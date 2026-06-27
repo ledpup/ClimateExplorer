@@ -1,13 +1,13 @@
 namespace ClimateExplorer.Web.Client.Pages;
 
 using Blazorise;
-using Blazorise.Snackbar;
 using ClimateExplorer.Core;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Services;
 using ClimateExplorer.Web.Client.Services.Chart;
+using ClimateExplorer.Web.Client.Services.Notifications;
 using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
@@ -18,13 +18,11 @@ using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.Extensions.Primitives;
 using Microsoft.JSInterop;
 using static ClimateExplorer.Core.Enums;
+using UserNotificationType = ClimateExplorer.Web.Client.UiModel.NotificationType;
 
 public abstract partial class ChartablePage : ComponentBase, IDisposable
 {
-    public const int SnackbarDisplayMs = 30_000;
-
     private readonly Guid componentInstanceId = Guid.NewGuid();
-    private readonly HashSet<string> activeSnackbarMessages = [];
     private bool initialChartStateResolved;
     private long chartBuildVersion;
 
@@ -52,13 +50,14 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
     [Inject]
     protected IChartDataBuilder? ChartDataBuilder { get; set; }
 
+    [Inject]
+    protected IUserNotificationService? NotificationService { get; set; }
+
     protected IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
 
     protected Dictionary<Guid, Location>? LocationDictionary { get; set; }
 
     protected IEnumerable<Region>? Regions { get; set; }
-
-    protected SnackbarStack? SnackbarStack { get; set; }
 
     protected ChartState? CurrentChartState { get; set; }
 
@@ -148,7 +147,7 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
 
             foreach (var message in buildResult.Messages)
             {
-                await SnackbarMessageEventHandler(message);
+                AddNotification(message);
             }
         }
         catch (Exception ex)
@@ -161,7 +160,7 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
             Logger!.LogError(ex, "Failed to build chart datasets.");
             ChartDataLoadingErrored = true;
             CurrentChartData = new ChartDataBuildResult();
-            await SnackbarMessageEventHandler(new SnackbarMessage { Message = "Failed to create the chart with the current settings.", Type = SnackbarColor.Danger });
+            AddNotification(new UserNotification { Message = "Failed to create the chart with the current settings.", Type = UserNotificationType.Error });
         }
         finally
         {
@@ -216,7 +215,7 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
     {
         if (chartPresetModel.ChartSeriesList == null || !chartPresetModel.ChartSeriesList.Any())
         {
-            await SnackbarMessageEventHandler(new SnackbarMessage { Message = $"No data available for the preset '{chartPresetModel.Title}'.", Type = SnackbarColor.Danger });
+            AddNotification(new UserNotification { Message = $"No data available for the preset '<b>{chartPresetModel.Title}</b>'.", Type = UserNotificationType.Warning });
             return;
         }
 
@@ -250,21 +249,9 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
         await JsRuntime!.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
     }
 
-    protected async Task SnackbarMessageEventHandler(SnackbarMessage snackbarMessage)
+    protected void AddNotification(UserNotification notification)
     {
-        if (!activeSnackbarMessages.Add(snackbarMessage.Message))
-        {
-            return;
-        }
-
-        await SnackbarStack!.PushAsync(snackbarMessage.Message, snackbarMessage.Type, options =>
-        {
-            options.ShowActionButton = true;
-            options.ActionButtonText = "✕";
-            options.Multiline = true;
-        });
-
-        _ = Task.Delay(SnackbarDisplayMs).ContinueWith(_ => activeSnackbarMessages.Remove(snackbarMessage.Message));
+        NotificationService!.Add(notification);
     }
 
     protected async Task<bool> EnsureInitialChartStateAsync(Location? location, Func<ChartState> createDefaultState)

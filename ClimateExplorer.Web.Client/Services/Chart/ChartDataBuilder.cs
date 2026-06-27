@@ -1,6 +1,5 @@
 namespace ClimateExplorer.Web.Client.Services.Chart;
 
-using Blazorise.Snackbar;
 using ClimateExplorer.Core;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Infrastructure;
@@ -44,7 +43,7 @@ public sealed class ChartDataBuilder : IChartDataBuilder
 
         var seriesWithData = await RetrieveDataSets(usableSeries, binGranularity, state, internalGroupingThreshold);
 
-        var messages = new List<SnackbarMessage>();
+        var messages = new List<UserNotification>();
         var processed = BuildProcessedDataSets(seriesWithData, binGranularity, state, messages);
 
         return processed with
@@ -106,15 +105,16 @@ public sealed class ChartDataBuilder : IChartDataBuilder
         return [.. dataSet.Select(x => x!.GetStartYearForDataSet()).Distinct().OrderBy(x => x)];
     }
 
-    private static SnackbarMessage CreateCompletenessFilteringMessage(DataSet dataSet)
+    private static UserNotification CreateCompletenessFilteringMessage(DataSet dataSet)
     {
         var dataType = dataSet.DataType.ToFriendlyName().ToLowerInvariant();
         var locationName = dataSet.GeographicalEntity?.ToString() ?? "the selected location";
 
-        return new SnackbarMessage
+        return new UserNotification
         {
-            Message = $"The completeness threshold removed all {dataType} observations for {locationName}.<br>There is not enough complete {dataType} data to chart this series.",
-            Type = SnackbarColor.Warning,
+            Message = $"The completeness threshold removed all {dataType} observations for <b>{locationName}</b>. There is not enough complete {dataType} data to chart this series.",
+            Type = NotificationType.Warning,
+            LocationName = dataSet.GeographicalEntity?.ToString(),
         };
     }
 
@@ -186,7 +186,7 @@ public sealed class ChartDataBuilder : IChartDataBuilder
         List<SeriesWithData> chartSeriesWithData,
         BinGranularities selectedBinGranularity,
         ChartState state,
-        List<SnackbarMessage> messages)
+        List<UserNotification> messages)
     {
         var l = new LogAugmenter(logger, "BuildProcessedDataSets");
 
@@ -244,7 +244,12 @@ public sealed class ChartDataBuilder : IChartDataBuilder
 
                 if (values.Count(y => y != null) < 10)
                 {
-                    messages.Add(new SnackbarMessage { Message = $"The moving‑average removed too many {cs.SourceDataSet.DataType.ToFriendlyName().ToLower()} observations for {cs.SourceDataSet.GeographicalEntity?.Name}.<br>We will revert to using the unsmoothed data.", Type = SnackbarColor.Warning });
+                    messages.Add(new UserNotification
+                    {
+                        Message = $"The moving-average removed too many {cs.SourceDataSet.DataType.ToFriendlyName().ToLower()} observations for <b>{cs.SourceDataSet.GeographicalEntity?.Name}</b>. We will revert to using the unsmoothed data.",
+                        Type = NotificationType.Warning,
+                        LocationName = cs.SourceDataSet.GeographicalEntity?.Name,
+                    });
                     cs.DataStatus = ChartSeriesDataStatus.FallbackToUnsmoothedData;
                     values = cs.SourceDataSet.DataRecords
                                             .Where(x => x.Value.HasValue)

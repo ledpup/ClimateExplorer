@@ -7,6 +7,7 @@ using ClimateExplorer.Core.Blog;
 using ClimateExplorer.Web.Client.Services;
 using ClimateExplorer.Web.Client.Services.Chart;
 using ClimateExplorer.Web.Client.Services.InfoPanelDismissal;
+using ClimateExplorer.Web.Client.Services.Notifications;
 using ClimateExplorer.Web.Client.Services.RecentObservations;
 using ClimateExplorer.WebApiClient.Services;
 using CurrentDevice;
@@ -31,6 +32,7 @@ builder.Services
     .AddScoped<IChartStateUrlService, ChartStateUrlService>()
     .AddScoped<IChartSeriesLocationSubstitutionService, ChartSeriesLocationSubstitutionService>()
     .AddScoped<IChartDataBuilder, ChartDataBuilder>()
+    .AddScoped<IUserNotificationService, NotificationService>()
     .AddScoped<IRecentObservationsDataProvider, RecentObservationsDataProvider>()
     .AddScoped<IRecentObservationsCalculator, RecentObservationsCalculator>()
     .AddScoped<IRecentObservationsService, RecentObservationsService>()

@@ -82,3 +82,9 @@
         padding: 14px 18px 18px;
     }
 }
+
+@media (prefers-reduced-motion: reduce) {
+    .side-panel {
+        transition: none;
+    }
+}

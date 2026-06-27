@@ -195,9 +195,9 @@ public partial class MapContainer
 
             InitialiseMapOptions();
 
-            if (internalLocation is not null)
+            if (internalLocation is not null && map is not null)
             {
-                if (IsMapExpanded && map is not null)
+                if (IsMapExpanded)
                 {
                     mapRerendering = true;
                     var selectedLocationCentre = new LatLng(internalLocation.Coordinates.Latitude, internalLocation.Coordinates.Longitude);
@@ -207,6 +207,8 @@ public partial class MapContainer
                 {
                     await ScrollToPoint(internalLocation.Coordinates);
                 }
+
+                lastExpandedCentre = new LatLng(internalLocation.Coordinates.Latitude, internalLocation.Coordinates.Longitude);
             }
         }
 

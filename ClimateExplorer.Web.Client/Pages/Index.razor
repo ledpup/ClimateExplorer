@@ -4,7 +4,6 @@
 @implements IDisposable
 
 @using Blazorise
-@using Blazorise.Snackbar
 @using static ClimateExplorer.Web.UiModel.SuggestedPresetLists;
 @using static ClimateExplorer.Web.Client.Components.Common.Collapsible;
 @using ClimateExplorer.Web.Client.Components
@@ -23,8 +22,6 @@
     <meta property="og:url" content="@PageUrl" />
     <link rel="canonical" href="@PageUrl" />
 </HeadContent>
-
-<SnackbarStack @ref="SnackbarStack" Location="SnackbarStackLocation.Top" DefaultInterval="ChartablePage.SnackbarDisplayMs" TextAlignment="TextAlignment.Center" Class="snackbar-centre" />
 
 <Collapsible @ref="suggestedChartsCollapsible" InitiallyShowContents="false" ShowTitleWhenExpanded="false" ContentLayoutType="CollapserContentLayoutTypes.FlexboxRow">
     <CollapsedContent>

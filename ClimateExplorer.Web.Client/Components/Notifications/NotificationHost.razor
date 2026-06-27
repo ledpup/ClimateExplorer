@@ -1,0 +1,65 @@
+@using ClimateExplorer.Web.Client.Components.Common
+@using Microsoft.AspNetCore.Components
+
+@if (toastVisible)
+{
+    <button class="notification-toast" @onclick="OpenNotificationsPanelAsync">
+        <i class="fas fa-bell" aria-hidden="true"></i>
+        <span>New notifications</span>
+    </button>
+}
+
+<SidePanel @ref="notificationsSidePanel" Title="Notifications" Width="72%">
+    @if (Notifications.Count == 0)
+    {
+        <p class="notifications-empty">No notifications.</p>
+    }
+    else
+    {
+        <div class="table-card notifications-table-card">
+            <div class="table-header">Session notifications</div>
+            <div class="notifications-table-scroll">
+                <table class="table notifications-table">
+                    <thead>
+                        <tr>
+                            <th>Message</th>
+                            <th>Location</th>
+                            <th>Severity/type</th>
+                            <th class="read-column">Read</th>
+                            <th>Time of message</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var notification in Notifications)
+                        {
+                            <tr class="@(notification.IsRead ? "notification-read" : "notification-unread")">
+                                <td class="notification-message-cell">
+                                    <span>@((MarkupString)notification.Message)</span>
+                                    @if (notification.Count > 1)
+                                    {
+                                        <span class="notification-count">@notification.Count</span>
+                                    }
+                                    @if (!string.IsNullOrWhiteSpace(notification.ActionUrl) && !string.IsNullOrWhiteSpace(notification.ActionText))
+                                    {
+                                        <a class="notification-action" href="@notification.ActionUrl">@notification.ActionText</a>
+                                    }
+                                </td>
+                                <td>@FormatLocation(notification)</td>
+                                <td>
+                                    <span class="@GetTypeClass(notification.Type)">@notification.Type</span>
+                                </td>
+                                <td class="read-column">
+                                    <input type="checkbox"
+                                           checked="@notification.IsRead"
+                                           aria-label="@CreateReadLabel(notification)"
+                                           @onchange="args => OnReadChanged(notification.Id, args)" />
+                                </td>
+                                <td>@FormatTime(notification.UpdatedAt)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</SidePanel>

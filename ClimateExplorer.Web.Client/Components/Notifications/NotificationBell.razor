@@ -1,0 +1,12 @@
+<button class="@BellClass"
+        disabled="@(!HasNotifications)"
+        aria-label="@AriaLabel"
+        title="@AriaLabel"
+        @onclick="OpenNotifications">
+    <i class="fas fa-bell" aria-hidden="true"></i>
+    @if (UnreadCount > 0)
+    {
+        <span class="notification-badge" aria-hidden="true">@BadgeText</span>
+        <span class="visually-hidden">@UnreadLabel</span>
+    }
+</button>
