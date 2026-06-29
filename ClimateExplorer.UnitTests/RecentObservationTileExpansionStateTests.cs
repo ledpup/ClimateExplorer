@@ -3,6 +3,7 @@ namespace ClimateExplorer.UnitTests;
 using System;
 using System.Collections.Generic;
 using ClimateExplorer.Web.Client.UiModel;
+using ClimateExplorer.Web.Client.UiModel.RecentObservations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [TestClass]

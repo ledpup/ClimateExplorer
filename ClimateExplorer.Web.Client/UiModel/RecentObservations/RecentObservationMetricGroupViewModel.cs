@@ -1,4 +1,4 @@
-namespace ClimateExplorer.Web.Client.UiModel;
+namespace ClimateExplorer.Web.Client.UiModel.RecentObservations;
 
 /// <summary>
 /// A named, ordered set of metrics shown as one state of the expanded-tile toggle

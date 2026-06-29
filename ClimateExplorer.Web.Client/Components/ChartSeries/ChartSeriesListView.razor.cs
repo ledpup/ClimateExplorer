@@ -1,4 +1,4 @@
-namespace ClimateExplorer.Web.Client.Components.Chart;
+namespace ClimateExplorer.Web.Client.Components.ChartSeries;
 
 using ClimateExplorer.Web.UiModel;
 using Microsoft.AspNetCore.Components;

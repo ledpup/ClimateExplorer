@@ -5,7 +5,7 @@ using System.Globalization;
 using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.Client.Services.RecentObservations;
-using ClimateExplorer.Web.Client.UiModel;
+using ClimateExplorer.Web.Client.UiModel.RecentObservations;
 
 public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
 {

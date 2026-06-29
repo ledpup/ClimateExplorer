@@ -1,4 +1,4 @@
-namespace ClimateExplorer.Web.Client.UiModel;
+namespace ClimateExplorer.Web.Client.UiModel.RecentObservations;
 
 public static class RecentObservationCompletenessThreshold
 {
