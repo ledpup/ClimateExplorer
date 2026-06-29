@@ -262,7 +262,6 @@
     }
 
     ::deep .navbar-nav .nav-link {
-        font-size: 0.9rem;
         padding-right: 0.2rem;
         padding-left: 0.2rem;
     }
@@ -270,6 +269,10 @@
     ::deep .notification-nav-item {
         margin-left: auto;
         margin-right: 4px;
+    }
+
+    ::deep .notification-nav-item + .mobile-menu-nav-item {
+        margin-left: 0;
     }
 
     ::deep .mobile-menu-nav-item {

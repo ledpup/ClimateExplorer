@@ -140,3 +140,22 @@
     background: #d1e7dd;
     color: #0f5132;
 }
+
+@media (max-width: 767px) {
+    .notifications-table-scroll {
+        overflow-x: visible;
+    }
+
+    .notifications-table {
+        min-width: 0;
+    }
+
+    .notifications-table th:not(:first-child),
+    .notifications-table td:not(:first-child) {
+        display: none;
+    }
+
+    .notification-message-cell {
+        max-width: none;
+    }
+}
