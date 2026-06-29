@@ -49,6 +49,7 @@
     display: inline;
     color: white;
     padding: 0px;
+    white-space: nowrap;
 }
 
 ::deep .nav-button {
@@ -91,7 +92,7 @@
     color: #79c6f4;
     font-size: larger;
     cursor: pointer;
-    padding: 0 8px;
+    padding: 0;
     vertical-align: middle;
     display: inline-flex;
     align-items: center;
@@ -241,6 +242,45 @@
 }
 
 @media (max-width: 767px) {
+    ::deep .navbar-dark .navbar-brand {
+        flex: 0 0 auto;
+    }
+
+    ::deep .navbar-collapse {
+        min-width: 0;
+    }
+
+    ::deep .navbar-nav {
+        flex-wrap: nowrap;
+        min-width: 0;
+        padding-left: 8px;
+    }
+
+    ::deep .nav-item {
+        flex: 0 0 auto;
+        margin-right: 4px;
+    }
+
+    ::deep .navbar-nav .nav-link {
+        font-size: 0.9rem;
+        padding-right: 0.2rem;
+        padding-left: 0.2rem;
+    }
+
+    ::deep .notification-nav-item {
+        margin-left: auto;
+        margin-right: 4px;
+    }
+
+    ::deep .mobile-menu-nav-item {
+        margin-right: 6px;
+    }
+
+    ::deep .hamburger-toggle {
+        padding-right: 4px !important;
+        padding-left: 4px !important;
+    }
+
     ::deep .desktop-secondary-nav-item {
         display: none;
     }
