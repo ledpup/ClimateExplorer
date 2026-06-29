@@ -106,7 +106,7 @@ public partial class NotificationHost : IDisposable
 
     private string FormatTime(DateTimeOffset timestamp)
     {
-        return timestamp.ToLocalTime().ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
+        return timestamp.ToLocalTime().ToString("HH:mm", CultureInfo.InvariantCulture);
     }
 
     private string GetTypeClass(NotificationType type)

@@ -112,7 +112,7 @@ public sealed class ChartDataBuilder : IChartDataBuilder
 
         return new UserNotification
         {
-            Message = $"{locationName}: the completeness threshold removed all {dataType} observations. There is not enough data to chart this series.",
+            Message = $"{locationName}: the completeness threshold removed all <b>{dataType}</b> observations. There is not enough data to chart this series.",
             Type = NotificationType.Warning,
             LocationName = dataSet.GeographicalEntity?.ToString(),
         };
@@ -246,7 +246,7 @@ public sealed class ChartDataBuilder : IChartDataBuilder
                 {
                     messages.Add(new UserNotification
                     {
-                        Message = $"{cs.SourceDataSet.GeographicalEntity?.Name}: not enough {cs.SourceDataSet.DataType.ToFriendlyName().ToLower()} data for a moving average. Showing unsmoothed data instead.",
+                        Message = $"{cs.SourceDataSet.GeographicalEntity?.Name}: not enough <b>{cs.SourceDataSet.DataType.ToFriendlyName().ToLower()}</b> data for a moving average. Showing unsmoothed data instead.",
                         Type = NotificationType.Warning,
                         LocationName = cs.SourceDataSet.GeographicalEntity?.Name,
                     });
