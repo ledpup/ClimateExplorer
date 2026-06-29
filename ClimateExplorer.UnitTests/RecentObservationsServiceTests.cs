@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.Client.Services;
-using ClimateExplorer.Web.Client.UiModel;
+using ClimateExplorer.Web.Client.UiModel.RecentObservations;
 using ClimateExplorer.WebApiClient.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;

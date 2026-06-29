@@ -24,7 +24,6 @@
                             <th>Message</th>
                             <th>Location</th>
                             <th>Severity/type</th>
-                            <th class="read-column">Read</th>
                             <th>Time of message</th>
                         </tr>
                     </thead>
@@ -46,12 +45,6 @@
                                 <td>@FormatLocation(notification)</td>
                                 <td>
                                     <span class="@GetTypeClass(notification.Type)">@notification.Type</span>
-                                </td>
-                                <td class="read-column">
-                                    <input type="checkbox"
-                                           checked="@notification.IsRead"
-                                           aria-label="@CreateReadLabel(notification)"
-                                           @onchange="args => OnReadChanged(notification.Id, args)" />
                                 </td>
                                 <td>@FormatTime(notification.UpdatedAt)</td>
                             </tr>

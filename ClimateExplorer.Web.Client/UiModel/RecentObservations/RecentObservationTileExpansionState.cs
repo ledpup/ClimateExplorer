@@ -1,4 +1,4 @@
-namespace ClimateExplorer.Web.Client.UiModel;
+namespace ClimateExplorer.Web.Client.UiModel.RecentObservations;
 
 /// <summary>
 /// UI-only expansion state for a single Recent Observation tile. Collapsed by default.

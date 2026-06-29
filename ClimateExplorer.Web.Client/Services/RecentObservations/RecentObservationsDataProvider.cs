@@ -3,7 +3,7 @@ namespace ClimateExplorer.Web.Client.Services;
 
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.Client.Services.RecentObservations;
-using ClimateExplorer.Web.Client.UiModel;
+using ClimateExplorer.Web.Client.UiModel.RecentObservations;
 using ClimateExplorer.WebApiClient.Services;
 using Microsoft.Extensions.Logging;
 using static ClimateExplorer.Core.Enums;

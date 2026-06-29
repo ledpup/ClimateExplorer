@@ -1,4 +1,4 @@
-namespace ClimateExplorer.Web.Client.UiModel;
+namespace ClimateExplorer.Web.Client.UiModel.RecentObservations;
 
 /// <summary>
 /// One end of a metric's historical range for the comparison date — the record high
