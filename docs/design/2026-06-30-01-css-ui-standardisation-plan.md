@@ -107,3 +107,10 @@ The most suspicious CLS area is the location page composition:
 - Fixed the chart aggregation toggle regression by applying `.climate-button` to the native `AggregationOptions` button.
 - Restored the `LocationDashboard` options cog alignment by styling the scoped Blazorise dropdown toggle from the local wrapper and adding an accessible label.
 - Verified with `dotnet build`; visual verification remains manual because the repository instructions prohibit running the website, Playwright, Lighthouse, or browser tests in this pass.
+
+### 2026-07-01 Phase 2 dropdown primitive slice
+
+- Added `.climate-dropdown-toggle` to `app.css` for Blazorise dropdown toggle buttons that should match the shared ClimateExplorer control surface.
+- Migrated the chart grouping dropdown, chart axes dropdown, top-100 download dropdown, and location-dashboard options cog to the shared dropdown primitive.
+- Removed repeated dropdown button surface styling from `ChartView.razor.css`, `Top100.razor.css`, and `LocationDashboard.razor.css`; those scoped files now keep local layout/menu rules only.
+- Verified with `dotnet build`; browser visual checks remain deferred by repository instruction.

@@ -194,6 +194,47 @@ th {
     padding-bottom: 6px;
 }
 
+.btn.climate-dropdown-toggle,
+.climate-dropdown-toggle {
+    padding: var(--climate-space-control-padding);
+    background-color: var(--climate-color-control-surface);
+    border: none;
+    border-radius: var(--climate-radius-control);
+    text-decoration: none;
+    color: var(--climate-color-control-text);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--climate-space-control-gap);
+    position: relative;
+    user-select: none;
+    font: inherit;
+    box-shadow: var(--climate-shadow-control);
+    transition: var(--climate-transition-control);
+}
+
+.btn.climate-dropdown-toggle:hover,
+.btn.climate-dropdown-toggle:focus,
+.btn.climate-dropdown-toggle:active,
+.btn.climate-dropdown-toggle.show,
+.climate-dropdown-toggle:hover,
+.climate-dropdown-toggle:focus,
+.climate-dropdown-toggle:active,
+.climate-dropdown-toggle.show {
+    background-color: var(--climate-color-control-hover);
+    color: var(--climate-color-control-text);
+}
+
+.btn.climate-dropdown-toggle i,
+.climate-dropdown-toggle i {
+    margin-right: 8px;
+}
+
+.btn.climate-dropdown-toggle::after,
+.climate-dropdown-toggle::after {
+    margin-left: 0;
+}
+
 .climate-link-button {
     color: var(--climate-color-link);
     text-decoration: underline;

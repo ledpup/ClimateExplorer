@@ -34,25 +34,10 @@
     align-items: center;
 }
 
-.dropdown-wrapper ::deep .dropdown-toggle {
-    display: inline-flex;
-    align-items: center;
+.dropdown-wrapper ::deep .climate-dropdown-toggle {
     justify-content: center;
     min-height: 35px;
-    padding: 8px;
-    border-radius: var(--climate-radius-control);
-    box-shadow: var(--climate-shadow-control);
-    background-color: var(--climate-color-control-surface);
-    color: var(--climate-color-control-text);
     line-height: 1;
-}
-
-.dropdown-wrapper ::deep .dropdown-toggle:hover {
-    background-color: var(--climate-color-control-hover);
-}
-
-.dropdown-wrapper ::deep .dropdown-toggle::after {
-    margin-left: 8px;
 }
 
 .dropdown-menu-content {
