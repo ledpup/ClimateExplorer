@@ -42,14 +42,13 @@
 
                     @if (HasExpandableCurrentTiles)
                     {
-                        <button type="button"
-                                class="chart-control recent-observations-toggle-all"
-                                title="@ExpandCollapseAllLabel"
-                                aria-label="@ExpandCollapseAllLabel"
-                                @onclick="ToggleAllTileExpansion">
+                        <ClimateButton Class="chart-control recent-observations-toggle-all"
+                                       AriaLabel="@ExpandCollapseAllLabel"
+                                       title="@ExpandCollapseAllLabel"
+                                       OnClick="ToggleAllTileExpansion">
                             <span class="oi oi-chevron-right recent-observations-toggle-all-chevron @(AreAllExpandableCurrentTilesExpanded ? "expanded" : string.Empty)" aria-hidden="true"></span>
                             @ExpandCollapseAllLabel
-                        </button>
+                        </ClimateButton>
                     }
                 </div>
 

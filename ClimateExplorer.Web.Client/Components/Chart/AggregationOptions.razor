@@ -10,9 +10,7 @@
     }
     <div class="aggregation-options-container">
         <DelayedTooltip Text="Change how data is grouped for aggregation.<br>Group fortnightly at a 70% threshold by default">
-            <button class="climate-button chart-control aggregation-toggle dropdown-toggle" @onclick="TogglePanel">
-                <i class="fas fa-cog"></i> Aggregation
-            </button>
+            <ClimateButton Text="Aggregation" Icon="fas fa-cog" Class="chart-control aggregation-toggle dropdown-toggle" OnClick="TogglePanel" />
         </DelayedTooltip>
         @if (panelOpen)
         {

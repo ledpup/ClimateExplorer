@@ -1,10 +1,10 @@
 @namespace ClimateExplorer.Web.Client.Components
 
 <p>
-    ClimateExplorer helps you explore how the climate is changing in your region and around the world. There are two main sections: this page and the regional &amp; global section. Try clicking elements such as <button class="climate-link-button action-link" @onclick="OnShowRecordHigh">record high</button>.
+    ClimateExplorer helps you explore how the climate is changing in your region and around the world. There are two main sections: this page and the regional &amp; global section. Try clicking elements such as <ClimateLinkButton Text="record high" Class="action-link" OnClick="OnShowRecordHigh" />.
 </p>
 <p>
-    The suggested charts are a quick way to get started. Use the chevron at the top to <button class="climate-link-button action-link" @onclick="OnToggleSuggestedCharts">see more chart presets</button>, or <button class="climate-link-button action-link" @onclick="OnAddDataSet">add data sets</button> to build custom views.
+    The suggested charts are a quick way to get started. Use the chevron at the top to <ClimateLinkButton Text="see more chart presets" Class="action-link" OnClick="OnToggleSuggestedCharts" />, or <ClimateLinkButton Text="add data sets" Class="action-link" OnClick="OnAddDataSet" /> to build custom views.
 </p>
 <p>
     The <a href="regionalandglobal">regional &amp; global</a> section has charts for broader indicators: greenhouse gases, sea ice, sea level rise, and temperature anomalies.

@@ -40,11 +40,11 @@ The most suspicious CLS area is the location page composition:
 
 | Area | Plan |
 | --- | --- |
-| Files/components to inspect | Start with `app.css`, then migrate scoped usages in `ChartView`, `Top100`, `ClimateRecords`, `LocationDashboard`, `MapContainer`, `DataSetBrowser`, `Notifications`, and selected page CSS. |
+| Files/components to inspect | Start with `app.css` and `ClimateExplorer.Web.Client/Components/Common/Control`, then migrate scoped usages in `ChartView`, `Top100`, `ClimateRecords`, `LocationDashboard`, `MapContainer`, `DataSetBrowser`, `Notifications`, and selected page CSS. |
 | Problems to look for | Class names describe location of use rather than behavior: `.chart-control`, `.top100-btn`, `.top100-download-btn`, `.download-button`, `.today-btn`, `.sort-toggle-btn`, `.map-toggle-button`, `.add-series-button`, `.add-dataset`, `.action-link`, `.record-link`. Different shadows, icon gaps, hover colors, disabled states, and `inline-flex` versus `inline-block` behavior make controls visually inconsistent. |
-| Proposed changes | Introduce a small global design layer in `app.css`: CSS custom properties for color, radius, shadow, spacing, and transitions; `.climate-button` as the standard button; `.climate-button--subtle`, `.climate-button--primary`, `.climate-button--danger`, `.climate-button--compact`, `.climate-icon-button`, `.climate-link-button`, and `.climate-control-group` as needed. Prefer `.climate-button` because it is readable in Razor markup and matches the product name. Keep component-specific classes for layout only. |
-| Risks | A global `.climate-button` can drift into a second design system if Bootstrap/component-library controls are not clearly assigned. Too many modifiers would recreate the current duplication under new names. Button migration can affect wrapping and CLS because inline controls currently have different margins and display modes. |
-| Validation steps | Migrate one visual family at a time. First prove parity on native buttons and link-like buttons, then compact/icon variants. Use visual regression screenshots and a focused manual pass for hover, focus, disabled, active, wrapping, and touch target size. |
+| Proposed changes | Keep `app.css` as the visual token and primitive layer, but move repeated markup into small Blazor components under `Components/Common/Control`: `ClimateButton`, `ClimateDropdownButton`, and `ClimateLinkButton`. Components own the consistent button type, icon rendering, class composition, click callback, disabled state where relevant, and accessible-name parameters. Component-specific classes should remain layout/modifier hooks only. |
+| Risks | A component layer can become too broad if every one-off control variant becomes a parameter. Keep the components small and let child content or local wrapper CSS handle unusual cases. Button migration can affect wrapping and CLS because inline controls currently have different margins and display modes. Blazorise dropdown toggles still depend on CSS specificity against Bootstrap/Blazorise button styles. |
+| Validation steps | Migrate one visual family at a time. First prove parity on native buttons, dropdown buttons, and link-like buttons, then compact/icon variants. Use visual regression screenshots and a focused manual pass for hover, focus, disabled, active, wrapping, keyboard focus, accessible names, and touch target size. |
 
 ## Phase 3: CLS Investigation by Viewport Size
 
@@ -113,4 +113,12 @@ The most suspicious CLS area is the location page composition:
 - Added `.climate-dropdown-toggle` to `app.css` for Blazorise dropdown toggle buttons that should match the shared ClimateExplorer control surface.
 - Migrated the chart grouping dropdown, chart axes dropdown, top-100 download dropdown, and location-dashboard options cog to the shared dropdown primitive.
 - Removed repeated dropdown button surface styling from `ChartView.razor.css`, `Top100.razor.css`, and `LocationDashboard.razor.css`; those scoped files now keep local layout/menu rules only.
+- Verified with `dotnet build`; browser visual checks remain deferred by repository instruction.
+
+### 2026-07-01 Phase 2 component pivot
+
+- Pivoted Phase 2 from direct shared CSS classes in feature markup to reusable controls in `ClimateExplorer.Web.Client/Components/Common/Control`.
+- Added `ClimateButton`, `ClimateDropdownButton`, and `ClimateLinkButton`; the components compose the shared CSS primitives while centralising icon rendering, default `button` type, callback wiring, disabled state where relevant, and accessible-name parameters.
+- Migrated the highest-repeat controls first: chart add/filter/download/aggregation controls, chart grouping and axes dropdowns, top-100 copy/download actions, climate-records today/sort/download actions, location-dashboard change-location/options controls, map expand/collapse, dataset add actions, location record-high links, and home overview action links.
+- Kept `app.css` as the visual source of truth and left scoped CSS classes as layout/modifier hooks.
 - Verified with `dotnet build`; browser visual checks remain deferred by repository instruction.

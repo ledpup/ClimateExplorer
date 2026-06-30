@@ -1,11 +1,8 @@
 @using Blazorise
 
 <div class="axes-dropdown-wrapper">
-    <Dropdown>
-        <DropdownToggle Class="climate-dropdown-toggle">
-            <i class="fas fa-chart-line"></i> Axes
-        </DropdownToggle>
-        <DropdownMenu>
+    <ClimateDropdownButton Text="Axes" Icon="fas fa-chart-line">
+        <MenuContent>
             @if (Axes != null && Axes.Count > 0)
             {
                 <div class="axes-menu-content">
@@ -22,6 +19,6 @@
                     }
                 </div>
             }
-        </DropdownMenu>
-    </Dropdown>
+        </MenuContent>
+    </ClimateDropdownButton>
 </div>

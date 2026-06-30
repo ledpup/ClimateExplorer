@@ -14,9 +14,7 @@
                     <div class="chart-series-list-wrapper">
                         <ChartSeriesListView ChartSeriesList="ChartSeriesList" OnSeriesChanged="@RaiseChartStateChanged" IsLoading="ChartLoadingIndicatorVisible"></ChartSeriesListView>
 
-                        <button class="climate-button climate-button--compact add-series-button" @onclick="ShowAddDataSetModal">
-                            <i class="fas fa-plus"></i> Add
-                        </button>
+                        <ClimateButton Text="Add" Icon="fas fa-plus" Compact="true" Class="add-series-button" OnClick="ShowAddDataSetModal" />
                     </div>
 
                     <div class="chart-wrapper @(NoChartDataAvailable ? "chart-no-data" : "")" @ref="chartWrapper">
@@ -34,27 +32,24 @@
 
                     <div class="chart-controls">
                         <DelayedTooltip Text="Toggle between showing all available years and the filtered date range">
-                            <button class="climate-button chart-control" @onclick="ChartAllDataToggle"><i class="@( ChartAllData ? "fas fa-check-square" : "fas fa-square" )"></i> Chart all data</button>
+                            <ClimateButton Text="Chart all data" Icon="@(ChartAllData ? "fas fa-check-square" : "fas fa-square")" Class="chart-control" OnClick="ChartAllDataToggle" />
                         </DelayedTooltip>
 
                         @if (!string.IsNullOrWhiteSpace(SelectedStartYear) || !string.IsNullOrWhiteSpace(SelectedEndYear))
                         {
                             <DelayedTooltip Text="Remove the active year filter">
-                                <button class="climate-button chart-control" @onclick="OnClearFilter"><i class="fa-solid fa-filter-circle-xmark"></i> Clear filter</button>
+                                <ClimateButton Text="Clear filter" Icon="fa-solid fa-filter-circle-xmark" Class="chart-control" OnClick="OnClearFilter" />
                             </DelayedTooltip>
                         }
 
                         <DelayedTooltip Text="Change how data is grouped on the x-axis: yearly, monthly, daily">
-                            <Dropdown>
-                                <DropdownToggle Class="climate-dropdown-toggle">
-                                    <i class="fas fa-calendar"></i> Grouping
-                                </DropdownToggle>
-                                <DropdownMenu>
+                            <ClimateDropdownButton Text="Grouping" Icon="fas fa-calendar">
+                                <MenuContent>
                                     <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByYear)">Yearly</DropdownItem>
                                     <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByMonthOnly)">Monthly</DropdownItem>
                                     <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByDayOnly)">Daily</DropdownItem>
-                                </DropdownMenu>
-                            </Dropdown>
+                                </MenuContent>
+                            </ClimateDropdownButton>
                         </DelayedTooltip>
 
                         <DelayedTooltip Text="Change the scale of the chart axes to scale from zero or the minimum value">
@@ -68,7 +63,7 @@
                         </div>
 
                         <DelayedTooltip Text="Download the chart data as a CSV file" Style="display: inline-block; margin-left: auto">
-                            <button class="climate-button chart-control chart-control-download" @onclick="OnDownloadDataClicked"><i class="fas fa-download"></i> Download</button>
+                            <ClimateButton Text="Download" Icon="fas fa-download" Class="chart-control chart-control-download" OnClick="OnDownloadDataClicked" />
                         </DelayedTooltip>
                     </div>
                 </div>

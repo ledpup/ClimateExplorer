@@ -46,7 +46,7 @@
         @if (ActiveView == RecordView.Daily)
         {
             <DelayedTooltip Text="Set filter to today's date">
-                <button class="climate-button today-btn" disabled="@IsTodaySelected" @onclick="OnTodayClicked">Today</button>
+                <ClimateButton Text="Today" Class="today-btn" Disabled="@IsTodaySelected" OnClick="OnTodayClicked" />
             </DelayedTooltip>
         }
         <DelayedTooltip Text="Filter records to a specific month, or view all months">
@@ -91,9 +91,7 @@
         </DelayedTooltip>
     }
     <DelayedTooltip Text="Toggle sort order">
-        <button class="climate-button sort-toggle-btn" @onclick="OnSortToggled">
-            <i class="fa-solid fa-temperature-arrow-@(Ascending ? "up" : "down")"></i> @SortLabel
-        </button>
+        <ClimateButton Text="@SortLabel" Icon="@SortToggleIcon" Class="sort-toggle-btn" OnClick="OnSortToggled" />
     </DelayedTooltip>
 }
 </div>
@@ -231,7 +229,7 @@
         @if (ClimateRecordRows.Count > 0)
         {
             <div class="d-flex justify-content-end mt-2">
-                <button class="climate-button download-button" @onclick="DownloadAllRecords"><i class="fas fa-download"></i> Download</button>
+                <ClimateButton Text="Download" Icon="fas fa-download" Class="download-button" OnClick="DownloadAllRecords" />
             </div>
         }
         </DelayedLoadingIndicator>
