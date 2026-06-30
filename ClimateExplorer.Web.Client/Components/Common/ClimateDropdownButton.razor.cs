@@ -1,4 +1,4 @@
-namespace ClimateExplorer.Web.Client.Components.Common.Control;
+namespace ClimateExplorer.Web.Client.Components.Common;
 
 using Microsoft.AspNetCore.Components;
 
