@@ -18,14 +18,9 @@
 }
 
 .add-dataset {
-    cursor: pointer;
     color: #09C2FC;
     font-weight: bold;
     text-decoration: none;
-    background: none;
-    border: none;
-    font: inherit;
-    padding: 0;
 }
 
 .add-dataset:hover {
