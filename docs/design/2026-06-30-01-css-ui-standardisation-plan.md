@@ -101,3 +101,9 @@ The most suspicious CLS area is the location page composition:
 - Trimmed component-scoped CSS so migrated feature classes now keep local layout differences instead of full duplicate button skins.
 - Removed the now-empty `HomeOverviewInfo.razor.css`.
 - Deferred Blazorise dropdown styling, accessible-name work, browser screenshots, and CLS measurement to their separate plans/validation passes.
+
+### 2026-07-01 feedback follow-up
+
+- Fixed the chart aggregation toggle regression by applying `.climate-button` to the native `AggregationOptions` button.
+- Restored the `LocationDashboard` options cog alignment by styling the scoped Blazorise dropdown toggle from the local wrapper and adding an accessible label.
+- Verified with `dotnet build`; visual verification remains manual because the repository instructions prohibit running the website, Playwright, Lighthouse, or browser tests in this pass.
