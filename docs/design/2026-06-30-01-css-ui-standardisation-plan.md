@@ -72,7 +72,7 @@ The most suspicious CLS area is the location page composition:
 | --- | --- |
 | 1. Baseline and inventory | Add a temporary or test-only Playwright helper to capture screenshots and CLS/source-node data across the required breakpoints. Record duplicated CSS groups before changes. |
 | 2. Design primitives | Add CSS tokens and reusable button/control classes to `app.css` without changing existing markup. Keep them unused until screenshots establish a baseline. |
-| 3. Native visual migration | Move native controls from duplicated classes to `.climate-button` variants: chart download/add controls, top-100 copy, climate records today/sort/download, map toggle, dataset add/link-like controls where appropriate. Leave compatibility aliases temporarily if needed. |
+| 3. Native visual migration | Move repeated native controls to `Components/Common/Control` components: chart download/add controls, top-100 copy/download controls, climate records today/sort/download, change-location actions, map toggle, dataset add/link-like controls where appropriate. Leave compatibility aliases temporarily if needed. |
 | 4. CLS fixes | Replace broad fixed-height "CLS fix" rules with component-owned reservation. Investigate dashboard fields, stripe/extreme-year insertion, map wrapper height/aspect ratio, and suggested chart reservation independently. Remove or reduce `.location-info-container` only after source-node data proves the underlying shift is handled. |
 | 5. Cleanup | Delete compatibility aliases, old duplicated selector groups, stale comments, and dead rules after each migrated area passes screenshots, CLS checks, and smoke tests. |
 
@@ -119,6 +119,6 @@ The most suspicious CLS area is the location page composition:
 
 - Pivoted Phase 2 from direct shared CSS classes in feature markup to reusable controls in `ClimateExplorer.Web.Client/Components/Common/Control`.
 - Added `ClimateButton`, `ClimateDropdownButton`, and `ClimateLinkButton`; the components compose the shared CSS primitives while centralising icon rendering, default `button` type, callback wiring, disabled state where relevant, and accessible-name parameters.
-- Migrated the highest-repeat controls first: chart add/filter/download/aggregation controls, chart grouping and axes dropdowns, top-100 copy/download actions, climate-records today/sort/download actions, location-dashboard change-location/options controls, map expand/collapse, dataset add actions, location record-high links, and home overview action links.
+- Migrated the highest-repeat controls first: chart add/filter/download/aggregation controls, chart grouping and axes dropdowns, top-100 copy/download actions, climate-records today/sort/download actions, location-dashboard change-location/options controls, change-location modal near-me/random actions, map expand/collapse, dataset add actions, location record-high links, and home overview action links.
 - Kept `app.css` as the visual source of truth and left scoped CSS classes as layout/modifier hooks.
 - Verified with `dotnet build`; browser visual checks remain deferred by repository instruction.
