@@ -26,6 +26,7 @@
     vertical-align: baseline;
     position: relative;
     cursor: pointer;
+    transform: translateY(-2px);
 }
 
 .chart-controls {
@@ -42,7 +43,8 @@
 
 .dropdown-wrapper ::deep .climate-dropdown-toggle {
     justify-content: center;
-    min-height: 35px;
+    min-height: 40px;
+    min-width: 40px;
     line-height: 1;
 }
 
@@ -51,11 +53,11 @@
 }
 
 .dashboard-overview-fields {
-    min-height: 64px;
+    min-height: 74px;
 }
 
 .dashboard-climate-section {
-    min-height: 0;
+    min-height: 108px;
 }
 
 .dashboard-climate-section--precipitation {
@@ -64,10 +66,10 @@
 
 @media (max-width: 767px) {
     .dashboard-overview-fields {
-        min-height: 128px;
+        min-height: 144px;
     }
 
     .dashboard-climate-section {
-        min-height: 0;
+        min-height: 182px;
     }
 }

@@ -150,3 +150,10 @@ The most suspicious CLS area is the location page composition:
 - Removed local margin/top-offset compensation from `AggregationOptions` so it aligns with the shared chart-control row spacing.
 - Added explicit gap-based collapsed-control row styling in `LocationDashboard` so the change-location button and options cog use the same spacing primitive.
 - Verified with `dotnet build`; browser visual checks, Playwright, Lighthouse, and website runs remain deferred by repository instruction.
+
+### 2026-07-01 Phase 5 feedback correction
+
+- Reverted the attempted shared control `line-height` normalization because manual feedback confirmed it did not affect the chart-control alignment issue.
+- Adjusted the `LocationDashboard` options dropdown wrapper upward and gave the icon-only toggle a stable `40px` square footprint so it aligns with the adjacent "Change location" button.
+- Increased `LocationDashboard` overview and climate-section reservations so async recent-observation support and temperature stripe/extreme-year content do not increase the dashboard height after loading.
+- Skipped build/test because this correction only changes CSS and repository instructions prohibit browser validation in this pass.

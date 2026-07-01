@@ -171,7 +171,6 @@ th {
     position: relative;
     user-select: none;
     font: inherit;
-    line-height: 1.5;
     box-shadow: var(--climate-shadow-control);
     transition: var(--climate-transition-control);
 }
@@ -206,7 +205,6 @@ th {
     position: relative;
     user-select: none;
     font: inherit;
-    line-height: 1.5;
     box-shadow: var(--climate-shadow-control) !important;
     transition: var(--climate-transition-control);
 }
