@@ -34,7 +34,8 @@
     .map-space-reserver {
         margin-bottom: 10px;
         z-index: 1;
-        height: 250px;
+        height: clamp(220px, 34vw, 320px);
+        min-height: 220px;
         width: 100%;
     }
 }
@@ -49,6 +50,7 @@
     .map-space-reserver {
         flex: 1 1 480px;
         min-width: 320px;
+        min-height: 286px;
         /* location-info-container comes first in source order (mobile shows the map on top, so it's first in markup); reorder here so the dashboard is on the left */
         order: 2;
     }

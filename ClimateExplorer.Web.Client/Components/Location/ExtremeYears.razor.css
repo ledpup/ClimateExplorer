@@ -12,10 +12,16 @@
 .warm-cool-years {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    min-height: 58px;
+}
+
+.warm-cool-years--loading {
+    visibility: hidden;
 }
 
 @media (max-width: 767px) {
     .warm-cool-years {
         display: block;
+        min-height: 116px;
     }
 }

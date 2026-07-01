@@ -133,3 +133,10 @@ The most suspicious CLS area is the location page composition:
 - Fixed mobile chart-control alignment so the chart download button left-aligns with the other controls on mobile.
 - Strengthened `.climate-dropdown-toggle` shadow styling so Blazorise/Bootstrap button rules do not hide the shared control shadow.
 - Deferred measured CLS attribution and breakpoint screenshots to a manual/browser-enabled validation pass.
+
+### 2026-07-01 Phase 4 component-owned reservation slice
+
+- Moved the warm/cool year reservation into `ExtremeYears` so the component reserves its own loading space instead of relying on a broader dashboard-section minimum.
+- Kept the dashboard overview row reservation in `LocationDashboard`, but removed the broad climate-section minimum now that `ClimateStripe` and `ExtremeYears` own their vertical space.
+- Changed the map wrapper to own stable collapsed dimensions: a responsive clamped height on mobile/tablet and a desktop minimum height that prevents the absolutely positioned map from depending entirely on async dashboard content.
+- Noted manual visual feedback from `docs/design/2026-07-01-style-errors.png`: chart-control vertical alignment/gaps and the dashboard options cog still need a later styling pass if they remain after browser validation. These are deliberately deferred so Phase 4 stays focused on layout reservation.
