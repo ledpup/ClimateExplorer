@@ -209,7 +209,7 @@ th {
     position: relative;
     user-select: none;
     font: inherit;
-    box-shadow: var(--climate-shadow-control);
+    box-shadow: var(--climate-shadow-control) !important;
     transition: var(--climate-transition-control);
 }
 

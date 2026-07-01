@@ -91,8 +91,6 @@
 }
 
 .recent-observations-reference-date-reset {
-    align-items: center;
-    display: inline-flex;
     flex: 0 0 auto;
     height: 1.9375rem;
     justify-content: center;
@@ -162,15 +160,12 @@
 }
 
 .recent-observations-retry {
-    align-items: center;
-    background: #fff;
     border: 1px solid currentColor;
     border-radius: 6px;
     color: inherit;
-    display: inline-flex;
-    gap: 0.4rem;
     margin-left: auto;
     padding: 0.35rem 0.55rem;
+    box-shadow: none;
 }
 
 .recent-observations-retry:hover {

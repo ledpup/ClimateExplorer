@@ -1,4 +1,4 @@
-/* CLS fix: reserve vertical space for series cards */
+/* Reserve vertical space for series cards while chart data is loading. */
 .chart-series-list-wrapper {
     min-height: 54px;
 }
@@ -80,6 +80,13 @@
 .chart-controls .chart-control-download {
     margin-left: auto;
     margin-right: 0;
+}
+
+@media only screen and (max-width: 767px) {
+    .chart-controls .chart-control-download {
+        margin-left: 0;
+        margin-right: 16px;
+    }
 }
 
     .chart-controls .info-icon {
