@@ -43,3 +43,25 @@
 .dropdown-menu-content {
     margin: 8px 8px;
 }
+
+.dashboard-overview-fields {
+    min-height: 64px;
+}
+
+.dashboard-climate-section {
+    min-height: 124px;
+}
+
+.dashboard-climate-section--precipitation {
+    margin-top: 8px;
+}
+
+@media (max-width: 767px) {
+    .dashboard-overview-fields {
+        min-height: 128px;
+    }
+
+    .dashboard-climate-section {
+        min-height: 168px;
+    }
+}

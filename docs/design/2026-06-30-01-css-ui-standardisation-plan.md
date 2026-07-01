@@ -122,3 +122,10 @@ The most suspicious CLS area is the location page composition:
 - Migrated the highest-repeat controls first: chart add/filter/download/aggregation controls, chart grouping and axes dropdowns, top-100 copy/download actions, climate-records today/sort/download actions, location-dashboard change-location/options controls, change-location modal near-me/random actions, map expand/collapse, dataset add actions, location record-high links, and home overview action links.
 - Kept `app.css` as the visual source of truth and left scoped CSS classes as layout/modifier hooks.
 - Verified with `dotnet build`; browser visual checks remain deferred by repository instruction.
+
+### 2026-07-01 Phase 3 code-level reservation slice
+
+- Began Phase 3 without browser/Playwright instrumentation because repository instructions prohibit running the website, Playwright, Lighthouse, or browser tests.
+- Added component-owned reserved regions inside `LocationDashboard` for the async overview field row and the temperature stripe/extreme-year block.
+- Kept the broader `location-info-container` reservation in place as a compatibility floor until browser CLS source-node data can prove it is safe to reduce or remove.
+- Deferred measured CLS attribution and breakpoint screenshots to a manual/browser-enabled validation pass.

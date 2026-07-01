@@ -34,11 +34,6 @@
     }
 }
 
-/* CLS fix: reserve space for LocationInfo async content */
-.location-info-container {
-    min-height: 410px;
-}
-
 .location-info-container:has(.collapser.content-hidden) {
     min-height: 95px;
 }
