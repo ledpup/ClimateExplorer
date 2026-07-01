@@ -171,6 +171,7 @@ th {
     position: relative;
     user-select: none;
     font: inherit;
+    line-height: 1.5;
     box-shadow: var(--climate-shadow-control);
     transition: var(--climate-transition-control);
 }
@@ -182,10 +183,6 @@ th {
 .climate-button:disabled {
     opacity: 0.45;
     cursor: default;
-}
-
-.climate-button i {
-    margin-right: 8px;
 }
 
 .climate-button--compact {
@@ -209,6 +206,7 @@ th {
     position: relative;
     user-select: none;
     font: inherit;
+    line-height: 1.5;
     box-shadow: var(--climate-shadow-control) !important;
     transition: var(--climate-transition-control);
 }
@@ -223,11 +221,6 @@ th {
 .climate-dropdown-toggle.show {
     background-color: var(--climate-color-control-hover);
     color: var(--climate-color-control-text);
-}
-
-.btn.climate-dropdown-toggle i,
-.climate-dropdown-toggle i {
-    margin-right: 8px;
 }
 
 .btn.climate-dropdown-toggle::after,

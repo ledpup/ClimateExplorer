@@ -140,3 +140,13 @@ The most suspicious CLS area is the location page composition:
 - Kept the dashboard overview row reservation in `LocationDashboard`, but removed the broad climate-section minimum now that `ClimateStripe` and `ExtremeYears` own their vertical space.
 - Changed the map wrapper to own stable collapsed dimensions: a responsive clamped height on mobile/tablet and a desktop minimum height that prevents the absolutely positioned map from depending entirely on async dashboard content.
 - Noted manual visual feedback from `docs/design/2026-07-01-style-errors.png`: chart-control vertical alignment/gaps and the dashboard options cog still need a later styling pass if they remain after browser validation. These are deliberately deferred so Phase 4 stays focused on layout reservation.
+
+### 2026-07-01 Phase 5 chart/dashboard control spacing slice
+
+- Continued the manual-feedback styling pass from `docs/design/2026-07-01-style-errors.png`.
+- Removed duplicate icon spacing from the shared `.climate-button` and `.climate-dropdown-toggle` primitives; shared controls now rely on `gap` rather than combining `gap` with icon `margin-right`.
+- Converted the chart controls row from per-control margins and a negative bottom-margin compensation to a simpler flex `gap` layout.
+- Replaced the chart download tooltip's inline `margin-left: auto` with a local `.chart-download-control` wrapper so desktop right-alignment and mobile left-alignment are controlled in CSS.
+- Removed local margin/top-offset compensation from `AggregationOptions` so it aligns with the shared chart-control row spacing.
+- Added explicit gap-based collapsed-control row styling in `LocationDashboard` so the change-location button and options cog use the same spacing primitive.
+- Verified with `dotnet build`; browser visual checks, Playwright, Lighthouse, and website runs remain deferred by repository instruction.

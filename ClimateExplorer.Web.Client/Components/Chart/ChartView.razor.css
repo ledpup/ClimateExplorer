@@ -45,25 +45,18 @@
 
 
 .chart-controls {
-    margin: 20px;
-    /* This negative bottom margin is to compensate for the bottom margin on .chart-control, so that there's no
-     * unnecessary large gap below the bottom row of .chart-controls
-    */
-    margin-bottom: -16px;
-    margin-left: 0px;
-    margin-right: 0px;
+    margin: 20px 0 4px;
     user-select: none;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+    gap: 16px;
 }
 
 ::deep .chart-controls .dropdown {
     text-decoration: none;
-    margin: 8px 16px 16px 8px;
-    display: inline-block;
-    top: -1px;
-    position: relative;
+    display: inline-flex;
+    align-items: center;
     vertical-align: baseline;
 }
 
@@ -72,20 +65,16 @@
 }
 
 .chart-controls .chart-control {
-    margin-right: 16px;
-    margin-bottom: 16px;
     vertical-align: baseline;
 }
 
-.chart-controls .chart-control-download {
+.chart-download-control {
     margin-left: auto;
-    margin-right: 0;
 }
 
 @media only screen and (max-width: 767px) {
-    .chart-controls .chart-control-download {
+    .chart-download-control {
         margin-left: 0;
-        margin-right: 16px;
     }
 }
 

@@ -62,9 +62,11 @@
                             <i class="fas fa-circle-info" style="cursor: pointer;" @onclick=ShowChartOptionsInfo></i>
                         </div>
 
-                        <DelayedTooltip Text="Download the chart data as a CSV file" Style="display: inline-block; margin-left: auto">
-                            <ClimateButton Text="Download" Icon="fas fa-download" Class="chart-control chart-control-download" OnClick="OnDownloadDataClicked" />
-                        </DelayedTooltip>
+                        <span class="chart-download-control">
+                            <DelayedTooltip Text="Download the chart data as a CSV file" Style="display: inline-block">
+                                <ClimateButton Text="Download" Icon="fas fa-download" Class="chart-control chart-control-download" OnClick="OnDownloadDataClicked" />
+                            </DelayedTooltip>
+                        </span>
                     </div>
                 </div>
             </Content>

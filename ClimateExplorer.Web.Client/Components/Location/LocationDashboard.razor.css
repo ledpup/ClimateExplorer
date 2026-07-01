@@ -26,7 +26,13 @@
     vertical-align: baseline;
     position: relative;
     cursor: pointer;
-    margin-left: 8px;
+}
+
+.chart-controls {
+    align-items: center;
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 16px;
 }
 
 .dropdown-wrapper ::deep .dropdown {
