@@ -43,13 +43,13 @@
                         }
 
                         <DelayedTooltip Text="Change how data is grouped on the x-axis: yearly, monthly, daily">
-                            <ClimateDropdownButton Text="Grouping" Icon="fas fa-calendar">
+                            <DropdownButton Text="Grouping" Icon="fas fa-calendar">
                                 <MenuContent>
                                     <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByYear)">Yearly</DropdownItem>
                                     <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByMonthOnly)">Monthly</DropdownItem>
                                     <DropdownItem Clicked="() => OnSelectedBinGranularityChanged(BinGranularities.ByDayOnly)">Daily</DropdownItem>
                                 </MenuContent>
-                            </ClimateDropdownButton>
+                            </DropdownButton>
                         </DelayedTooltip>
 
                         <DelayedTooltip Text="Change the scale of the chart axes to scale from zero or the minimum value">

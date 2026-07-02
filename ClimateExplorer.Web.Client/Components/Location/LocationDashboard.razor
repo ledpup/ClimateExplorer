@@ -13,7 +13,7 @@
                     <ClimateButton Text="@(ChangeLocationLoading ? "Loading locations..." : "Change location")" Icon="fas fa-map" Class="chart-control" Disabled="@ChangeLocationLoading" OnClick="() => ChangeLocationClicked(new EventArgs())" />
                 </DelayedTooltip>
                 <span class="dropdown-wrapper">
-                    <ClimateDropdownButton Icon="fas fa-cog" AriaLabel="Location dashboard options">
+                    <DropdownButton Icon="fas fa-cog" AriaLabel="Location dashboard options">
                         <MenuContent>
                             <div class="dropdown-menu-content">
                                 <Check TValue="bool"
@@ -23,7 +23,7 @@
                                 </Check>
                             </div>
                         </MenuContent>
-                    </ClimateDropdownButton>
+                    </DropdownButton>
                 </span>
             </span>
         }

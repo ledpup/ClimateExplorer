@@ -2,7 +2,7 @@
 @using ClimateExplorer.Web.Client.Components.Common
 
 <div class="axes-dropdown-wrapper">
-    <ClimateDropdownButton Text="Axes" Icon="fas fa-chart-line">
+    <DropdownButton Text="Axes" Icon="fas fa-chart-line">
         <MenuContent>
             @if (Axes != null && Axes.Count > 0)
             {
@@ -21,5 +21,5 @@
                 </div>
             }
         </MenuContent>
-    </ClimateDropdownButton>
+    </DropdownButton>
 </div>

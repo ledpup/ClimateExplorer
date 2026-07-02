@@ -51,7 +51,7 @@
         flex: 1 1 480px;
         min-width: 320px;
         min-height: 286px;
-        /* location-info-container comes first in source order (mobile shows the map on top, so it's first in markup); reorder here so the dashboard is on the left */
+        /* location-dashboard-container comes first in source order (mobile shows the map on top, so it's first in markup); reorder here so the dashboard is on the left */
         order: 2;
     }
 
@@ -59,7 +59,7 @@
         flex-direction: column;
     }
 
-    .location-info-container {
+    .location-dashboard-container {
         /* Main dashboard content grows with the screen, up to a readable cap; the map flexes to fill whatever width is left */
         flex: 1 1 480px;
         max-width: 1040px;
