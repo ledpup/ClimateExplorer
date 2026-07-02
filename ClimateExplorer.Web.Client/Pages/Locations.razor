@@ -114,7 +114,7 @@
                             <td class="@(location.RecordHigh is null ? null : "text-end")">
                                 @if (location.RecordHigh is not null)
                                 {
-                                    <ClimateLinkButton Text="@FormatRecordHigh(location.RecordHigh)" Class="record-link" OnClick="@(() => ShowClimateRecordsAsync(location))" />
+                                    <ClimateButton Variant="ButtonVariant.Link" Text="@FormatRecordHigh(location.RecordHigh)" Class="record-link" OnClick="@(() => ShowClimateRecordsAsync(location))" />
                                 }
                                 else
                                 {

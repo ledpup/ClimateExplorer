@@ -21,6 +21,9 @@ public partial class ClimateButton
     public bool Compact { get; set; }
 
     [Parameter]
+    public ButtonVariant Variant { get; set; } = ButtonVariant.Solid;
+
+    [Parameter]
     public string Type { get; set; } = "button";
 
     [Parameter]
@@ -39,9 +42,11 @@ public partial class ClimateButton
     {
         get
         {
-            var classes = Compact
-                ? "climate-button climate-button--compact"
-                : "climate-button";
+            var classes = Variant switch
+            {
+                ButtonVariant.Link => "climate-link-button",
+                _ => Compact ? "climate-button climate-button--compact" : "climate-button",
+            };
 
             return string.IsNullOrWhiteSpace(Class)
                 ? classes
