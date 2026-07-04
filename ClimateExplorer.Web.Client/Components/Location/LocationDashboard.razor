@@ -6,31 +6,28 @@
 
 <Collapsible @ref="LocationCollapsible" Title="@Location?.DisplayTitle" CompactTitle="@Location?.CodeTitle" MinimalTitle="@Location?.Name" OnShowOrHide="OverviewShowOrHideHandler" CollapserSize="Collapsible.CollapserSizes.ExtraLarge">
     <CollapsedContent>
-        @if (!LocationLoadingIndicatorVisible)
-        {
-            <span class="chart-controls">
-                <DelayedTooltip Multiline="true" Style="display: inline-block" Text="Change the current location. Four ways to choose:<br>• Near me — use browser location<br>• Random — a surprise location<br>• Search — type a location name<br>• Nearby — closest stations">
-                    <ClimateButton Text="@(ChangeLocationLoading ? "Loading locations..." : "Change location")" Icon="fas fa-map" Class="chart-control" Disabled="@ChangeLocationLoading" OnClick="() => ChangeLocationClicked(new EventArgs())" />
-                </DelayedTooltip>
-                <span class="dropdown-wrapper">
-                    <DropdownButton Icon="fas fa-cog" AriaLabel="Location dashboard options">
-                        <MenuContent>
-                            <div class="dropdown-menu-content">
-                                <Check TValue="bool"
-                                        Value="@Precipitation"
-                                        ValueChanged="@(async (bool v) => await TogglePrecipitation())">
-                                    Precipitation stripe
-                                </Check>
-                            </div>
-                        </MenuContent>
-                    </DropdownButton>
-                </span>
+        <span class="chart-controls">
+            <DelayedTooltip Multiline="true" Style="display: inline-block" Text="Change the current location. Four ways to choose:<br>• Near me — use browser location<br>• Random — a surprise location<br>• Search — type a location name<br>• Nearby — closest stations">
+                <ClimateButton Text="@(ChangeLocationLoading ? "Loading locations..." : "Change location")" Icon="fas fa-map" Class="chart-control" Disabled="@ChangeLocationLoading" OnClick="() => ChangeLocationClicked(new EventArgs())" />
+            </DelayedTooltip>
+            <span class="dropdown-wrapper">
+                <DropdownButton Icon="fas fa-cog" AriaLabel="Location dashboard options">
+                    <MenuContent>
+                        <div class="dropdown-menu-content">
+                            <Check TValue="bool"
+                                    Value="@Precipitation"
+                                    ValueChanged="@(async (bool v) => await TogglePrecipitation())">
+                                Precipitation stripe
+                            </Check>
+                        </div>
+                    </MenuContent>
+                </DropdownButton>
             </span>
-        }
+        </span>
     </CollapsedContent>
     <Content>
         <DelayedLoadingIndicator @bind-Visible="@LocationLoadingIndicatorVisible" ZIndex="5">
-            <div class="dashboard-overview-fields">
+            <div class="@(LocationLoadingIndicatorVisible ? "dashboard-overview-fields--loading" : null)">
                 @if (Location is not null)
                 {
                     <OverviewField Label="Location" Tooltip="Click to locate on Google Maps" OnClick="OpenLocationMapAsync"><Value>@GeoLocationAsString</Value></OverviewField>
@@ -55,10 +52,8 @@
             </div>
         </DelayedLoadingIndicator>
         <DelayedLoadingIndicator @bind-Visible="@StripeLoadingIndicatorVisible" ZIndex="5">
-            <div class="dashboard-climate-section">
-                <ClimateStripe UnitOfMeasure="UnitOfMeasure.DegreesCelsius" LocationName=@Location?.Name LocationMean=@TemperatureLocationMean DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange="HandleOnYearFilterChange" ShowInfo="true" />
-                <ExtremeYears HighLabel="Warmest years" LowLabel="Coolest years" UnitOfMeasure="UnitOfMeasure.DegreesCelsius" DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange="HandleOnYearFilterChange" />
-            </div>
+            <ClimateStripe UnitOfMeasure="UnitOfMeasure.DegreesCelsius" LocationName=@Location?.Name LocationMean=@TemperatureLocationMean DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange="HandleOnYearFilterChange" ShowInfo="true" />
+            <ExtremeYears HighLabel="Warmest years" LowLabel="Coolest years" UnitOfMeasure="UnitOfMeasure.DegreesCelsius" DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange="HandleOnYearFilterChange" />
             @if (Precipitation && PrecipitationLocationMean != null)
             {
                 <div class="dashboard-climate-section dashboard-climate-section--precipitation">

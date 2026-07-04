@@ -52,24 +52,12 @@
     margin: 8px 8px;
 }
 
-.dashboard-overview-fields {
-    min-height: 74px;
-}
-
-.dashboard-climate-section {
-    min-height: 108px;
-}
-
-.dashboard-climate-section--precipitation {
-    margin-top: 8px;
+.dashboard-overview-fields--loading {
+    min-height: 53px;
 }
 
 @media (max-width: 767px) {
-    .dashboard-overview-fields {
-        min-height: 144px;
-    }
-
-    .dashboard-climate-section {
-        min-height: 166px;
+    .dashboard-overview-fields--loading {
+        min-height: 159px;
     }
 }

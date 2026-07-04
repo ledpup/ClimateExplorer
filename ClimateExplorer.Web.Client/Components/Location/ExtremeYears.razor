@@ -3,7 +3,7 @@
 @using ClimateExplorer.Web.UiModel
 @using static ClimateExplorer.Core.Enums
 
-<div class="warm-cool-years @(DataRecords is null ? "warm-cool-years--loading" : string.Empty)">
+<div class="extreme-years @(DataRecords is null ? "extreme-years--loading" : string.Empty)">
     @if (DataRecords is not null)
     {
         <OverviewField Label="@FirstLabel">
