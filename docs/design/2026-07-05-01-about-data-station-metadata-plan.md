@@ -1,7 +1,7 @@
 # AboutData Station Metadata Plan
 
 - **Date:** 2026-07-05
-- **Status:** Proposed
+- **Status:** Implemented - build and focused tests passed
 - **Author:** Codex
 - **Scope:** `ClimateExplorer.WebApi` `PostDataSets`, shared dataset metadata models, chart data preparation, and `ClimateExplorer.Web.Client/Components/ChartSeries/AboutData`
 - **Builds on:** N/A
@@ -10,6 +10,32 @@
 ## Summary
 
 `AboutData.razor` currently displays dataset definition metadata from `ChartSeriesDefinition.SourceSeriesSpecifications`: dataset name, publisher, optional more-information link, and description. It does not receive the `DataSet` returned by `POST /dataset`, so it cannot display station/source metadata that is only known after the API resolves a chart request.
+
+## Implementation Progress
+
+Completed before the UI work began:
+
+- Added shared `DataSetSourceMetadata` and `DataSetStationMetadata` models in `ClimateExplorer.Core.Model`.
+- Added nullable `DataSet.SourceMetadata`.
+- Added `DataSetDefinition.StationMetadataFileName` and configured known station-backed definitions.
+- Added `ClimateExplorer.WebApi/DataSetMetadata/DataSetSourceMetadataBuilder.cs` plus `StationMetadataLookup`.
+- Wired `DataSetEndpoints.PostDataSets` to build source metadata for every request source specification.
+- Versioned the dataset cache key with `DataSet_v2_` so old cached responses are not returned without metadata.
+- Added `DataSetSourceMetadataBuilderTests` covering single-station, multi-station, missing station details, and derived-series metadata.
+
+Completed as part of the UI continuation:
+
+- Preserved `SourceMetadata` when `ChartDataBuilder` creates replacement datasets for annual change, moving average preprocessing, and processed gap-filled chart data.
+- Passed source metadata from `ChartView` through `ChartSeriesListView` and `ChartSeriesView` into `AboutData`.
+- Updated `AboutData` to render source, station date, station-link, and multi-station table details when metadata is available.
+- Converted the touched series actions, including "About this data", to accessible buttons and added keyboard access to the expandable series title bar.
+- Added `ChartDataBuilder` tests for metadata preservation through annual change, moving average, and processed dataset creation.
+
+Verification:
+
+- `dotnet build` passed.
+- Focused `ChartDataBuilder` metadata-preservation tests passed.
+- Full `dotnet test` was not used for final verification because it includes browser/Playwright UI tests, which this repo note says not to run. An earlier broad run also surfaced unrelated unit assertion failures where expected strings do not include the current `<b>...</b>` message markup.
 
 The likely current flow is:
 
@@ -29,13 +55,13 @@ The existing metadata pieces are close to what is needed:
 - `Station` already carries `Id`, `Name`, `CountryCode`, coordinates, `FirstYear`, and `LastYear`.
 - `RecentObservationSourceMetadata` has similar source fields, but it is single-station and includes `RetrievedAtUtc`, which is not appropriate for chart datasets.
 
-## Stage 1: API Changes
+## Stage 1: API Changes - Complete
 
-### Proposed Shared Models
+### Shared Models
 
-Add new chart dataset metadata models in `ClimateExplorer.Core.Model` rather than extending `RecentObservationSourceMetadata`.
+Implemented chart dataset metadata models in `ClimateExplorer.Core.Model` rather than extending `RecentObservationSourceMetadata`.
 
-Recommended shape:
+Implemented shape:
 
 ```csharp
 public sealed record DataSetSourceMetadata
@@ -61,7 +87,7 @@ public sealed record DataSetStationMetadata
 }
 ```
 
-Then extend `DataSet` with:
+`DataSet` was extended with:
 
 ```csharp
 public List<DataSetSourceMetadata>? SourceMetadata { get; set; }
@@ -78,7 +104,7 @@ Keep `RetrievedAtUtc` out of these models. Chart datasets are served from bundle
 
 ### Source and Station Resolution
 
-Add a small metadata builder used by `DataSetEndpoints.PostDataSets`, for example `DataSetSourceMetadataBuilder`.
+Added `DataSetSourceMetadataBuilder`, used by `DataSetEndpoints.PostDataSets`.
 
 Responsibilities:
 
@@ -110,7 +136,7 @@ Do not silently discard stations when the station metadata file has no matching 
 
 There is no general station metadata service today. Add one deliberately rather than embedding file reads inside `PostDataSets`.
 
-Recommended approach:
+Implemented approach:
 
 - Add an optional station metadata hint to `DataSetDefinition`, such as `StationMetadataFileName`.
 - Set it for known station-backed datasets where metadata files exist under `ClimateExplorer.WebApi/MetaData/Station`.
@@ -134,41 +160,36 @@ For series derivation:
 
 `PostDataSets` currently builds returned geography and measurement metadata from `body.SeriesSpecifications[0]`. Keep that behavior unless a broader derived-series API refactor is planned, but do not limit source metadata to the first specification.
 
-### Cache Behavior
+### Cache Behavior - Complete
 
-`PostDataSets` caches `DataSet` responses by serialized request body. Existing cache entries will not have the new metadata property. The implementation should either:
+`PostDataSets` now uses a `DataSet_v2_` cache key prefix. Existing cache entries without metadata are bypassed.
 
-- version the cache key, for example `DataSet_v2_`, or
-- hydrate missing `SourceMetadata` on cache hit before returning and then write the updated value back.
+### API Tests - Complete
 
-The versioned key is simpler and avoids stale responses.
+Added focused MSTest coverage around `DataSetSourceMetadataBuilder`.
 
-### API Tests
-
-Add focused MSTest tests using the existing naming style `MethodName_StateUnderTest_ExpectedBehavior`.
-
-Recommended tests:
+Implemented tests include:
 
 - `BuildSourceMetadata_SingleMappedStation_ReturnsSourceAndStationMetadata`
 - `BuildSourceMetadata_MultipleMappedStations_ReturnsAllStationsWithMappingDates`
 - `BuildSourceMetadata_MissingStationDetails_ReturnsStationIdsWithoutNames`
 - `BuildSourceMetadata_DerivedSeries_ReturnsMetadataForEachSourceSpecification`
-- `PostDataSets_CachedResponseWithoutMetadata_DoesNotReturnStaleMetadata` if choosing hydration instead of a versioned cache key
+- Cache behavior uses a versioned key rather than hydration, so no stale-cache hydration test was added.
 
 Prefer unit tests around the metadata builder with in-memory definitions, mappings, and station rows. Add one `PostDataSets` integration-style test only if the helper wiring is otherwise untested.
 
-## Stage 2: Blazor App Changes
+## Stage 2: Blazor App Changes - Complete
 
 ### Data Flow
 
-Update the chart component parameter chain so `AboutData` can see the metadata returned by the API:
+Updated the chart component parameter chain so `AboutData` can see the metadata returned by the API:
 
-1. `ChartView` already receives `ChartDataBuildResult Data`.
-2. Preserve a list containing both `Data.SeriesWithData` and `Data.NonRenderedSeriesWithData`.
-3. Pass that list into `ChartSeriesListView`.
+1. `ChartView` receives `ChartDataBuildResult Data`.
+2. `ChartView` preserves a list containing both `Data.SeriesWithData` and `Data.NonRenderedSeriesWithData`.
+3. `ChartView` passes that list into `ChartSeriesListView`.
 4. `ChartSeriesListView` matches each `ChartSeriesDefinition` to its `SeriesWithData` by `ChartSeries.Id`.
-5. Pass the matching source metadata into `ChartSeriesView`.
-6. Pass it into `AboutData`.
+5. `ChartSeriesListView` passes the matching source metadata into `ChartSeriesView`.
+6. `ChartSeriesView` passes it into `AboutData`.
 
 Recommended component API:
 
@@ -184,15 +205,15 @@ public IReadOnlyList<DataSetSourceMetadata>? SourceMetadata { get; set; }
 
 Passing only the metadata keeps `AboutData` focused. Passing the full `SeriesWithData` would also work, but it would couple the modal to chart rendering state it does not need.
 
-### Preserve Metadata During Client Processing
+### Preserve Metadata During Client Processing - Complete
 
-`ChartDataBuilder.BuildProcessedDataSets` creates fresh `DataSet` instances for annual change, moving-average preprocessing, and gap-filled processed datasets. Copy `SourceMetadata` whenever creating a replacement `DataSet`.
+`ChartDataBuilder.BuildProcessedDataSets` creates fresh `DataSet` instances for annual change, moving-average preprocessing, and gap-filled processed datasets. Those replacement datasets now copy `SourceMetadata`.
 
 This matters immediately for annual-change series, because that path replaces `SourceDataSet` before `AboutData` would read it.
 
-### AboutData Display Logic
+### AboutData Display Logic - Complete
 
-Keep the existing dataset definition content and add source/station content below it.
+The existing dataset definition content remains in place. Source/station content is now rendered below it when source metadata is available.
 
 For each `SourceSeriesSpecification` currently rendered by `AboutData`:
 
@@ -232,24 +253,24 @@ Missing values:
 
 Avoid rendering a station section when there is no station metadata and no mapping-backed station ID.
 
-### Accessibility
+### Accessibility - Complete
 
-While touching this area, ensure the "About" control has an accessible name. The existing clickable `div.series-control` should be converted to an accessible button-like component or given keyboard handling plus `role="button"`, `tabindex="0"`, and an `aria-label`.
+The "About", "Clone", and "Remove" series controls are now real buttons with accessible names. The expandable series title bar has `role="button"`, `tabindex="0"`, an accessible label, and Enter/Space keyboard handling.
 
 The modal content should keep normal semantic headings and table headers. Source links should keep `target="_blank"` and add `rel="noopener noreferrer"`.
 
-### Blazor Tests and Checks
+### Blazor Tests and Checks - Complete
 
 There does not appear to be a bUnit setup in `ClimateExplorer.UnitTests`. Avoid introducing bUnit just for this unless component testing is becoming a broader project standard.
 
-Recommended checks:
+Checks:
 
-- Unit-test formatting/mapping helpers in `AboutData.razor.cs` if display logic is extracted into methods.
-- Add `ChartDataBuilder` tests proving `SourceMetadata` is preserved through:
+- `AboutData` helper methods are private display helpers and are currently covered by Razor compilation rather than direct unit tests.
+- Added `ChartDataBuilder` tests proving `SourceMetadata` is preserved through:
   - annual change
   - moving average
   - processed dataset creation
-- Build the solution or relevant projects to catch Razor compile errors.
+- `dotnet build` passed and caught Razor compile issues during implementation.
 - Do not run the website, Playwright, Lighthouse, or browser tests.
 
 ## Risks and Open Questions
@@ -261,7 +282,12 @@ Recommended checks:
 - Station-specific source links differ by source. URL template expansion should be centralized and unit-tested.
 - Old cached `DataSet` responses can miss metadata unless the cache key is versioned or metadata is hydrated on cache hit.
 
-## Recommended Implementation Order
+## Remaining Work
+
+1. Optionally do a product copy review for source/station display wording and missing-value behavior.
+2. Separately decide whether existing unit tests should expect the current HTML-marked notification messages.
+
+## Original Recommended Implementation Order
 
 1. Add `DataSetSourceMetadata` and `DataSetStationMetadata` models and a nullable `DataSet.SourceMetadata` property.
 2. Add a metadata builder with in-memory unit tests for single-station, multi-station, missing-details, and derived-series cases.

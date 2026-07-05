@@ -6,16 +6,22 @@
 @using static ClimateExplorer.Core.Enums;
 
 <div class="chart-series-config @(ChartSeries!.IsExpanded ? "is-expanded" : "") @(TitleStyle == ChartSeriesTitleStyle.WholeTitleBarInSeriesColour ? "has-colour-strip" : "")" style="@StyleForOuterDiv">
-    <div class="title-bar" @onclick="ExpandCollapse" style="@StyleForTitleBar">
+    <div class="title-bar"
+         role="button"
+         tabindex="0"
+         aria-label="@ToggleExpandedLabel"
+         @onclick="ExpandCollapse"
+         @onkeydown="OnTitleBarKeyDown"
+         style="@StyleForTitleBar">
         <div class="main">
             <div class="title">@ChartSeries!.GetFriendlyTitleShort()</div>
             <div class="description">@ChartSeries!.GetFriendlyDescription()</div>
         </div>
         <div class="title-bar-actions">
             <DelayedTooltip Text="Remove this series">
-                <div class="trash" @onclick="@OnRemoveSeriesClicked">
+                <button type="button" class="trash" aria-label="Remove this series" @onclick="@OnRemoveSeriesClicked" @onclick:stopPropagation="true">
                     <i class="fas fa-trash fa-lg"></i>
-                </div>
+                </button>
             </DelayedTooltip>
             <div class="expander">
                 <span class="@(ChartSeries!.IsExpanded ? "oi oi-chevron-top" : "oi oi-chevron-bottom")" aria-hidden="true"></span>
@@ -210,22 +216,22 @@
                     </div>
                     <div class="series-controls">
                         <DelayedTooltip Text="About this data" Style="display: inline-block">
-                            <div class="series-control" @onclick="@OnAboutThisDataClicked">
+                            <button type="button" class="series-control" aria-label="About this data" @onclick="@OnAboutThisDataClicked">
                                 <i class="fas fa-info"></i>
                                 <div class="label">About</div>
-                            </div>
+                            </button>
                         </DelayedTooltip>
                         <DelayedTooltip Text="Duplicate this series" Style="display: inline-block">
-                            <div class="series-control" @onclick="@OnDuplicateSeriesClicked">
+                            <button type="button" class="series-control" aria-label="Duplicate this series" @onclick="@OnDuplicateSeriesClicked">
                                 <i class="fas fa-clone"></i>
                                 <div class="label">Clone</div>
-                            </div>
+                            </button>
                         </DelayedTooltip>
                         <DelayedTooltip Text="Remove this series" Style="display: inline-block">
-                            <div class="series-control danger" @onclick="@OnRemoveSeriesClicked">
+                            <button type="button" class="series-control danger" aria-label="Remove this series" @onclick="@OnRemoveSeriesClicked">
                                 <i class="fas fa-trash"></i>
                                 <div class="label">Remove</div>
-                            </div>
+                            </button>
                         </DelayedTooltip>
                     </div>
                 </div>
@@ -235,4 +241,4 @@
     }
 </div>
 
-<AboutData @ref="aboutData" ChartSeries="@ChartSeries" />
+<AboutData @ref="aboutData" ChartSeries="@ChartSeries" SourceMetadata="@SourceMetadata" />
