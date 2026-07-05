@@ -20,6 +20,7 @@ public class DataSetDefinitionsBuilder
                 MoreInformationUrl = "https://www.bom.gov.au/climate/data/acorn-sat/#tabs=ACORN-SAT",
                 StationInfoUrl = "https://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
                 LocationInfoUrl = "https://www.bom.gov.au/climate/data/acorn-sat/stations/#/[primaryStation]",
+                StationMetadataFileName = "Stations_Australia_unadjusted.json",
                 MeasurementDefinitions =
                 [
                     new()
@@ -65,6 +66,7 @@ public class DataSetDefinitionsBuilder
                 MoreInformationUrl = "https://www.bom.gov.au/",
                 StationInfoUrl = "https://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
                 LocationInfoUrl = "https://www.bom.gov.au/climate/data/acorn-sat/stations/#/[primaryStation]",
+                StationMetadataFileName = "Stations_Australia_unadjusted.json",
                 MeasurementDefinitions =
                 [
                     new()
@@ -129,6 +131,7 @@ public class DataSetDefinitionsBuilder
                 Publisher = "National Oceanic and Atmospheric Administration (NOAA)",
                 PublisherUrl = "https://www.noaa.gov/",
                 MoreInformationUrl = "https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-monthly",
+                StationMetadataFileName = "Stations_ghcnm_adjusted.json",
                 MeasurementDefinitions =
                 [
                     new()
@@ -169,6 +172,7 @@ public class DataSetDefinitionsBuilder
                 Publisher = "National Oceanic and Atmospheric Administration (NOAA)",
                 PublisherUrl = "https://www.noaa.gov/",
                 MoreInformationUrl = "https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-monthly#tab-800",
+                StationMetadataFileName = "Stations_ghcnm_adjusted.json",
                 MeasurementDefinitions =
                 [
                     new()
@@ -196,6 +200,8 @@ public class DataSetDefinitionsBuilder
                 Publisher = "National Oceanic and Atmospheric Administration (NOAA)",
                 PublisherUrl = "https://www.noaa.gov/",
                 MoreInformationUrl = "https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-daily",
+                DataDownloadUrl = "https://www.ncei.noaa.gov/data/global-historical-climatology-network-daily/access/[station].csv",
+                StationMetadataFileName = "Stations_ghcnm_adjusted.json",
                 MeasurementDefinitions =
                 [
                     new()
@@ -236,6 +242,8 @@ public class DataSetDefinitionsBuilder
                 Publisher = "National Oceanic and Atmospheric Administration (NOAA)",
                 PublisherUrl = "https://www.noaa.gov/",
                 MoreInformationUrl = "https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-daily",
+                DataDownloadUrl = "https://www.ncei.noaa.gov/data/global-historical-climatology-network-daily/access/[station].csv",
+                StationMetadataFileName = "Stations_ghcnm_adjusted.json",
                 MeasurementDefinitions =
                 [
                     new()
@@ -468,6 +476,7 @@ Our aim is to provide climate science and services to people and organisations, 
                 MoreInformationUrl = "https://www.metoffice.gov.uk/hadobs/",
                 StationInfoUrl = "https://www.metoffice.gov.uk/hadobs/",
                 DataDownloadUrl = "https://www.metoffice.gov.uk/hadobs/hadcet/data/download.html",
+                StationMetadataFileName = "Stations_UK_HadObs.json",
                 MeasurementDefinitions =
                 [
                     new()
@@ -575,6 +584,7 @@ The reference period used to calculate the anomalies is 1971–2000.",
                 Publisher = "National Oceanic and Atmospheric Administration (NOAA)",
                 MoreInformationUrl = "https://www.ncei.noaa.gov/products/land-based-station/noaa-global-temp",
                 DataDownloadUrl = "https://www.ncei.noaa.gov/data/noaa-global-surface-temperature/v6/access/timeseries/aravg.mon.[station].v6.0.0.[year][month].asc",
+                StationMetadataFileName = "Stations_NoaaGlobalTemp.json",
                 MeasurementDefinitions =
                 [
                     new MeasurementDefinition
@@ -601,6 +611,7 @@ The reference period used to calculate the anomalies is 1971–2000.",
                 PublisherUrl = "https://www.globalcarbonproject.org/",
                 MoreInformationUrl = "https://zenodo.org/records/14106218",
                 DataDownloadUrl = null,
+                StationMetadataFileName = "Stations_Gcb.json",
                 MeasurementDefinitions =
                 [
                     new MeasurementDefinition
