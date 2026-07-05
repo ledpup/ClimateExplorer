@@ -6,62 +6,60 @@
 
 <Collapsible @ref="LocationCollapsible" Title="@Location?.DisplayTitle" CompactTitle="@Location?.CodeTitle" MinimalTitle="@Location?.Name" OnShowOrHide="OverviewShowOrHideHandler" CollapserSize="Collapsible.CollapserSizes.ExtraLarge">
     <CollapsedContent>
-        @if (!LocationLoadingIndicatorVisible)
-        {
-            <span class="chart-controls">
-                <DelayedTooltip Multiline="true" Style="display: inline-block" Text="Change the current location. Four ways to choose:<br>• Near me — use browser location<br>• Random — a surprise location<br>• Search — type a location name<br>• Nearby — closest stations">
-                    <button class="chart-control" @onclick="() => ChangeLocationClicked(new EventArgs())" disabled="@ChangeLocationLoading"><i class="fas fa-map"></i> @(ChangeLocationLoading ? "Loading locations..." : "Change location")</button>
-                </DelayedTooltip>
-                <span class="dropdown-wrapper">
-                    <Dropdown>
-                        <DropdownToggle>
-                            <i class="fas fa-cog"></i>
-                        </DropdownToggle>
-                        <DropdownMenu>
-                            <div class="dropdown-menu-content">
-                                <Check TValue="bool"
-                                        Value="@Precipitation"
-                                        ValueChanged="@(async (bool v) => await TogglePrecipitation())">
-                                    Precipitation stripe
-                                </Check>
-                            </div>
-                        </DropdownMenu>
-                    </Dropdown>
-                </span>
+        <span class="chart-controls">
+            <DelayedTooltip Multiline="true" Style="display: inline-block" Text="Change the current location. Four ways to choose:<br>• Near me — use browser location<br>• Random — a surprise location<br>• Search — type a location name<br>• Nearby — closest stations">
+                <ClimateButton Text="@(ChangeLocationLoading ? "Loading locations..." : "Change location")" Icon="fas fa-map" Class="chart-control" Disabled="@ChangeLocationLoading" OnClick="() => ChangeLocationClicked(new EventArgs())" />
+            </DelayedTooltip>
+            <span class="dropdown-wrapper">
+                <DropdownButton Icon="fas fa-cog" AriaLabel="Location dashboard options">
+                    <MenuContent>
+                        <div class="dropdown-menu-content">
+                            <Check TValue="bool"
+                                    Value="@Precipitation"
+                                    ValueChanged="@(async (bool v) => await TogglePrecipitation())">
+                                Precipitation stripe
+                            </Check>
+                        </div>
+                    </MenuContent>
+                </DropdownButton>
             </span>
-        }
+        </span>
     </CollapsedContent>
     <Content>
         <DelayedLoadingIndicator @bind-Visible="@LocationLoadingIndicatorVisible" ZIndex="5">
-            @if (Location is not null)
-            {
-                <OverviewField Label="Location" Tooltip="Click to locate on Google Maps" OnClick="OpenLocationMapAsync"><Value>@GeoLocationAsString</Value></OverviewField>
-            }
-            @if (WarmingAnomalyAsString != null && WarmingAnomalyAsString != "NA")
-            {
-                <OverviewField Label="Warming anomaly" Tooltip="Click for information on anomalies" PopupContent="@WarmingAnomalyContent"><Value>@(WarmingAnomalyAsString == null ? "NA" : WarmingAnomalyAsString)</Value></OverviewField>
-                <OverviewField Label="Heating score" Tooltip="Click for information on heating scores" PopupContent="@HeatingScoreContent"><Value>@(Location!.HeatingScore == null ? "NA" : Location.HeatingScore)</Value></OverviewField>
-            }
-            @if (Location?.RecordHigh != null)
-            {
-                <OverviewField Label="Record high" OnClick="@ShowRecordHighAsync" ToolTip="@RecordHighToolTip"><Value>@(Location?.RecordHigh == null ? "NA" : Location?.RecordHigh.Year)</Value></OverviewField>
-            }
-            @if (RecentObservationsSupported)
-            {
-                <OverviewField Label="Recent observations" OnClick="@ShowRecentObservationsAsync" ToolTip="Compare daily observations with historical climate records"><Value>View</Value></OverviewField>
-            }
-            @if (Precipitation && PrecipitationAnomalyAsString != null && PrecipitationAnomalyAsString != "NA")
-            {
-                <OverviewField Label="Precipitation anomaly" Tooltip="Click for information on anomalies" PopupContent="@PrecipitationAnomalyContent"><Value>@(PrecipitationAnomalyAsString == null ? "NA" : PrecipitationAnomalyAsString)</Value></OverviewField>
-            }
+            <div class="@(LocationLoadingIndicatorVisible ? "dashboard-overview-fields--loading" : null)">
+                @if (Location is not null)
+                {
+                    <OverviewField Label="Location" Tooltip="Click to locate on Google Maps" OnClick="OpenLocationMapAsync"><Value>@GeoLocationAsString</Value></OverviewField>
+                }
+                @if (WarmingAnomalyAsString != null && WarmingAnomalyAsString != "NA")
+                {
+                    <OverviewField Label="Warming anomaly" Tooltip="Click for information on anomalies" PopupContent="@WarmingAnomalyContent"><Value>@(WarmingAnomalyAsString == null ? "NA" : WarmingAnomalyAsString)</Value></OverviewField>
+                    <OverviewField Label="Heating score" Tooltip="Click for information on heating scores" PopupContent="@HeatingScoreContent"><Value>@(Location!.HeatingScore == null ? "NA" : Location.HeatingScore)</Value></OverviewField>
+                }
+                @if (Location?.RecordHigh != null)
+                {
+                    <OverviewField Label="Record high" OnClick="@ShowRecordHighAsync" ToolTip="@RecordHighToolTip"><Value>@(Location?.RecordHigh == null ? "NA" : Location?.RecordHigh.Year)</Value></OverviewField>
+                }
+                @if (RecentObservationsSupported)
+                {
+                    <OverviewField Label="Recent observations" OnClick="@ShowRecentObservationsAsync" ToolTip="Compare daily observations with historical climate records"><Value>View</Value></OverviewField>
+                }
+                @if (Precipitation && PrecipitationAnomalyAsString != null && PrecipitationAnomalyAsString != "NA")
+                {
+                    <OverviewField Label="Precipitation anomaly" Tooltip="Click for information on anomalies" PopupContent="@PrecipitationAnomalyContent"><Value>@(PrecipitationAnomalyAsString == null ? "NA" : PrecipitationAnomalyAsString)</Value></OverviewField>
+                }
+            </div>
         </DelayedLoadingIndicator>
         <DelayedLoadingIndicator @bind-Visible="@StripeLoadingIndicatorVisible" ZIndex="5">
             <ClimateStripe UnitOfMeasure="UnitOfMeasure.DegreesCelsius" LocationName=@Location?.Name LocationMean=@TemperatureLocationMean DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange="HandleOnYearFilterChange" ShowInfo="true" />
             <ExtremeYears HighLabel="Warmest years" LowLabel="Coolest years" UnitOfMeasure="UnitOfMeasure.DegreesCelsius" DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange="HandleOnYearFilterChange" />
             @if (Precipitation && PrecipitationLocationMean != null)
             {
-                <ClimateStripe UnitOfMeasure="UnitOfMeasure.Millimetres" LocationName=@Location?.Name LocationMean=@PrecipitationLocationMean DataRecords="@PrecipitationAnomalyRecords" OnYearFilterChange="HandleOnPrecipitationYearFilterChange" ShowInfo="false" />
-                <ExtremeYears HighLabel="Wettest years" LowLabel="Driest years" HighFirst="false" UnitOfMeasure="UnitOfMeasure.Millimetres" DataRecords="@PrecipitationAnomalyRecords" OnYearFilterChange="HandleOnPrecipitationYearFilterChange" />
+                <div class="dashboard-climate-section dashboard-climate-section--precipitation">
+                    <ClimateStripe UnitOfMeasure="UnitOfMeasure.Millimetres" LocationName=@Location?.Name LocationMean=@PrecipitationLocationMean DataRecords="@PrecipitationAnomalyRecords" OnYearFilterChange="HandleOnPrecipitationYearFilterChange" ShowInfo="false" />
+                    <ExtremeYears HighLabel="Wettest years" LowLabel="Driest years" HighFirst="false" UnitOfMeasure="UnitOfMeasure.Millimetres" DataRecords="@PrecipitationAnomalyRecords" OnYearFilterChange="HandleOnPrecipitationYearFilterChange" />
+                </div>
             }
         </DelayedLoadingIndicator>
     </Content>

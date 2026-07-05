@@ -3,9 +3,9 @@
 @using ClimateExplorer.Web.UiModel
 @using static ClimateExplorer.Core.Enums
 
-@if (DataRecords is not null)
-{
-    <div class="warm-cool-years">
+<div class="extreme-years @(DataRecords is null ? "extreme-years--loading" : string.Empty)">
+    @if (DataRecords is not null)
+    {
         <OverviewField Label="@FirstLabel">
             <Value>
                 @foreach (var year in FirstList)
@@ -22,5 +22,5 @@
                 }
             </Value>
         </OverviewField>
-    </div>
-}
+    }
+</div>

@@ -6,23 +6,19 @@
     position: relative;
 }
 
-
-/* CLS fix: render both suggested-chart variants immediately; CSS controls which is visible.
-   This avoids a layout shift when IsMobileDevice resolves from null after first render. */
+/* Render both suggested-chart variants immediately; CSS controls which is visible
+   after the device breakpoint is known. */
 .suggested-mobile-only {
     display: none;
 }
 
-/* CLS fix: reserve space for the mini lozenges (desktop) so the collapsible section
-   does not grow when preset data loads, preventing div.location-and-chart-container
-   from shifting. 44px = ~1 row of mini cards (36px card + 4px bottom margin + 4px buffer). */
+/* Reserve roughly one row of mini cards while preset data loads. */
 .suggested-mini-only {
     min-height: 44px;
 }
 
 @media only screen and (max-width: 1024px) {
-    /* CLS fix: reserve space for the single mobile preset card (title ~24px + description
-       ~41px + padding 24px = ~89px); 90px prevents the collapsible from growing after load. */
+    /* Reserve roughly one mobile preset card while preset data loads. */
     .suggested-mobile-only {
         display: block;
         min-height: 90px;
@@ -34,20 +30,12 @@
     }
 }
 
-/* CLS fix: reserve space for LocationInfo async content */
-.location-info-container {
-    min-height: 410px;
-}
-
-.location-info-container:has(.collapser.content-hidden) {
-    min-height: 95px;
-}
-
 @media only screen and (max-width: 1024px) {
     .map-space-reserver {
         margin-bottom: 10px;
         z-index: 1;
-        height: 250px;
+        height: clamp(220px, 34vw, 320px);
+        min-height: 220px;
         width: 100%;
     }
 }
@@ -62,7 +50,7 @@
     .map-space-reserver {
         flex: 1 1 480px;
         min-width: 320px;
-        /* location-info-container comes first in source order (mobile shows the map on top, so it's first in markup); reorder here so the dashboard is on the left */
+        /* location-dashboard-container comes first in source order (mobile shows the map on top, so it's first in markup); reorder here so the dashboard is on the left */
         order: 2;
     }
 
@@ -70,13 +58,12 @@
         flex-direction: column;
     }
 
-    .location-info-container {
+    .location-dashboard-container {
         /* Main dashboard content grows with the screen, up to a readable cap; the map flexes to fill whatever width is left */
         flex: 1 1 480px;
         max-width: 1040px;
-        min-width: 480px;
         order: 1;
-        /* CLS fix: desktop fields fit in 1 row so total height is less than mobile */
-        min-height: 265px;
+        position: relative;
+        z-index: 30;
     }
 }

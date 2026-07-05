@@ -87,6 +87,8 @@ public partial class ClimateRecords
         : 31;
     private string SortIcon => Ascending ? "fa-up-long" : "fa-down-long";
 
+    private string SortToggleIcon => $"fa-solid fa-temperature-arrow-{(Ascending ? "up" : "down")}";
+
     private string SortLabel
     {
         get

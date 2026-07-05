@@ -57,27 +57,13 @@
 
 .today-btn,
 .sort-toggle-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 8px;
     font-size: 0.875rem;
     font-weight: 500;
-}
-
-.today-btn:hover:not(:disabled),
-.sort-toggle-btn:hover {
-    background-color: #cfc;
 }
 
 .today-btn:active:not(:disabled),
 .sort-toggle-btn:active {
     transform: scale(0.98);
-}
-
-.today-btn:disabled {
-    opacity: 0.45;
-    cursor: default;
 }
 
 .sort-toggle-btn i {

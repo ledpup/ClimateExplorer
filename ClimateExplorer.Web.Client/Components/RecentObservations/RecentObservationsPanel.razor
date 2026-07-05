@@ -20,9 +20,7 @@
             <div class="recent-observations-state error">
                 <i class="fas fa-triangle-exclamation"></i>
                 <span>@CurrentState.ErrorMessage</span>
-                <button class="recent-observations-retry" @onclick="RetryCurrentTab">
-                    <i class="fas fa-rotate-right"></i> Retry
-                </button>
+                <ClimateButton Text="Retry" Icon="fas fa-rotate-right" Class="recent-observations-retry" OnClick="RetryCurrentTab" />
             </div>
         }
         else
@@ -30,26 +28,19 @@
             if (CurrentTiles.Count > 0)
             {
                 <div class="chart-controls recent-observations-period-controls mb-4">
-                    <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="AddEarlierDay" disabled="@IsAddEarlierDayDisabled">
-                        @AddDayButtonLabel
-                    </button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="AddEarlierMonth" disabled="@IsAddEarlierMonthDisabled">
-                        @AddMonthButtonLabel
-                    </button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="AddEarlierSeason" disabled="@IsAddEarlierSeasonDisabled">
-                        @AddSeasonButtonLabel
-                    </button>
+                    <ClimateButton Text="@AddDayButtonLabel" Disabled="@IsAddEarlierDayDisabled" OnClick="AddEarlierDay" />
+                    <ClimateButton Text="@AddMonthButtonLabel" Disabled="@IsAddEarlierMonthDisabled" OnClick="AddEarlierMonth" />
+                    <ClimateButton Text="@AddSeasonButtonLabel" Disabled="@IsAddEarlierSeasonDisabled" OnClick="AddEarlierSeason" />
 
                     @if (HasExpandableCurrentTiles)
                     {
-                        <button type="button"
-                                class="chart-control recent-observations-toggle-all"
-                                title="@ExpandCollapseAllLabel"
-                                aria-label="@ExpandCollapseAllLabel"
-                                @onclick="ToggleAllTileExpansion">
+                        <ClimateButton Class="chart-control recent-observations-toggle-all"
+                                       AriaLabel="@ExpandCollapseAllLabel"
+                                       title="@ExpandCollapseAllLabel"
+                                       OnClick="ToggleAllTileExpansion">
                             <span class="oi oi-chevron-right recent-observations-toggle-all-chevron @(AreAllExpandableCurrentTilesExpanded ? "expanded" : string.Empty)" aria-hidden="true"></span>
                             @ExpandCollapseAllLabel
-                        </button>
+                        </ClimateButton>
                     }
                 </div>
 
@@ -96,14 +87,12 @@
                                                     aria-invalid="@(!string.IsNullOrWhiteSpace(referenceDateValidationMessage))"
                                                     @oninput="OnReferenceDateInput"
                                                     @onchange="OnReferenceDateChanged" />
-                                                <button type="button"
-                                                        class="btn btn-sm btn-outline-secondary recent-observations-reference-date-reset"
-                                                        title="Reset to latest reference date"
-                                                        aria-label="Reset to latest reference date"
-                                                        disabled="@IsResetReferenceDateDisabled"
-                                                        @onclick="ResetReferenceDate">
-                                                    <i class="fas fa-rotate-left" aria-hidden="true"></i>
-                                                </button>
+                                                <ClimateButton Icon="fas fa-rotate-left"
+                                                               Class="recent-observations-reference-date-reset"
+                                                               AriaLabel="Reset to latest reference date"
+                                                               title="Reset to latest reference date"
+                                                               Disabled="@IsResetReferenceDateDisabled"
+                                                               OnClick="ResetReferenceDate" />
                                             </div>
                                         </DelayedTooltip>
                                         @if (!string.IsNullOrWhiteSpace(referenceDateValidationMessage))

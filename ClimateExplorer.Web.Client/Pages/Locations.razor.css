@@ -63,12 +63,7 @@
 
 /* ── Climate record link button ──────────────────────────────────────────── */
 .record-link {
-    background: none;
-    border: none;
-    padding: 0;
     color: #425f59;
-    text-decoration: underline;
-    cursor: pointer;
     font-size: inherit;
 }
 

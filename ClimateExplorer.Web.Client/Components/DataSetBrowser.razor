@@ -1,10 +1,4 @@
-@using ClimateExplorer.Core.Model;
-@using ClimateExplorer.Core.ViewModel
-@using ClimateExplorer.Web.UiModel
-@using Blazorise
-@using Blazorise.Components
-@using Blazorise.Charts
-@using static ClimateExplorer.Core.Enums
+@using ClimateExplorer.Web.Client.Components.Common
 
 @if (RootFolders != null)
 {
@@ -15,7 +9,7 @@
             @foreach (var ds in f.DataSets)
             {
                 <div class="entry-list">
-                    <button class="add-dataset" @onclick="() => AddDataSet(ds)"><span class="oi oi-plus" aria-hidden="true"></span></button> <span class="dataset-name">@ds.Name</span>
+                    <ClimateButton Variant="ButtonVariant.Link" Icon="oi oi-plus" AriaLabel="@($"Add {ds.Name}")" Class="add-dataset" OnClick="() => AddDataSet(ds)" /> <span class="dataset-name">@ds.Name</span>
                 </div>
             }
         </div>

@@ -50,6 +50,7 @@
 
 .collapsible-title-full {
     display: inline-block;
+    min-height: 48px;
 }
 
 @media (max-width: 1024px) {
