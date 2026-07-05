@@ -220,7 +220,7 @@ public class ChartDataBuilderTests
         Assert.AreSame(precipitationSeries, result.NonRenderedSeriesWithData.Single().ChartSeries);
         Assert.AreEqual(ChartSeriesDataStatus.NoChartableDataAfterCompletenessFiltering, result.NonRenderedSeriesWithData.Single().DataStatus);
         Assert.HasCount(1, result.Messages);
-        StringAssert.Contains(result.Messages.Single().Message, "completeness threshold removed all precipitation observations");
+        StringAssert.Contains(result.Messages.Single().Message, "the completeness threshold removed all <b>precipitation</b> observations");
         Assert.HasCount(2, state.Series);
 
         var processedValues = result.SeriesWithData.Single().ProcessedDataSet!.DataRecords.Select(x => x.Value).ToArray();
@@ -249,7 +249,7 @@ public class ChartDataBuilderTests
         Assert.HasCount(1, result.NonRenderedSeriesWithData);
         Assert.AreEqual(ChartSeriesDataStatus.NoChartableDataAfterCompletenessFiltering, result.NonRenderedSeriesWithData.Single().DataStatus);
         Assert.HasCount(1, result.Messages);
-        StringAssert.Contains(result.Messages.Single().Message, "completeness threshold removed all solar radiation observations");
+        StringAssert.Contains(result.Messages.Single().Message, "the completeness threshold removed all <b>solar radiation</b> observations");
     }
 
     [TestMethod]

@@ -107,7 +107,7 @@ public class ChartSeriesLocationSubstitutionServiceTests
         Assert.HasCount(1, result.State.Series);
         Assert.IsFalse(result.State.Series.Single().DataAvailable);
         Assert.HasCount(1, result.Messages);
-        StringAssert.Contains(result.Messages.Single().Message, "Precipitation data is not available at Newtown, New Country.");
+        StringAssert.Contains(result.Messages.Single().Message, "Newtown, New Country: <b>Precipitation</b> data is not available.");
     }
 
     private static ChartSeriesLocationSubstitutionService CreateService()

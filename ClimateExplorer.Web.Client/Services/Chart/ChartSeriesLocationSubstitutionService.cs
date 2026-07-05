@@ -82,7 +82,7 @@ public sealed class ChartSeriesLocationSubstitutionService : IChartSeriesLocatio
             var dataType = sss.MeasurementDefinition.DataType.ToFriendlyName();
             messages.Add(new UserNotification
             {
-                Message = $"{dataType} data is not available at <b>{location.FullTitle}</b>.",
+                Message = $"{location.FullTitle}: <b>{dataType}</b> data is not available.",
                 Type = NotificationType.Warning,
                 LocationId = location.Id,
                 LocationName = location.FullTitle,
