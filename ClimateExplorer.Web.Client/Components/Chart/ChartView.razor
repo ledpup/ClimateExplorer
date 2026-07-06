@@ -12,7 +12,7 @@
             <Content>
                 <div class="chart-and-controls">
                     <div class="chart-series-list-wrapper">
-                        <ChartSeriesListView ChartSeriesList="ChartSeriesList" OnSeriesChanged="@RaiseChartStateChanged" IsLoading="ChartLoadingIndicatorVisible"></ChartSeriesListView>
+                        <ChartSeriesListView ChartSeriesList="ChartSeriesList" SeriesWithData="AllChartSeriesWithData" OnSeriesChanged="@RaiseChartStateChanged" IsLoading="ChartLoadingIndicatorVisible"></ChartSeriesListView>
 
                         <ClimateButton Text="Add" Icon="fas fa-plus" Compact="true" Class="add-series-button" OnClick="ShowAddDataSetModal" />
                     </div>

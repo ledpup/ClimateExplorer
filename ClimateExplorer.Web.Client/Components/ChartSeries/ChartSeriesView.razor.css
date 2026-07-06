@@ -47,6 +47,8 @@
             padding-top: 12px;
             color: #a00000;
             margin-left: 0;
+            border: 0;
+            background: transparent;
         }
 
         .chart-series-config .title-bar .expander {
@@ -156,7 +158,8 @@
                 transition: background-color 0.25s;
                 border-radius: 12px;
                 margin-right: 8px;
-
+                border: 0;
+                background: transparent;
                 text-align: center;
             }
 

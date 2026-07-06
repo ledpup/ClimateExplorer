@@ -5,6 +5,7 @@
         <ChartSeriesView 
             @key="@cs.Id"
             ChartSeries="@cs" 
+            SourceMetadata="@GetSourceMetadata(cs)"
             OnSeriesChanged="@OnSeriesChangedInternal"
             OnDuplicateSeries="@OnDuplicateSeries"
             OnRemoveSeries="@OnRemoveSeries"

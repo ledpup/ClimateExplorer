@@ -19,43 +19,140 @@
                 <CloseButton />
             </ModalHeader>
             <ModalBody>
-            @if (ChartSeries.SourceSeriesSpecifications!.Length > 1)
-            {
-                <div class="derived-series-note">This is a derived series, calculated by subtracting one series from another to show the difference between the two.</div>
-            }
+                @if (ChartSeries.SourceSeriesSpecifications!.Length > 1)
+                {
+                    <div class="derived-series-note">This is a derived series, calculated by subtracting one series from another to show the difference between the two.</div>
+                }
 
-            @foreach (var sss in ChartSeries.SourceSeriesSpecifications)
-            {
-                @if (ChartSeries.SourceSeriesSpecifications.Length > 1)
+                @foreach (var sss in ChartSeries.SourceSeriesSpecifications)
                 {
-                    <h4>@ChartSeriesDefinition.BuildFriendlyTitleShortForSeries(sss, ChartSeries.BinGranularity, ChartSeries.Aggregation)</h4>
-                }
-                <div class="entry">
-                    <div class="title">Dataset</div>
-                    <div class="value">
-                        @if (sss.DataSetDefinition!.MoreInformationUrl != null)
-                        {
-                            <a href="@sss.DataSetDefinition.MoreInformationUrl" target="_blank">@sss.DataSetDefinition.Name</a>
-                        }
-                        else
-                        {
-                            @sss.DataSetDefinition.Name
-                        }
-                    
-                    @if (sss.DataSetDefinition.Publisher != null)
+                    @if (ChartSeries.SourceSeriesSpecifications.Length > 1)
                     {
-                        <span> published by </span><a href="@sss.DataSetDefinition.PublisherUrl" target="_blank">@sss.DataSetDefinition.Publisher</a>
+                        <h4>@ChartSeriesDefinition.BuildFriendlyTitleShortForSeries(sss, ChartSeries.BinGranularity, ChartSeries.Aggregation)</h4>
                     }
-                    </div>
-                </div>
-                @if (sss.DataSetDefinition.Description != null)
-                {
                     <div class="entry">
-                        <div class="title">Dataset description</div>
-                        <div class="value">@((MarkupString)sss.DataSetDefinition.Description.Replace("\r\n", "<br>"))</div>
+                        <div class="title">Dataset</div>
+                        <div class="value">
+                            @if (sss.DataSetDefinition!.MoreInformationUrl != null)
+                            {
+                                <a href="@sss.DataSetDefinition.MoreInformationUrl" target="_blank" rel="noopener noreferrer">@sss.DataSetDefinition.Name</a>
+                            }
+                            else
+                            {
+                                @sss.DataSetDefinition.Name
+                            }
+                        </div>
                     </div>
+                    @if (sss.DataSetDefinition.Description != null)
+                    {
+                        <div class="entry">
+                            <div class="title">Description</div>
+                            <div class="value">@((MarkupString)sss.DataSetDefinition.Description.Replace("\r\n", "<br>"))</div>
+                        </div>
+                    }
+                    @if (sss.DataSetDefinition.Publisher is not null)
+                    {
+                        <div class="entry">
+                            <div class="title">Published by</div>
+                            <div class="value">
+                                <a href="@sss.DataSetDefinition.PublisherUrl" target="_blank" rel="noopener noreferrer">@sss.DataSetDefinition.Publisher</a>
+                            </div>
+                        </div>
+                    }
+
+                    var sourceMetadata = FindSourceMetadata(sss);
+                    @if (sourceMetadata is not null && HasRenderableSourceMetadata(sourceMetadata))
+                    {
+                        @if (IsSingleStation(sourceMetadata))
+                        {
+                            var station = sourceMetadata.Stations.Single();
+                            <div class="entry">
+                                <div class="title">Station</div>
+                                <div class="value">@FormatStation(station)</div>
+                            </div>
+                            @if (station.StationStartDate.HasValue && station.StationEndDate.HasValue)
+                            {
+                                <div class="entry">
+                                    <div class="title">Station dates</div>
+                                    <div class="value">@FormatStationDateRange(station)</div>
+                                </div>
+                            }
+                            @if (GetStationOrSourceUrl(station, sourceMetadata) is { } sourceUrl && sss.DataSetDefinition.MoreInformationUrl != sourceUrl)
+                            {
+                                <div class="entry">
+                                    <div class="title">Source link</div>
+                                    <div class="value">
+                                        <a href="@sourceUrl" target="_blank" rel="noopener noreferrer">@FormatStationOrSourceUrlLabel(station, sourceMetadata)</a>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else if (HasRenderableStations(sourceMetadata))
+                        {
+                            var showStationLinks = HasStationLinks(sourceMetadata);
+                            <div class="table-card source-stations">
+                                <div class="table-header">Stations</div>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Station ID</th>
+                                            <th>Start date</th>
+                                            <th>End date</th>
+                                            @if (showStationLinks)
+                                            {
+                                                <th>Source</th>
+                                            }
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var station in sourceMetadata.Stations)
+                                        {
+                                            <tr>
+                                                <td>@FormatMissing(station.StationId)</td>
+                                                <td>@FormatDate(station.StationStartDate)</td>
+                                                <td>@FormatDate(station.StationEndDate)</td>
+                                                @if (showStationLinks)
+                                                {
+                                                    <td>
+                                                        @if (!string.IsNullOrWhiteSpace(station.SourceUrl))
+                                                        {
+                                                            <a href="@station.SourceUrl" target="_blank" rel="noopener noreferrer">@FormatStationUrlLabel(station)</a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span>&#x2014;</span>
+                                                        }
+                                                    </td>
+                                                }
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            @if (!showStationLinks 
+                                        && !string.IsNullOrWhiteSpace(sourceMetadata.SourceUrl) 
+                                        && sss.DataSetDefinition.MoreInformationUrl != sourceMetadata.SourceUrl)
+                            {
+                                <div class="entry source-link">
+                                    <div class="title">Source link</div>
+                                    <div class="value">
+                                        <a href="@sourceMetadata.SourceUrl" target="_blank" rel="noopener noreferrer">@FormatSourceUrlLabel(sourceMetadata)</a>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else if (!string.IsNullOrWhiteSpace(sourceMetadata.SourceUrl) && sss.DataSetDefinition.MoreInformationUrl != sourceMetadata.SourceUrl)
+                        {
+                            <div class="entry">
+                                <div class="title">Source link</div>
+                                <div class="value">
+                                    <a href="@sourceMetadata.SourceUrl" target="_blank" rel="noopener noreferrer">@FormatSourceUrlLabel(sourceMetadata)</a>
+                                </div>
+                            </div>
+                        }
+                    }
                 }
-            }
             </ModalBody>
         </ModalContent>
     </Modal>

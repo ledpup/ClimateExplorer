@@ -77,6 +77,22 @@ public class ChartDataBuilderTests
     }
 
     [TestMethod]
+    public async Task BuildAsync_AnnualChangeSeries_PreservesSourceMetadata()
+    {
+        var sourceMetadata = CreateSourceMetadata();
+        var dataSet = CreateYearDataSet([(2000, 1), (2001, 2), (2002, 4), (2003, 7)], sourceMetadata: sourceMetadata);
+        var dataService = CreateDataService(dataSet);
+        var series = CreateSeries(secondaryCalculation: SecondaryCalculationOptions.AnnualChange);
+
+        var result = await CreateBuilder(dataService).BuildAsync(new ChartState { ChartAllData = true, Series = [series] });
+
+        var seriesWithData = result.SeriesWithData.Single();
+        Assert.AreSame(sourceMetadata, seriesWithData.SourceDataSet.SourceMetadata);
+        Assert.AreSame(sourceMetadata, seriesWithData.PreProcessedDataSet!.SourceMetadata);
+        Assert.AreSame(sourceMetadata, seriesWithData.ProcessedDataSet!.SourceMetadata);
+    }
+
+    [TestMethod]
     public async Task ChartAllDataSelectsFullRangeWhileStartYearClampsIt()
     {
         var records = Enumerable.Range(2000, 11).Select(y => (year: y, value: (double?)y)).ToArray();
@@ -147,6 +163,37 @@ public class ChartDataBuilderTests
     }
 
     [TestMethod]
+    public async Task BuildAsync_MovingAverageSeries_PreservesSourceMetadata()
+    {
+        var sourceMetadata = CreateSourceMetadata();
+        var dataSet = CreateYearDataSet(
+            Enumerable.Range(2000, 30).Select(year => (year, value: (double?)year)),
+            sourceMetadata: sourceMetadata);
+        var dataService = CreateDataService(dataSet);
+        var series = CreateSeries(smoothing: SeriesSmoothingOptions.MovingAverage, smoothingWindow: 3);
+
+        var result = await CreateBuilder(dataService).BuildAsync(new ChartState { ChartAllData = true, Series = [series] });
+
+        var seriesWithData = result.SeriesWithData.Single();
+        Assert.AreSame(sourceMetadata, seriesWithData.SourceDataSet.SourceMetadata);
+        Assert.AreSame(sourceMetadata, seriesWithData.PreProcessedDataSet!.SourceMetadata);
+        Assert.AreSame(sourceMetadata, seriesWithData.ProcessedDataSet!.SourceMetadata);
+    }
+
+    [TestMethod]
+    public async Task BuildAsync_ProcessedDataSet_PreservesSourceMetadata()
+    {
+        var sourceMetadata = CreateSourceMetadata();
+        var dataSet = CreateYearDataSet([(2000, 1), (2002, 3)], sourceMetadata: sourceMetadata);
+        var dataService = CreateDataService(dataSet);
+        var series = CreateSeries();
+
+        var result = await CreateBuilder(dataService).BuildAsync(new ChartState { ChartAllData = true, Series = [series] });
+
+        Assert.AreSame(sourceMetadata, result.SeriesWithData.Single().ProcessedDataSet!.SourceMetadata);
+    }
+
+    [TestMethod]
     public async Task BuildRendersAvailableSeriesWhenAnotherSeriesHasNoChartableDataAfterCompletenessFiltering()
     {
         var temperatureDataSet = CreateYearDataSet([(2000, 10), (2001, 11), (2002, 12)]);
@@ -173,7 +220,7 @@ public class ChartDataBuilderTests
         Assert.AreSame(precipitationSeries, result.NonRenderedSeriesWithData.Single().ChartSeries);
         Assert.AreEqual(ChartSeriesDataStatus.NoChartableDataAfterCompletenessFiltering, result.NonRenderedSeriesWithData.Single().DataStatus);
         Assert.HasCount(1, result.Messages);
-        StringAssert.Contains(result.Messages.Single().Message, "completeness threshold removed all precipitation observations");
+        StringAssert.Contains(result.Messages.Single().Message, "the completeness threshold removed all <b>precipitation</b> observations");
         Assert.HasCount(2, state.Series);
 
         var processedValues = result.SeriesWithData.Single().ProcessedDataSet!.DataRecords.Select(x => x.Value).ToArray();
@@ -202,7 +249,7 @@ public class ChartDataBuilderTests
         Assert.HasCount(1, result.NonRenderedSeriesWithData);
         Assert.AreEqual(ChartSeriesDataStatus.NoChartableDataAfterCompletenessFiltering, result.NonRenderedSeriesWithData.Single().DataStatus);
         Assert.HasCount(1, result.Messages);
-        StringAssert.Contains(result.Messages.Single().Message, "completeness threshold removed all solar radiation observations");
+        StringAssert.Contains(result.Messages.Single().Message, "the completeness threshold removed all <b>solar radiation</b> observations");
     }
 
     [TestMethod]
@@ -296,7 +343,8 @@ public class ChartDataBuilderTests
         IEnumerable<(int Year, double? Value)> records,
         DataType dataType = DataType.TempMean,
         UnitOfMeasure unitOfMeasure = UnitOfMeasure.DegreesCelsius,
-        DataRecord[]? rawDataRecords = null)
+        DataRecord[]? rawDataRecords = null,
+        List<DataSetSourceMetadata>? sourceMetadata = null)
     {
         return new DataSet
         {
@@ -304,7 +352,32 @@ public class ChartDataBuilderTests
             MeasurementDefinition = CreateMeasurementDefinition(dataType, unitOfMeasure),
             DataRecords = [.. records.Select(r => new BinnedRecord(new YearBinIdentifier((short)r.Year).Id, r.Value))],
             RawDataRecords = rawDataRecords,
+            SourceMetadata = sourceMetadata,
         };
+    }
+
+    private static List<DataSetSourceMetadata> CreateSourceMetadata()
+    {
+        return
+        [
+            new DataSetSourceMetadata
+            {
+                DataSetDefinitionId = DataSetId,
+                LocationId = LocationId,
+                LocationName = "Testville",
+                SourceCode = "Test",
+                SourceName = "Test data set",
+                Stations =
+                [
+                    new DataSetStationMetadata
+                    {
+                        StationId = "TEST001",
+                        StationName = "Test Station",
+                        StationStartDate = new DateOnly(2000, 1, 1),
+                    },
+                ],
+            },
+        ];
     }
 
     private static Location CreateLocation()

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
+using ClimateExplorer.WebApi.Metadata;
 using Microsoft.AspNetCore.Mvc;
 using static ClimateExplorer.Core.Enums;
 
@@ -16,7 +17,7 @@ internal static class DataSetEndpoints
         PostDataSetsRequestBody body,
         [FromServices] ClimateExplorerApiServices services)
     {
-        string cacheKey = "DataSet_" + JsonSerializer.Serialize(body);
+        string cacheKey = "DataSet_v2_" + JsonSerializer.Serialize(body);
 
         var result = await services.Cache.Get<DataSet>(cacheKey);
 
@@ -29,10 +30,10 @@ internal static class DataSetEndpoints
 
         var series = await dsb.BuildDataSet(body);
         var definitions = await DataSetDefinition.GetDataSetDefinitions();
-        var spec = body.SeriesSpecifications[0];
-        var dsd = definitions.Single(x => x.Id == spec.DataSetDefinitionId);
+        var spec = body.SeriesSpecifications![0];
 
         var geoEntity = await GeographicalEntity.GetGeographicalEntity(spec.LocationId);
+        var sourceMetadata = await new DataSetSourceMetadataBuilder().BuildAsync(body, definitions);
 
         var returnDataSet =
             new DataSet
@@ -54,6 +55,7 @@ internal static class DataSetEndpoints
                     body.IncludeRawDataRecords == true
                     ? series.RawDataRecords
                     : null,
+                SourceMetadata = sourceMetadata,
             };
 
         // If the BinningRule is ByYearAndDay (or ByDayOnly filtered to a specific year) then there is little
