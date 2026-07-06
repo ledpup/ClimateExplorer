@@ -11,15 +11,13 @@
         @if (CurrentState.IsLoading)
         {
             <div class="recent-observations-state">
-                <i class="fas fa-spinner fa-spin"></i>
-                <span>Loading recent observations...</span>
+                <span><i class="fas fa-spinner fa-spin"></i> Loading recent observations...</span>
             </div>
         }
         else if (!string.IsNullOrWhiteSpace(CurrentState.ErrorMessage))
         {
             <div class="recent-observations-state error">
-                <i class="fas fa-triangle-exclamation"></i>
-                <span>@CurrentState.ErrorMessage</span>
+                <span><i class="fas fa-triangle-exclamation"></i> @CurrentState.ErrorMessage</span>
                 <ClimateButton Text="Retry" Icon="fas fa-rotate-right" Class="recent-observations-retry" OnClick="RetryCurrentTab" />
             </div>
         }
