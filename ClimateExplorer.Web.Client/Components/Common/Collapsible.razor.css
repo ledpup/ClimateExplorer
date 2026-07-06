@@ -49,7 +49,8 @@
     }
 
 .collapsible-title-full {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
     min-height: 48px;
 }
 
@@ -59,7 +60,8 @@
     }
 
     .collapsible-title-compact {
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
     }
 }
 
@@ -69,7 +71,8 @@
     }
 
     .collapsible-title-minimal {
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
     }
 }
 
