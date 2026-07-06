@@ -41,29 +41,28 @@
                             {
                                 @sss.DataSetDefinition.Name
                             }
-                    
-                        @if (sss.DataSetDefinition.Publisher != null)
-                        {
-                            <span> published by </span><a href="@sss.DataSetDefinition.PublisherUrl" target="_blank" rel="noopener noreferrer">@sss.DataSetDefinition.Publisher</a>
-                        }
                         </div>
                     </div>
                     @if (sss.DataSetDefinition.Description != null)
                     {
                         <div class="entry">
-                            <div class="title">Dataset description</div>
+                            <div class="title">Description</div>
                             <div class="value">@((MarkupString)sss.DataSetDefinition.Description.Replace("\r\n", "<br>"))</div>
+                        </div>
+                    }
+                    @if (sss.DataSetDefinition.Publisher is not null)
+                    {
+                        <div class="entry">
+                            <div class="title">Published by</div>
+                            <div class="value">
+                                <a href="@sss.DataSetDefinition.PublisherUrl" target="_blank" rel="noopener noreferrer">@sss.DataSetDefinition.Publisher</a>
+                            </div>
                         </div>
                     }
 
                     var sourceMetadata = FindSourceMetadata(sss);
                     @if (sourceMetadata is not null && HasRenderableSourceMetadata(sourceMetadata))
                     {
-                        <div class="entry">
-                            <div class="title">Source</div>
-                            <div class="value">@FormatSource(sourceMetadata)</div>
-                        </div>
-
                         @if (IsSingleStation(sourceMetadata))
                         {
                             var station = sourceMetadata.Stations.Single();
@@ -78,7 +77,7 @@
                                     <div class="value">@FormatStationDateRange(station)</div>
                                 </div>
                             }
-                            @if (GetStationOrSourceUrl(station, sourceMetadata) is { } sourceUrl)
+                            @if (GetStationOrSourceUrl(station, sourceMetadata) is { } sourceUrl && sss.DataSetDefinition.MoreInformationUrl != sourceUrl)
                             {
                                 <div class="entry">
                                     <div class="title">Source link</div>
@@ -131,7 +130,9 @@
                                 </table>
                             </div>
 
-                            @if (!showStationLinks && !string.IsNullOrWhiteSpace(sourceMetadata.SourceUrl))
+                            @if (!showStationLinks 
+                                        && !string.IsNullOrWhiteSpace(sourceMetadata.SourceUrl) 
+                                        && sss.DataSetDefinition.MoreInformationUrl != sourceMetadata.SourceUrl)
                             {
                                 <div class="entry source-link">
                                     <div class="title">Source link</div>
@@ -141,7 +142,7 @@
                                 </div>
                             }
                         }
-                        else if (!string.IsNullOrWhiteSpace(sourceMetadata.SourceUrl))
+                        else if (!string.IsNullOrWhiteSpace(sourceMetadata.SourceUrl) && sss.DataSetDefinition.MoreInformationUrl != sourceMetadata.SourceUrl)
                         {
                             <div class="entry">
                                 <div class="title">Source link</div>

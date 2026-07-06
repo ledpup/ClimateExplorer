@@ -78,7 +78,7 @@ public partial class AboutData
 
     private static string FormatDate(DateOnly? date)
     {
-        return date?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) ?? "Unknown";
+        return date?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) ?? "—";
     }
 
     private static string FormatMissing(string? value)
