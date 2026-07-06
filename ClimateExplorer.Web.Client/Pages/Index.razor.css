@@ -63,7 +63,5 @@
         flex: 1 1 480px;
         max-width: 1040px;
         order: 1;
-        position: relative;
-        z-index: 30;
     }
 }

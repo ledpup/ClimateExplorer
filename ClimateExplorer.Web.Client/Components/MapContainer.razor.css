@@ -33,7 +33,7 @@
         left: 0px;
         right: 0px;
         bottom: 0px;
-        z-index: 20;
+        z-index: 0;
     }
         .mapContainer.expanded {
             position: fixed;
@@ -41,6 +41,7 @@
             right: 0px;
             bottom: 0px;
             left: 0px;
+            z-index: 1000;
         }
 
     .mapToggleExpanded {
@@ -50,7 +51,7 @@
         left: auto;
         padding: 12px;
         text-align: right;
-        z-index: 1000;
+        z-index: 1001;
     }
 
     .mapToggleCollapsed {
@@ -81,7 +82,7 @@
            is trapped inside its box rather than collapsing through. Match it here so the map ends flush with the
            visible bottom edge of the collapsible card instead of overrunning it. */
         bottom: 24px;
-        z-index: 20;
+        z-index: 0;
     }
 
         .mapContainer.expanded {
@@ -90,6 +91,7 @@
             right: 0px;
             bottom: 0px;
             left: 0px;
+            z-index: 1000;
         }
 
     .mapToggleExpanded {
@@ -99,7 +101,7 @@
         left: auto;
         padding: 12px;
         text-align: right;
-        z-index: 1000;
+        z-index: 1001;
     }
 
     .mapToggleCollapsed {

@@ -17,9 +17,6 @@
         color: #0a58ca;
     }
 
-/* display:contents makes the wrapper transparent to layout so the Dropdown
-   continues to sit inline with the other chart controls, while still giving
-   Blazor's CSS isolation a plain HTML element to stamp the scope attribute on. */
 .dropdown-wrapper {
     display: inline-flex;
     align-items: center;
@@ -46,6 +43,10 @@
     min-height: 40px;
     min-width: 40px;
     line-height: 1;
+}
+
+.dropdown-wrapper ::deep .dropdown-menu {
+    z-index: 30;
 }
 
 .dropdown-menu-content {
