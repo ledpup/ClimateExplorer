@@ -22,8 +22,8 @@
     align-items: center;
     vertical-align: baseline;
     position: relative;
+    top: -2px;
     cursor: pointer;
-    transform: translateY(-2px);
 }
 
 .chart-controls {
