@@ -1,7 +1,7 @@
 # Location Dataset Metadata Plan
 
 - **Date:** 2026-07-07
-- **Status:** Proposed (API stage implemented 2026-07-07; see addendum)
+- **Status:** Proposed (API and WebApiClient stages implemented 2026-07-07; see addenda)
 - **Author:** Codex
 - **Scope:** `ClimateExplorer.WebApi` dataset/location metadata endpoints, `ClimateExplorer.WebApiClient`, `ClimateExplorer.Web.Client` location table and dashboard source metadata UI
 - **Builds on:** [AboutData Station Metadata Plan](2026-07-05-01-about-data-station-metadata-plan.md)
@@ -9,7 +9,7 @@
 
 ## Summary
 
-Add a location-level dataset source metadata API and a shared Blazor side panel so users can inspect the sources behind a location without first opening a chart series.
+Add a location-level dataset metadata API and a shared Blazor side panel so users can inspect the sources behind a location without first opening a chart series.
 
 The API should return all dataset sources available to one location as `DataSetMetadata` entries. The UI should open a side panel from both `Locations.razor` and `LocationDashboard`, fetch that metadata, render one tab per dataset source, and reuse the existing `AboutData` metadata rendering instead of creating a second station/source display path.
 
@@ -129,7 +129,7 @@ Recommended direction:
 
 Recommended route, matching the existing flat query-style endpoint conventions:
 
-- `GET /location-dataset-source-metadata?locationId={guid}`
+- `GET /location-dataset-metadata?locationId={guid}`
 
 Alternative REST-style route:
 
@@ -182,7 +182,7 @@ Example shape:
 
 ### Response Completeness
 
-The existing `AboutData` body uses both dataset definition details and `DataSetSourceMetadata` details:
+The existing `AboutData` body uses both dataset definition details and `DataSetMetadata` details:
 
 - Dataset name, description, publisher, publisher URL, and more-information URL come from `DataSetDefinitionViewModel`.
 - Resolved source URL, source label, station ids, station names, station date ranges, and station URLs come from `DataSetMetadata`.
@@ -277,7 +277,7 @@ Add to `IDataService`:
 
 Add to `DataService`:
 
-- Build `/location-dataset-source-metadata`.
+- Build `/location-dataset-metadata`.
 - Add `locationId` via `QueryHelpers.AddQueryString`.
 - Read `DataSetMetadata[]` with the existing web JSON options.
 - Cache by URL in `DataServiceCache`.
@@ -509,9 +509,9 @@ Recommended builder tests:
 
 Recommended service tests:
 
-- `GetSourceMetadataAsync_UnknownLocation_ReturnsNotFoundResult` or equivalent handler-level test.
-- `GetSourceMetadataAsync_KnownLocationWithNoDatasets_ReturnsEmptyList`
-- `GetSourceMetadataAsync_KnownLocationWithMultipleDatasets_ReturnsOrderedMetadata`
+- `GetMetadataAsync_UnknownLocation_ReturnsNotFoundResult` or equivalent handler-level test.
+- `GetMetadataAsync_KnownLocationWithNoDatasets_ReturnsEmptyList`
+- `GetMetadataAsync_KnownLocationWithMultipleDatasets_ReturnsOrderedMetadata`
 
 Existing useful coverage:
 
@@ -521,7 +521,7 @@ Existing useful coverage:
 
 If adding tests around `DataService` is practical with the existing test setup:
 
-- Verify `GetLocationDataSetMetadata` calls `/location-dataset-source-metadata?locationId=...`.
+- Verify `GetLocationDataSetMetadata` calls `/location-dataset-metadata?locationId=...`.
 - Verify successful JSON deserialization.
 - Verify non-success status throws a useful exception.
 - Verify repeated calls hit `DataServiceCache`.
@@ -592,6 +592,25 @@ Verification:
 
 Not implemented in this stage:
 
-- `ClimateExplorer.WebApiClient` wrapper method.
+- Blazor side panel/component work.
+- `Locations.razor` and `LocationDashboard` integration.
+
+## Addendum - WebApiClient Implementation Notes
+
+Implemented the WebApiClient stage on 2026-07-07:
+
+- Added `IDataService.GetLocationDataSetMetadata(Guid locationId)`.
+- Added `DataService.GetLocationDataSetMetadata`, calling `GET /location-dataset-metadata?locationId={guid}`.
+- Added client-side caching through `DataServiceCache` using the full URL as the cache key.
+- Added explicit non-success response handling that includes the status code and response body in the thrown exception.
+- Added focused `DataServiceTests` coverage for endpoint URL construction, response deserialization, caching, and non-success error behavior.
+
+Verification:
+
+- `dotnet build ClimateExplorer.sln` passed with the existing MSTest parallelization warning.
+- `dotnet test ClimateExplorer.UnitTests\ClimateExplorer.UnitTests.csproj --no-build --filter "FullyQualifiedName~DataServiceTests|FullyQualifiedName~DataSetMetadataBuilderTests|FullyQualifiedName~LocationDataSetMetadataServiceTests"` passed: 12 tests.
+
+Not implemented in this stage:
+
 - Blazor side panel/component work.
 - `Locations.razor` and `LocationDashboard` integration.

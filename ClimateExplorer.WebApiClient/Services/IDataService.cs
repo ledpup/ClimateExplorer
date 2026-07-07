@@ -12,6 +12,7 @@ public interface IDataService
     Task<IEnumerable<LocationDistance>> GetNearbyLocations(Guid locationId, int? take = null, int? skip = null);
     Task<Location> GetLocationByPath(string path);
     Task<Location?> GetLocationById(Guid locationId);
+    Task<IReadOnlyList<DataSetMetadata>> GetLocationDataSetMetadata(Guid locationId);
     Task<IEnumerable<Region>> GetRegions();
     Task<DataSet> PostDataSet(
         BinGranularities binGranularity,
