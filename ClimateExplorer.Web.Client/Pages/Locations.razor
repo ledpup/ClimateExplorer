@@ -110,7 +110,20 @@
                                 }
                             </td>
                             <td class="data-types-cell">@GetDataTypesDisplay(location.Id)</td>
-                            <td class="data-sources-cell">@GetDataSourcesDisplay(location.Id)</td>
+                            <td class="data-sources-cell">
+                                @if (HasDataSources(location.Id))
+                                {
+                                    <ClimateButton Variant="ButtonVariant.Link"
+                                                   Text="@GetDataSourcesDisplay(location.Id)"
+                                                   AriaLabel="@($"View data sources for {location.Name}")"
+                                                   Class="data-sources-link"
+                                                   OnClick="@(() => ShowDataSetMetadataAsync(location))" />
+                                }
+                                else
+                                {
+                                    <span>&#x2014;</span>
+                                }
+                            </td>
                             <td class="@(location.RecordHigh is null ? null : "text-end")">
                                 @if (location.RecordHigh is not null)
                                 {
@@ -156,3 +169,5 @@
 <SidePanel @ref="climateRecordsSidePanel" Title="@("Climate records for " + Location?.Name)">
     <ClimateRecords Location="@Location" DataSetDefinitions="@DataSetDefinitions" />
 </SidePanel>
+
+<LocationDataSetMetadataSidePanel @ref="dataSetMetadataSidePanel" DataSetDefinitions="@DataSetDefinitions" />

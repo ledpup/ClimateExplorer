@@ -19,6 +19,13 @@
                                     ValueChanged="@(async (bool v) => await TogglePrecipitation())">
                                 Precipitation stripe
                             </Check>
+                            <ClimateButton Variant="ButtonVariant.Link"
+                                           Text="Data sources"
+                                           Icon="fas fa-database"
+                                           AriaLabel="@DataSourcesButtonLabel"
+                                           Disabled="@(Location is null)"
+                                           Class="dropdown-menu-action"
+                                           OnClick="ShowDataSetMetadataAsync" />
                         </div>
                     </MenuContent>
                 </DropdownButton>
@@ -72,3 +79,5 @@
 <SidePanel @ref="recentObservationsSidePanel" Title="@("Recent observations for " + Location?.Name)" Width="85%">
     <RecentObservationsPanel Location="@Location" />
 </SidePanel>
+
+<LocationDataSetMetadataSidePanel @ref="dataSetMetadataSidePanel" DataSetDefinitions="@DataSetDefinitions" />

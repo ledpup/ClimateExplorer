@@ -5,6 +5,7 @@ using ClimateExplorer.Core.Infrastructure;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Components.Common;
+using ClimateExplorer.Web.Client.Components.Location;
 using ClimateExplorer.WebApiClient.Services;
 using Microsoft.AspNetCore.Components;
 using static ClimateExplorer.Core.Enums;
@@ -28,6 +29,7 @@ public partial class Locations
     private int filteredCount;
     private int totalPages = 1;
     private SidePanel? climateRecordsSidePanel;
+    private LocationDataSetMetadataSidePanel? dataSetMetadataSidePanel;
     private Location? selectedLocation;
     private string? nameFilter;
 
@@ -285,9 +287,19 @@ public partial class Locations
         return string.Join(", ", sources);
     }
 
+    private bool HasDataSources(Guid locationId)
+    {
+        return locationDataSources.TryGetValue(locationId, out var sources) && sources.Count > 0;
+    }
+
     private async Task ShowClimateRecordsAsync(Location location)
     {
         selectedLocation = location;
         await (climateRecordsSidePanel?.ShowAsync() ?? Task.CompletedTask);
+    }
+
+    private async Task ShowDataSetMetadataAsync(Location location)
+    {
+        await (dataSetMetadataSidePanel?.ShowAsync(location) ?? Task.CompletedTask);
     }
 }

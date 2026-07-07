@@ -1,0 +1,46 @@
+@using Blazorise
+@using ClimateExplorer.Core.Model
+@using ClimateExplorer.Web.Client.Components.ChartSeries
+@using ClimateExplorer.Web.Client.Components.Common
+
+<SidePanel @ref="sidePanel" Title="@Title" Width="@Width">
+    <div class="location-dataset-metadata-panel" aria-live="polite">
+        @if (isLoading)
+        {
+            <div class="location-dataset-metadata-state">
+                <span><i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Loading data sources...</span>
+            </div>
+        }
+        else if (!string.IsNullOrWhiteSpace(errorMessage))
+        {
+            <div class="location-dataset-metadata-state error">
+                <span><i class="fas fa-triangle-exclamation" aria-hidden="true"></i> @errorMessage</span>
+                <ClimateButton Text="Retry" Icon="fas fa-rotate-right" Class="location-dataset-metadata-retry" OnClick="RetryAsync" />
+            </div>
+        }
+        else if (metadata is { Count: 0 })
+        {
+            <div class="location-dataset-metadata-state">
+                <span><i class="fas fa-circle-info" aria-hidden="true"></i> No dataset metadata is available for this location.</span>
+            </div>
+        }
+        else if (metadata is not null && ActiveMetadata is not null)
+        {
+            <div class="location-dataset-metadata-tabs">
+                <Tabs SelectedTab="@activeTabKey" SelectedTabChanged="@OnTabChanged">
+                    <Items>
+                        @for (var i = 0; i < metadata.Count; i++)
+                        {
+                            var row = metadata[i];
+                            <Tab Name="@BuildTabKey(row, i)">@GetTabLabel(row, i)</Tab>
+                        }
+                    </Items>
+                </Tabs>
+            </div>
+
+            <div class="location-dataset-metadata-details">
+                <AboutDataDetails DataSetDefinition="@ActiveDataSetDefinition" Metadata="@ActiveMetadata" />
+            </div>
+        }
+    </div>
+</SidePanel>

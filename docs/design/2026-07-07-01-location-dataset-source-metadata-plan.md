@@ -1,7 +1,7 @@
 # Location Dataset Metadata Plan
 
 - **Date:** 2026-07-07
-- **Status:** Proposed (API and WebApiClient stages implemented 2026-07-07; see addenda)
+- **Status:** Implemented 2026-07-07 (see addenda)
 - **Author:** Codex
 - **Scope:** `ClimateExplorer.WebApi` dataset/location metadata endpoints, `ClimateExplorer.WebApiClient`, `ClimateExplorer.Web.Client` location table and dashboard source metadata UI
 - **Builds on:** [AboutData Station Metadata Plan](2026-07-05-01-about-data-station-metadata-plan.md)
@@ -594,6 +594,22 @@ Not implemented in this stage:
 
 - Blazor side panel/component work.
 - `Locations.razor` and `LocationDashboard` integration.
+
+## Addendum - UI Implementation Notes
+
+Implemented the Blazor UI stage on 2026-07-07:
+
+- Extracted the reusable dataset/source/station body from `AboutData` into `AboutDataDetails`.
+- Updated `AboutData` to keep the existing modal shell and render `AboutDataDetails` for each chart source series.
+- Added `LocationDataSetMetadataSidePanel`, which opens the existing `SidePanel`, fetches `IDataService.GetLocationDataSetMetadata`, handles loading/empty/error states, ignores stale responses, and renders one tab per returned dataset metadata row.
+- Updated `Locations.razor` so the data sources cell is an accessible link-style `ClimateButton` when sources exist and opens the shared metadata panel for that row.
+- Updated `LocationDashboard` with a `Data sources` option-menu action that opens the same metadata panel for the current location.
+
+Verification:
+
+- `dotnet build ClimateExplorer.sln` passed with the existing MSTest parallelization warning.
+- `dotnet test ClimateExplorer.UnitTests\ClimateExplorer.UnitTests.csproj --no-build --filter "FullyQualifiedName~DataServiceTests|FullyQualifiedName~DataSetMetadataBuilderTests|FullyQualifiedName~LocationDataSetMetadataServiceTests"` passed: 12 tests.
+- Website, Playwright, Lighthouse, and browser tests were not run, per `AGENTS.md`.
 
 ## Addendum - WebApiClient Implementation Notes
 

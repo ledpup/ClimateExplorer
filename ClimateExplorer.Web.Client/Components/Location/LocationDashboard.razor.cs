@@ -19,6 +19,7 @@ public partial class LocationDashboard
 {
     private SidePanel? climateRecordsSidePanel;
     private SidePanel? recentObservationsSidePanel;
+    private LocationDataSetMetadataSidePanel? dataSetMetadataSidePanel;
 
     [Inject]
     public IDataService? DataService { get; set; }
@@ -77,6 +78,10 @@ public partial class LocationDashboard
     private string? RecordHighToolTip { get; set; }
     private bool RecentObservationsSupported { get; set; }
 
+    private string DataSourcesButtonLabel => Location is null
+        ? "View data sources"
+        : $"View data sources for {Location.Name}";
+
     public void ChangeLocationClicked(EventArgs args)
     {
         RequestLocationChange.InvokeAsync();
@@ -90,6 +95,13 @@ public partial class LocationDashboard
     public Task ShowRecordHighAsync() => climateRecordsSidePanel?.ShowAsync() ?? Task.CompletedTask;
 
     public Task ShowRecentObservationsAsync() => recentObservationsSidePanel?.ShowAsync() ?? Task.CompletedTask;
+
+    public Task ShowDataSetMetadataAsync()
+    {
+        return Location is null
+            ? Task.CompletedTask
+            : dataSetMetadataSidePanel?.ShowAsync(Location) ?? Task.CompletedTask;
+    }
 
     public async Task OpenLocationMapAsync() => await JS!.InvokeVoidAsync("open", LocationMapUrl, "_blank");
 
