@@ -1,5 +1,6 @@
 namespace ClimateExplorer.Web.Client.Components.ChartSeries;
 
+using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.UiModel;
 using Microsoft.AspNetCore.Components;
 
@@ -7,6 +8,9 @@ public partial class ChartSeriesListView
 {
     [Parameter]
     public List<ChartSeriesDefinition>? ChartSeriesList { get; set; }
+
+    [Parameter]
+    public IReadOnlyList<SeriesWithData>? SeriesWithData { get; set; }
 
     [Parameter]
     public EventCallback OnSeriesChanged { get; set; }
@@ -24,6 +28,14 @@ public partial class ChartSeriesListView
     private async Task OnSeriesChangedInternal()
     {
         await OnSeriesChanged.InvokeAsync();
+    }
+
+    private IReadOnlyList<DataSetSourceMetadata>? GetSourceMetadata(ChartSeriesDefinition chartSeries)
+    {
+        return SeriesWithData?
+            .FirstOrDefault(x => x.ChartSeries.Id == chartSeries.Id)
+            ?.SourceDataSet
+            .SourceMetadata;
     }
 
     private async Task OnRemoveSeries(ChartSeriesDefinition csd)

@@ -1,8 +1,33 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 @import url('table.css');
 
+:root {
+    --climate-color-surface: #ffffff;
+    --climate-color-control-surface: #f8f8f8;
+    --climate-color-control-text: #425f59;
+    --climate-color-control-hover: #cfc;
+    --climate-color-link: #0071c1;
+    --climate-color-link-hover: #0a58ca;
+    --climate-color-muted-text: #595959;
+    --climate-color-info-icon: #79c6f4;
+    --climate-radius-control: 8px;
+    --climate-shadow-control: rgb(0 0 0 / 20%) 0 0 4px;
+    --climate-shadow-panel: rgb(0 0 0 / 15%) 1px 1px 12px;
+    --climate-space-control-padding: 8px;
+    --climate-space-control-gap: 0.5rem;
+    --climate-transition-control: background-color 0.25s, color 0.25s, border-color 0.25s;
+
+    /* Blazorise uses Tippy.js -- override via CSS custom properties.
+       Colours taken from the original SuggestedChartsMini custom tooltip. */
+    --b-tooltip-background-color-r: 255;
+    --b-tooltip-background-color-g: 255;
+    --b-tooltip-background-color-b: 255;
+    --b-tooltip-background-opacity: 1;
+    --b-tooltip-color: var(--climate-color-control-text);
+}
+
 .custom-modal-header {
-    background-color: #425f59;
+    background-color: var(--climate-color-control-text);
     color: white;
 }
 
@@ -36,7 +61,7 @@ h5 { font-size: 0.9rem; }
 h6 { font-size: 0.85rem; }
 
 a, .btn-link {
-    color: #0071c1;
+    color: var(--climate-color-link);
 }
 
 .btn-primary {
@@ -119,7 +144,7 @@ a, .btn-link {
 }
 
 .secondary-text {
-    color: #595959;
+    color: var(--climate-color-muted-text);
 }
 
 td:nth-child(n+2) {
@@ -131,61 +156,90 @@ th {
     font-weight: normal;
 }
 
-.chart-controls .chart-control,
-.add-series-button,
-.top100-btn,
-.top100-download-btn,
-.download-button,
-.today-btn,
-.sort-toggle-btn {
-    padding: 8px;
-    background-color: #f8f8f8;
+.climate-button {
+    padding: var(--climate-space-control-padding);
+    background-color: var(--climate-color-control-surface);
     border: none;
-    border-radius: 8px;
+    border-radius: var(--climate-radius-control);
     text-decoration: none;
-    color: #425f59;
+    color: var(--climate-color-control-text);
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     vertical-align: text-bottom;
-    gap: 0.5rem;
+    gap: var(--climate-space-control-gap);
     position: relative;
     user-select: none;
     font: inherit;
-    box-shadow: rgb(0 0 0 / 20%) 0px 0px 6px;
+    box-shadow: var(--climate-shadow-control);
+    transition: var(--climate-transition-control);
 }
 
-.chart-controls .chart-control {
-    margin: 8px;
+.climate-button:hover:not(:disabled) {
+    background-color: var(--climate-color-control-hover);
 }
 
-.chart-controls .chart-control i,
-.add-series-button i,
-.top100-btn i,
-.top100-download-btn i,
-.download-button i {
-    margin-right: 8px;
+.climate-button:disabled {
+    opacity: 0.45;
+    cursor: default;
 }
 
-.chart-controls .chart-control:hover,
-.add-series-button:hover,
-.top100-btn:hover,
-.top100-download-btn:hover,
-.download-button:hover {
-    background-color: #cfc;
-    transition: 0.25s;
+.climate-button--compact {
+    min-height: 44px;
+    padding-top: 10px;
+    padding-bottom: 6px;
 }
 
-/* Blazorise uses Tippy.js -- override via CSS custom properties.
-   Colours taken from the original SuggestedChartsMini custom tooltip. */
-:root {
-    --b-tooltip-background-color-r: 255;
-    --b-tooltip-background-color-g: 255;
-    --b-tooltip-background-color-b: 255;
-    --b-tooltip-background-opacity: 1;
-    --b-tooltip-color: #425f59;
+.btn.climate-dropdown-toggle,
+.climate-dropdown-toggle {
+    padding: var(--climate-space-control-padding);
+    background-color: var(--climate-color-control-surface);
+    border: none;
+    border-radius: var(--climate-radius-control);
+    text-decoration: none;
+    color: var(--climate-color-control-text);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--climate-space-control-gap);
+    position: relative;
+    user-select: none;
+    font: inherit;
+    box-shadow: var(--climate-shadow-control) !important;
+    transition: var(--climate-transition-control);
+}
+
+.btn.climate-dropdown-toggle:hover,
+.btn.climate-dropdown-toggle:focus,
+.btn.climate-dropdown-toggle:active,
+.btn.climate-dropdown-toggle.show,
+.climate-dropdown-toggle:hover,
+.climate-dropdown-toggle:focus,
+.climate-dropdown-toggle:active,
+.climate-dropdown-toggle.show {
+    background-color: var(--climate-color-control-hover);
+    color: var(--climate-color-control-text);
+}
+
+.btn.climate-dropdown-toggle::after,
+.climate-dropdown-toggle::after {
+    margin-left: 0;
+}
+
+.climate-link-button {
+    color: var(--climate-color-link);
+    text-decoration: underline;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font: inherit;
+    padding: 0;
+}
+
+.climate-link-button:hover {
+    color: var(--climate-color-link-hover);
 }
 
 .tippy-box[data-theme~=blazorise] {
-    box-shadow: rgb(0 0 0 / 15%) 1px 1px 12px;
+    box-shadow: var(--climate-shadow-panel);
 }

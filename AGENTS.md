@@ -1,6 +1,7 @@
 # Agent Notes
 
 - A plan or analysis document goes in docs/design. See [readme](docs/design/README.md)
+- Do not run the website, Playwright, Lighthouse, or browser tests.
 
 ## C#
 

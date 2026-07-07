@@ -7,9 +7,7 @@
 
 .aggregation-options-container {
     position: relative;
-    display: inline-block;
-    margin: 8px 16px 16px 8px;
-    top: -1px;
+    display: inline-flex;
     vertical-align: top;
 }
 

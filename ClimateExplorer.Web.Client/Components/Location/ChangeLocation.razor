@@ -15,8 +15,8 @@
             </ModalHeader>
             <ModalBody>           
                 <Div Class="mt-1 d-flex gap-4">
-                    <Button Clicked="@NearMeClicked" Color="Color.Primary">Near me</Button>
-                    <Button Clicked="@RandomLocationClicked" Color="Color.Secondary">Random location</Button>
+                    <ClimateButton Text="Near me" Icon="fas fa-location-crosshairs" OnClick="NearMeClicked" />
+                    <ClimateButton Text="Random location" Icon="fas fa-shuffle" OnClick="RandomLocationClicked" />
                 </Div>
 
                 @if (BrowserLocationErrorMessage != null)

@@ -1,4 +1,4 @@
-/* CLS fix: reserve vertical space for series cards */
+/* Reserve vertical space for series cards while chart data is loading. */
 .chart-series-list-wrapper {
     min-height: 54px;
 }
@@ -45,71 +45,37 @@
 
 
 .chart-controls {
-    margin: 20px;
-    /* This negative bottom margin is to compensate for the bottom margin on .chart-control, so that there's no
-     * unnecessary large gap below the bottom row of .chart-controls
-    */
-    margin-bottom: -16px;
-    margin-left: 0px;
-    margin-right: 0px;
+    margin: 20px 0 4px;
     user-select: none;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+    gap: 16px;
 }
 
 ::deep .chart-controls .dropdown {
     text-decoration: none;
-    margin: 8px 16px 16px 8px;
-    display: inline-block;
-    top: -1px;
-    border-radius: 8px;
-    box-shadow: rgb(0 0 0 / 20%) 0px 0px 4px;
-}
-
-    ::deep .chart-controls .dropdown .btn {
-        padding: 8px;
-        background-color: #f8f8f8;
-        color: #425f59;
-    }
-
-        ::deep .chart-controls .dropdown .btn i {
-            margin-right: 8px;
-        }
-
-        ::deep .chart-controls .dropdown .btn:hover {
-            background: #cfc !important;
-            transition: 0.25s;
-        }
-
-.chart-controls .chart-control {
-    padding: 8px;
-    background-color: #f8f8f8;
-    border: none;
-    border-radius: 8px;
-    margin-right: 16px;
-    margin-bottom: 16px;
-    text-decoration: none;
-    color: #425f59;
-    cursor: pointer;
-    display: inline-block;
-    font: inherit;
-    box-shadow: rgb(0 0 0 / 20%) 0px 0px 4px;
+    display: inline-flex;
+    align-items: center;
     vertical-align: baseline;
 }
 
-    .chart-controls .chart-control i {
-        margin-right: 8px;
-    }
+::deep .chart-controls .dropdown .climate-dropdown-toggle {
+    margin: 0;
+}
 
-    .chart-controls .chart-control:hover {
-        background-color: #cfc;
-        transition: 0.25s;
-    }
+.chart-controls .chart-control {
+    vertical-align: baseline;
+}
 
-.chart-controls .chart-control-download {
+.chart-download-control {
     margin-left: auto;
-    margin-right: 0;
+}
+
+@media only screen and (max-width: 767px) {
+    .chart-download-control {
+        margin-left: 0;
+    }
 }
 
     .chart-controls .info-icon {
@@ -152,30 +118,8 @@
     }
 
 .add-series-button {
-    box-shadow: rgb(0 0 0 / 20%) 0px 0px 6px;
-    display: inline-block;
-    min-height: 44px;
-    padding: 8px;
-    padding-bottom: 6px;
-    padding-top: 10px;
-    border: none;
-    border-radius: 8px;
-    background-color: #f8f8f8;
-    text-decoration: none;
-    color: #425f59;
-    cursor: pointer;
-    user-select: none;
-    font: inherit;
+    display: inline-flex;
 }
-
-    .add-series-button i {
-        margin-right: 8px;
-    }
-
-    .add-series-button:hover {
-        background: #cfc;
-        transition: 0.25s;
-    }
 
 .info-icon {
     margin-left: 8px;

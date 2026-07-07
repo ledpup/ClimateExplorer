@@ -36,6 +36,8 @@ public class DataSet
 
     public DataRecord[]? RawDataRecords { get; set; }
 
+    public List<DataSetSourceMetadata>? SourceMetadata { get; set; }
+
     public short? StartYear
     {
         get

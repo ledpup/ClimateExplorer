@@ -2,9 +2,11 @@ namespace ClimateExplorer.Web.Client.Components.ChartSeries;
 
 using Blazorise;
 using ClimateExplorer.Core.DataPreparation;
+using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using static ClimateExplorer.Core.Enums;
 
 public partial class ChartSeriesView
@@ -22,6 +24,9 @@ public partial class ChartSeriesView
     public ChartSeriesDefinition? ChartSeries { get; set; }
 
     [Parameter]
+    public IReadOnlyList<DataSetSourceMetadata>? SourceMetadata { get; set; }
+
+    [Parameter]
     public EventCallback OnSeriesChanged { get; set; }
 
     [Parameter]
@@ -36,6 +41,10 @@ public partial class ChartSeriesView
     private string StyleForTitleBar => GenerateStyleForTitleBar();
 
     private string StyleForOuterDiv => GenerateStyleForOuterDiv();
+
+    private string ToggleExpandedLabel => ChartSeries?.IsExpanded == true
+        ? "Collapse series options"
+        : "Expand series options";
 
     public string GenerateStyleForOuterDiv()
     {
@@ -212,5 +221,13 @@ public partial class ChartSeriesView
     private void ExpandCollapse()
     {
         ChartSeries!.IsExpanded = !ChartSeries.IsExpanded;
+    }
+
+    private void OnTitleBarKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key is "Enter" or " ")
+        {
+            ExpandCollapse();
+        }
     }
 }

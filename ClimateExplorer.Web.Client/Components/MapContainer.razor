@@ -1,7 +1,4 @@
-@using Blazorise
-@using ClimateExplorer.Core.Model;
-@using CurrentDevice;
-@using DPBlazorMapLibrary;
+@using ClimateExplorer.Web.Client.Components.Common
 
 <div class="mapContainer collapsed" id="mapContainer">
     @if (mapOptions != null)
@@ -12,15 +9,11 @@
     <div class="@(IsMapExpanded ? "mapToggleExpanded" : "mapToggleCollapsed")">
         @if (IsMapExpanded)
         {
-            <Button Clicked="@CollapseMap" Class="map-toggle-button" Disabled="Locations is null" Visibility="map is null ? Visibility.Invisible : Visibility.Visible">
-                <span><i class="fas fa-compress"></i> Collapse</span>
-            </Button>
+            <ClimateButton Text="Collapse" Icon="fas fa-compress" Class="map-toggle-button" Disabled="Locations is null" OnClick="CollapseMap" style="@(map is null ? "visibility: hidden" : null)" />
         }
         else
         {
-            <Button Clicked="@ExpandMap" Class="map-toggle-button" Disabled="Locations is null" Visibility="map is null ? Visibility.Invisible : Visibility.Visible">
-                <span><i class="fas fa-expand"></i> Expand</span>
-            </Button>
+            <ClimateButton Text="Expand" Icon="fas fa-expand" Class="map-toggle-button" Disabled="Locations is null" OnClick="ExpandMap" style="@(map is null ? "visibility: hidden" : null)" />
         }
     </div>
 </div>

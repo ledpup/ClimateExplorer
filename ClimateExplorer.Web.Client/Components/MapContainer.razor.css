@@ -8,7 +8,7 @@
 }
 
 /* The styles here (which position the map depending on screen width and whether the map has been "expanded" or not) dance around
-   the styles in Index.razor.css which position the .location-info-container accordingly.
+   the styles in Index.razor.css which position the .location-dashboard-container accordingly.
 
    The idea is:
      - when the screen's less than 1024px wide, the map appears at the top, full-width, followed by location info, full-width.
@@ -33,7 +33,7 @@
         left: 0px;
         right: 0px;
         bottom: 0px;
-        z-index: 20;
+        z-index: 0;
     }
         .mapContainer.expanded {
             position: fixed;
@@ -41,6 +41,7 @@
             right: 0px;
             bottom: 0px;
             left: 0px;
+            z-index: 1000;
         }
 
     .mapToggleExpanded {
@@ -50,7 +51,7 @@
         left: auto;
         padding: 12px;
         text-align: right;
-        z-index: 1000;
+        z-index: 1001;
     }
 
     .mapToggleCollapsed {
@@ -77,11 +78,11 @@
         top: 16px;
         right: 8px;
         left: 0px;
-        /* .location-info-container is a flex item, so its content's trailing margin-bottom (24px, from .collapsible-panel)
+        /* .location-dashboard-container is a flex item, so its content's trailing margin-bottom (24px, from .collapsible-panel)
            is trapped inside its box rather than collapsing through. Match it here so the map ends flush with the
            visible bottom edge of the collapsible card instead of overrunning it. */
         bottom: 24px;
-        z-index: 20;
+        z-index: 0;
     }
 
         .mapContainer.expanded {
@@ -90,6 +91,7 @@
             right: 0px;
             bottom: 0px;
             left: 0px;
+            z-index: 1000;
         }
 
     .mapToggleExpanded {
@@ -99,7 +101,7 @@
         left: auto;
         padding: 12px;
         text-align: right;
-        z-index: 1000;
+        z-index: 1001;
     }
 
     .mapToggleCollapsed {

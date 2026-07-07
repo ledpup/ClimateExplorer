@@ -81,6 +81,7 @@ public partial class ChartView : IAsyncDisposable
 
     private BinGranularities SelectedBinGranularity { get; set; } = BinGranularities.ByYear;
     private List<SeriesWithData>? ChartSeriesWithData { get; set; }
+    private List<SeriesWithData>? AllChartSeriesWithData { get; set; }
     private string? SelectedStartYear { get; set; }
     private string? SelectedEndYear { get; set; }
     private short SelectedGroupingDays { get; set; }
@@ -403,6 +404,7 @@ public partial class ChartView : IAsyncDisposable
     private void ApplyChartData(ChartDataBuildResult buildResult)
     {
         ChartSeriesWithData = [.. buildResult.SeriesWithData];
+        AllChartSeriesWithData = [.. buildResult.SeriesWithData, .. buildResult.NonRenderedSeriesWithData];
         ChartBins = buildResult.ChartBins;
         chartStartBin = buildResult.ChartStartBin;
         chartEndBin = buildResult.ChartEndBin;

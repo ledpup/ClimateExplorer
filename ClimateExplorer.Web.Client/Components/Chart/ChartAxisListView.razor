@@ -1,11 +1,9 @@
 @using Blazorise
+@using ClimateExplorer.Web.Client.Components.Common
 
 <div class="axes-dropdown-wrapper">
-    <Dropdown>
-        <DropdownToggle>
-            <i class="fas fa-chart-line"></i> Axes
-        </DropdownToggle>
-        <DropdownMenu>
+    <DropdownButton Text="Axes" Icon="fas fa-chart-line">
+        <MenuContent>
             @if (Axes != null && Axes.Count > 0)
             {
                 <div class="axes-menu-content">
@@ -22,6 +20,6 @@
                     }
                 </div>
             }
-        </DropdownMenu>
-    </Dropdown>
+        </MenuContent>
+    </DropdownButton>
 </div>

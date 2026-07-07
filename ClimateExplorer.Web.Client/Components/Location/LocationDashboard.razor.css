@@ -17,21 +17,48 @@
         color: #0a58ca;
     }
 
-/* display:contents makes the wrapper transparent to layout so the Dropdown
-   continues to sit inline with the other chart controls, while still giving
-   Blazor's CSS isolation a plain HTML element to stamp the scope attribute on. */
 .dropdown-wrapper {
     display: inline-flex;
     align-items: center;
-    vertical-align: text-bottom;
-    gap: 0.5rem;
+    vertical-align: baseline;
     position: relative;
+    top: -2px;
     cursor: pointer;
-    padding: 8px;
-    border-radius: 8px;
-    color: #425f59;
+}
+
+.chart-controls {
+    align-items: center;
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.dropdown-wrapper ::deep .dropdown {
+    display: inline-flex;
+    align-items: center;
+}
+
+.dropdown-wrapper ::deep .climate-dropdown-toggle {
+    justify-content: center;
+    min-height: 40px;
+    min-width: 40px;
+    line-height: 1;
+}
+
+.dropdown-wrapper ::deep .dropdown-menu {
+    z-index: 30;
 }
 
 .dropdown-menu-content {
     margin: 8px 8px;
+}
+
+.dashboard-overview-fields--loading {
+    min-height: 53px;
+}
+
+@media (max-width: 767px) {
+    .dashboard-overview-fields--loading {
+        min-height: 159px;
+    }
 }
