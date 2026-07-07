@@ -26,7 +26,7 @@
         }
         else if (metadata is not null && ActiveMetadata is not null)
         {
-            <div class="location-dataset-metadata-tabs">
+            <div class="climate-tabs location-dataset-metadata-tabs">
                 <Tabs SelectedTab="@activeTabKey" SelectedTabChanged="@OnTabChanged">
                     <Items>
                         @for (var i = 0; i < metadata.Count; i++)
