@@ -48,29 +48,29 @@ public static class RecentObservationComparison
     {
         if (ranking.IsNewHighRecord)
         {
-            return $"Warmest {comparisonLabel} on record";
+            return $"Warmest {comparisonLabel}";
         }
 
         if (ranking.IsNewLowRecord)
         {
-            return $"Coolest {comparisonLabel} on record";
+            return $"Coolest {comparisonLabel}";
         }
 
         if (ranking.IsTiedHighRecord && ranking.HighRank == 1)
         {
-            return $"Equal warmest {comparisonLabel} on record";
+            return $"Equal warmest {comparisonLabel}";
         }
 
         if (ranking.IsTiedLowRecord && ranking.LowRank == 1)
         {
-            return $"Equal coolest {comparisonLabel} on record";
+            return $"Equal coolest {comparisonLabel}";
         }
 
         if (ranking.Direction == RecentObservationComparisonDirection.High)
         {
             if (ranking.HighRank <= 5 && !ranking.IsTiedHighRecord)
             {
-                return $"{FormatOrdinal(ranking.HighRank)} warmest {comparisonLabel} on record";
+                return $"{FormatOrdinal(ranking.HighRank)} warmest {comparisonLabel}";
             }
 
             if (ranking.HighPercentile >= 95d)
@@ -90,7 +90,7 @@ public static class RecentObservationComparison
         {
             if (ranking.LowRank <= 5 && !ranking.IsTiedLowRecord)
             {
-                return $"{FormatOrdinal(ranking.LowRank)} coolest {comparisonLabel} on record";
+                return $"{FormatOrdinal(ranking.LowRank)} coolest {comparisonLabel}";
             }
 
             if (ranking.LowPercentile >= 95d)
@@ -113,19 +113,19 @@ public static class RecentObservationComparison
     {
         if (ranking.IsNewHighRecord)
         {
-            return $"Wettest {comparisonLabel} on record";
+            return $"Wettest {comparisonLabel}";
         }
 
         if (ranking.IsNewLowRecord)
         {
-            return $"Driest {comparisonLabel} on record";
+            return $"Driest {comparisonLabel}";
         }
 
         if (ranking.Direction == RecentObservationComparisonDirection.High)
         {
             if (ranking.HighRank <= 5 && !ranking.IsTiedHighRecord)
             {
-                return $"{FormatOrdinal(ranking.HighRank)} wettest {comparisonLabel} on record";
+                return $"{FormatOrdinal(ranking.HighRank)} wettest {comparisonLabel}";
             }
 
             if (ranking.HighPercentile >= 95d)
@@ -145,7 +145,7 @@ public static class RecentObservationComparison
         {
             if (ranking.LowRank <= 5 && !ranking.IsTiedLowRecord)
             {
-                return $"{FormatOrdinal(ranking.LowRank)} driest {comparisonLabel} on record";
+                return $"{FormatOrdinal(ranking.LowRank)} driest {comparisonLabel}";
             }
 
             if (ranking.LowPercentile >= 95d)
