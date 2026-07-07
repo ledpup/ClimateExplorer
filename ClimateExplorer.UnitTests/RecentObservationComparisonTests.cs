@@ -27,7 +27,7 @@ public class RecentObservationComparisonTests
 
         var headline = RecentObservationComparison.BuildTemperatureHeadline("May", result);
 
-        Assert.AreEqual("2nd warmest May on record", headline);
+        Assert.AreEqual("2nd warmest May", headline);
     }
 
     [TestMethod]
