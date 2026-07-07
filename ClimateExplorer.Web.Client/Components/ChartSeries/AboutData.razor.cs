@@ -14,14 +14,14 @@ public partial class AboutData
     public ChartSeriesDefinition? ChartSeries { get; set; }
 
     [Parameter]
-    public IReadOnlyList<DataSetSourceMetadata>? SourceMetadata { get; set; }
+    public IReadOnlyList<DataSetMetadata>? SourceMetadata { get; set; }
 
     public Task Show()
     {
         return modal!.Show();
     }
 
-    private static bool HasRenderableSourceMetadata(DataSetSourceMetadata metadata)
+    private static bool HasRenderableSourceMetadata(DataSetMetadata metadata)
     {
         return !string.IsNullOrWhiteSpace(metadata.SourceCode) ||
             !string.IsNullOrWhiteSpace(metadata.SourceName) ||
@@ -29,26 +29,26 @@ public partial class AboutData
             HasRenderableStations(metadata);
     }
 
-    private static bool HasRenderableStations(DataSetSourceMetadata metadata)
+    private static bool HasRenderableStations(DataSetMetadata metadata)
     {
         return metadata.Stations.Any(
             x => !string.IsNullOrWhiteSpace(x.StationId) ||
                 !string.IsNullOrWhiteSpace(x.StationName));
     }
 
-    private static bool IsSingleStation(DataSetSourceMetadata metadata)
+    private static bool IsSingleStation(DataSetMetadata metadata)
     {
         return metadata.Stations.Count == 1 &&
             (!string.IsNullOrWhiteSpace(metadata.Stations[0].StationId) ||
                 !string.IsNullOrWhiteSpace(metadata.Stations[0].StationName));
     }
 
-    private static bool HasStationLinks(DataSetSourceMetadata metadata)
+    private static bool HasStationLinks(DataSetMetadata metadata)
     {
         return metadata.Stations.Any(x => !string.IsNullOrWhiteSpace(x.SourceUrl));
     }
 
-    private static string FormatSource(DataSetSourceMetadata metadata)
+    private static string FormatSource(DataSetMetadata metadata)
     {
         if (!string.IsNullOrWhiteSpace(metadata.SourceCode) &&
             !string.IsNullOrWhiteSpace(metadata.SourceName) &&
@@ -86,14 +86,14 @@ public partial class AboutData
         return string.IsNullOrWhiteSpace(value) ? "\u2014" : value;
     }
 
-    private static string? GetStationOrSourceUrl(DataSetStationMetadata station, DataSetSourceMetadata metadata)
+    private static string? GetStationOrSourceUrl(DataSetStationMetadata station, DataSetMetadata metadata)
     {
         return !string.IsNullOrWhiteSpace(station.SourceUrl)
             ? station.SourceUrl
             : metadata.SourceUrl;
     }
 
-    private static string FormatStationOrSourceUrlLabel(DataSetStationMetadata station, DataSetSourceMetadata metadata)
+    private static string FormatStationOrSourceUrlLabel(DataSetStationMetadata station, DataSetMetadata metadata)
     {
         return !string.IsNullOrWhiteSpace(station.SourceUrl)
             ? FormatStationUrlLabel(station)
@@ -112,14 +112,14 @@ public partial class AboutData
             : "Source";
     }
 
-    private static string FormatSourceUrlLabel(DataSetSourceMetadata metadata)
+    private static string FormatSourceUrlLabel(DataSetMetadata metadata)
     {
         return string.IsNullOrWhiteSpace(metadata.SourceUrlLabel)
             ? "Source"
             : metadata.SourceUrlLabel;
     }
 
-    private DataSetSourceMetadata? FindSourceMetadata(SourceSeriesSpecification sourceSeriesSpecification)
+    private DataSetMetadata? FindSourceMetadata(SourceSeriesSpecification sourceSeriesSpecification)
     {
         return SourceMetadata?.FirstOrDefault(
             x => x.DataSetDefinitionId == sourceSeriesSpecification.DataSetDefinition?.Id &&

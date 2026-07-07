@@ -33,7 +33,7 @@ internal static class DataSetEndpoints
         var spec = body.SeriesSpecifications![0];
 
         var geoEntity = await GeographicalEntity.GetGeographicalEntity(spec.LocationId);
-        var sourceMetadata = await new DataSetSourceMetadataBuilder().BuildAsync(body, definitions);
+        var sourceMetadata = await new DataSetMetadataBuilder().BuildAsync(body, definitions);
 
         var returnDataSet =
             new DataSet

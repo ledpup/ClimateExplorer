@@ -11,7 +11,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static ClimateExplorer.Core.Enums;
 
 [TestClass]
-public sealed class DataSetSourceMetadataBuilderTests
+public sealed class DataSetMetadataBuilderTests
 {
     private static readonly Guid DataSetDefinitionId = Guid.Parse("10000000-0000-0000-0000-000000000001");
     private static readonly Guid SecondDataSetDefinitionId = Guid.Parse("10000000-0000-0000-0000-000000000002");
@@ -166,9 +166,30 @@ public sealed class DataSetSourceMetadataBuilderTests
         Assert.AreEqual("STATION2", result[1].Stations.Single().StationId);
     }
 
-    private static DataSetSourceMetadataBuilder CreateBuilder(IStationMetadataLookup stationLookup)
+    [TestMethod]
+    public async Task BuildAsync_DataSetDefinitionAndLocation_ReturnsSourceAndStationMetadata()
     {
-        return new DataSetSourceMetadataBuilder(stationLookup, id => Task.FromResult(CreateGeographicalEntity(id)));
+        var dataSetDefinition = CreateDataSetDefinition(
+            DataSetDefinitionId,
+            LocationId,
+            [new DataFileFilterAndAdjustment { Id = "STATION1" }]);
+        var stationLookup = new StubStationMetadataLookup(
+            new Station { Id = "STATION1", Name = "Station One" });
+
+        var result = await CreateBuilder(stationLookup).BuildAsync(dataSetDefinition, LocationId);
+
+        Assert.AreEqual(DataSetDefinitionId, result.DataSetDefinitionId);
+        Assert.AreEqual(LocationId, result.LocationId);
+        Assert.AreEqual("Testville", result.LocationName);
+        Assert.AreEqual("TEST", result.SourceCode);
+        Assert.AreEqual("Test dataset", result.SourceName);
+        Assert.AreEqual("STATION1", result.Stations.Single().StationId);
+        Assert.AreEqual("Station One", result.Stations.Single().StationName);
+    }
+
+    private static DataSetMetadataBuilder CreateBuilder(IStationMetadataLookup stationLookup)
+    {
+        return new DataSetMetadataBuilder(stationLookup, id => Task.FromResult(CreateGeographicalEntity(id)));
     }
 
     private static GeographicalEntity CreateGeographicalEntity(Guid id)

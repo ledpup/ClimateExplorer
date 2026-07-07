@@ -24,7 +24,7 @@ public partial class ChartSeriesView
     public ChartSeriesDefinition? ChartSeries { get; set; }
 
     [Parameter]
-    public IReadOnlyList<DataSetSourceMetadata>? SourceMetadata { get; set; }
+    public IReadOnlyList<DataSetMetadata>? SourceMetadata { get; set; }
 
     [Parameter]
     public EventCallback OnSeriesChanged { get; set; }

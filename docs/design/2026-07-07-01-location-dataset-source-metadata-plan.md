@@ -1,7 +1,7 @@
-# Location Dataset Source Metadata Plan
+# Location Dataset Metadata Plan
 
 - **Date:** 2026-07-07
-- **Status:** Proposed
+- **Status:** Proposed (API stage implemented 2026-07-07; see addendum)
 - **Author:** Codex
 - **Scope:** `ClimateExplorer.WebApi` dataset/location metadata endpoints, `ClimateExplorer.WebApiClient`, `ClimateExplorer.Web.Client` location table and dashboard source metadata UI
 - **Builds on:** [AboutData Station Metadata Plan](2026-07-05-01-about-data-station-metadata-plan.md)
@@ -11,13 +11,13 @@
 
 Add a location-level dataset source metadata API and a shared Blazor side panel so users can inspect the sources behind a location without first opening a chart series.
 
-The API should return all dataset sources available to one location as `DataSetSourceMetadata` entries. The UI should open a side panel from both `Locations.razor` and `LocationDashboard`, fetch that metadata, render one tab per dataset source, and reuse the existing `AboutData` metadata rendering instead of creating a second station/source display path.
+The API should return all dataset sources available to one location as `DataSetMetadata` entries. The UI should open a side panel from both `Locations.razor` and `LocationDashboard`, fetch that metadata, render one tab per dataset source, and reuse the existing `AboutData` metadata rendering instead of creating a second station/source display path.
 
 ## Current-State Investigation
 
-### Dataset Source Metadata
+### Dataset Metadata
 
-`DataSetSourceMetadata` is a shared model in `ClimateExplorer.Core.Model`. It currently carries:
+`DataSetMetadata` is a shared model in `ClimateExplorer.Core.Model`. It currently carries:
 
 - `DataSetDefinitionId`, `LocationId`, and `LocationName`.
 - `SourceCode`, `SourceName`, `SourceUrl`, and `SourceUrlLabel`.
@@ -25,21 +25,21 @@ The API should return all dataset sources available to one location as `DataSetS
 
 Relevant files:
 
-- `ClimateExplorer.Core/Model/DataSetSourceMetadata.cs`
-- `ClimateExplorer.Core/Model/DataSetStationMetadata.cs`
+- `ClimateExplorer.Core/Model/DataSetMetadata.cs`
+- `ClimateExplorer.Core/Model/DataSetMetadata.cs`
 - `ClimateExplorer.Core/Model/DataSet.cs`, where `SourceMetadata` is attached to returned chart datasets.
 
 `DataSetStationMetadata` already supports one or more station/file mappings through station id, station name, station start/end dates, source URL, and source URL label.
 
 ### Metadata Builder
 
-`DataSetSourceMetadataBuilder` currently lives in `ClimateExplorer.WebApi/DataSetMetadata/DataSetSourceMetadataBuilder.cs`.
+`DataSetMetadataBuilder` currently lives in `ClimateExplorer.WebApi/DataSetMetadata/DataSetMetadataBuilder.cs`.
 
 Current behavior:
 
 - `BuildAsync(PostDataSetsRequestBody, IReadOnlyList<DataSetDefinition>?)` iterates every chart request `SeriesSpecification`.
 - For each specification it resolves the matching `DataSetDefinition`, geographical entity, and `DataLocationMapping.LocationIdToDataFileMappings`.
-- It creates one `DataSetSourceMetadata` per source specification.
+- It creates one `DataSetMetadata` per source specification.
 - It creates one `DataSetStationMetadata` per mapping when the dataset is station-backed.
 - It already handles multiple mapped stations and missing station details.
 
@@ -61,7 +61,7 @@ Current behavior:
 
 - It is a modal component.
 - It receives `ChartSeriesDefinition? ChartSeries`.
-- It receives `IReadOnlyList<DataSetSourceMetadata>? SourceMetadata`.
+- It receives `IReadOnlyList<DataSetMetadata>? SourceMetadata`.
 - It renders dataset name, description, and publisher from `SourceSeriesSpecification.DataSetDefinition`.
 - It finds source/station metadata by matching `DataSetDefinitionId` and `LocationId`.
 - It renders single-station details compactly and multiple stations in a table.
@@ -150,7 +150,7 @@ No body.
 Success:
 
 - `200 OK`
-- JSON array of `DataSetSourceMetadata`.
+- JSON array of `DataSetMetadata`.
 - One entry per dataset definition available to the location.
 - Stable ordering by `SourceCode`, then `SourceName`, then `DataSetDefinitionId`.
 
@@ -185,32 +185,32 @@ Example shape:
 The existing `AboutData` body uses both dataset definition details and `DataSetSourceMetadata` details:
 
 - Dataset name, description, publisher, publisher URL, and more-information URL come from `DataSetDefinitionViewModel`.
-- Resolved source URL, source label, station ids, station names, station date ranges, and station URLs come from `DataSetSourceMetadata`.
+- Resolved source URL, source label, station ids, station names, station date ranges, and station URLs come from `DataSetMetadata`.
 
 There are two viable designs:
 
-1. Keep `DataSetSourceMetadata` focused on resolved source/station metadata and have the UI join against already-loaded `DataSetDefinitions`.
-2. Extend `DataSetSourceMetadata` with nullable catalog display fields such as `Description`, `Publisher`, `PublisherUrl`, and `MoreInformationUrl`.
+1. Keep `DataSetMetadata` focused on resolved source/station metadata and have the UI join against already-loaded `DataSetDefinitions`.
+2. Extend `DataSetMetadata` with nullable catalog display fields such as `Description`, `Publisher`, `PublisherUrl`, and `MoreInformationUrl`.
 
-Recommendation: use option 1 for the first implementation because both target UI callers already have `DataSetDefinitions`. If later callers need a standalone endpoint response, add optional catalog fields to `DataSetSourceMetadata` without changing the route or response collection type.
+Recommendation: use option 1 for the first implementation because both target UI callers already have `DataSetDefinitions`. If later callers need a standalone endpoint response, add optional catalog fields to `DataSetMetadata` without changing the route or response collection type.
 
 ### Location-Level Metadata Service
 
-Add a small API-side service/wrapper, for example `LocationDataSetSourceMetadataService`.
+Add a small API-side service/wrapper, for example `LocationDataSetMetadataService`.
 
 Responsibilities:
 
 - Resolve the requested location from existing location metadata.
 - Load dataset definitions from `DataSetDefinition.GetDataSetDefinitions()`.
 - Select definitions whose `DataLocationMapping.LocationIdToDataFileMappings` contains the location id.
-- Delegate source/station construction to `DataSetSourceMetadataBuilder`.
-- Return an ordered `List<DataSetSourceMetadata>`.
+- Delegate source/station construction to `DataSetMetadataBuilder`.
+- Return an ordered `List<DataSetMetadata>`.
 
 This keeps the endpoint thin and keeps dataset availability logic out of the Blazor client.
 
 ### Builder Changes
 
-Refactor `DataSetSourceMetadataBuilder` around a reusable core operation:
+Refactor `DataSetMetadataBuilder` around a reusable core operation:
 
 - Build one metadata row from `DataSetDefinition` plus `locationId`.
 - Existing `BuildAsync(PostDataSetsRequestBody, definitions)` becomes an adapter that resolves definitions from source specs and calls the reusable core.
@@ -226,8 +226,8 @@ Why not call the current method directly:
 
 Add a handler in the most fitting existing API class:
 
-- Preferred: `LocationEndpoints.GetLocationDataSetSourceMetadata(...)`, because the endpoint is location-scoped.
-- Acceptable: `DataSetEndpoints.GetLocationDataSetSourceMetadata(...)`, because the payload is dataset metadata.
+- Preferred: `LocationEndpoints.GetLocationDataSetMetadata(...)`, because the endpoint is location-scoped.
+- Acceptable: `DataSetEndpoints.GetLocationDataSetMetadata(...)`, because the payload is dataset metadata.
 
 Map it in `ClimateExplorerEndpointRouteBuilderExtensions`.
 
@@ -266,20 +266,20 @@ Client-side caching should be added in `DataService` through `DataServiceCache`,
 
 Server-side cache can be added later if profiling shows repeated file reads matter:
 
-- Suggested key: `LocationDataSetSourceMetadata_v1_{locationId}`.
+- Suggested key: `LocationDataSetMetadata_v1_{locationId}`.
 - Prefer `LongtermCache`, because bundled metadata is static within a running deployment.
 
 ## Stage 2: API Client Design
 
 Add to `IDataService`:
 
-- `Task<IReadOnlyList<DataSetSourceMetadata>> GetLocationDataSetSourceMetadata(Guid locationId);`
+- `Task<IReadOnlyList<DataSetMetadata>> GetLocationDataSetMetadata(Guid locationId);`
 
 Add to `DataService`:
 
 - Build `/location-dataset-source-metadata`.
 - Add `locationId` via `QueryHelpers.AddQueryString`.
-- Read `DataSetSourceMetadata[]` with the existing web JSON options.
+- Read `DataSetMetadata[]` with the existing web JSON options.
 - Cache by URL in `DataServiceCache`.
 - Throw a clear exception on non-success status codes so the side panel can show an error state.
 
@@ -307,7 +307,7 @@ Internal state:
 
 - `SidePanel? sidePanel`
 - `Location? selectedLocation`
-- `IReadOnlyList<DataSetSourceMetadata>? sourceMetadata`
+- `IReadOnlyList<DataSetMetadata>? sourceMetadata`
 - `bool isLoading`
 - `string? errorMessage`
 - `string? selectedTab`
@@ -355,7 +355,7 @@ Accessibility:
 
 ### Tabs
 
-Render one tab per `DataSetSourceMetadata`.
+Render one tab per `DataSetMetadata`.
 
 Tab label:
 
@@ -382,7 +382,7 @@ Recommended refactor:
 - Extract the body used for one source specification into an inline component, for example `AboutDataSourceDetails`.
 - Parameters for the extracted component:
   - `DataSetDefinitionViewModel? DataSetDefinition`
-  - `DataSetSourceMetadata? SourceMetadata`
+  - `DataSetMetadata? SourceMetadata`
   - optional heading/title parameter if chart-derived series still need section headings.
 - Move helper methods such as station/source formatting with the component or into a small internal helper class if both the modal and panel need them.
 - Update `AboutData` to keep the modal shell and loop over chart sources, rendering `AboutDataSourceDetails` for each source.
@@ -515,13 +515,13 @@ Recommended service tests:
 
 Existing useful coverage:
 
-- `DataSetSourceMetadataBuilderTests` already covers single station, multiple stations, missing station details, and derived chart requests. Keep these tests and add location-level cases rather than replacing them.
+- `DataSetMetadataBuilderTests` already covers single station, multiple stations, missing station details, and derived chart requests. Keep these tests and add location-level cases rather than replacing them.
 
 ### API Client Tests
 
 If adding tests around `DataService` is practical with the existing test setup:
 
-- Verify `GetLocationDataSetSourceMetadata` calls `/location-dataset-source-metadata?locationId=...`.
+- Verify `GetLocationDataSetMetadata` calls `/location-dataset-source-metadata?locationId=...`.
 - Verify successful JSON deserialization.
 - Verify non-success status throws a useful exception.
 - Verify repeated calls hit `DataServiceCache`.
@@ -555,10 +555,10 @@ Manual QA cases for a human developer:
 
 ## Proposed Implementation Order
 
-1. Refactor `DataSetSourceMetadataBuilder` to expose a source-definition-plus-location core method while preserving the existing chart request adapter.
+1. Refactor `DataSetMetadataBuilder` to expose a source-definition-plus-location core method while preserving the existing chart request adapter.
 2. Add the location-level metadata service/wrapper and unit tests for dataset availability selection.
 3. Add the new endpoint and route mapping.
-4. Add `IDataService.GetLocationDataSetSourceMetadata` and `DataService` implementation with client-side caching.
+4. Add `IDataService.GetLocationDataSetMetadata` and `DataService` implementation with client-side caching.
 5. Extract the reusable inline `AboutData` source details renderer and update the existing modal to use it.
 6. Add `LocationDataSourcesSidePanel` with loading, empty, error, and tab states.
 7. Update `Locations.razor` to turn data source text into an accessible link-style button and wire the side panel.
@@ -568,9 +568,30 @@ Manual QA cases for a human developer:
 
 ## Risks and Open Questions
 
-- `DataSetSourceMetadata` does not currently include publisher or description fields. The recommended UI design joins against existing `DataSetDefinitions`; if future callers need a standalone response, extend the model with optional catalog fields.
+- `DataSetMetadata` does not currently include publisher or description fields. The recommended UI design joins against existing `DataSetDefinitions`; if future callers need a standalone response, extend the model with optional catalog fields.
 - Some dataset mappings use file/source identifiers rather than true station identifiers. The existing builder only creates station rows when the definition looks station-backed; preserve that behavior.
 - Some station metadata files are sparse. The UI should look intentional with station ids and dates even when names are missing.
 - Source short names may not be globally unique. Use short names as visible tab labels as required, but use dataset ids as internal tab keys.
 - The existing `SidePanel` has a private dismiss method and no public close callback. The new shared side panel can work without changes, but future polish may require a close event or focus management pass.
 - `LocationEndpoints.GetLocationById` currently returns null rather than a 404-style result. The new endpoint should explicitly return 404 for unknown ids because the caller needs a clear error state.
+
+## Addendum - API Implementation Notes
+
+Implemented the API stage on 2026-07-07:
+
+- Added `DataSetMetadataBuilder.BuildAsync(DataSetDefinition, Guid)` so location-level metadata can reuse the existing source/station resolution without constructing fake chart request bodies.
+- Added `LocationDataSetMetadataService`, which validates a location, selects dataset definitions mapped to that location, orders them by short name/name/id, and delegates metadata construction to the builder.
+- Added `LocationDataSetMetadataResult` to distinguish unknown locations from known locations with no datasets.
+- Added `GET /location-dataset-metadata?locationId={guid}` via `LocationEndpoints.GetLocationDataSetMetadata`.
+- Added unit coverage for the direct builder path and the location-level service.
+
+Verification:
+
+- `dotnet build ClimateExplorer.sln` passed with the existing MSTest parallelization warning.
+- `dotnet test ClimateExplorer.UnitTests\ClimateExplorer.UnitTests.csproj --no-build --filter "FullyQualifiedName~DataSetMetadataBuilderTests|FullyQualifiedName~LocationDataSetMetadataServiceTests"` passed: 9 tests.
+
+Not implemented in this stage:
+
+- `ClimateExplorer.WebApiClient` wrapper method.
+- Blazor side panel/component work.
+- `Locations.razor` and `LocationDashboard` integration.

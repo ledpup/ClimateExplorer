@@ -10,12 +10,12 @@ using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 
 [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.OrderingRules", "SA1204:Static elements should appear before instance elements", Justification = "Private helpers are kept below the public flow they support.")]
-internal sealed class DataSetSourceMetadataBuilder
+internal sealed class DataSetMetadataBuilder
 {
     private readonly IStationMetadataLookup stationMetadataLookup;
     private readonly Func<Guid, Task<GeographicalEntity>> getGeographicalEntity;
 
-    public DataSetSourceMetadataBuilder(
+    public DataSetMetadataBuilder(
         IStationMetadataLookup? stationMetadataLookup = null,
         Func<Guid, Task<GeographicalEntity>>? getGeographicalEntity = null)
     {
@@ -23,7 +23,7 @@ internal sealed class DataSetSourceMetadataBuilder
         this.getGeographicalEntity = getGeographicalEntity ?? GeographicalEntity.GetGeographicalEntity;
     }
 
-    public async Task<List<DataSetSourceMetadata>> BuildAsync(
+    public async Task<List<DataSetMetadata>> BuildAsync(
         PostDataSetsRequestBody body,
         IReadOnlyList<DataSetDefinition>? dataSetDefinitions = null)
     {
@@ -34,27 +34,34 @@ internal sealed class DataSetSourceMetadataBuilder
 
         dataSetDefinitions ??= await DataSetDefinition.GetDataSetDefinitions();
 
-        var sourceMetadata = new List<DataSetSourceMetadata>();
+        var sourceMetadata = new List<DataSetMetadata>();
         foreach (var specification in body.SeriesSpecifications)
         {
             var dataSetDefinition = dataSetDefinitions.Single(x => x.Id == specification.DataSetDefinitionId);
-            var geographicalEntity = await getGeographicalEntity(specification.LocationId);
-            var mappings = GetDataFileMappings(dataSetDefinition, specification.LocationId);
-
-            sourceMetadata.Add(new DataSetSourceMetadata
-            {
-                DataSetDefinitionId = dataSetDefinition.Id,
-                LocationId = geographicalEntity.Id,
-                LocationName = geographicalEntity.Name,
-                SourceCode = dataSetDefinition.ShortName,
-                SourceName = dataSetDefinition.Name,
-                SourceUrl = ResolveSourceUrl(dataSetDefinition, mappings),
-                SourceUrlLabel = dataSetDefinition.ShortName,
-                Stations = await BuildStationsAsync(dataSetDefinition, mappings),
-            });
+            sourceMetadata.Add(await BuildAsync(dataSetDefinition, specification.LocationId));
         }
 
         return sourceMetadata;
+    }
+
+    public async Task<DataSetMetadata> BuildAsync(
+        DataSetDefinition dataSetDefinition,
+        Guid locationId)
+    {
+        var geographicalEntity = await getGeographicalEntity(locationId);
+        var mappings = GetDataFileMappings(dataSetDefinition, locationId);
+
+        return new DataSetMetadata
+        {
+            DataSetDefinitionId = dataSetDefinition.Id,
+            LocationId = geographicalEntity.Id,
+            LocationName = geographicalEntity.Name,
+            SourceCode = dataSetDefinition.ShortName,
+            SourceName = dataSetDefinition.Name,
+            SourceUrl = ResolveSourceUrl(dataSetDefinition, mappings),
+            SourceUrlLabel = dataSetDefinition.ShortName,
+            Stations = await BuildStationsAsync(dataSetDefinition, mappings),
+        };
     }
 
     private static List<DataFileFilterAndAdjustment> GetDataFileMappings(
