@@ -145,7 +145,8 @@ public sealed record RecentObservationTileViewModel
             AverageText = null,
             TypicalVariationText = null,
             CurrentPeriodText = null,
-            StandardScoreText = null,
+            StandardScoreLabel = null,
+            StandardScoreValue = null,
             UnavailableReason = "Recent observations are below the completeness threshold.",
         })];
     }

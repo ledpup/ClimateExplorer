@@ -933,7 +933,8 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             AverageText = $"Average: {metric.Format(average)}",
             TypicalVariationText = standardDeviation is null ? null : $"Typical variation: ±{metric.Format(standardDeviation.Value)}",
             CurrentPeriodText = $"{currentPeriodLabel}: {metric.Format(currentValue.Value.Value)}",
-            StandardScoreText = score.HasValue && double.IsFinite(score.Value) ? $"Standard score: {FormatStandardScore(score.Value)}" : null,
+            StandardScoreLabel = score.HasValue && double.IsFinite(score.Value) ? "standard score" : null,
+            StandardScoreValue = score.HasValue && double.IsFinite(score.Value) ? FormatStandardScore(score.Value) : null,
             ComparablePeriodCount = distribution.ComparablePeriodCount,
         };
     }
