@@ -476,7 +476,7 @@ public class RecentObservationsServiceTests
             previousMonthCount: 0,
             previousSeasonCount: 0);
         var latestSevenDays = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays);
-        var total = latestSevenDays.MetricGroups.Single(x => x.Key == MetricGroupKey.Extremes).Metrics.Single();
+        var total = latestSevenDays.MetricGroups.Single(x => x.Key == MetricGroupKey.PeriodRecords).Metrics.Single();
 
         Assert.AreEqual("7mm", latestSevenDays.PrimaryValue);
         Assert.IsTrue(latestSevenDays.HasComparison);
@@ -542,7 +542,7 @@ public class RecentObservationsServiceTests
             previousMonthCount: 0,
             previousSeasonCount: 0);
         var latestSevenDays = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays);
-        var total = latestSevenDays.MetricGroups.Single(x => x.Key == MetricGroupKey.Extremes).Metrics.Single();
+        var total = latestSevenDays.MetricGroups.Single(x => x.Key == MetricGroupKey.PeriodRecords).Metrics.Single();
 
         Assert.AreEqual("105mm", latestSevenDays.PrimaryValue);
         Assert.IsTrue(latestSevenDays.HasComparison);
@@ -570,7 +570,7 @@ public class RecentObservationsServiceTests
             previousMonthCount: 0,
             previousSeasonCount: 0);
         var latestSevenDays = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays);
-        var total = latestSevenDays.MetricGroups.Single(x => x.Key == MetricGroupKey.Extremes).Metrics.Single();
+        var total = latestSevenDays.MetricGroups.Single(x => x.Key == MetricGroupKey.PeriodRecords).Metrics.Single();
 
         Assert.AreEqual("105mm", latestSevenDays.PrimaryValue);
         Assert.IsTrue(latestSevenDays.HasComparison);
@@ -1143,7 +1143,7 @@ public class RecentObservationsServiceTests
         Assert.IsTrue(latestSevenDays.SupportingStats.All(x => x.RecordStatus == RecentObservationRecordStatus.NewRecord));
         Assert.IsTrue(latestSevenDays.SupportingStats.All(x => x.RecordStatusText == "NEW RECORD"));
         Assert.IsTrue(latestSevenDays.MetricGroups
-            .Single(group => group.Key == MetricGroupKey.Extremes)
+            .Single(group => group.Key == MetricGroupKey.PeriodRecords)
             .Metrics
             .Where(metric => metric.Label != "Mean temperature")
             .All(metric => metric.RecordStatus == RecentObservationRecordStatus.NewRecord));
@@ -1230,11 +1230,11 @@ public class RecentObservationsServiceTests
             [
                 new RecentObservationMetricGroupViewModel
                 {
-                    Key = MetricGroupKey.Extremes,
-                    Title = "Extremes",
+                    Key = MetricGroupKey.PeriodRecords,
+                    Title = "Period records",
                     Metrics =
                     [
-                        new RecentObservationExtremesViewModel
+                        new RecentObservationRecordsViewModel
                         {
                             Label = "Average maximum temperature",
                             CurrentValue = "30.0°C",
@@ -1246,11 +1246,11 @@ public class RecentObservationsServiceTests
                 },
                 new RecentObservationMetricGroupViewModel
                 {
-                    Key = MetricGroupKey.DailyExtremes,
+                    Key = MetricGroupKey.DayRecords,
                     Title = "Daily extremes",
                     Metrics =
                     [
-                        new RecentObservationExtremesViewModel
+                        new RecentObservationRecordsViewModel
                         {
                             Label = "Highest daily maximum",
                             CurrentValue = "35.0°C",
@@ -1645,14 +1645,14 @@ public class RecentObservationsServiceTests
             previousSeasonCount: 0);
         var latestSevenDays = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays);
 
-        CollectionAssert.AreEqual(new[] { MetricGroupKey.Extremes, MetricGroupKey.DailyExtremes }, latestSevenDays.MetricGroups.Select(x => x.Key).ToArray());
-        CollectionAssert.AreEqual(new[] { "Extremes", "Daily extremes" }, latestSevenDays.MetricGroups.Select(x => x.Title).ToArray());
+        CollectionAssert.AreEqual(new[] { MetricGroupKey.PeriodRecords, MetricGroupKey.DayRecords }, latestSevenDays.MetricGroups.Select(x => x.Key).ToArray());
+        CollectionAssert.AreEqual(new[] { "Period records", "Day records" }, latestSevenDays.MetricGroups.Select(x => x.Title).ToArray());
 
-        var period = latestSevenDays.MetricGroups.Single(x => x.Key == MetricGroupKey.Extremes);
+        var period = latestSevenDays.MetricGroups.Single(x => x.Key == MetricGroupKey.PeriodRecords);
         CollectionAssert.AreEqual(new[] { "Total precipitation" }, period.Metrics.Select(x => x.Label).ToArray());
         Assert.AreEqual("7mm", period.Metrics[0].CurrentValue);
 
-        var dailyExtremes = latestSevenDays.MetricGroups.Single(x => x.Key == MetricGroupKey.DailyExtremes);
+        var dailyExtremes = latestSevenDays.MetricGroups.Single(x => x.Key == MetricGroupKey.DayRecords);
         CollectionAssert.AreEqual(new[] { "Highest daily precipitation" }, dailyExtremes.Metrics.Select(x => x.Label).ToArray());
         Assert.AreEqual("1mm", dailyExtremes.Metrics[0].CurrentValue);
     }
@@ -1668,13 +1668,13 @@ public class RecentObservationsServiceTests
             previousMonthCount: 6,
             previousSeasonCount: 2);
 
-        AssertMetricGroupLabel(result, RecentObservationPeriodKind.LatestSevenDays, null, "Extremes");
-        AssertMetricGroupLabel(result, RecentObservationPeriodKind.CurrentMonth, null, "Extremes");
-        AssertMetricGroupLabel(result, RecentObservationPeriodKind.PreviousMonth, 1, "Extremes");
-        AssertMetricGroupLabel(result, RecentObservationPeriodKind.PreviousMonth, 6, "Extremes");
-        AssertMetricGroupLabel(result, RecentObservationPeriodKind.PreviousSeason, 1, "Extremes");
-        AssertMetricGroupLabel(result, RecentObservationPeriodKind.PreviousSeason, 2, "Extremes");
-        AssertMetricGroupLabel(result, RecentObservationPeriodKind.YearToDate, null, "Extremes");
+        AssertMetricGroupLabel(result, RecentObservationPeriodKind.LatestSevenDays, null, "Period records");
+        AssertMetricGroupLabel(result, RecentObservationPeriodKind.CurrentMonth, null, "Period records");
+        AssertMetricGroupLabel(result, RecentObservationPeriodKind.PreviousMonth, 1, "Period records");
+        AssertMetricGroupLabel(result, RecentObservationPeriodKind.PreviousMonth, 6, "Period records");
+        AssertMetricGroupLabel(result, RecentObservationPeriodKind.PreviousSeason, 1, "Period records");
+        AssertMetricGroupLabel(result, RecentObservationPeriodKind.PreviousSeason, 2, "Period records");
+        AssertMetricGroupLabel(result, RecentObservationPeriodKind.YearToDate, null, "Period records");
     }
 
     [TestMethod]
@@ -1735,7 +1735,7 @@ public class RecentObservationsServiceTests
 
         // Recent 7-day total is 7mm, below every historical equivalent period
         // (min 77mm in 2000), so it is a new low record (driest).
-        var total = latestSevenDays.MetricGroups.Single(x => x.Key == MetricGroupKey.Extremes).Metrics.Single();
+        var total = latestSevenDays.MetricGroups.Single(x => x.Key == MetricGroupKey.PeriodRecords).Metrics.Single();
         Assert.AreEqual("7mm", total.CurrentValue);
         Assert.AreEqual(RecentObservationRecordStatus.NewRecord, total.RecordStatus);
         Assert.IsNull(total.RankText);
@@ -1744,7 +1744,7 @@ public class RecentObservationsServiceTests
         Assert.AreEqual("77mm", total.RecordLow!.Value);
         Assert.AreEqual("2000", total.RecordLow.Year);
 
-        var highestDaily = latestSevenDays.MetricGroups.Single(x => x.Key == MetricGroupKey.DailyExtremes).Metrics.Single();
+        var highestDaily = latestSevenDays.MetricGroups.Single(x => x.Key == MetricGroupKey.DayRecords).Metrics.Single();
         Assert.AreEqual("1mm", highestDaily.CurrentValue);
         Assert.AreEqual(RecentObservationRecordStatus.NewRecord, highestDaily.RecordStatus);
         Assert.AreEqual("39mm", highestDaily.RecordHigh!.Value);
@@ -1771,7 +1771,7 @@ public class RecentObservationsServiceTests
             previousSeasonCount: 0);
         var latestSevenDays = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays);
 
-        var period = latestSevenDays.MetricGroups.Single(x => x.Key == MetricGroupKey.Extremes);
+        var period = latestSevenDays.MetricGroups.Single(x => x.Key == MetricGroupKey.PeriodRecords);
         CollectionAssert.AreEqual(
             new[] { "Average maximum temperature", "Average minimum temperature", "Mean temperature" },
             period.Metrics.Select(x => x.Label).ToArray());
@@ -1784,7 +1784,7 @@ public class RecentObservationsServiceTests
         Assert.AreEqual("11.0°C", avgMax.RecordHigh!.Value);
         Assert.AreEqual("2000", avgMax.RecordHigh.Year);
 
-        var dailyExtremes = latestSevenDays.MetricGroups.Single(x => x.Key == MetricGroupKey.DailyExtremes);
+        var dailyExtremes = latestSevenDays.MetricGroups.Single(x => x.Key == MetricGroupKey.DayRecords);
         CollectionAssert.AreEqual(
             new[] { "Highest daily maximum", "Lowest daily maximum", "Highest daily minimum", "Lowest daily minimum" },
             dailyExtremes.Metrics.Select(x => x.Label).ToArray());
@@ -1888,7 +1888,7 @@ public class RecentObservationsServiceTests
             .ApplyCompletenessThreshold(RecentObservationCompletenessThreshold.Default)
             .Tiles
             .Single(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays);
-        var total = latestSevenDays.MetricGroups.Single(x => x.Key == MetricGroupKey.Extremes).Metrics.Single();
+        var total = latestSevenDays.MetricGroups.Single(x => x.Key == MetricGroupKey.PeriodRecords).Metrics.Single();
 
         Assert.IsFalse(latestSevenDays.HasComparison);
         Assert.IsFalse(total.HasRecords);
@@ -1988,7 +1988,7 @@ public class RecentObservationsServiceTests
         string expectedLabel)
     {
         var tile = result.Tiles.Single(x => x.PeriodKind == periodKind && (!periodOffset.HasValue || x.PeriodOffset == periodOffset));
-        var periodGroup = tile.MetricGroups.Single(x => x.Key == MetricGroupKey.Extremes);
+        var periodGroup = tile.MetricGroups.Single(x => x.Key == MetricGroupKey.PeriodRecords);
 
         Assert.AreEqual(expectedLabel, periodGroup.Title, $"Unexpected period metric group title for {tile.PeriodTitle}.");
     }

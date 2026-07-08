@@ -9,5 +9,5 @@ public sealed record RecentObservationMetricGroupViewModel
 {
     public MetricGroupKey? Key { get; init; }
     public string Title { get; init; } = string.Empty;
-    public IReadOnlyList<RecentObservationExtremesViewModel> Metrics { get; init; } = [];
+    public IReadOnlyList<RecentObservationRecordsViewModel> Metrics { get; init; } = [];
 }

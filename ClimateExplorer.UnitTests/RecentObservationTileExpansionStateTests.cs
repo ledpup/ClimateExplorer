@@ -9,8 +9,8 @@ public class RecentObservationTileExpansionStateTests
 {
     private static readonly IReadOnlyList<RecentObservationMetricGroupViewModel> Groups =
     [
-        new RecentObservationMetricGroupViewModel { Key = MetricGroupKey.Extremes, Title = "Extremes" },
-        new RecentObservationMetricGroupViewModel { Key = MetricGroupKey.DailyExtremes, Title = "Daily extremes" },
+        new RecentObservationMetricGroupViewModel { Key = MetricGroupKey.PeriodRecords },
+        new RecentObservationMetricGroupViewModel { Key = MetricGroupKey.DayRecords },
     ];
 
     [TestMethod]
@@ -41,9 +41,9 @@ public class RecentObservationTileExpansionStateTests
 
         state.EnsureSelection(Groups);
 
-        Assert.AreEqual(MetricGroupKey.Extremes, state.SelectedGroupKey);
-        Assert.IsTrue(state.IsGroupSelected(MetricGroupKey.Extremes));
-        Assert.IsFalse(state.IsGroupSelected(MetricGroupKey.DailyExtremes));
+        Assert.AreEqual(MetricGroupKey.PeriodRecords, state.SelectedGroupKey);
+        Assert.IsTrue(state.IsGroupSelected(MetricGroupKey.PeriodRecords));
+        Assert.IsFalse(state.IsGroupSelected(MetricGroupKey.DayRecords));
     }
 
     [TestMethod]
@@ -51,18 +51,18 @@ public class RecentObservationTileExpansionStateTests
     {
         var state = new RecentObservationTileExpansionState();
         state.EnsureSelection(Groups);
-        state.SelectGroup(MetricGroupKey.DailyExtremes);
+        state.SelectGroup(MetricGroupKey.DayRecords);
 
         state.EnsureSelection(Groups);
 
-        Assert.AreEqual(MetricGroupKey.DailyExtremes, state.SelectedGroupKey);
+        Assert.AreEqual(MetricGroupKey.DayRecords, state.SelectedGroupKey);
     }
 
     [TestMethod]
     public void EnsureSelectionClearsWhenNoGroups()
     {
         var state = new RecentObservationTileExpansionState();
-        state.SelectGroup(MetricGroupKey.Extremes);
+        state.SelectGroup(MetricGroupKey.PeriodRecords);
 
         state.EnsureSelection([]);
 
@@ -76,10 +76,10 @@ public class RecentObservationTileExpansionStateTests
         state.EnsureSelection(Groups);
         state.Toggle();
 
-        state.SelectGroup(MetricGroupKey.DailyExtremes);
+        state.SelectGroup(MetricGroupKey.DayRecords);
 
         Assert.IsTrue(state.IsExpanded);
-        Assert.IsTrue(state.IsGroupSelected(MetricGroupKey.DailyExtremes));
+        Assert.IsTrue(state.IsGroupSelected(MetricGroupKey.DayRecords));
     }
 
     [TestMethod]

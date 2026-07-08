@@ -817,7 +817,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
 
         foreach (var group in groupDefinitions)
         {
-            var metrics = new List<RecentObservationExtremesViewModel>();
+            var metrics = new List<RecentObservationRecordsViewModel>();
             foreach (var metric in group.Metrics)
             {
                 if (period.MetricValues.TryGetValue(metric.Key, out var value))
@@ -840,7 +840,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         return groups;
     }
 
-    private static RecentObservationExtremesViewModel BuildMetric(Metric metric, double currentValue, HistoricalValues? distribution)
+    private static RecentObservationRecordsViewModel BuildMetric(Metric metric, double currentValue, HistoricalValues? distribution)
     {
         var ranking = distribution is null
             ? null
@@ -848,7 +848,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
 
         if (ranking is null || distribution is null)
         {
-            return new RecentObservationExtremesViewModel
+            return new RecentObservationRecordsViewModel
             {
                 Label = metric.DetailLabel,
                 CurrentValue = metric.Format(currentValue),
@@ -865,7 +865,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         // for the comparison date as plain reference context (no rank of their own).
         var status = RecentObservationComparison.DetermineRecordStatus(ranking);
 
-        return new RecentObservationExtremesViewModel
+        return new RecentObservationRecordsViewModel
         {
             Label = metric.DetailLabel,
             CurrentValue = metric.Format(currentValue),
@@ -1368,8 +1368,8 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         MeanTemperatureMetric,
         [AverageMaxTemperatureMetric, AverageMinTemperatureMetric],
         [
-            new MetricGroup(MetricGroupKey.Extremes, "Extremes", [AverageMaxTemperatureMetric, AverageMinTemperatureMetric, MeanTemperatureMetric]),
-            new MetricGroup(MetricGroupKey.DailyExtremes, "Daily extremes", [HighestDailyMaxTemperatureMetric, LowestDailyMaxTemperatureMetric, HighestDailyMinTemperatureMetric, LowestDailyMinTemperatureMetric]),
+            new MetricGroup(MetricGroupKey.PeriodRecords, "Period records", [AverageMaxTemperatureMetric, AverageMinTemperatureMetric, MeanTemperatureMetric]),
+            new MetricGroup(MetricGroupKey.DayRecords, "Day records", [HighestDailyMaxTemperatureMetric, LowestDailyMaxTemperatureMetric, HighestDailyMinTemperatureMetric, LowestDailyMinTemperatureMetric]),
         ],
         [
             new MetricGroup(MetricGroupKey.Day, "Day", [DailyMaxTemperatureMetric, DailyMinTemperatureMetric, DailyMeanTemperatureMetric]),
@@ -1386,8 +1386,8 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         PrecipitationMetric,
         [],
         [
-            new MetricGroup(MetricGroupKey.Extremes, "Extremes", [PrecipitationMetric]),
-            new MetricGroup(MetricGroupKey.DailyExtremes, "Daily extremes", [HighestDailyPrecipitationMetric]),
+            new MetricGroup(MetricGroupKey.PeriodRecords, "Period records", [PrecipitationMetric]),
+            new MetricGroup(MetricGroupKey.DayRecords, "Day records", [HighestDailyPrecipitationMetric]),
         ],
         [
             new MetricGroup(MetricGroupKey.Day, "Day", [DailyPrecipitationMetric]),

@@ -3,6 +3,6 @@
 public enum MetricGroupKey
 {
     Day,
-    Extremes,
-    DailyExtremes,
+    PeriodRecords,
+    DayRecords,
 }
