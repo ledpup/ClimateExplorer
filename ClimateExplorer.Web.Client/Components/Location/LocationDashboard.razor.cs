@@ -57,7 +57,7 @@ public partial class LocationDashboard
     private bool StripeLoadingIndicatorVisible { get; set; }
     private bool LoadStripeData { get; set; }
 
-    private bool Precipitation { get; set; }
+    private bool DisplayPrecipitation { get; set; }
 
     private List<YearlyValues>? TemperatureAnomalyRecords { get; set; }
     private double? TemperatureLocationMean { get; set; }
@@ -76,7 +76,6 @@ public partial class LocationDashboard
     private RenderFragment? HeatingScoreContent { get; set; }
 
     private string? RecordHighToolTip { get; set; }
-    private bool RecentObservationsSupported { get; set; }
 
     private string DataSourcesButtonLabel => Location is null
         ? "View data sources"
@@ -126,7 +125,6 @@ public partial class LocationDashboard
     {
         if (Location == null || DataSetDefinitions == null)
         {
-            RecentObservationsSupported = false;
             return;
         }
 
@@ -138,7 +136,6 @@ public partial class LocationDashboard
 
         GeoLocationAsString = Location!.Coordinates.ToString();
         LocationIdLastTimeOnParametersSetAsyncWasCalled = Location?.Id;
-        RecentObservationsSupported = false;
         LocationLoadingIndicatorVisible = false;
         LoadStripeData = true;
         StripeLoadingIndicatorVisible = true;
@@ -199,13 +196,10 @@ public partial class LocationDashboard
                                     builder.CloseComponent();
                                 };
 
-            if (Precipitation)
+            if (DisplayPrecipitation)
             {
                 await GeneratePrecipitationView();
             }
-
-            var recentObservationsSupport = await DataService!.GetRecentObservations(Location!.Id, isLocationSupported: true);
-            RecentObservationsSupported = recentObservationsSupport.IsSupported || HasDailyClimateRecordsForRecentObservations();
 
             StripeLoadingIndicatorVisible = false;
             StateHasChanged();
@@ -238,9 +232,9 @@ public partial class LocationDashboard
 
     protected async Task TogglePrecipitation()
     {
-        Precipitation = !Precipitation;
+        DisplayPrecipitation = !DisplayPrecipitation;
 
-        if (Precipitation && PrecipitationAnomalyAsString == null)
+        if (DisplayPrecipitation && PrecipitationAnomalyAsString == null)
         {
             await GeneratePrecipitationView();
         }
@@ -271,24 +265,5 @@ public partial class LocationDashboard
             PrecipitationAnomalyRecords = null;
             PrecipitationAnomalyContent = null;
         }
-    }
-
-    private bool HasDailyClimateRecordsForRecentObservations()
-    {
-        if (Location is null || DataSetDefinitions is null)
-        {
-            return false;
-        }
-
-        var dailyDataTypes = DataSetDefinitionViewModel
-            .GetMeasurementsForLocation(DataSetDefinitions, Location.Id)
-            .Select(x => x.Item2)
-            .Where(x => x.DataResolution == DataResolution.Daily)
-            .Select(x => x.DataType)
-            .ToHashSet();
-
-        return dailyDataTypes.Contains(DataType.TempMean) ||
-               (dailyDataTypes.Contains(DataType.TempMax) && dailyDataTypes.Contains(DataType.TempMin)) ||
-               dailyDataTypes.Contains(DataType.Precipitation);
     }
 }

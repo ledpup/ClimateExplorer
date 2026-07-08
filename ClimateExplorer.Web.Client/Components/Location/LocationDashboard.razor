@@ -15,17 +15,15 @@
                     <MenuContent>
                         <div class="dropdown-menu-content">
                             <Check TValue="bool"
-                                    Value="@Precipitation"
+                                    Value="@DisplayPrecipitation"
                                     ValueChanged="@(async (bool v) => await TogglePrecipitation())">
                                 Precipitation stripe
                             </Check>
-                            <ClimateButton Variant="ButtonVariant.Link"
-                                           Text="Data sources"
-                                           Icon="fas fa-database"
-                                           AriaLabel="@DataSourcesButtonLabel"
-                                           Disabled="@(Location is null)"
-                                           Class="dropdown-menu-action"
-                                           OnClick="ShowDataSetMetadataAsync" />
+                            <DropdownItem Disabled="@(Location is null)"
+                                          aria-label="@DataSourcesButtonLabel"
+                                          Clicked="ShowDataSetMetadataAsync">
+                                <i class="fas fa-database" aria-hidden="true"></i> Data sources
+                            </DropdownItem>
                         </div>
                     </MenuContent>
                 </DropdownButton>
@@ -48,11 +46,8 @@
                 {
                     <OverviewField Label="Record high" OnClick="@ShowRecordHighAsync" ToolTip="@RecordHighToolTip"><Value>@(Location?.RecordHigh == null ? "NA" : Location?.RecordHigh.Year)</Value></OverviewField>
                 }
-                @if (RecentObservationsSupported)
-                {
-                    <OverviewField Label="Recent observations" OnClick="@ShowRecentObservationsAsync" ToolTip="Compare daily observations with historical climate records"><Value>View</Value></OverviewField>
-                }
-                @if (Precipitation && PrecipitationAnomalyAsString != null && PrecipitationAnomalyAsString != "NA")
+                <OverviewField Label="Recent observations" OnClick="@ShowRecentObservationsAsync" ToolTip="Compare daily observations with historical climate records"><Value>View</Value></OverviewField>
+                @if (DisplayPrecipitation && PrecipitationAnomalyAsString != null && PrecipitationAnomalyAsString != "NA")
                 {
                     <OverviewField Label="Precipitation anomaly" Tooltip="Click for information on anomalies" PopupContent="@PrecipitationAnomalyContent"><Value>@(PrecipitationAnomalyAsString == null ? "NA" : PrecipitationAnomalyAsString)</Value></OverviewField>
                 }
@@ -61,7 +56,7 @@
         <DelayedLoadingIndicator @bind-Visible="@StripeLoadingIndicatorVisible" ZIndex="5">
             <ClimateStripe UnitOfMeasure="UnitOfMeasure.DegreesCelsius" LocationName=@Location?.Name LocationMean=@TemperatureLocationMean DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange="HandleOnYearFilterChange" ShowInfo="true" />
             <ExtremeYears HighLabel="Warmest years" LowLabel="Coolest years" UnitOfMeasure="UnitOfMeasure.DegreesCelsius" DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange="HandleOnYearFilterChange" />
-            @if (Precipitation && PrecipitationLocationMean != null)
+            @if (DisplayPrecipitation && PrecipitationLocationMean != null)
             {
                 <div class="dashboard-climate-section dashboard-climate-section--precipitation">
                     <ClimateStripe UnitOfMeasure="UnitOfMeasure.Millimetres" LocationName=@Location?.Name LocationMean=@PrecipitationLocationMean DataRecords="@PrecipitationAnomalyRecords" OnYearFilterChange="HandleOnPrecipitationYearFilterChange" ShowInfo="false" />
@@ -80,4 +75,4 @@
     <RecentObservationsPanel Location="@Location" />
 </SidePanel>
 
-<LocationDataSetMetadataSidePanel @ref="dataSetMetadataSidePanel" DataSetDefinitions="@DataSetDefinitions" />
+<LocationDataSetMetadataSidePanel @ref="dataSetMetadataSidePanel" DataSetDefinitions="@DataSetDefinitions" Width="50%" />
