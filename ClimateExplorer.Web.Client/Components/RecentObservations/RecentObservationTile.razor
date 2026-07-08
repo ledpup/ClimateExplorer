@@ -176,6 +176,10 @@
                                         {
                                             <span class="recent-observation-detail-record">@metric.TypicalVariationText</span>
                                         }
+                                        @if (!string.IsNullOrWhiteSpace(metric.CurrentPeriodText))
+                                        {
+                                            <span class="recent-observation-detail-record">@metric.CurrentPeriodText</span>
+                                        }
                                         @if (!string.IsNullOrWhiteSpace(metric.StandardScoreText))
                                         {
                                             <span class="recent-observation-detail-record">@metric.StandardScoreText</span>

@@ -1822,6 +1822,7 @@ public class RecentObservationsServiceTests
         Assert.AreEqual("Precipitation", precipitation.Label);
         Assert.AreEqual("Historical range: 77mm to 252mm", precipitation.HistoricalRangeText);
         Assert.AreEqual("Typical variation: ±52.5mm", precipitation.TypicalVariationText);
+        Assert.IsTrue(precipitation.CurrentPeriodText!.StartsWith("Latest 7 days: ", StringComparison.Ordinal));
         Assert.AreEqual("Standard score: -3.0×", precipitation.StandardScoreText);
         Assert.AreEqual(26, precipitation.ComparablePeriodCount);
     }
@@ -1844,7 +1845,26 @@ public class RecentObservationsServiceTests
         Assert.AreEqual("Precipitation", precipitation.Label);
         Assert.AreEqual("Historical range: 1mm to 26mm", precipitation.HistoricalRangeText);
         Assert.AreEqual("Typical variation: ±7.5mm", precipitation.TypicalVariationText);
+        Assert.IsTrue(precipitation.CurrentPeriodText!.StartsWith("14 June 2026: ", StringComparison.Ordinal));
         Assert.AreEqual("Standard score: -1.7×", precipitation.StandardScoreText);
+    }
+
+    [TestMethod]
+    public async Task GetPrecipitationRecords_CurrentSeasonVariationTab_UsesSeasonToDateCurrentPeriodLabel()
+    {
+        var historicalRecords = CreateHistoricalRangeRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 7, 15));
+        var service = CreateService(recentEndDate: new DateOnly(2026, 7, 15), historicalRecords: historicalRecords);
+
+        var result = await service.GetPrecipitationRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: 1,
+            previousMonthCount: 0,
+            previousSeasonCount: 0);
+        var currentSeason = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.CurrentSeason);
+        var variation = (RecentObservationVariationTabViewModel)currentSeason.AvailableExpandedTabs.Single(x => x.Key == MetricGroupKey.Variation);
+        var precipitation = variation.Metrics.Single();
+
+        Assert.IsTrue(precipitation.CurrentPeriodText!.StartsWith("Winter 2026 to date: ", StringComparison.Ordinal));
     }
 
     [TestMethod]
