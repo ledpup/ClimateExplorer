@@ -14,14 +14,9 @@ public interface ICache
     Task Put<T>(string key, T obj);
 }
 
-public class FileBackedCache : ICache
+public class FileBackedCache(string cacheFolderName) : ICache
 {
-    private readonly string cacheFolderName;
-
-    public FileBackedCache(string cacheFolderName)
-    {
-        this.cacheFolderName = cacheFolderName;
-    }
+    private readonly string cacheFolderName = cacheFolderName;
 
     public async Task<T> Get<T>(string key)
     {

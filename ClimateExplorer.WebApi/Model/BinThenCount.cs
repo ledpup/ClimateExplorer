@@ -1,13 +1,7 @@
 ﻿namespace ClimateExplorer.WebApi.Model;
 
-public class BinThenCount : StatsParameters
+public class BinThenCount(short? numberOfBins, short? binSize) : StatsParameters
 {
-    public BinThenCount(short? numberOfBins, short? binSize)
-    {
-        NumberOfBins = numberOfBins;
-        BinSize = binSize;
-    }
-
-    public short? NumberOfBins { get; set; }
-    public short? BinSize { get; set; }
+    public short? NumberOfBins { get; set; } = numberOfBins;
+    public short? BinSize { get; set; } = binSize;
 }

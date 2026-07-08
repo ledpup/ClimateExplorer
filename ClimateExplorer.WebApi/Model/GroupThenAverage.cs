@@ -1,13 +1,7 @@
 ﻿namespace ClimateExplorer.WebApi.Model;
 
-public class GroupThenAverage : StatsParameters
+public class GroupThenAverage(short dayGrouping = 14, float dayGroupingThreshold = .7f) : StatsParameters
 {
-    public GroupThenAverage(short dayGrouping = 14, float dayGroupingThreshold = .7f)
-    {
-        DayGrouping = dayGrouping;
-        DayGroupingThreshold = dayGroupingThreshold;
-    }
-
-    public short DayGrouping { get; set; }
-    public float DayGroupingThreshold { get; set; }
+    public short DayGrouping { get; set; } = dayGrouping;
+    public float DayGroupingThreshold { get; set; } = dayGroupingThreshold;
 }
