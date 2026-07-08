@@ -1062,7 +1062,7 @@ public class RecentObservationsServiceTests
 
         Assert.IsNull(precipitation.HistoricalRangeText);
         Assert.IsNull(precipitation.TypicalVariationText);
-        Assert.IsNull(precipitation.VariationScoreText);
+        Assert.IsNull(precipitation.StandardScoreText);
         Assert.AreEqual("Recent observations are below the completeness threshold.", precipitation.UnavailableReason);
     }
 
@@ -1822,7 +1822,7 @@ public class RecentObservationsServiceTests
         Assert.AreEqual("Precipitation", precipitation.Label);
         Assert.AreEqual("Historical range: 77mm to 252mm", precipitation.HistoricalRangeText);
         Assert.AreEqual("Typical variation: ±52.5mm", precipitation.TypicalVariationText);
-        Assert.AreEqual("Variation score: -3.0×", precipitation.VariationScoreText);
+        Assert.AreEqual("Standard score: -3.0×", precipitation.StandardScoreText);
         Assert.AreEqual(26, precipitation.ComparablePeriodCount);
     }
 
@@ -1844,11 +1844,11 @@ public class RecentObservationsServiceTests
         Assert.AreEqual("Precipitation", precipitation.Label);
         Assert.AreEqual("Historical range: 1mm to 26mm", precipitation.HistoricalRangeText);
         Assert.AreEqual("Typical variation: ±7.5mm", precipitation.TypicalVariationText);
-        Assert.AreEqual("Variation score: -1.7×", precipitation.VariationScoreText);
+        Assert.AreEqual("Standard score: -1.7×", precipitation.StandardScoreText);
     }
 
     [TestMethod]
-    public async Task GetPrecipitationRecords_ZeroVariationHistory_OmitsVariationScore()
+    public async Task GetPrecipitationRecords_ZeroVariationHistory_OmitsStandardScore()
     {
         var historicalRecords = CreateHistoricalDailyValues(
             new DateOnly(2026, 6, 8),
@@ -1867,7 +1867,7 @@ public class RecentObservationsServiceTests
 
         Assert.AreEqual("Historical range: 14mm to 14mm", precipitation.HistoricalRangeText);
         Assert.AreEqual("Typical variation: ±0mm", precipitation.TypicalVariationText);
-        Assert.IsNull(precipitation.VariationScoreText);
+        Assert.IsNull(precipitation.StandardScoreText);
     }
 
     [TestMethod]
@@ -1950,7 +1950,7 @@ public class RecentObservationsServiceTests
             latestSevenDaysVariation.Metrics.Select(x => x.Label).ToArray());
         Assert.AreEqual("Historical range: 0.0°C to 25.0°C", latestSevenDaysVariation.Metrics[0].HistoricalRangeText);
         Assert.AreEqual("Typical variation: ±7.5°C", latestSevenDaysVariation.Metrics[0].TypicalVariationText);
-        Assert.AreEqual("Variation score: +5.0×", latestSevenDaysVariation.Metrics[0].VariationScoreText);
+        Assert.AreEqual("Standard score: +5.0×", latestSevenDaysVariation.Metrics[0].StandardScoreText);
 
         var daily = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.Daily);
         var dailyVariation = (RecentObservationVariationTabViewModel)daily.AvailableExpandedTabs.Single(x => x.Key == MetricGroupKey.Variation);

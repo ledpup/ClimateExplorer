@@ -138,10 +138,10 @@ public sealed record RecentObservationTileViewModel
             HistoricalMinimum = null,
             HistoricalMaximum = null,
             TypicalVariation = null,
-            VariationScore = null,
+            StandardScore = null,
             HistoricalRangeText = null,
             TypicalVariationText = null,
-            VariationScoreText = null,
+            StandardScoreText = null,
             UnavailableReason = "Recent observations are below the completeness threshold.",
         })];
     }

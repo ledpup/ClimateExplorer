@@ -910,9 +910,10 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             };
         }
 
+        var average = values.Average();
         var standardDeviation = StandardDeviation.PopulationStandardDeviation(values);
         var score = standardDeviation is > 0d
-            ? (currentValue.Value.Value - values.Average()) / standardDeviation.Value
+            ? (currentValue.Value.Value - average) / standardDeviation.Value
             : (double?)null;
 
         return new RecentObservationVariationViewModel
@@ -920,12 +921,14 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             Label = metric.VariationLabel,
             HistoricalMinimum = values.Min(),
             HistoricalMaximum = values.Max(),
+            Average = average,
             TypicalVariation = standardDeviation,
-            VariationScore = score,
+            StandardScore = score,
             Unit = metric.Unit,
             HistoricalRangeText = $"Historical range: {metric.Format(values.Min())} to {metric.Format(values.Max())}",
+            AverageText = $"Average: {metric.Format(average)}",
             TypicalVariationText = standardDeviation is null ? null : $"Typical variation: ±{metric.Format(standardDeviation.Value)}",
-            VariationScoreText = score.HasValue && double.IsFinite(score.Value) ? $"Variation score: {FormatVariationScore(score.Value)}" : null,
+            StandardScoreText = score.HasValue && double.IsFinite(score.Value) ? $"Standard score: {FormatStandardScore(score.Value)}" : null,
             ComparablePeriodCount = distribution.ComparablePeriodCount,
         };
     }
@@ -1319,7 +1322,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         return $"{(value >= 0 ? "+" : string.Empty)}{metric.Format(value)}";
     }
 
-    private static string FormatVariationScore(double value)
+    private static string FormatStandardScore(double value)
     {
         return $"{(value >= 0 ? "+" : string.Empty)}{value.ToString("0.0", CultureInfo.InvariantCulture)}×";
     }

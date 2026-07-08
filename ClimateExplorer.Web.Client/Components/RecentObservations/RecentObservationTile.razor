@@ -168,13 +168,17 @@
                                         {
                                             <span class="recent-observation-detail-record">@metric.HistoricalRangeText</span>
                                         }
+                                        @if (!string.IsNullOrWhiteSpace(metric.AverageText))
+                                        {
+                                            <span class="recent-observation-detail-record">@metric.AverageText</span>
+                                        }
                                         @if (!string.IsNullOrWhiteSpace(metric.TypicalVariationText))
                                         {
                                             <span class="recent-observation-detail-record">@metric.TypicalVariationText</span>
                                         }
-                                        @if (!string.IsNullOrWhiteSpace(metric.VariationScoreText))
+                                        @if (!string.IsNullOrWhiteSpace(metric.StandardScoreText))
                                         {
-                                            <span class="recent-observation-detail-record">@metric.VariationScoreText</span>
+                                            <span class="recent-observation-detail-record">@metric.StandardScoreText</span>
                                         }
                                     }
                                 </dd>
