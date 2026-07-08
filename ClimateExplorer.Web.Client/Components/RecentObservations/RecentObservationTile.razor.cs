@@ -5,7 +5,7 @@ using ClimateExplorer.Web.Client.UiModel.RecentObservations;
 
 public partial class RecentObservationTile
 {
-    private bool IsDayRecordsSelected => SelectedGroup?.Key == MetricGroupKey.DayRecords;
+    private bool IsDayRecordsSelected => SelectedTab?.Key == MetricGroupKey.DayRecords;
 
     private static string FormatCurrentMetricDate(DateOnly date)
     {

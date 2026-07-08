@@ -59,6 +59,24 @@ public class RecentObservationTileExpansionStateTests
     }
 
     [TestMethod]
+    public void EnsureSelection_VariationTabSelected_PreservesSelection()
+    {
+        var tabs = new RecentObservationExpandedTabViewModel[]
+        {
+            new RecentObservationMetricGroupViewModel { Key = MetricGroupKey.PeriodRecords },
+            new RecentObservationVariationTabViewModel { Key = MetricGroupKey.Variation },
+        };
+        var state = new RecentObservationTileExpansionState();
+        state.EnsureSelection(tabs);
+        state.SelectGroup(MetricGroupKey.Variation);
+
+        state.EnsureSelection(tabs);
+
+        Assert.AreEqual(MetricGroupKey.Variation, state.SelectedGroupKey);
+        Assert.IsTrue(state.IsGroupSelected(MetricGroupKey.Variation));
+    }
+
+    [TestMethod]
     public void EnsureSelectionClearsWhenNoGroups()
     {
         var state = new RecentObservationTileExpansionState();

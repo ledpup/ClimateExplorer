@@ -1,7 +1,7 @@
 # Recent Observations: Variation expanded tab
 
 - **Date:** 2026-07-08
-- **Status:** Proposed
+- **Status:** Proposed; stages 1-2 implemented 2026-07-08 (see addendum)
 - **Author:** Codex
 - **Scope:** `RecentObservationsCalculator`, Recent Observation expanded tab view models, `RecentObservationTile` rendering/CSS, related unit tests
 - **Builds on:** [recent observations metric architecture](2026-06-17-01-recent-observations-metric-architecture.md), [expandable tiles with metric groups](2026-06-17-02-recent-observations-expandable-tiles.md), and [day records date display](2026-07-08-01-day-records-date-display-plan.md)
@@ -329,3 +329,21 @@ Rendering tests:
 7. Apply completeness-threshold suppression to variation content.
 8. Add focused unit tests for tab presence/order, variation calculation,
    formatting, zero-variance handling, missing history, and daily tile behavior.
+
+## Addendum - implementation notes
+
+Stages 1-2 are implemented:
+
+- Added a shared `RecentObservationExpandedTabViewModel` base and records /
+  variation tab view models.
+- Kept `RecentObservationMetricGroupViewModel` as a records-tab subtype so the
+  existing calculator output and service tests can continue to use `MetricGroups`
+  during the transition.
+- Added `RecentObservationTileViewModel.AvailableExpandedTabs`, which prefers
+  explicitly supplied expanded tabs and otherwise adapts existing metric groups.
+- Updated `RecentObservationTile` and expansion state to select/render typed
+  expanded tabs while preserving the existing records UI.
+- Added `MetricGroupKey.Variation` as the future stable selection key.
+
+Variation calculation, daily/non-day tab construction, and final
+completeness-threshold behavior remain for later stages.

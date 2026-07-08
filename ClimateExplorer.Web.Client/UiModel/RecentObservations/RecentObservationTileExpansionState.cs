@@ -25,20 +25,20 @@ public sealed class RecentObservationTileExpansionState
     }
 
     // <summary>
-    // Ensures a sensible selected group once groups are known. Defaults to the
-    // first group (e.g. "Period") and only fills a missing/stale selection.
+    // Ensures a sensible selected tab once tabs are known. Defaults to the
+    // first tab (e.g. "Period records") and only fills a missing/stale selection.
     // </summary>
-    public void EnsureSelection(IReadOnlyList<RecentObservationMetricGroupViewModel> groups)
+    public void EnsureSelection(IReadOnlyList<RecentObservationExpandedTabViewModel> tabs)
     {
-        if (groups.Count == 0)
+        if (tabs.Count == 0)
         {
             SelectedGroupKey = null;
             return;
         }
 
-        if (SelectedGroupKey is null || groups.All(x => x.Key != SelectedGroupKey))
+        if (SelectedGroupKey is null || tabs.All(x => x.Key != SelectedGroupKey))
         {
-            SelectedGroupKey = groups[0].Key;
+            SelectedGroupKey = tabs[0].Key;
         }
     }
 
