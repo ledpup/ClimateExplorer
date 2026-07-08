@@ -166,7 +166,10 @@
                                     {
                                         @if (!string.IsNullOrWhiteSpace(metric.StandardScoreValue))
                                         {
-                                            <span class="recent-observation-detail-current">@metric.StandardScoreValue</span><span>@metric.StandardScoreLabel</span>
+                                            <div class="recent-observation-detail-headline">
+                                                <span class="recent-observation-detail-current">@metric.StandardScoreValue</span>
+                                                <span class="recent-observation-detail-rank">@metric.StandardScoreLabel</span>
+                                            </div>
                                         }
                                         @if (!string.IsNullOrWhiteSpace(metric.AverageText))
                                         {
