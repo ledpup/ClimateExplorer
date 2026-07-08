@@ -4,6 +4,7 @@ namespace ClimateExplorer.Web.Client.Services;
 using System.Globalization;
 using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Core.Model;
+using ClimateExplorer.Core.Stats;
 using ClimateExplorer.Web.Client.Services.RecentObservations;
 using ClimateExplorer.Web.Client.UiModel.RecentObservations;
 
@@ -646,6 +647,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         var historicalContext = showHistoricalRange ? CreateHistoricalContextLabel(period) : null;
         var showMin = domain.ShowHistoricalMin;
 
+        var metricGroups = BuildMetricGroups(period, domain, distributions);
         return new RecentObservationTileViewModel
         {
             PeriodKind = ToTilePeriodKind(period.Kind),
@@ -670,7 +672,8 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             Note = CombineNotes(period.Note, BuildLimitedHistoryNote(period, historicalValues, ranking)),
             Stats = stats,
             SupportingStats = supportingStats,
-            MetricGroups = BuildMetricGroups(period, domain, distributions),
+            MetricGroups = metricGroups,
+            ExpandedTabs = BuildExpandedTabs(period, domain, distributions, metricGroups),
             ComparablePeriodCount = historicalValues.ComparablePeriodCount,
             CanShowHistoricalRecord = historicalValues.CanShowHistoricalRecord,
             CanShowHistoricalRange = historicalValues.CanShowHistoricalRange,
@@ -810,8 +813,8 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         var groups = new List<RecentObservationMetricGroupViewModel>();
 
         // A daily tile is a single day's observation - max/min/mean, not aggregates
-        // across days, so it uses its own single group (which also hides the
-        // period/daily-extremes toggle, since only one group is present).
+        // across days, so it uses its own records group. The expanded-tab layer
+        // renames this to "Records" once the Variation tab is added.
         var groupDefinitions = period.Kind == PeriodKind.Daily ? domain.DailyGroups : domain.Groups;
 
         foreach (var group in groupDefinitions)
@@ -837,6 +840,94 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         }
 
         return groups;
+    }
+
+    private static IReadOnlyList<RecentObservationExpandedTabViewModel> BuildExpandedTabs(
+        PeriodObservation period,
+        MetricDomain domain,
+        IReadOnlyDictionary<string, HistoricalValues> distributions,
+        IReadOnlyList<RecentObservationMetricGroupViewModel> recordGroups)
+    {
+        var tabs = new List<RecentObservationExpandedTabViewModel>();
+
+        foreach (var group in recordGroups)
+        {
+            tabs.Add(new RecentObservationRecordsTabViewModel
+            {
+                Key = group.Key,
+                Title = group.Key == MetricGroupKey.Day ? "Records" : group.Title,
+                Metrics = group.Metrics,
+            });
+        }
+
+        var variationMetrics = BuildVariationMetrics(period, domain, distributions);
+        if (variationMetrics.Count > 0)
+        {
+            tabs.Add(new RecentObservationVariationTabViewModel
+            {
+                Key = MetricGroupKey.Variation,
+                Title = "Variation",
+                Metrics = variationMetrics,
+            });
+        }
+
+        return tabs;
+    }
+
+    private static IReadOnlyList<RecentObservationVariationViewModel> BuildVariationMetrics(
+        PeriodObservation period,
+        MetricDomain domain,
+        IReadOnlyDictionary<string, HistoricalValues> distributions)
+    {
+        var metrics = period.Kind == PeriodKind.Daily ? domain.DailyVariationMetrics : domain.VariationMetrics;
+        var result = new List<RecentObservationVariationViewModel>();
+
+        foreach (var metric in metrics)
+        {
+            if (period.MetricValues.TryGetValue(metric.Key, out var currentValue))
+            {
+                result.Add(BuildVariationMetric(metric, currentValue, distributions.GetValueOrDefault(metric.Key)));
+            }
+        }
+
+        return result;
+    }
+
+    private static RecentObservationVariationViewModel BuildVariationMetric(
+        Metric metric,
+        MetricObservationValue currentValue,
+        HistoricalValues? distribution)
+    {
+        var values = distribution?.FiniteValues ?? [];
+        if (distribution is null || values.Count == 0 || !currentValue.Value.HasValue || !double.IsFinite(currentValue.Value.Value))
+        {
+            return new RecentObservationVariationViewModel
+            {
+                Label = metric.VariationLabel,
+                Unit = metric.Unit,
+                UnavailableReason = distribution?.UnavailableReason ?? "No comparable historical data is available for this comparison.",
+                ComparablePeriodCount = distribution?.ComparablePeriodCount ?? 0,
+            };
+        }
+
+        var standardDeviation = StandardDeviation.PopulationStandardDeviation(values);
+        var score = standardDeviation is > 0d
+            ? (currentValue.Value.Value - values.Average()) / standardDeviation.Value
+            : (double?)null;
+
+        return new RecentObservationVariationViewModel
+        {
+            Label = metric.VariationLabel,
+            HistoricalMinimum = values.Min(),
+            HistoricalMaximum = values.Max(),
+            TypicalVariation = standardDeviation,
+            VariationScore = score,
+            Unit = metric.Unit,
+            HistoricalRangeText = $"Historical range: {metric.Format(values.Min())} to {metric.Format(values.Max())}",
+            TypicalVariationText = standardDeviation is null ? null : $"Typical variation: ±{metric.Format(standardDeviation.Value)}",
+            VariationScoreText = score.HasValue && double.IsFinite(score.Value) ? $"Variation score: {FormatVariationScore(score.Value)}" : null,
+            ComparablePeriodCount = distribution.ComparablePeriodCount,
+        };
     }
 
     private static RecentObservationRecordsViewModel BuildMetric(Metric metric, MetricObservationValue currentValue, HistoricalValues? distribution)
@@ -1228,6 +1319,11 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         return $"{(value >= 0 ? "+" : string.Empty)}{metric.Format(value)}";
     }
 
+    private static string FormatVariationScore(double value)
+    {
+        return $"{(value >= 0 ? "+" : string.Empty)}{value.ToString("0.0", CultureInfo.InvariantCulture)}×";
+    }
+
     private static string? FormatHistoricalOccurrence(HistoricalPeriodValue? value)
     {
         return value?.Year?.ToString(CultureInfo.InvariantCulture);
@@ -1252,7 +1348,9 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         x => x.Mean,
         MetricAggregation.Mean,
         FormatTemperature,
-        "Mean temperature");
+        "Mean temperature",
+        "Mean temperature",
+        "°C");
 
     private static readonly Metric AverageMaxTemperatureMetric = new(
         "temp.max",
@@ -1261,7 +1359,9 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         x => x.Max,
         MetricAggregation.Mean,
         FormatTemperature,
-        "Average maximum temperature");
+        "Average maximum temperature",
+        "Average max temp",
+        "°C");
 
     private static readonly Metric AverageMinTemperatureMetric = new(
         "temp.min",
@@ -1270,7 +1370,9 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         x => x.Min,
         MetricAggregation.Mean,
         FormatTemperature,
-        "Average minimum temperature");
+        "Average minimum temperature",
+        "Average min temp",
+        "°C");
 
     private static readonly Metric HighestDailyMaxTemperatureMetric = new(
         "temp.daily-max-high",
@@ -1279,7 +1381,9 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         x => x.Max,
         MetricAggregation.Max,
         FormatTemperature,
-        "Highest daily maximum");
+        "Highest daily maximum",
+        "Highest daily maximum",
+        "°C");
 
     private static readonly Metric LowestDailyMaxTemperatureMetric = new(
         "temp.daily-max-low",
@@ -1288,7 +1392,9 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         x => x.Max,
         MetricAggregation.Min,
         FormatTemperature,
-        "Lowest daily maximum");
+        "Lowest daily maximum",
+        "Lowest daily maximum",
+        "°C");
 
     private static readonly Metric HighestDailyMinTemperatureMetric = new(
         "temp.daily-min-high",
@@ -1297,7 +1403,9 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         x => x.Min,
         MetricAggregation.Max,
         FormatTemperature,
-        "Highest daily minimum");
+        "Highest daily minimum",
+        "Highest daily minimum",
+        "°C");
 
     private static readonly Metric LowestDailyMinTemperatureMetric = new(
         "temp.daily-min-low",
@@ -1306,7 +1414,9 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         x => x.Min,
         MetricAggregation.Min,
         FormatTemperature,
-        "Lowest daily minimum");
+        "Lowest daily minimum",
+        "Lowest daily minimum",
+        "°C");
 
     // Daily tiles describe a single day, which has a maximum, a minimum and a mean
     // — not aggregates across days. These reuse the period-metric keys (so their
@@ -1319,7 +1429,9 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         x => x.Max,
         MetricAggregation.Max,
         FormatTemperature,
-        "Maximum");
+        "Maximum",
+        "Maximum",
+        "°C");
 
     private static readonly Metric DailyMinTemperatureMetric = new(
         "temp.daily-min-low",
@@ -1328,7 +1440,9 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         x => x.Min,
         MetricAggregation.Min,
         FormatTemperature,
-        "Minimum");
+        "Minimum",
+        "Minimum",
+        "°C");
 
     private static readonly Metric DailyMeanTemperatureMetric = new(
         "temp.mean",
@@ -1337,7 +1451,9 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         x => x.Mean,
         MetricAggregation.Mean,
         FormatTemperature,
-        "Mean");
+        "Mean",
+        "Mean",
+        "°C");
 
     private static readonly Metric PrecipitationMetric = new(
         "precip.total",
@@ -1346,7 +1462,9 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         x => x.Precipitation,
         MetricAggregation.Sum,
         FormatPrecipitation,
-        "Total precipitation");
+        "Total precipitation",
+        "Precipitation",
+        "mm");
 
     private static readonly Metric HighestDailyPrecipitationMetric = new(
         "precip.daily-high",
@@ -1355,7 +1473,9 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         x => x.Precipitation,
         MetricAggregation.Max,
         FormatPrecipitation,
-        "Highest daily precipitation");
+        "Highest daily precipitation",
+        "Highest daily precipitation",
+        "mm");
 
     private static readonly Metric DailyPrecipitationMetric = new(
         "precip.total",
@@ -1364,7 +1484,9 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         x => x.Precipitation,
         MetricAggregation.Sum,
         FormatPrecipitation,
-        "Precipitation");
+        "Precipitation",
+        "Precipitation",
+        "mm");
 
     private static readonly MetricDomain TemperatureDomain = new(
         MeanTemperatureMetric,
@@ -1376,6 +1498,8 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         [
             new MetricGroup(MetricGroupKey.Day, "Day", [DailyMaxTemperatureMetric, DailyMinTemperatureMetric, DailyMeanTemperatureMetric]),
         ],
+        [AverageMaxTemperatureMetric, AverageMinTemperatureMetric, MeanTemperatureMetric],
+        [DailyMaxTemperatureMetric, DailyMinTemperatureMetric, DailyMeanTemperatureMetric],
         "Mean temperature",
         ShowHistoricalMin: true,
         "Warmest",
@@ -1394,6 +1518,8 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         [
             new MetricGroup(MetricGroupKey.Day, "Day", [DailyPrecipitationMetric]),
         ],
+        [PrecipitationMetric],
+        [DailyPrecipitationMetric],
         "Precipitation total",
         ShowHistoricalMin: true,
         "Wettest",
@@ -1424,7 +1550,9 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         Func<DailyObservation, double?> Select,
         MetricAggregation Aggregation,
         Func<double, string> Format,
-        string DetailLabel);
+        string DetailLabel,
+        string VariationLabel,
+        string Unit);
 
     private sealed record MetricGroup(MetricGroupKey Key, string Title, IReadOnlyList<Metric> Metrics);
 
@@ -1433,6 +1561,8 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         IReadOnlyList<Metric> Supporting,
         IReadOnlyList<MetricGroup> Groups,
         IReadOnlyList<MetricGroup> DailyGroups,
+        IReadOnlyList<Metric> VariationMetrics,
+        IReadOnlyList<Metric> DailyVariationMetrics,
         string PrimaryLabel,
         bool ShowHistoricalMin,
         string HistoricalMaxWord,
@@ -1450,7 +1580,9 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
                 var all = new[] { Primary }
                     .Concat(Supporting)
                     .Concat(Groups.SelectMany(x => x.Metrics))
-                    .Concat(DailyGroups.SelectMany(x => x.Metrics));
+                    .Concat(DailyGroups.SelectMany(x => x.Metrics))
+                    .Concat(VariationMetrics)
+                    .Concat(DailyVariationMetrics);
                 foreach (var metric in all)
                 {
                     if (seen.Add(metric.Key))
@@ -1497,6 +1629,10 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         int MinimumRankSampleSize)
     {
         public List<double?> Values => [.. PeriodValues.Select(x => x.Value)];
+
+        public List<double> FiniteValues => [.. PeriodValues
+            .Where(x => x.Value.HasValue && double.IsFinite(x.Value.Value))
+            .Select(x => x.Value!.Value)];
 
         public int ComparablePeriodCount => PeriodValues.Count(x => x.Value.HasValue && double.IsFinite(x.Value.Value));
 

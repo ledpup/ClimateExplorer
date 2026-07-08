@@ -1,7 +1,7 @@
 # Recent Observations: Variation expanded tab
 
 - **Date:** 2026-07-08
-- **Status:** Proposed; stages 1-2 implemented 2026-07-08 (see addendum)
+- **Status:** Implemented 2026-07-08 (see addendum)
 - **Author:** Codex
 - **Scope:** `RecentObservationsCalculator`, Recent Observation expanded tab view models, `RecentObservationTile` rendering/CSS, related unit tests
 - **Builds on:** [recent observations metric architecture](2026-06-17-01-recent-observations-metric-architecture.md), [expandable tiles with metric groups](2026-06-17-02-recent-observations-expandable-tiles.md), and [day records date display](2026-07-08-01-day-records-date-display-plan.md)
@@ -332,7 +332,9 @@ Rendering tests:
 
 ## Addendum - implementation notes
 
-Stages 1-2 are implemented:
+Implemented in two passes.
+
+The first pass introduced the expanded-tab model shape:
 
 - Added a shared `RecentObservationExpandedTabViewModel` base and records /
   variation tab view models.
@@ -345,5 +347,16 @@ Stages 1-2 are implemented:
   expanded tabs while preserving the existing records UI.
 - Added `MetricGroupKey.Variation` as the future stable selection key.
 
-Variation calculation, daily/non-day tab construction, and final
-completeness-threshold behavior remain for later stages.
+The second pass completed variation behavior:
+
+- Added per-domain daily and non-daily variation metric lists.
+- Built variation rows from the existing historical distributions using
+  population standard deviation.
+- Added **Variation** after **Day records** for non-day tiles.
+- Added **Records** and **Variation** tabs for day tiles while preserving the
+  existing `MetricGroupKey.Day` record group for compatibility.
+- Kept variation content visible but unavailable when completeness-threshold
+  suppression removes comparison details.
+- Added service/unit coverage for non-day tab order, daily tab order,
+  precipitation variation formatting, daily precipitation variation, zero
+  standard-deviation handling, and temperature variation labels.
