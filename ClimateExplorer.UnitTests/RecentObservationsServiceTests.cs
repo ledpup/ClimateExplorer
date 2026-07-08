@@ -1062,7 +1062,8 @@ public class RecentObservationsServiceTests
 
         Assert.IsNull(precipitation.HistoricalRangeText);
         Assert.IsNull(precipitation.TypicalVariationText);
-        Assert.IsNull(precipitation.StandardScoreText);
+        Assert.IsNull(precipitation.StandardScoreLabel);
+        Assert.IsNull(precipitation.StandardScoreValue);
         Assert.AreEqual("Recent observations are below the completeness threshold.", precipitation.UnavailableReason);
     }
 
@@ -1822,7 +1823,9 @@ public class RecentObservationsServiceTests
         Assert.AreEqual("Precipitation", precipitation.Label);
         Assert.AreEqual("Historical range: 77mm to 252mm", precipitation.HistoricalRangeText);
         Assert.AreEqual("Typical variation: ±52.5mm", precipitation.TypicalVariationText);
-        Assert.AreEqual("Standard score: -3.0×", precipitation.StandardScoreText);
+        Assert.IsTrue(precipitation.CurrentPeriodText!.StartsWith("Latest 7 days: ", StringComparison.Ordinal));
+        Assert.AreEqual("standard score", precipitation.StandardScoreLabel);
+        Assert.AreEqual("-3.0×", precipitation.StandardScoreValue);
         Assert.AreEqual(26, precipitation.ComparablePeriodCount);
     }
 
@@ -1844,7 +1847,27 @@ public class RecentObservationsServiceTests
         Assert.AreEqual("Precipitation", precipitation.Label);
         Assert.AreEqual("Historical range: 1mm to 26mm", precipitation.HistoricalRangeText);
         Assert.AreEqual("Typical variation: ±7.5mm", precipitation.TypicalVariationText);
-        Assert.AreEqual("Standard score: -1.7×", precipitation.StandardScoreText);
+        Assert.IsTrue(precipitation.CurrentPeriodText!.StartsWith("14 June 2026: ", StringComparison.Ordinal));
+        Assert.AreEqual("standard score", precipitation.StandardScoreLabel);
+        Assert.AreEqual("-1.7×", precipitation.StandardScoreValue);
+    }
+
+    [TestMethod]
+    public async Task GetPrecipitationRecords_CurrentSeasonVariationTab_UsesSeasonToDateCurrentPeriodLabel()
+    {
+        var historicalRecords = CreateHistoricalRangeRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 7, 15));
+        var service = CreateService(recentEndDate: new DateOnly(2026, 7, 15), historicalRecords: historicalRecords);
+
+        var result = await service.GetPrecipitationRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: 1,
+            previousMonthCount: 0,
+            previousSeasonCount: 0);
+        var currentSeason = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.CurrentSeason);
+        var variation = (RecentObservationVariationTabViewModel)currentSeason.AvailableExpandedTabs.Single(x => x.Key == MetricGroupKey.Variation);
+        var precipitation = variation.Metrics.Single();
+
+        Assert.IsTrue(precipitation.CurrentPeriodText!.StartsWith("Winter 2026 to date: ", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1867,7 +1890,8 @@ public class RecentObservationsServiceTests
 
         Assert.AreEqual("Historical range: 14mm to 14mm", precipitation.HistoricalRangeText);
         Assert.AreEqual("Typical variation: ±0mm", precipitation.TypicalVariationText);
-        Assert.IsNull(precipitation.StandardScoreText);
+        Assert.IsNull(precipitation.StandardScoreLabel);
+        Assert.IsNull(precipitation.StandardScoreValue);
     }
 
     [TestMethod]
@@ -1950,7 +1974,8 @@ public class RecentObservationsServiceTests
             latestSevenDaysVariation.Metrics.Select(x => x.Label).ToArray());
         Assert.AreEqual("Historical range: 0.0°C to 25.0°C", latestSevenDaysVariation.Metrics[0].HistoricalRangeText);
         Assert.AreEqual("Typical variation: ±7.5°C", latestSevenDaysVariation.Metrics[0].TypicalVariationText);
-        Assert.AreEqual("Standard score: +5.0×", latestSevenDaysVariation.Metrics[0].StandardScoreText);
+        Assert.AreEqual("standard score", latestSevenDaysVariation.Metrics[0].StandardScoreLabel);
+        Assert.AreEqual("+5.0×", latestSevenDaysVariation.Metrics[0].StandardScoreValue);
 
         var daily = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.Daily);
         var dailyVariation = (RecentObservationVariationTabViewModel)daily.AvailableExpandedTabs.Single(x => x.Key == MetricGroupKey.Variation);

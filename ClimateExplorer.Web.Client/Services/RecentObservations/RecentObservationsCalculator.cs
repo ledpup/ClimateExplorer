@@ -456,7 +456,8 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             PeriodComparisonMode.DailyRange,
             periodOffset ?? previousMonthOffset,
             note,
-            ComputeMetrics(records, domain)));
+            ComputeMetrics(records, domain),
+            seasonPeriod));
     }
 
     private static IReadOnlyDictionary<string, MetricObservationValue> ComputeMetrics(IReadOnlyList<DailyObservation> records, MetricDomain domain)
@@ -881,12 +882,13 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
     {
         var metrics = period.Kind == PeriodKind.Daily ? domain.DailyVariationMetrics : domain.VariationMetrics;
         var result = new List<RecentObservationVariationViewModel>();
+        var currentPeriodLabel = CreateCurrentPeriodLabel(period);
 
         foreach (var metric in metrics)
         {
             if (period.MetricValues.TryGetValue(metric.Key, out var currentValue))
             {
-                result.Add(BuildVariationMetric(metric, currentValue, distributions.GetValueOrDefault(metric.Key)));
+                result.Add(BuildVariationMetric(metric, currentValue, distributions.GetValueOrDefault(metric.Key), currentPeriodLabel));
             }
         }
 
@@ -896,7 +898,8 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
     private static RecentObservationVariationViewModel BuildVariationMetric(
         Metric metric,
         MetricObservationValue currentValue,
-        HistoricalValues? distribution)
+        HistoricalValues? distribution,
+        string currentPeriodLabel)
     {
         var values = distribution?.FiniteValues ?? [];
         if (distribution is null || values.Count == 0 || !currentValue.Value.HasValue || !double.IsFinite(currentValue.Value.Value))
@@ -922,15 +925,38 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             HistoricalMinimum = values.Min(),
             HistoricalMaximum = values.Max(),
             Average = average,
+            CurrentValue = currentValue.Value,
             TypicalVariation = standardDeviation,
             StandardScore = score,
             Unit = metric.Unit,
             HistoricalRangeText = $"Historical range: {metric.Format(values.Min())} to {metric.Format(values.Max())}",
             AverageText = $"Average: {metric.Format(average)}",
             TypicalVariationText = standardDeviation is null ? null : $"Typical variation: ±{metric.Format(standardDeviation.Value)}",
-            StandardScoreText = score.HasValue && double.IsFinite(score.Value) ? $"Standard score: {FormatStandardScore(score.Value)}" : null,
+            CurrentPeriodText = $"{currentPeriodLabel}: {metric.Format(currentValue.Value.Value)}",
+            StandardScoreLabel = score.HasValue && double.IsFinite(score.Value) ? "standard score" : null,
+            StandardScoreValue = score.HasValue && double.IsFinite(score.Value) ? FormatStandardScore(score.Value) : null,
             ComparablePeriodCount = distribution.ComparablePeriodCount,
         };
+    }
+
+    private static string CreateCurrentPeriodLabel(PeriodObservation period)
+    {
+        if (period.ComparisonMode == PeriodComparisonMode.DailyDate)
+        {
+            return FormatFullDate(period.StartDate);
+        }
+
+        if (period.Kind == PeriodKind.CurrentSeason && period.SeasonPeriod is not null)
+        {
+            return $"{period.SeasonPeriod.Season} {MeteorologicalSeasonCalculator.FormatSeasonYear(period.SeasonPeriod)} to date";
+        }
+
+        return period.Title;
+    }
+
+    private static string FormatFullDate(DateOnly date)
+    {
+        return $"{FormatDayMonth(date)} {date.Year}";
     }
 
     private static RecentObservationRecordsViewModel BuildMetric(Metric metric, MetricObservationValue currentValue, HistoricalValues? distribution)
@@ -1614,7 +1640,8 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         PeriodComparisonMode ComparisonMode,
         int? PeriodOffset,
         string? Note,
-        IReadOnlyDictionary<string, MetricObservationValue> MetricValues);
+        IReadOnlyDictionary<string, MetricObservationValue> MetricValues,
+        MeteorologicalSeasonPeriod? SeasonPeriod = null);
 
     private sealed record ObservationCompleteness(int AvailableObservationCount, int ExpectedObservationCount)
     {
