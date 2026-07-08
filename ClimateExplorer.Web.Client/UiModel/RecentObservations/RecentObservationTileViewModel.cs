@@ -27,6 +27,7 @@ public sealed record RecentObservationTileViewModel
     public List<RecentObservationStatViewModel> Stats { get; init; } = [];
     public List<RecentObservationStatViewModel> SupportingStats { get; init; } = [];
     public IReadOnlyList<RecentObservationMetricGroupViewModel> MetricGroups { get; init; } = [];
+    public IReadOnlyList<RecentObservationExpandedTabViewModel> ExpandedTabs { get; init; } = [];
     public int ComparablePeriodCount { get; init; }
     public bool CanShowHistoricalRecord { get; init; }
     public bool CanShowHistoricalRange { get; init; }
@@ -38,6 +39,9 @@ public sealed record RecentObservationTileViewModel
     public float Completeness => ExpectedObservationCount <= 0
         ? 1f
         : Math.Clamp((float)AvailableObservationCount / ExpectedObservationCount, 0f, 1f);
+
+    public IReadOnlyList<RecentObservationExpandedTabViewModel> AvailableExpandedTabs =>
+        ExpandedTabs.Count > 0 ? ExpandedTabs : MetricGroups;
 
     public RecentObservationTileViewModel ApplyCompletenessThreshold(float completenessThreshold)
     {
@@ -75,6 +79,7 @@ public sealed record RecentObservationTileViewModel
             Stats = StripRecordStatus(Stats),
             SupportingStats = StripRecordStatus(SupportingStats),
             MetricGroups = StripComparisons(MetricGroups),
+            ExpandedTabs = StripComparisons(ExpandedTabs),
         };
     }
 
@@ -93,18 +98,51 @@ public sealed record RecentObservationTileViewModel
     {
         return [.. groups.Select(group => group with
         {
-            Metrics = [.. group.Metrics.Select(metric => metric with
-            {
-                RankText = null,
-                RecordStatus = Core.Calculators.RecentObservationRecordStatus.None,
-                RecordStatusText = null,
-                RecordHigh = null,
-                RecordLow = null,
-                CanShowHistoricalRecord = false,
-                CanShowHistoricalRange = false,
-                CanShowRank = false,
-                CanShowPercentile = false,
-            })],
+            Metrics = StripRecordMetrics(group.Metrics),
+        })];
+    }
+
+    private static IReadOnlyList<RecentObservationExpandedTabViewModel> StripComparisons(
+        IReadOnlyList<RecentObservationExpandedTabViewModel> tabs)
+    {
+        return [.. tabs.Select(tab => tab switch
+        {
+            RecentObservationRecordsTabViewModel records => records with { Metrics = StripRecordMetrics(records.Metrics) },
+            RecentObservationVariationTabViewModel variation => variation with { Metrics = StripVariationMetrics(variation.Metrics) },
+            _ => tab,
+        })];
+    }
+
+    private static IReadOnlyList<RecentObservationRecordsViewModel> StripRecordMetrics(
+        IReadOnlyList<RecentObservationRecordsViewModel> metrics)
+    {
+        return [.. metrics.Select(metric => metric with
+        {
+            RankText = null,
+            RecordStatus = Core.Calculators.RecentObservationRecordStatus.None,
+            RecordStatusText = null,
+            RecordHigh = null,
+            RecordLow = null,
+            CanShowHistoricalRecord = false,
+            CanShowHistoricalRange = false,
+            CanShowRank = false,
+            CanShowPercentile = false,
+        })];
+    }
+
+    private static IReadOnlyList<RecentObservationVariationViewModel> StripVariationMetrics(
+        IReadOnlyList<RecentObservationVariationViewModel> metrics)
+    {
+        return [.. metrics.Select(metric => metric with
+        {
+            HistoricalMinimum = null,
+            HistoricalMaximum = null,
+            TypicalVariation = null,
+            StandardScore = null,
+            HistoricalRangeText = null,
+            TypicalVariationText = null,
+            StandardScoreText = null,
+            UnavailableReason = "Recent observations are below the completeness threshold.",
         })];
     }
 

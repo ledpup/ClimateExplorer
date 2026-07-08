@@ -88,29 +88,29 @@
             }
         </dl>
     }
-    @if (Tile.MetricGroups.Count > 0)
+    @if (Tile.AvailableExpandedTabs.Count > 0)
     {
         @if (Expansion.IsExpanded)
         {
             <div class="recent-observation-detail">
-                @if (Tile.MetricGroups.Count > 1)
+                @if (Tile.AvailableExpandedTabs.Count > 1)
                 {
                     <div class="recent-observation-detail-toggle" role="group" aria-label="Statistics view">
-                        @foreach (var group in Tile.MetricGroups)
+                        @foreach (var tab in Tile.AvailableExpandedTabs)
                         {
                             <button type="button"
-                                    class="recent-observation-detail-toggle-option @(Expansion.IsGroupSelected(group.Key) ? "selected" : string.Empty)"
-                                    aria-pressed="@(Expansion.IsGroupSelected(group.Key) ? "true" : "false")"
-                                    @onclick="@(() => Expansion.SelectGroup(group.Key))">
-                                @group.Title
+                                    class="recent-observation-detail-toggle-option @(Expansion.IsGroupSelected(tab.Key) ? "selected" : string.Empty)"
+                                    aria-pressed="@(Expansion.IsGroupSelected(tab.Key) ? "true" : "false")"
+                                    @onclick="@(() => Expansion.SelectGroup(tab.Key))">
+                                @tab.Title
                             </button>
                         }
                     </div>
                 }
-                @if (SelectedGroup is not null)
+                @if (SelectedTab is RecentObservationRecordsTabViewModel recordsTab)
                 {
                     <dl class="recent-observation-detail-metrics">
-                        @foreach (var metric in SelectedGroup.Metrics)
+                        @foreach (var metric in recordsTab.Metrics)
                         {
                             <div class="recent-observation-detail-metric">
                                 <dt>@metric.Label</dt>
@@ -144,6 +144,42 @@
                                             <span class="recent-observation-detail-record-label">@record.Label:</span>
                                             <span class="recent-observation-detail-record-value">@record.Value</span><span class="recent-observation-detail-record-date">@FormatRecordOccurrence(record)</span>
                                         </span>
+                                    }
+                                </dd>
+                            </div>
+                        }
+                    </dl>
+                }
+                else if (SelectedTab is RecentObservationVariationTabViewModel variationTab)
+                {
+                    <dl class="recent-observation-detail-metrics">
+                        @foreach (var metric in variationTab.Metrics)
+                        {
+                            <div class="recent-observation-detail-metric">
+                                <dt>@metric.Label</dt>
+                                <dd>
+                                    @if (!string.IsNullOrWhiteSpace(metric.UnavailableReason))
+                                    {
+                                        <span class="recent-observation-detail-record">@metric.UnavailableReason</span>
+                                    }
+                                    else
+                                    {
+                                        @if (!string.IsNullOrWhiteSpace(metric.HistoricalRangeText))
+                                        {
+                                            <span class="recent-observation-detail-record">@metric.HistoricalRangeText</span>
+                                        }
+                                        @if (!string.IsNullOrWhiteSpace(metric.AverageText))
+                                        {
+                                            <span class="recent-observation-detail-record">@metric.AverageText</span>
+                                        }
+                                        @if (!string.IsNullOrWhiteSpace(metric.TypicalVariationText))
+                                        {
+                                            <span class="recent-observation-detail-record">@metric.TypicalVariationText</span>
+                                        }
+                                        @if (!string.IsNullOrWhiteSpace(metric.StandardScoreText))
+                                        {
+                                            <span class="recent-observation-detail-record">@metric.StandardScoreText</span>
+                                        }
                                     }
                                 </dd>
                             </div>
@@ -185,12 +221,12 @@
 
     protected override void OnParametersSet()
     {
-        Expansion.EnsureSelection(Tile.MetricGroups);
+        Expansion.EnsureSelection(Tile.AvailableExpandedTabs);
     }
 
-    private RecentObservationMetricGroupViewModel? SelectedGroup =>
-        Tile.MetricGroups.FirstOrDefault(group => Expansion.IsGroupSelected(group.Key))
-        ?? (Tile.MetricGroups.Count > 0 ? Tile.MetricGroups[0] : null);
+    private RecentObservationExpandedTabViewModel? SelectedTab =>
+        Tile.AvailableExpandedTabs.FirstOrDefault(tab => Expansion.IsGroupSelected(tab.Key))
+        ?? (Tile.AvailableExpandedTabs.Count > 0 ? Tile.AvailableExpandedTabs[0] : null);
 
     private string ExpandLabel => Expansion.IsExpanded ? "Hide statistics" : "Show statistics";
 
@@ -202,7 +238,7 @@
 
     private string RemovableClass => IsRemovable ? "removable" : string.Empty;
 
-    private string ExpandableClass => Tile.MetricGroups.Count > 0 ? "expandable" : string.Empty;
+    private string ExpandableClass => Tile.AvailableExpandedTabs.Count > 0 ? "expandable" : string.Empty;
 
     private static string StatusClass(RecentObservationRecordStatus status) => status switch
     {

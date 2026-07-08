@@ -367,7 +367,7 @@ public partial class RecentObservationsPanel
 
     private bool IsExpandableTile(RecentObservationTileViewModel tile)
     {
-        return tile.MetricGroups.Count > 0;
+        return tile.AvailableExpandedTabs.Count > 0;
     }
 
     private IEnumerable<int> GetAvailableOffsets(RecentObservationPeriodKind periodKind)
