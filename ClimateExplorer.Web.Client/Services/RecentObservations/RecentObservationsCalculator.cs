@@ -645,7 +645,6 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
 
         var showHistoricalRange = ranking is not null && historicalValues.CanShowHistoricalRange;
         var historicalContext = showHistoricalRange ? CreateHistoricalContextLabel(period) : null;
-        var metricGroupLabel = CreateMetricGroupLabel(period);
         var showMin = domain.ShowHistoricalMin;
 
         return new RecentObservationTileViewModel
@@ -655,7 +654,6 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             PeriodStartDate = period.StartDate,
             PeriodEndDate = period.EndDate,
             PeriodTitle = period.Title,
-            MetricGroupLabel = metricGroupLabel,
             Headline = BuildTileHeadline(period, domain, historicalValues, ranking),
             PercentileSentence = BuildPercentileSentence(period, domain, historicalValues, ranking),
             PrimaryLabel = domain.PrimaryLabel,
@@ -673,7 +671,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             Note = CombineNotes(period.Note, BuildLimitedHistoryNote(period, historicalValues, ranking)),
             Stats = stats,
             SupportingStats = supportingStats,
-            MetricGroups = BuildMetricGroups(period, domain, distributions, metricGroupLabel),
+            MetricGroups = BuildMetricGroups(period, domain, distributions),
             ComparablePeriodCount = historicalValues.ComparablePeriodCount,
             CanShowHistoricalRecord = historicalValues.CanShowHistoricalRecord,
             CanShowHistoricalRange = historicalValues.CanShowHistoricalRange,
@@ -808,8 +806,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
     private static IReadOnlyList<RecentObservationMetricGroupViewModel> BuildMetricGroups(
         PeriodObservation period,
         MetricDomain domain,
-        IReadOnlyDictionary<string, HistoricalValues> distributions,
-        string metricGroupLabel)
+        IReadOnlyDictionary<string, HistoricalValues> distributions)
     {
         var groups = new List<RecentObservationMetricGroupViewModel>();
 
@@ -820,7 +817,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
 
         foreach (var group in groupDefinitions)
         {
-            var metrics = new List<RecentObservationMetricViewModel>();
+            var metrics = new List<RecentObservationExtremesViewModel>();
             foreach (var metric in group.Metrics)
             {
                 if (period.MetricValues.TryGetValue(metric.Key, out var value))
@@ -834,7 +831,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
                 groups.Add(new RecentObservationMetricGroupViewModel
                 {
                     Key = group.Key,
-                    Title = group.Key == "period" ? metricGroupLabel : group.Title,
+                    Title = group.Title,
                     Metrics = metrics,
                 });
             }
@@ -843,7 +840,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         return groups;
     }
 
-    private static RecentObservationMetricViewModel BuildMetric(Metric metric, double currentValue, HistoricalValues? distribution)
+    private static RecentObservationExtremesViewModel BuildMetric(Metric metric, double currentValue, HistoricalValues? distribution)
     {
         var ranking = distribution is null
             ? null
@@ -851,7 +848,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
 
         if (ranking is null || distribution is null)
         {
-            return new RecentObservationMetricViewModel
+            return new RecentObservationExtremesViewModel
             {
                 Label = metric.DetailLabel,
                 CurrentValue = metric.Format(currentValue),
@@ -868,7 +865,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         // for the comparison date as plain reference context (no rank of their own).
         var status = RecentObservationComparison.DetermineRecordStatus(ranking);
 
-        return new RecentObservationMetricViewModel
+        return new RecentObservationExtremesViewModel
         {
             Label = metric.DetailLabel,
             CurrentValue = metric.Format(currentValue),
@@ -1126,18 +1123,6 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         return period.ComparisonLabel;
     }
 
-    private static string CreateMetricGroupLabel(PeriodObservation period)
-    {
-        return period.Kind switch
-        {
-            PeriodKind.LatestSevenDays => "7 Days",
-            PeriodKind.CurrentMonth or PeriodKind.PreviousMonth => MonthName(period.EndDate.Month),
-            PeriodKind.CurrentSeason or PeriodKind.PreviousSeason => period.Title,
-            PeriodKind.YearToDate => period.EndDate.Year.ToString(CultureInfo.InvariantCulture),
-            _ => period.Title,
-        };
-    }
-
     private static string CreateComparisonLabel(
         PeriodKind kind,
         DateOnly endDate,
@@ -1383,11 +1368,11 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         MeanTemperatureMetric,
         [AverageMaxTemperatureMetric, AverageMinTemperatureMetric],
         [
-            new MetricGroup("period", "Period", [AverageMaxTemperatureMetric, AverageMinTemperatureMetric, MeanTemperatureMetric]),
-            new MetricGroup("daily-extremes", "Daily extremes", [HighestDailyMaxTemperatureMetric, LowestDailyMaxTemperatureMetric, HighestDailyMinTemperatureMetric, LowestDailyMinTemperatureMetric]),
+            new MetricGroup(MetricGroupKey.Extremes, "Extremes", [AverageMaxTemperatureMetric, AverageMinTemperatureMetric, MeanTemperatureMetric]),
+            new MetricGroup(MetricGroupKey.DailyExtremes, "Daily extremes", [HighestDailyMaxTemperatureMetric, LowestDailyMaxTemperatureMetric, HighestDailyMinTemperatureMetric, LowestDailyMinTemperatureMetric]),
         ],
         [
-            new MetricGroup("day", "Day", [DailyMaxTemperatureMetric, DailyMinTemperatureMetric, DailyMeanTemperatureMetric]),
+            new MetricGroup(MetricGroupKey.Day, "Day", [DailyMaxTemperatureMetric, DailyMinTemperatureMetric, DailyMeanTemperatureMetric]),
         ],
         "Mean temperature",
         ShowHistoricalMin: true,
@@ -1401,11 +1386,11 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         PrecipitationMetric,
         [],
         [
-            new MetricGroup("period", "Period", [PrecipitationMetric]),
-            new MetricGroup("daily-extremes", "Daily extremes", [HighestDailyPrecipitationMetric]),
+            new MetricGroup(MetricGroupKey.Extremes, "Extremes", [PrecipitationMetric]),
+            new MetricGroup(MetricGroupKey.DailyExtremes, "Daily extremes", [HighestDailyPrecipitationMetric]),
         ],
         [
-            new MetricGroup("day", "Day", [DailyPrecipitationMetric]),
+            new MetricGroup(MetricGroupKey.Day, "Day", [DailyPrecipitationMetric]),
         ],
         "Precipitation total",
         ShowHistoricalMin: true,
@@ -1439,7 +1424,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         Func<double, string> Format,
         string DetailLabel);
 
-    private sealed record MetricGroup(string Key, string Title, IReadOnlyList<Metric> Metrics);
+    private sealed record MetricGroup(MetricGroupKey Key, string Title, IReadOnlyList<Metric> Metrics);
 
     private sealed record MetricDomain(
         Metric Primary,

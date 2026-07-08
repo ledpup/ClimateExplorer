@@ -9,7 +9,6 @@ public sealed record RecentObservationTileViewModel
     public DateOnly PeriodStartDate { get; init; }
     public DateOnly PeriodEndDate { get; init; }
     public string PeriodTitle { get; init; } = string.Empty;
-    public string MetricGroupLabel { get; init; } = string.Empty;
     public string Headline { get; init; } = string.Empty;
     public string PercentileSentence { get; init; } = string.Empty;
     public string PrimaryLabel { get; init; } = string.Empty;

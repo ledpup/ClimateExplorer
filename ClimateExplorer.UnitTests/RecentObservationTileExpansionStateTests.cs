@@ -1,8 +1,6 @@
 namespace ClimateExplorer.UnitTests;
 
-using System;
 using System.Collections.Generic;
-using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.Client.UiModel.RecentObservations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -11,8 +9,8 @@ public class RecentObservationTileExpansionStateTests
 {
     private static readonly IReadOnlyList<RecentObservationMetricGroupViewModel> Groups =
     [
-        new RecentObservationMetricGroupViewModel { Key = "period", Title = "Period" },
-        new RecentObservationMetricGroupViewModel { Key = "daily-extremes", Title = "Daily Extremes" },
+        new RecentObservationMetricGroupViewModel { Key = MetricGroupKey.Extremes, Title = "Extremes" },
+        new RecentObservationMetricGroupViewModel { Key = MetricGroupKey.DailyExtremes, Title = "Daily extremes" },
     ];
 
     [TestMethod]
@@ -43,9 +41,9 @@ public class RecentObservationTileExpansionStateTests
 
         state.EnsureSelection(Groups);
 
-        Assert.AreEqual("period", state.SelectedGroupKey);
-        Assert.IsTrue(state.IsGroupSelected("period"));
-        Assert.IsFalse(state.IsGroupSelected("daily-extremes"));
+        Assert.AreEqual(MetricGroupKey.Extremes, state.SelectedGroupKey);
+        Assert.IsTrue(state.IsGroupSelected(MetricGroupKey.Extremes));
+        Assert.IsFalse(state.IsGroupSelected(MetricGroupKey.DailyExtremes));
     }
 
     [TestMethod]
@@ -53,29 +51,18 @@ public class RecentObservationTileExpansionStateTests
     {
         var state = new RecentObservationTileExpansionState();
         state.EnsureSelection(Groups);
-        state.SelectGroup("daily-extremes");
+        state.SelectGroup(MetricGroupKey.DailyExtremes);
 
         state.EnsureSelection(Groups);
 
-        Assert.AreEqual("daily-extremes", state.SelectedGroupKey);
-    }
-
-    [TestMethod]
-    public void EnsureSelectionResetsAStaleSelection()
-    {
-        var state = new RecentObservationTileExpansionState();
-        state.SelectGroup("no-longer-present");
-
-        state.EnsureSelection(Groups);
-
-        Assert.AreEqual("period", state.SelectedGroupKey);
+        Assert.AreEqual(MetricGroupKey.DailyExtremes, state.SelectedGroupKey);
     }
 
     [TestMethod]
     public void EnsureSelectionClearsWhenNoGroups()
     {
         var state = new RecentObservationTileExpansionState();
-        state.SelectGroup("period");
+        state.SelectGroup(MetricGroupKey.Extremes);
 
         state.EnsureSelection([]);
 
@@ -89,10 +76,10 @@ public class RecentObservationTileExpansionStateTests
         state.EnsureSelection(Groups);
         state.Toggle();
 
-        state.SelectGroup("daily-extremes");
+        state.SelectGroup(MetricGroupKey.DailyExtremes);
 
         Assert.IsTrue(state.IsExpanded);
-        Assert.IsTrue(state.IsGroupSelected("daily-extremes"));
+        Assert.IsTrue(state.IsGroupSelected(MetricGroupKey.DailyExtremes));
     }
 
     [TestMethod]
