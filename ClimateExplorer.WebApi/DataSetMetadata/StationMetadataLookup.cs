@@ -3,6 +3,7 @@
 namespace ClimateExplorer.WebApi.Metadata;
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,7 +13,7 @@ using ClimateExplorer.Core.Model;
 [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.OrderingRules", "SA1204:Static elements should appear before instance elements", Justification = "Private helpers are kept below the public flow they support.")]
 internal sealed class StationMetadataLookup : IStationMetadataLookup
 {
-    private static readonly Dictionary<string, Task<IReadOnlyDictionary<string, Station>>> StationsByFileName = [];
+    private static readonly ConcurrentDictionary<string, Task<IReadOnlyDictionary<string, Station>>> StationsByFileName = new();
 
     public async Task<Station?> GetStationAsync(DataSetDefinition dataSetDefinition, string stationId)
     {
@@ -28,13 +29,7 @@ internal sealed class StationMetadataLookup : IStationMetadataLookup
 
     private Task<IReadOnlyDictionary<string, Station>> GetStationsAsync(string stationMetadataFileName)
     {
-        if (!StationsByFileName.TryGetValue(stationMetadataFileName, out var stationsTask))
-        {
-            stationsTask = LoadStationsAsync(stationMetadataFileName);
-            StationsByFileName[stationMetadataFileName] = stationsTask;
-        }
-
-        return stationsTask;
+        return StationsByFileName.GetOrAdd(stationMetadataFileName, LoadStationsAsync);
     }
 
     private static async Task<IReadOnlyDictionary<string, Station>> LoadStationsAsync(string stationMetadataFileName)
