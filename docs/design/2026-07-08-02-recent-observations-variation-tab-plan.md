@@ -9,15 +9,20 @@
 
 ## Goal
 
-Add a **Variation** expanded-tab button to non-day Recent Observation tiles for
-both temperature and precipitation.
+Add a **Variation** expanded-tab button to Recent Observation tiles for both
+temperature and precipitation.
 
-The tab explains how far the current period's aggregate value sits from
-equivalent historical periods:
+The tab explains how far the current tile's metric value sits from equivalent
+historical observations or periods:
 
 - Historical range: historical minimum to historical maximum.
-- Typical variation: standard deviation of equivalent historical period values.
+- Typical variation: standard deviation of equivalent historical values.
 - Variation score: `(current value - historical average) / standard deviation`.
+
+Expanded tab shape differs by tile type:
+
+- Day tiles: **Records**, **Variation**.
+- Non-day tiles: **Period records**, **Day records**, **Variation**.
 
 ## Current model and rendering flow
 
@@ -39,12 +44,17 @@ then calls `GetHistoricalDistributions` once per tile. That distribution is
 already keyed by metric and contains the historical period values used by
 `Period records` and `Day records`.
 
-The relevant existing non-day groups are declared in `MetricDomain.Groups`:
+The relevant existing non-day record groups are declared in
+`MetricDomain.Groups`:
 
 - Temperature: `PeriodRecords` and `DayRecords`.
 - Precipitation: `PeriodRecords` and `DayRecords`.
 
-Daily tiles use `MetricDomain.DailyGroups`, which only contains `Day`.
+Daily record groups are declared in `MetricDomain.DailyGroups` and currently
+render as a single untoggled `Day` group. This will need to become a visible
+**Records** tab whenever a daily **Variation** tab is added. The implementation
+can keep the existing `MetricGroupKey.Day` key to avoid churn, but should change
+the user-facing tab title from `Day` to `Records`.
 
 ## Recommended model approach
 
@@ -124,25 +134,36 @@ does not accidentally include null or non-finite values. Use
   variation score, or equivalent code using the same population standard
   deviation convention.
 
-The current period value should come from `period.MetricValues[metric.Key]`,
-matching `Period records`. For temperature, use the period aggregate metrics:
+The current value should come from `period.MetricValues[metric.Key]`, matching
+the corresponding records tab.
+
+For non-day temperature tiles, use the period aggregate metrics:
 
 - average max temperature;
 - average min temperature;
 - mean temperature.
 
-For precipitation, use the period precipitation amount.
+For day temperature tiles, use the daily observation metrics:
+
+- maximum temperature;
+- minimum temperature;
+- mean temperature.
+
+For non-day precipitation tiles, use the period precipitation amount. For day
+precipitation tiles, use the daily precipitation amount.
 
 Add variation metric labels explicitly rather than reusing record labels blindly:
 
-- `Average max temp`
-- `Average min temp`
-- `Mean temperature`
-- `Precipitation`
+- non-day temperature: `Average max temp`, `Average min temp`,
+  `Mean temperature`;
+- day temperature: `Maximum`, `Minimum`, `Mean`;
+- precipitation: `Precipitation`.
 
 The cleanest place is either a `VariationLabel` field on the internal `Metric`
 record or a `MetricDomain.VariationMetrics` list whose entries include display
-labels.
+labels. If using `MetricDomain.VariationMetrics`, support separate daily and
+non-daily variation metric lists, just as records already have `Groups` and
+`DailyGroups`.
 
 ## Rendering changes
 
@@ -166,11 +187,15 @@ separate branch:
 ```
 
 Use the existing `.recent-observation-detail-metrics` and
-`.recent-observation-detail-metric` grid. Temperature will naturally lay out as:
+`.recent-observation-detail-metric` grid. Non-day temperature will naturally lay
+out as:
 
 - row 1, column 1: Average max temp;
 - row 1, column 2: Average min temp;
 - row 2, column 1: Mean temperature.
+
+Day temperature should use the same grid with `Maximum`, `Minimum`, and `Mean`
+in that order.
 
 For each variation row, render only the available lines:
 
@@ -230,8 +255,9 @@ Missing max/min/mean temperature:
 Current temperature daily observations require paired max/min values, so missing
 recent max/min reduces completeness. Historical max/min may be unavailable, in
 which case the calculator falls back to mean-temperature history. In that case,
-mean temperature variation can still be calculated, but average max/min variation
-rows should show unavailable history rather than borrowing mean history.
+mean temperature variation can still be calculated, but average max/min or daily
+maximum/minimum variation rows should show unavailable history rather than
+borrowing mean history.
 
 Completeness threshold:
 When `ApplyCompletenessThreshold` suppresses comparisons, variation content must
@@ -240,6 +266,12 @@ Variation tab from the thresholded tile or keep it with an unavailable reason;
 prefer the latter only if the UI would otherwise cause a jarring tab-count shift
 while the user adjusts the threshold.
 
+Daily tiles:
+Daily tiles should no longer hide the expanded-tab toggle once variation is
+available. They should expose two tabs: a **Records** tab backed by the current
+daily record metrics, and a **Variation** tab backed by same-calendar-date
+historical distributions.
+
 ## Tests to add or update
 
 Use the repo's `MethodName_StateUnderTest_ExpectedBehavior` naming convention for
@@ -247,16 +279,20 @@ new tests.
 
 Service/calculator tests:
 
-- Non-day precipitation tiles expose tabs in order:
+- Non-day precipitation and temperature tiles expose tabs in order:
   `PeriodRecords`, `DayRecords`, `Variation`.
-- Daily precipitation and daily temperature tiles expose `Variation`.
+- Daily precipitation and daily temperature tiles expose tabs in order:
+  `Day`, `Variation`, with user-facing titles `Records`, `Variation`.
 - Precipitation variation contains historical range, typical variation, and a
   signed variation score formatted with `mm` and `×`.
-- Temperature variation contains exactly average max, average min, and mean
-  temperature rows in that order, each using `°C`.
+- Non-day temperature variation contains exactly average max, average min, and
+  mean temperature rows in that order, each using `°C`.
+- Day temperature variation contains exactly maximum, minimum, and mean rows in
+  that order, each using `°C`.
 - Negative variation scores include the minus sign; positive scores include `+`.
 - A zero-standard-deviation historical distribution omits the variation score.
-- Mean-temperature fallback history does not fabricate average max/min variation.
+- Mean-temperature fallback history does not fabricate average max/min or daily
+  maximum/minimum variation.
 
 View-model/completeness tests:
 
@@ -288,6 +324,8 @@ Rendering tests:
 4. Build variation rows in `RecentObservationsCalculator` from existing
    historical distributions and `StandardDeviation`.
 5. Wire non-day tiles to append a **Variation** tab after **Day records**.
-6. Apply completeness-threshold suppression to variation content.
-7. Add focused unit tests for tab presence/order, variation calculation,
-   formatting, zero-variance handling, missing history, and day-tile exclusion.
+6. Wire day tiles to render **Records** and **Variation** tabs, with **Records**
+   using the existing daily record metrics.
+7. Apply completeness-threshold suppression to variation content.
+8. Add focused unit tests for tab presence/order, variation calculation,
+   formatting, zero-variance handling, missing history, and daily tile behavior.
