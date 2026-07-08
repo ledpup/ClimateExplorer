@@ -1,4 +1,4 @@
-﻿namespace ClimateExplorer.Core;
+﻿namespace ClimateExplorer.Core.Stats;
 
 public static class CentredMovingAverageCalculator
 {

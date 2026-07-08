@@ -1,4 +1,4 @@
-using ClimateExplorer.Core;
+using ClimateExplorer.Core.Stats;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 
