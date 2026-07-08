@@ -101,7 +101,9 @@
     ::deep .country-col,
     ::deep .country-cell,
     ::deep .anomaly-col,
-    ::deep .anomaly-cell {
+    ::deep .anomaly-cell,
+    ::deep .recent-observations-col,
+    ::deep .recent-observations-cell {
         display: none;
     }
 

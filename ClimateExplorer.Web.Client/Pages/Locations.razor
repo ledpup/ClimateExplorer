@@ -87,6 +87,9 @@
                         <TableHeaderCell TextAlignment="TextAlignment.Center" Class="data-sources-col">
                             <Strong>Data sources</Strong>
                         </TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.Center" Class="recent-observations-col">
+                            <Strong>Recent observations</Strong>
+                        </TableHeaderCell>
                         <TableHeaderCell TextAlignment="TextAlignment.End" @onclick='() => OnSortChanged("recordhigh")' Style="cursor: pointer; user-select: none;">
                             <Strong>Record high <i class="fas @GetSortIconClass("recordhigh")"></i></Strong>
                         </TableHeaderCell>
@@ -123,6 +126,9 @@
                                 {
                                     <span>&#x2014;</span>
                                 }
+                            </td>
+                            <td class="recent-observations-cell text-center">
+                                <ClimateButton Variant="ButtonVariant.Link" Text="View" Class="record-link" OnClick="@(() => ShowRecentObservationsAsync(location))" />
                             </td>
                             <td class="@(location.RecordHigh is null ? null : "text-end")">
                                 @if (location.RecordHigh is not null)
@@ -170,4 +176,8 @@
     <ClimateRecords Location="@Location" DataSetDefinitions="@DataSetDefinitions" />
 </SidePanel>
 
-<LocationDataSetMetadataSidePanel @ref="dataSetMetadataSidePanel" DataSetDefinitions="@DataSetDefinitions" />
+<SidePanel @ref="recentObservationsSidePanel" Title="@("Recent observations for " + Location?.Name)" Width="85%">
+    <RecentObservationsPanel Location="@Location" />
+</SidePanel>
+
+<LocationDataSetMetadataSidePanel @ref="dataSetMetadataSidePanel" DataSetDefinitions="@DataSetDefinitions" Width="50%" />

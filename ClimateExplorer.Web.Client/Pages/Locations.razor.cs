@@ -29,6 +29,7 @@ public partial class Locations
     private int filteredCount;
     private int totalPages = 1;
     private SidePanel? climateRecordsSidePanel;
+    private SidePanel? recentObservationsSidePanel;
     private LocationDataSetMetadataSidePanel? dataSetMetadataSidePanel;
     private Location? selectedLocation;
     private string? nameFilter;
@@ -296,6 +297,12 @@ public partial class Locations
     {
         selectedLocation = location;
         await (climateRecordsSidePanel?.ShowAsync() ?? Task.CompletedTask);
+    }
+
+    private async Task ShowRecentObservationsAsync(Location location)
+    {
+        selectedLocation = location;
+        await (recentObservationsSidePanel?.ShowAsync() ?? Task.CompletedTask);
     }
 
     private async Task ShowDataSetMetadataAsync(Location location)
