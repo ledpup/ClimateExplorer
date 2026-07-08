@@ -171,9 +171,9 @@
                                                 <span class="recent-observation-detail-rank">@metric.StandardScoreLabel</span>
                                             </div>
                                         }
-                                        @if (!string.IsNullOrWhiteSpace(metric.AverageText))
+                                        @if (!string.IsNullOrWhiteSpace(metric.HistoricalAverageText))
                                         {
-                                            <span class="recent-observation-detail-record">@metric.AverageText</span>
+                                            <span class="recent-observation-detail-record">@metric.HistoricalAverageText</span>
                                         }
                                         @if (!string.IsNullOrWhiteSpace(metric.TypicalVariationText))
                                         {
