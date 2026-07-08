@@ -458,16 +458,15 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             ComputeMetrics(records, domain)));
     }
 
-    private static IReadOnlyDictionary<string, double> ComputeMetrics(IReadOnlyList<DailyObservation> records, MetricDomain domain)
+    private static IReadOnlyDictionary<string, MetricObservationValue> ComputeMetrics(IReadOnlyList<DailyObservation> records, MetricDomain domain)
     {
-        var result = new Dictionary<string, double>();
+        var result = new Dictionary<string, MetricObservationValue>();
 
         foreach (var metric in domain.AllMetrics)
         {
             var values = records
-                .Select(metric.Select)
-                .Where(x => x.HasValue)
-                .Select(x => x!.Value)
+                .Select(record => new MetricObservationValue(record.Date, metric.Select(record)))
+                .Where(x => x.Value.HasValue)
                 .ToList();
 
             if (values.Count > 0)
@@ -479,14 +478,14 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         return result;
     }
 
-    private static double Aggregate(IReadOnlyList<double> values, MetricAggregation aggregation)
+    private static MetricObservationValue Aggregate(IReadOnlyList<MetricObservationValue> values, MetricAggregation aggregation)
     {
         return aggregation switch
         {
-            MetricAggregation.Mean => values.Average(),
-            MetricAggregation.Sum => values.Sum(),
-            MetricAggregation.Max => values.Max(),
-            MetricAggregation.Min => values.Min(),
+            MetricAggregation.Mean => new MetricObservationValue(null, values.Average(x => x.Value!.Value)),
+            MetricAggregation.Sum => new MetricObservationValue(null, values.Sum(x => x.Value!.Value)),
+            MetricAggregation.Max => values.OrderByDescending(x => x.Value!.Value).ThenBy(x => x.OccurredOn).First(),
+            MetricAggregation.Min => values.OrderBy(x => x.Value!.Value).ThenBy(x => x.OccurredOn).First(),
             _ => throw new NotImplementedException(),
         };
     }
@@ -521,7 +520,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         foreach (var metric in metrics)
         {
             var values = sameDate
-                .Select(x => new HistoricalPeriodValue(metric.Select(x), (short)x.Date.Year))
+                .Select(x => new HistoricalPeriodValue(metric.Select(x), (short)x.Date.Year, x.Date))
                 .Where(x => x.Value.HasValue)
                 .ToList();
 
@@ -567,14 +566,14 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             foreach (var group in groups)
             {
                 var groupValues = group.Records
-                    .Select(metric.Select)
-                    .Where(x => x.HasValue)
-                    .Select(x => x!.Value)
+                    .Select(record => new MetricObservationValue(record.Date, metric.Select(record)))
+                    .Where(x => x.Value.HasValue)
                     .ToList();
 
                 if (groupValues.Count >= group.RequiredDays)
                 {
-                    values.Add(new HistoricalPeriodValue(Aggregate(groupValues, metric.Aggregation), (short)group.Year));
+                    var aggregate = Aggregate(groupValues, metric.Aggregation);
+                    values.Add(new HistoricalPeriodValue(aggregate.Value, (short)group.Year, aggregate.OccurredOn));
                 }
             }
 
@@ -613,7 +612,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
     {
         var historicalValues = distributions[domain.Primary.Key];
         var primaryValue = period.MetricValues[domain.Primary.Key];
-        var ranking = RecentObservationComparison.Rank(primaryValue, historicalValues.Values);
+        var ranking = RecentObservationComparison.Rank(primaryValue.Value!.Value, historicalValues.Values);
         var singular = period.Completeness.AvailableObservationCount == 1;
         var stats = new List<RecentObservationStatViewModel>();
         var supportingStats = new List<RecentObservationStatViewModel>();
@@ -622,11 +621,11 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         {
             if (period.MetricValues.TryGetValue(metric.Key, out var value))
             {
-                var status = GetRecordStatus(value, distributions.GetValueOrDefault(metric.Key));
+                var status = GetRecordStatus(value.Value!.Value, distributions.GetValueOrDefault(metric.Key));
                 supportingStats.Add(new RecentObservationStatViewModel
                 {
                     Label = singular ? metric.SingularLabel : metric.PluralLabel,
-                    Value = metric.Format(value),
+                    Value = metric.Format(value.Value!.Value),
                     RecordStatus = status,
                     RecordStatusText = FormatCollapsedRecordStatus(status),
                 });
@@ -657,7 +656,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             Headline = BuildTileHeadline(period, domain, historicalValues, ranking),
             PercentileSentence = BuildPercentileSentence(period, domain, historicalValues, ranking),
             PrimaryLabel = domain.PrimaryLabel,
-            PrimaryValue = domain.Primary.Format(primaryValue),
+            PrimaryValue = domain.Primary.Format(primaryValue.Value!.Value),
             PrimaryRecordStatus = primaryStatus,
             PrimaryRecordStatusText = FormatCollapsedRecordStatus(primaryStatus),
             HistoricalMaxLabel = showHistoricalRange ? $"{domain.HistoricalMaxWord} {historicalContext}" : null,
@@ -840,18 +839,19 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         return groups;
     }
 
-    private static RecentObservationRecordsViewModel BuildMetric(Metric metric, double currentValue, HistoricalValues? distribution)
+    private static RecentObservationRecordsViewModel BuildMetric(Metric metric, MetricObservationValue currentValue, HistoricalValues? distribution)
     {
         var ranking = distribution is null
             ? null
-            : RecentObservationComparison.Rank(currentValue, distribution.Values);
+            : RecentObservationComparison.Rank(currentValue.Value!.Value, distribution.Values);
 
         if (ranking is null || distribution is null)
         {
             return new RecentObservationRecordsViewModel
             {
                 Label = metric.DetailLabel,
-                CurrentValue = metric.Format(currentValue),
+                CurrentValue = metric.Format(currentValue.Value!.Value),
+                CurrentValueDate = currentValue.OccurredOn,
                 ComparablePeriodCount = distribution?.ComparablePeriodCount ?? 0,
                 CanShowHistoricalRecord = distribution?.CanShowHistoricalRecord ?? false,
                 CanShowHistoricalRange = distribution?.CanShowHistoricalRange ?? false,
@@ -868,7 +868,8 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         return new RecentObservationRecordsViewModel
         {
             Label = metric.DetailLabel,
-            CurrentValue = metric.Format(currentValue),
+            CurrentValue = metric.Format(currentValue.Value!.Value),
+            CurrentValueDate = currentValue.OccurredOn,
             RecordStatus = status,
             RecordStatusText = FormatRecordStatus(status, ranking, distribution),
             RankText = distribution.CanShowRank ? BuildRankText(ranking, status) : null,
@@ -907,6 +908,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             Label = label,
             Value = metric.Format(value),
             Year = FormatHistoricalOccurrence(occurrence),
+            Date = occurrence?.OccurredOn,
         };
     }
 
@@ -1477,7 +1479,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         PeriodComparisonMode ComparisonMode,
         int? PeriodOffset,
         string? Note,
-        IReadOnlyDictionary<string, double> MetricValues);
+        IReadOnlyDictionary<string, MetricObservationValue> MetricValues);
 
     private sealed record ObservationCompleteness(int AvailableObservationCount, int ExpectedObservationCount)
     {
@@ -1510,16 +1512,20 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             .Where(x => x.Value.HasValue && double.IsFinite(x.Value.Value))
             .OrderByDescending(x => x.Value!.Value)
             .ThenBy(x => x.Year)
+            .ThenBy(x => x.OccurredOn)
             .FirstOrDefault();
 
         public HistoricalPeriodValue? MinValue => PeriodValues
             .Where(x => x.Value.HasValue && double.IsFinite(x.Value.Value))
             .OrderBy(x => x.Value!.Value)
             .ThenBy(x => x.Year)
+            .ThenBy(x => x.OccurredOn)
             .FirstOrDefault();
     }
 
-    private sealed record HistoricalPeriodValue(double? Value, short? Year);
+    private sealed record HistoricalPeriodValue(double? Value, short? Year, DateOnly? OccurredOn);
+
+    private sealed record MetricObservationValue(DateOnly? OccurredOn, double? Value);
 
     private enum PeriodKind
     {

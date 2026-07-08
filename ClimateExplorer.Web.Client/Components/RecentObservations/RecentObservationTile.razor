@@ -115,22 +115,34 @@
                             <div class="recent-observation-detail-metric">
                                 <dt>@metric.Label</dt>
                                 <dd>
-                                    <div class="recent-observation-detail-headline">
+                                    <div class="recent-observation-detail-headline @(IsDayRecordsSelected ? "day-records" : string.Empty)">
                                         <span class="recent-observation-detail-current">@metric.CurrentValue</span>
-                                        @if (!string.IsNullOrWhiteSpace(metric.RecordStatusText))
+                                        @if (IsDayRecordsSelected && metric.CurrentValueDate.HasValue)
+                                        {
+                                            <span class="recent-observation-detail-current-date">· @FormatCurrentMetricDate(metric.CurrentValueDate.Value)</span>
+                                        }
+                                        @if (!IsDayRecordsSelected && !string.IsNullOrWhiteSpace(metric.RecordStatusText))
                                         {
                                             <span class="recent-observation-status status-@StatusClass(metric.RecordStatus)">@metric.RecordStatusText</span>
                                         }
-                                        else if (!string.IsNullOrWhiteSpace(metric.RankText))
+                                        else if (!IsDayRecordsSelected && !string.IsNullOrWhiteSpace(metric.RankText))
                                         {
                                             <span class="recent-observation-detail-rank">@metric.RankText</span>
                                         }
                                     </div>
+                                    @if (IsDayRecordsSelected && !string.IsNullOrWhiteSpace(metric.RecordStatusText))
+                                    {
+                                        <span class="recent-observation-status status-@StatusClass(metric.RecordStatus)">@metric.RecordStatusText</span>
+                                    }
+                                    else if (IsDayRecordsSelected && !string.IsNullOrWhiteSpace(metric.RankText))
+                                    {
+                                        <span class="recent-observation-detail-rank day-records">@metric.RankText</span>
+                                    }
                                     @foreach (var record in metric.Records)
                                     {
                                         <span class="recent-observation-detail-record">
                                             <span class="recent-observation-detail-record-label">@record.Label:</span>
-                                            @record.Value@(record.Year is not null ? $" ({record.Year})" : string.Empty)
+                                            <span class="recent-observation-detail-record-value">@record.Value</span><span class="recent-observation-detail-record-date">@FormatRecordOccurrence(record)</span>
                                         </span>
                                     }
                                 </dd>

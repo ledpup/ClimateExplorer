@@ -1810,6 +1810,128 @@ public class RecentObservationsServiceTests
     }
 
     [TestMethod]
+    public async Task GetTemperatureRecords_DayRecordsMetricsHaveOccurrences_ExposesCurrentAndHistoricalDates()
+    {
+        var historicalMax = CreateHistoricalDailyValues(
+            new DateOnly(2026, 6, 1),
+            new DateOnly(2026, 6, 14),
+            (year, date) => (year, date.Day) switch
+            {
+                (2020, 10) => 60d,
+                (2000, _) => 10d,
+                _ => 20d + ((year - 2000) * 0.1d) + ((date.Day - 8) * 0.01d),
+            });
+        var historicalMin = CreateHistoricalDailyValues(
+            new DateOnly(2026, 6, 1),
+            new DateOnly(2026, 6, 14),
+            (year, date) => (year, date.Day) switch
+            {
+                (2021, 9) => 35d,
+                (2002, 11) => -10d,
+                (2000, _) => 5d,
+                _ => 15d + ((year - 2000) * 0.05d) + ((date.Day - 8) * 0.01d),
+            });
+        var service = CreateTemperatureServiceWithExtremes(
+            recentMax: date => date.Day switch
+            {
+                9 => 12.3d,
+                12 => 42.6d,
+                _ => 25d,
+            },
+            recentMin: date => date.Day switch
+            {
+                10 => 21.4d,
+                11 => 2.5d,
+                _ => 10d,
+            },
+            historicalMax,
+            historicalMin);
+
+        var result = await service.GetTemperatureRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: 1,
+            previousMonthCount: 0,
+            previousSeasonCount: 0);
+        var latestSevenDays = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays);
+        var dailyExtremes = latestSevenDays.MetricGroups.Single(x => x.Key == MetricGroupKey.DayRecords);
+
+        var highestDailyMax = dailyExtremes.Metrics.Single(x => x.Label == "Highest daily maximum");
+        Assert.AreEqual("42.6°C", highestDailyMax.CurrentValue);
+        Assert.AreEqual(new DateOnly(2026, 6, 12), highestDailyMax.CurrentValueDate);
+        Assert.AreEqual(new DateOnly(2020, 6, 10), highestDailyMax.RecordHigh!.Date);
+        Assert.AreEqual(new DateOnly(2000, 6, 8), highestDailyMax.RecordLow!.Date);
+
+        var lowestDailyMax = dailyExtremes.Metrics.Single(x => x.Label == "Lowest daily maximum");
+        Assert.AreEqual("12.3°C", lowestDailyMax.CurrentValue);
+        Assert.AreEqual(new DateOnly(2026, 6, 9), lowestDailyMax.CurrentValueDate);
+
+        var highestDailyMin = dailyExtremes.Metrics.Single(x => x.Label == "Highest daily minimum");
+        Assert.AreEqual("21.4°C", highestDailyMin.CurrentValue);
+        Assert.AreEqual(new DateOnly(2026, 6, 10), highestDailyMin.CurrentValueDate);
+        Assert.AreEqual(new DateOnly(2021, 6, 9), highestDailyMin.RecordHigh!.Date);
+
+        var lowestDailyMin = dailyExtremes.Metrics.Single(x => x.Label == "Lowest daily minimum");
+        Assert.AreEqual("2.5°C", lowestDailyMin.CurrentValue);
+        Assert.AreEqual(new DateOnly(2026, 6, 11), lowestDailyMin.CurrentValueDate);
+        Assert.AreEqual(new DateOnly(2002, 6, 11), lowestDailyMin.RecordLow!.Date);
+    }
+
+    [TestMethod]
+    public async Task GetPrecipitationRecords_DayRecordsMetricHasOccurrence_ExposesCurrentAndHistoricalDates()
+    {
+        var historicalRecords = CreateHistoricalDailyValues(
+            new DateOnly(2026, 6, 1),
+            new DateOnly(2026, 6, 14),
+            (year, date) => (year, date.Day) switch
+            {
+                (2020, 9) => 80d,
+                (2000, _) => 2d,
+                _ => 10d + ((year - 2000) * 0.1d) + ((date.Day - 8) * 0.01d),
+            });
+        var service = CreateService(
+            historicalRecords: historicalRecords,
+            recentValue: date => date.Day == 12 ? 12d : 1d);
+
+        var result = await service.GetPrecipitationRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: 1,
+            previousMonthCount: 0,
+            previousSeasonCount: 0);
+        var latestSevenDays = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays);
+        var dailyExtremes = latestSevenDays.MetricGroups.Single(x => x.Key == MetricGroupKey.DayRecords);
+        var highestDaily = dailyExtremes.Metrics.Single(x => x.Label == "Highest daily precipitation");
+
+        Assert.AreEqual("12mm", highestDaily.CurrentValue);
+        Assert.AreEqual(new DateOnly(2026, 6, 12), highestDaily.CurrentValueDate);
+        Assert.AreEqual(new DateOnly(2020, 6, 9), highestDaily.RecordHigh!.Date);
+        Assert.AreEqual(new DateOnly(2000, 6, 8), highestDaily.RecordLow!.Date);
+    }
+
+    [TestMethod]
+    public async Task GetTemperatureRecords_DayRecordsMetricTies_UsesEarliestOccurrenceDate()
+    {
+        var historicalMax = CreateHistoricalDailyValues(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14), (_, _) => 20d);
+        var historicalMin = CreateHistoricalDailyValues(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14), (_, _) => 10d);
+        var service = CreateTemperatureServiceWithExtremes(
+            recentMax: date => date.Day is 10 or 12 ? 42d : 25d,
+            recentMin: _ => 10d,
+            historicalMax,
+            historicalMin);
+
+        var result = await service.GetTemperatureRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: 1,
+            previousMonthCount: 0,
+            previousSeasonCount: 0);
+        var latestSevenDays = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays);
+        var dailyExtremes = latestSevenDays.MetricGroups.Single(x => x.Key == MetricGroupKey.DayRecords);
+        var highestDailyMax = dailyExtremes.Metrics.Single(x => x.Label == "Highest daily maximum");
+
+        Assert.AreEqual("42.0°C", highestDailyMax.CurrentValue);
+        Assert.AreEqual(new DateOnly(2026, 6, 10), highestDailyMax.CurrentValueDate);
+    }
+
+    [TestMethod]
     public async Task DailyTemperatureTileShowsSingleDayMaximumMinimumAndMean()
     {
         // A single day has a maximum, a minimum and a mean — not aggregates across

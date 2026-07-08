@@ -11,4 +11,5 @@ public sealed record RecentObservationMetricRecordViewModel
     public string Label { get; init; } = string.Empty; // "Record high" | "Record low"
     public string Value { get; init; } = string.Empty; // formatted record value
     public string? Year { get; init; }
+    public DateOnly? Date { get; init; }
 }
