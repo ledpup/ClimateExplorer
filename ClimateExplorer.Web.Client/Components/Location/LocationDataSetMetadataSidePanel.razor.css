@@ -1,0 +1,27 @@
+.location-dataset-metadata-panel {
+    max-width: 70rem;
+}
+
+.location-dataset-metadata-state {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #475569;
+    min-height: 8rem;
+}
+
+.location-dataset-metadata-state.error {
+    color: #8a1f1f;
+}
+
+.location-dataset-metadata-retry {
+    margin-left: 0.5rem;
+}
+
+.location-dataset-metadata-tabs {
+    margin-bottom: 1rem;
+}
+
+.location-dataset-metadata-details {
+    max-width: 58rem;
+}

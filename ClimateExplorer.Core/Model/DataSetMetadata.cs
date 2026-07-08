@@ -1,6 +1,6 @@
 namespace ClimateExplorer.Core.Model;
 
-public sealed record DataSetSourceMetadata
+public sealed record DataSetMetadata
 {
     public Guid? DataSetDefinitionId { get; set; }
     public Guid? LocationId { get; set; }

@@ -70,7 +70,6 @@
     font-size: 0.875rem;
 }
 
-/* ── Tabs ────────────────────────────────────────────────────────────────── */
 ::deep table.table thead th:first-child,
 ::deep table.table td:first-child {
     width: 5rem;
@@ -83,33 +82,4 @@
     ::deep .top-percent-cell {
         display: none;
     }
-}
-
-::deep .nav-tabs {
-    border-bottom: 2px solid #c4d4d1;
-}
-
-::deep .nav-tabs .nav-link {
-    color: #6b8e89;
-    border: none;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -2px;
-    border-radius: 0;
-    padding: 0.35rem 0.75rem;
-    font-size: 1rem;
-    font-weight: bold;
-    background: none;
-}
-
-::deep .nav-tabs .nav-link:hover {
-    color: #425f59;
-    border-bottom-color: #7a9e9a;
-    background: none;
-}
-
-::deep .nav-tabs .nav-link.active {
-    color: #2a3d39;
-    border-bottom: 2px solid #425f59;
-    background: none;
-    font-weight: 600;
 }

@@ -71,6 +71,17 @@
     color: #2a3d39;
 }
 
+.data-sources-link {
+    color: #425f59;
+    font-size: inherit;
+    line-height: inherit;
+    text-align: start;
+}
+
+.data-sources-link:hover {
+    color: #2a3d39;
+}
+
 
 /* ── Responsive columns ──────────────────────────────────────────────────── */
 @media (max-width: 1024px) {
@@ -90,7 +101,9 @@
     ::deep .country-col,
     ::deep .country-cell,
     ::deep .anomaly-col,
-    ::deep .anomaly-cell {
+    ::deep .anomaly-cell,
+    ::deep .recent-observations-col,
+    ::deep .recent-observations-cell {
         display: none;
     }
 

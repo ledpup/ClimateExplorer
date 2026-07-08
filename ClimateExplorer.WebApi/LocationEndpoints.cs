@@ -8,6 +8,8 @@ using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
+using ClimateExplorer.WebApi.Metadata;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using static ClimateExplorer.Core.Enums;
 
@@ -176,6 +178,26 @@ internal static class LocationEndpoints
         var locations = await GetCachedLocations(services);
         var location = locations.SingleOrDefault(x => x.Id == locationId);
         return location;
+    }
+
+    public static async Task<IResult> GetLocationDataSetMetadata(
+        [FromServices] ClimateExplorerApiServices services,
+        Guid locationId)
+    {
+        var metadataService = new LocationDataSetMetadataService(
+            getLocations: () => GetCachedLocations(services, locationId, permitCreateCache: false));
+
+        var result = await metadataService.GetAsync(locationId);
+        if (!result.LocationFound)
+        {
+            return Results.NotFound(new
+            {
+                Message = $"Location {locationId} was not found.",
+                LocationId = locationId,
+            });
+        }
+
+        return Results.Ok(result.SourceMetadata);
     }
 
     public static List<Region> GetRegions()

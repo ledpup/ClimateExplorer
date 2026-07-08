@@ -30,7 +30,7 @@ public partial class ChartSeriesListView
         await OnSeriesChanged.InvokeAsync();
     }
 
-    private IReadOnlyList<DataSetSourceMetadata>? GetSourceMetadata(ChartSeriesDefinition chartSeries)
+    private IReadOnlyList<DataSetMetadata>? GetSourceMetadata(ChartSeriesDefinition chartSeries)
     {
         return SeriesWithData?
             .FirstOrDefault(x => x.ChartSeries.Id == chartSeries.Id)

@@ -179,6 +179,28 @@ public class DataService : IDataService
         return location;
     }
 
+    public async Task<IReadOnlyList<DataSetMetadata>> GetLocationDataSetMetadata(Guid locationId)
+    {
+        var url = "/location-dataset-metadata";
+        url = QueryHelpers.AddQueryString(url, "locationId", locationId.ToString());
+
+        var result = dataServiceCache.Get<DataSetMetadata[]>(url);
+        if (result == null)
+        {
+            var response = await httpClient.GetAsync(url);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Received non-success status code {response.StatusCode} with body {await response.Content.ReadAsStringAsync()}");
+            }
+
+            result = await response.Content.ReadFromJsonAsync<DataSetMetadata[]>(jsonSerializerOptions);
+
+            dataServiceCache.Put(url, result!);
+        }
+
+        return result!;
+    }
+
     public async Task<IEnumerable<HeatingScoreRow>> GetHeatingScoreTable()
     {
         const string heatingScoreTableKey = "HeatingScoreTable";

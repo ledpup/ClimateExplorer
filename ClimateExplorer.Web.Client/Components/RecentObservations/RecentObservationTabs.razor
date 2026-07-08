@@ -2,7 +2,7 @@
 @using Blazorise
 @using ClimateExplorer.Web.Client.UiModel.RecentObservations
 
-<div class="recent-observation-tabs">
+<div class="climate-tabs recent-observation-tabs">
     <Tabs SelectedTab="@SelectedTab.ToString()" SelectedTabChanged="@OnSelectedTabChanged">
         <Items>
             <Tab Name="@RecentObservationsTab.Temperature.ToString()">Temperature</Tab>

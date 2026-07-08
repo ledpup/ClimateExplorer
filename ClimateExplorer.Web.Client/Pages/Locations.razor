@@ -87,6 +87,9 @@
                         <TableHeaderCell TextAlignment="TextAlignment.Center" Class="data-sources-col">
                             <Strong>Data sources</Strong>
                         </TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.Center" Class="recent-observations-col">
+                            <Strong>Recent observations</Strong>
+                        </TableHeaderCell>
                         <TableHeaderCell TextAlignment="TextAlignment.End" @onclick='() => OnSortChanged("recordhigh")' Style="cursor: pointer; user-select: none;">
                             <Strong>Record high <i class="fas @GetSortIconClass("recordhigh")"></i></Strong>
                         </TableHeaderCell>
@@ -110,7 +113,23 @@
                                 }
                             </td>
                             <td class="data-types-cell">@GetDataTypesDisplay(location.Id)</td>
-                            <td class="data-sources-cell">@GetDataSourcesDisplay(location.Id)</td>
+                            <td class="data-sources-cell">
+                                @if (HasDataSources(location.Id))
+                                {
+                                    <ClimateButton Variant="ButtonVariant.Link"
+                                                   Text="@GetDataSourcesDisplay(location.Id)"
+                                                   AriaLabel="@($"View data sources for {location.Name}")"
+                                                   Class="data-sources-link"
+                                                   OnClick="@(() => ShowDataSetMetadataAsync(location))" />
+                                }
+                                else
+                                {
+                                    <span>&#x2014;</span>
+                                }
+                            </td>
+                            <td class="recent-observations-cell text-center">
+                                <ClimateButton Variant="ButtonVariant.Link" Text="View" Class="record-link" OnClick="@(() => ShowRecentObservationsAsync(location))" />
+                            </td>
                             <td class="@(location.RecordHigh is null ? null : "text-end")">
                                 @if (location.RecordHigh is not null)
                                 {
@@ -156,3 +175,9 @@
 <SidePanel @ref="climateRecordsSidePanel" Title="@("Climate records for " + Location?.Name)">
     <ClimateRecords Location="@Location" DataSetDefinitions="@DataSetDefinitions" />
 </SidePanel>
+
+<SidePanel @ref="recentObservationsSidePanel" Title="@("Recent observations for " + Location?.Name)" Width="85%">
+    <RecentObservationsPanel Location="@Location" />
+</SidePanel>
+
+<LocationDataSetMetadataSidePanel @ref="dataSetMetadataSidePanel" DataSetDefinitions="@DataSetDefinitions" Width="50%" />

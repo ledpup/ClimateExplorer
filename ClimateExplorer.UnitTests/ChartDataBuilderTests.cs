@@ -344,7 +344,7 @@ public class ChartDataBuilderTests
         DataType dataType = DataType.TempMean,
         UnitOfMeasure unitOfMeasure = UnitOfMeasure.DegreesCelsius,
         DataRecord[]? rawDataRecords = null,
-        List<DataSetSourceMetadata>? sourceMetadata = null)
+        List<DataSetMetadata>? sourceMetadata = null)
     {
         return new DataSet
         {
@@ -356,11 +356,11 @@ public class ChartDataBuilderTests
         };
     }
 
-    private static List<DataSetSourceMetadata> CreateSourceMetadata()
+    private static List<DataSetMetadata> CreateSourceMetadata()
     {
         return
         [
-            new DataSetSourceMetadata
+            new DataSetMetadata
             {
                 DataSetDefinitionId = DataSetId,
                 LocationId = LocationId,

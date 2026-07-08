@@ -12,6 +12,7 @@ internal static class ClimateExplorerEndpointRouteBuilderExtensions
         app.MapGet("/location", LocationEndpoints.GetLocations);
         app.MapGet("/location-by-path", LocationEndpoints.GetLocationByPath);
         app.MapGet("/location-by-id", LocationEndpoints.GetLocationById);
+        app.MapGet("/location-dataset-metadata", LocationEndpoints.GetLocationDataSetMetadata);
         app.MapGet("/nearby-locations", LocationEndpoints.GetNearbyLocations);
         app.MapGet("/country", MetadataEndpoints.GetCountries);
         app.MapGet("/region", LocationEndpoints.GetRegions);
