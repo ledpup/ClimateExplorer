@@ -7,7 +7,7 @@ public sealed class RecentObservationTileExpansionState
 {
     public bool IsExpanded { get; private set; }
 
-    public string? SelectedGroupKey { get; private set; }
+    public MetricGroupKey? SelectedGroupKey { get; private set; }
 
     public void Expand()
     {
@@ -24,10 +24,10 @@ public sealed class RecentObservationTileExpansionState
         IsExpanded = false;
     }
 
-    /// <summary>
-    /// Ensures a sensible selected group once groups are known. Defaults to the
-    /// first group (e.g. "Period") and only fills a missing/stale selection.
-    /// </summary>
+    // <summary>
+    // Ensures a sensible selected group once groups are known. Defaults to the
+    // first group (e.g. "Period") and only fills a missing/stale selection.
+    // </summary>
     public void EnsureSelection(IReadOnlyList<RecentObservationMetricGroupViewModel> groups)
     {
         if (groups.Count == 0)
@@ -42,13 +42,13 @@ public sealed class RecentObservationTileExpansionState
         }
     }
 
-    public void SelectGroup(string key)
+    public void SelectGroup(MetricGroupKey? key)
     {
         SelectedGroupKey = key;
     }
 
-    public bool IsGroupSelected(string key)
+    public bool IsGroupSelected(MetricGroupKey? group)
     {
-        return SelectedGroupKey == key;
+        return SelectedGroupKey == group;
     }
 }

@@ -8,21 +8,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using ClimateExplorer.Core.Model;
 
-internal sealed class LocationDataSetMetadataService
+internal sealed class LocationDataSetMetadataService(
+    Func<Task<IEnumerable<Location>>>? getLocations = null,
+    Func<Task<List<DataSetDefinition>>>? getDataSetDefinitions = null,
+    DataSetMetadataBuilder? sourceMetadataBuilder = null)
 {
-    private readonly Func<Task<IEnumerable<Location>>> getLocations;
-    private readonly Func<Task<List<DataSetDefinition>>> getDataSetDefinitions;
-    private readonly DataSetMetadataBuilder sourceMetadataBuilder;
-
-    public LocationDataSetMetadataService(
-        Func<Task<IEnumerable<Location>>>? getLocations = null,
-        Func<Task<List<DataSetDefinition>>>? getDataSetDefinitions = null,
-        DataSetMetadataBuilder? sourceMetadataBuilder = null)
-    {
-        this.getLocations = getLocations ?? (async () => await Location.GetLocations());
-        this.getDataSetDefinitions = getDataSetDefinitions ?? DataSetDefinition.GetDataSetDefinitions;
-        this.sourceMetadataBuilder = sourceMetadataBuilder ?? new DataSetMetadataBuilder();
-    }
+    private readonly Func<Task<IEnumerable<Location>>> getLocations = getLocations ?? (async () => await Location.GetLocations());
+    private readonly Func<Task<List<DataSetDefinition>>> getDataSetDefinitions = getDataSetDefinitions ?? DataSetDefinition.GetDataSetDefinitions;
+    private readonly DataSetMetadataBuilder sourceMetadataBuilder = sourceMetadataBuilder ?? new DataSetMetadataBuilder();
 
     public async Task<LocationDataSetMetadataResult> GetAsync(Guid locationId)
     {

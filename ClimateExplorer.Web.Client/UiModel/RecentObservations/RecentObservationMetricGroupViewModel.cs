@@ -7,7 +7,7 @@ namespace ClimateExplorer.Web.Client.UiModel.RecentObservations;
 /// </summary>
 public sealed record RecentObservationMetricGroupViewModel
 {
-    public string Key { get; init; } = string.Empty;
+    public MetricGroupKey? Key { get; init; }
     public string Title { get; init; } = string.Empty;
-    public IReadOnlyList<RecentObservationMetricViewModel> Metrics { get; init; } = [];
+    public IReadOnlyList<RecentObservationRecordsViewModel> Metrics { get; init; } = [];
 }

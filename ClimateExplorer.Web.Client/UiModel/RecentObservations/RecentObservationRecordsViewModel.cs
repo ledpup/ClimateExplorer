@@ -8,10 +8,11 @@ using ClimateExplorer.Core.Calculators;
 /// New/Equal record badge when at an extreme), and the record high and record low
 /// for the comparison date shown as plain reference context.
 /// </summary>
-public sealed record RecentObservationMetricViewModel
+public sealed record RecentObservationRecordsViewModel
 {
     public string Label { get; init; } = string.Empty;
     public string CurrentValue { get; init; } = string.Empty;
+    public DateOnly? CurrentValueDate { get; init; }
 
     /// <summary>
     /// The current value's single rank, e.g. "2nd highest of 102" or "3rd lowest of

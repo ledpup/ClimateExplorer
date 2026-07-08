@@ -320,10 +320,20 @@
     font-weight: 700;
 }
 
+.recent-observation-detail-current-date {
+    color: #697d78;
+    font-size: 0.86rem;
+    font-weight: 600;
+}
+
 .recent-observation-detail-rank {
     color: #697d78;
     font-size: 0.78rem;
     font-weight: 600;
+}
+
+.recent-observation-detail-rank.day-records {
+    display: block;
 }
 
 .recent-observation-detail-record {
@@ -333,6 +343,14 @@
 }
 
 .recent-observation-detail-record-label {
+    color: #697d78;
+}
+
+.recent-observation-detail-record-value {
+    color: #4d625d;
+}
+
+.recent-observation-detail-record-date {
     color: #697d78;
 }
 

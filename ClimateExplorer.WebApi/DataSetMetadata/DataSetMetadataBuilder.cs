@@ -10,18 +10,12 @@ using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 
 [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.OrderingRules", "SA1204:Static elements should appear before instance elements", Justification = "Private helpers are kept below the public flow they support.")]
-internal sealed class DataSetMetadataBuilder
+internal sealed class DataSetMetadataBuilder(
+    IStationMetadataLookup? stationMetadataLookup = null,
+    Func<Guid, Task<GeographicalEntity>>? getGeographicalEntity = null)
 {
-    private readonly IStationMetadataLookup stationMetadataLookup;
-    private readonly Func<Guid, Task<GeographicalEntity>> getGeographicalEntity;
-
-    public DataSetMetadataBuilder(
-        IStationMetadataLookup? stationMetadataLookup = null,
-        Func<Guid, Task<GeographicalEntity>>? getGeographicalEntity = null)
-    {
-        this.stationMetadataLookup = stationMetadataLookup ?? new StationMetadataLookup();
-        this.getGeographicalEntity = getGeographicalEntity ?? GeographicalEntity.GetGeographicalEntity;
-    }
+    private readonly IStationMetadataLookup stationMetadataLookup = stationMetadataLookup ?? new StationMetadataLookup();
+    private readonly Func<Guid, Task<GeographicalEntity>> getGeographicalEntity = getGeographicalEntity ?? GeographicalEntity.GetGeographicalEntity;
 
     public async Task<List<DataSetMetadata>> BuildAsync(
         PostDataSetsRequestBody body,
