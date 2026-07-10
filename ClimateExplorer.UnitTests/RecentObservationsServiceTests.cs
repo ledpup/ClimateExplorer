@@ -168,6 +168,71 @@ public class RecentObservationsServiceTests
     }
 
     [TestMethod]
+    [DataRow(2026, 1, 1, -35.3d, false, false, true)]
+    [DataRow(2026, 1, 15, -35.3d, true, false, true)]
+    [DataRow(2026, 5, 1, -35.3d, false, true, true)]
+    [DataRow(2026, 5, 2, -35.3d, true, true, true)]
+    [DataRow(2026, 6, 14, -35.3d, true, true, false)]
+    [DataRow(2026, 7, 14, -35.3d, true, true, true)]
+    public async Task GetPrecipitationRecords_ReferenceDateAtPeriodBoundaries_TogglesOnlyCurrentPeriodTiles(
+        int year,
+        int month,
+        int day,
+        double latitude,
+        bool expectCurrentMonth,
+        bool expectYearToDate,
+        bool expectCurrentSeason)
+    {
+        var today = new DateOnly(year, month, day);
+        var service = CreateService(recentStartDate: today.AddYears(-2), recentEndDate: today, today: today);
+
+        var result = await service.GetPrecipitationRecords(
+            CreateLocation(latitude),
+            previousDayCount: 2,
+            previousMonthCount: 1,
+            previousSeasonCount: 1,
+            previousYearCount: 1);
+
+        Assert.AreEqual(expectCurrentMonth, result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.CurrentMonth));
+        Assert.AreEqual(expectYearToDate, result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.YearToDate));
+        Assert.AreEqual(expectCurrentSeason, result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.CurrentSeason));
+        Assert.IsTrue(result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays));
+        Assert.IsTrue(result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.PreviousMonth));
+        Assert.IsTrue(result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.PreviousSeason));
+        Assert.IsTrue(result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.PreviousYear));
+
+        var expectedPeriodKinds = new List<RecentObservationPeriodKind>
+        {
+            RecentObservationPeriodKind.Daily,
+            RecentObservationPeriodKind.Daily,
+            RecentObservationPeriodKind.LatestSevenDays,
+        };
+
+        if (expectCurrentMonth)
+        {
+            expectedPeriodKinds.Add(RecentObservationPeriodKind.CurrentMonth);
+        }
+
+        expectedPeriodKinds.Add(RecentObservationPeriodKind.PreviousMonth);
+
+        if (expectCurrentSeason)
+        {
+            expectedPeriodKinds.Add(RecentObservationPeriodKind.CurrentSeason);
+        }
+
+        expectedPeriodKinds.Add(RecentObservationPeriodKind.PreviousSeason);
+
+        if (expectYearToDate)
+        {
+            expectedPeriodKinds.Add(RecentObservationPeriodKind.YearToDate);
+        }
+
+        expectedPeriodKinds.Add(RecentObservationPeriodKind.PreviousYear);
+
+        CollectionAssert.AreEqual(expectedPeriodKinds, result.Tiles.Select(x => x.PeriodKind).ToList());
+    }
+
+    [TestMethod]
     [DataRow(2026, 7, 14, -35.3d, "Winter to Date")]
     [DataRow(2026, 8, 14, -35.3d, "Winter to Date")]
     [DataRow(2026, 10, 14, -35.3d, "Spring to Date")]

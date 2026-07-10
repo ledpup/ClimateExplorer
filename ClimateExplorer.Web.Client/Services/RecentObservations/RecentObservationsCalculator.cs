@@ -353,8 +353,17 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             PeriodKind.LatestSevenDays,
             domain);
 
-        var monthStart = new DateOnly(referenceDate.Year, referenceDate.Month, 1);
-        AddRangePeriod(periods, GetRecordsInRange(daily, monthStart, referenceDate), monthStart, referenceDate, PeriodKind.CurrentMonth, domain);
+        var currentMonthToDate = GetCurrentMonthToDatePeriod(referenceDate);
+        if (currentMonthToDate is not null)
+        {
+            AddRangePeriod(
+                periods,
+                GetRecordsInRange(daily, currentMonthToDate.StartDate, currentMonthToDate.EndDate),
+                currentMonthToDate.StartDate,
+                currentMonthToDate.EndDate,
+                PeriodKind.CurrentMonth,
+                domain);
+        }
 
         foreach (var previousMonth in GetPreviousMonthPeriods(referenceDate, previousMonthCount))
         {
@@ -397,8 +406,17 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
                 periodOffset: index + 1);
         }
 
-        var ytdStart = new DateOnly(referenceDate.Year, 1, 1);
-        AddRangePeriod(periods, GetRecordsInRange(daily, ytdStart, referenceDate), ytdStart, referenceDate, PeriodKind.YearToDate, domain);
+        var yearToDate = GetYearToDatePeriod(referenceDate);
+        if (yearToDate is not null)
+        {
+            AddRangePeriod(
+                periods,
+                GetRecordsInRange(daily, yearToDate.StartDate, yearToDate.EndDate),
+                yearToDate.StartDate,
+                yearToDate.EndDate,
+                PeriodKind.YearToDate,
+                domain);
+        }
 
         foreach (var previousYear in GetPreviousYearPeriods(referenceDate, previousYearCount))
         {
@@ -415,6 +433,13 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         return periods;
     }
 
+    private static CurrentPeriod? GetCurrentMonthToDatePeriod(DateOnly referenceDate)
+    {
+        return referenceDate.Day == 1
+            ? null
+            : new CurrentPeriod(new DateOnly(referenceDate.Year, referenceDate.Month, 1), referenceDate);
+    }
+
     private static MeteorologicalSeasonPeriod? GetCurrentSeasonToDatePeriod(DateOnly referenceDate, double latitude)
     {
         if (!MeteorologicalSeasonCalculator.IsCurrentSeasonToDateMeaningful(referenceDate))
@@ -423,6 +448,13 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         }
 
         return MeteorologicalSeasonCalculator.GetCurrentSeason(referenceDate, latitude) with { EndDate = referenceDate };
+    }
+
+    private static CurrentPeriod? GetYearToDatePeriod(DateOnly referenceDate)
+    {
+        return referenceDate.Month == 1
+            ? null
+            : new CurrentPeriod(new DateOnly(referenceDate.Year, 1, 1), referenceDate);
     }
 
     private static PeriodObservation CreateDailyPeriod(string title, DailyObservation record, MetricDomain domain, int periodOffset)
@@ -1696,6 +1728,8 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
     private sealed record PreviousMonthPeriod(DateOnly StartDate, DateOnly EndDate, int Offset);
 
     private sealed record PreviousYearPeriod(DateOnly StartDate, DateOnly EndDate, int Offset);
+
+    private sealed record CurrentPeriod(DateOnly StartDate, DateOnly EndDate);
 
     private sealed record PreviousDayPeriod<TRecord>(TRecord Record, string Title, int Offset);
 
