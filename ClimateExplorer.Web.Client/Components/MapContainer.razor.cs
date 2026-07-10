@@ -441,7 +441,7 @@ public partial class MapContainer
                     Center = targetCentreOverride
                         ?? (restoredZoom.HasValue && restoredCentre is not null ? restoredCentre : currentCentre)
                         ?? centre,
-                    Zoom = restoredZoom ?? currentZoom ?? 8,
+                    Zoom = restoredZoom ?? currentZoom ?? 7,
                     Dragging = !(bool)IsMobileDevice! || IsMapExpanded,
                 };
         }

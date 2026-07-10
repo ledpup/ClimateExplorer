@@ -1,5 +1,5 @@
 .locations-container {
-    max-width: 90em;
+    max-width: 100em;
     margin: auto;
     padding: 0 1rem 2rem;
 }
@@ -53,7 +53,6 @@
     font-size: 0.8rem;
     color: #555;
     white-space: normal;
-    max-width: 14em;
 }
 
 /* ── Sort icon muted ─────────────────────────────────────────────────────── */
