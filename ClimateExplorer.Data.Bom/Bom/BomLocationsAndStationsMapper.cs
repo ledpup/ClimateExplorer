@@ -11,6 +11,7 @@ public static class BomLocationsAndStationsMapper
     public static async Task<List<Station>> BuildAcornSatLocationsFromMetaDataAsync(Guid dataSetDefinitionId, string outputFileSuffix)
     {
         var oldLocations = await Location.GetLocationsFromFile(@"MetaData\ACORN-SAT\Locations.json");
+        var bomStationDetails = LoadBomStationDetails();
 
         var locations = new List<Location>();
         var stations = new List<Station>();
@@ -92,11 +93,15 @@ public static class BomLocationsAndStationsMapper
 
                 if (!stations.Any(x => x.Id == externalStationCode))
                 {
+                    var foundStationDetails = bomStationDetails.TryGetValue(externalStationCode, out var stationDetails);
+
                     stations.Add(
                         new Station
                         {
                             Id = externalStationCode,
-                            CountryCode = "AS"
+                            CountryCode = "AS",
+                            Name = foundStationDetails ? stationDetails.Name : null,
+                            Coordinates = foundStationDetails ? stationDetails.Coordinates : null,
                         });
                 }
             }
@@ -123,6 +128,42 @@ public static class BomLocationsAndStationsMapper
         WriteFiles(outputFileSuffix, locations, stations, dataFileMapping);
 
         return stations;
+    }
+
+    // Site, Dist, Site name, Start, End, Lat, Lon, Source, STA, Height (m), Bar_ht, WMO - columns are whitespace-separated
+    // (padded to a fixed width), and Dist is blank for some stations, so it's captured as an optional group.
+    private static readonly Regex BomStationRegEx = new(
+        @"^\s*(?<id>\d{6})\s+(?:(?<dist>\d{1,3}[A-Za-z]{0,2})\s+)?(?<name>\S.*?)\s{2,}(?<start>\d{4}|\.\.)\s+(?<end>\d{4}|\.\.)\s+(?<lat>-?\d+\.\d+)\s+(?<lon>-?\d+\.\d+)\s+\S.*?\s{2,}(?<height>-?\d+\.\d+|\.\.)\s");
+
+    private static Dictionary<string, (string Name, Coordinates Coordinates)> LoadBomStationDetails()
+    {
+        var stationDetails = new Dictionary<string, (string Name, Coordinates Coordinates)>();
+        var lines = File.ReadAllLines(@"MetaData\stations.txt");
+        var provider = CultureInfo.InvariantCulture;
+
+        foreach (var line in lines)
+        {
+            var match = BomStationRegEx.Match(line);
+            if (!match.Success)
+            {
+                continue;
+            }
+
+            var id = match.Groups["id"].Value;
+            var name = match.Groups["name"].Value.Trim();
+            var height = match.Groups["height"].Value;
+
+            stationDetails[id] = (
+                name,
+                new Coordinates
+                {
+                    Latitude = double.Parse(match.Groups["lat"].Value, provider),
+                    Longitude = double.Parse(match.Groups["lon"].Value, provider),
+                    Elevation = height == ".." ? null : double.Parse(height, provider),
+                });
+        }
+
+        return stationDetails;
     }
 
     private static void WriteFiles(string outputFileSuffix, List<Location> locations, List<Station> stations, DataFileMapping dataFileMapping)
