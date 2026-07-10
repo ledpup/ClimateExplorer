@@ -1,8 +1,10 @@
 namespace ClimateExplorer.Web.Client.Components.ChartSeries;
 
 using System.Globalization;
+using ClimateExplorer.Core;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
+using ClimateExplorer.Web.UiModel;
 using Microsoft.AspNetCore.Components;
 
 public partial class AboutDataDetails
@@ -28,16 +30,34 @@ public partial class AboutDataDetails
                 !string.IsNullOrWhiteSpace(x.StationName));
     }
 
-    private static bool IsSingleStation(DataSetMetadata metadata)
-    {
-        return metadata.Stations.Count == 1 &&
-            (!string.IsNullOrWhiteSpace(metadata.Stations[0].StationId) ||
-                !string.IsNullOrWhiteSpace(metadata.Stations[0].StationName));
-    }
-
     private static bool HasStationLinks(DataSetMetadata metadata)
     {
         return metadata.Stations.Any(x => !string.IsNullOrWhiteSpace(x.SourceUrl));
+    }
+
+    private static List<MeasurementDefinitionViewModel>? GetMeasurementDefinitions(DataSetDefinitionViewModel? dataSetDefinition)
+    {
+        return dataSetDefinition?.MeasurementDefinitions;
+    }
+
+    private static string FormatDataType(MeasurementDefinitionViewModel measurementDefinition)
+    {
+        return measurementDefinition.DataType.ToFriendlyName();
+    }
+
+    private static string FormatDataResolution(MeasurementDefinitionViewModel measurementDefinition)
+    {
+        return measurementDefinition.DataResolution.ToString();
+    }
+
+    private static string FormatUnitOfMeasure(MeasurementDefinitionViewModel measurementDefinition)
+    {
+        return Enums.UnitOfMeasureLabelShort(measurementDefinition.UnitOfMeasure);
+    }
+
+    private static string FormatDataAdjustment(MeasurementDefinitionViewModel measurementDefinition)
+    {
+        return measurementDefinition.DataAdjustment?.ToString() ?? "\u2014";
     }
 
     private static string FormatStation(DataSetStationMetadata station)

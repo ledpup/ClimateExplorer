@@ -23,83 +23,84 @@
             <div class="value">@((MarkupString)DataSetDefinition.Description.Replace("\r\n", "<br>"))</div>
         </div>
     }
-    @if (DataSetDefinition?.Publisher is not null)
+
+    @if (GetMeasurementDefinitions(DataSetDefinition) is { Count: > 0 } measurementDefinitions)
     {
         <div class="entry">
-            <div class="title">Published by</div>
-            <div class="value">
-                <a href="@DataSetDefinition.PublisherUrl" target="_blank" rel="noopener noreferrer">@DataSetDefinition.Publisher</a>
+            <div class="title mb-2">Available data</div>
+            <div class="table-card source-measurements">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th class="data-type-col">Data type</th>
+                            <th>Resolution</th>
+                            <th>Unit</th>
+                            <th>Adjustment</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var measurementDefinition in measurementDefinitions)
+                        {
+                            <tr>
+                                <td class="data-type-col">@FormatDataType(measurementDefinition)</td>
+                                <td>@FormatDataResolution(measurementDefinition)</td>
+                                <td>@FormatUnitOfMeasure(measurementDefinition)</td>
+                                <td>@FormatDataAdjustment(measurementDefinition)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
         </div>
     }
 
     @if (Metadata is not null && HasRenderableMetadata(Metadata))
     {
-        @if (IsSingleStation(Metadata))
-        {
-            var station = Metadata.Stations.Single();
-            <div class="entry">
-                <div class="title">Station</div>
-                <div class="value">@FormatStation(station)</div>
-            </div>
-            @if (station.StationStartDate.HasValue && station.StationEndDate.HasValue)
-            {
-                <div class="entry">
-                    <div class="title">Station dates</div>
-                    <div class="value">@FormatStationDateRange(station)</div>
-                </div>
-            }
-            @if (GetStationOrSourceUrl(station, Metadata) is { } sourceUrl && DataSetDefinition?.MoreInformationUrl != sourceUrl)
-            {
-                <div class="entry">
-                    <div class="title">Source link</div>
-                    <div class="value">
-                        <a href="@sourceUrl" target="_blank" rel="noopener noreferrer">@FormatStationOrSourceUrlLabel(station, Metadata)</a>
-                    </div>
-                </div>
-            }
-        }
-        else if (HasRenderableStations(Metadata))
+        if (HasRenderableStations(Metadata))
         {
             var showStationLinks = HasStationLinks(Metadata);
-            <div class="table-card source-stations">
-                <div class="table-header">Stations</div>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Station ID</th>
-                            <th>Start date</th>
-                            <th>End date</th>
-                            @if (showStationLinks)
-                            {
-                                <th>Source</th>
-                            }
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var station in Metadata.Stations)
-                        {
+             <div class="entry">
+                <div class="title mb-2">Stations</div>
+                <div class="table-card source-stations">
+                    <table class="table">
+                        <thead>
                             <tr>
-                                <td>@FormatMissing(station.StationId)</td>
-                                <td>@FormatDate(station.StationStartDate)</td>
-                                <td>@FormatDate(station.StationEndDate)</td>
+                                <th>Station ID</th>
+                                <th class="station-name-col">Station name</th>
+                                <th>Start date</th>
+                                <th>End date</th>
                                 @if (showStationLinks)
                                 {
-                                    <td>
-                                        @if (!string.IsNullOrWhiteSpace(station.SourceUrl))
-                                        {
-                                            <a href="@station.SourceUrl" target="_blank" rel="noopener noreferrer">@FormatStationUrlLabel(station)</a>
-                                        }
-                                        else
-                                        {
-                                            <span>&#x2014;</span>
-                                        }
-                                    </td>
+                                    <th>Source</th>
                                 }
                             </tr>
-                        }
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach (var station in Metadata.Stations)
+                            {
+                                <tr>
+                                    <td>@FormatMissing(station.StationId)</td>
+                                    <td class="station-name-col">@FormatMissing(station.StationName)</td>
+                                    <td>@FormatDate(station.StationStartDate)</td>
+                                    <td>@FormatDate(station.StationEndDate)</td>
+                                    @if (showStationLinks)
+                                    {
+                                        <td>
+                                            @if (!string.IsNullOrWhiteSpace(station.SourceUrl))
+                                            {
+                                                <a href="@station.SourceUrl" target="_blank" rel="noopener noreferrer">@FormatStationUrlLabel(station)</a>
+                                            }
+                                            else
+                                            {
+                                                <span>&#x2014;</span>
+                                            }
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             @if (!showStationLinks
@@ -120,6 +121,16 @@
                 <div class="title">Source link</div>
                 <div class="value">
                     <a href="@Metadata.SourceUrl" target="_blank" rel="noopener noreferrer">@FormatSourceUrlLabel(Metadata)</a>
+                </div>
+            </div>
+        }
+
+        @if (DataSetDefinition?.Publisher is not null)
+        {
+            <div class="entry">
+                <div class="title">Published by</div>
+                <div class="value">
+                    <a href="@DataSetDefinition.PublisherUrl" target="_blank" rel="noopener noreferrer">@DataSetDefinition.Publisher</a>
                 </div>
             </div>
         }

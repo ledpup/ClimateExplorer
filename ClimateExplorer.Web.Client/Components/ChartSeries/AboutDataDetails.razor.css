@@ -10,6 +10,24 @@
     margin-bottom: 12px;
 }
 
+.source-measurements {
+    margin-bottom: 12px;
+}
+
 .source-link {
     margin-top: 12px;
+}
+
+.data-type-col {
+    text-align: left;
+}
+
+.station-name-col {
+    text-align: left;
+}
+
+@media (max-width: 767px) {
+    .station-name-col {
+        display: none;
+    }
 }

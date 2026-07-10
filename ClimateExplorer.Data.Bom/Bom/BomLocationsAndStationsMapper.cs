@@ -8,9 +8,10 @@ namespace ClimateExplorer.Data.Bom;
 
 public static class BomLocationsAndStationsMapper
 {
-    public static async Task<List<Station>> BuildAcornSatLocationsFromReferenceMetaDataAsync(Guid dataSetDefinitionId, string outputFileSuffix)
+    public static async Task<List<Station>> BuildAcornSatLocationsFromMetaDataAsync(Guid dataSetDefinitionId, string outputFileSuffix)
     {
-        var oldLocations = await Location.GetLocationsFromFile(@"ReferenceMetaData\ACORN-SAT\Locations.json");
+        var oldLocations = await Location.GetLocationsFromFile(@"MetaData\ACORN-SAT\Locations.json");
+        var bomStationDetails = LoadBomStationDetails();
 
         var locations = new List<Location>();
         var stations = new List<Station>();
@@ -18,7 +19,7 @@ public static class BomLocationsAndStationsMapper
         var stationToLocationMapping = new Dictionary<string, Guid>();
 
         // Get the friendly location name and the "primary station", as best we can do.
-        var locationRowData = File.ReadAllLines(@"ReferenceMetaData\ACORN-SAT\acorn_sat_stations.csv");
+        var locationRowData = File.ReadAllLines(@"MetaData\ACORN-SAT\acorn_sat_stations.csv");
         foreach (var row in locationRowData.Skip(1))
         {
             var splitRow = row.Split(',');
@@ -44,7 +45,7 @@ public static class BomLocationsAndStationsMapper
         }
 
 
-        var primarySitesFile = File.ReadAllLines(@"ReferenceMetaData\ACORN-SAT\primarysites.txt");
+        var primarySitesFile = File.ReadAllLines(@"MetaData\ACORN-SAT\primarysites.txt");
         var stationRegEx = new Regex(@"^(?<id>\d+)\s(?<start>\d+)\s(?<end>\d+)$");
 
         foreach (var row in primarySitesFile)
@@ -92,11 +93,15 @@ public static class BomLocationsAndStationsMapper
 
                 if (!stations.Any(x => x.Id == externalStationCode))
                 {
+                    var foundStationDetails = bomStationDetails.TryGetValue(externalStationCode, out var stationDetails);
+
                     stations.Add(
                         new Station
                         {
                             Id = externalStationCode,
-                            CountryCode = "AS"
+                            CountryCode = "AS",
+                            Name = foundStationDetails ? stationDetails.Name : null,
+                            Coordinates = foundStationDetails ? stationDetails.Coordinates : null,
                         });
                 }
             }
@@ -125,6 +130,42 @@ public static class BomLocationsAndStationsMapper
         return stations;
     }
 
+    // Site, Dist, Site name, Start, End, Lat, Lon, Source, STA, Height (m), Bar_ht, WMO - columns are whitespace-separated
+    // (padded to a fixed width), and Dist is blank for some stations, so it's captured as an optional group.
+    private static readonly Regex BomStationRegEx = new(
+        @"^\s*(?<id>\d{6})\s+(?:(?<dist>\d{1,3}[A-Za-z]{0,2})\s+)?(?<name>\S.*?)\s{2,}(?<start>\d{4}|\.\.)\s+(?<end>\d{4}|\.\.)\s+(?<lat>-?\d+\.\d+)\s+(?<lon>-?\d+\.\d+)\s+\S.*?\s{2,}(?<height>-?\d+\.\d+|\.\.)\s");
+
+    private static Dictionary<string, (string Name, Coordinates Coordinates)> LoadBomStationDetails()
+    {
+        var stationDetails = new Dictionary<string, (string Name, Coordinates Coordinates)>();
+        var lines = File.ReadAllLines(@"MetaData\stations.txt");
+        var provider = CultureInfo.InvariantCulture;
+
+        foreach (var line in lines)
+        {
+            var match = BomStationRegEx.Match(line);
+            if (!match.Success)
+            {
+                continue;
+            }
+
+            var id = match.Groups["id"].Value;
+            var name = match.Groups["name"].Value.Trim();
+            var height = match.Groups["height"].Value;
+
+            stationDetails[id] = (
+                name,
+                new Coordinates
+                {
+                    Latitude = double.Parse(match.Groups["lat"].Value, provider),
+                    Longitude = double.Parse(match.Groups["lon"].Value, provider),
+                    Elevation = height == ".." ? null : double.Parse(height, provider),
+                });
+        }
+
+        return stationDetails;
+    }
+
     private static void WriteFiles(string outputFileSuffix, List<Location> locations, List<Station> stations, DataFileMapping dataFileMapping)
     {
         var options = new JsonSerializerOptions
@@ -150,7 +191,7 @@ public static class BomLocationsAndStationsMapper
         var file = await File.ReadAllTextAsync(unadjustedDataFileMappingPath);
         var unadjustedDataFileMapping = JsonSerializer.Deserialize<DataFileMapping>(file);
         var locationIdToDataFileMappings = unadjustedDataFileMapping!.LocationIdToDataFileMappings;
-        var stations = await File.ReadAllLinesAsync(@"ReferenceMetaData\ACORN-SAT\acorn_sat_stations.txt");
+        var stations = await File.ReadAllLinesAsync(@"MetaData\ACORN-SAT\acorn_sat_stations.txt");
 
         var dataFileMapping = new DataFileMapping() { DataSetDefinitionId = dataSetDefinitionId };
         foreach (var station in stations)

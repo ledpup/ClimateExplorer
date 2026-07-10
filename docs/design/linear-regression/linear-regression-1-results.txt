@@ -1,0 +1,28 @@
+Best-fit values	
+Slope	0.02043 ± 0.001807
+Y-intercept	-27.73 ± 3.567
+X-intercept	1357
+1/Slope	48.94
+
+95% Confidence Intervals	
+Slope	0.01685 to 0.02402
+Y-intercept	-34.81 to -20.65
+X-intercept	1226 to 1449
+
+Goodness of Fit	
+R Square	0.5638
+Sy.x	0.5569
+
+Is slope significantly non-zero?	
+F	128.0
+DFn,DFd	1,99
+P Value	< 0.0001
+Deviation from zero?	Significant
+
+Equation	Y = 0.02043*X - 27.73
+
+Data	
+Number of X values	101
+Maximum number of Y replicates	1
+Total number of values	101
+Number of missing values	0

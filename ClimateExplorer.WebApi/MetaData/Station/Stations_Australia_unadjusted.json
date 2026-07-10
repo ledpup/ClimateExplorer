@@ -1,1847 +1,2051 @@
 [
   {
     "Id": "001021",
-    "Name": null,
+    "Name": "KALUMBURU MISSION",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -14.2961,
+      "Longitude": 126.6431,
+      "Elevation": 23
+    }
   },
   {
     "Id": "001019",
-    "Name": null,
+    "Name": "KALUMBURU",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -14.2964,
+      "Longitude": 126.6453,
+      "Elevation": 23
+    }
   },
   {
     "Id": "002011",
-    "Name": null,
+    "Name": "OLD HALLS CREEK",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -18.2519,
+      "Longitude": 127.7817,
+      "Elevation": 360
+    }
   },
   {
     "Id": "002012",
-    "Name": null,
+    "Name": "HALLS CREEK METEOROLOGICAL OFFICE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -18.2291,
+      "Longitude": 127.6636,
+      "Elevation": 422
+    }
   },
   {
     "Id": "002079",
-    "Name": null,
+    "Name": "HALLS CREEK AIRPORT",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -18.2337,
+      "Longitude": 127.6666,
+      "Elevation": 409.4
+    }
   },
   {
     "Id": "003002",
-    "Name": null,
+    "Name": "BROOME POST OFFICE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -17.95,
+      "Longitude": 122.25,
+      "Elevation": 19
+    }
   },
   {
     "Id": "003003",
-    "Name": null,
+    "Name": "BROOME AIRPORT",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -17.9475,
+      "Longitude": 122.2352,
+      "Elevation": 7.4
+    }
   },
   {
     "Id": "004002",
-    "Name": null,
+    "Name": "PORT HEDLAND POST OFFICE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -20.3139,
+      "Longitude": 118.5742,
+      "Elevation": 8
+    }
   },
   {
     "Id": "004032",
-    "Name": null,
+    "Name": "PORT HEDLAND AIRPORT",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -20.3725,
+      "Longitude": 118.6317,
+      "Elevation": 6.4
+    }
   },
   {
     "Id": "004020",
-    "Name": null,
+    "Name": "MARBLE BAR COMPARISON",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -21.1756,
+      "Longitude": 119.7497,
+      "Elevation": 182.3
+    }
   },
   {
     "Id": "004106",
-    "Name": null,
+    "Name": "MARBLE BAR",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -21.1756,
+      "Longitude": 119.7497,
+      "Elevation": 182.3
+    }
   },
   {
     "Id": "005007",
-    "Name": null,
+    "Name": "LEARMONTH AIRPORT",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -22.2406,
+      "Longitude": 114.0967,
+      "Elevation": 5
+    }
   },
   {
     "Id": "005026",
-    "Name": null,
+    "Name": "WITTENOOM",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -22.2425,
+      "Longitude": 118.3358,
+      "Elevation": 463
+    }
   },
   {
     "Id": "005098",
-    "Name": null,
+    "Name": "KARIJINI NORTH",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -22.2999,
+      "Longitude": 118.4498,
+      "Elevation": 474
+    }
   },
   {
     "Id": "006062",
-    "Name": null,
+    "Name": "CARNARVON POST OFFICE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -24.8858,
+      "Longitude": 113.6565,
+      "Elevation": 4.6
+    }
   },
   {
     "Id": "006011",
-    "Name": null,
+    "Name": "CARNARVON AIRPORT",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -24.8878,
+      "Longitude": 113.67,
+      "Elevation": 4
+    }
   },
   {
     "Id": "007046",
-    "Name": null,
+    "Name": "MEEKATHARRA POST OFFICE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -26.5933,
+      "Longitude": 118.4883,
+      "Elevation": 511
+    }
   },
   {
     "Id": "007045",
-    "Name": null,
+    "Name": "MEEKATHARRA AIRPORT",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -26.6136,
+      "Longitude": 118.5372,
+      "Elevation": 517
+    }
   },
   {
     "Id": "008093",
-    "Name": null,
+    "Name": "MORAWA",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -29.2103,
+      "Longitude": 116.0089,
+      "Elevation": 274
+    }
   },
   {
     "Id": "008296",
-    "Name": null,
+    "Name": "MORAWA AIRPORT",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -29.2039,
+      "Longitude": 116.0247,
+      "Elevation": 271.4
+    }
   },
   {
     "Id": "008039",
-    "Name": null,
+    "Name": "DALWALLINU COMPARISON",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -30.2772,
+      "Longitude": 116.6619,
+      "Elevation": 335
+    }
   },
   {
     "Id": "008297",
-    "Name": null,
+    "Name": "DALWALLINU",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -30.276,
+      "Longitude": 116.6715,
+      "Elevation": 324.5
+    }
   },
   {
     "Id": "008050",
-    "Name": null,
+    "Name": "GERALDTON TOWN",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -28.7769,
+      "Longitude": 114.605,
+      "Elevation": 3
+    }
   },
   {
     "Id": "008051",
-    "Name": null,
+    "Name": "GERALDTON AIRPORT COMPARISON",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -28.7953,
+      "Longitude": 114.6975,
+      "Elevation": 33
+    }
   },
   {
     "Id": "008315",
-    "Name": null,
+    "Name": "GERALDTON AIRPORT",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -28.8047,
+      "Longitude": 114.6989,
+      "Elevation": 29.7
+    }
   },
   {
     "Id": "009034",
-    "Name": null,
+    "Name": "PERTH REGIONAL OFFICE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -31.9556,
+      "Longitude": 115.8697,
+      "Elevation": 19
+    }
   },
   {
     "Id": "009021",
-    "Name": null,
+    "Name": "PERTH AIRPORT M.O.",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -31.9275,
+      "Longitude": 115.9764,
+      "Elevation": 15.4
+    }
   },
   {
     "Id": "009518",
-    "Name": null,
+    "Name": "CAPE LEEUWIN",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -34.3728,
+      "Longitude": 115.1358,
+      "Elevation": 13
+    }
   },
   {
     "Id": "009510",
-    "Name": null,
+    "Name": "BRIDGETOWN COMPARISON",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -33.9575,
+      "Longitude": 116.1375,
+      "Elevation": 149.9
+    }
   },
   {
     "Id": "009617",
-    "Name": null,
+    "Name": "BRIDGETOWN",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -33.9486,
+      "Longitude": 116.1311,
+      "Elevation": 178.7
+    }
   },
   {
     "Id": "009541",
-    "Name": null,
+    "Name": "ESPERANCE POST OFFICE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -33.85,
+      "Longitude": 121.8833,
+      "Elevation": 4
+    }
   },
   {
     "Id": "009789",
-    "Name": null,
+    "Name": "ESPERANCE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -33.83,
+      "Longitude": 121.8925,
+      "Elevation": 25
+    }
   },
   {
     "Id": "009500",
-    "Name": null,
+    "Name": "ALBANY",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -35.0289,
+      "Longitude": 117.8808,
+      "Elevation": 3
+    }
   },
   {
     "Id": "009741",
-    "Name": null,
+    "Name": "ALBANY AIRPORT COMPARISON",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -34.9414,
+      "Longitude": 117.8022,
+      "Elevation": 68
+    }
   },
   {
     "Id": "009999",
-    "Name": null,
+    "Name": "ALBANY AIRPORT",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -34.9411,
+      "Longitude": 117.8158,
+      "Elevation": 68.4
+    }
   },
   {
     "Id": "010093",
-    "Name": null,
+    "Name": "MERREDIN RESEARCH STATION",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -31.4994,
+      "Longitude": 118.2242,
+      "Elevation": 318
+    }
   },
   {
     "Id": "010092",
-    "Name": null,
+    "Name": "MERREDIN",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -31.4756,
+      "Longitude": 118.2789,
+      "Elevation": 315
+    }
   },
   {
     "Id": "010035",
-    "Name": null,
+    "Name": "CUNDERDIN",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -31.6494,
+      "Longitude": 117.2331,
+      "Elevation": 220
+    }
   },
   {
     "Id": "010286",
-    "Name": null,
+    "Name": "CUNDERDIN AIRFIELD",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -31.622,
+      "Longitude": 117.2282,
+      "Elevation": 216.7
+    }
   },
   {
     "Id": "010579",
-    "Name": null,
+    "Name": "KATANNING COMPARISON",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -33.6886,
+      "Longitude": 117.5553,
+      "Elevation": 310
+    }
   },
   {
     "Id": "010916",
-    "Name": null,
+    "Name": "KATANNING",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -33.6856,
+      "Longitude": 117.6064,
+      "Elevation": 320
+    }
   },
   {
     "Id": "010648",
-    "Name": null,
+    "Name": "WANDERING COMPARISON",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -32.6814,
+      "Longitude": 116.6756,
+      "Elevation": 280
+    }
   },
   {
     "Id": "010917",
-    "Name": null,
+    "Name": "WANDERING",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -32.6722,
+      "Longitude": 116.6706,
+      "Elevation": 275
+    }
   },
   {
     "Id": "011003",
-    "Name": null,
+    "Name": "EUCLA",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -31.6797,
+      "Longitude": 128.8958,
+      "Elevation": 93.1
+    }
   },
   {
     "Id": "011004",
-    "Name": null,
+    "Name": "FORREST AERO",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -30.8389,
+      "Longitude": 128.1139,
+      "Elevation": 156
+    }
   },
   {
     "Id": "011052",
-    "Name": null,
+    "Name": "FORREST",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -30.8453,
+      "Longitude": 128.1092,
+      "Elevation": 159
+    }
   },
   {
     "Id": "012039",
-    "Name": null,
+    "Name": "KALGOORLIE POST OFFICE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -30.75,
+      "Longitude": 121.4667,
+      "Elevation": 361
+    }
   },
   {
     "Id": "012038",
-    "Name": null,
+    "Name": "KALGOORLIE-BOULDER AIRPORT",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -30.7847,
+      "Longitude": 121.4533,
+      "Elevation": 365.3
+    }
   },
   {
     "Id": "013017",
-    "Name": null,
+    "Name": "GILES METEOROLOGICAL OFFICE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -25.0341,
+      "Longitude": 128.301,
+      "Elevation": 598
+    }
   },
   {
     "Id": "014016",
-    "Name": null,
+    "Name": "DARWIN POST OFFICE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -12.46,
+      "Longitude": 130.84,
+      "Elevation": 24.4
+    }
   },
   {
     "Id": "014015",
-    "Name": null,
+    "Name": "DARWIN AIRPORT",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -12.4239,
+      "Longitude": 130.8925,
+      "Elevation": 30.4
+    }
   },
   {
     "Id": "014825",
-    "Name": null,
+    "Name": "VICTORIA RIVER DOWNS",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -16.403,
+      "Longitude": 131.0145,
+      "Elevation": 88.5
+    }
   },
   {
     "Id": "015087",
-    "Name": null,
+    "Name": "TENNANT CREEK POST OFFICE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -19.6475,
+      "Longitude": 134.1896,
+      "Elevation": 376.5
+    }
   },
   {
     "Id": "015135",
-    "Name": null,
+    "Name": "TENNANT CREEK AIRPORT",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -19.6423,
+      "Longitude": 134.1833,
+      "Elevation": 375.7
+    }
   },
   {
     "Id": "015540",
-    "Name": null,
+    "Name": "ALICE SPRINGS POST OFFICE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -23.71,
+      "Longitude": 133.8683,
+      "Elevation": 580
+    }
   },
   {
     "Id": "015590",
-    "Name": null,
+    "Name": "ALICE SPRINGS AIRPORT",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -23.7951,
+      "Longitude": 133.889,
+      "Elevation": 546
+    }
   },
   {
     "Id": "015548",
-    "Name": null,
+    "Name": "RABBIT FLAT",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -20.1883,
+      "Longitude": 130.0161,
+      "Elevation": 340
+    }
   },
   {
     "Id": "015666",
-    "Name": null,
+    "Name": "RABBIT FLAT",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -20.1823,
+      "Longitude": 130.0148,
+      "Elevation": 340
+    }
   },
   {
     "Id": "016001",
-    "Name": null,
+    "Name": "WOOMERA AERODROME",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -31.1558,
+      "Longitude": 136.8054,
+      "Elevation": 166.6
+    }
   },
   {
     "Id": "016044",
-    "Name": null,
+    "Name": "TARCOOLA",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -30.7111,
+      "Longitude": 134.5694,
+      "Elevation": 119.5
+    }
   },
   {
     "Id": "016098",
-    "Name": null,
+    "Name": "TARCOOLA AERO",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -30.7051,
+      "Longitude": 134.5786,
+      "Elevation": 123
+    }
   },
   {
     "Id": "017043",
-    "Name": null,
+    "Name": "OODNADATTA AIRPORT",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -27.5553,
+      "Longitude": 135.4456,
+      "Elevation": 116.5
+    }
   },
   {
     "Id": "017114",
-    "Name": null,
+    "Name": "OODNADATTA",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -27.5498,
+      "Longitude": 135.4484,
+      "Elevation": 120
+    }
   },
   {
     "Id": "017024",
-    "Name": null,
+    "Name": "MARREE (FARINA)",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -30.066,
+      "Longitude": 138.2739,
+      "Elevation": 91
+    }
   },
   {
     "Id": "017031",
-    "Name": null,
+    "Name": "MARREE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -29.6451,
+      "Longitude": 138.0639,
+      "Elevation": 49
+    }
   },
   {
     "Id": "017126",
-    "Name": null,
+    "Name": "MARREE AERO",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -29.6587,
+      "Longitude": 138.0684,
+      "Elevation": 50
+    }
   },
   {
     "Id": "018012",
-    "Name": null,
+    "Name": "CEDUNA AMO",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -32.1297,
+      "Longitude": 133.6976,
+      "Elevation": 15.3
+    }
   },
   {
     "Id": "018044",
-    "Name": null,
+    "Name": "KYANCUTTA TOWN",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -33.1337,
+      "Longitude": 135.5521,
+      "Elevation": 59
+    }
   },
   {
     "Id": "018070",
-    "Name": null,
+    "Name": "PORT LINCOLN",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -34.7225,
+      "Longitude": 135.8558,
+      "Elevation": 4
+    }
   },
   {
     "Id": "018192",
-    "Name": null,
+    "Name": "NORTH SHIELDS (PORT LINCOLN AWS)",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -34.5993,
+      "Longitude": 135.8784,
+      "Elevation": 8.5
+    }
   },
   {
     "Id": "021046",
-    "Name": null,
+    "Name": "SNOWTOWN",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -33.7844,
+      "Longitude": 138.2133,
+      "Elevation": 103
+    }
   },
   {
     "Id": "021133",
-    "Name": null,
+    "Name": "SNOWTOWN (RAYVILLE PARK)",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -33.7675,
+      "Longitude": 138.2182,
+      "Elevation": 109.1
+    }
   },
   {
     "Id": "022801",
-    "Name": null,
+    "Name": "CAPE BORDA COMPARISON",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -35.7529,
+      "Longitude": 136.5938,
+      "Elevation": 143
+    }
   },
   {
     "Id": "022823",
-    "Name": null,
+    "Name": "CAPE BORDA",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -35.7549,
+      "Longitude": 136.5959,
+      "Elevation": 158
+    }
   },
   {
     "Id": "023000",
-    "Name": null,
+    "Name": "ADELAIDE (WEST TERRACE / NGAYIRDAPIRA)",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -34.9257,
+      "Longitude": 138.5832,
+      "Elevation": 29.3
+    }
   },
   {
     "Id": "023090",
-    "Name": null,
+    "Name": "ADELAIDE (KENT TOWN)",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -34.9211,
+      "Longitude": 138.6216,
+      "Elevation": 48
+    }
   },
   {
     "Id": "023321",
-    "Name": null,
+    "Name": "NURIOOTPA COMPARISON",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -34.4767,
+      "Longitude": 139.0047,
+      "Elevation": 274
+    }
   },
   {
     "Id": "023373",
-    "Name": null,
+    "Name": "NURIOOTPA PIRSA",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -34.4761,
+      "Longitude": 139.0056,
+      "Elevation": 275
+    }
   },
   {
     "Id": "026020",
-    "Name": null,
+    "Name": "MOUNT GAMBIER POST OFFICE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -37.8333,
+      "Longitude": 140.7833,
+      "Elevation": 65
+    }
   },
   {
     "Id": "026021",
-    "Name": null,
+    "Name": "MOUNT GAMBIER AERO",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -37.7473,
+      "Longitude": 140.7739,
+      "Elevation": 63
+    }
   },
   {
     "Id": "026026",
-    "Name": null,
+    "Name": "ROBE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -37.1628,
+      "Longitude": 139.756,
+      "Elevation": 3.3
+    }
   },
   {
     "Id": "027042",
-    "Name": null,
+    "Name": "WEIPA EASTERN AVE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -12.6267,
+      "Longitude": 141.8836,
+      "Elevation": 20
+    }
   },
   {
     "Id": "027045",
-    "Name": null,
+    "Name": "WEIPA AERO",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -12.6778,
+      "Longitude": 141.9208,
+      "Elevation": 18
+    }
   },
   {
     "Id": "027022",
-    "Name": null,
+    "Name": "THURSDAY ISLAND MO",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -10.5853,
+      "Longitude": 142.21,
+      "Elevation": 57.6
+    }
   },
   {
     "Id": "027021",
-    "Name": null,
+    "Name": "THURSDAY ISLAND TOWNSHIP",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -10.5831,
+      "Longitude": 142.2203,
+      "Elevation": 8
+    }
   },
   {
     "Id": "027058",
-    "Name": null,
+    "Name": "HORN ISLAND",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -10.5844,
+      "Longitude": 142.29,
+      "Elevation": 4
+    }
   },
   {
     "Id": "028004",
-    "Name": null,
+    "Name": "PALMERVILLE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -15.9999,
+      "Longitude": 144.0754,
+      "Elevation": 203.8
+    }
   },
   {
     "Id": "029041",
-    "Name": null,
+    "Name": "NORMANTON POST OFFICE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -17.6706,
+      "Longitude": 141.0672,
+      "Elevation": 8.4
+    }
   },
   {
     "Id": "029063",
-    "Name": null,
+    "Name": "NORMANTON AIRPORT",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -17.6872,
+      "Longitude": 141.0733,
+      "Elevation": 18.4
+    }
   },
   {
     "Id": "029004",
-    "Name": null,
+    "Name": "BURKETOWN POST OFFICE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -17.7425,
+      "Longitude": 139.5475,
+      "Elevation": 5.5
+    }
   },
   {
     "Id": "029077",
-    "Name": null,
+    "Name": "BURKETOWN AIRPORT",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -17.7483,
+      "Longitude": 139.5356,
+      "Elevation": 5.7
+    }
   },
   {
     "Id": "030045",
-    "Name": null,
+    "Name": "RICHMOND POST OFFICE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -20.7289,
+      "Longitude": 143.1425,
+      "Elevation": 211.1
+    }
   },
   {
     "Id": "030161",
-    "Name": null,
+    "Name": "RICHMOND AIRPORT",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -20.7001,
+      "Longitude": 143.1137,
+      "Elevation": 206.3
+    }
   },
   {
     "Id": "030018",
-    "Name": null,
+    "Name": "GEORGETOWN POST OFFICE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -18.2922,
+      "Longitude": 143.5483,
+      "Elevation": 291.7
+    }
   },
   {
     "Id": "030124",
-    "Name": null,
+    "Name": "GEORGETOWN AIRPORT",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -18.3039,
+      "Longitude": 143.5306,
+      "Elevation": 301.8
+    }
   },
   {
     "Id": "031010",
-    "Name": null,
+    "Name": "CAIRNS POST OFFICE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -16.9333,
+      "Longitude": 145.7833,
+      "Elevation": 2
+    }
   },
   {
     "Id": "031011",
-    "Name": null,
+    "Name": "CAIRNS AERO",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -16.8736,
+      "Longitude": 145.7458,
+      "Elevation": 2.2
+    }
   },
   {
     "Id": "032040",
-    "Name": null,
+    "Name": "TOWNSVILLE AERO",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -19.2483,
+      "Longitude": 146.7661,
+      "Elevation": 4.3
+    }
   },
   {
     "Id": "033046",
-    "Name": null,
+    "Name": "MACKAY POST OFFICE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -21.15,
+      "Longitude": 149.1833,
+      "Elevation": 11
+    }
   },
   {
     "Id": "033047",
-    "Name": null,
+    "Name": "TE KOWAI EXP STN",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -21.1642,
+      "Longitude": 149.1192,
+      "Elevation": 13
+    }
   },
   {
     "Id": "033119",
-    "Name": null,
+    "Name": "MACKAY M.O",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -21.1172,
+      "Longitude": 149.2169,
+      "Elevation": 30.3
+    }
   },
   {
     "Id": "034002",
-    "Name": null,
+    "Name": "CHARTERS TOWERS POST OFFICE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -20.0781,
+      "Longitude": 146.2614,
+      "Elevation": 309.8
+    }
   },
   {
     "Id": "034084",
-    "Name": null,
+    "Name": "CHARTERS TOWERS AIRPORT COMPARISON",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -20.0427,
+      "Longitude": 146.2716,
+      "Elevation": 289.8
+    }
   },
   {
     "Id": "036007",
-    "Name": null,
+    "Name": "BARCALDINE POST OFFICE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -23.5544,
+      "Longitude": 145.2883,
+      "Elevation": 266.9
+    }
   },
   {
     "Id": "036030",
-    "Name": null,
+    "Name": "LONGREACH POST OFFICE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -23.45,
+      "Longitude": 144.25,
+      "Elevation": 191
+    }
   },
   {
     "Id": "036031",
-    "Name": null,
+    "Name": "LONGREACH AERO",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -23.4397,
+      "Longitude": 144.2828,
+      "Elevation": 192.2
+    }
   },
   {
     "Id": "037010",
-    "Name": null,
+    "Name": "CAMOOWEAL TOWNSHIP",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -19.9225,
+      "Longitude": 138.1214,
+      "Elevation": 231.2
+    }
   },
   {
     "Id": "038003",
-    "Name": null,
+    "Name": "BOULIA AIRPORT",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -22.9117,
+      "Longitude": 139.9039,
+      "Elevation": 161.8
+    }
   },
   {
     "Id": "038002",
-    "Name": null,
+    "Name": "BIRDSVILLE POLICE STATION",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -25.9003,
+      "Longitude": 139.3492,
+      "Elevation": 37
+    }
   },
   {
     "Id": "038026",
-    "Name": null,
+    "Name": "BIRDSVILLE AIRPORT",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -25.8975,
+      "Longitude": 139.3472,
+      "Elevation": 46.6
+    }
   },
   {
     "Id": "039039",
-    "Name": null,
+    "Name": "GAYNDAH POST OFFICE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -25.6258,
+      "Longitude": 151.6094,
+      "Elevation": 105.7
+    }
   },
   {
     "Id": "039066",
-    "Name": null,
+    "Name": "GAYNDAH AIRPORT",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -25.6167,
+      "Longitude": 151.6156,
+      "Elevation": 110.9
+    }
   },
   {
     "Id": "039083",
-    "Name": null,
+    "Name": "ROCKHAMPTON AERO",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -23.3753,
+      "Longitude": 150.4775,
+      "Elevation": 10.4
+    }
   },
   {
     "Id": "039015",
-    "Name": null,
+    "Name": "BUNDABERG POST OFFICE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -24.8667,
+      "Longitude": 152.3467,
+      "Elevation": 14
+    }
   },
   {
     "Id": "039128",
-    "Name": null,
+    "Name": "BUNDABERG AERO",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -24.9069,
+      "Longitude": 152.323,
+      "Elevation": 30.8
+    }
   },
   {
     "Id": "040004",
-    "Name": null,
+    "Name": "AMBERLEY AMO",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -27.6297,
+      "Longitude": 152.7111,
+      "Elevation": 24.2
+    }
   },
   {
     "Id": "040043",
-    "Name": null,
+    "Name": "CAPE MORETON LIGHTHOUSE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -27.0314,
+      "Longitude": 153.4661,
+      "Elevation": 99.9
+    }
   },
   {
     "Id": "040223",
-    "Name": null,
+    "Name": "BRISBANE AERO",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -27.4178,
+      "Longitude": 153.1142,
+      "Elevation": 4
+    }
   },
   {
     "Id": "040842",
-    "Name": null,
+    "Name": "BRISBANE AERO",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -27.3917,
+      "Longitude": 153.1292,
+      "Elevation": 4.5
+    }
   },
   {
     "Id": "042023",
-    "Name": null,
+    "Name": "MILES POST OFFICE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -26.6581,
+      "Longitude": 150.1844,
+      "Elevation": 302
+    }
   },
   {
     "Id": "042112",
-    "Name": null,
+    "Name": "MILES CONSTANCE STREET",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -26.6569,
+      "Longitude": 150.1819,
+      "Elevation": 304.8
+    }
   },
   {
     "Id": "043034",
-    "Name": null,
+    "Name": "ST GEORGE POST OFFICE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -28.0361,
+      "Longitude": 148.5814,
+      "Elevation": 200.8
+    }
   },
   {
     "Id": "043109",
-    "Name": null,
+    "Name": "ST GEORGE AIRPORT",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -28.0478,
+      "Longitude": 148.5957,
+      "Elevation": 198.5
+    }
   },
   {
     "Id": "044022",
-    "Name": null,
+    "Name": "CHARLEVILLE POST OFFICE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -26.4025,
+      "Longitude": 146.2381,
+      "Elevation": 293.5
+    }
   },
   {
     "Id": "044021",
-    "Name": null,
+    "Name": "CHARLEVILLE AERO",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -26.4139,
+      "Longitude": 146.2558,
+      "Elevation": 301.6
+    }
   },
   {
     "Id": "045017",
-    "Name": null,
+    "Name": "THARGOMINDAH POST OFFICE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -27.9978,
+      "Longitude": 143.8197,
+      "Elevation": 128.7
+    }
   },
   {
     "Id": "045025",
-    "Name": null,
+    "Name": "THARGOMINDAH AIRPORT",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -27.9867,
+      "Longitude": 143.815,
+      "Elevation": 130.9
+    }
   },
   {
     "Id": "046043",
-    "Name": null,
+    "Name": "WILCANNIA (REID ST)",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -31.5631,
+      "Longitude": 143.3747,
+      "Elevation": 75
+    }
   },
   {
     "Id": "046012",
-    "Name": null,
+    "Name": "WILCANNIA AERODROME AWS",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -31.5194,
+      "Longitude": 143.385,
+      "Elevation": 94.3
+    }
   },
   {
     "Id": "046037",
-    "Name": null,
+    "Name": "TIBOOBURRA POST OFFICE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -29.4362,
+      "Longitude": 142.0097,
+      "Elevation": 183
+    }
   },
   {
     "Id": "046126",
-    "Name": null,
+    "Name": "TIBOOBURRA AIRPORT",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -29.4448,
+      "Longitude": 142.0567,
+      "Elevation": 176.4
+    }
   },
   {
     "Id": "048030",
-    "Name": null,
+    "Name": "COBAR POST OFFICE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -31.5,
+      "Longitude": 145.8,
+      "Elevation": 250.5
+    }
   },
   {
     "Id": "048027",
-    "Name": null,
+    "Name": "COBAR MO",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -31.484,
+      "Longitude": 145.8294,
+      "Elevation": 260
+    }
   },
   {
     "Id": "048013",
-    "Name": null,
+    "Name": "BOURKE POST OFFICE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -30.0917,
+      "Longitude": 145.9358,
+      "Elevation": 106
+    }
   },
   {
     "Id": "048239",
-    "Name": null,
+    "Name": "BOURKE AIRPORT",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -30.0423,
+      "Longitude": 145.952,
+      "Elevation": 107.5
+    }
   },
   {
     "Id": "048245",
-    "Name": null,
+    "Name": "BOURKE AIRPORT AWS",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -30.0362,
+      "Longitude": 145.9521,
+      "Elevation": 107.3
+    }
   },
   {
     "Id": "073054",
-    "Name": null,
+    "Name": "WYALONG POST OFFICE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -33.9262,
+      "Longitude": 147.2418,
+      "Elevation": 245
+    }
   },
   {
     "Id": "050017",
-    "Name": null,
+    "Name": "WEST WYALONG AIRPORT AWS",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -33.9382,
+      "Longitude": 147.1962,
+      "Elevation": 257
+    }
   },
   {
     "Id": "052026",
-    "Name": null,
+    "Name": "WALGETT COUNCIL DEPOT",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -30.0236,
+      "Longitude": 148.1218,
+      "Elevation": 133
+    }
   },
   {
     "Id": "052088",
-    "Name": null,
+    "Name": "WALGETT AIRPORT AWS",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -30.0372,
+      "Longitude": 148.1223,
+      "Elevation": 133
+    }
   },
   {
     "Id": "053027",
-    "Name": null,
+    "Name": "MOREE POST OFFICE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -29.5,
+      "Longitude": 149.9,
+      "Elevation": 207.3
+    }
   },
   {
     "Id": "053048",
-    "Name": null,
+    "Name": "MOREE COMPARISON",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -29.4819,
+      "Longitude": 149.8383,
+      "Elevation": 212.1
+    }
   },
   {
     "Id": "053115",
-    "Name": null,
+    "Name": "MOREE AERO",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -29.4898,
+      "Longitude": 149.8471,
+      "Elevation": 213
+    }
   },
   {
     "Id": "055024",
-    "Name": null,
+    "Name": "GUNNEDAH RESOURCE CENTRE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -31.0261,
+      "Longitude": 150.2687,
+      "Elevation": 307.3
+    }
   },
   {
     "Id": "056017",
-    "Name": null,
+    "Name": "INVERELL COMPARISON",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -29.7783,
+      "Longitude": 151.1114,
+      "Elevation": 584
+    }
   },
   {
     "Id": "056242",
-    "Name": null,
+    "Name": "INVERELL (RAGLAN ST)",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -29.7796,
+      "Longitude": 151.1121,
+      "Elevation": 582
+    }
   },
   {
     "Id": "058012",
-    "Name": null,
+    "Name": "YAMBA PILOT STATION",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -29.4325,
+      "Longitude": 153.3632,
+      "Elevation": 27.4
+    }
   },
   {
     "Id": "059040",
-    "Name": null,
+    "Name": "COFFS HARBOUR MO",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -30.3107,
+      "Longitude": 153.1187,
+      "Elevation": 5
+    }
   },
   {
     "Id": "059151",
-    "Name": null,
+    "Name": "COFFS HARBOUR AIRPORT",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -30.3189,
+      "Longitude": 153.1162,
+      "Elevation": 3.5
+    }
   },
   {
     "Id": "060026",
-    "Name": null,
+    "Name": "PORT MACQUARIE (HILL ST)",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -31.4399,
+      "Longitude": 152.911,
+      "Elevation": 20
+    }
   },
   {
     "Id": "060139",
-    "Name": null,
+    "Name": "PORT MACQUARIE AIRPORT AWS (COMPARISON)",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -31.4335,
+      "Longitude": 152.8655,
+      "Elevation": 4.2
+    }
   },
   {
     "Id": "060168",
-    "Name": null,
+    "Name": "PORT MACQUARIE AIRPORT AWS",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -31.4343,
+      "Longitude": 152.8662,
+      "Elevation": 4.5
+    }
   },
   {
     "Id": "061078",
-    "Name": null,
+    "Name": "WILLIAMTOWN RAAF",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -32.7939,
+      "Longitude": 151.8364,
+      "Elevation": 7.5
+    }
   },
   {
     "Id": "061089",
-    "Name": null,
+    "Name": "SCONE SCS",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -32.0632,
+      "Longitude": 150.9271,
+      "Elevation": 216
+    }
   },
   {
     "Id": "061363",
-    "Name": null,
+    "Name": "SCONE AIRPORT AWS",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -32.0335,
+      "Longitude": 150.8264,
+      "Elevation": 221.4
+    }
   },
   {
     "Id": "063005",
-    "Name": null,
+    "Name": "BATHURST AG STATION COMPARISON",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -33.4288,
+      "Longitude": 149.5559,
+      "Elevation": 713
+    }
   },
   {
     "Id": "065012",
-    "Name": null,
+    "Name": "DUBBO (DARLING STREET)",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -32.2385,
+      "Longitude": 148.6089,
+      "Elevation": 260
+    }
   },
   {
     "Id": "065070",
-    "Name": null,
+    "Name": "DUBBO AIRPORT AWS",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -32.2206,
+      "Longitude": 148.5753,
+      "Elevation": 284
+    }
   },
   {
     "Id": "066062",
-    "Name": null,
+    "Name": "SYDNEY (OBSERVATORY HILL)",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -33.8607,
+      "Longitude": 151.205,
+      "Elevation": 39
+    }
   },
   {
     "Id": "066214",
-    "Name": null,
+    "Name": "SYDNEY (OBSERVATORY HILL)",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -33.8593,
+      "Longitude": 151.2048,
+      "Elevation": 43.4
+    }
   },
   {
     "Id": "067033",
-    "Name": null,
+    "Name": "RICHMOND RAAF",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -33.6022,
+      "Longitude": 150.7794,
+      "Elevation": 19
+    }
   },
   {
     "Id": "067105",
-    "Name": null,
+    "Name": "RICHMOND RAAF",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -33.6004,
+      "Longitude": 150.7761,
+      "Elevation": 19
+    }
   },
   {
     "Id": "068076",
-    "Name": null,
+    "Name": "NOWRA RAN AIR STATION",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -34.9449,
+      "Longitude": 150.545,
+      "Elevation": 109
+    }
   },
   {
     "Id": "068072",
-    "Name": null,
+    "Name": "NOWRA RAN AIR STATION AWS",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -34.9469,
+      "Longitude": 150.5353,
+      "Elevation": 109
+    }
   },
   {
     "Id": "068034",
-    "Name": null,
+    "Name": "JERVIS BAY (POINT PERPENDICULAR LIGHTHOU",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -35.0936,
+      "Longitude": 150.8048,
+      "Elevation": 85
+    }
   },
   {
     "Id": "068151",
-    "Name": null,
+    "Name": "JERVIS BAY (POINT PERPENDICULAR AWS)",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -35.0936,
+      "Longitude": 150.8049,
+      "Elevation": 85
+    }
   },
   {
     "Id": "069018",
-    "Name": null,
+    "Name": "MORUYA HEADS PILOT STATION",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -35.9093,
+      "Longitude": 150.1532,
+      "Elevation": 17
+    }
   },
   {
     "Id": "070099",
-    "Name": null,
+    "Name": "CANBERRA (ACTON)",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -35.3,
+      "Longitude": 149.1
+    }
   },
   {
     "Id": "070014",
-    "Name": null,
+    "Name": "CANBERRA AIRPORT COMPARISON",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -35.3049,
+      "Longitude": 149.2014,
+      "Elevation": 578.4
+    }
   },
   {
     "Id": "070351",
-    "Name": null,
+    "Name": "CANBERRA AIRPORT",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -35.3106,
+      "Longitude": 149.197,
+      "Elevation": 577.1
+    }
   },
   {
     "Id": "072151",
-    "Name": null,
+    "Name": "WAGGA WAGGA (KOORINGAL)",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -35.1333,
+      "Longitude": 147.3667,
+      "Elevation": 240
+    }
   },
   {
     "Id": "072150",
-    "Name": null,
+    "Name": "WAGGA WAGGA AMO",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -35.1583,
+      "Longitude": 147.4575,
+      "Elevation": 212
+    }
   },
   {
     "Id": "072091",
-    "Name": null,
+    "Name": "CABRAMURRA SMHEA",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -35.9383,
+      "Longitude": 148.3842,
+      "Elevation": 1475
+    }
   },
   {
     "Id": "072161",
-    "Name": null,
+    "Name": "CABRAMURRA SMHEA AWS",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -35.9371,
+      "Longitude": 148.3779,
+      "Elevation": 1482.4
+    }
   },
   {
     "Id": "074128",
-    "Name": null,
+    "Name": "DENILIQUIN (VISITOR INFORMATION CENTRE)",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -35.5283,
+      "Longitude": 144.9651,
+      "Elevation": 96
+    }
   },
   {
     "Id": "074258",
-    "Name": null,
+    "Name": "DENILIQUIN AIRPORT AWS",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -35.5575,
+      "Longitude": 144.9458,
+      "Elevation": 94
+    }
   },
   {
     "Id": "076077",
-    "Name": null,
+    "Name": "MILDURA POST OFFICE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -34.1833,
+      "Longitude": 142.2,
+      "Elevation": 53.9
+    }
   },
   {
     "Id": "076031",
-    "Name": null,
+    "Name": "MILDURA AIRPORT",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -34.2358,
+      "Longitude": 142.0867,
+      "Elevation": 50
+    }
   },
   {
     "Id": "078031",
-    "Name": null,
+    "Name": "NHILL",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -36.3347,
+      "Longitude": 141.6367,
+      "Elevation": 133
+    }
   },
   {
     "Id": "078015",
-    "Name": null,
+    "Name": "NHILL AERODROME",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -36.3093,
+      "Longitude": 141.6486,
+      "Elevation": 138.9
+    }
   },
   {
     "Id": "080023",
-    "Name": null,
+    "Name": "KERANG",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -35.7466,
+      "Longitude": 143.935,
+      "Elevation": 78
+    }
   },
   {
     "Id": "082039",
-    "Name": null,
+    "Name": "RUTHERGLEN RESEARCH",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -36.1048,
+      "Longitude": 146.5094,
+      "Elevation": 175
+    }
   },
   {
     "Id": "084016",
-    "Name": null,
+    "Name": "GABO ISLAND LIGHTHOUSE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -37.5679,
+      "Longitude": 149.9158,
+      "Elevation": 15
+    }
   },
   {
     "Id": "084030",
-    "Name": null,
+    "Name": "ORBOST (COMPARISON)",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -37.6917,
+      "Longitude": 148.4589,
+      "Elevation": 41
+    }
   },
   {
     "Id": "084145",
-    "Name": null,
+    "Name": "ORBOST",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -37.6922,
+      "Longitude": 148.4667,
+      "Elevation": 62.7
+    }
   },
   {
     "Id": "085133",
-    "Name": null,
+    "Name": "SALE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -38.1,
+      "Longitude": 147.05,
+      "Elevation": 9.8
+    }
   },
   {
     "Id": "085072",
-    "Name": null,
+    "Name": "EAST SALE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -38.1156,
+      "Longitude": 147.1323,
+      "Elevation": 4.6
+    }
   },
   {
     "Id": "085096",
-    "Name": null,
+    "Name": "WILSONS PROMONTORY LIGHTHOUSE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -39.1297,
+      "Longitude": 146.4246,
+      "Elevation": 95
+    }
   },
   {
     "Id": "086071",
-    "Name": null,
+    "Name": "MELBOURNE REGIONAL OFFICE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -37.8075,
+      "Longitude": 144.97,
+      "Elevation": 31.2
+    }
   },
   {
     "Id": "086338",
-    "Name": null,
+    "Name": "MELBOURNE (OLYMPIC PARK)",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -37.8255,
+      "Longitude": 144.9816,
+      "Elevation": 7.5
+    }
   },
   {
     "Id": "087031",
-    "Name": null,
+    "Name": "LAVERTON RAAF",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -37.8565,
+      "Longitude": 144.7565,
+      "Elevation": 20.1
+    }
   },
   {
     "Id": "090015",
-    "Name": null,
+    "Name": "CAPE OTWAY LIGHTHOUSE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -38.8557,
+      "Longitude": 143.513,
+      "Elevation": 80
+    }
   },
   {
     "Id": "091057",
-    "Name": null,
+    "Name": "LOW HEAD (COMPARISON)",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -41.0567,
+      "Longitude": 146.7883,
+      "Elevation": 28
+    }
   },
   {
     "Id": "091293",
-    "Name": null,
+    "Name": "LOW HEAD",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -41.0547,
+      "Longitude": 146.7874,
+      "Elevation": 3
+    }
   },
   {
     "Id": "091049",
-    "Name": null,
+    "Name": "LAUNCESTON (CITY)",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -41.4264,
+      "Longitude": 147.1275,
+      "Elevation": 3
+    }
   },
   {
     "Id": "091104",
-    "Name": null,
+    "Name": "LAUNCESTON AIRPORT COMPARISON",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -41.5397,
+      "Longitude": 147.2033,
+      "Elevation": 166
+    }
   },
   {
     "Id": "091311",
-    "Name": null,
+    "Name": "LAUNCESTON AIRPORT",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -41.5476,
+      "Longitude": 147.2156,
+      "Elevation": 166.9
+    }
   },
   {
     "Id": "092045",
-    "Name": null,
+    "Name": "LARAPUNA (EDDYSTONE POINT)",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -40.9928,
+      "Longitude": 148.3467,
+      "Elevation": 19.7
+    }
   },
   {
     "Id": "094010",
-    "Name": null,
+    "Name": "CAPE BRUNY LIGHTHOUSE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -43.4892,
+      "Longitude": 147.1453,
+      "Elevation": 55
+    }
   },
   {
     "Id": "094198",
-    "Name": null,
+    "Name": "CAPE BRUNY (CAPE BRUNY)",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -43.4886,
+      "Longitude": 147.1444,
+      "Elevation": 59.7
+    }
   },
   {
     "Id": "094029",
-    "Name": null,
+    "Name": "HOBART (ELLERSLIE ROAD)",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -42.8897,
+      "Longitude": 147.3278,
+      "Elevation": 50.5
+    }
   },
   {
     "Id": "094069",
-    "Name": null,
+    "Name": "GROVE (COMPARISON)",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -42.983,
+      "Longitude": 147.0771,
+      "Elevation": 63
+    }
   },
   {
     "Id": "094220",
-    "Name": null,
+    "Name": "GROVE (RESEARCH STATION)",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -42.9844,
+      "Longitude": 147.0756,
+      "Elevation": 65
+    }
   },
   {
     "Id": "096003",
-    "Name": null,
+    "Name": "BUTLERS GORGE",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -42.2753,
+      "Longitude": 146.2758,
+      "Elevation": 667
+    }
   },
   {
     "Id": "096071",
-    "Name": null,
+    "Name": "LAKE ST CLAIR NATIONAL PARK",
     "CountryCode": "AS",
-    "Coordinates": null,
-    "FirstYear": null,
-    "LastYear": null,
-    "YearsOfMissingData": null
+    "Coordinates": {
+      "Latitude": -42.1177,
+      "Longitude": 146.1771,
+      "Elevation": 742
+    }
   }
 ]
