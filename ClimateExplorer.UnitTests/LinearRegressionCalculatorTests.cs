@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using ClimateExplorer.Core.Stats;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -77,6 +78,36 @@ public class LinearRegressionCalculatorTests
         Assert.AreEqual(-0.004332, result.Significance.SlopeConfidenceInterval.Lower, 5e-6);
         Assert.AreEqual(0.01173, result.Significance.SlopeConfidenceInterval.Upper, 5e-5);
         Assert.IsFalse(result.Significance.IsSlopeSignificant);
+    }
+
+    [TestMethod]
+    public void Calculate_CanberraTemperatureAll_ResultsFileMatchesCalculatedRegression()
+    {
+        var result = LinearRegressionCalculator.Calculate(
+            ReadFixture("Climate", "linear-regression-1-canberra-temp-all.csv"));
+        var expected = ReadResultFixture("Climate", "linear-regression-1-canberra-temp-all-results.txt");
+
+        AssertMatchesResultFixture(expected, result);
+    }
+
+    [TestMethod]
+    public void Calculate_CanberraTemperatureLast30Years_ResultsFileMatchesCalculatedRegression()
+    {
+        var result = LinearRegressionCalculator.Calculate(
+            ReadFixture("Climate", "linear-regression-2-canberra-temp-last-30.csv"));
+        var expected = ReadResultFixture("Climate", "linear-regression-2-canberra-temp-last-30-results.txt");
+
+        AssertMatchesResultFixture(expected, result);
+    }
+
+    [TestMethod]
+    public void Calculate_CanberraTemperatureFirstHalf_ResultsFileMatchesCalculatedRegression()
+    {
+        var result = LinearRegressionCalculator.Calculate(
+            ReadFixture("Climate", "linear-regression-3-canberra-temp-first-half.csv"));
+        var expected = ReadResultFixture("Climate", "linear-regression-3-canberra-temp-first-half-results.txt");
+
+        AssertMatchesResultFixture(expected, result);
     }
 
     [TestMethod]
@@ -185,7 +216,7 @@ public class LinearRegressionCalculatorTests
     public void Predict_NoisyRegression_ReturnsWiderObservationIntervalThanMeanInterval()
     {
         var result = LinearRegressionCalculator.Calculate(
-            ReadFixture("Design", "linear-regression-2-canberra-temp-last-30.csv"));
+            ReadFixture("Climate", "linear-regression-2-canberra-temp-last-30.csv"));
         var prediction = LinearRegressionCalculator.Predict(result, 2026);
 
         var meanWidth = prediction.MeanConfidenceInterval.Upper - prediction.MeanConfidenceInterval.Lower;
@@ -299,4 +330,121 @@ public class LinearRegressionCalculatorTests
 
         return points;
     }
+
+    private static RegressionExpectedResults ReadResultFixture(params string[] fixturePath)
+    {
+        var text = File.ReadAllText(GetFixturePath(fixturePath));
+        var degreesOfFreedomFields = ReadTextField(text, "DFn,DFd").Split(',');
+        var pValueText = ReadTextField(text, "P Value");
+
+        return new RegressionExpectedResults(
+            ReadFirstNumber(ReadTextField(text, "Slope")),
+            ReadSecondNumber(ReadTextField(text, "Slope")),
+            ReadFirstNumber(ReadTextField(text, "Y-intercept")),
+            ReadFirstNumber(ReadTextField(text, "R Square")),
+            ReadFirstNumber(ReadTextField(text, "Sy.x")),
+            ReadFirstNumber(ReadTextField(text, "F")),
+            int.Parse(degreesOfFreedomFields[1], CultureInfo.InvariantCulture),
+            ParsePValue(pValueText),
+            pValueText.TrimStart().StartsWith('<'),
+            ReadRange(ReadTextField(text, "Slope", occurrence: 2)),
+            ReadFirstNumber(ReadTextField(text, "Number of X values")),
+            ReadFirstNumber(ReadTextField(text, "Total number of values")));
+    }
+
+    private static void AssertMatchesResultFixture(
+        RegressionExpectedResults expected,
+        LinearRegressionResult actual)
+    {
+        Assert.AreEqual(expected.Count, actual.Input.Count);
+        Assert.AreEqual(expected.TotalValueCount, actual.Input.Count);
+        Assert.AreEqual(expected.DegreesOfFreedom, actual.Significance.DegreesOfFreedom);
+        Assert.AreEqual(expected.Slope, actual.Line.Slope, Tolerance(expected.Slope));
+        Assert.AreEqual(expected.SlopeStandardError, actual.Significance.SlopeStandardError, Tolerance(expected.SlopeStandardError));
+        Assert.AreEqual(expected.Intercept, actual.Line.Intercept, Tolerance(expected.Intercept));
+        Assert.AreEqual(expected.RSquared, actual.Fit.RSquared, Tolerance(expected.RSquared));
+        Assert.AreEqual(expected.ResidualStandardError, actual.Fit.ResidualStandardError, Tolerance(expected.ResidualStandardError));
+        Assert.AreEqual(expected.FStatistic, actual.Significance.FStatistic, Tolerance(expected.FStatistic));
+        Assert.AreEqual(expected.SlopeConfidenceInterval.Lower, actual.Significance.SlopeConfidenceInterval.Lower, Tolerance(expected.SlopeConfidenceInterval.Lower));
+        Assert.AreEqual(expected.SlopeConfidenceInterval.Upper, actual.Significance.SlopeConfidenceInterval.Upper, Tolerance(expected.SlopeConfidenceInterval.Upper));
+
+        if (expected.IsPValueUpperBound)
+        {
+            Assert.IsLessThan(expected.PValue, actual.Significance.PValue);
+        }
+        else
+        {
+            Assert.AreEqual(expected.PValue, actual.Significance.PValue, PValueTolerance(expected.PValue));
+        }
+    }
+
+    private static string GetFixturePath(params string[] fixturePath)
+    {
+        var pathParts = new[] { AppContext.BaseDirectory, "LinearRegressionFixtures" }
+            .Concat(fixturePath)
+            .ToArray();
+
+        return Path.Combine(pathParts);
+    }
+
+    private static string ReadTextField(string text, string label, int occurrence = 1)
+    {
+        var matches = Regex.Matches(
+            text,
+            @$"^{Regex.Escape(label)}\s+(?<value>.+)$",
+            RegexOptions.Multiline);
+
+        return matches[occurrence - 1].Groups["value"].Value.Trim();
+    }
+
+    private static ConfidenceInterval ReadRange(string value)
+    {
+        var numbers = Regex.Matches(value, @"[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?")
+            .Select(match => double.Parse(match.Value, CultureInfo.InvariantCulture))
+            .ToArray();
+
+        return new ConfidenceInterval(numbers[0], numbers[1]);
+    }
+
+    private static double ReadFirstNumber(string value) => ReadNumber(value, 0);
+
+    private static double ReadSecondNumber(string value) => ReadNumber(value, 1);
+
+    private static double ReadNumber(string value, int index)
+    {
+        var matches = Regex.Matches(value, @"[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?");
+
+        return double.Parse(matches[index].Value, CultureInfo.InvariantCulture);
+    }
+
+    private static double ParsePValue(string value)
+    {
+        return double.Parse(
+            value.Replace("<", string.Empty, StringComparison.Ordinal).Trim(),
+            CultureInfo.InvariantCulture);
+    }
+
+    private static double Tolerance(double expected)
+    {
+        return Math.Max(Math.Abs(expected) * 5e-4, 5e-7);
+    }
+
+    private static double PValueTolerance(double expected)
+    {
+        return Math.Max(Math.Abs(expected) * 5e-4, 5e-5);
+    }
+
+    private sealed record RegressionExpectedResults(
+        double Slope,
+        double SlopeStandardError,
+        double Intercept,
+        double RSquared,
+        double ResidualStandardError,
+        double FStatistic,
+        int DegreesOfFreedom,
+        double PValue,
+        bool IsPValueUpperBound,
+        ConfidenceInterval SlopeConfidenceInterval,
+        double Count,
+        double TotalValueCount);
 }

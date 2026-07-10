@@ -19,9 +19,8 @@ There are sample input and expected output files in:
 
 `docs\design\linear-regression`
 
-The sample CSV inputs were later moved into
-`ClimateExplorer.UnitTests\LinearRegressionFixtures\Design`; the expected
-output text files remain in `docs\design\linear-regression`.
+The sample CSV inputs and expected-output text files were later moved into
+`ClimateExplorer.UnitTests\LinearRegressionFixtures\Climate`.
 
 Use these files to create unit tests for the implementation.
 
@@ -198,6 +197,7 @@ Implemented a dependency-free simple ordinary least squares regression utility u
 Tests were added in `ClimateExplorer.UnitTests/LinearRegressionCalculatorTests.cs` and cover:
 
 - The three supplied Canberra temperature fixtures, including missing-row handling before points reach the calculator.
+- Three result-file-driven Canberra temperature tests that compare the calculated slope, slope standard error, intercept, R², residual standard error, F statistic, degrees of freedom, p-value, slope confidence interval, and counts against the moved expected-output files.
 - Perfect positive and negative lines.
 - Near-flat/non-significant data.
 - Unevenly spaced X values.
