@@ -68,7 +68,7 @@
                     <thead>
                         <tr>
                             <th>Station ID</th>
-                            <td>Station name</td>
+                            <th class="station-name-col">Station name</th>
                             <th>Start date</th>
                             <th>End date</th>
                             @if (showStationLinks)
@@ -82,7 +82,7 @@
                         {
                             <tr>
                                 <td>@FormatMissing(station.StationId)</td>
-                                <td>@FormatMissing(station.StationName)</td>
+                                <td class="station-name-col">@FormatMissing(station.StationName)</td>
                                 <td>@FormatDate(station.StationStartDate)</td>
                                 <td>@FormatDate(station.StationEndDate)</td>
                                 @if (showStationLinks)

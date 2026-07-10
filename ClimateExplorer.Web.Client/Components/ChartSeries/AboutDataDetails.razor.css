@@ -13,3 +13,13 @@
 .source-link {
     margin-top: 12px;
 }
+
+.station-name-col {
+    text-align: left;
+}
+
+@media (max-width: 767px) {
+    .station-name-col {
+        display: none;
+    }
+}
