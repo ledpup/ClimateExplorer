@@ -56,31 +56,7 @@
 
     @if (Metadata is not null && HasRenderableMetadata(Metadata))
     {
-        @if (IsSingleStation(Metadata))
-        {
-            var station = Metadata.Stations.Single();
-            <div class="entry">
-                <div class="title">Station</div>
-                <div class="value">@FormatStation(station)</div>
-            </div>
-            @if (station.StationStartDate.HasValue && station.StationEndDate.HasValue)
-            {
-                <div class="entry">
-                    <div class="title">Station dates</div>
-                    <div class="value">@FormatStationDateRange(station)</div>
-                </div>
-            }
-            @if (GetStationOrSourceUrl(station, Metadata) is { } sourceUrl && DataSetDefinition?.MoreInformationUrl != sourceUrl)
-            {
-                <div class="entry">
-                    <div class="title">Source link</div>
-                    <div class="value">
-                        <a href="@sourceUrl" target="_blank" rel="noopener noreferrer">@FormatStationOrSourceUrlLabel(station, Metadata)</a>
-                    </div>
-                </div>
-            }
-        }
-        else if (HasRenderableStations(Metadata))
+        if (HasRenderableStations(Metadata))
         {
             var showStationLinks = HasStationLinks(Metadata);
              <div class="entry">
