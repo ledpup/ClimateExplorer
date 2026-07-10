@@ -1,5 +1,7 @@
 namespace ClimateExplorer.Core.Stats;
 
+using ClimateExplorer.Core.Stats.Model;
+
 public static class LinearRegressionCalculator
 {
     private const int MinimumPointCount = 3;

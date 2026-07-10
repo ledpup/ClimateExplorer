@@ -1,4 +1,4 @@
-namespace ClimateExplorer.Core.Stats;
+namespace ClimateExplorer.Core.Stats.Model;
 
 public sealed record RegressionPrediction(
     double X,

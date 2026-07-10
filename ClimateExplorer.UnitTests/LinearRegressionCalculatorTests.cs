@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using ClimateExplorer.Core.Stats;
+using ClimateExplorer.Core.Stats.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ClimateExplorer.UnitTests;
