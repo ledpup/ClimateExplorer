@@ -10,17 +10,21 @@ public sealed class RecentObservationPeriodSelection
     public const int MaximumPreviousDayCount = 7;
     public const int MaximumPreviousMonthCount = 11;
     public const int MaximumPreviousSeasonCount = 3;
+    public const int MaximumPreviousYearCount = 10;
 
     private readonly SortedSet<int> visiblePreviousDayOffsets = new() { DefaultPreviousDayCount };
     private readonly SortedSet<int> visiblePreviousMonthOffsets = [];
     private readonly SortedSet<int> visiblePreviousSeasonOffsets = [];
+    private readonly SortedSet<int> visiblePreviousYearOffsets = [];
 
     public int PreviousDayCount => visiblePreviousDayOffsets.Count;
     public int PreviousMonthCount => visiblePreviousMonthOffsets.Count;
     public int PreviousSeasonCount => visiblePreviousSeasonOffsets.Count;
+    public int PreviousYearCount => visiblePreviousYearOffsets.Count;
     public bool IsAddEarlierDayDisabled => !CanAddEarlierDay();
     public bool IsAddEarlierMonthDisabled => !CanAddEarlierMonth();
     public bool IsAddEarlierSeasonDisabled => !CanAddEarlierSeason();
+    public bool IsAddEarlierYearDisabled => !CanAddEarlierYear();
 
     public void AddEarlierDay(IEnumerable<int>? availableOffsets = null)
     {
@@ -37,6 +41,11 @@ public sealed class RecentObservationPeriodSelection
         AddNextVisibleOffset(visiblePreviousSeasonOffsets, availableOffsets, MaximumPreviousSeasonCount);
     }
 
+    public void AddEarlierYear(IEnumerable<int>? availableOffsets = null)
+    {
+        AddNextVisibleOffset(visiblePreviousYearOffsets, availableOffsets, MaximumPreviousYearCount);
+    }
+
     public bool CanAddEarlierDay(IEnumerable<int>? availableOffsets = null)
     {
         return GetNextVisibleOffset(visiblePreviousDayOffsets, availableOffsets, MaximumPreviousDayCount).HasValue;
@@ -50,6 +59,11 @@ public sealed class RecentObservationPeriodSelection
     public bool CanAddEarlierSeason(IEnumerable<int>? availableOffsets = null)
     {
         return GetNextVisibleOffset(visiblePreviousSeasonOffsets, availableOffsets, MaximumPreviousSeasonCount).HasValue;
+    }
+
+    public bool CanAddEarlierYear(IEnumerable<int>? availableOffsets = null)
+    {
+        return GetNextVisibleOffset(visiblePreviousYearOffsets, availableOffsets, MaximumPreviousYearCount).HasValue;
     }
 
     public string CreateAddButtonLabel(
@@ -82,7 +96,9 @@ public sealed class RecentObservationPeriodSelection
     {
         if (!tile.PeriodOffset.HasValue)
         {
-            return tile.PeriodKind is not RecentObservationPeriodKind.PreviousMonth and not RecentObservationPeriodKind.PreviousSeason;
+            return tile.PeriodKind is not RecentObservationPeriodKind.PreviousMonth
+                and not RecentObservationPeriodKind.PreviousSeason
+                and not RecentObservationPeriodKind.PreviousYear;
         }
 
         return tile.PeriodKind switch
@@ -90,6 +106,7 @@ public sealed class RecentObservationPeriodSelection
             RecentObservationPeriodKind.Daily => visiblePreviousDayOffsets.Contains(tile.PeriodOffset.Value),
             RecentObservationPeriodKind.PreviousMonth => visiblePreviousMonthOffsets.Contains(tile.PeriodOffset.Value),
             RecentObservationPeriodKind.PreviousSeason => visiblePreviousSeasonOffsets.Contains(tile.PeriodOffset.Value),
+            RecentObservationPeriodKind.PreviousYear => visiblePreviousYearOffsets.Contains(tile.PeriodOffset.Value),
             _ => true,
         };
     }
@@ -106,6 +123,7 @@ public sealed class RecentObservationPeriodSelection
             RecentObservationPeriodKind.Daily => tile.PeriodOffset.Value > DefaultPreviousDayCount,
             RecentObservationPeriodKind.PreviousMonth => true,
             RecentObservationPeriodKind.PreviousSeason => true,
+            RecentObservationPeriodKind.PreviousYear => true,
             _ => false,
         };
     }
@@ -128,6 +146,9 @@ public sealed class RecentObservationPeriodSelection
             case RecentObservationPeriodKind.PreviousSeason:
                 visiblePreviousSeasonOffsets.Remove(tile.PeriodOffset.Value);
                 break;
+            case RecentObservationPeriodKind.PreviousYear:
+                visiblePreviousYearOffsets.Remove(tile.PeriodOffset.Value);
+                break;
         }
     }
 
@@ -137,6 +158,7 @@ public sealed class RecentObservationPeriodSelection
         visiblePreviousDayOffsets.Add(DefaultPreviousDayCount);
         visiblePreviousMonthOffsets.Clear();
         visiblePreviousSeasonOffsets.Clear();
+        visiblePreviousYearOffsets.Clear();
     }
 
     private RecentObservationTileViewModel? GetMaximumReachedTile(
@@ -182,6 +204,7 @@ public sealed class RecentObservationPeriodSelection
             RecentObservationPeriodKind.Daily => visiblePreviousDayOffsets,
             RecentObservationPeriodKind.PreviousMonth => visiblePreviousMonthOffsets,
             RecentObservationPeriodKind.PreviousSeason => visiblePreviousSeasonOffsets,
+            RecentObservationPeriodKind.PreviousYear => visiblePreviousYearOffsets,
             _ => [],
         };
     }
@@ -193,6 +216,7 @@ public sealed class RecentObservationPeriodSelection
             RecentObservationPeriodKind.Daily => MaximumPreviousDayCount,
             RecentObservationPeriodKind.PreviousMonth => MaximumPreviousMonthCount,
             RecentObservationPeriodKind.PreviousSeason => MaximumPreviousSeasonCount,
+            RecentObservationPeriodKind.PreviousYear => MaximumPreviousYearCount,
             _ => 0,
         };
     }

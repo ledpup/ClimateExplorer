@@ -43,6 +43,7 @@ public partial class RecentObservationsPanel
     private string AddDayButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.Daily, "day");
     private string AddMonthButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.PreviousMonth, "month");
     private string AddSeasonButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.PreviousSeason, "season");
+    private string AddYearButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.PreviousYear, "year");
     private string ExpandCollapseAllLabel => CurrentState.ExpansionStates.CreateToggleAllLabel(CurrentExpansionTargets);
     private bool HasExpandableCurrentTiles => CurrentState.ExpansionStates.HasExpandableTile(CurrentExpansionTargets);
     private bool AreAllExpandableCurrentTilesExpanded => CurrentState.ExpansionStates.AreAllExpandableTilesExpanded(CurrentExpansionTargets);
@@ -56,6 +57,7 @@ public partial class RecentObservationsPanel
     private bool IsAddEarlierDayDisabled => !periodSelection.CanAddEarlierDay(GetAvailableOffsets(RecentObservationPeriodKind.Daily));
     private bool IsAddEarlierMonthDisabled => !periodSelection.CanAddEarlierMonth(GetAvailableOffsets(RecentObservationPeriodKind.PreviousMonth));
     private bool IsAddEarlierSeasonDisabled => !periodSelection.CanAddEarlierSeason(GetAvailableOffsets(RecentObservationPeriodKind.PreviousSeason));
+    private bool IsAddEarlierYearDisabled => !periodSelection.CanAddEarlierYear(GetAvailableOffsets(RecentObservationPeriodKind.PreviousYear));
     private IReadOnlyList<RecentObservationSourceMetadata> CurrentSourceMetadata => CurrentState.Result?.SourceMetadata ?? [];
     private RecentObservationSourceMetadata? ObservationSourceMetadata => CurrentSourceMetadata
         .FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.SourceName) && !string.IsNullOrWhiteSpace(x.StationId));
@@ -150,6 +152,11 @@ public partial class RecentObservationsPanel
     private void AddEarlierSeason()
     {
         periodSelection.AddEarlierSeason(GetAvailableOffsets(RecentObservationPeriodKind.PreviousSeason));
+    }
+
+    private void AddEarlierYear()
+    {
+        periodSelection.AddEarlierYear(GetAvailableOffsets(RecentObservationPeriodKind.PreviousYear));
     }
 
     private void RemoveTile(RecentObservationTileViewModel tile)
@@ -281,6 +288,7 @@ public partial class RecentObservationsPanel
             PreviousDayCount = RecentObservationPeriodSelection.MaximumPreviousDayCount,
             PreviousMonthCount = RecentObservationPeriodSelection.MaximumPreviousMonthCount,
             PreviousSeasonCount = RecentObservationPeriodSelection.MaximumPreviousSeasonCount,
+            PreviousYearCount = RecentObservationPeriodSelection.MaximumPreviousYearCount,
         };
     }
 
