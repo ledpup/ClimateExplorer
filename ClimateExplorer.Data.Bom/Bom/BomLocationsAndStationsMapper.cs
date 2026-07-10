@@ -8,9 +8,9 @@ namespace ClimateExplorer.Data.Bom;
 
 public static class BomLocationsAndStationsMapper
 {
-    public static async Task<List<Station>> BuildAcornSatLocationsFromReferenceMetaDataAsync(Guid dataSetDefinitionId, string outputFileSuffix)
+    public static async Task<List<Station>> BuildAcornSatLocationsFromMetaDataAsync(Guid dataSetDefinitionId, string outputFileSuffix)
     {
-        var oldLocations = await Location.GetLocationsFromFile(@"ReferenceMetaData\ACORN-SAT\Locations.json");
+        var oldLocations = await Location.GetLocationsFromFile(@"MetaData\ACORN-SAT\Locations.json");
 
         var locations = new List<Location>();
         var stations = new List<Station>();
@@ -18,7 +18,7 @@ public static class BomLocationsAndStationsMapper
         var stationToLocationMapping = new Dictionary<string, Guid>();
 
         // Get the friendly location name and the "primary station", as best we can do.
-        var locationRowData = File.ReadAllLines(@"ReferenceMetaData\ACORN-SAT\acorn_sat_stations.csv");
+        var locationRowData = File.ReadAllLines(@"MetaData\ACORN-SAT\acorn_sat_stations.csv");
         foreach (var row in locationRowData.Skip(1))
         {
             var splitRow = row.Split(',');
@@ -44,7 +44,7 @@ public static class BomLocationsAndStationsMapper
         }
 
 
-        var primarySitesFile = File.ReadAllLines(@"ReferenceMetaData\ACORN-SAT\primarysites.txt");
+        var primarySitesFile = File.ReadAllLines(@"MetaData\ACORN-SAT\primarysites.txt");
         var stationRegEx = new Regex(@"^(?<id>\d+)\s(?<start>\d+)\s(?<end>\d+)$");
 
         foreach (var row in primarySitesFile)
@@ -150,7 +150,7 @@ public static class BomLocationsAndStationsMapper
         var file = await File.ReadAllTextAsync(unadjustedDataFileMappingPath);
         var unadjustedDataFileMapping = JsonSerializer.Deserialize<DataFileMapping>(file);
         var locationIdToDataFileMappings = unadjustedDataFileMapping!.LocationIdToDataFileMappings;
-        var stations = await File.ReadAllLinesAsync(@"ReferenceMetaData\ACORN-SAT\acorn_sat_stations.txt");
+        var stations = await File.ReadAllLinesAsync(@"MetaData\ACORN-SAT\acorn_sat_stations.txt");
 
         var dataFileMapping = new DataFileMapping() { DataSetDefinitionId = dataSetDefinitionId };
         foreach (var station in stations)

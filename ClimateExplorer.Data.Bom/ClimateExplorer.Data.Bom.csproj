@@ -26,16 +26,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="ReferenceMetaData\ACORN-SAT\acorn_sat_stations.csv">
+    <None Update="MetaData\ACORN-SAT\acorn_sat_stations.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="ReferenceMetaData\ACORN-SAT\acorn_sat_stations.txt">
+    <None Update="MetaData\ACORN-SAT\acorn_sat_stations.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="ReferenceMetaData\ACORN-SAT\Locations.json">
+    <None Update="MetaData\ACORN-SAT\Locations.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="ReferenceMetaData\ACORN-SAT\primarysites.txt">
+    <None Update="MetaData\ACORN-SAT\primarysites.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
