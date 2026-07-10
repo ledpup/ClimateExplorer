@@ -1,3 +1,14 @@
+# Linear Regression Utility
+
+- **Date:** 2026-07-11
+- **Status:** Implemented 2026-07-11 (see addendum)
+- **Author:** User request, implemented by Codex
+- **Scope:** `ClimateExplorer.Core/Stats`, `ClimateExplorer.UnitTests`, `docs/design/linear-regression`
+- **Builds on:** N/A
+- **Branch context:** local workspace
+
+## Proposal
+
 Create a C# linear regression utility with clearly isolated calculation sections.
 
 ## Context
@@ -7,6 +18,10 @@ I want a general-purpose linear regression implementation.
 There are sample input and expected output files in:
 
 `docs\design\linear-regression`
+
+The sample CSV inputs were later moved into
+`ClimateExplorer.UnitTests\LinearRegressionFixtures\Design`; the expected
+output text files remain in `docs\design\linear-regression`.
 
 Use these files to create unit tests for the implementation.
 
@@ -170,3 +185,41 @@ For each one, document:
 - Any rounding/tolerance decisions
 
 Do not use huge datasets.
+
+## Addendum - implementation notes
+
+Implemented a dependency-free simple ordinary least squares regression utility under `ClimateExplorer.Core/Stats`:
+
+- `LinearRegressionCalculator.Calculate(...)` returns sectioned results for input summary, best-fit line, fit, and significance.
+- `LinearRegressionCalculator.Predict(...)` is separate from the main calculation and returns both the fitted-mean confidence interval and the individual-observation prediction interval.
+- Public result records include `DataPoint`, `LinearRegressionResult`, `RegressionInputSummary`, `RegressionLine`, `RegressionFit`, `RegressionSignificance`, `RegressionPrediction`, and `ConfidenceInterval`.
+- An internal `StudentTDistribution` helper provides p-values and critical values without adding a third-party numerical dependency.
+
+Tests were added in `ClimateExplorer.UnitTests/LinearRegressionCalculatorTests.cs` and cover:
+
+- The three supplied Canberra temperature fixtures, including missing-row handling before points reach the calculator.
+- Perfect positive and negative lines.
+- Near-flat/non-significant data.
+- Unevenly spaced X values.
+- Invalid inputs, non-finite values, invalid alpha, and identical X values.
+- Prediction output, including separate mean confidence and observation prediction intervals.
+
+Additional public/reference datasets added as copied test fixtures:
+
+- NIST/ITL StRD Norris dataset: `https://www.itl.nist.gov/div898/strd/lls/data/Norris.shtml`
+- Wikipedia "Simple linear regression" numerical height/mass example: `https://en.wikipedia.org/wiki/Simple_linear_regression#Numerical_example`
+
+Deviations and decisions:
+
+- The proposed single-file object model was split into one type per file because the project enforces StyleCop rule SA1402.
+- NIST publishes a certified F statistic rather than a p-value for Norris; the test matches the certified F statistic and verifies the resulting p-value is effectively zero.
+- The calculator requires at least three points because residual standard error, slope uncertainty, p-values, and prediction intervals need positive residual degrees of freedom.
+
+Verification:
+
+- `dotnet build ClimateExplorer.UnitTests\ClimateExplorer.UnitTests.csproj --no-restore` succeeded. It reports the existing MSTEST0001 analyzer warning about explicitly configuring test parallelization.
+- `dotnet test ClimateExplorer.UnitTests\ClimateExplorer.UnitTests.csproj --no-build --no-restore` passed: 288 tests.
+
+Follow-up:
+
+- Consider explicitly enabling or disabling MSTest parallelization in a separate test-project housekeeping change to clear MSTEST0001.
