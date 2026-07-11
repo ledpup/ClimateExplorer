@@ -1,6 +1,7 @@
 namespace ClimateExplorer.Core.Stats;
 
 using ClimateExplorer.Core.Stats.Model;
+using static MathHelpers;
 
 public static class LinearRegressionCalculator
 {
@@ -31,7 +32,7 @@ public static class LinearRegressionCalculator
         var predictedY = regression.Line.Predict(x);
         var leverage =
             (1.0 / regression.Input.Count)
-            + (Math.Pow(x - regression.Input.MeanX, 2) / regression.Input.SumSquaredXDeviations);
+            + (Square(x - regression.Input.MeanX) / regression.Input.SumSquaredXDeviations);
 
         var tCritical = StudentTDistribution.TwoTailedCriticalValue(
             alpha,
@@ -75,8 +76,8 @@ public static class LinearRegressionCalculator
         var count = observations.Length;
         var meanX = observations.Average(point => point.X);
         var meanY = observations.Average(point => point.Y);
-        var sumSquaredXDeviations = observations.Sum(point => Math.Pow(point.X - meanX, 2));
-        var sumSquaredYDeviations = observations.Sum(point => Math.Pow(point.Y - meanY, 2));
+        var sumSquaredXDeviations = observations.Sum(point => Square(point.X - meanX));
+        var sumSquaredYDeviations = observations.Sum(point => Square(point.Y - meanY));
 
         if (sumSquaredXDeviations == 0)
         {
@@ -112,7 +113,7 @@ public static class LinearRegressionCalculator
         RegressionLine line)
     {
         var residualSumOfSquares = observations.Sum(
-            point => Math.Pow(point.Y - line.Predict(point.X), 2));
+            point => Square(point.Y - line.Predict(point.X)));
         residualSumOfSquares = CleanNearZero(residualSumOfSquares);
 
         var regressionSumOfSquares = CleanNearZero(input.SumSquaredYDeviations - residualSumOfSquares);

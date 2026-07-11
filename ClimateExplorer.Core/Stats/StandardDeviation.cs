@@ -1,5 +1,7 @@
 ﻿namespace ClimateExplorer.Core.Stats;
 
+using static MathHelpers;
+
 public static class StandardDeviation
 {
     public static double? PopulationStandardDeviation(IEnumerable<double> values)
@@ -14,7 +16,7 @@ public static class StandardDeviation
         var mean = list.Average();
 
         var variance = list
-            .Average(value => (value - mean) * (value - mean));
+            .Average(value => Square(value - mean));
 
         return Math.Sqrt(variance);
     }
@@ -31,7 +33,7 @@ public static class StandardDeviation
         var mean = list.Average();
 
         var variance = list
-            .Sum(value => (value - mean) * (value - mean)) / (list.Count - 1);
+            .Sum(value => Square(value - mean)) / (list.Count - 1);
 
         return Math.Sqrt(variance);
     }
@@ -50,7 +52,7 @@ public static class StandardDeviation
         var mean = list.Average();
 
         var variance = list
-            .Average(historicalValue => (historicalValue - mean) * (historicalValue - mean));
+            .Average(historicalValue => Square(historicalValue - mean));
         var standardDeviation = Math.Sqrt(variance);
 
         if (standardDeviation == 0)
