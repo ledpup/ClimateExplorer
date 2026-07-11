@@ -1,0 +1,104 @@
+@namespace ClimateExplorer.Web.Client.Components.RecentObservations
+
+@if (IsRemovable)
+{
+    <button type="button" class="btn-close recent-observation-remove" aria-label="@RemoveButtonLabel" @onclick="OnRemove"></button>
+}
+
+<div class="recent-observation-period">@Tile.PeriodTitle</div>
+<h3 class="recent-observation-headline">@Tile.Headline</h3>
+<p class="recent-observation-percentile">@Tile.PercentileSentence</p>
+
+<div class="recent-observation-primary">
+    <span class="recent-observation-primary-label">@Tile.PrimaryLabel</span>
+    <span class="recent-observation-primary-value">
+        @if (!string.IsNullOrWhiteSpace(Tile.PrimaryRecordStatusText))
+        {
+            <span class="recent-observation-status status-@RecentObservationTileDisplay.StatusClass(Tile.PrimaryRecordStatus)">@Tile.PrimaryRecordStatusText</span>
+        }
+        <strong>@Tile.PrimaryValue</strong>
+    </span>
+</div>
+
+@if (Tile.Stats.Count > 0)
+{
+    <dl class="recent-observation-stats">
+        @foreach (var stat in Tile.Stats)
+        {
+            <div>
+                <dt>@stat.Label</dt>
+                <dd>
+                    <span class="recent-observation-stat-value">@stat.Value</span>
+                    @if (!string.IsNullOrWhiteSpace(stat.RecordStatusText))
+                    {
+                        <span class="recent-observation-status status-@RecentObservationTileDisplay.StatusClass(stat.RecordStatus)">@stat.RecordStatusText</span>
+                    }
+                </dd>
+            </div>
+        }
+    </dl>
+}
+
+@if (!string.IsNullOrWhiteSpace(Tile.Note))
+{
+    <p class="recent-observation-note">@Tile.Note</p>
+}
+
+@if (!string.IsNullOrWhiteSpace(Tile.HistoricalMaxLabel) && !string.IsNullOrWhiteSpace(Tile.HistoricalMaxValue))
+{
+    <dl class="recent-observation-historical-range">
+        <div>
+            <dt>@Tile.HistoricalMaxLabel</dt>
+            <dd>
+                @Tile.HistoricalMaxValue
+                @if (!string.IsNullOrWhiteSpace(Tile.HistoricalMaxOccurred))
+                {
+                    <span class="recent-observation-historical-occurred"> - @Tile.HistoricalMaxOccurred</span>
+                }
+            </dd>
+        </div>
+        @if (!string.IsNullOrWhiteSpace(Tile.HistoricalMinLabel) && !string.IsNullOrWhiteSpace(Tile.HistoricalMinValue))
+        {
+            <div>
+                <dt>@Tile.HistoricalMinLabel</dt>
+                <dd>
+                    @Tile.HistoricalMinValue
+                    @if (!string.IsNullOrWhiteSpace(Tile.HistoricalMinOccurred))
+                    {
+                        <span class="recent-observation-historical-occurred"> - @Tile.HistoricalMinOccurred</span>
+                    }
+                </dd>
+            </div>
+        }
+    </dl>
+}
+
+@if (Tile.SupportingStats.Count > 0)
+{
+    <dl class="recent-observation-stats recent-observation-supporting-stats">
+        @foreach (var stat in Tile.SupportingStats)
+        {
+            <div>
+                <dt>@stat.Label</dt>
+                <dd>
+                    <span class="recent-observation-stat-value">@stat.Value</span>
+                    @if (!string.IsNullOrWhiteSpace(stat.RecordStatusText))
+                    {
+                        <span class="recent-observation-status status-@RecentObservationTileDisplay.StatusClass(stat.RecordStatus)">@stat.RecordStatusText</span>
+                    }
+                </dd>
+            </div>
+        }
+    </dl>
+}
+
+@if (Tile.AvailableExpandedTabs.Count > 0)
+{
+    <button type="button"
+            class="recent-observation-expand"
+            aria-expanded="@(Expansion.IsExpanded ? "true" : "false")"
+            aria-label="@ExpandLabel"
+            @onclick="ToggleExpanded">
+        <span class="oi oi-chevron-right recent-observation-chevron @(Expansion.IsExpanded ? "expanded" : string.Empty)" aria-hidden="true"></span>
+    </button>
+}

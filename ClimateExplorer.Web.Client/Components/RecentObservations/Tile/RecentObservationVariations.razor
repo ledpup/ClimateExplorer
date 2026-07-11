@@ -1,0 +1,38 @@
+@namespace ClimateExplorer.Web.Client.Components.RecentObservations
+
+<dl class="recent-observation-detail-metrics">
+    @foreach (var metric in Metrics)
+    {
+        <div class="recent-observation-detail-metric">
+            <dt>@metric.Label</dt>
+            <dd>
+                @if (!string.IsNullOrWhiteSpace(metric.UnavailableReason))
+                {
+                    <span class="recent-observation-detail-record">@metric.UnavailableReason</span>
+                }
+                else
+                {
+                    @if (!string.IsNullOrWhiteSpace(metric.StandardScoreValue))
+                    {
+                        <div class="recent-observation-detail-headline">
+                            <span class="recent-observation-detail-current">@metric.StandardScoreValue</span>
+                            <span class="recent-observation-detail-rank">@metric.StandardScoreLabel</span>
+                        </div>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(metric.HistoricalAverageText))
+                    {
+                        <span class="recent-observation-detail-record">@metric.HistoricalAverageText</span>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(metric.TypicalVariationText))
+                    {
+                        <span class="recent-observation-detail-record">@metric.TypicalVariationText</span>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(metric.CurrentPeriodText))
+                    {
+                        <span class="recent-observation-detail-record">@metric.CurrentPeriodText</span>
+                    }
+                }
+            </dd>
+        </div>
+    }
+</dl>
