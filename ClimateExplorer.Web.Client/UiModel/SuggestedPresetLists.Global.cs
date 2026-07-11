@@ -7,7 +7,7 @@ using static ClimateExplorer.Core.Enums;
 
 public static partial class SuggestedPresetLists
 {
-    public static List<SuggestedChartPresetModelWithVariants> RegionalAndGlobalPresets(IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions)
+    public static List<SuggestedChartPresetModelWithVariants> GlobalPresets(IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions)
     {
         var suggestedPresets = new List<SuggestedChartPresetModelWithVariants>();
 

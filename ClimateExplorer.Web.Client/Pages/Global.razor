@@ -1,4 +1,4 @@
-@page "/regionalandglobal"
+@page "/global"
 @implements IDisposable
 
 @using Blazorise
@@ -23,7 +23,7 @@
 <div style="flex-grow: 0">
     <Collapsible Title="Suggested charts" InitiallyShowContents="@(IsMobileDevice.HasValue ? !IsMobileDevice : null)" ShowTitleWhenExpanded="false" ContentLayoutType="CollapserContentLayoutTypes.FlexboxRow">
         <Content>
-            <SuggestedCharts DataSetDefinitions="@DataSetDefinitions" OnChartPresetSelected="@OnChartPresetSelected" ExpandUpwards="false" PresetType="PresetTypes.RegionalAndGlobal"></SuggestedCharts>
+            <SuggestedCharts DataSetDefinitions="@DataSetDefinitions" OnChartPresetSelected="@OnChartPresetSelected" ExpandUpwards="false" PresetType="PresetTypes.Global"></SuggestedCharts>
         </Content>
     </Collapsible>
 </div>

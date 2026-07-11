@@ -9,7 +9,7 @@ public partial class NavMenu : IDisposable
     private readonly (string Route, string Text)[] primaryItems =
                 [
                     (string.Empty, "local"),
-                    ("regionalandglobal", "regional & global"),
+                    ("global", "global"),
                 ];
 
     private readonly SecondaryNavItem[] secondaryItems =

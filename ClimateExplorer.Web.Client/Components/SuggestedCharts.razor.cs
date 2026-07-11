@@ -35,7 +35,7 @@ public partial class SuggestedCharts
         // The location-based preset lists dereference SelectedLocation. The page can render this
         // component before the location has resolved (e.g. the home page before its fallback
         // location loads), so guard against null rather than assuming it's always set.
-        if (SelectedLocation == null && PresetType != PresetTypes.RegionalAndGlobal)
+        if (SelectedLocation == null && PresetType != PresetTypes.Global)
         {
             SuggestedPresets = null;
             return;
@@ -46,8 +46,8 @@ public partial class SuggestedCharts
             case PresetTypes.Location:
                 SuggestedPresets = SuggestedPresetLists.LocationBasedPresets(DataSetDefinitions, SelectedLocation!);
                 break;
-            case PresetTypes.RegionalAndGlobal:
-                SuggestedPresets = SuggestedPresetLists.RegionalAndGlobalPresets(DataSetDefinitions);
+            case PresetTypes.Global:
+                SuggestedPresets = SuggestedPresetLists.GlobalPresets(DataSetDefinitions);
                 break;
             case PresetTypes.MobileLocation:
                 SuggestedPresets = SuggestedPresetLists.LocationBasedPresetsMobile(DataSetDefinitions, SelectedLocation!);

@@ -5,7 +5,7 @@ public static partial class SuggestedPresetLists
     public enum PresetTypes
     {
         Location,
-        RegionalAndGlobal,
+        Global,
         MobileLocation,
     }
 }

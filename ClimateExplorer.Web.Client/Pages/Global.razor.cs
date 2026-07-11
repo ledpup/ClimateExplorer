@@ -9,18 +9,18 @@ using ClimateExplorer.Web.UiModel;
 using Microsoft.AspNetCore.Components;
 using static ClimateExplorer.Core.Enums;
 
-public partial class RegionalAndGlobal : ChartablePage
+public partial class Global : ChartablePage
 {
-    public RegionalAndGlobal()
+    public Global()
     {
-        PageName = "regionalandglobal";
+        PageName = "global";
     }
 
     protected override string PageTitle
     {
         get
         {
-            return $"ClimateExplorer - Regional and global long-term climate trends";
+            return $"ClimateExplorer - Global long-term climate trends";
         }
     }
 
@@ -28,7 +28,7 @@ public partial class RegionalAndGlobal : ChartablePage
     {
         get
         {
-            return "Explore regional and global long-term climate trends. View CO₂ levels, sea ice extent, sea level rise, and global temperature anomalies.";
+            return "Explore global long-term climate trends. View CO₂ levels, sea ice extent, sea level rise, and global temperature anomalies.";
         }
     }
 
@@ -36,7 +36,7 @@ public partial class RegionalAndGlobal : ChartablePage
     {
         get
         {
-            return $"https://climateexplorer.net/regionalandglobal";
+            return $"https://climateexplorer.net/global";
         }
     }
 
