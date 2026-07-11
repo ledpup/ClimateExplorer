@@ -11,4 +11,5 @@ public sealed record RecentObservationsOptions
     public int PreviousDayCount { get; init; } = RecentObservationPeriodSelection.MaximumPreviousDayCount;
     public int PreviousMonthCount { get; init; } = RecentObservationPeriodSelection.MaximumPreviousMonthCount;
     public int PreviousSeasonCount { get; init; } = RecentObservationPeriodSelection.MaximumPreviousSeasonCount;
+    public int PreviousYearCount { get; init; }
 }

@@ -40,11 +40,12 @@ public sealed class RecentObservationsService : IRecentObservationsService
         int previousDayCount,
         int previousMonthCount,
         int previousSeasonCount,
+        int previousYearCount = 0,
         DateOnly? referenceDate = null,
         ComparisonEndMode comparisonEndMode = ComparisonEndMode.FullDataset)
     {
         var dataSet = await LoadTemperatureData(location);
-        return Calculate(location, dataSet, CreateOptions(previousDayCount, previousMonthCount, previousSeasonCount, referenceDate, comparisonEndMode));
+        return Calculate(location, dataSet, CreateOptions(previousDayCount, previousMonthCount, previousSeasonCount, previousYearCount, referenceDate, comparisonEndMode));
     }
 
     public async Task<RecentObservationsTabResult> GetPrecipitationRecords(
@@ -52,17 +53,19 @@ public sealed class RecentObservationsService : IRecentObservationsService
         int previousDayCount,
         int previousMonthCount,
         int previousSeasonCount,
+        int previousYearCount = 0,
         DateOnly? referenceDate = null,
         ComparisonEndMode comparisonEndMode = ComparisonEndMode.FullDataset)
     {
         var dataSet = await LoadPrecipitationData(location);
-        return Calculate(location, dataSet, CreateOptions(previousDayCount, previousMonthCount, previousSeasonCount, referenceDate, comparisonEndMode));
+        return Calculate(location, dataSet, CreateOptions(previousDayCount, previousMonthCount, previousSeasonCount, previousYearCount, referenceDate, comparisonEndMode));
     }
 
     private static RecentObservationsOptions CreateOptions(
         int previousDayCount,
         int previousMonthCount,
         int previousSeasonCount,
+        int previousYearCount,
         DateOnly? referenceDate,
         ComparisonEndMode comparisonEndMode)
     {
@@ -73,6 +76,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
             PreviousDayCount = previousDayCount,
             PreviousMonthCount = previousMonthCount,
             PreviousSeasonCount = previousSeasonCount,
+            PreviousYearCount = previousYearCount,
         };
     }
 }

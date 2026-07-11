@@ -30,13 +30,6 @@ public partial class AboutDataDetails
                 !string.IsNullOrWhiteSpace(x.StationName));
     }
 
-    private static bool IsSingleStation(DataSetMetadata metadata)
-    {
-        return metadata.Stations.Count == 1 &&
-            (!string.IsNullOrWhiteSpace(metadata.Stations[0].StationId) ||
-                !string.IsNullOrWhiteSpace(metadata.Stations[0].StationName));
-    }
-
     private static bool HasStationLinks(DataSetMetadata metadata)
     {
         return metadata.Stations.Any(x => !string.IsNullOrWhiteSpace(x.SourceUrl));

@@ -19,6 +19,7 @@ public interface IRecentObservationsService
         int previousDayCount,
         int previousMonthCount,
         int previousSeasonCount,
+        int previousYearCount = 0,
         DateOnly? referenceDate = null,
         ComparisonEndMode comparisonEndMode = ComparisonEndMode.FullDataset);
 
@@ -27,6 +28,7 @@ public interface IRecentObservationsService
         int previousDayCount,
         int previousMonthCount,
         int previousSeasonCount,
+        int previousYearCount = 0,
         DateOnly? referenceDate = null,
         ComparisonEndMode comparisonEndMode = ComparisonEndMode.FullDataset);
 }

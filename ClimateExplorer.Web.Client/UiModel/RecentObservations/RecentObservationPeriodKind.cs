@@ -9,4 +9,5 @@ public enum RecentObservationPeriodKind
     CurrentSeason,
     PreviousSeason,
     YearToDate,
+    PreviousYear,
 }
