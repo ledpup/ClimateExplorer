@@ -4,4 +4,5 @@ public enum SeriesDisplayStyle
 {
     Line,
     Bar,
+    Scatter,
 }

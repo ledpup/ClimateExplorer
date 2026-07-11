@@ -96,6 +96,7 @@ public static partial class SuggestedPresetLists
                                     Smoothing = SeriesSmoothingOptions.None,
                                     SmoothingWindow = 5,
                                     Value = SeriesValueOptions.Value,
+                                    DisplayStyle = SeriesDisplayStyle.Scatter,
                                 },
                             ],
                     },

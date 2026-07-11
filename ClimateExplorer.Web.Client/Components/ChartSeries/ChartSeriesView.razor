@@ -167,7 +167,7 @@
                                 </div>
                             </DelayedTooltip>
                         }
-                        <DelayedTooltip Text="Whether to draw this series as a line or a bar chart" Style="display: block">
+                        <DelayedTooltip Text="Whether to draw this series as a line, a bar chart, or scattered points" Style="display: block">
                             <div class="form-row">
                                 <span class="form-label">Display style</span>
                                 <span class="form-control-wrap">
@@ -177,6 +177,7 @@
                                             ValueChanged="@OnDisplayStyleChanged">
                                         <SelectItem Value="SeriesDisplayStyle.Line">Line</SelectItem>
                                         <SelectItem Value="SeriesDisplayStyle.Bar">Bar</SelectItem>
+                                        <SelectItem Value="SeriesDisplayStyle.Scatter">Scatter</SelectItem>
                                     </Select>
                                 </span>
                             </div>

@@ -91,6 +91,41 @@ public static class ChartLogic
         return lineChartDataset;
     }
 
+    public static LineChartDataset<double?> GetScatterChartDataset(
+        string label,
+        List<double?> values,
+        ChartColor chartColor,
+        UnitOfMeasure unitOfMeasure,
+        SeriesTransformations seriesTransformations,
+        string? customTransformation,
+        SeriesAggregationOptions seriesAggregationOptions)
+    {
+        var count = values.Count;
+        var colour = new List<string>();
+        for (var i = 0; i < count; i++)
+        {
+            colour.Add(chartColor);
+        }
+
+        return
+            new LineChartDataset<double?>
+            {
+                Label = label,
+                Data = values,
+                BackgroundColor = colour,
+                BorderColor = colour,
+                Fill = false,
+                PointRadius = 3f,
+                PointHoverRadius = 5f,
+                ShowLine = false,
+                PointBorderColor = colour,
+                PointHoverBackgroundColor = colour,
+                BorderWidth = 0,
+
+                YAxisID = GetYAxisId(seriesTransformations, customTransformation, unitOfMeasure, seriesAggregationOptions),
+            };
+    }
+
     public static BarChartDataset<double?> GetBarChartDataset(
         string label,
         List<double?> values,
@@ -119,7 +154,7 @@ public static class ChartLogic
         string label,
         List<double?> values,
         UnitOfMeasure unitOfMeasure,
-        ChartType chartType,
+        SeriesDisplayStyle displayStyle,
         ChartColor? chartColour = null,
         bool? absoluteValues = false,
         bool redPositive = true,
@@ -133,11 +168,12 @@ public static class ChartLogic
             throw new NullReferenceException(nameof(chartColour));
         }
 
-        return chartType switch
+        return displayStyle switch
         {
-            ChartType.Line => GetLineChartDataset(label, values, chartColour.Value, unitOfMeasure, seriesTransformations, customTransformation, renderSmallPoints, seriesAggregationOptions),
-            ChartType.Bar => GetBarChartDataset(label, values, chartColour!.Value, unitOfMeasure, absoluteValues, redPositive, seriesTransformations, customTransformation, seriesAggregationOptions),
-            _ => throw new NotImplementedException($"ChartType {chartType}"),
+            SeriesDisplayStyle.Line => GetLineChartDataset(label, values, chartColour.Value, unitOfMeasure, seriesTransformations, customTransformation, renderSmallPoints, seriesAggregationOptions),
+            SeriesDisplayStyle.Bar => GetBarChartDataset(label, values, chartColour!.Value, unitOfMeasure, absoluteValues, redPositive, seriesTransformations, customTransformation, seriesAggregationOptions),
+            SeriesDisplayStyle.Scatter => GetScatterChartDataset(label, values, chartColour.Value, unitOfMeasure, seriesTransformations, customTransformation, seriesAggregationOptions),
+            _ => throw new NotImplementedException($"SeriesDisplayStyle {displayStyle}"),
         };
     }
 
@@ -187,12 +223,7 @@ public static class ChartLogic
 
         chartSeries.ChartSeries!.Colour = htmlColourCode;
 
-        var chartType =
-            chartSeries.ChartSeries.DisplayStyle == SeriesDisplayStyle.Line
-            ? ChartType.Line
-            : ChartType.Bar;
-
-        var chartDataset = GetChartDataset(label, values, dataSet.MeasurementDefinition!.UnitOfMeasure, chartType, colour, absoluteValues, redPositive, chartSeries.ChartSeries.SeriesTransformation, chartSeries.ChartSeries.CustomTransformation, chartSeries.ChartSeries.Aggregation, renderSmallPoints);
+        var chartDataset = GetChartDataset(label, values, dataSet.MeasurementDefinition!.UnitOfMeasure, chartSeries.ChartSeries.DisplayStyle, colour, absoluteValues, redPositive, chartSeries.ChartSeries.SeriesTransformation, chartSeries.ChartSeries.CustomTransformation, chartSeries.ChartSeries.Aggregation, renderSmallPoints);
 
         await chart.AddDataSet(chartDataset);
     }
