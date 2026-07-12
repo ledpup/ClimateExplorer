@@ -29,6 +29,7 @@ public static class DataTypeExtensions
             DataType.Ozone => "Ozone",
             DataType.SeaLevel => "Sea level",
             DataType.OceanAcidity => "Ocean acidity",
+            DataType.CO2Deseasoned => "Deseasoned CO\u2082",
             _ => throw new NotImplementedException(),
         };
     }

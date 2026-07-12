@@ -176,6 +176,7 @@ public partial class Locations
         DataType.SeaIceExtent => "Sea ice",
         DataType.OzoneHoleArea => "Ozone",
         DataType.SeaLevel => "Sea level",
+        DataType.CO2Deseasoned => "CO₂ deseasoned",
         _ => dt.ToString(),
     };
 

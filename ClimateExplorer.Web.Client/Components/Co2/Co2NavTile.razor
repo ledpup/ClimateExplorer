@@ -1,0 +1,6 @@
+<div class="co2-nav-tile" title="Current atmospheric CO₂ (deseasonalised), parts per million">
+    @if (Value.HasValue)
+    {
+        <span class="co2-value @(IsVisible ? "co2-visible" : string.Empty)">@Value.Value.ToString("F0")</span>
+    }
+</div>

@@ -1,6 +1,7 @@
 namespace ClimateExplorer.Web.Client.Layout;
 
 using ClimateExplorer.Web.Client.Services;
+using CurrentDevice;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
 
@@ -25,6 +26,11 @@ public partial class NavMenu : IDisposable
 
     [Inject]
     public NavigationManager? NavigationManager { get; set; }
+
+    [Inject]
+    protected ICurrentDeviceService? CurrentDeviceService { get; set; }
+
+    private bool? IsMobileDevice { get; set; }
 
     private IEnumerable<SecondaryNavItem> VisibleSecondaryItems => secondaryItems.Where(item => !item.LocalOnly || IsLocalPage());
 
@@ -52,6 +58,13 @@ public partial class NavMenu : IDisposable
     protected override void OnInitialized()
     {
         NavigationManager!.LocationChanged += OnLocationChanged;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        IsMobileDevice ??= await CurrentDeviceService!.Mobile();
     }
 
     private static bool IsLocal(string path)

@@ -311,6 +311,16 @@ public class DataSetDefinitionsBuilder
                         FolderName = @"Atmosphere\GHGs",
                         FileNameFormat = "co2_mm_mlo.txt",
                     },
+                    new()
+                    {
+                        DataType = DataType.CO2Deseasoned,
+                        UnitOfMeasure = UnitOfMeasure.PartsPerMillion,
+                        DataResolution = DataResolution.Monthly,
+                        DataAdjustment = null,
+                        DataRowRegEx = @"^\s+(?<year>\d+)\s+(?<month>\d+)\s+(?<decimalDate>\d+\.\d+)\s+(?<co2>\d+\.\d+)\s+(?<value>\d+\.\d+).*$",
+                        FolderName = @"Atmosphere\GHGs",
+                        FileNameFormat = "co2_mm_mlo.txt",
+                    },
                 ],
             },
             new()
