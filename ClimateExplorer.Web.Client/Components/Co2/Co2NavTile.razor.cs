@@ -25,7 +25,7 @@ public partial class Co2NavTile : IDisposable
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (!firstRender)
+        if (Value is not null)
         {
             return;
         }
@@ -35,16 +35,27 @@ public partial class Co2NavTile : IDisposable
 
         try
         {
-            await Task.Delay(LoadDelayMs, cancellationToken);
-
             var response = await DataService.GetClimateRecords(
                 AtmosphereLocationId,
                 DataType.CO2Deseasoned,
                 ascending: false,
                 take: 1,
-                monthly: true);
+                monthly: true,
+                fromCacheOnly: true);
 
-            Value = response.Records.FirstOrDefault()?.Value;
+            if (response is null)
+            {
+                await Task.Delay(LoadDelayMs, cancellationToken);
+
+                response = await DataService.GetClimateRecords(
+                    AtmosphereLocationId,
+                    DataType.CO2Deseasoned,
+                    ascending: false,
+                    take: 1,
+                    monthly: true);
+
+                Value = response!.Records.FirstOrDefault()?.Value;
+            }
         }
         catch (OperationCanceledException)
         {

@@ -17,7 +17,7 @@ public class StandardDeviationTests
     [TestMethod]
     public void PopulationStandardDeviation_WikipediaExample()
     {
-        var result = StandardDeviation.PopulationStandardDeviation(WikipediaExample);
+        var result = StandardDeviationCalculator.PopulationStandardDeviation(WikipediaExample);
 
         Assert.AreEqual(2.0, result!.Value, 1e-9);
     }
@@ -25,7 +25,7 @@ public class StandardDeviationTests
     [TestMethod]
     public void SampleStandardDeviation_WikipediaExample()
     {
-        var result = StandardDeviation.SampleStandardDeviation(WikipediaExample);
+        var result = StandardDeviationCalculator.SampleStandardDeviation(WikipediaExample);
 
         Assert.AreEqual(2.13808993529939, result!.Value, 1e-9);
     }
@@ -38,7 +38,7 @@ public class StandardDeviationTests
     [TestMethod]
     public void PopulationStandardDeviation_OneToFive()
     {
-        var result = StandardDeviation.PopulationStandardDeviation(OneToFive);
+        var result = StandardDeviationCalculator.PopulationStandardDeviation(OneToFive);
 
         Assert.AreEqual(1.4142135623730951, result!.Value, 1e-12);
     }
@@ -46,7 +46,7 @@ public class StandardDeviationTests
     [TestMethod]
     public void SampleStandardDeviation_OneToFive()
     {
-        var result = StandardDeviation.SampleStandardDeviation(OneToFive);
+        var result = StandardDeviationCalculator.SampleStandardDeviation(OneToFive);
 
         Assert.AreEqual(1.5811388300841898, result!.Value, 1e-12);
     }
@@ -54,7 +54,7 @@ public class StandardDeviationTests
     [TestMethod]
     public void PopulationStandardDeviation_EmptyCollection_ReturnsNull()
     {
-        var result = StandardDeviation.PopulationStandardDeviation(Array.Empty<double>());
+        var result = StandardDeviationCalculator.PopulationStandardDeviation(Array.Empty<double>());
 
         Assert.IsNull(result);
     }
@@ -62,7 +62,7 @@ public class StandardDeviationTests
     [TestMethod]
     public void PopulationStandardDeviation_SingleValue_IsZero()
     {
-        var result = StandardDeviation.PopulationStandardDeviation(new double[] { 42 });
+        var result = StandardDeviationCalculator.PopulationStandardDeviation(new double[] { 42 });
 
         Assert.AreEqual(0.0, result!.Value, 1e-12);
     }
@@ -70,7 +70,7 @@ public class StandardDeviationTests
     [TestMethod]
     public void PopulationStandardDeviation_AllValuesIdentical_IsZero()
     {
-        var result = StandardDeviation.PopulationStandardDeviation(new double[] { 7, 7, 7, 7 });
+        var result = StandardDeviationCalculator.PopulationStandardDeviation(new double[] { 7, 7, 7, 7 });
 
         Assert.AreEqual(0.0, result!.Value, 1e-12);
     }
@@ -78,7 +78,7 @@ public class StandardDeviationTests
     [TestMethod]
     public void SampleStandardDeviation_EmptyCollection_ReturnsNull()
     {
-        var result = StandardDeviation.SampleStandardDeviation(Array.Empty<double>());
+        var result = StandardDeviationCalculator.SampleStandardDeviation(Array.Empty<double>());
 
         Assert.IsNull(result);
     }
@@ -87,7 +87,7 @@ public class StandardDeviationTests
     public void SampleStandardDeviation_SingleValue_ReturnsNull()
     {
         // n - 1 == 0, so a sample SD is undefined for a single observation.
-        var result = StandardDeviation.SampleStandardDeviation(new double[] { 42 });
+        var result = StandardDeviationCalculator.SampleStandardDeviation(new double[] { 42 });
 
         Assert.IsNull(result);
     }
@@ -97,7 +97,7 @@ public class StandardDeviationTests
     {
         // Historical set mean is 5, population SD is 2 (see WikipediaExample above).
         // 9 is exactly 2 standard deviations above the mean.
-        var result = StandardDeviation.StandardDeviationsFromMean(9, WikipediaExample);
+        var result = StandardDeviationCalculator.StandardDeviationsFromMean(9, WikipediaExample);
 
         Assert.AreEqual(2.0, result!.Value, 1e-9);
     }
@@ -106,7 +106,7 @@ public class StandardDeviationTests
     public void StandardDeviationsFromMean_BelowMean_IsNegative()
     {
         // 1 is exactly 2 standard deviations below the mean of 5.
-        var result = StandardDeviation.StandardDeviationsFromMean(1, WikipediaExample);
+        var result = StandardDeviationCalculator.StandardDeviationsFromMean(1, WikipediaExample);
 
         Assert.AreEqual(-2.0, result!.Value, 1e-9);
     }
@@ -114,7 +114,7 @@ public class StandardDeviationTests
     [TestMethod]
     public void StandardDeviationsFromMean_ValueEqualsMean_IsZero()
     {
-        var result = StandardDeviation.StandardDeviationsFromMean(5, WikipediaExample);
+        var result = StandardDeviationCalculator.StandardDeviationsFromMean(5, WikipediaExample);
 
         Assert.AreEqual(0.0, result!.Value, 1e-9);
     }
@@ -122,7 +122,7 @@ public class StandardDeviationTests
     [TestMethod]
     public void StandardDeviationsFromMean_EmptyHistory_ReturnsNull()
     {
-        var result = StandardDeviation.StandardDeviationsFromMean(5, Array.Empty<double>());
+        var result = StandardDeviationCalculator.StandardDeviationsFromMean(5, Array.Empty<double>());
 
         Assert.IsNull(result);
     }
@@ -131,7 +131,7 @@ public class StandardDeviationTests
     public void StandardDeviationsFromMean_ZeroVariance_ReturnsNull()
     {
         // Standard deviation of the history is 0, so the z-score would be a division by zero.
-        var result = StandardDeviation.StandardDeviationsFromMean(7, new double[] { 7, 7, 7 });
+        var result = StandardDeviationCalculator.StandardDeviationsFromMean(7, new double[] { 7, 7, 7 });
 
         Assert.IsNull(result);
     }

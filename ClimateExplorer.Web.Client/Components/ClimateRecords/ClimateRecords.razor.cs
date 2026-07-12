@@ -316,7 +316,7 @@ public partial class ClimateRecords
                     var month = SelectedMonth != 0 ? (int?)SelectedMonth : null;
                     var day = ActiveView == RecordView.Daily && SelectedMonth != 0 && SelectedDay != 0 ? (int?)SelectedDay : null;
                     ClimateRecordsResult = await DataService!.GetClimateRecords(Location.Id, SelectedDataType.Value, SelectedDataAdjustment, Ascending, take: Count, skip: CurrentPage, month, ActiveView == RecordView.Monthly, day);
-                    ClimateRecordRows = [.. ClimateRecordsResult.Records.Select(ClimateRecordViewModel.FromDataRecord)];
+                    ClimateRecordRows = [.. ClimateRecordsResult!.Records.Select(ClimateRecordViewModel.FromDataRecord)];
                     ComputedRowStyles = ComputeRowStyles(ClimateRecordsResult);
                     var startRank = ((CurrentPage - 1) * Count) + 1;
                     ComputedTopPercentages = ComputeTopPercentLabels(ClimateRecordsResult, startRank, ClimateRecordsResult.TotalCount);
@@ -524,7 +524,7 @@ public partial class ClimateRecords
                 var monthFilter = SelectedMonth != 0 ? (int?)SelectedMonth : null;
                 var dayFilter = ActiveView == RecordView.Daily && SelectedMonth != 0 && SelectedDay != 0 ? (int?)SelectedDay : null;
                 var allData = await DataService!.GetClimateRecords(Location.Id, SelectedDataType.Value, SelectedDataAdjustment, Ascending, null, null, monthFilter, ActiveView == RecordView.Monthly, dayFilter);
-                records = [.. allData.Records.Select(ClimateRecordViewModel.FromDataRecord)];
+                records = [.. allData!.Records.Select(ClimateRecordViewModel.FromDataRecord)];
                 exportDataResolution = allData.DataResolution ?? exportDataResolution;
                 exportUnitOfMeasure = allData.UnitOfMeasure ?? exportUnitOfMeasure;
             }

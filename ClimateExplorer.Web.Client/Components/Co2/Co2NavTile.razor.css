@@ -1,4 +1,10 @@
-
+.co2-nav-tile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 0 20px;
+}
 
 .co2-value {
     font-family: 'Century Gothic', 'Futura', 'Trebuchet MS', 'Segoe UI', sans-serif;

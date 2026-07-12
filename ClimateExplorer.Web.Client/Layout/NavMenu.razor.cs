@@ -64,7 +64,11 @@ public partial class NavMenu : IDisposable
     {
         await base.OnAfterRenderAsync(firstRender);
 
-        IsMobileDevice ??= await CurrentDeviceService!.Mobile();
+        if (firstRender)
+        {
+            IsMobileDevice = await CurrentDeviceService!.Mobile();
+            await InvokeAsync(StateHasChanged);
+        }
     }
 
     private static bool IsLocal(string path)

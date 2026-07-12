@@ -165,7 +165,7 @@ public sealed class RecentObservationsDataProvider : IRecentObservationsDataProv
         foreach (var adjustment in GetAdjustmentCandidates(dataType, preferredAdjustment))
         {
             var response = await dataService.GetClimateRecords(locationId, dataType, adjustment, monthly: false);
-            if (response.Records.Count > 0)
+            if (response!.Records.Count > 0)
             {
                 return response;
             }
