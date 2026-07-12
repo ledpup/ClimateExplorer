@@ -2,7 +2,7 @@
 
 using static MathHelpers;
 
-public static class StandardDeviation
+public static class StandardDeviationCalculator
 {
     public static double? PopulationStandardDeviation(IEnumerable<double> values)
     {

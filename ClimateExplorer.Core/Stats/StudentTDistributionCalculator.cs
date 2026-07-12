@@ -1,6 +1,6 @@
 namespace ClimateExplorer.Core.Stats;
 
-internal static class StudentTDistribution
+internal static class StudentTDistributionCalculator
 {
     private static readonly double[] LanczosCoefficients =
     [

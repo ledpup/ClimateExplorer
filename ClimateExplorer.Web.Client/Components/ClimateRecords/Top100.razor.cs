@@ -66,7 +66,7 @@ public partial class Top100
             var month = SelectedMonth != 0 ? (int?)SelectedMonth : null;
             var top100 = await DataService.GetClimateRecords(Location.Id, DataType!.Value, DataAdjustment, Ascending, take: 100, skip: 1, month, false);
 
-            if (top100.Records.Count < 100)
+            if (top100!.Records.Count < 100)
             {
                 YearCounts = [];
             }

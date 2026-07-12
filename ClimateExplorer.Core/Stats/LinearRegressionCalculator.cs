@@ -34,7 +34,7 @@ public static class LinearRegressionCalculator
             (1.0 / regression.Input.Count)
             + (Square(x - regression.Input.MeanX) / regression.Input.SumSquaredXDeviations);
 
-        var tCritical = StudentTDistribution.TwoTailedCriticalValue(
+        var tCritical = StudentTDistributionCalculator.TwoTailedCriticalValue(
             alpha,
             regression.Significance.DegreesOfFreedom);
 
@@ -172,7 +172,7 @@ public static class LinearRegressionCalculator
             return new ConfidenceInterval(slope, slope);
         }
 
-        var tCritical = StudentTDistribution.TwoTailedCriticalValue(alpha, degreesOfFreedom);
+        var tCritical = StudentTDistributionCalculator.TwoTailedCriticalValue(alpha, degreesOfFreedom);
         var margin = tCritical * slopeStandardError;
 
         return new ConfidenceInterval(slope - margin, slope + margin);
@@ -202,7 +202,7 @@ public static class LinearRegressionCalculator
             return 0;
         }
 
-        return StudentTDistribution.TwoTailedPValue(tStatistic, degreesOfFreedom);
+        return StudentTDistributionCalculator.TwoTailedPValue(tStatistic, degreesOfFreedom);
     }
 
     private static void ValidateAlpha(double alpha)

@@ -25,7 +25,7 @@ var jsonSerializerOptions = new JsonSerializerOptions
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
 };
 
-var referenceDataDefintions = dataSetDefinitions
+var globalDataDefintions = dataSetDefinitions
     .Where(x =>
             !string.IsNullOrEmpty(x.DataDownloadUrl)
             && x.MeasurementDefinitions!.Count == 1
@@ -34,7 +34,7 @@ var referenceDataDefintions = dataSetDefinitions
             && x.ShortName != "ODGI") // ODGI handled below)
     .ToList();
 
-foreach (var dataSetDefinition in referenceDataDefintions)
+foreach (var dataSetDefinition in globalDataDefintions)
 {
     logger.LogInformation($"Processing {dataSetDefinition.Name}");
     await DownloadDataSetData(dataSetDefinition, Folders.SourceDataFolder);

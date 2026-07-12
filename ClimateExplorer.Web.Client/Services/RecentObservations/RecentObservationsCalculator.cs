@@ -964,7 +964,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         }
 
         var average = values.Average();
-        var standardDeviation = StandardDeviation.PopulationStandardDeviation(values);
+        var standardDeviation = StandardDeviationCalculator.PopulationStandardDeviation(values);
         var score = standardDeviation is > 0d
             ? (currentValue.Value.Value - average) / standardDeviation.Value
             : (double?)null;
