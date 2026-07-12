@@ -104,7 +104,7 @@ public partial class Locations
         var log = new LogAugmenter(Logger!, nameof(OnInitializedAsync));
         log.LogInformation("Starting");
 
-        allLocations = [.. await DataService!.GetLocations()];
+        allLocations = [.. (await DataService!.GetLocations())!];
         dataSetDefinitions = [.. await DataService!.GetDataSetDefinitions()];
 
         foreach (var dsd in dataSetDefinitions)

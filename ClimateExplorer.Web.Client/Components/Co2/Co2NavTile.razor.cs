@@ -35,24 +35,12 @@ public partial class Co2NavTile : IDisposable
 
         try
         {
-            var response = await DataService.GetClimateRecords(
-                AtmosphereLocationId,
-                DataType.CO2Deseasoned,
-                ascending: false,
-                take: 1,
-                monthly: true,
-                fromCacheOnly: true);
+            var response = await GetCo2(true);
 
             if (response is null)
             {
                 await Task.Delay(LoadDelayMs, cancellationToken);
-
-                response = await DataService.GetClimateRecords(
-                    AtmosphereLocationId,
-                    DataType.CO2Deseasoned,
-                    ascending: false,
-                    take: 1,
-                    monthly: true);
+                response = await GetCo2(false);
 
                 Value = response!.Records.FirstOrDefault()?.Value;
             }
@@ -67,5 +55,16 @@ public partial class Co2NavTile : IDisposable
             IsVisible = true;
             await InvokeAsync(StateHasChanged);
         }
+    }
+
+    private async Task<ClimateRecordsResponse?> GetCo2(bool fromCacheOnly)
+    {
+        return await DataService.GetClimateRecords(
+            AtmosphereLocationId,
+            DataType.CO2Deseasoned,
+            ascending: false,
+            take: 1,
+            monthly: true,
+            fromCacheOnly: fromCacheOnly);
     }
 }

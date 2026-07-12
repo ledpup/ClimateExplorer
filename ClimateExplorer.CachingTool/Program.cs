@@ -29,5 +29,5 @@ await Parallel.ForEachAsync(locations!, new ParallelOptions(), async (location, 
 
 // Generate cached locations. This will include the RecordHigh climate record
 logger.LogInformation("Creating locations cache");
-locations = await dataService.GetLocations();
+locations = await dataService.GetLocations(permitCreateCache: true);
 logger.LogInformation("Finished creating locations cache");

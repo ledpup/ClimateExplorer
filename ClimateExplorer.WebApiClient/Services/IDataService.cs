@@ -8,7 +8,7 @@ public interface IDataService
 {
     Task<ApiMetadataModel> GetAbout();
     Task<IEnumerable<DataSetDefinitionViewModel>> GetDataSetDefinitions();
-    Task<IEnumerable<Location>> GetLocations(bool permitCreateCache = true);
+    Task<IEnumerable<Location>?> GetLocations(bool permitCreateCache = false, bool fromCacheOnly = false);
     Task<IEnumerable<LocationDistance>> GetNearbyLocations(Guid locationId, int? take = null, int? skip = null);
     Task<Location> GetLocationByPath(string path);
     Task<Location?> GetLocationById(Guid locationId);

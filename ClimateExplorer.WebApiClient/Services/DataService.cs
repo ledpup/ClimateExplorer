@@ -93,7 +93,7 @@ public class DataService : IDataService
         return result!;
     }
 
-    public async Task<IEnumerable<Location>> GetLocations(bool permitCreateCache = true)
+    public async Task<IEnumerable<Location>?> GetLocations(bool permitCreateCache = true, bool fromCacheOnly = false)
     {
         var url = $"/location";
         
@@ -105,6 +105,11 @@ public class DataService : IDataService
         var result = dataServiceCache.Get<Location[]>(url);
         if (result == null)
         {
+            if (fromCacheOnly)
+            {
+                return null;
+            }
+
             result = await httpClient.GetFromJsonAsync<Location[]>(url);
 
             dataServiceCache.Put(url, result!);
