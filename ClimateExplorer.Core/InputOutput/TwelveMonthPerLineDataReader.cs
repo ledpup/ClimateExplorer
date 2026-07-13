@@ -11,21 +11,17 @@ public static class TwelveMonthPerLineDataReader
         string datasetsFolder = "Datasets")
     {
         var station = string.Empty;
-        var dataPath = measurementDefinition.DataFileSource == null
-            ? $@"{measurementDefinition.FolderName}\{measurementDefinition.FileNameFormat!}"
-            : string.Empty;
         if (dataFileFilterAndAdjustments != null)
         {
             station = dataFileFilterAndAdjustments!.Single().Id;
-            dataPath = dataPath.Replace("[station]", station);
         }
 
-        var records = measurementDefinition.DataFileSource == null
-            ? await DataReaderFunctions.GetLinesInDataFileWithCascade(dataPath, datasetsFolder)
-            : await DataReaderFunctions.GetLinesInDataFileSource(measurementDefinition.DataFileSource, station, datasetsFolder);
+        var dataFileSource = measurementDefinition.DataFileSource
+            ?? throw new InvalidOperationException("Every measurement definition must have an explicit data file source.");
+        var records = await DataReaderFunctions.GetLinesInDataFileSource(dataFileSource, station, datasetsFolder);
         if (records == null)
         {
-            throw new Exception("Unable to read data " + dataPath);
+            throw new Exception("Unable to read data " + dataFileSource.FilePathFormat);
         }
 
         var regEx = new Regex(measurementDefinition.DataRowRegEx!);

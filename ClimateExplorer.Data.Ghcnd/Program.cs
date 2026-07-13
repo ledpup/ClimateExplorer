@@ -22,14 +22,10 @@ var stations = await Station.GetStationsFromFile(Folders.SelectedStationsFile);
 const string downloadFolder = "Download";
 await GhcndBulkStationFileCache.DownloadStationsAsync(stations, httpClient, downloadFolder, logger);
 
-var dataSetDefinitions = DataSetDefinitionsBuilder.BuildDataSetDefinitions();
-var ghcndFolder = dataSetDefinitions.Single(x => x.ShortName == "GHCNd").MeasurementDefinitions!.First().FolderName!;
-var ghcndpFolder = dataSetDefinitions.Single(x => x.ShortName == "GHCNdp").MeasurementDefinitions!.Single().FolderName!;
-
 var stationsWithTempData = new List<Station>();
 var stationsWithPrcpData = new List<Station>();
-var temperatureFolder = Folders.SourceDataFolder + ghcndFolder;
-var precipitationFolder = Folders.SourceDataFolder + ghcndpFolder;
+var temperatureFolder = Path.Combine(Folders.SourceDataFolder, "GHCNd", "Temperature");
+var precipitationFolder = Path.Combine(Folders.SourceDataFolder, "GHCNd", "Precipitation");
 
 try
 {

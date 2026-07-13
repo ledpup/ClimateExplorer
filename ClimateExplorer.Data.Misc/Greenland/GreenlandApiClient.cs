@@ -49,7 +49,7 @@ public class GreenlandApiClient
         }
 
         var fileName = "greenland-melt-area.csv";
-        var destinationPath = Path.Combine(Folders.SourceDataFolder, "Ice", fileName);
+        var destinationPath = Path.Combine(Folders.SourceDataFolder, "Greenland", fileName);
 
         logger.LogInformation("Saving file {fileName} to {destinationPath}", fileName, destinationPath);
 

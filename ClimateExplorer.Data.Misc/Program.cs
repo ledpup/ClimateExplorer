@@ -41,23 +41,23 @@ foreach (var dataSetDefinition in globalDataDefintions)
 }
 
 var oceanAcidity = dataSetDefinitions.Single(x => x.Name == "Ocean acidity");
-OceanAcidityReducer.Process("HOT_surface_CO2", oceanAcidity.MeasurementDefinitions!.Single().FolderName!);
+OceanAcidityReducer.Process("HOT_surface_CO2", GetSourceFolder(oceanAcidity.MeasurementDefinitions!.Single()));
 
 var seaLevel = dataSetDefinitions.Single(x => x.Name == "Mean sea level");
-SeaLevelFileReducer.Process("slr_sla_gbl_free_ref_90", seaLevel.MeasurementDefinitions!.Single().FolderName!);
+SeaLevelFileReducer.Process("slr_sla_gbl_free_ref_90", GetSourceFolder(seaLevel.MeasurementDefinitions!.Single()));
 
 var ozoneArea = dataSetDefinitions.Single(x => x.ShortName == "Ozone hole area");
-OzoneFileReducer.Process("cams_ozone_monitoring_sh_ozone_area", ozoneArea.MeasurementDefinitions!.Single().FolderName!);
+OzoneFileReducer.Process("cams_ozone_monitoring_sh_ozone_area", GetSourceFolder(ozoneArea.MeasurementDefinitions!.Single()));
 
 var ozoneColumn = dataSetDefinitions.Single(x => x.ShortName == "Ozone hole column");
-OzoneFileReducer.Process("cams_ozone_monitoring_sh_ozone_minimum", ozoneColumn.MeasurementDefinitions!.Single().FolderName!);
+OzoneFileReducer.Process("cams_ozone_monitoring_sh_ozone_minimum", GetSourceFolder(ozoneColumn.MeasurementDefinitions!.Single()));
 
 // ODGI
 var odgi = dataSetDefinitions.Single(x => x.ShortName == "ODGI");
 var downloadUrl = odgi.DataDownloadUrl;
 odgi.DataDownloadUrl = odgi.DataDownloadUrl!.Replace("[station]", "table1");
 await DownloadDataSetData(odgi, Folders.SourceDataFolder, "table1");
-odgi.DataDownloadUrl = odgi.DataDownloadUrl!.Replace("[station]", "table2");
+odgi.DataDownloadUrl = downloadUrl!.Replace("[station]", "table2");
 await DownloadDataSetData(odgi, Folders.SourceDataFolder, "table2");
 
 // HadCET
@@ -84,7 +84,7 @@ await GreenlandApiClient.GetMeltDataAndSave(httpClient, logger);
  * Generally, you want to be downloading for the current year - 1 and the 12th month.
  * But it depends on what is currently available on the server at https://www.ncei.noaa.gov/data/noaa-global-surface-temperature/v6/access/timeseries/
  *
- * IMPORTANT: you need to update FileNameFormat property in the measurement definition (in DataSetDefinitionsBuilder.cs) of NoaaGlobalTemp so that it is the same year and month.
+ * IMPORTANT: you need to update DataFileSource.FilePathFormat in the measurement definition (in DataSetDefinitionsBuilder.cs) of NoaaGlobalTemp so that it is the same year and month.
  *
  */
 var noaaGlobalTempYear = "2025";
@@ -111,11 +111,13 @@ GenerateMapMarkers();
 async Task DownloadDataSetData(DataSetDefinition dataSetDefinition, string? destinationBasePath = null, string? station = null, MeasurementDefinition? measurementDefinition = null)
 {
     var md = measurementDefinition == null ? dataSetDefinition.MeasurementDefinitions!.Single() : measurementDefinition;
-    var outputPath = Path.Combine("Output", md.FolderName!);
+    var relativeFilePath = md.DataFileSource.FilePathFormat.Replace("[station]", station ?? string.Empty);
+    var relativeFolder = Path.GetDirectoryName(relativeFilePath)!;
+    var outputPath = Path.Combine("Output", relativeFolder);
 
     Directory.CreateDirectory(outputPath);
 
-    var fileName = station == null ? md.FileNameFormat : md.FileNameFormat!.Replace("[station]", station);
+    var fileName = Path.GetFileName(relativeFilePath);
     fileName = fileName!.Replace("_reduced", string.Empty);
     var filePathAndName = $@"{outputPath}\{fileName}";
     if (File.Exists(filePathAndName))
@@ -140,12 +142,19 @@ async Task DownloadDataSetData(DataSetDefinition dataSetDefinition, string? dest
         return;
     }
 
-    var destinationPathAndFile = destinationBasePath == null ? null : Path.Combine(destinationBasePath, md.FolderName!, fileName!);
+    var destinationPathAndFile = destinationBasePath == null ? null : Path.Combine(destinationBasePath, relativeFolder, fileName!);
     if (destinationPathAndFile != null)
     {
+        Directory.CreateDirectory(Path.GetDirectoryName(destinationPathAndFile)!);
         logger.LogInformation($"Will now copy {fileName} to {destinationPathAndFile}");
         File.Copy(filePathAndName, destinationPathAndFile, true);
     }
+}
+
+static string GetSourceFolder(MeasurementDefinition measurementDefinition)
+{
+    return Path.GetDirectoryName(measurementDefinition.DataFileSource.FilePathFormat)
+        ?? throw new InvalidOperationException("The source file must be in a dataset-owned folder.");
 }
 
 static void GenerateMapMarkers()

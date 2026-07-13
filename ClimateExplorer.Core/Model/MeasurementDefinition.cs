@@ -9,10 +9,9 @@ public class MeasurementDefinition
     public required DataResolution DataResolution { get; set; }
     public DataAdjustment? DataAdjustment { get; set; }
     public RowDataType RowDataType { get; set; }
-    public string? FolderName { get; set; }
-    public string? FileNameFormat { get; set; }
-    public DataFileSourceDefinition? DataFileSource { get; set; }
+    public required DataFileSourceDefinition DataFileSource { get; set; }
     public string? DataDownloadUrl { get; set; }
+    public string? DataDownloaderKey { get; set; }
     public string? DataRowRegEx { get; set; }
     public string? NullValue { get; set; }
     public double? ValueAdjustment { get; set; }

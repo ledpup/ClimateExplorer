@@ -1,6 +1,5 @@
 ﻿namespace ClimateExplorer.Core.InputOutput;
 
-using System.Diagnostics;
 using System.IO.Compression;
 using System.Text.RegularExpressions;
 using ClimateExplorer.Core.Model;
@@ -44,12 +43,11 @@ public static class DataReaderFunctions
         var regEx = new Regex(measurementDefinition.DataRowRegEx!);
 
         var records = new Dictionary<string, DataRecord>();
+        var dataFileSource = measurementDefinition.DataFileSource
+            ?? throw new InvalidOperationException("Every measurement definition must have an explicit data file source.");
         foreach (var dataFileDefinition in dataFileFilterAndAdjustments)
         {
-            var filePath = measurementDefinition.DataFileSource == null
-                ? measurementDefinition.FolderName + @"\" + measurementDefinition.FileNameFormat!.Replace("[station]", dataFileDefinition.Id)
-                : string.Empty;
-            var fileRecords = await ReadDataFile(filePath, measurementDefinition.DataFileSource, regEx, measurementDefinition.NullValue!, measurementDefinition.DataResolution, dataFileDefinition.Id, datasetsFolder, dataFileDefinition.StartDate, dataFileDefinition.EndDate);
+            var fileRecords = await ReadDataFile(dataFileSource, regEx, measurementDefinition.NullValue!, measurementDefinition.DataResolution, dataFileDefinition.Id, datasetsFolder, dataFileDefinition.StartDate, dataFileDefinition.EndDate);
             var values = fileRecords.Values.ToList();
 
             // Adjust based on the measurement definition (how the data is stored on file vs the unit of measure in the measurement definition).
@@ -201,23 +199,6 @@ public static class DataReaderFunctions
         return dataRecords;
     }
 
-    public static async Task<string[]> GetLinesInDataFileWithCascade(string dataFilePath, string datasetsFolder = "Datasets")
-    {
-        string[]? lines = TryGetDataFromDatasetZipFile(dataFilePath, datasetsFolder);
-
-        if (lines == null)
-        {
-            lines = TryGetDataFromSingleEntryZipFile(dataFilePath, datasetsFolder);
-        }
-
-        if (lines == null)
-        {
-            lines = await TryGetDataFromUncompressedSingleFile(dataFilePath);
-        }
-
-        return lines!;
-    }
-
     public static async Task<string[]?> GetLinesInDataFileSource(
         DataFileSourceDefinition dataFileSource,
         string station,
@@ -241,8 +222,7 @@ public static class DataReaderFunctions
     }
 
     private static async Task<Dictionary<string, DataRecord>> ReadDataFile(
-        string pathAndFile,
-        DataFileSourceDefinition? dataFileSource,
+        DataFileSourceDefinition dataFileSource,
         Regex regEx,
         string nullValue,
         DataResolution dataResolution,
@@ -251,9 +231,7 @@ public static class DataReaderFunctions
         DateOnly? startDate = null,
         DateOnly? endDate = null)
     {
-        string[]? lines = dataFileSource == null
-            ? await GetLinesInDataFileWithCascade(pathAndFile, datasetsFolder)
-            : await GetLinesInDataFileSource(dataFileSource, station, datasetsFolder);
+        var lines = await GetLinesInDataFileSource(dataFileSource, station, datasetsFolder);
 
         return ProcessDataFile(lines, regEx, nullValue, dataResolution, station, startDate, endDate);
     }
@@ -336,52 +314,6 @@ public static class DataReaderFunctions
         }
 
         return dataRecords;
-    }
-
-    private static async Task<string[]?> TryGetDataFromUncompressedSingleFile(string siteFilePath)
-    {
-        if (File.Exists(siteFilePath))
-        {
-            return await File.ReadAllLinesAsync(siteFilePath);
-        }
-
-        return null;
-    }
-
-    private static string[]? TryGetDataFromDatasetZipFile(string filePath, string datasetsFolder)
-    {
-        string[] pathComponents =
-            filePath.Split(
-                new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar },
-                StringSplitOptions.RemoveEmptyEntries);
-
-        var shallowestFolderName = pathComponents.First();
-
-        var datasetName = shallowestFolderName;
-
-        string zipPath = Path.Combine(datasetsFolder, datasetName + ".zip");
-
-        if (!File.Exists(zipPath))
-        {
-            return null;
-        }
-
-        var zipEntryPath = string.Join('/', pathComponents.Skip(1));
-
-        Debug.WriteLine("Reading from zip " + zipPath);
-        return ReadLinesFromZipFileEntry(zipPath, zipEntryPath);
-    }
-
-    private static string[]? TryGetDataFromSingleEntryZipFile(string filePath, string datasetsFolder)
-    {
-        var zipPath = Path.Combine(datasetsFolder, Path.ChangeExtension(filePath, ".zip"));
-
-        if (!File.Exists(zipPath))
-        {
-            return null;
-        }
-
-        return ReadLinesFromZipFileEntry(zipPath, Path.GetFileName(filePath));
     }
 
     private static string ResolveSourceFilePath(string pathFormat, string station, string datasetsFolder)

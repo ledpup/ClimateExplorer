@@ -165,6 +165,7 @@ internal static class ClimateRecordsEndpoints
             StartYear = startYear,
             EndYear = endYear,
             TotalCount = totalCount,
+            RetrievedDate = dataSet.RetrievedDate,
         };
         return response;
     }

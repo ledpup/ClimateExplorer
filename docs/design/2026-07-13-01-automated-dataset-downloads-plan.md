@@ -625,7 +625,7 @@ multi-file state and stronger merge tests than the direct downloads.
 
 ## Staged implementation plan
 
-### Stage 0: Contract tests and file-store seam
+### Stage 0: Contract tests and file-store seam — completed 2026-07-13
 
 1. Add record-level contract tests for every storage family before paths move.
 2. Add dataset-level storage metadata and teach the file loader to distinguish a
@@ -647,6 +647,46 @@ multi-file state and stronger merge tests than the direct downloads.
    oldest-retrieval behavior.
 
 No dataset is opted in during this stage.
+
+#### Stage 0 implementation progress
+
+Completed on 2026-07-13:
+
+- `ClimateExplorer.DataPipeline` now deterministically emits the dataset-owned
+  layout. The current package contains 10,426 logical source files in 2,098
+  physical assets.
+- BOM is packaged as 205 station archives containing temperature maximum,
+  temperature minimum, derived mean temperature, precipitation, and solar
+  radiation. GHCNd temperature and precipitation are combined into one archive
+  per station.
+- ACORN-SAT and GHCNm are stored in their own annual archives. Met,
+  NOAAGlobalTemp, and the small global datasets are loose files in
+  dataset-owned folders. The corresponding loose `ClimateExplorer.SourceData`
+  inputs were moved to the same folder structure.
+- Every `MeasurementDefinition` now has a required explicit
+  `DataFileSourceDefinition`. `FolderName`, `FileNameFormat`, and the inferred
+  legacy archive cascade were removed rather than retained as compatibility
+  paths.
+- The old Atmosphere, Ice, Ocean, Precipitation, Solar, Temperature, and
+  Temperature_BOM archives were removed from the deployable package. Packaging
+  fails for duplicate source files, duplicate logical destinations, duplicate
+  physical assets, or omitted source files.
+- Real-package contracts resolve every measurement definition against the new
+  package, including archive entries, and verify that the two Mauna Loa CO₂
+  measurements share one physical source.
+- The Web API now has DI-registered freshness policy, uniquely named temporary
+  workspaces, per-asset asynchronous locks, and same-directory atomic source
+  publication. Source state records length, SHA-256, path, asset key, and the
+  successful retrieval time.
+- `/dataset` now contains the refresh/fallback orchestration seam and propagates
+  successful retrieval time. `/climate-record` propagates that time from the
+  underlying dataset response. Tests cover fresh cache, failed refresh with a
+  cached response, cold packaged-source fallback, and successful rebuild.
+- No downloader key is assigned to a dataset, so this stage does not perform
+  network retrieval. `/recent-observations` remains unchanged.
+
+Verification at completion: 323 unit tests passed and the complete solution
+built with zero warnings and errors.
 
 ### Stage 1: Generic direct downloads
 
@@ -686,7 +726,6 @@ archives and the explicitly specialised datasets remain deferred.
 2. Opt in each Hadley measurement with its own resolution-derived cadence.
 3. Add tests proving that selecting one measurement downloads only its file and
    never mutates shared dataset metadata.
-4. Remove the HadCET/HadCEP block from `ClimateExplorer.Data.Misc`.
 
 ### Stage 4: GHCNd station archives
 
@@ -715,7 +754,6 @@ archives and the explicitly specialised datasets remain deferred.
    policy.
 3. Test mapped-table selection, malformed table fallback, and last-known-good
    behavior.
-4. Remove the ODGI block from `ClimateExplorer.Data.Misc`.
 
 ### Stage 7: NOAAGlobalTemp
 
@@ -724,8 +762,6 @@ archives and the explicitly specialised datasets remain deferred.
 3. Use the stable loose source names established in stage 0.
 4. Record remote release metadata and test fallback when a newer release is
    absent or malformed.
-5. Remove hard-coded release selection and metadata generation from
-   `ClimateExplorer.Data.Misc`.
 
 ### Stage 8: Greenland ice melt
 
@@ -733,20 +769,16 @@ archives and the explicitly specialised datasets remain deferred.
 2. Add first-snapshot, incremental current-year, year-boundary, missing-date,
    reported-zero, and partial-failure tests.
 3. Opt in the dataset at the daily cadence.
-4. Remove `GreenlandApiClient` invocation from `ClimateExplorer.Data.Misc`.
 
 ### Stage 9: Cleanup and operations
 
-1. Reduce `ClimateExplorer.Data.Misc/Program.cs` to site-map and map-marker
-   generation, then remove unused HTTP setup, download helpers, reducer classes,
-   packages, and folders.
-2. Keep `ClimateExplorer.DataPipeline` capable of producing one deployable data
+1. Keep `ClimateExplorer.DataPipeline` capable of producing one deployable data
    package: loose mutable files under dataset-owned folders, BOM/GHCNd station
    archives, and annual ACORN-SAT/GHCNm dataset archives.
-3. Document source-data write permissions, deployment replacement semantics,
+2. Document source-data write permissions, deployment replacement semantics,
    cache keys, operational logs, and how to force a safe refresh without
    deleting the current source file.
-4. Keep `ClimateExplorer.SourceData` as the build-time input to the deployable
+3. Keep `ClimateExplorer.SourceData` as the build-time input to the deployable
    data package. The pipeline may copy a managed file loose rather than archive
    it, but the running Web API receives only one source copy.
 
@@ -814,8 +846,7 @@ The rollout is complete when:
 - **Provider formats can drift.** Parse-based validation and preservation of the
   current source file are required for every source; content length alone is
   insufficient.
-- **Old response caches have no retrieval date.** Treat them as stale but retain
-  them as fallback until a validated refresh succeeds.
+- **Old response caches have no retrieval date.** Assume they will be deleted.
 - **Source and response caches have different granularity.** Keep asset retrieval
   state separate from chart-response cache entries and derive response time from
   contributing assets.

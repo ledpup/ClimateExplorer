@@ -307,10 +307,9 @@ public class DataReaderTests
             DataResolution = Core.Enums.DataResolution.Daily,
             NullValue = "-",
             DataRowRegEx = @"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),-?\d*,(?<tmin>-?[\d+\.\d+]*),-?\d*,.*,D$",
-            FolderName = @"Auckland",
-            FileNameFormat = "[station].csv"
+            DataFileSource = new DataFileSourceDefinition { FilePathFormat = "[station].csv" },
         };
 
-        await DataReaderFunctions.GetDataRecords(md, dataFileFilterAndAdjustments);
+        await DataReaderFunctions.GetDataRecords(md, dataFileFilterAndAdjustments, "Auckland");
     }
 }

@@ -30,8 +30,26 @@ async Task UpdateAcornSatRecordsFromRaw(DataSetDefinition bom, DataSetDefinition
     var mdUnadjusted = bom.MeasurementDefinitions!.Single(x => x.DataType == dataType);
     var mdAdjusted = acornSat.MeasurementDefinitions!.Single(x => x.DataType == dataType);
 
-    mdUnadjusted.FolderName = unadjustedFolder;
-    mdAdjusted.FolderName = adjustedFolder;
+    mdUnadjusted.DataFileSource = new DataFileSourceDefinition
+    {
+        FilePathFormat = dataType switch
+        {
+            Enums.DataType.TempMean => "[station]_daily_tempmean.csv",
+            Enums.DataType.TempMax => "[station]_daily_tempmax.csv",
+            Enums.DataType.TempMin => "[station]_daily_tempmin.csv",
+            _ => throw new NotSupportedException($"Unsupported ACORN-SAT data type {dataType}."),
+        },
+    };
+    mdAdjusted.DataFileSource = new DataFileSourceDefinition
+    {
+        FilePathFormat = dataType switch
+        {
+            Enums.DataType.TempMean => "tmean.[station].daily.csv",
+            Enums.DataType.TempMax => "tmax.[station].daily.csv",
+            Enums.DataType.TempMin => "tmin.[station].daily.csv",
+            _ => throw new NotSupportedException($"Unsupported ACORN-SAT data type {dataType}."),
+        },
+    };
 
     Console.ForegroundColor = ConsoleColor.Gray;
 
@@ -40,7 +58,7 @@ async Task UpdateAcornSatRecordsFromRaw(DataSetDefinition bom, DataSetDefinition
     {
         Console.WriteLine($"{dataType}: Processing station {station.Id}");
 
-        var adjRecords = (await DataReaderFunctions.GetDataRecords(mdAdjusted, [station])).Where(x => x.Value != null).OrderBy(x => x.Date);
+        var adjRecords = (await DataReaderFunctions.GetDataRecords(mdAdjusted, [station], adjustedFolder)).Where(x => x.Value != null).OrderBy(x => x.Date);
 
         if (!adjRecords.Any())
         {
@@ -60,7 +78,7 @@ async Task UpdateAcornSatRecordsFromRaw(DataSetDefinition bom, DataSetDefinition
             continue;
         }
 
-        var unadjRecords = (await DataReaderFunctions.GetDataRecords(mdUnadjusted, [station])).Where(x => x.Value != null).OrderBy(x => x.Date).ToDictionary(x => x.Key!, x => x);
+        var unadjRecords = (await DataReaderFunctions.GetDataRecords(mdUnadjusted, [station], unadjustedFolder)).Where(x => x.Value != null).OrderBy(x => x.Date).ToDictionary(x => x.Key!, x => x);
 
         if (!unadjRecords.Values.Where(x => ((DateOnly)x.Date!).Year == yearToCreateAdjustedRecords).Any())
         {
@@ -93,7 +111,7 @@ async Task UpdateAcornSatRecordsFromRaw(DataSetDefinition bom, DataSetDefinition
         else
         {
             Console.WriteLine($"No {dataType} adjustments were being made for station {station.Id} in ACORN-SAT for the year {yearToCreateAdjustedRecords - 1}. Will now update the temperature record for {yearToCreateAdjustedRecords}, using BOM raw temperatures.");
-            var filePath = mdAdjusted.FolderName + @"\" + mdAdjusted.FileNameFormat!.Replace("[station]", station.Id);
+            var filePath = Path.Combine(adjustedFolder, mdAdjusted.DataFileSource.FilePathFormat.Replace("[station]", station.Id));
             var fileContents = File.ReadAllText(filePath);
 
             FileStream? fileStream = null;

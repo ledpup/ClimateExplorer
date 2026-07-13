@@ -3,10 +3,12 @@ namespace ClimateExplorer.WebApi;
 using System;
 using System.Linq;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
+using ClimateExplorer.WebApi.DataRetrieval;
 using ClimateExplorer.WebApi.Metadata;
 using Microsoft.AspNetCore.Mvc;
 using static ClimateExplorer.Core.Enums;
@@ -15,13 +17,15 @@ internal static class DataSetEndpoints
 {
     public static async Task<DataSet> PostDataSets(
         PostDataSetsRequestBody body,
-        [FromServices] ClimateExplorerApiServices services)
+        [FromServices] ClimateExplorerApiServices services,
+        CancellationToken cancellationToken = default)
     {
         string cacheKey = "DataSet_v2_" + JsonSerializer.Serialize(body);
 
         var result = await services.Cache.Get<DataSet>(cacheKey);
+        var sourcePreparation = await services.DataSetSourceUpdateCoordinator.PrepareAsync(body, result, cancellationToken);
 
-        if (result != null)
+        if (result != null && sourcePreparation.Outcome is DataSetSourcePreparationOutcome.UseCached or DataSetSourcePreparationOutcome.RefreshFailed)
         {
             return result;
         }
@@ -56,6 +60,9 @@ internal static class DataSetEndpoints
                     ? series.RawDataRecords
                     : null,
                 SourceMetadata = sourceMetadata,
+                RetrievedDate = sourcePreparation.Outcome == DataSetSourcePreparationOutcome.RefreshFailed
+                    ? null
+                    : sourcePreparation.RetrievedDate,
             };
 
         // If the BinningRule is ByYearAndDay (or ByDayOnly filtered to a specific year) then there is little

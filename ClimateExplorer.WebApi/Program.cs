@@ -1,7 +1,9 @@
 #pragma warning disable SA1200 // Using directives should be placed correctly
+using System;
 using System.Text.Json.Serialization;
 using ClimateExplorer.Data.Ghcnd;
 using ClimateExplorer.WebApi;
+using ClimateExplorer.WebApi.DataRetrieval;
 using ClimateExplorer.WebApi.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http.Json;
@@ -46,12 +48,19 @@ builder.Services.Configure<JsonOptions>(
 
 builder.Logging.AddConsole();
 
+builder.Services.AddSingleton(TimeProvider.System);
+builder.Services.AddSingleton<DataSetFreshnessPolicy>();
+builder.Services.AddSingleton<DataSetAssetLockProvider>();
+builder.Services.AddSingleton<DataSetDownloadWorkspaceFactory>();
+builder.Services.AddSingleton(new DataSetSourceFileStore("Datasets"));
+builder.Services.AddSingleton<IDataSetSourceUpdateCoordinator, DataSetSourceUpdateCoordinator>();
 builder.Services.AddSingleton(
-    new ClimateExplorerApiServices(
+    services => new ClimateExplorerApiServices(
         new FileBackedTwoLayerCache("cache"),
         new FileBackedTwoLayerCache("cache-longterm"),
         BomHttpClientFactory.CreateBomHttpClient(),
-        GhcndHttpClientFactory.CreateHttpClient()));
+        GhcndHttpClientFactory.CreateHttpClient(),
+        services.GetRequiredService<IDataSetSourceUpdateCoordinator>()));
 
 var app = builder.Build();
 app.UseCors();

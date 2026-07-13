@@ -106,59 +106,6 @@ public sealed class DataFileSourceTests
     }
 
     [TestMethod]
-    public async Task GetLinesInDataFileWithCascade_DatasetArchive_ReadsExistingLayout()
-    {
-        CreateArchive(
-            Path.Combine(datasetsFolder, "Ocean.zip"),
-            new Dictionary<string, string>
-            {
-                ["nino34.long.anom.data.txt"] = "header\nrecord",
-            });
-
-        var lines = await DataReaderFunctions.GetLinesInDataFileWithCascade(
-            @"Ocean\nino34.long.anom.data.txt",
-            datasetsFolder);
-
-        CollectionAssert.AreEqual(new[] { "header", "record" }, lines);
-    }
-
-    [TestMethod]
-    public async Task GetLinesInDataFileWithCascade_SingleEntryArchive_ReadsExistingLayout()
-    {
-        CreateArchive(
-            Path.Combine(datasetsFolder, "GHCNd", "Temperature", "AE000041196.zip"),
-            new Dictionary<string, string>
-            {
-                ["AE000041196.csv"] = "header\nrecord",
-            });
-
-        var lines = await DataReaderFunctions.GetLinesInDataFileWithCascade(
-            @"GHCNd\Temperature\AE000041196.csv",
-            datasetsFolder);
-
-        CollectionAssert.AreEqual(new[] { "header", "record" }, lines);
-    }
-
-    [TestMethod]
-    public async Task GetLinesInDataFileWithCascade_ExistingLoosePathOutsideDatasetsFolder_ReadsFile()
-    {
-        var looseFilePath = Path.Combine(Path.GetDirectoryName(datasetsFolder)!, $"{Guid.NewGuid():N}.txt");
-
-        try
-        {
-            await File.WriteAllLinesAsync(looseFilePath, ["header", "record"]);
-
-            var lines = await DataReaderFunctions.GetLinesInDataFileWithCascade(looseFilePath, datasetsFolder);
-
-            CollectionAssert.AreEqual(new[] { "header", "record" }, lines);
-        }
-        finally
-        {
-            File.Delete(looseFilePath);
-        }
-    }
-
-    [TestMethod]
     public async Task GetLinesInDataFileSource_UnresolvedPlaceholder_ThrowsInvalidOperationException()
     {
         var source = new DataFileSourceDefinition

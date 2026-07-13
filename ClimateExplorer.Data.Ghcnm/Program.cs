@@ -147,8 +147,8 @@ File.WriteAllText(Folders.MetaDataFolder + $@"DataFileMapping\DataFileMapping{ou
 var dataSetDefinitions = DataSetDefinitionsBuilder.BuildDataSetDefinitions();
 var ghcnm = dataSetDefinitions.Single(x => x.ShortName == "GHCNm");
 
-await CreateStationDataFiles("qcf", ghcnm.MeasurementDefinitions!.Single(x => x.DataAdjustment == Enums.DataAdjustment.Adjusted).FolderName!, selectedStations, logger);
-await CreateStationDataFiles("qcu", ghcnm.MeasurementDefinitions!.Single(x => x.DataAdjustment == Enums.DataAdjustment.Unadjusted).FolderName!, selectedStations, logger);
+await CreateStationDataFiles("qcf", @"Temperature\GHCNm\Adjusted", selectedStations, logger);
+await CreateStationDataFiles("qcu", @"Temperature\GHCNm\Unadjusted", selectedStations, logger);
 
 List<Station> SelectStationsByDbscanClusteringAndTakingHighestScore(List<Station> processedStations, double distance, Dictionary<string, int> countryDistanceOverride, int minimumPointsPerCluster)
 {
