@@ -1,8 +1,9 @@
 namespace ClimateExplorer.Core.Model;
 
+using ClimateExplorer.Core.Interface;
 using static ClimateExplorer.Core.Enums;
 
-public sealed record ClimateRecordsResponse
+public sealed record ClimateRecordsResponse : ICachedData
 {
     public List<DataRecord> Records { get; set; } = [];
     public DataType? DataType { get; set; }
@@ -12,4 +13,5 @@ public sealed record ClimateRecordsResponse
     public int? StartYear { get; set; }
     public int? EndYear { get; set; }
     public int TotalCount { get; set; }
+    public DateTimeOffset? RetrievedDate { get; set; }
 }
