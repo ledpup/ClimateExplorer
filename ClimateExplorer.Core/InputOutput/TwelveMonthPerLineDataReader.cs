@@ -5,15 +5,24 @@ using ClimateExplorer.Core.Model;
 
 public static class TwelveMonthPerLineDataReader
 {
-    public static async Task<List<DataRecord>> GetTwelveMonthsPerRowData(MeasurementDefinition measurementDefinition, List<DataFileFilterAndAdjustment>? dataFileFilterAndAdjustments)
+    public static async Task<List<DataRecord>> GetTwelveMonthsPerRowData(
+        MeasurementDefinition measurementDefinition,
+        List<DataFileFilterAndAdjustment>? dataFileFilterAndAdjustments,
+        string datasetsFolder = "Datasets")
     {
-        var dataPath = $@"{measurementDefinition.FolderName}\{measurementDefinition!.FileNameFormat!}";
+        var station = string.Empty;
+        var dataPath = measurementDefinition.DataFileSource == null
+            ? $@"{measurementDefinition.FolderName}\{measurementDefinition.FileNameFormat!}"
+            : string.Empty;
         if (dataFileFilterAndAdjustments != null)
         {
-            dataPath = dataPath.Replace("[station]", dataFileFilterAndAdjustments!.Single().Id);
+            station = dataFileFilterAndAdjustments!.Single().Id;
+            dataPath = dataPath.Replace("[station]", station);
         }
 
-        var records = await DataReaderFunctions.GetLinesInDataFileWithCascade(dataPath);
+        var records = measurementDefinition.DataFileSource == null
+            ? await DataReaderFunctions.GetLinesInDataFileWithCascade(dataPath, datasetsFolder)
+            : await DataReaderFunctions.GetLinesInDataFileSource(measurementDefinition.DataFileSource, station, datasetsFolder);
         if (records == null)
         {
             throw new Exception("Unable to read data " + dataPath);

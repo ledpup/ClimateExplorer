@@ -26,7 +26,8 @@ public static class DataReaderFunctions
 
     public static async Task<List<DataRecord>> GetDataRecords(
         MeasurementDefinition measurementDefinition,
-        List<DataFileFilterAndAdjustment>? dataFileFilterAndAdjustments)
+        List<DataFileFilterAndAdjustment>? dataFileFilterAndAdjustments,
+        string datasetsFolder = "Datasets")
     {
         if (dataFileFilterAndAdjustments == null)
         {
@@ -45,8 +46,10 @@ public static class DataReaderFunctions
         var records = new Dictionary<string, DataRecord>();
         foreach (var dataFileDefinition in dataFileFilterAndAdjustments)
         {
-            var filePath = measurementDefinition.FolderName + @"\" + measurementDefinition.FileNameFormat!.Replace("[station]", dataFileDefinition.Id);
-            var fileRecords = await ReadDataFile(filePath, regEx, measurementDefinition.NullValue!, measurementDefinition.DataResolution, dataFileDefinition.Id, dataFileDefinition.StartDate, dataFileDefinition.EndDate);
+            var filePath = measurementDefinition.DataFileSource == null
+                ? measurementDefinition.FolderName + @"\" + measurementDefinition.FileNameFormat!.Replace("[station]", dataFileDefinition.Id)
+                : string.Empty;
+            var fileRecords = await ReadDataFile(filePath, measurementDefinition.DataFileSource, regEx, measurementDefinition.NullValue!, measurementDefinition.DataResolution, dataFileDefinition.Id, datasetsFolder, dataFileDefinition.StartDate, dataFileDefinition.EndDate);
             var values = fileRecords.Values.ToList();
 
             // Adjust based on the measurement definition (how the data is stored on file vs the unit of measure in the measurement definition).
@@ -198,13 +201,13 @@ public static class DataReaderFunctions
         return dataRecords;
     }
 
-    public static async Task<string[]> GetLinesInDataFileWithCascade(string dataFilePath)
+    public static async Task<string[]> GetLinesInDataFileWithCascade(string dataFilePath, string datasetsFolder = "Datasets")
     {
-        string[]? lines = TryGetDataFromDatasetZipFile(dataFilePath);
+        string[]? lines = TryGetDataFromDatasetZipFile(dataFilePath, datasetsFolder);
 
         if (lines == null)
         {
-            lines = TryGetDataFromSingleEntryZipFile(dataFilePath);
+            lines = TryGetDataFromSingleEntryZipFile(dataFilePath, datasetsFolder);
         }
 
         if (lines == null)
@@ -215,16 +218,42 @@ public static class DataReaderFunctions
         return lines!;
     }
 
+    public static async Task<string[]?> GetLinesInDataFileSource(
+        DataFileSourceDefinition dataFileSource,
+        string station,
+        string datasetsFolder = "Datasets")
+    {
+        ArgumentNullException.ThrowIfNull(dataFileSource);
+
+        var sourceFilePath = ResolveSourceFilePath(dataFileSource.FilePathFormat, station, datasetsFolder);
+        if (!File.Exists(sourceFilePath))
+        {
+            return null;
+        }
+
+        if (dataFileSource.ArchiveEntryPathFormat == null)
+        {
+            return await File.ReadAllLinesAsync(sourceFilePath);
+        }
+
+        var archiveEntryPath = ResolveArchiveEntryPath(dataFileSource.ArchiveEntryPathFormat, station);
+        return ReadLinesFromZipFileEntry(sourceFilePath, archiveEntryPath);
+    }
+
     private static async Task<Dictionary<string, DataRecord>> ReadDataFile(
         string pathAndFile,
+        DataFileSourceDefinition? dataFileSource,
         Regex regEx,
         string nullValue,
         DataResolution dataResolution,
         string station,
+        string datasetsFolder,
         DateOnly? startDate = null,
         DateOnly? endDate = null)
     {
-        string[]? lines = await GetLinesInDataFileWithCascade(pathAndFile);
+        string[]? lines = dataFileSource == null
+            ? await GetLinesInDataFileWithCascade(pathAndFile, datasetsFolder)
+            : await GetLinesInDataFileSource(dataFileSource, station, datasetsFolder);
 
         return ProcessDataFile(lines, regEx, nullValue, dataResolution, station, startDate, endDate);
     }
@@ -319,7 +348,7 @@ public static class DataReaderFunctions
         return null;
     }
 
-    private static string[]? TryGetDataFromDatasetZipFile(string filePath)
+    private static string[]? TryGetDataFromDatasetZipFile(string filePath, string datasetsFolder)
     {
         string[] pathComponents =
             filePath.Split(
@@ -330,7 +359,7 @@ public static class DataReaderFunctions
 
         var datasetName = shallowestFolderName;
 
-        string zipPath = Path.Combine("Datasets", datasetName + ".zip");
+        string zipPath = Path.Combine(datasetsFolder, datasetName + ".zip");
 
         if (!File.Exists(zipPath))
         {
@@ -343,9 +372,9 @@ public static class DataReaderFunctions
         return ReadLinesFromZipFileEntry(zipPath, zipEntryPath);
     }
 
-    private static string[]? TryGetDataFromSingleEntryZipFile(string filePath)
+    private static string[]? TryGetDataFromSingleEntryZipFile(string filePath, string datasetsFolder)
     {
-        var zipPath = Path.Combine("Datasets", Path.ChangeExtension(filePath, ".zip"));
+        var zipPath = Path.Combine(datasetsFolder, Path.ChangeExtension(filePath, ".zip"));
 
         if (!File.Exists(zipPath))
         {
@@ -353,6 +382,53 @@ public static class DataReaderFunctions
         }
 
         return ReadLinesFromZipFileEntry(zipPath, Path.GetFileName(filePath));
+    }
+
+    private static string ResolveSourceFilePath(string pathFormat, string station, string datasetsFolder)
+    {
+        var relativePath = ResolvePathFormat(pathFormat, station);
+        if (Path.IsPathRooted(relativePath))
+        {
+            throw new InvalidOperationException($"Data source path '{relativePath}' must be relative to the datasets folder.");
+        }
+
+        var rootPath = Path.GetFullPath(datasetsFolder);
+        var sourceFilePath = Path.GetFullPath(Path.Combine(rootPath, relativePath));
+        var rootPathWithSeparator = rootPath.EndsWith(Path.DirectorySeparatorChar)
+            ? rootPath
+            : rootPath + Path.DirectorySeparatorChar;
+
+        if (!sourceFilePath.StartsWith(rootPathWithSeparator, StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidOperationException($"Data source path '{relativePath}' resolves outside the datasets folder.");
+        }
+
+        return sourceFilePath;
+    }
+
+    private static string ResolveArchiveEntryPath(string pathFormat, string station)
+    {
+        var entryPath = ResolvePathFormat(pathFormat, station).Replace('\\', '/');
+        var pathSegments = entryPath.Split('/', StringSplitOptions.RemoveEmptyEntries);
+        if (Path.IsPathRooted(entryPath) || pathSegments.Any(x => x is "." or ".."))
+        {
+            throw new InvalidOperationException($"Archive entry path '{entryPath}' must be a relative path within the archive.");
+        }
+
+        return entryPath;
+    }
+
+    private static string ResolvePathFormat(string pathFormat, string station)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(pathFormat);
+
+        var resolvedPath = pathFormat.Replace("[station]", station, StringComparison.Ordinal);
+        if (resolvedPath.Contains('[') || resolvedPath.Contains(']'))
+        {
+            throw new InvalidOperationException($"Data source path '{pathFormat}' contains an unresolved placeholder.");
+        }
+
+        return resolvedPath;
     }
 
     private static string[]? ReadLinesFromZipFileEntry(string zipFilename, string zipEntryFilename)

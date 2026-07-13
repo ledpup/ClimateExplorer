@@ -11,6 +11,8 @@ public class MeasurementDefinition
     public RowDataType RowDataType { get; set; }
     public string? FolderName { get; set; }
     public string? FileNameFormat { get; set; }
+    public DataFileSourceDefinition? DataFileSource { get; set; }
+    public string? DataDownloadUrl { get; set; }
     public string? DataRowRegEx { get; set; }
     public string? NullValue { get; set; }
     public double? ValueAdjustment { get; set; }
