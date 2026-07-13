@@ -717,6 +717,7 @@ Two different indices are calculated, one that is relevant for the ozone layer o
                 PublisherUrl = "https://www.noaa.gov/",
                 MoreInformationUrl = "https://gml.noaa.gov/odgi/",
                 DataDownloadUrl = "https://gml.noaa.gov/odgi/odgi_[station].csv",
+                DataDownloaderKey = "direct-http",
                 MeasurementDefinitions =
                 [
                     new MeasurementDefinition

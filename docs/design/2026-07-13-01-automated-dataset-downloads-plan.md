@@ -1,7 +1,7 @@
 # Automated dataset downloads for historical API data
 
 - **Date:** 2026-07-13
-- **Status:** In progress — stages 0 and 1 complete
+- **Status:** In progress — stages 0–6 complete
 - **Author:** Codex
 - **Scope:** dataset download metadata, `/dataset` and `/climate-record` request flow, dataset file loading/storage, Web API dependency injection, `ClimateExplorer.Data.Misc`, and related unit tests
 - **Branch context:** `development`
@@ -861,7 +861,7 @@ Completed on 2026-07-13:
 Verification at completion: 346 unit tests passed; `/recent-observations`
 production files have no changes.
 
-### Stage 5: BOM station archives
+### Stage 5: BOM station archives — completed 2026-07-14
 
 1. Extract/reuse BOM observation-code download helpers without changing
    `/recent-observations`.
@@ -871,13 +871,83 @@ production files have no changes.
    entries, archive validation, cold source fallback, and concurrency.
 4. Opt in the historical BOM definition at the daily cadence.
 
-### Stage 6: ODGI
+#### Stage 5 implementation progress
+
+Completed on 2026-07-14:
+
+- `BomDailyDataClient` resolves the BOM available-years token and downloads one
+  provider ZIP per observation code, rejecting oversized responses, missing
+  tokens, and archives that do not contain exactly one CSV entry.
+- `BomDataSetDownloader` (`bom-station`) downloads maximum temperature, minimum
+  temperature, precipitation, and solar radiation for the station shared by the
+  resolved asset, derives mean temperature with the same
+  `Math.Round((max + min) / 2D, 2)` rule used by the standalone
+  `ClimateExplorer.Data.Bom.CreateTempMean` tool, and writes all five entries
+  into `BOM/<station>.zip` in the isolated workspace. The archive is only ever
+  created after every provider download succeeds.
+- The historical BOM dataset is opted into `bom-station` for all five
+  measurements sharing the station archive; the shared coordinator's per-asset
+  lock and source state give the archive one freshness and replacement unit, as
+  for GHCNd.
+- `BomDataSetDownloader` and `BomDailyDataClient` are registered once in both
+  the Web API and `ClimateExplorer.Data.Misc` composition, alongside the other
+  downloader keys; neither host contains a second BOM download implementation.
+- Tests cover the full five-entry archive with correct derived-mean values, a
+  single failing observation-code download leaving no candidate archive behind,
+  and a corrupt provider archive being rejected before publication. Package
+  contract tests prove all opted-in downloader keys resolve as expected and
+  that the five BOM measurements for a mapped station resolve to one archive.
+  Cold source fallback and concurrent-request coalescing are exercised by the
+  existing downloader-agnostic `DataSetSourceUpdateCoordinator` tests, the same
+  pattern used for GHCNd in stage 4.
+- `/recent-observations` production code was not changed.
+
+Verification at completion: 351 unit tests passed; the Web API and
+`ClimateExplorer.Data.Misc` projects built with zero warnings and errors.
+
+### Stage 6: ODGI — completed 2026-07-14
 
 1. Resolve the `table1`/`table2` inventory discrepancy.
 2. Implement and register the ODGI handler with its explicit yearly freshness
    policy.
 3. Test mapped-table selection, malformed table fallback, and last-known-good
    behavior.
+
+#### Stage 6 implementation progress
+
+Completed on 2026-07-14:
+
+- The `table1`/`table2` inventory question is resolved by inspection rather than
+  code: `DataFileMapping_Odgi.json` maps the dataset's only location to
+  `table1`, and `table2` has no consuming measurement or mapping. Because
+  `DataSetSourceAssetResolver` only ever produces assets for mapped filter IDs,
+  opting ODGI in was sufficient to make `table2` permanently unreachable by
+  automatic retrieval without adding any table-selection logic. A metadata
+  contract test now asserts exactly one resolved ODGI asset, at
+  `ODGI\odgi_table1.csv`, sourced from `.../odgi_table1.csv`.
+- No bespoke ODGI handler class was needed. The dataset's existing
+  `DataDownloadUrl`/`DataFileSource` `[station]`-token pair already matches the
+  generic `direct-http` contract used since stage 1, so ODGI opts into
+  `direct-http` directly, the same way Niño 3.4 and the other small global
+  datasets did.
+- `DataSetFreshnessPolicy` gained the previously-unconfirmed yearly policy:
+  `DataResolution.Yearly` is now stale at 28 days, the same boundary as
+  monthly, per the plan's conservative default. Boundary tests cover data just
+  under and exactly at 28 days old; `DataResolution.Weekly` remains
+  unsupported and still throws, proving the new case is additive rather than a
+  fallback default.
+- Malformed-table fallback and last-known-good behavior are exercised by the
+  existing downloader-agnostic `DataSetSourceUpdateCoordinator` tests, the same
+  pattern already used for GHCNd and BOM rather than a duplicate ODGI-specific
+  set.
+- `ClimateExplorer.Data.Misc/Program.cs` no longer contains the manual
+  `table1`/`table2` download block or the now-unused
+  `DataSetDefinitionsBuilder.BuildDataSetDefinitions()` call it required; ODGI
+  refreshes through the same `DataSetBatchRefresher` call as every other
+  opted-in dataset.
+
+Verification at completion: 354 unit tests passed; the complete solution built
+with zero new warnings and errors (unchanged from stage 5).
 
 ### Stage 7: NOAAGlobalTemp
 

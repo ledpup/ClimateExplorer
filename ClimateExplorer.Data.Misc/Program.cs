@@ -18,8 +18,6 @@ using ILoggerFactory factory = LoggerFactory.Create(builder => builder.AddConsol
 ILogger logger = factory.CreateLogger("ClimateExplorer.Data.Misc");
 logger.LogInformation("Starting ClimateExplorer.Data.Misc");
 
-var dataSetDefinitions = DataSetDefinitionsBuilder.BuildDataSetDefinitions();
-
 var httpClient = CreateHttpClient();
 
 var dataSetSourceAssetResolver = new DataSetSourceAssetResolver(Path.Combine(Folders.MetaDataFolder, "DataFileMapping"));
@@ -53,14 +51,6 @@ var jsonSerializerOptions = new JsonSerializerOptions
     Converters = { new JsonStringEnumConverter() },
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
 };
-
-// ODGI
-var odgi = dataSetDefinitions.Single(x => x.ShortName == "ODGI");
-var downloadUrl = odgi.DataDownloadUrl;
-odgi.DataDownloadUrl = odgi.DataDownloadUrl!.Replace("[station]", "table1");
-await DownloadDataSetData(odgi, Folders.SourceDataFolder, "table1");
-odgi.DataDownloadUrl = downloadUrl!.Replace("[station]", "table2");
-await DownloadDataSetData(odgi, Folders.SourceDataFolder, "table2");
 
 // Download and build Greenland ice melt
 await GreenlandApiClient.GetMeltDataAndSave(httpClient, logger);

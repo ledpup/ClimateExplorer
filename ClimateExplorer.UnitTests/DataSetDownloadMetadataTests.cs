@@ -1,5 +1,6 @@
 namespace ClimateExplorer.UnitTests;
 
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -18,7 +19,7 @@ public sealed class DataSetDownloadMetadataTests
 
         var assets = await resolver.ResolveAllAsync(CancellationToken.None);
 
-        Assert.HasCount(2078, assets);
+        Assert.HasCount(2079, assets);
         CollectionAssert.AreEquivalent(
             new[] { "bom-station", "direct-http", "ghcnd-station", "ocean-acidity", "ozone", "sea-level" },
             assets.Select(x => x.DownloaderKey).Distinct().ToArray());
@@ -68,6 +69,18 @@ public sealed class DataSetDownloadMetadataTests
         CollectionAssert.AreEquivalent(
             new[] { "CO2", "CO2Deseasoned" },
             asset.Measurements.Select(x => x.MeasurementDefinition.DataType.ToString()).ToArray());
+    }
+
+    [TestMethod]
+    public async Task ResolveAllAsync_Odgi_ResolvesOnlyTheMappedTable1Asset()
+    {
+        var assets = await CreateResolver().ResolveAllAsync(CancellationToken.None);
+
+        var odgiAssets = assets.Where(x => x.RelativePath.StartsWith(@"ODGI\", StringComparison.Ordinal)).ToList();
+
+        Assert.HasCount(1, odgiAssets);
+        Assert.AreEqual(@"ODGI\odgi_table1.csv", odgiAssets[0].RelativePath);
+        Assert.AreEqual("https://gml.noaa.gov/odgi/odgi_table1.csv", odgiAssets[0].DownloadUrl);
     }
 
     [TestMethod]

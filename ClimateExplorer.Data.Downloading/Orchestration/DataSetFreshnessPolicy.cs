@@ -22,6 +22,7 @@ public sealed class DataSetFreshnessPolicy(TimeProvider timeProvider)
         {
             DataResolution.Daily => TimeSpan.FromHours(24),
             DataResolution.Monthly => TimeSpan.FromDays(28),
+            DataResolution.Yearly => TimeSpan.FromDays(28),
             _ => throw new NotSupportedException($"No automatic retrieval freshness interval is configured for {dataResolution}."),
         };
 

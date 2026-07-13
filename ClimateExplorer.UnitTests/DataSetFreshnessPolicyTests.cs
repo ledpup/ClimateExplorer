@@ -49,6 +49,18 @@ public sealed class DataSetFreshnessPolicyTests
     }
 
     [TestMethod]
+    public void IsFresh_YearlyDataYoungerThan28Days_ReturnsTrue()
+    {
+        Assert.IsTrue(policy.IsFresh(CreateState(Now.AddDays(-28).AddTicks(1)), DataResolution.Yearly));
+    }
+
+    [TestMethod]
+    public void IsFresh_YearlyDataExactly28DaysOld_ReturnsFalse()
+    {
+        Assert.IsFalse(policy.IsFresh(CreateState(Now.AddDays(-28)), DataResolution.Yearly));
+    }
+
+    [TestMethod]
     public void IsFresh_RetrievedDateWithNonUtcOffset_ComparesAbsoluteTime()
     {
         var retrievedDate = Now.AddHours(-23).ToOffset(TimeSpan.FromHours(10));
