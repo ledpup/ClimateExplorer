@@ -842,7 +842,7 @@ public class RecentObservationsServiceTests
         var dataService = new Mock<IDataService>();
         SetupEmptyClimateRecords(dataService);
         dataService
-            .Setup(x => x.GetRecentObservations(LocationId, false))
+            .Setup(x => x.GetRecentObservations(LocationId))
             .ReturnsAsync(new RecentObservationsResponse
             {
                 IsSupported = true,
@@ -879,7 +879,7 @@ public class RecentObservationsServiceTests
             });
 
         Assert.AreEqual(new DateOnly(2026, 6, 7), recalculated.ReferenceDate);
-        dataService.Verify(x => x.GetRecentObservations(LocationId, false), Times.Once);
+        dataService.Verify(x => x.GetRecentObservations(LocationId), Times.Once);
         dataService.Verify(
             x => x.GetClimateRecords(
                 LocationId,
@@ -910,7 +910,7 @@ public class RecentObservationsServiceTests
         var dataService = new Mock<IDataService>();
         SetupEmptyClimateRecords(dataService);
         dataService
-            .Setup(x => x.GetRecentObservations(LocationId, false))
+            .Setup(x => x.GetRecentObservations(LocationId))
             .ReturnsAsync(new RecentObservationsResponse
             {
                 IsSupported = true,
@@ -963,7 +963,7 @@ public class RecentObservationsServiceTests
         var dataService = new Mock<IDataService>();
         SetupEmptyClimateRecords(dataService);
         dataService
-            .Setup(x => x.GetRecentObservations(It.IsAny<Guid>(), false))
+            .Setup(x => x.GetRecentObservations(It.IsAny<Guid>()))
             .ReturnsAsync(new RecentObservationsResponse
             {
                 IsSupported = true,
@@ -978,8 +978,8 @@ public class RecentObservationsServiceTests
         await service.LoadPrecipitationData(CreateSouthernHemisphereLocation());
         await service.LoadPrecipitationData(CreateSouthernHemisphereLocation(otherLocationId));
 
-        dataService.Verify(x => x.GetRecentObservations(LocationId, false), Times.Once);
-        dataService.Verify(x => x.GetRecentObservations(otherLocationId, false), Times.Once);
+        dataService.Verify(x => x.GetRecentObservations(LocationId), Times.Once);
+        dataService.Verify(x => x.GetRecentObservations(otherLocationId), Times.Once);
         dataService.Verify(
             x => x.GetClimateRecords(
                 LocationId,
@@ -2337,7 +2337,7 @@ public class RecentObservationsServiceTests
         SetupEmptyClimateRecords(dataService);
 
         dataService
-            .Setup(x => x.GetRecentObservations(LocationId, false))
+            .Setup(x => x.GetRecentObservations(LocationId))
             .ReturnsAsync(new RecentObservationsResponse
             {
                 IsSupported = true,
@@ -2501,7 +2501,7 @@ public class RecentObservationsServiceTests
         SetupEmptyClimateRecords(dataService);
 
         dataService
-            .Setup(x => x.GetRecentObservations(LocationId, false))
+            .Setup(x => x.GetRecentObservations(LocationId))
             .ReturnsAsync(new RecentObservationsResponse
             {
                 IsSupported = true,
@@ -2547,7 +2547,7 @@ public class RecentObservationsServiceTests
         SetupEmptyClimateRecords(dataService);
 
         dataService
-            .Setup(x => x.GetRecentObservations(LocationId, false))
+            .Setup(x => x.GetRecentObservations(LocationId))
             .ReturnsAsync(new RecentObservationsResponse
             {
                 IsSupported = true,
