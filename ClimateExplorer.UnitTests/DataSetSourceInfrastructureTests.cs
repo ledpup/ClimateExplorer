@@ -4,7 +4,8 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using ClimateExplorer.Data.Downloading;
+using ClimateExplorer.Data.Downloading.Storage;
+using ClimateExplorer.Data.Downloading.Workspace;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [TestClass]

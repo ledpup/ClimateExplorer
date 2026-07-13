@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ClimateExplorer.Core;
-using ClimateExplorer.Data.Downloading;
+using ClimateExplorer.Data.Downloading.Orchestration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [TestClass]

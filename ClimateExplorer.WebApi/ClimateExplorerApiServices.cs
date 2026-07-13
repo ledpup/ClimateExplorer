@@ -1,7 +1,7 @@
 namespace ClimateExplorer.WebApi;
 
 using System.Net.Http;
-using ClimateExplorer.Data.Downloading;
+using ClimateExplorer.Data.Downloading.Orchestration;
 using ClimateExplorer.WebApi.Infrastructure;
 
 public sealed class ClimateExplorerApiServices(

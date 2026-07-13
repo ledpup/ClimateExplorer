@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
-using ClimateExplorer.Data.Downloading;
+using ClimateExplorer.Data.Downloading.Models;
 using ClimateExplorer.WebApi.Metadata;
 using Microsoft.AspNetCore.Mvc;
 using static ClimateExplorer.Core.Enums;

@@ -7,7 +7,8 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using ClimateExplorer.Core.Model;
-using ClimateExplorer.Data.Downloading;
+using ClimateExplorer.Data.Downloading.Downloaders;
+using ClimateExplorer.Data.Downloading.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static ClimateExplorer.Core.Enums;
 
