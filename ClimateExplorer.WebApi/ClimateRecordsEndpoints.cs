@@ -90,7 +90,8 @@ internal static class ClimateRecordsEndpoints
                 RequiredCupDataProportion = ClimateExplorerApiConstants.DefaultCupDataProportion,
                 CupSize = ClimateExplorerApiConstants.DefaultCupSize,
             },
-            services);
+            services,
+            permitSourceUpdate: true);
 
         static int YearOf(BinnedRecord r) => r.BinIdentifier switch
         {

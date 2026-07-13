@@ -47,7 +47,7 @@ public sealed class DataSetSourceUpdateCoordinatorTests
         var coordinator = CreateCoordinator(downloader);
         var request = await CreateNinoRequest();
 
-        var result = await coordinator.PrepareAsync(request, null, CancellationToken.None);
+        var result = await coordinator.PrepareAsync(request, null, permitSourceUpdate: true, CancellationToken.None);
 
         Assert.AreEqual(DataSetSourcePreparationOutcome.Rebuild, result.Outcome);
         Assert.AreEqual(Now, result.RetrievedDate);
@@ -56,15 +56,28 @@ public sealed class DataSetSourceUpdateCoordinatorTests
     }
 
     [TestMethod]
+    public async Task PrepareAsync_ColdManagedSourceWithoutPermitSourceUpdate_DoesNotDownloadAndReturnsRefreshFailed()
+    {
+        var downloader = new StubDownloader(ValidNinoContent);
+        var coordinator = CreateCoordinator(downloader);
+        var request = await CreateNinoRequest();
+
+        var result = await coordinator.PrepareAsync(request, null, permitSourceUpdate: false, CancellationToken.None);
+
+        Assert.AreEqual(DataSetSourcePreparationOutcome.RefreshFailed, result.Outcome);
+        Assert.AreEqual(0, downloader.CallCount);
+    }
+
+    [TestMethod]
     public async Task PrepareAsync_FreshResponseAndMatchingSourceState_ReturnsCacheWithoutDownloadingAgain()
     {
         var downloader = new StubDownloader(ValidNinoContent);
         var coordinator = CreateCoordinator(downloader);
         var request = await CreateNinoRequest();
-        await coordinator.PrepareAsync(request, null, CancellationToken.None);
+        await coordinator.PrepareAsync(request, null, permitSourceUpdate: true, CancellationToken.None);
         var cachedData = new DataSet { RetrievedDate = Now };
 
-        var result = await coordinator.PrepareAsync(request, cachedData, CancellationToken.None);
+        var result = await coordinator.PrepareAsync(request, cachedData, permitSourceUpdate: true, CancellationToken.None);
 
         Assert.AreEqual(DataSetSourcePreparationOutcome.UseCached, result.Outcome);
         Assert.AreEqual(1, downloader.CallCount);
@@ -79,7 +92,7 @@ public sealed class DataSetSourceUpdateCoordinatorTests
         var downloader = new StubDownloader("not a valid dataset");
         var coordinator = CreateCoordinator(downloader);
 
-        var result = await coordinator.PrepareAsync(await CreateNinoRequest(), new DataSet(), CancellationToken.None);
+        var result = await coordinator.PrepareAsync(await CreateNinoRequest(), new DataSet(), permitSourceUpdate: true, CancellationToken.None);
 
         Assert.AreEqual(DataSetSourcePreparationOutcome.RefreshFailed, result.Outcome);
         Assert.AreEqual(ValidNinoContent, await File.ReadAllTextAsync(sourcePath));
@@ -93,8 +106,8 @@ public sealed class DataSetSourceUpdateCoordinatorTests
         var request = await CreateNinoRequest();
 
         var results = await Task.WhenAll(
-            coordinator.PrepareAsync(request, null, CancellationToken.None),
-            coordinator.PrepareAsync(request, null, CancellationToken.None));
+            coordinator.PrepareAsync(request, null, permitSourceUpdate: true, CancellationToken.None),
+            coordinator.PrepareAsync(request, null, permitSourceUpdate: true, CancellationToken.None));
 
         Assert.IsTrue(results.All(x => x.Outcome == DataSetSourcePreparationOutcome.Rebuild));
         Assert.AreEqual(1, downloader.CallCount);

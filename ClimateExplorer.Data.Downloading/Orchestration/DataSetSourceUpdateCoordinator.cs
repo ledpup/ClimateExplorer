@@ -44,6 +44,7 @@ public sealed class DataSetSourceUpdateCoordinator : IDataSetSourceUpdateCoordin
     public async Task<DataSetSourcePreparationResult> PrepareAsync(
         PostDataSetsRequestBody request,
         DataSet? cachedData,
+        bool permitSourceUpdate,
         CancellationToken cancellationToken)
     {
         IReadOnlyList<DataSetDownloadRequest> assets;
@@ -79,7 +80,7 @@ public sealed class DataSetSourceUpdateCoordinator : IDataSetSourceUpdateCoordin
                 DataSetRetrievalDate.OldestFor(currentStates));
         }
 
-        var refreshedStates = await EnsureCurrentAsync(assets, forceRefresh: false, cancellationToken);
+        var refreshedStates = await EnsureCurrentAsync(assets, forceRefresh: false, permitSourceUpdate, cancellationToken);
         if (refreshedStates == null)
         {
             return new DataSetSourcePreparationResult(DataSetSourcePreparationOutcome.RefreshFailed);
@@ -93,6 +94,7 @@ public sealed class DataSetSourceUpdateCoordinator : IDataSetSourceUpdateCoordin
     public async Task<IReadOnlyList<DataSetSourceState>?> EnsureCurrentAsync(
         IReadOnlyList<DataSetDownloadRequest> assets,
         bool forceRefresh,
+        bool permitSourceUpdate,
         CancellationToken cancellationToken)
     {
         var states = new List<DataSetSourceState>();
@@ -101,7 +103,7 @@ public sealed class DataSetSourceUpdateCoordinator : IDataSetSourceUpdateCoordin
             var state = forceRefresh ? null : await GetCurrentStateAsync(asset, cancellationToken);
             if (state == null)
             {
-                state = await RefreshAsync(asset, forceRefresh, cancellationToken);
+                state = await RefreshAsync(asset, forceRefresh, permitSourceUpdate, cancellationToken);
             }
 
             if (state == null)
@@ -167,8 +169,14 @@ public sealed class DataSetSourceUpdateCoordinator : IDataSetSourceUpdateCoordin
     private async Task<DataSetSourceState?> RefreshAsync(
         DataSetDownloadRequest asset,
         bool forceRefresh,
+        bool permitSourceUpdate,
         CancellationToken cancellationToken)
     {
+        if (!permitSourceUpdate)
+        {
+            return null;
+        }
+
         await using var lease = await lockProvider.AcquireAsync(asset.AssetKey, cancellationToken);
         if (!forceRefresh)
         {

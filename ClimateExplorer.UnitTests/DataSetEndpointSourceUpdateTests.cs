@@ -145,6 +145,7 @@ public sealed class DataSetEndpointSourceUpdateTests
         public Task<DataSetSourcePreparationResult> PrepareAsync(
             PostDataSetsRequestBody request,
             DataSet? cachedData,
+            bool permitSourceUpdate,
             CancellationToken cancellationToken)
         {
             CallCount++;

@@ -14,7 +14,7 @@ public sealed class DataSetBatchRefresher(
 
         foreach (var asset in assets)
         {
-            var states = await coordinator.EnsureCurrentAsync([asset], forceRefresh: true, cancellationToken);
+            var states = await coordinator.EnsureCurrentAsync([asset], forceRefresh: true, permitSourceUpdate: true, cancellationToken);
             if (states == null)
             {
                 failures.Add(asset.AssetKey);

@@ -9,5 +9,6 @@ public interface IDataSetSourceUpdateCoordinator
     Task<DataSetSourcePreparationResult> PrepareAsync(
         PostDataSetsRequestBody request,
         DataSet? cachedData,
+        bool permitSourceUpdate,
         CancellationToken cancellationToken);
 }
