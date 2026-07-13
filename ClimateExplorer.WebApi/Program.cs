@@ -1,11 +1,11 @@
 #pragma warning disable SA1200 // Using directives should be placed correctly
 using System;
+using System.IO;
 using System.Net.Http;
 using System.Text.Json.Serialization;
 using ClimateExplorer.Data.Downloading;
 using ClimateExplorer.Data.Ghcnd;
 using ClimateExplorer.WebApi;
-using ClimateExplorer.WebApi.DataRetrieval;
 using ClimateExplorer.WebApi.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http.Json;
@@ -60,7 +60,8 @@ builder.Services.AddSingleton<DataSetDownloadWorkspaceFactory>();
 builder.Services.AddSingleton<DataSetDownloadValidator>();
 builder.Services.AddSingleton(new DataSetSourceAssetResolver());
 builder.Services.AddSingleton(new DataSetSourceFileStore("Datasets"));
-builder.Services.AddSingleton<IDataSetSourceStateStore>(new CachedDataSetSourceStateStore(longtermCache));
+builder.Services.AddSingleton<IDataSetSourceStateStore>(
+    new FileDataSetSourceStateStore(Path.Combine(Path.GetTempPath(), "ClimateExplorer", "DataSetSourceState")));
 builder.Services.AddSingleton(CreateDataSetSourceHttpClient());
 builder.Services.AddSingleton<DataSetHttpFileDownloader>();
 builder.Services.AddSingleton<IDataSetDownloader, DirectHttpDataSetDownloader>();
