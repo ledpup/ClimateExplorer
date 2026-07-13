@@ -10,7 +10,11 @@
 
 Move the regional/global download work currently performed by
 `ClimateExplorer.Data.Misc` into the Web API data paths used by `/dataset` and
-`/climate-record`.
+`/climate-record`. The shared monthly Mauna Loa atmospheric CO₂ source used by
+both `CO2` and `CO2Deseasoned` is also in scope even though the current
+`globalDataDefinitions` predicate skips it. Historical unadjusted daily BOM and
+GHCNd station data are also in scope once their deployed storage is reorganised
+into independently replaceable station archives.
 
 For datasets that have opted into automatic retrieval, a request should:
 
@@ -24,12 +28,12 @@ For datasets that have opted into automatic retrieval, a request should:
 6. update retrieval state, rebuild/cache the response, and return it;
 7. return the existing cached response if download, transformation, validation,
    publication, or rebuilding fails; or, when no response has yet been cached,
-   read the packaged dataset, cache that response, and return it.
+   read the existing source file, cache that response, and return it.
 
-`/recent-observations` and its BOM/GHCNd download implementations are explicitly
-out of scope. They are useful examples for temporary-file cleanup and defensive
-download handling, but should not be routed through the new historical-dataset
-coordinator.
+`/recent-observations` endpoint behavior, caching, and response construction are
+explicitly out of scope. Its BOM/GHCNd clients and parsers are useful lower-level
+building blocks for the historical downloader, but the endpoint should not be
+routed through the new coordinator or changed to use the historical cache.
 
 The end state for `ClimateExplorer.Data.Misc/Program.cs` should ideally be:
 
@@ -38,8 +42,10 @@ await BuildStaticContent.GenerateSiteMap();
 GenerateMapMarkers();
 ```
 
-The packaged ZIP files remain a deployable bootstrap and last-resort fallback;
-automatic downloads do not eliminate them.
+Deployment continues to include a source-data package. For automatically managed
+datasets, the deployed file and the subsequently downloaded file are the same
+physical source file: a successful refresh atomically replaces it in place.
+There is no separate packaged fallback copy or runtime-override tree.
 
 ## Current flow and constraints
 
@@ -61,10 +67,29 @@ is:
    `Datasets/GHCNd/Temperature/[station].zip`;
 3. an uncompressed relative file.
 
-The first-match behavior means an automatically downloaded override cannot
-simply be placed beside the source files: a packaged dataset-wide archive would
-still win. File lookup needs an explicit runtime-override tier ahead of the
-immutable package tiers.
+An automatically managed file cannot remain inside a data-type-wide ZIP without
+rewriting unrelated datasets on every refresh. It also must not exist both loose
+and inside a ZIP, because that creates two candidate sources. Reorganise the
+deployed data by owning dataset rather than temperature/precipitation/solar data
+type. Use one replaceable station ZIP for daily BOM and GHCNd, and loose files
+for the small non-station datasets.
+
+Adjusted ACORN-SAT and GHCNm remain annual/manual and are out of automatic-
+download scope. They can be repackaged under dataset-owned archives as a storage
+migration, without changing their update cadence or request behavior.
+
+The current archive inventory illustrates the ownership problem:
+
+- `Temperature_BOM.zip` contains 205 stations for each of max, min, and derived
+  mean temperature;
+- `Precipitation.zip` mixes 205 BOM station files, 1 Met file, and 1,690 GHCNm
+  files;
+- `Temperature.zip` mixes 336 ACORN-SAT files, 3,802 GHCNm files, 3 Met files,
+  and 14 NOAAGlobalTemp files;
+- `Solar.zip` mixes 205 BOM station files with the two global solar files.
+
+Dataset ownership makes the refresh unit explicit and prevents one provider's
+update from rewriting an archive owned jointly with unrelated providers.
 
 `FileBackedTwoLayerCache` persists endpoint results but does not expire them or
 write them atomically. `DataSet` and `ClimateRecordsResponse` already implement
@@ -88,26 +113,35 @@ metadata; it should not regenerate metadata during a client request.
 
 ## Dataset inventory
 
-The existing `globalDataDefinitions` predicate is useful as a migration
-inventory, but it must not become the runtime selection rule. In particular, it
-also selects a station-templated GHCNd precipitation definition, for which a
-request's mapped station ID is required. Automatic retrieval should be explicitly
-enabled in metadata and should operate only on the assets required by the
-current request.
+The existing `globalDataDefinitions` predicate is useful as a starting migration
+inventory, but it must not become the runtime selection rule. It accidentally
+selects station-templated GHCNd precipitation, while excluding GHCNd temperature,
+BOM, and the shared Mauna Loa CO₂ file. The new metadata should explicitly opt
+in complete source assets, including all measurements stored in a station ZIP.
 
 | Group | Current handling | Target handler | Refresh cadence |
 | --- | --- | --- | --- |
-| Niño 3.4, methane, nitrous oxide, IOD, Arctic/Antarctic sea ice, sunspots, total solar irradiance, Mauna Loa transmission, AMO, and eligible mapped GHCNd precipitation assets | `globalDataDefinitions` plus `DownloadDataSetData` | generic direct-file handler | measurement resolution: 24 hours daily, 28 days monthly |
+| Mauna Loa CO₂/seasonally adjusted CO₂, Niño 3.4, methane, nitrous oxide, IOD, Arctic/Antarctic sea ice, sunspots, total solar irradiance, Mauna Loa transmission, and AMO | shared direct source or `globalDataDefinitions` plus `DownloadDataSetData` | generic direct-file handler | measurement resolution: 24 hours daily, 28 days monthly |
 | Ocean acidity | direct download plus `OceanAcidityReducer` | ocean-acidity transforming handler | 28 days |
 | Sea level and the two ozone datasets | direct download plus reducers | focused transforming handlers | 24 hours |
 | HadCET mean/max/min and HadCEP precipitation | per-measurement mutation followed by `DownloadDataSetData` | generic direct-file handler using measurement URLs | mean 28 days; max/min/precipitation 24 hours |
+| GHCNd temperature and precipitation | separate station ZIPs below data-type folders; recent observations already download one provider CSV per station | GHCNd station handler producing one dataset-owned station ZIP | 24 hours |
+| BOM unadjusted mean/max/min temperature, precipitation, and solar radiation | temperature-wide and precipitation/solar aggregate ZIPs | BOM station handler producing one dataset-owned station ZIP | 24 hours |
+| ACORN-SAT and GHCNm adjusted data | annual pipeline downloads in data-type archives | dataset-owned archives, no automatic handler | out of scope; retain annual process |
 | ODGI | two manually substituted table URLs | ODGI handler | yearly data; use 28 days unless a separate yearly policy is approved |
 | NOAAGlobalTemp | manually selected release year/month and one download per mapped area | NOAAGlobalTemp handler | 28 days |
 | Greenland ice melt | one API request per year followed by CSV aggregation | Greenland handler | 24 hours |
 
-Carbon dioxide has two measurement definitions sharing one downloaded file, so
-it is not currently selected by `globalDataDefinitions`. It is required for
-the first migration.
+Mauna Loa carbon dioxide has two monthly measurement definitions (`CO2` and
+`CO2Deseasoned`) sharing `Atmosphere/GHGs/co2_mm_mlo.txt`. It is in scope and is
+scheduled for stage 2 after the single-measurement direct path. Both
+measurements must resolve to one asset key, one freshness record, and one
+download.
+
+The separate yearly **CO₂ emissions** dataset is not the shared Mauna Loa source:
+its definition currently has no `DataDownloadUrl` and its release filename
+changes. It remains a manual source unless a stable discovery mechanism is added
+to scope separately.
 
 ## Metadata decisions
 
@@ -138,9 +172,10 @@ override only if a mixed dataset eventually needs it. Suggested values are
 stable strings such as `direct-http`, `ocean-acidity`, `odgi`,
 `noaa-global-temperature`, and `greenland-melt`.
 
-A missing key means "packaged data only." This avoids accidentally enabling
-every definition with a non-null URL, permits incremental deployment, and keeps
-the old `globalDataDefinitions` predicate out of request handling.
+A missing key means "read the deployed source without automatic refresh." This
+avoids accidentally enabling every definition with a non-null URL, permits
+incremental deployment, and keeps the old `globalDataDefinitions` predicate out
+of request handling.
 
 The key selects a DI-registered implementation; it is not an enum switch. New
 dataset types require a new handler registration and metadata assignment, not a
@@ -152,15 +187,32 @@ but it should not control the new routing.
 
 ### Separate local identity from remote naming
 
-Build the local asset path from `FolderName`, `FileNameFormat`, and mapped file
-ID. Resolve only supported request variables such as `[station]` in the generic
-handler. Reject unresolved variables rather than issuing a malformed request.
+Do not build the physical asset path only from `FolderName` and
+`FileNameFormat`. That model assumes one file per measurement and cannot express
+one BOM/GHCNd station ZIP shared by several measurements.
+
+Add storage metadata that can resolve:
+
+- a dataset-owned storage folder, such as `BOM`, `GHCNd`, `Met`, or
+  `NOAAGlobalTemp`;
+- an optional archive path format, such as `[station].zip`;
+- each measurement's entry/file path format within that asset;
+- the mapped station/area ID used to replace `[station]`.
+
+Keep GHCNd and GHCNm as separate storage owners rather than a single ambiguous
+`GHCN` folder: their resolution, adjustment, archive granularity, and update
+cadence are different. Similarly, keep `BOM` separate from `ACORN-SAT` even
+though both are published by the Bureau of Meteorology.
+
+Resolve only supported request variables such as `[station]`. Reject unresolved
+variables before issuing a request or constructing a path.
 
 Remote release identifiers must not force manual local filename changes. This
 is especially important for NOAAGlobalTemp and total solar irradiance. A
 specialised handler may discover a dated remote file but should publish it under
-a stable local asset identity. Introduce the stable filename and matching
-packaged fallback in the same deployment so cold fallback continues to work.
+a stable local asset identity. Introduce the stable filename and deploy an
+initial source file at that path in the same release so a cold request can still
+be served when the remote source is unavailable.
 
 ## Proposed architecture
 
@@ -223,13 +275,15 @@ implement `ICachedData` and contain at least:
 
 - `RetrievedDate` in UTC;
 - the asset key and local path;
-- an optional content hash/length for diagnostics;
+- the source file's content hash and length;
 - optional source/release information needed by specialised handlers.
 
-Treat state as usable only when both the state entry and its published asset
-exist. Write the asset first, then write state. If the state write fails after a
-successful publish, a later request may download again, which is safer than
-claiming a missing file is current.
+Treat state as usable only when the source file exists and its hash/length match
+the state entry. This detects a deployment replacing an automatically updated
+file with the newly deployed package version. Write the source file first, then
+write state. If the state write fails after a successful replacement, a later
+request may download again, which is safer than claiming a different file is
+current.
 
 Use one shared freshness policy that accepts `ICachedData`, the underlying
 measurement resolution, and `TimeProvider`. The initial policy is:
@@ -257,40 +311,130 @@ aggregated responses and is not the source measurement resolution.
 
 Existing cache records with a null `RetrievedDate` are stale. A failure must not
 advance `RetrievedDate`; doing so would disguise an unsuccessful refresh. A
-packaged-only fallback response can be cached with a null retrieval time, while
-the source state remains absent. If repeated remote failures become noisy, add a
-separate short `NextAttemptAfter` backoff later rather than overloading
-`RetrievedDate`.
+response built from a deployed source with no successful automatic retrieval can
+be cached with a null retrieval time, while the source state remains absent. If
+repeated remote failures become noisy, add a separate short `NextAttemptAfter`
+backoff later rather than overloading `RetrievedDate`.
 
-### File store and packaged fallback
+### One mutable source-data store
 
-Introduce a dataset file-store abstraction used by both the download coordinator
-and the two existing line readers. Its read order should be:
+There must be one physical source for each logical asset. For automatically
+managed datasets, deploy the file or station archive at the same writable path
+that the downloader will later replace. Readers do not choose between deployed
+and downloaded versions; they are successive versions of the same source asset.
 
-1. a validated runtime override in a configurable writable data root;
-2. the existing single-entry package ZIP;
-3. the existing dataset-wide package ZIP;
-4. the legacy uncompressed source path, where still supported.
+The target deployed structure is:
 
-Keep the runtime root outside the checked-in/package content and configure it to
-a persistent writable location in deployed environments. Verify this deployment
-assumption before enabling the first handler.
+```text
+Datasets/
+  BOM/
+    001019.zip
+    001021.zip
+    ...
+  GHCNd/
+    AE000041196.zip
+    ...
+  ACORN-SAT.zip
+  GHCNm.zip
+  Met/
+    meantemp_monthly_totals.txt
+    maxtemp_daily_totals.txt
+    mintemp_daily_totals.txt
+    HadCEP_daily_totals.txt
+  NOAAGlobalTemp/
+    <stable area files>
+  CO2/
+    co2_mm_mlo.txt
+  Methane/
+    ch4_mm_gl.txt
+  NitrousOxide/
+    n2o_mm_gl.txt
+  Nino34/
+    nino34.long.anom.data.txt
+  IOD/
+    dmi.had.long.data.txt
+  AMO/
+    ersst.v5.amo.dat
+  OceanAcidity/
+    HOT_surface_CO2_reduced.csv
+  SeaLevel/
+    slr_sla_gbl_free_ref_90_reduced.csv
+  Greenland/
+    greenland-melt-area.csv
+  ArcticSeaIce/
+    N_seaice_extent_daily_v4.0.csv
+  AntarcticSeaIce/
+    S_seaice_extent_daily_v4.0.csv
+  OzoneHoleArea/
+    cams_ozone_monitoring_sh_ozone_area_reduced.csv
+  OzoneHoleColumn/
+    cams_ozone_monitoring_sh_ozone_minimum_reduced.csv
+  ODGI/
+    odgi_table1.csv
+    odgi_table2.csv
+  AtmosphericTransmission/
+    mauna_loa_transmission.dat
+  CO2Emissions/
+    GCB2025v15_MtCO2_flat.csv
+  Sunspots/
+    SN_d_tot_V2.0.txt
+  TSI/
+    tsi-ssi_v02r01_observed-tsi-composite.txt
+```
 
-Single-entry ZIPs are straightforward with the existing reader and preserve
-disk space, so prefer them for the runtime override: the archive contains one
-entry whose name is the stable local filename. The design should still permit an
-uncompressed override if a specialised source makes ZIP publication awkward.
-Do not rewrite a large dataset-wide ZIP for one refreshed file.
+The exact storage names should be stable identifiers rather than mutable display
+names, but the ownership rule is the important part: top-level paths represent
+dataset/provider families, never a measurement type such as temperature,
+precipitation, atmosphere, ocean, ice, or solar.
+
+Each `BOM/<station>.zip` is one source asset and contains that station's
+temperature maximum, temperature minimum, derived mean temperature,
+precipitation, and solar-radiation files. All are daily and share the same
+24-hour freshness boundary. The handler may make several provider requests, but
+it validates and replaces the station archive as one unit.
+
+Each `GHCNd/<station>.zip` is one source asset built from the provider's one
+station CSV. It contains separate temperature and precipitation entries when
+those series are available/mapped. A request for either measurement refreshes
+the shared station archive once.
+
+`ACORN-SAT.zip` and `GHCNm.zip` are dataset-owned annual archives and remain
+outside automatic retrieval. This storage-only move separates adjusted annual
+data from unadjusted daily BOM/GHCNd data without changing the annual update
+process.
+
+Remove `Temperature_BOM.zip`, `Temperature.zip`, `Precipitation.zip`, and
+`Solar.zip` after their entries have moved to the target owners. Remove
+`Atmosphere.zip`, `Ocean.zip`, and `Ice.zip` after deploying each entry loose
+under its dataset-owned folder.
+No migrated logical file may remain in both the old archive and its new path.
+
+Update `ClimateExplorer.DataPipeline` to emit this structure and add a packaging
+test that fails if one logical path is emitted twice. Update the file loader to
+resolve an explicit source descriptor rather than infer storage solely from the
+first `FolderName` segment.
+
+The descriptor needs to distinguish the physical asset from the entry consumed
+by a measurement. For example, GHCNd temperature and precipitation have the
+same `GHCNd/[station].zip` asset but different entry paths. Prefer dataset-level
+storage metadata (dataset folder/archive format) plus a measurement-level entry
+path over continuing to overload `MeasurementDefinition.FolderName`.
+
+The source root must be writable in the deployed Web API. It may be populated by
+the deployment package on each release, but after startup there is still only
+one copy of each managed asset. Retrieval state hashes detect whether deployment
+has changed that copy and prevent a cache timestamp for an older file from being
+treated as current.
 
 Every attempt creates a uniquely named directory below `Path.GetTempPath()`, as
 the recent BOM observations path does. Download and transform only inside that
 directory. In a `finally` block, delete temporary files and the directory.
 
-After validation, create the final ZIP or file in the runtime data root under a
-sibling temporary name, flush/close it, and atomically rename it over the prior
-runtime override. This same-volume final step prevents readers from observing a
-partial file. The immutable packaged artifact is never overwritten and remains
-available if no valid runtime override exists.
+After validation, copy the candidate into the source directory under a sibling
+temporary name, flush/close it, and atomically rename it over the existing source
+file. This same-volume final step prevents readers from observing a partial file.
+If any earlier step fails, the existing deployed or previously downloaded source
+file is untouched.
 
 Use a per-asset asynchronous lock in the singleton coordinator. Recheck source
 state after taking the lock so simultaneous requests coalesce into one download.
@@ -325,6 +469,11 @@ the current reducers does not silently change the public series. Corrections to
 known reducer behavior should be explicit test-backed changes, not accidental
 side effects of the move.
 
+When several measurement definitions share one source asset, validation must run
+the candidate against every consuming definition before replacement. In
+particular, `co2_mm_mlo.txt` must satisfy both the `CO2` and `CO2Deseasoned`
+parsers even when the current request asks for only one of them.
+
 ### Endpoint orchestration and failure behavior
 
 Place refresh orchestration in `DataSetEndpoints.PostDataSets`, before a cached
@@ -336,21 +485,22 @@ For each request:
 1. Resolve the definitions, measurements, locations, and mapped source assets
    for every `SeriesSpecification`.
 2. Read the existing cached `DataSet` using the current request cache key.
-3. If the response is fresh for all managed contributing resolutions, return it.
+3. If the response is fresh for all managed contributing resolutions and every
+   contributing source-state hash still matches its source file, return it.
 4. Otherwise ask the coordinator to ensure each managed asset is current. The
    coordinator itself checks source state so another response shape can reuse a
    recent download.
 5. If any required refresh fails and a cached response exists, log the fallback
    and return that response unchanged.
-6. If all managed assets are usable, rebuild from runtime overrides/package
-   cascade, set `RetrievedDate`, cache, and return the new response.
-7. If there is no cached response and retrieval fails, build through the file
-   cascade. This reads an older validated runtime override when one exists, or
-   the packaged file otherwise. Cache and return that response without claiming
-   a successful new retrieval.
+6. If all managed assets are usable, rebuild from the current source files, set
+   `RetrievedDate`, cache, and return the new response.
+7. If there is no cached response and retrieval fails, build from the existing
+   source file. On a new deployment this is the file supplied by the package; on
+   a running deployment it may be the last successfully downloaded version.
+   Cache and return that response without claiming a successful new retrieval.
 8. If rebuilding unexpectedly fails after a source publish, return the prior
-   cached response. With no cached response, retry against packaged fallback and
-   only propagate an error if the package is also missing or invalid.
+   cached response. With no cached response, propagate an error only when the
+   single source file is also missing or invalid.
 
 Do not invalidate every cached chart variation eagerly. Each cached result has a
 retrieval time; it will rebuild lazily on its next request. A source refresh from
@@ -392,6 +542,46 @@ Put these direct URLs on their measurements:
 The generic direct handler can then apply the correct cadence independently for
 each measurement. No special Hadley dispatcher is needed.
 
+### GHCNd station archives
+
+Use the existing GHCNd HTTP client and processors as shared lower-level code,
+without changing `/recent-observations`. One provider station CSV contains the
+daily temperature and precipitation inputs, so the historical handler should:
+
+1. download that CSV once for the mapped station;
+2. build the temperature and precipitation entry formats consumed by the
+   historical readers;
+3. validate every entry that the station's mappings expose;
+4. create `Datasets/GHCNd/<station>.zip` in the temporary directory; and
+5. atomically replace that station archive and update its one retrieval-state
+   cache entry.
+
+This replaces the current parallel `GHCNd/Temperature/<station>.zip` and
+`GHCNd/Precipitation/<station>.zip` paths. If a station supports only one mapped
+series, the archive may contain only that valid entry; it must always contain
+the entry requested by the current call.
+
+### BOM station archives
+
+The BOM provider supplies separate downloads per observation code, but all the
+historical BOM measurements are daily and should share one station-level source
+asset. On refresh, the handler should download every supported mapped series for
+that station, validate them, derive mean temperature from maximum/minimum using
+the existing `ClimateExplorer.Data.Bom.CreateTempMean` rules, and build one
+`Datasets/BOM/<station>.zip` containing:
+
+- maximum temperature;
+- minimum temperature;
+- mean temperature;
+- precipitation; and
+- solar radiation.
+
+Replace the archive only when every expected entry is valid. Do not patch one
+entry inside the deployed archive or give its entries different retrieval
+dates. The remote ZIP parsing and observation-code lookup can be extracted from
+recent observations into shared source-client code, but `/recent-observations`
+must retain its current endpoint cache, date window, and response behavior.
+
 ### ODGI
 
 The current program downloads `table1` and `table2`, while the checked-in
@@ -420,13 +610,13 @@ metadata test, but do not regenerate station or mapping JSON during requests.
 ### Greenland ice melt
 
 The handler must turn multiple yearly JSON responses into the one CSV consumed
-by the existing reader. A first successful runtime snapshot may be built from
+by the existing reader. A first successful refreshed snapshot may be built from
 all required years. Later daily refreshes should reuse immutable completed years
 and request only the current year, plus the previous year around a year boundary
 if the provider revises it.
 
 Do not emit future dates as zero. Distinguish a reported zero melt area from a
-missing API observation, and preserve the existing packaged aggregate when the
+missing API observation, and preserve the existing source aggregate when the
 current-year response is missing, malformed, or implausibly incomplete. Publish
 the combined CSV only after all changed years and the final aggregate validate.
 
@@ -437,47 +627,58 @@ multi-file state and stronger merge tests than the direct downloads.
 
 ### Stage 0: Contract tests and file-store seam
 
-1. Add tests that capture current packaged reads for one dataset-wide ZIP and
-   one single-entry ZIP.
-2. Extract file lookup behind the runtime-override/package cascade without
-   changing the returned records.
-3. Add the writable runtime store, atomic publish behavior, temporary cleanup,
-   and per-asset locking.
-4. Add `ICachedData` freshness tests for null, daily, monthly, boundary, and UTC
+1. Add record-level contract tests for every storage family before paths move.
+2. Add dataset-level storage metadata and teach the file loader to distinguish a
+   physical archive from its measurement entry.
+3. Change `ClimateExplorer.DataPipeline` to emit the target dataset-owned
+   structure: BOM/GHCNd station ZIPs, annual ACORN-SAT/GHCNm archives, loose
+   Met/NOAAGlobalTemp files, and one dataset-owned folder for every small loose
+   global source formerly held in Atmosphere/Ocean/Ice/Solar archives.
+4. Update measurement paths/mappings and prove that the same records are read
+   after migration. Do not enable network retrieval yet.
+5. Delete the obsolete data-type archives only after parity tests pass, and add
+   a packaging assertion that one logical asset never exists twice.
+6. Add atomic in-place source replacement, temporary cleanup, and per-asset
+   locking.
+7. Add `ICachedData` freshness tests for null, daily, monthly, boundary, and UTC
    timestamps.
-5. Add endpoint tests for fresh cache, stale cache, successful refresh, stale
-   fallback, cold packaged fallback, and multi-series oldest-retrieval behavior.
+8. Add endpoint tests for fresh cache, stale cache, successful refresh, stale
+   cache fallback, cold deployed-source fallback, and multi-series
+   oldest-retrieval behavior.
 
 No dataset is opted in during this stage.
 
 ### Stage 1: Generic direct downloads
 
 1. Add downloader metadata and the DI-registered `direct-http` handler.
-2. Resolve mapped `[station]` values from the request rather than downloading
-   every known station.
-3. Opt in the non-transforming datasets currently handled by
-   `globalDataDefinitions`, in small batches grouped by source provider.
-4. For each dataset, add parser-validation fixtures and a packaged-fallback test.
-5. Measure automatically managed unaggregated daily response sizes and decide
+2. Opt in the small, non-transforming datasets currently handled by
+   `globalDataDefinitions`, in small batches grouped by source provider. Leave
+   GHCNd for its station-archive stage rather than treating precipitation as a
+   one-measurement direct file.
+3. For each dataset, add parser-validation fixtures and test cold fallback to
+   the same deployed loose source file.
+4. Measure automatically managed unaggregated daily response sizes and decide
    whether to retain or remove the current no-cache early return.
-6. Confirm `/recent-observations` tests and call paths are unchanged.
+5. Confirm `/recent-observations` tests and call paths are unchanged.
 
 Do not mechanically opt in a definition merely because the old LINQ predicate
-selected it. Verify URL tokens, local filenames, mappings, and packaged fallback
-for every entry first.
+selected it. Verify URL tokens, local filenames, mappings, and the deployed loose
+source for every entry first.
 
-### Stage 2: Transforming global downloads
+### Stage 2: Shared CO₂ and transforming global downloads
 
-1. Move ocean-acidity transformation into its handler and add golden tests.
-2. Move sea-level and ozone transformations into focused handlers and add golden
+1. Opt in the shared Mauna Loa CO₂ file and prove that `CO2` and
+   `CO2Deseasoned` share one download and retrieval state.
+2. Move ocean-acidity transformation into its handler and add golden tests.
+3. Move sea-level and ozone transformations into focused handlers and add golden
    tests.
-3. Opt in these datasets only after raw and transformed validation is in place.
-4. CO2 is in scope for this stage.
+4. Opt in the transforming datasets only after raw and transformed validation
+   is in place.
 5. Remove their calls from `ClimateExplorer.Data.Misc` after the Web API path is
    deployed and observed successfully.
 
-This completes the `globalDataDefinitions`/reducer portion while keeping the
-three explicitly specialised datasets deferred.
+This completes the small `globalDataDefinitions`/reducer portion while station
+archives and the explicitly specialised datasets remain deferred.
 
 ### Stage 3: HadCET and HadCEP
 
@@ -487,7 +688,27 @@ three explicitly specialised datasets deferred.
    never mutates shared dataset metadata.
 4. Remove the HadCET/HadCEP block from `ClimateExplorer.Data.Misc`.
 
-### Stage 4: ODGI
+### Stage 4: GHCNd station archives
+
+1. Extract/reuse the GHCNd station download and processing helpers without
+   changing `/recent-observations`.
+2. Implement one refresh operation for `GHCNd/<station>.zip`, containing all
+   mapped temperature/precipitation entries produced from one provider CSV.
+3. Add tests for temperature-only, precipitation-only, shared-series,
+   corruption, cold source fallback, and one-download concurrency behavior.
+4. Opt in both GHCNd definitions at the daily cadence.
+
+### Stage 5: BOM station archives
+
+1. Extract/reuse BOM observation-code download helpers without changing
+   `/recent-observations`.
+2. Implement an all-expected-series refresh of `BOM/<station>.zip`, including
+   derived mean temperature and solar radiation.
+3. Add tests for partial provider failure, derived mean parity, missing expected
+   entries, archive validation, cold source fallback, and concurrency.
+4. Opt in the historical BOM definition at the daily cadence.
+
+### Stage 6: ODGI
 
 1. Resolve the `table1`/`table2` inventory discrepancy.
 2. Implement and register the ODGI handler with its explicit yearly freshness
@@ -496,17 +717,17 @@ three explicitly specialised datasets deferred.
    behavior.
 4. Remove the ODGI block from `ClimateExplorer.Data.Misc`.
 
-### Stage 5: NOAAGlobalTemp
+### Stage 7: NOAAGlobalTemp
 
 1. Implement bounded latest-release discovery and stable local filenames.
 2. Test all existing mapped station/area IDs and on-demand single-area downloads.
-3. Migrate the packaged fallback to the stable local name in the same release.
+3. Use the stable loose source names established in stage 0.
 4. Record remote release metadata and test fallback when a newer release is
    absent or malformed.
 5. Remove hard-coded release selection and metadata generation from
    `ClimateExplorer.Data.Misc`.
 
-### Stage 6: Greenland ice melt
+### Stage 8: Greenland ice melt
 
 1. Implement yearly API download/validation and aggregate generation.
 2. Add first-snapshot, incremental current-year, year-boundary, missing-date,
@@ -514,20 +735,20 @@ three explicitly specialised datasets deferred.
 3. Opt in the dataset at the daily cadence.
 4. Remove `GreenlandApiClient` invocation from `ClimateExplorer.Data.Misc`.
 
-### Stage 7: Cleanup and operations
+### Stage 9: Cleanup and operations
 
 1. Reduce `ClimateExplorer.Data.Misc/Program.cs` to site-map and map-marker
    generation, then remove unused HTTP setup, download helpers, reducer classes,
    packages, and folders.
-2. Keep `ClimateExplorer.DataPipeline` capable of creating packaged fallback
-   snapshots; it is no longer the normal freshness mechanism for migrated
-   datasets.
-3. Document the runtime data path, persistence/permissions requirement, cache
-   keys, operational logs, and how to force a safe refresh without deleting the
-   packaged fallback.
-4. After an observation period, decide whether any migrated source data can be
-   removed from `ClimateExplorer.SourceData`; do not combine that deployment
-   decision with the first downloader release.
+2. Keep `ClimateExplorer.DataPipeline` capable of producing one deployable data
+   package: loose mutable files under dataset-owned folders, BOM/GHCNd station
+   archives, and annual ACORN-SAT/GHCNm dataset archives.
+3. Document source-data write permissions, deployment replacement semantics,
+   cache keys, operational logs, and how to force a safe refresh without
+   deleting the current source file.
+4. Keep `ClimateExplorer.SourceData` as the build-time input to the deployable
+   data package. The pipeline may copy a managed file loose rather than archive
+   it, but the running Web API receives only one source copy.
 
 ## Tests and acceptance criteria
 
@@ -543,18 +764,24 @@ At minimum, cover:
 - concurrent requests for one asset causing one download;
 - different assets being able to download independently;
 - non-success HTTP, timeout, cancellation, empty content, HTML masquerading as
-  data, corrupt ZIP, wrong ZIP entry, regex mismatch, invalid dates, and all-null
-  values;
+  data, regex mismatch, invalid dates, all-null values, corrupt station ZIPs,
+  missing station entries, and wrong archive entries;
 - failed refresh leaving the previously published asset and cached response
   byte-for-byte/semantically unchanged;
-- cold failure loading and caching the packaged file;
+- cold failure loading and caching the deployed source file;
 - measurement URL overriding the dataset URL;
 - unresolved URL tokens being rejected before HTTP;
 - multi-series responses using the oldest contributing retrieval time and
   refreshing only stale assets;
 - `/climate-record` receiving and returning the underlying retrieval time;
-- runtime override precedence followed by single-entry ZIP, dataset ZIP, and
-  uncompressed fallback precedence;
+- storage-migration parity for BOM, GHCNd, ACORN-SAT, GHCNm, Met,
+  NOAAGlobalTemp, and every small dataset extracted from the former
+  Atmosphere/Ocean/Ice/Solar archives;
+- packaging validation that every logical asset exists exactly once, whether it
+  is a loose file, station archive, or annual dataset archive;
+- one GHCNd provider download producing every mapped entry in one station ZIP;
+- one BOM station refresh producing max/min/derived-mean temperature,
+  precipitation, and solar entries in one station ZIP;
 - each specialised transform/discovery/merge behavior described above;
 - all existing recent-observations endpoint and service tests continuing to pass
   without modification to production recent-observations code.
@@ -562,8 +789,12 @@ At minimum, cover:
 The rollout is complete when:
 
 - every migrated request either returns fresh validated data or a known-good
-  cached/packaged response;
+  cached/current-source response;
 - failed attempts never replace a known-good file or advance `RetrievedDate`;
+- the data package contains no temperature-, precipitation-, or solar-wide
+  archive that mixes independently owned datasets;
+- GHCNd and BOM unadjusted station archives refresh daily, while GHCNm and
+  ACORN-SAT retain their annual/manual process;
 - new downloader types can be added by implementing/registering a handler and
   assigning metadata, without editing a central dispatcher;
 - the Web API no longer relies on `ClimateExplorer.Data.Misc` for the listed
@@ -574,16 +805,23 @@ The rollout is complete when:
 
 ## Risks and rollout safeguards
 
-- **Writable storage may not persist in hosting.** Verify and configure a
-  persistent runtime data root before stage 1; otherwise every restart will
-  discard overrides and source state will be invalid.
-- **Provider formats can drift.** Parse-based validation and packaged fallback
-  are required for every source; content length alone is insufficient.
+- **The deployed source directory may be read-only.** Verify write permissions
+  before stage 1. Automatically managed files must be atomically replaceable in
+  the same directory from which readers load them.
+- **Deployment can replace an updated source file.** Store a required file hash
+  with retrieval state. A mismatch makes the state stale and triggers refresh;
+  it must not create a second source copy.
+- **Provider formats can drift.** Parse-based validation and preservation of the
+  current source file are required for every source; content length alone is
+  insufficient.
 - **Old response caches have no retrieval date.** Treat them as stale but retain
   them as fallback until a validated refresh succeeds.
 - **Source and response caches have different granularity.** Keep asset retrieval
   state separate from chart-response cache entries and derive response time from
   contributing assets.
+- **A station archive couples several measurements.** Treat the whole BOM or
+  GHCNd station ZIP as the freshness and replacement unit. Never partially
+  update archive entries or assign per-entry retrieval dates.
 - **Multi-asset refresh can partially succeed.** Publish atomically per asset and
   rebuild/cache a response only when all required assets are usable. A failed
   request returns its prior cached response even if another asset was safely
@@ -592,5 +830,5 @@ The rollout is complete when:
   by leaving `RetrievedDate` null. Add a separate bounded retry marker only if
   operational logs show a need.
 - **Remote URLs may be dated.** Separate remote release discovery from stable
-  local identity and ship a matching packaged fallback whenever that identity
+  local identity and deploy an initial source asset whenever that identity
   changes.
