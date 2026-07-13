@@ -1,7 +1,7 @@
 namespace ClimateExplorer.WebApi;
 
 using System.Net.Http;
-using ClimateExplorer.WebApi.DataRetrieval;
+using ClimateExplorer.Data.Downloading;
 using ClimateExplorer.WebApi.Infrastructure;
 
 public sealed class ClimateExplorerApiServices(
@@ -29,5 +29,5 @@ public sealed class ClimateExplorerApiServices(
 
     public HttpClient GhcndHttpClient { get; } = ghcndHttpClient;
 
-    internal IDataSetSourceUpdateCoordinator DataSetSourceUpdateCoordinator { get; private set; } = new DataSetSourceUpdateCoordinator();
+    internal IDataSetSourceUpdateCoordinator DataSetSourceUpdateCoordinator { get; private set; } = null!;
 }

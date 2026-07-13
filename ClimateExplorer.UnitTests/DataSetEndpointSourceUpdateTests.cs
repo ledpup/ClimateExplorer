@@ -11,7 +11,7 @@ using ClimateExplorer.Core;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.WebApi;
-using ClimateExplorer.WebApi.DataRetrieval;
+using ClimateExplorer.Data.Downloading;
 using ClimateExplorer.WebApi.Infrastructure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static ClimateExplorer.Core.Enums;
@@ -143,7 +143,7 @@ public sealed class DataSetEndpointSourceUpdateTests
 
         public Task<DataSetSourcePreparationResult> PrepareAsync(
             PostDataSetsRequestBody request,
-            DataSet cachedData,
+            DataSet? cachedData,
             CancellationToken cancellationToken)
         {
             CallCount++;

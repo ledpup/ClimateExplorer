@@ -38,4 +38,16 @@ public sealed class DataPackageRegistryTests
         Assert.ThrowsExactly<InvalidDataException>(
             () => registry.RegisterPhysicalAsset("Dataset/source.zip"));
     }
+
+    [TestMethod]
+    public void RegisterArchiveSource_MultipleEntries_RegistersSourceOnceAndEveryLogicalEntry()
+    {
+        var registry = new DataPackageRegistry();
+        var sourcePath = Path.Combine(Path.GetTempPath(), "source.zip");
+
+        registry.RegisterArchiveSource(sourcePath, ["Dataset/source.zip!/one.csv", "Dataset/source.zip!/two.csv"]);
+
+        Assert.HasCount(1, registry.SourcePaths);
+        Assert.AreEqual(2, registry.LogicalFileCount);
+    }
 }

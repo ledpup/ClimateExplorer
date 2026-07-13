@@ -63,6 +63,7 @@ public class DataSetDefinitionsBuilder
                 MoreInformationUrl = "https://www.bom.gov.au/",
                 StationInfoUrl = "https://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
                 LocationInfoUrl = "https://www.bom.gov.au/climate/data/acorn-sat/stations/#/[primaryStation]",
+                DataDownloaderKey = "bom-station",
                 StationMetadataFileName = "Stations_Australia_unadjusted.json",
                 MeasurementDefinitions =
                 [
@@ -190,6 +191,7 @@ public class DataSetDefinitionsBuilder
                 PublisherUrl = "https://www.noaa.gov/",
                 MoreInformationUrl = "https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-daily",
                 DataDownloadUrl = "https://www.ncei.noaa.gov/data/global-historical-climatology-network-daily/access/[station].csv",
+                DataDownloaderKey = "ghcnd-station",
                 StationMetadataFileName = "Stations_ghcnm_adjusted.json",
                 MeasurementDefinitions =
                 [
@@ -230,6 +232,7 @@ public class DataSetDefinitionsBuilder
                 PublisherUrl = "https://www.noaa.gov/",
                 MoreInformationUrl = "https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-daily",
                 DataDownloadUrl = "https://www.ncei.noaa.gov/data/global-historical-climatology-network-daily/access/[station].csv",
+                DataDownloaderKey = "ghcnd-station",
                 StationMetadataFileName = "Stations_ghcnm_adjusted.json",
                 MeasurementDefinitions =
                 [
@@ -258,6 +261,7 @@ public class DataSetDefinitionsBuilder
                     Niño 3.4 conditions of +0.4 deg C or higher are considered El Niño, and -0.4 deg C or lower are considered La Niña.",
                 MoreInformationUrl = "https://psl.noaa.gov/data/timeseries/month/",
                 DataDownloadUrl = "https://psl.noaa.gov/data/timeseries/month/data/nino34.long.anom.data",
+                DataDownloaderKey = "direct-http",
                 MeasurementDefinitions =
                 [
                     new()
@@ -284,6 +288,7 @@ public class DataSetDefinitionsBuilder
                 PublisherUrl = "https://www.noaa.gov/",
                 MoreInformationUrl = "https://gml.noaa.gov/ccgg/trends/mlo.html",
                 DataDownloadUrl = "https://gml.noaa.gov/webdata/ccgg/trends/co2/co2_mm_mlo.txt",
+                DataDownloaderKey = "direct-http",
                 MeasurementDefinitions =
                 [
                     new()
@@ -316,6 +321,7 @@ public class DataSetDefinitionsBuilder
                 PublisherUrl = "https://www.noaa.gov/",
                 MoreInformationUrl = "https://gml.noaa.gov/ccgg/trends_ch4/",
                 DataDownloadUrl = "https://gml.noaa.gov/webdata/ccgg/trends/ch4/ch4_mm_gl.txt",
+                DataDownloaderKey = "direct-http",
                 MeasurementDefinitions =
                 [
                     new()
@@ -339,6 +345,7 @@ public class DataSetDefinitionsBuilder
                 PublisherUrl = "https://www.noaa.gov/",
                 MoreInformationUrl = "https://gml.noaa.gov/ccgg/trends_n2o/",
                 DataDownloadUrl = "https://gml.noaa.gov/webdata/ccgg/trends/n2o/n2o_mm_gl.txt",
+                DataDownloaderKey = "direct-http",
                 MeasurementDefinitions =
                 [
                     new()
@@ -370,6 +377,7 @@ public class DataSetDefinitionsBuilder
         For monitoring the IOD, Australian climatologists consider sustained values above +0.4 °C as typical of a positive IOD, and values below −0.4 °C as typical of a negative IOD.",
                 MoreInformationUrl = "https://www.bom.gov.au/climate/enso",
                 DataDownloadUrl = "https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/dmi.had.long.data",
+                DataDownloaderKey = "direct-http",
                 MeasurementDefinitions =
                 [
                     new()
@@ -394,6 +402,7 @@ public class DataSetDefinitionsBuilder
                 Description = "The daily Sea Ice Index provides a quick look at Arctic-wide changes in sea ice. It provides consistently processed daily ice extent and concentration images and data since 1979.",
                 MoreInformationUrl = "https://nsidc.org/data/seaice_index/",
                 DataDownloadUrl = "https://masie_web.apps.nsidc.org/pub/DATASETS/NOAA/G02135/north/daily/data/N_seaice_extent_daily_v4.0.csv",
+                DataDownloaderKey = "direct-http",
                 MeasurementDefinitions =
                 [
                     new()
@@ -415,6 +424,7 @@ public class DataSetDefinitionsBuilder
                 Description = "The daily Sea Ice Index provides a quick look at Antarctic-wide changes in sea ice. It provides consistently processed daily ice extent and concentration images and data since 1979.",
                 MoreInformationUrl = "https://nsidc.org/data/seaice_index/",
                 DataDownloadUrl = "https://masie_web.apps.nsidc.org/pub/DATASETS/NOAA/G02135/south/daily/data/S_seaice_extent_daily_v4.0.csv",
+                DataDownloaderKey = "direct-http",
                 MeasurementDefinitions =
                 [
                     new()
@@ -462,7 +472,7 @@ Our aim is to provide climate science and services to people and organisations, 
                 PublisherUrl = "https://www.metoffice.gov.uk/",
                 MoreInformationUrl = "https://www.metoffice.gov.uk/hadobs/",
                 StationInfoUrl = "https://www.metoffice.gov.uk/hadobs/",
-                DataDownloadUrl = "https://www.metoffice.gov.uk/hadobs/hadcet/data/download.html",
+                DataDownloaderKey = "direct-http",
                 StationMetadataFileName = "Stations_UK_HadObs.json",
                 MeasurementDefinitions =
                 [
@@ -472,6 +482,7 @@ Our aim is to provide climate science and services to people and organisations, 
                         DataType = DataType.TempMean,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Monthly,
+                        DataDownloadUrl = "https://www.metoffice.gov.uk/hadobs/hadcet/data/meantemp_monthly_totals.txt",
                         RowDataType = RowDataType.TwelveMonthsPerRow,
                         DataRowRegEx = @"^\s*(?<year>\d{4})\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+).*$",
                         DataFileSource = LooseSource(@"Met\meantemp_monthly_totals.txt"),
@@ -483,6 +494,7 @@ Our aim is to provide climate science and services to people and organisations, 
                         DataType = DataType.TempMax,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
+                        DataDownloadUrl = "https://www.metoffice.gov.uk/hadobs/hadcet/data/maxtemp_daily_totals.txt",
                         DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})\s+(?<value>-?[\d+\.\d+]*)$",
                         DataFileSource = LooseSource(@"Met\maxtemp_daily_totals.txt"),
                     },
@@ -492,6 +504,7 @@ Our aim is to provide climate science and services to people and organisations, 
                         DataType = DataType.TempMin,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
+                        DataDownloadUrl = "https://www.metoffice.gov.uk/hadobs/hadcet/data/mintemp_daily_totals.txt",
                         DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})\s+(?<value>-?[\d+\.\d+]*)$",
                         DataFileSource = LooseSource(@"Met\mintemp_daily_totals.txt"),
                     },
@@ -500,6 +513,7 @@ Our aim is to provide climate science and services to people and organisations, 
                         DataType = DataType.Precipitation,
                         UnitOfMeasure = UnitOfMeasure.Millimetres,
                         DataResolution = DataResolution.Daily,
+                        DataDownloadUrl = "https://www.metoffice.gov.uk/hadobs/hadukp/data/daily/HadCEP_daily_totals.txt",
                         DataAdjustment = null,
                         DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})\s+(?<value>-?[\d+\.\d+]*)$",
                         DataFileSource = LooseSource(@"Met\HadCEP_daily_totals.txt"),
@@ -516,6 +530,7 @@ Our aim is to provide climate science and services to people and organisations, 
                 Publisher = "WDC-SILSO, Royal Observatory of Belgium, Brussels",
                 MoreInformationUrl = "https://sidc.be/SILSO/newdataset",
                 DataDownloadUrl = "https://sidc.be/SILSO/DATA/SN_d_tot_V2.0.txt",
+                DataDownloaderKey = "direct-http",
                 MeasurementDefinitions =
                 [
                     new MeasurementDefinition
@@ -539,6 +554,7 @@ Our aim is to provide climate science and services to people and organisations, 
                 Publisher = "National Oceanic and Atmospheric Administration (NOAA)",
                 MoreInformationUrl = "https://www.ncei.noaa.gov/products/climate-data-records/total-solar-irradiance",
                 DataDownloadUrl = "https://www.ncei.noaa.gov/data/total-solar-irradiance/access/ancillary-data/tsi-ssi_v03r00_observed-tsi-composite_s19780101_e20250630_c20250917.txt",
+                DataDownloaderKey = "direct-http",
                 MeasurementDefinitions =
                 [
                     new MeasurementDefinition
@@ -619,6 +635,7 @@ Aerosols have the greatest potential influence on the record and in general have
                 PublisherUrl = "https://www.noaa.gov/",
                 MoreInformationUrl = "https://gml.noaa.gov/grad/mloapt.html",
                 DataDownloadUrl = "https://gml.noaa.gov/webdata/grad/mloapt/mauna_loa_transmission.dat",
+                DataDownloaderKey = "direct-http",
                 MeasurementDefinitions =
                 [
                     new MeasurementDefinition
@@ -648,7 +665,7 @@ The ozone hole area is calculated as the area with ozone values below 220 DU sou
                 PublisherUrl = "https://www.copernicus.eu/",
                 MoreInformationUrl = "https://atmosphere.copernicus.eu/monitoring-ozone-layer",
                 DataDownloadUrl = "https://sites.ecmwf.int/data/cams/ozone_monitoring/data/cams_ozone_monitoring_sh_ozone_area.csv",
-                AlterDownloadedFile = true,
+                DataDownloaderKey = "ozone",
                 MeasurementDefinitions =
                 [
                     new MeasurementDefinition
@@ -673,7 +690,7 @@ The ozone hole area is calculated as the area with ozone values below 220 DU sou
                 PublisherUrl = "https://www.copernicus.eu/",
                 MoreInformationUrl = "https://atmosphere.copernicus.eu/monitoring-ozone-layer",
                 DataDownloadUrl = "https://sites.ecmwf.int/data/cams/ozone_monitoring/data/cams_ozone_monitoring_sh_ozone_minimum.csv",
-                AlterDownloadedFile = true,
+                DataDownloaderKey = "ozone",
                 MeasurementDefinitions =
                 [
                     new MeasurementDefinition
@@ -726,7 +743,7 @@ Only altimetry measurements between 66°S and 66°N have been processed. An inve
                 PublisherUrl = "https://www.noaa.gov/",
                 MoreInformationUrl = "https://www.star.nesdis.noaa.gov/socd/lsa/SeaLevelRise/LSA_SLR_timeseries_global.php",
                 DataDownloadUrl = "https://www.star.nesdis.noaa.gov/socd/lsa/SeaLevelRise/slr/slr_sla_gbl_free_ref_90.csv",
-                AlterDownloadedFile = true,
+                DataDownloaderKey = "sea-level",
                 MeasurementDefinitions =
                 [
                     new MeasurementDefinition
@@ -752,6 +769,7 @@ This AMO time-series is from NOAA/NCEI, using the ERSSTV5 dataset. It is a sea-s
                 PublisherUrl = "https://www.noaa.gov/",
                 MoreInformationUrl = "https://psl.noaa.gov/data/timeseries/AMO/",
                 DataDownloadUrl = "https://www1.ncdc.noaa.gov/pub/data/cmb/ersst/v5/index/ersst.v5.amo.dat",
+                DataDownloaderKey = "direct-http",
                 MeasurementDefinitions =
                 [
                     new MeasurementDefinition
@@ -777,7 +795,7 @@ The mean seawater pH is calculated from the mean seawater dissolved inorganic ca
                 PublisherUrl = "https://www.noaa.gov/",
                 MoreInformationUrl = "https://hahana.soest.hawaii.edu/hot/",
                 DataDownloadUrl = "https://hahana.soest.hawaii.edu/hot/hotco2/HOT_surface_CO2.txt",
-                AlterDownloadedFile = true,
+                DataDownloaderKey = "ocean-acidity",
                 MeasurementDefinitions =
                 [
                     new MeasurementDefinition

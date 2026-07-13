@@ -13,17 +13,20 @@ public class DataSetDefinition
     public string? DataDownloadUrl { get; set; }
     public string? DataDownloaderKey { get; set; }
     public string? StationMetadataFileName { get; set; }
-    public bool? AlterDownloadedFile { get; set; }
-
     public List<MeasurementDefinition>? MeasurementDefinitions { get; set; }
 
     public DataFileMapping? DataLocationMapping { get; set; }
 
-    public static async Task<List<DataSetDefinition>> GetDataSetDefinitions()
+    public static Task<List<DataSetDefinition>> GetDataSetDefinitions()
+    {
+        return GetDataSetDefinitions(null);
+    }
+
+    public static async Task<List<DataSetDefinition>> GetDataSetDefinitions(string? dataFileMappingFolder)
     {
         var ddds = DataSetDefinitionsBuilder.BuildDataSetDefinitions();
 
-        var dataFileMappings = await DataFileMapping.GetDataFileMappings();
+        var dataFileMappings = await DataFileMapping.GetDataFileMappings(dataFileMappingFolder);
         foreach (var ddd in ddds!)
         {
             var dataFileMapping = dataFileMappings.Where(x => x.DataSetDefinitionId == ddd.Id);

@@ -2,7 +2,7 @@ namespace ClimateExplorer.UnitTests;
 
 using System;
 using ClimateExplorer.Core.Model;
-using ClimateExplorer.WebApi.DataRetrieval;
+using ClimateExplorer.Data.Downloading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static ClimateExplorer.Core.Enums;
 
@@ -54,6 +54,12 @@ public sealed class DataSetFreshnessPolicyTests
         var retrievedDate = Now.AddHours(-23).ToOffset(TimeSpan.FromHours(10));
 
         Assert.IsTrue(policy.IsFresh(CreateState(retrievedDate), DataResolution.Daily));
+    }
+
+    [TestMethod]
+    public void IsFresh_FutureRetrievedDate_ReturnsFalse()
+    {
+        Assert.IsFalse(policy.IsFresh(CreateState(Now.AddMinutes(1)), DataResolution.Daily));
     }
 
     [TestMethod]

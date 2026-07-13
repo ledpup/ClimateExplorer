@@ -1,16 +1,17 @@
 # Automated dataset downloads for historical API data
 
 - **Date:** 2026-07-13
-- **Status:** Proposed
+- **Status:** In progress — stages 0 and 1 complete
 - **Author:** Codex
 - **Scope:** dataset download metadata, `/dataset` and `/climate-record` request flow, dataset file loading/storage, Web API dependency injection, `ClimateExplorer.Data.Misc`, and related unit tests
 - **Branch context:** `development`
 
 ## Goal
 
-Move the regional/global download work currently performed by
-`ClimateExplorer.Data.Misc` into the Web API data paths used by `/dataset` and
-`/climate-record`. The shared monthly Mauna Loa atmospheric CO₂ source used by
+Move the regional/global download implementation currently contained in
+`ClimateExplorer.Data.Misc` into a shared retrieval library used by both the Web
+API data paths (`/dataset` and `/climate-record`) and a batch-refresh mode in
+`ClimateExplorer.Data.Misc`. The shared monthly Mauna Loa atmospheric CO₂ source used by
 both `CO2` and `CO2Deseasoned` is also in scope even though the current
 `globalDataDefinitions` predicate skips it. Historical unadjusted daily BOM and
 GHCNd station data are also in scope once their deployed storage is reorganised
@@ -35,12 +36,18 @@ explicitly out of scope. Its BOM/GHCNd clients and parsers are useful lower-leve
 building blocks for the historical downloader, but the endpoint should not be
 routed through the new coordinator or changed to use the historical cache.
 
-The end state for `ClimateExplorer.Data.Misc/Program.cs` should ideally be:
+The end state for `ClimateExplorer.Data.Misc/Program.cs` should be a thin batch
+host over the shared coordinator, followed by its existing static-content work:
 
 ```csharp
+await dataSetBatchRefresher.RefreshAllAsync();
 await BuildStaticContent.GenerateSiteMap();
 GenerateMapMarkers();
 ```
+
+The batch host and request paths must use the same metadata, handlers,
+validation, publication, state, and freshness rules. `Data.Misc` must not retain
+an independent download method or write to a different runtime source tree.
 
 Deployment continues to include a source-data package. For automatically managed
 datasets, the deployed file and the subsequently downloaded file are the same
@@ -261,12 +268,13 @@ release-discovery, or transformation behavior. Shared helpers may perform HTTP
 status checks, bounded stream copies, hashing, and cleanup, but helpers should
 not decide which dataset algorithm to run.
 
-Register the coordinator, file store, freshness policy, `TimeProvider`, generic
-HTTP client, and all handlers through Web API dependency injection. Extend
-`ClimateExplorerApiServices` only as a transition if replacing that service bag
-would broaden the change too far. Do not add a Web API reference to the
-`ClimateExplorer.Data.Misc` executable; move the focused transformer logic into
-Web API-owned classes and unit-test it there.
+Place the coordinator, file store, freshness policy, downloader contracts,
+generic HTTP client logic, and handlers in a shared data-retrieval project that
+references `ClimateExplorer.Core` but neither host. Register those services
+through Web API dependency injection. `ClimateExplorer.Data.Misc` should compose
+the same services for a batch run and call a batch facade that resolves all
+opted-in assets. Neither host references the other, and specialised transformer
+logic moves into the shared project with focused unit tests.
 
 ### Retrieval state and freshness
 
@@ -688,24 +696,65 @@ Completed on 2026-07-13:
 Verification at completion: 323 unit tests passed and the complete solution
 built with zero warnings and errors.
 
-### Stage 1: Generic direct downloads
+### Stage 1: Generic direct downloads — completed 2026-07-13
 
-1. Add downloader metadata and the DI-registered `direct-http` handler.
-2. Opt in the small, non-transforming datasets currently handled by
+1. Extract the Stage 0 retrieval primitives into a shared data-retrieval project
+   consumed by both Web API and `ClimateExplorer.Data.Misc`.
+2. Add downloader metadata and the DI-registered `direct-http` handler.
+3. Add a batch facade so `ClimateExplorer.Data.Misc` can refresh every opted-in
+   asset through the same coordinator in one run.
+4. Opt in the small, non-transforming datasets currently handled by
    `globalDataDefinitions`, in small batches grouped by source provider. Leave
    GHCNd for its station-archive stage rather than treating precipitation as a
    one-measurement direct file.
-3. For each dataset, add parser-validation fixtures and test cold fallback to
+5. For each dataset, add parser-validation fixtures and test cold fallback to
    the same deployed loose source file.
-4. Measure automatically managed unaggregated daily response sizes and decide
+6. Measure automatically managed unaggregated daily response sizes and decide
    whether to retain or remove the current no-cache early return.
-5. Confirm `/recent-observations` tests and call paths are unchanged.
+7. Confirm `/recent-observations` tests and call paths are unchanged.
 
 Do not mechanically opt in a definition merely because the old LINQ predicate
 selected it. Verify URL tokens, local filenames, mappings, and the deployed loose
 source for every entry first.
 
-### Stage 2: Shared CO₂ and transforming global downloads
+#### Stage 1 implementation progress
+
+Completed on 2026-07-13:
+
+- The retrieval primitives now live in `ClimateExplorer.Data.Downloading`, a
+  shared project referenced by both Web API and `ClimateExplorer.Data.Misc`.
+  Neither host owns a second copy of freshness, locking, workspace, validation,
+  state, or atomic-publication behavior.
+- The `IDataSetDownloader` registry selects handlers by the explicit metadata
+  key. The first `direct-http` handler performs bounded streaming downloads,
+  rejects empty files and HTML responses, and writes only to an isolated
+  workspace before reader-based validation and publication. There is no dataset
+  ID switch or central dispatcher.
+- Source state is stored per physical asset and contains the successful UTC
+  retrieval time, relative path, byte length, and SHA-256 hash. A missing,
+  stale, future-dated, corrupt, or mismatched state triggers refresh. Concurrent
+  API calls for one asset share the per-asset lock and perform one download.
+- Niño 3.4, methane, nitrous oxide, IOD, Arctic sea ice, Antarctic sea ice,
+  sunspots, total solar irradiance, Mauna Loa atmospheric transmission, and AMO
+  are explicitly opted into `direct-http`. Contract validation proves that all
+  ten deployed loose source files parse through their configured production
+  readers. GHCNd and all transforming or specialised datasets remain opted out.
+- `ClimateExplorer.Data.Misc` force-refreshes all opted-in assets through
+  `DataSetBatchRefresher` and the same coordinator used by the Web API. Its old
+  generic download loop excludes migrated datasets; the remaining legacy code
+  is limited to handlers scheduled for later stages.
+- The existing no-cache optimization for unaggregated daily responses is
+  retained. The four managed daily source files currently range from about
+  0.6 MB to 3.0 MB, and the atomic last-known-good source plus source state are
+  sufficient for cold fallback without persisting every unaggregated response
+  shape.
+- `/recent-observations` production code was not changed. Its existing BOM and
+  GHCNd tests run as part of the full unit-test suite.
+
+Verification at completion: 334 unit tests passed; the Web API and
+`ClimateExplorer.Data.Misc` projects built with zero warnings and errors.
+
+### Stage 2: Shared CO₂ and transforming global downloads — completed 2026-07-13
 
 1. Opt in the shared Mauna Loa CO₂ file and prove that `CO2` and
    `CO2Deseasoned` share one download and retrieval state.
@@ -714,20 +763,67 @@ source for every entry first.
    tests.
 4. Opt in the transforming datasets only after raw and transformed validation
    is in place.
-5. Remove their calls from `ClimateExplorer.Data.Misc` after the Web API path is
-   deployed and observed successfully.
 
 This completes the small `globalDataDefinitions`/reducer portion while station
 archives and the explicitly specialised datasets remain deferred.
 
-### Stage 3: HadCET and HadCEP
+#### Stage 2 implementation progress
+
+Completed on 2026-07-13:
+
+- The Mauna Loa CO₂ dataset is opted into `direct-http`. Its `CO2` and
+  `CO2Deseasoned` measurements resolve to one `CO2/co2_mm_mlo.txt` request,
+  one asset key, one download, and one retrieval-state record; validation runs
+  both configured readers before publication.
+- A shared bounded HTTP file client now serves direct and transforming
+  downloaders. `TransformingDataSetDownloader` composes a registered key with a
+  focused source transformer, keeping handler selection extensible without a
+  dataset dispatcher.
+- Ocean acidity has a small tabular transformer that locates named columns,
+  rejects malformed rows, skips the provider null marker, and averages valid pH
+  observations by month.
+- Sea level parses the provider's decimal dates, averages available satellite
+  values per row, and preserves provider comment headers. Ozone area and column
+  use one focused timestamp-to-daily-average transformer that includes the final
+  day in the source.
+- All transformed candidates are parsed by the normal production reader before
+  atomic publication. Golden tests cover each transformation and malformed
+  input, while package contracts validate all 15 opted-in physical assets.
+- The old `ClimateExplorer.Data.Misc` reducers, their `CsvHelper` dependency,
+  and `DataSetDefinition.AlterDownloadedFile` were removed. The batch host no
+  longer contains a generic global download/reduce path.
+
+Verification at completion: 339 unit tests passed; the shared library, Web API,
+and `ClimateExplorer.Data.Misc` built successfully.
+
+### Stage 3: HadCET and HadCEP — completed 2026-07-13
 
 1. Add measurement-level download URLs and make the generic handler prefer them.
 2. Opt in each Hadley measurement with its own resolution-derived cadence.
 3. Add tests proving that selecting one measurement downloads only its file and
    never mutates shared dataset metadata.
 
-### Stage 4: GHCNd station archives
+#### Stage 3 implementation progress
+
+Completed on 2026-07-13:
+
+- The Hadley dataset landing-page URL is no longer treated as a data source.
+  Mean, maximum, and minimum HadCET temperature plus HadCEP precipitation each
+  carry their own direct file URL on `MeasurementDefinition`.
+- The dataset opts into the existing `direct-http` handler. Asset resolution
+  prefers each measurement URL, produces four independent Met source assets,
+  and applies the monthly cadence only to mean temperature while the three
+  daily sources use the 24-hour cadence.
+- `ClimateExplorer.Data.Misc` no longer mutates the shared dataset definition or
+  invokes its legacy download method for Hadley data. The normal batch facade
+  refreshes all four files.
+- Metadata contracts verify the four stable local paths and four measurement-
+  specific provider URLs; all four packaged files validate through their normal
+  readers.
+
+Verification at completion: 340 unit tests passed.
+
+### Stage 4: GHCNd station archives — completed 2026-07-13
 
 1. Extract/reuse the GHCNd station download and processing helpers without
    changing `/recent-observations`.
@@ -736,6 +832,34 @@ archives and the explicitly specialised datasets remain deferred.
 3. Add tests for temperature-only, precipitation-only, shared-series,
    corruption, cold source fallback, and one-download concurrency behavior.
 4. Opt in both GHCNd definitions at the daily cadence.
+
+#### Stage 4 implementation progress
+
+Completed on 2026-07-13:
+
+- Both GHCNd definitions opt into `ghcnd-station`. Physical source paths, not
+  dataset IDs, are the asset identity, so temperature and precipitation mapped
+  to the same station share one lock, download, ZIP, and source-state record.
+- Request resolution expands a requested physical asset to every opted-in
+  measurement that consumes it. A shared station therefore validates maximum
+  temperature, minimum temperature, and precipitation before publication, while
+  temperature-only and precipitation-only stations contain only their mapped
+  valid entry.
+- The handler downloads the provider station CSV once, reuses the existing
+  GHCNd CSV reader, quality checks, and sufficient-data filters, then creates
+  `GHCNd/<station>.zip` in the isolated workspace. Cancellation support was
+  added to the shared station downloader without changing recent-observations
+  endpoint behavior.
+- The 3,536 split build-time GHCNd CSV files were replaced by the same 1,854
+  station ZIP assets used at runtime. `ClimateExplorer.DataPipeline` copies and
+  inventories those ZIPs directly; it has no legacy split-folder path.
+- Tests cover shared, temperature-only, precipitation-only, insufficient-data,
+  archive-entry, production-reader validation, and shared-mapping behavior.
+  The complete package rebuild still produces 2,098 physical assets containing
+  10,426 logical files.
+
+Verification at completion: 346 unit tests passed; `/recent-observations`
+production files have no changes.
 
 ### Stage 5: BOM station archives
 
@@ -829,10 +953,10 @@ The rollout is complete when:
   ACORN-SAT retain their annual/manual process;
 - new downloader types can be added by implementing/registering a handler and
   assigning metadata, without editing a central dispatcher;
-- the Web API no longer relies on `ClimateExplorer.Data.Misc` for the listed
-  datasets;
-- `ClimateExplorer.Data.Misc/Program.cs` contains only the site-map and map-marker
-  calls shown in the goal;
+- the Web API and `ClimateExplorer.Data.Misc` use the same shared coordinator and
+  handlers, and neither host contains a separate dataset download implementation;
+- one `ClimateExplorer.Data.Misc` run can refresh all opted-in regional/global
+  assets and then generate the site map and map markers;
 - `/recent-observations` remains unchanged.
 
 ## Risks and rollout safeguards

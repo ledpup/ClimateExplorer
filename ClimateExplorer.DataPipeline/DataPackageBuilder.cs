@@ -43,62 +43,36 @@ public sealed class DataPackageBuilder(string sourceRoot, string outputRoot)
 
     private void BuildBomArchives()
     {
-        var sourceFolders = new[]
-        {
-            @"Temperature_BOM\daily_tempmean",
-            @"Temperature_BOM\daily_tempmax",
-            @"Temperature_BOM\daily_tempmin",
-            @"Precipitation\BOM",
-            @"Solar\BOM",
-        };
-
-        var filesByFolder = sourceFolders.ToDictionary(
-            folder => folder,
-            folder => GetFilesByStation(folder, file => Path.GetFileName(file).Split('_')[0]),
-            StringComparer.OrdinalIgnoreCase);
-
-        var stations = filesByFolder[sourceFolders[0]].Keys.Order(StringComparer.Ordinal).ToArray();
-        foreach (var folder in sourceFolders.Skip(1))
-        {
-            if (!stations.SequenceEqual(filesByFolder[folder].Keys.Order(StringComparer.Ordinal), StringComparer.Ordinal))
-            {
-                throw new InvalidDataException($"BOM station inventory in '{folder}' does not match the other BOM measurements.");
-            }
-        }
-
-        foreach (var station in stations)
-        {
-            var entries = sourceFolders.Select(folder => new ArchiveSource(
-                filesByFolder[folder][station],
-                Path.GetFileName(filesByFolder[folder][station])));
-
-            CreateArchive($@"BOM\{station}.zip", entries);
-        }
+        CopyArchiveDirectory("BOM");
     }
 
     private void BuildGhcndArchives()
     {
-        var temperatureFiles = GetFilesByStation(@"GHCNd\Temperature", Path.GetFileNameWithoutExtension);
-        var precipitationFiles = GetFilesByStation(@"GHCNd\Precipitation", Path.GetFileNameWithoutExtension);
-        var stations = temperatureFiles.Keys
-            .Concat(precipitationFiles.Keys)
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .Order(StringComparer.Ordinal);
+        CopyArchiveDirectory("GHCNd");
+    }
 
-        foreach (var station in stations)
+    private void CopyArchiveDirectory(string relativeDirectory)
+    {
+        var sourceDirectory = SourcePath(relativeDirectory);
+        foreach (var sourceArchivePath in Directory.GetFiles(sourceDirectory, "*.zip", SearchOption.TopDirectoryOnly).Order(StringComparer.Ordinal))
         {
-            var entries = new List<ArchiveSource>();
-            if (temperatureFiles.TryGetValue(station, out var temperatureFile))
+            var targetRelativePath = NormalizeRelativePath(Path.Combine(relativeDirectory, Path.GetFileName(sourceArchivePath)));
+            registry.RegisterPhysicalAsset(targetRelativePath);
+            using (var archive = ZipFile.OpenRead(sourceArchivePath))
             {
-                entries.Add(new ArchiveSource(temperatureFile, $"Temperature/{Path.GetFileName(temperatureFile)}"));
+                if (archive.Entries.Count == 0)
+                {
+                    throw new InvalidDataException($"Source archive '{sourceArchivePath}' has no entries.");
+                }
+
+                registry.RegisterArchiveSource(
+                    sourceArchivePath,
+                    archive.Entries.Select(entry => $"{targetRelativePath}!/{NormalizeArchiveEntry(entry.FullName)}"));
             }
 
-            if (precipitationFiles.TryGetValue(station, out var precipitationFile))
-            {
-                entries.Add(new ArchiveSource(precipitationFile, $"Precipitation/{Path.GetFileName(precipitationFile)}"));
-            }
-
-            CreateArchive($@"GHCNd\{station}.zip", entries);
+            var targetPath = Path.Combine(stagingRoot, targetRelativePath);
+            Directory.CreateDirectory(Path.GetDirectoryName(targetPath)!);
+            File.Copy(sourceArchivePath, targetPath);
         }
     }
 

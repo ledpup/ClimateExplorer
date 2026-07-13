@@ -1,6 +1,8 @@
 #pragma warning disable SA1200 // Using directives should be placed correctly
 using System;
+using System.Net.Http;
 using System.Text.Json.Serialization;
+using ClimateExplorer.Data.Downloading;
 using ClimateExplorer.Data.Ghcnd;
 using ClimateExplorer.WebApi;
 using ClimateExplorer.WebApi.DataRetrieval;
@@ -48,16 +50,46 @@ builder.Services.Configure<JsonOptions>(
 
 builder.Logging.AddConsole();
 
+var responseCache = new FileBackedTwoLayerCache("cache");
+var longtermCache = new FileBackedTwoLayerCache("cache-longterm");
+
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddSingleton<DataSetFreshnessPolicy>();
 builder.Services.AddSingleton<DataSetAssetLockProvider>();
 builder.Services.AddSingleton<DataSetDownloadWorkspaceFactory>();
+builder.Services.AddSingleton<DataSetDownloadValidator>();
+builder.Services.AddSingleton(new DataSetSourceAssetResolver());
 builder.Services.AddSingleton(new DataSetSourceFileStore("Datasets"));
-builder.Services.AddSingleton<IDataSetSourceUpdateCoordinator, DataSetSourceUpdateCoordinator>();
+builder.Services.AddSingleton<IDataSetSourceStateStore>(new CachedDataSetSourceStateStore(longtermCache));
+builder.Services.AddSingleton(CreateDataSetSourceHttpClient());
+builder.Services.AddSingleton<DataSetHttpFileDownloader>();
+builder.Services.AddSingleton<IDataSetDownloader, DirectHttpDataSetDownloader>();
+builder.Services.AddSingleton<IDataSetDownloader>(
+    new GhcndDataSetDownloader(GhcndHttpClientFactory.CreateHttpClient()));
+builder.Services.AddSingleton<IDataSetDownloader>(
+    new BomDataSetDownloader(new BomDailyDataClient(BomHttpClientFactory.CreateBomHttpClient())));
+builder.Services.AddSingleton<IDataSetDownloader>(
+    services => new TransformingDataSetDownloader(
+        "ocean-acidity",
+        services.GetRequiredService<DataSetHttpFileDownloader>(),
+        new OceanAciditySourceFileTransformer()));
+builder.Services.AddSingleton<IDataSetDownloader>(
+    services => new TransformingDataSetDownloader(
+        "sea-level",
+        services.GetRequiredService<DataSetHttpFileDownloader>(),
+        new SeaLevelSourceFileTransformer()));
+builder.Services.AddSingleton<IDataSetDownloader>(
+    services => new TransformingDataSetDownloader(
+        "ozone",
+        services.GetRequiredService<DataSetHttpFileDownloader>(),
+        new OzoneSourceFileTransformer()));
+builder.Services.AddSingleton<DataSetSourceUpdateCoordinator>();
+builder.Services.AddSingleton<IDataSetSourceUpdateCoordinator>(
+    services => services.GetRequiredService<DataSetSourceUpdateCoordinator>());
 builder.Services.AddSingleton(
     services => new ClimateExplorerApiServices(
-        new FileBackedTwoLayerCache("cache"),
-        new FileBackedTwoLayerCache("cache-longterm"),
+        responseCache,
+        longtermCache,
         BomHttpClientFactory.CreateBomHttpClient(),
         GhcndHttpClientFactory.CreateHttpClient(),
         services.GetRequiredService<IDataSetSourceUpdateCoordinator>()));
@@ -68,3 +100,13 @@ app.UseCors();
 app.MapClimateExplorerEndpoints();
 
 app.Run();
+
+static HttpClient CreateDataSetSourceHttpClient()
+{
+    var client = new HttpClient
+    {
+        Timeout = TimeSpan.FromMinutes(2),
+    };
+    client.DefaultRequestHeaders.UserAgent.ParseAdd("ClimateExplorer/1.0 dataset-refresh");
+    return client;
+}

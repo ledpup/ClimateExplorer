@@ -9,14 +9,21 @@ public static class GhcndStationCsvDownloader
         return $"https://www.ncei.noaa.gov/data/global-historical-climatology-network-daily/access/{stationId}.csv";
     }
 
-    public static async Task<string> DownloadCsvAsync(HttpClient httpClient, string stationId)
+    public static async Task<string> DownloadCsvAsync(
+        HttpClient httpClient,
+        string stationId,
+        CancellationToken cancellationToken = default)
     {
         var url = GetDownloadUrl(stationId);
         try
         {
-            using var response = await httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+            using var response = await httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
             response.EnsureSuccessStatusCode();
-            return await response.Content.ReadAsStringAsync();
+            return await response.Content.ReadAsStringAsync(cancellationToken);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
         }
         catch (Exception ex)
         {

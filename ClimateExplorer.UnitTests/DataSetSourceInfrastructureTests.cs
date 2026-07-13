@@ -4,7 +4,7 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using ClimateExplorer.WebApi.DataRetrieval;
+using ClimateExplorer.Data.Downloading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [TestClass]
