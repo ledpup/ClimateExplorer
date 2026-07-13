@@ -14,17 +14,12 @@ internal static class RecentObservationsEndpoints
     public static async Task<RecentObservationsResponse> GetRecentObservations(
         [FromServices] ClimateExplorerApiServices services,
         [FromServices] ILoggerFactory loggerFactory,
-        Guid locationId,
-        bool isLocationSupported = false)
+        Guid locationId)
     {
         var logger = loggerFactory.CreateLogger(nameof(RecentObservationsEndpoints));
         var today = DateOnly.FromDateTime(DateTime.Today);
         var yesterday = today.AddDays(-1);
         var context = await GetRecentObservationsContext(services, locationId, today);
-        if (isLocationSupported || context == null)
-        {
-            return new RecentObservationsResponse { IsSupported = context?.IsTemperatureSupported ?? false };
-        }
 
         var recentObservationStartDate = new DateOnly(today.Year - 1, 1, 1);
         var recentObservationEndDate = new DateOnly(today.Year, 12, 31);
