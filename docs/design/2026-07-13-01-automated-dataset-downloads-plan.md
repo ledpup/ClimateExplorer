@@ -1,7 +1,7 @@
 # Automated dataset downloads for historical API data
 
 - **Date:** 2026-07-13
-- **Status:** In progress — stages 0–7 complete
+- **Status:** In progress — stages 0–8 complete
 - **Author:** Codex
 - **Scope:** dataset download metadata, `/dataset` and `/climate-record` request flow, dataset file loading/storage, Web API dependency injection, `ClimateExplorer.Data.Misc`, and related unit tests
 - **Branch context:** `development`
@@ -1014,12 +1014,74 @@ Completed on 2026-07-14:
 Verification at completion: 359 unit tests passed; the complete solution built
 with zero warnings and errors.
 
-### Stage 8: Greenland ice melt
+### Stage 8: Greenland ice melt — completed 2026-07-14
 
 1. Implement yearly API download/validation and aggregate generation.
 2. Add first-snapshot, incremental current-year, year-boundary, missing-date,
    reported-zero, and partial-failure tests.
 3. Opt in the dataset at the daily cadence.
+
+#### Stage 8 implementation progress
+
+Completed on 2026-07-14:
+
+- `GreenlandMeltDataClient` (new) issues one request per year against the
+  provider's yearly melt-area API and parses its `{timestamp: value}` JSON into
+  `IReadOnlyDictionary<DateOnly, double?>`, rejecting non-success responses,
+  unparseable JSON, an empty body, or an unrecognised date key.
+- `GreenlandDataSetDownloader` (`greenland-melt`) reads the previously
+  published `Greenland\greenland-melt-area.csv` (if any) via the same
+  `DataSetSourceFileStore` the coordinator already publishes through, and
+  splits its lines by year. Years are then classified as reusable ("stable")
+  or to be (re-)fetched: the current year is always fetched, the immediately
+  preceding year is re-fetched only in January (to absorb a provider revision
+  made after the year turns over), and any year with no cached lines at all is
+  fetched (covering the first-ever run, which fetches the full 1979-to-date
+  range in one pass instead of the old tool's fixed two-line hard-coded
+  range). Stable years are copied through byte-for-byte, so an untouched year
+  is provably never re-requested.
+- A day is only written to the candidate CSV when the provider actually
+  reported a numeric value for it (including a genuine `0`). A day absent
+  from the response, or present with an explicit JSON `null`, is simply
+  omitted rather than written as `,0`. `DataReaderFunctions`' existing
+  gap-filling (`ProcessDataFile`, `DataReaderFunctions.cs:164-179`) already
+  synthesises a null record for any date-shaped gap between two rows, so this
+  requires no reader change and fixes the "missing day silently became a
+  reported zero" defect called out in the design without touching the row
+  format or any already-published historical byte range.
+- Each (re-)fetched year is checked for plausibility before being merged: a
+  year strictly before the current one must have at least 355 populated days
+  (a completed year should be almost full), and the current year must have at
+  least `dayOfYear - 10` (a 10-day grace period for provider ingestion lag).
+  Failing this check throws, so the coordinator's existing last-known-good
+  fallback keeps serving the prior published aggregate untouched — no
+  Greenland-specific partial-merge/fallback logic was needed on top of the
+  behaviour already proven for every other handler.
+- The dataset opted into `greenland-melt` for its one `IceMeltArea`
+  measurement; `DataDownloadUrl` was nulled at the dataset level since the
+  handler builds its own per-year request URL, the same pattern used for
+  BOM/GHCNd/NOAAGlobalTemp.
+- `ClimateExplorer.Data.Misc/Program.cs` no longer calls the old
+  `GreenlandApiClient.GetMeltDataAndSave`, which has been deleted along with
+  its `Output`-folder-based per-year JSON caching (an ad hoc mechanism that is
+  now superseded by the shared coordinator's source-state/publish pipeline).
+  Greenland now refreshes through the same `DataSetBatchRefresher` call as
+  every other opted-in dataset, in both the Web API and the batch host.
+- Tests cover: a cold first run bootstrapping every year from 1979 through the
+  current year; a warm run that reuses a cached stable year unchanged and
+  requests only the current year; a January-boundary run that additionally
+  re-fetches the immediately preceding year and overwrites its previously
+  cached (deliberately stale/sentinel) content; a day that is absent from the
+  API response versus one with an explicit `null` value, both of which must
+  be omitted rather than written as `0`, alongside a genuine reported `0`
+  which must be written explicitly; and an implausibly incomplete current-year
+  response, which must throw before any candidate file is written. A metadata
+  contract test asserts the single stable `greenland-melt` asset with no
+  download URL, and the existing packaged-source validation test now also
+  covers the real deployed `greenland-melt-area.csv` unchanged.
+
+Verification at completion: 365 unit tests passed; the complete solution built
+with zero warnings and errors.
 
 ### Stage 9: Cleanup and operations
 

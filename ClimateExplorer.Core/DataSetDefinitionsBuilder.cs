@@ -445,7 +445,8 @@ public class DataSetDefinitionsBuilder
                 ShortName = "Greenland ice melt",
                 Description = "Greenland ice melt area since 1979",
                 MoreInformationUrl = "https://nsidc.org/greenland-today",
-                DataDownloadUrl = "https://nsidc.org/api/greenland/melt_area/{year}",
+                DataDownloadUrl = null,
+                DataDownloaderKey = "greenland-melt",
                 MeasurementDefinitions =
                 [
                     new()

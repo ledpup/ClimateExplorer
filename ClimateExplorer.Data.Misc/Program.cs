@@ -23,12 +23,13 @@ var httpClient = CreateHttpClient();
 var dataSetSourceAssetResolver = new DataSetSourceAssetResolver(Path.Combine(Folders.MetaDataFolder, "DataFileMapping"));
 var timeProvider = TimeProvider.System;
 var dataSetHttpFileDownloader = new DataSetHttpFileDownloader(httpClient);
+var dataSetSourceFileStore = new DataSetSourceFileStore(Folders.SourceDataFolder);
 var dataSetSourceUpdateCoordinator = new DataSetSourceUpdateCoordinator(
     dataSetSourceAssetResolver,
     new DataSetFreshnessPolicy(timeProvider),
     new DataSetAssetLockProvider(),
     new DataSetDownloadWorkspaceFactory(),
-    new DataSetSourceFileStore(Folders.SourceDataFolder),
+    dataSetSourceFileStore,
     new FileDataSetSourceStateStore(Path.Combine("Output", "DataSetSourceState")),
     new DataSetDownloadValidator(),
     [
@@ -36,6 +37,7 @@ var dataSetSourceUpdateCoordinator = new DataSetSourceUpdateCoordinator(
         new GhcndDataSetDownloader(GhcndHttpClientFactory.CreateHttpClient()),
         new BomDataSetDownloader(new BomDailyDataClient(httpClient)),
         new NoaaGlobalTempDataSetDownloader(dataSetHttpFileDownloader, timeProvider),
+        new GreenlandDataSetDownloader(new GreenlandMeltDataClient(httpClient), dataSetSourceFileStore, timeProvider),
         new TransformingDataSetDownloader("ocean-acidity", dataSetHttpFileDownloader, new OceanAciditySourceFileTransformer()),
         new TransformingDataSetDownloader("sea-level", dataSetHttpFileDownloader, new SeaLevelSourceFileTransformer()),
         new TransformingDataSetDownloader("ozone", dataSetHttpFileDownloader, new OzoneSourceFileTransformer()),
@@ -52,9 +54,6 @@ var jsonSerializerOptions = new JsonSerializerOptions
     Converters = { new JsonStringEnumConverter() },
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
 };
-
-// Download and build Greenland ice melt
-await GreenlandApiClient.GetMeltDataAndSave(httpClient, logger);
 
 var stations = NoaaGlobalTemp.DataFileMapping().LocationIdToDataFileMappings.Values.Select(x => x.Single().Id);
 

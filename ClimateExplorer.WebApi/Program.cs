@@ -78,6 +78,11 @@ builder.Services.AddSingleton<IDataSetDownloader>(
         services.GetRequiredService<DataSetHttpFileDownloader>(),
         services.GetRequiredService<TimeProvider>()));
 builder.Services.AddSingleton<IDataSetDownloader>(
+    services => new GreenlandDataSetDownloader(
+        new GreenlandMeltDataClient(services.GetRequiredService<HttpClient>()),
+        services.GetRequiredService<DataSetSourceFileStore>(),
+        services.GetRequiredService<TimeProvider>()));
+builder.Services.AddSingleton<IDataSetDownloader>(
     services => new TransformingDataSetDownloader(
         "ocean-acidity",
         services.GetRequiredService<DataSetHttpFileDownloader>(),

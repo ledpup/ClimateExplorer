@@ -19,9 +19,9 @@ public sealed class DataSetDownloadMetadataTests
 
         var assets = await resolver.ResolveAllAsync(CancellationToken.None);
 
-        Assert.HasCount(2092, assets);
+        Assert.HasCount(2093, assets);
         CollectionAssert.AreEquivalent(
-            new[] { "bom-station", "direct-http", "ghcnd-station", "noaa-global-temperature", "ocean-acidity", "ozone", "sea-level" },
+            new[] { "bom-station", "direct-http", "ghcnd-station", "greenland-melt", "noaa-global-temperature", "ocean-acidity", "ozone", "sea-level" },
             assets.Select(x => x.DownloaderKey).Distinct().ToArray());
         Assert.AreEqual(assets.Count, assets.Select(x => x.AssetKey).Distinct().Count());
         Assert.IsTrue(assets.All(x => !x.RelativePath.Contains('[') && (x.DownloadUrl == null || !x.DownloadUrl.Contains('['))));
@@ -81,6 +81,18 @@ public sealed class DataSetDownloadMetadataTests
         Assert.HasCount(1, odgiAssets);
         Assert.AreEqual(@"ODGI\odgi_table1.csv", odgiAssets[0].RelativePath);
         Assert.AreEqual("https://gml.noaa.gov/odgi/odgi_table1.csv", odgiAssets[0].DownloadUrl);
+    }
+
+    [TestMethod]
+    public async Task ResolveAllAsync_Greenland_ResolvesOneStableAsset()
+    {
+        var assets = await CreateResolver().ResolveAllAsync(CancellationToken.None);
+
+        var greenlandAssets = assets.Where(x => x.DownloaderKey == "greenland-melt").ToList();
+
+        Assert.HasCount(1, greenlandAssets);
+        Assert.AreEqual(@"Greenland\greenland-melt-area.csv", greenlandAssets[0].RelativePath);
+        Assert.IsNull(greenlandAssets[0].DownloadUrl);
     }
 
     [TestMethod]
