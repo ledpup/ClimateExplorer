@@ -38,3 +38,17 @@ The two download paths overlap in *what* they fetch (same GHCNd CSV endpoint, sa
 ## Bottom line
 
 The downloader duplication (`GhcndDataSetDownloader`/`BomDataSetDownloader` vs the `RecentObservations*DataSource` download code) is real but already mostly superseded by the general pipeline — that part can likely be deleted. What's actually load-bearing in `/recent-observations` is the endpoint-level logic: content-aware freshness, single-source-across-series consistency, the flat per-series metadata shape, and the cheap support probe. Retiring the endpoint means re-homing those four behaviors into `/climate-record` (or a thin wrapper), not just switching the client to three calls.
+
+## Revisit (2026-07-14): station cardinality closes gap #2
+
+Checked the claim that GHCNd is always single-station and BOM always has exactly one *currently open* station per location, against the actual mapping data:
+
+- `DataFileMapping_ghcnd_temperature.json`: 1734/1734 locations map to exactly one station. No multi-station GHCNd locations exist.
+- `DataFileMapping_Australia_unadjusted.json`: 82/113 locations have multiple time-boxed station entries (closed stations stitched together), but **every** location's last entry has `EndDate: null` — there is always exactly one open station per location, never zero, never more than one. `DataFileMapping_Australia_adjusted.json` (ACORN-SAT) has zero multi-station locations.
+- `RecentObservationsDataSourceHelpers.GetMostRecentOperatingStationId` — the "as-at" picker that looked like `/recent-observations`-only capability — is only ever invoked with `asAt = today` ([RecentObservationsEndpoints.cs:22](../../ClimateExplorer.WebApi/RecentObservationsEndpoints.cs#L22)), so it's already degenerate in practice: it always resolves to whichever mapping entry has `EndDate == null`.
+
+This means gap #2 (`RecentObservationSourceMetadata` vs `DataSetMetadata.Stations` shape mismatch) isn't a real reconciliation problem. There is never more than one candidate "active" station to pick from — `SourceMetadata` on `ClimateRecordsResponse` can be defined as the `Stations` entry with `StationEndDate == null`, paired with the `RetrievedDate` the endpoint already computes ([ClimateRecordsEndpoints.cs:169](../../ClimateExplorer.WebApi/ClimateRecordsEndpoints.cs#L169)). Mechanical, not a design problem.
+
+Gaps #1 (content-aware freshness), #3 (cross-type source consistency), and #4 (cheap support probe) are untouched by this — they don't depend on station cardinality and still need to be closed before `/recent-observations` can be retired.
+
+Separately: `DataSetSourceAssetResolver` still treats each *closed* BOM station as its own perpetually-refreshed asset — nothing marks a closed station (`EndDate` in the past) as "fetch once, then freeze," so the background pipeline will keep re-downloading dead stations' archives forever. `BomDataSetDownloader` already hard-fails if a request ever resolves to more than one station id, so this is a resolver-level fix (skip/freeze closed-station assets after their first successful fetch), not a downloader-level one.
