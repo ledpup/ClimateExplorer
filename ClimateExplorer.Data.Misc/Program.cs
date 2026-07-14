@@ -42,7 +42,8 @@ var dataSetSourceUpdateCoordinator = new DataSetSourceUpdateCoordinator(
         new TransformingDataSetDownloader("sea-level", dataSetHttpFileDownloader, new SeaLevelSourceFileTransformer()),
         new TransformingDataSetDownloader("ozone", dataSetHttpFileDownloader, new OzoneSourceFileTransformer()),
     ],
-    timeProvider);
+    timeProvider,
+    factory.CreateLogger<DataSetSourceUpdateCoordinator>());
 IDataSetBatchRefresher dataSetBatchRefresher = new DataSetBatchRefresher(
     dataSetSourceAssetResolver,
     dataSetSourceUpdateCoordinator);

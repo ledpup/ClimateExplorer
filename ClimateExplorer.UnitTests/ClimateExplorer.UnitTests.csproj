@@ -31,7 +31,6 @@
     <ProjectReference Include="..\ClimateExplorer.Core\ClimateExplorer.Core.csproj" />
     <ProjectReference Include="..\ClimateExplorer.Data.Downloading\ClimateExplorer.Data.Downloading.csproj" />
     <ProjectReference Include="..\ClimateExplorer.DataPipeline\ClimateExplorer.DataPipeline.csproj" />
-    <ProjectReference Include="..\ClimateExplorer.Data.IntegratedSurfaceData\ClimateExplorer.Data.IntegratedSurfaceData.csproj" />
     <ProjectReference Include="..\ClimateExplorer.Web.Client\ClimateExplorer.Web.Client.csproj" />
     <ProjectReference Include="..\ClimateExplorer.WebApiClient\ClimateExplorer.WebApiClient.csproj" />
     <ProjectReference Include="..\ClimateExplorer.WebApi\ClimateExplorer.WebApi.csproj" />

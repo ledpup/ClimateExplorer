@@ -1,7 +1,7 @@
 # Automated dataset downloads for historical API data
 
 - **Date:** 2026-07-13
-- **Status:** In progress — stages 0–8 complete
+- **Status:** Done — all stages (0–9) complete
 - **Author:** Codex
 - **Scope:** dataset download metadata, `/dataset` and `/climate-record` request flow, dataset file loading/storage, Web API dependency injection, `ClimateExplorer.Data.Misc`, and related unit tests
 - **Branch context:** `development`
@@ -1088,7 +1088,7 @@ Completed on 2026-07-14:
 Verification at completion: 365 unit tests passed; the complete solution built
 with zero warnings and errors.
 
-### Stage 9: Cleanup and operations
+### Stage 9: Cleanup and operations — completed 2026-07-15
 
 1. Keep `ClimateExplorer.DataPipeline` capable of producing one deployable data
    package: loose mutable files under dataset-owned folders, BOM/GHCNd station
@@ -1099,6 +1099,56 @@ with zero warnings and errors.
 3. Keep `ClimateExplorer.SourceData` as the build-time input to the deployable
    data package. The pipeline may copy a managed file loose rather than archive
    it, but the running Web API receives only one source copy.
+
+#### Stage 9 implementation progress
+
+Completed 2026-07-15:
+
+- Verified items 1 and 3 already held from stages 0–8 with no code changes
+  needed: `DataPackageBuilder.Build()` still emits exactly the target tree
+  (BOM/GHCNd station zips, `ACORN-SAT.zip`, `GHCNm.zip`, loose per-dataset
+  folders), rejects the retired data-type-wide archives and any omitted or
+  duplicated logical asset (`ValidateTargetLayout`), and no runtime project
+  (`ClimateExplorer.WebApi`, `ClimateExplorer.Data.Downloading`) references
+  `ClimateExplorer.SourceData` — only `ClimateExplorer.DataPipeline` does, at
+  build time.
+- Item 2's prerequisite turned out not to hold: `ClimateExplorer.Data.Downloading`
+  had no logging at all through stages 0–8 — every coordinator failure path was
+  a bare `catch { return null; }` with no trace of what failed. Documenting
+  "operational logs" as they stood would have meant documenting silence, so
+  this stage added the minimal logging the plan's own endpoint-orchestration
+  section (see above) already specified: `DataSetSourceUpdateCoordinator` now
+  takes an `ILogger<DataSetSourceUpdateCoordinator>` and logs the fresh/stale
+  decision, each refresh's asset key/downloader key/duration/published
+  size/latest record date, every failure (with the underlying exception) before
+  falling back, and missing-downloader configuration errors.
+  `ClimateExplorerApiServices` gained a matching `ILogger` used by
+  `DataSetEndpoints.PostDataSets` to log the two fallback paths (stale-cache
+  fallback after a failed refresh, and cold-source fallback when there was no
+  cached response to fall back to). `ClimateExplorer.Data.Misc` passes its
+  existing console `ILoggerFactory` into the same coordinator, so a batch run's
+  force-refresh of every opted-in asset produces the same messages.
+- The one existing coordinator-construction test
+  (`DataSetSourceUpdateCoordinatorTests.CreateCoordinator`) was updated to pass
+  `NullLogger<DataSetSourceUpdateCoordinator>.Instance`; no other test changed,
+  since `ClimateExplorerApiServices`'s pre-existing five-argument constructor
+  (used throughout `ClimateExplorer.UnitTests`) was left untouched and a new
+  six-argument overload taking the logger was added alongside it for the real
+  Web API host only.
+- Wrote
+  [docs/operations/automated-dataset-downloads.md](../operations/automated-dataset-downloads.md)
+  covering source-data write permissions (per host, per store), the two
+  distinct "replace in place" mechanisms (packaging's staging/backup swap vs.
+  runtime's same-directory atomic rename) and how a deployment replacing a file
+  underneath a stale cache entry is detected, the difference between an asset
+  key, its hashed state-file name, and the unrelated response-cache key, the
+  full table of log messages above, and the supported way to force one asset's
+  refresh (delete its state file, not its source file) versus force-refreshing
+  everything (run `ClimateExplorer.Data.Misc`).
+
+Verification at completion: 377 unit tests passed; the complete solution built
+with zero new warnings and errors (unchanged pre-existing MSTEST analyzer
+warnings only).
 
 ## Tests and acceptance criteria
 

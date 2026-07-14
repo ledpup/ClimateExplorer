@@ -15,6 +15,7 @@ using ClimateExplorer.Data.Downloading.Models;
 using ClimateExplorer.Data.Downloading.Orchestration;
 using ClimateExplorer.Data.Downloading.Storage;
 using ClimateExplorer.Data.Downloading.Workspace;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static ClimateExplorer.Core.Enums;
 
@@ -125,7 +126,8 @@ public sealed class DataSetSourceUpdateCoordinatorTests
             new MemoryStateStore(),
             new DataSetDownloadValidator(),
             [downloader],
-            timeProvider);
+            timeProvider,
+            NullLogger<DataSetSourceUpdateCoordinator>.Instance);
     }
 
     private static async Task<PostDataSetsRequestBody> CreateNinoRequest()

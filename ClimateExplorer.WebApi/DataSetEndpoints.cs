@@ -11,6 +11,7 @@ using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Data.Downloading.Models;
 using ClimateExplorer.WebApi.Metadata;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using static ClimateExplorer.Core.Enums;
 
 internal static class DataSetEndpoints
@@ -28,7 +29,17 @@ internal static class DataSetEndpoints
 
         if (result != null && sourcePreparation.Outcome is DataSetSourcePreparationOutcome.UseCached or DataSetSourcePreparationOutcome.RefreshFailed)
         {
+            if (sourcePreparation.Outcome == DataSetSourcePreparationOutcome.RefreshFailed)
+            {
+                services.Logger.LogWarning("PostDataSets falling back to the previously cached response after a refresh failure");
+            }
+
             return result;
+        }
+
+        if (sourcePreparation.Outcome == DataSetSourcePreparationOutcome.RefreshFailed)
+        {
+            services.Logger.LogWarning("PostDataSets has no cached response and refresh failed; building from the existing published source file");
         }
 
         var dsb = new DataSetBuilder();

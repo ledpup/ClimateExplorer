@@ -106,7 +106,8 @@ builder.Services.AddSingleton(
         longtermCache,
         BomHttpClientFactory.CreateBomHttpClient(),
         GhcndHttpClientFactory.CreateHttpClient(),
-        services.GetRequiredService<IDataSetSourceUpdateCoordinator>()));
+        services.GetRequiredService<IDataSetSourceUpdateCoordinator>(),
+        services.GetRequiredService<ILogger<ClimateExplorerApiServices>>()));
 
 var app = builder.Build();
 app.UseCors();

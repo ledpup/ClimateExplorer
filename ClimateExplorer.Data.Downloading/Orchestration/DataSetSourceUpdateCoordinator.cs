@@ -6,6 +6,7 @@ using ClimateExplorer.Data.Downloading.Downloaders;
 using ClimateExplorer.Data.Downloading.Models;
 using ClimateExplorer.Data.Downloading.Storage;
 using ClimateExplorer.Data.Downloading.Workspace;
+using Microsoft.Extensions.Logging;
 
 public sealed class DataSetSourceUpdateCoordinator : IDataSetSourceUpdateCoordinator
 {
@@ -18,6 +19,7 @@ public sealed class DataSetSourceUpdateCoordinator : IDataSetSourceUpdateCoordin
     private readonly DataSetDownloadValidator validator;
     private readonly IReadOnlyDictionary<string, IDataSetDownloader> downloaders;
     private readonly TimeProvider timeProvider;
+    private readonly ILogger<DataSetSourceUpdateCoordinator> logger;
 
     public DataSetSourceUpdateCoordinator(
         DataSetSourceAssetResolver assetResolver,
@@ -28,7 +30,8 @@ public sealed class DataSetSourceUpdateCoordinator : IDataSetSourceUpdateCoordin
         IDataSetSourceStateStore stateStore,
         DataSetDownloadValidator validator,
         IEnumerable<IDataSetDownloader> downloaders,
-        TimeProvider timeProvider)
+        TimeProvider timeProvider,
+        ILogger<DataSetSourceUpdateCoordinator> logger)
     {
         this.assetResolver = assetResolver;
         this.freshnessPolicy = freshnessPolicy;
@@ -38,6 +41,7 @@ public sealed class DataSetSourceUpdateCoordinator : IDataSetSourceUpdateCoordin
         this.stateStore = stateStore;
         this.validator = validator;
         this.timeProvider = timeProvider;
+        this.logger = logger;
         this.downloaders = downloaders.ToDictionary(x => x.Key, StringComparer.Ordinal);
     }
 
@@ -56,8 +60,9 @@ public sealed class DataSetSourceUpdateCoordinator : IDataSetSourceUpdateCoordin
         {
             throw;
         }
-        catch
+        catch (Exception ex)
         {
+            logger.LogWarning(ex, "Failed to resolve dataset source assets for request");
             return new DataSetSourcePreparationResult(DataSetSourcePreparationOutcome.RefreshFailed);
         }
 
@@ -75,6 +80,7 @@ public sealed class DataSetSourceUpdateCoordinator : IDataSetSourceUpdateCoordin
                 .All(x => freshnessPolicy.IsFresh(cachedData, x.MeasurementDefinition.DataResolution));
         if (responseIsFresh && currentStates != null)
         {
+            logger.LogDebug("Cached response is fresh for assets [{AssetKeys}]; no download attempted", string.Join(", ", assets.Select(x => x.AssetKey)));
             return new DataSetSourcePreparationResult(
                 DataSetSourcePreparationOutcome.UseCached,
                 DataSetRetrievalDate.OldestFor(currentStates));
@@ -83,6 +89,10 @@ public sealed class DataSetSourceUpdateCoordinator : IDataSetSourceUpdateCoordin
         var refreshedStates = await EnsureCurrentAsync(assets, forceRefresh: false, permitSourceUpdate, cancellationToken);
         if (refreshedStates == null)
         {
+            logger.LogWarning(
+                "Refresh failed for one or more of assets [{AssetKeys}]; falling back to {Fallback}",
+                string.Join(", ", assets.Select(x => x.AssetKey)),
+                cachedData != null ? "the cached response" : "the existing published source file");
             return new DataSetSourcePreparationResult(DataSetSourcePreparationOutcome.RefreshFailed);
         }
 
@@ -160,8 +170,9 @@ public sealed class DataSetSourceUpdateCoordinator : IDataSetSourceUpdateCoordin
         {
             throw;
         }
-        catch
+        catch (Exception ex)
         {
+            logger.LogWarning(ex, "Failed to read current dataset source state for asset {AssetKey}", asset.AssetKey);
             return null;
         }
     }
@@ -187,13 +198,15 @@ public sealed class DataSetSourceUpdateCoordinator : IDataSetSourceUpdateCoordin
             }
         }
 
+        if (!downloaders.TryGetValue(asset.DownloaderKey, out var downloader))
+        {
+            logger.LogWarning("No downloader registered for key {DownloaderKey}, asset {AssetKey}", asset.DownloaderKey, asset.AssetKey);
+            return null;
+        }
+
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
         try
         {
-            if (!downloaders.TryGetValue(asset.DownloaderKey, out var downloader))
-            {
-                return null;
-            }
-
             using var workspace = workspaceFactory.Create();
             var artifact = await downloader.DownloadAsync(asset, workspace.Path, cancellationToken);
             var latestRecordDate = await validator.ValidateAsync(asset, workspace.Path, cancellationToken);
@@ -210,14 +223,27 @@ public sealed class DataSetSourceUpdateCoordinator : IDataSetSourceUpdateCoordin
                 LatestRecordDate = latestRecordDate,
             };
             await stateStore.PutAsync(state, cancellationToken);
+            logger.LogInformation(
+                "Refreshed dataset source {AssetKey} via {DownloaderKey} in {ElapsedMs}ms; published {Length} bytes, latest record date {LatestRecordDate}",
+                asset.AssetKey,
+                asset.DownloaderKey,
+                stopwatch.ElapsedMilliseconds,
+                fileInfo.Length,
+                latestRecordDate);
             return state;
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
         {
             throw;
         }
-        catch
+        catch (Exception ex)
         {
+            logger.LogWarning(
+                ex,
+                "Failed to refresh dataset source {AssetKey} via {DownloaderKey} after {ElapsedMs}ms; retaining previously published source",
+                asset.AssetKey,
+                asset.DownloaderKey,
+                stopwatch.ElapsedMilliseconds);
             return null;
         }
     }
