@@ -36,6 +36,11 @@ explicitly out of scope. Its BOM/GHCNd clients and parsers are useful lower-leve
 building blocks for the historical downloader, but the endpoint should not be
 routed through the new coordinator or changed to use the historical cache.
 
+**Update, 2026-07-14:** the above "unchanged"/"out of scope" statements describe
+this plan's own scope at the time it was written, not the endpoint's final fate.
+`/recent-observations` was subsequently retired — see
+[2026-07-14-01-retire-recent-observations-plan.md](2026-07-14-01-retire-recent-observations-plan.md).
+
 The end state for `ClimateExplorer.Data.Misc/Program.cs` should be a thin batch
 host over the shared coordinator, followed by its existing static-content work:
 

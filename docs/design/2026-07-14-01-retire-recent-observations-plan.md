@@ -1,7 +1,7 @@
 # Retire `/recent-observations` in favor of `/climate-record`
 
 - **Date:** 2026-07-14
-- **Status:** Proposed
+- **Status:** Done — all six stages complete
 - **Author:** Claude
 - **Scope:** `ClimateExplorer.WebApi` (`RecentObservationsEndpoints`, `RecentObservations/*`, `ClimateRecordsEndpoints`, `DataSetMetadataBuilder`), `ClimateExplorer.Data.Downloading` (`DataSetSourceAssetResolver`, `DataSetFreshnessPolicy`), `ClimateExplorer.Core.Model` (`ClimateRecordsResponse`), `ClimateExplorer.WebApiClient`, `ClimateExplorer.Web.Client/Services/RecentObservations`
 - **Builds on:** [Automated dataset downloads for historical API data](2026-07-13-01-automated-dataset-downloads-plan.md), [AboutData Station Metadata Plan](2026-07-05-01-about-data-station-metadata-plan.md), [Location Dataset Metadata Plan](2026-07-07-01-location-dataset-metadata-plan.md)
@@ -202,7 +202,7 @@ Verification at completion: 380 unit tests passed (379 pre-existing plus Stage 4
 complete solution built with zero warnings and errors. `git diff --stat` confirms only
 `RecentObservationsDataProvider.cs` and `RecentObservationsServiceTests.cs` changed for this stage.
 
-## Stage 6: Delete `/recent-observations`
+## Stage 6: Delete `/recent-observations` — ✅ Done
 
 Once Stage 5 ships and has been running long enough to be confident in the freshness tradeoff from Stage 3:
 
@@ -215,6 +215,37 @@ Once Stage 5 ships and has been running long enough to be confident in the fresh
 - `ClimateExplorer.UnitTests/RecentObservationsEndpointTests.cs` and `RecentObservationsServiceTests.cs` — delete or port any assertion not already covered by the shared `BomDailyDataClient`/`bom-station`/`ghcnd-station` downloader tests (check for genuinely duplicated coverage before deleting; the automated-downloads plan's Stage 5 already consolidated BOM CSV download/parsing into the shared downloader, but the recent-observations sources may still have independent 2-year-window slicing logic worth preserving as a ported test rather than losing coverage).
 - Leave `RecentObservationComparisonTests.cs`, `RecentObservationRecordDetectionTests.cs`, `RecentObservationRetrievalMetadataSelectorTests.cs`, and `RecentObservationTileExpansionStateTests.cs` untouched — they test client-side calculator/view-model logic, not the endpoint.
 - Update [2026-07-13-01-automated-dataset-downloads-plan.md](2026-07-13-01-automated-dataset-downloads-plan.md), which repeatedly states "`/recent-observations` remains unchanged" as an explicit out-of-scope/acceptance-criteria item across every stage — add a short pointer to this doc so the two don't read as contradictory to a future reader.
+
+#### Stage 6 implementation progress
+
+Completed 2026-07-14. Prior work in this session already deleted
+`RecentObservationsEndpoints.cs`, the `RecentObservations/` WebApi source
+classes, the route mapping, `IDataService.GetRecentObservations`/
+`DataService.GetRecentObservations`, and `RecentObservationsEndpointTests.cs`
+(commit `5981c289b`, "Remove RecentObservations"). This pass finished the rest:
+
+- Deleted `ClimateExplorer.Core/Model/RecentObservationsResponse.cs` and
+  `RecentObservationSeries.cs` — both were wire-response types with no
+  remaining references anywhere in the solution. `RecentObservationSourceMetadata.cs`
+  was kept, per plan, since Stage 5 already repurposed it as a client-local
+  view-shaping record.
+- `RecentObservationsServiceTests.cs` was already ported in Stage 5 to mock
+  only `GetClimateRecords` and no longer references `GetRecentObservations` or
+  either deleted response type, so no further edits or deletions were needed
+  there — it tests the client-side `RecentObservationsService`/
+  `RecentObservationsDataProvider`, not the removed endpoint, and stays.
+  `RecentObservationComparisonTests.cs`, `RecentObservationRecordDetectionTests.cs`,
+  `RecentObservationRetrievalMetadataSelectorTests.cs`, and
+  `RecentObservationTileExpansionStateTests.cs` were already untouched.
+- Added an "Update, 2026-07-14" pointer note in
+  [2026-07-13-01-automated-dataset-downloads-plan.md](2026-07-13-01-automated-dataset-downloads-plan.md)
+  right after its original "`/recent-observations` ... explicitly out of
+  scope" paragraph, clarifying that statement described that plan's scope at
+  the time it was written and linking here for the endpoint's actual fate.
+
+Verification: full solution build succeeds with zero errors (two
+pre-existing, unrelated MSTEST analyzer warnings only); all 377 tests in
+`ClimateExplorer.UnitTests` pass.
 
 ## Risks
 
