@@ -19,9 +19,9 @@ public sealed class DataSetDownloadMetadataTests
 
         var assets = await resolver.ResolveAllAsync(CancellationToken.None);
 
-        Assert.HasCount(2079, assets);
+        Assert.HasCount(2092, assets);
         CollectionAssert.AreEquivalent(
-            new[] { "bom-station", "direct-http", "ghcnd-station", "ocean-acidity", "ozone", "sea-level" },
+            new[] { "bom-station", "direct-http", "ghcnd-station", "noaa-global-temperature", "ocean-acidity", "ozone", "sea-level" },
             assets.Select(x => x.DownloaderKey).Distinct().ToArray());
         Assert.AreEqual(assets.Count, assets.Select(x => x.AssetKey).Distinct().Count());
         Assert.IsTrue(assets.All(x => !x.RelativePath.Contains('[') && (x.DownloadUrl == null || !x.DownloadUrl.Contains('['))));
@@ -107,6 +107,19 @@ public sealed class DataSetDownloadMetadataTests
             ghcndAssets.First(x => x.Measurements.Count == 1 && x.Measurements[0].MeasurementDefinition.DataType == Core.Enums.DataType.Precipitation),
             Folders.SourceDataFolder,
             CancellationToken.None);
+    }
+
+    [TestMethod]
+    public async Task ResolveAllAsync_NoaaGlobalTemp_ResolvesOneStableAssetPerMappedArea()
+    {
+        var assets = await CreateResolver().ResolveAllAsync(CancellationToken.None);
+
+        var noaaAssets = assets.Where(x => x.DownloaderKey == "noaa-global-temperature").ToList();
+
+        Assert.HasCount(13, noaaAssets);
+        Assert.IsTrue(noaaAssets.All(x => x.DownloadUrl == null));
+        Assert.IsTrue(noaaAssets.All(x => x.Measurements.Count == 1));
+        Assert.Contains(@"NOAAGlobalTemp\aravg.mon.land_ocean.90S.90N.v6.0.0.asc", noaaAssets.Select(x => x.RelativePath).ToArray());
     }
 
     [TestMethod]

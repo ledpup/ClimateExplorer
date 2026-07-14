@@ -1,7 +1,7 @@
 # Automated dataset downloads for historical API data
 
 - **Date:** 2026-07-13
-- **Status:** In progress — stages 0–6 complete
+- **Status:** In progress — stages 0–7 complete
 - **Author:** Codex
 - **Scope:** dataset download metadata, `/dataset` and `/climate-record` request flow, dataset file loading/storage, Web API dependency injection, `ClimateExplorer.Data.Misc`, and related unit tests
 - **Branch context:** `development`
@@ -949,13 +949,70 @@ Completed on 2026-07-14:
 Verification at completion: 354 unit tests passed; the complete solution built
 with zero new warnings and errors (unchanged from stage 5).
 
-### Stage 7: NOAAGlobalTemp
+### Stage 7: NOAAGlobalTemp — completed 2026-07-14
 
 1. Implement bounded latest-release discovery and stable local filenames.
 2. Test all existing mapped station/area IDs and on-demand single-area downloads.
 3. Use the stable loose source names established in stage 0.
 4. Record remote release metadata and test fallback when a newer release is
    absent or malformed.
+
+#### Stage 7 implementation progress
+
+Completed on 2026-07-14:
+
+- The dataset's `DataFileSource.FilePathFormat` dropped the baked-in release
+  identifier (`aravg.mon.[station].v6.0.0.202512.asc` became
+  `aravg.mon.[station].v6.0.0.asc`), and `DataDownloadUrl` is now `null` at the
+  dataset level. The 13 already-deployed area files, in both
+  `ClimateExplorer.SourceData/NOAAGlobalTemp` and
+  `ClimateExplorer.WebApi/Datasets/NOAAGlobalTemp`, were renamed to the same
+  stable identity with `git mv` so their content and history carried over
+  unchanged. This removes the release-coupled local filename the batch tool
+  previously required a human to edit by hand every month.
+- `NoaaGlobalTempDataSetDownloader` (`noaa-global-temperature`) owns release
+  discovery instead of the generic template resolver, the same way the BOM and
+  GHCNd handlers own their own request URLs rather than using
+  `DataSetDefinition.DataDownloadUrl`. Given a mapped area ID, it probes the
+  provider's dated timeseries URL starting at the current UTC month and
+  stepping backward for up to six months, stopping at the first response that
+  is a non-empty, non-HTML success. Six months is a conservative bound on
+  NOAA's typical four-to-eight-week publication lag; if every candidate in the
+  window fails, the handler throws and the coordinator's existing
+  last-known-good fallback applies, the same failure path already exercised by
+  every other downloader.
+- The dataset opted into `noaa-global-temperature` for its one `TempMean`
+  measurement. Because every mapped area resolves to its own loose file, no
+  archive or multi-measurement grouping was needed, unlike BOM/GHCNd.
+- The discovered remote release (year/month) is not written into
+  `DataSetSourceState`: that record's existing hash/length/`RetrievedDate`
+  fields already fully determine staleness and byte-for-byte identity, and
+  every other handler already omits any handler-specific provenance from
+  shared state. Adding a schema field with a single consumer was judged an
+  unwarranted abstraction; the chosen release is implicit in the downloaded
+  file's own content and is reproducible by re-probing on the next refresh.
+- `ClimateExplorer.Data.Misc/Program.cs` no longer hard-codes a release
+  year/month, mutates the dataset definition's `DataDownloadUrl` at runtime, or
+  calls the generic per-station `DownloadDataSetData` loop for this dataset
+  (which had no other caller once removed). NOAAGlobalTemp now refreshes
+  through the same `DataSetBatchRefresher` call as every other opted-in
+  dataset. The station/area metadata JSON generation for
+  `Stations_NoaaGlobalTemp.json` and `DataFileMapping_NoaaGlobalTemp.json`
+  is unchanged, since that is build-time metadata authoring rather than
+  runtime retrieval.
+- Tests cover: current-month release available; current month missing and
+  falling back through older months in order; every candidate in the bounded
+  window failing (throws, no partial file left behind); and an HTML error
+  page for the newest release being rejected in favor of an older valid
+  release. A metadata contract test asserts exactly 13 stable
+  `noaa-global-temperature` assets with no download URL and one measurement
+  each. The pre-existing packaged-source validation test
+  (`ValidateAsync_StageOnePackagedSources_AllMatchTheirConfiguredReaders`) now
+  covers all 13 renamed files without modification, since it already validates
+  every non-`ghcnd-station` asset against the packaged source folder.
+
+Verification at completion: 359 unit tests passed; the complete solution built
+with zero warnings and errors.
 
 ### Stage 8: Greenland ice melt
 

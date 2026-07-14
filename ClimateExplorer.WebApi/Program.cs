@@ -74,6 +74,10 @@ builder.Services.AddSingleton<IDataSetDownloader>(
 builder.Services.AddSingleton<IDataSetDownloader>(
     new BomDataSetDownloader(new BomDailyDataClient(BomHttpClientFactory.CreateBomHttpClient())));
 builder.Services.AddSingleton<IDataSetDownloader>(
+    services => new NoaaGlobalTempDataSetDownloader(
+        services.GetRequiredService<DataSetHttpFileDownloader>(),
+        services.GetRequiredService<TimeProvider>()));
+builder.Services.AddSingleton<IDataSetDownloader>(
     services => new TransformingDataSetDownloader(
         "ocean-acidity",
         services.GetRequiredService<DataSetHttpFileDownloader>(),

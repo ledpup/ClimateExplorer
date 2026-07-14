@@ -35,6 +35,7 @@ var dataSetSourceUpdateCoordinator = new DataSetSourceUpdateCoordinator(
         new DirectHttpDataSetDownloader(dataSetHttpFileDownloader),
         new GhcndDataSetDownloader(GhcndHttpClientFactory.CreateHttpClient()),
         new BomDataSetDownloader(new BomDailyDataClient(httpClient)),
+        new NoaaGlobalTempDataSetDownloader(dataSetHttpFileDownloader, timeProvider),
         new TransformingDataSetDownloader("ocean-acidity", dataSetHttpFileDownloader, new OceanAciditySourceFileTransformer()),
         new TransformingDataSetDownloader("sea-level", dataSetHttpFileDownloader, new SeaLevelSourceFileTransformer()),
         new TransformingDataSetDownloader("ozone", dataSetHttpFileDownloader, new OzoneSourceFileTransformer()),
@@ -55,72 +56,13 @@ var jsonSerializerOptions = new JsonSerializerOptions
 // Download and build Greenland ice melt
 await GreenlandApiClient.GetMeltDataAndSave(httpClient, logger);
 
-/*
- *
- * NoaaGlobalTemp:
- * Generally, you want to be downloading for the current year - 1 and the 12th month.
- * But it depends on what is currently available on the server at https://www.ncei.noaa.gov/data/noaa-global-surface-temperature/v6/access/timeseries/
- *
- * IMPORTANT: you need to update DataFileSource.FilePathFormat in the measurement definition (in DataSetDefinitionsBuilder.cs) of NoaaGlobalTemp so that it is the same year and month.
- *
- */
-var noaaGlobalTempYear = "2025";
-var noaaGlobalTempMonth = "12";
-
 var stations = NoaaGlobalTemp.DataFileMapping().LocationIdToDataFileMappings.Values.Select(x => x.Single().Id);
 
 File.WriteAllText($@"{Folders.MetaDataFolder}\Station\Stations_NoaaGlobalTemp.json", JsonSerializer.Serialize(stations.Select(x => new Station { Id = x }), jsonSerializerOptions));
 File.WriteAllText($@"{Folders.MetaDataFolder}\DataFileMapping\DataFileMapping_NoaaGlobalTemp.json", JsonSerializer.Serialize(NoaaGlobalTemp.DataFileMapping(), jsonSerializerOptions));
 
-var noaaGlobalTempDsd = DataSetDefinitionsBuilder.BuildDataSetDefinitions().Single(x => x.Id == Guid.Parse("E61C6279-EDF4-461B-BDD1-0724D21F42F3"));
-var urlTemplace = noaaGlobalTempDsd.DataDownloadUrl;
-
-foreach (var station in stations)
-{
-    logger.LogInformation($"Attempting to download data for the area '{station}', for the year {noaaGlobalTempYear}, month {noaaGlobalTempMonth}");
-    noaaGlobalTempDsd.DataDownloadUrl = urlTemplace!.Replace("[station]", station).Replace("[year]", noaaGlobalTempYear.ToString()).Replace("[month]", noaaGlobalTempMonth);
-    await DownloadDataSetData(noaaGlobalTempDsd, Folders.SourceDataFolder, station);
-}
-
 await BuildStaticContent.GenerateSiteMap();
 GenerateMapMarkers();
-
-async Task DownloadDataSetData(DataSetDefinition dataSetDefinition, string? destinationBasePath = null, string? station = null, MeasurementDefinition? measurementDefinition = null)
-{
-    var md = measurementDefinition == null ? dataSetDefinition.MeasurementDefinitions!.Single() : measurementDefinition;
-    var relativeFilePath = md.DataFileSource.FilePathFormat.Replace("[station]", station ?? string.Empty);
-    var relativeFolder = Path.GetDirectoryName(relativeFilePath)!;
-    var outputPath = Path.Combine("Output", relativeFolder);
-
-    Directory.CreateDirectory(outputPath);
-
-    var fileName = Path.GetFileName(relativeFilePath);
-    fileName = fileName!.Replace("_reduced", string.Empty);
-    var filePathAndName = $@"{outputPath}\{fileName}";
-    if (File.Exists(filePathAndName))
-    {
-        logger.LogInformation($"{fileName} already exists. Will not download again. Delete the file and re-run if you want to re-download.");
-    }
-    else
-    {
-        logger.LogInformation($"Downloading {fileName}");
-        var fileUrl = dataSetDefinition.DataDownloadUrl;
-        var response = await httpClient.GetAsync(fileUrl);
-
-        var content = await response.Content.ReadAsStringAsync();
-
-        await File.WriteAllTextAsync(filePathAndName, content);
-        logger.LogInformation($"File downloaded to {filePathAndName}");
-    }
-
-    var destinationPathAndFile = destinationBasePath == null ? null : Path.Combine(destinationBasePath, relativeFolder, fileName!);
-    if (destinationPathAndFile != null)
-    {
-        Directory.CreateDirectory(Path.GetDirectoryName(destinationPathAndFile)!);
-        logger.LogInformation($"Will now copy {fileName} to {destinationPathAndFile}");
-        File.Copy(filePathAndName, destinationPathAndFile, true);
-    }
-}
 
 static void GenerateMapMarkers()
 {
