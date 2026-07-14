@@ -14,4 +14,5 @@ public sealed record ClimateRecordsResponse : ICachedData
     public int? EndYear { get; set; }
     public int TotalCount { get; set; }
     public DateTimeOffset? RetrievedDate { get; set; }
+    public List<DataSetMetadata>? SourceMetadata { get; set; }
 }

@@ -33,9 +33,11 @@ Separately, this investigation surfaced a **live bug, independent of this retire
 - `DataSetSourceAssetResolver.ResolveAsync` ([DataSetSourceAssetResolver.cs:36](../../ClimateExplorer.Data.Downloading/Orchestration/DataSetSourceAssetResolver.cs#L36)) and `GetAllResolutionInputs` (lines 121-125) both take every filter in `LocationIdToDataFileMappings` unfiltered by `EndDate`, so a multi-station BOM location resolves to one `DataSetDownloadRequest` per historical station. `DataSetSourceUpdateCoordinator.EnsureCurrentAsync` ([DataSetSourceUpdateCoordinator.cs:94-118](../../ClimateExplorer.Data.Downloading/Orchestration/DataSetSourceUpdateCoordinator.cs#L94)) then freshness-checks and, once >24h stale, re-downloads *each* of them independently — including closed stations whose content can never change again.
 - `SeriesProvider` reads `DataSetDefinition.DataLocationMapping.LocationIdToDataFileMappings` directly ([SeriesProvider.cs:198](../../ClimateExplorer.Core/DataPreparation/SeriesProvider.cs#L198)), independently of `DataSetSourceAssetResolver`. Excluding closed stations from the resolver does not stop `SeriesProvider` from reading their already-downloaded/packaged files for full historical stitching.
 
-## Stage 1: Stop the automatic pipeline from re-fetching closed BOM stations
+## Stage 1: Stop the automatic pipeline from re-fetching closed BOM stations — ✅ Done (`3c860adda`, "stage 1")
 
 This is a live latency/bandwidth bug today, not a retirement prerequisite — ship it independently and first.
+
+Implemented as planned, with one refinement: the contract test asserts **at most one** open filter per location (not exactly one) — a handful of locations in some mappings are all-null placeholders with zero real stations for that provider, which is legitimate and distinct from the ambiguous "two or more open stations" case the test guards against. All four planned tests were added (`ResolveAsync_LocationWithClosedAndOpenBomStations_ResolvesOnlyTheOpenStation`, `ResolveAllAsync_MultiStationBomLocation_ExcludesClosedStations`, the existing GHCNd-path regression coverage in `ResolveAllAsync_Baseline`, and `GetDataFileMappings_EveryLocationOfAnAutomaticallyManagedDataset_HasAtMostOneOpenStation`), plus the baseline asset-count test was updated from 2093 to 2000 (92 closed BOM stations excluded). All 15 tests in the affected files pass.
 
 Exclude filters that are not the currently open station from automatic-retrieval resolution, at both call sites in `DataSetSourceAssetResolver`:
 
@@ -55,9 +57,11 @@ Edge case: if a location's only filter ever had a non-null `EndDate` (fully deco
 - `ResolveAsync_SingleStationGhcndLocation_UnaffectedByEndDateFilter` — regression guard that the GHCNd single-station path is unchanged.
 - Contract test: every `LocationIdToDataFileMappings` entry across every checked-in `DataFileMapping_*.json` has exactly one filter with `EndDate == null`.
 
-## Stage 2: Add `SourceMetadata` and confirm the structural "supported" signal on `ClimateRecordsResponse`
+## Stage 2: Add `SourceMetadata` and confirm the structural "supported" signal on `ClimateRecordsResponse` — ✅ Done
 
 Mechanical, low-risk — this mostly reuses machinery already shipped for `AboutData`/`LocationDataSetMetadataSidePanel`.
+
+Implemented exactly as planned: `SourceMetadata` added to `ClimateRecordsResponse` and wired from `dataSet.SourceMetadata` in `ClimateRecordsEndpoints.GetClimateRecords`, no new builder or endpoint. Added `ClimateRecordsEndpointsTests.cs` covering all three planned cases, exercised against real bundled GHCNd (`AE000041196`) and multi-station BOM (`cbb11150-ec74-4401-8357-fae6fef70768`, stations 001019/001021) data via a `RefreshFailed`-outcome stub coordinator (same no-network pattern as `DataSetEndpointSourceUpdateTests`), so no HTTP mocking was needed. All 371 tests in `ClimateExplorer.UnitTests` and a full solution build pass.
 
 1. Add `public List<DataSetMetadata>? SourceMetadata { get; set; }` to `ClimateRecordsResponse` ([ClimateRecordsResponse.cs](../../ClimateExplorer.Core/Model/ClimateRecordsResponse.cs)).
 2. In `ClimateRecordsEndpoints.GetClimateRecords`, set `SourceMetadata = dataSet.SourceMetadata` next to the existing `RetrievedDate = dataSet.RetrievedDate` (around line 169).
@@ -72,6 +76,8 @@ Mechanical, low-risk — this mostly reuses machinery already shipped for `About
 - `GetClimateRecords_KnownLocation_ReturnsSourceMetadataFromDataSet`.
 - `GetClimateRecords_MultiStationBomLocation_SourceMetadataStationsContainsExactlyOneOpenStation`.
 - `GetClimateRecords_UnmatchedDataTypeForLocation_ReturnsNullDataResolutionAndNoSourceMetadata` — locks in the "supported" signal.
+
+All three added in `ClimateExplorer.UnitTests/ClimateRecordsEndpointsTests.cs`.
 
 ## Stage 3: Freshness — content-aware for `bom-station`/`ghcnd-station`
 
