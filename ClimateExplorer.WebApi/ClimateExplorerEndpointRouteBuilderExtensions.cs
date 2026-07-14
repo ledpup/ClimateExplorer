@@ -21,7 +21,6 @@ internal static class ClimateExplorerEndpointRouteBuilderExtensions
         app.MapGet("/region", LocationEndpoints.GetRegions);
         app.MapGet("/heating-score-table", MetadataEndpoints.GetHeatingScoreTable);
         app.MapGet("/climate-record", ClimateRecordsEndpoints.GetClimateRecords);
-        app.MapGet("/recent-observations", RecentObservationsEndpoints.GetRecentObservations);
 
         // permitSourceUpdate is deliberately not a bindable parameter here: requests hitting /dataset
         // directly must never trigger a new external data download via ClimateExplorer.Data.Downloading.

@@ -274,13 +274,4 @@ public class DataService : IDataService
 
         return result!;
     }
-
-    public async Task<RecentObservationsResponse> GetRecentObservations(Guid locationId)
-    {
-        var url = "/recent-observations";
-        url = QueryHelpers.AddQueryString(url, "locationId", locationId.ToString());
-
-        var result = await httpClient.GetFromJsonAsync<RecentObservationsResponse>(url, jsonSerializerOptions);
-        return result!;
-    }
 }
