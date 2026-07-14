@@ -122,13 +122,22 @@ If BOM or GHCNd is down or simply hasn't published yet, the 6-hour retry keeps t
 
 Implemented exactly as planned. New file `ClimateExplorer.UnitTests/DataSetDownloadValidatorTests.cs` covers the three `ValidateAsync` cases (constructing minimal `MeasurementDefinition`s against small on-disk CSVs, following the pattern in `DataFileSourceTests.cs`); the five `IsFresh` cases were added to the existing `DataSetFreshnessPolicyTests.cs`, extending its `CreateState` helper with an optional `latestRecordDate` parameter. `DataSetSourceUpdateCoordinator.GetCurrentStateAsync` and `RefreshAsync` were wired as specified (step 5 in "Mechanism" — the `PrepareAsync` response-level check at line ~75 was left on the plain `ICachedData` overload, as planned). Full solution build and all 379 `ClimateExplorer.UnitTests` pass.
 
-## Stage 4: Lock in BOM-before-GHCNd consistency
+## Stage 4: Lock in BOM-before-GHCNd consistency — ✅ Done
 
 No production change — the ordering already produces single-source-per-location results for TempMax/TempMin/Precipitation (see "Verified facts"). Add a regression test so it stops being an accident of declaration order:
 
 - `DataSetDefinitionOrdering_BomPrecedesGhcndForTempMaxTempMinAndPrecipitation` — asserts `DataSetDefinitionsBuilder.BuildDataSetDefinitions()` places the BOM definition before both GHCNd definitions, so a future reordering (alphabetizing, inserting a new AU source) fails a test instead of silently splitting a location's max/min/precip across two providers.
 
-## Stage 5: Migrate `RecentObservationsDataProvider` onto `/climate-record` only
+#### Stage 4 implementation progress
+
+Completed 2026-07-14: added `ClimateExplorer.UnitTests/DataSetDefinitionsBuilderTests.cs` with
+`BuildDataSetDefinitions_BomAndGhcndDefinitions_BomPrecedesGhcndForTempMaxTempMinAndPrecipitation`,
+which locates the BOM (`E5EEA4D6…`), GHCNd (`87C65C34…`), and GHCNdp
+(`5BBEAF4C…`) definitions by `Id` in `DataSetDefinitionsBuilder.BuildDataSetDefinitions()`'s
+returned list and asserts the BOM index precedes both GHCNd indices. No
+production code changed, as planned.
+
+## Stage 5: Migrate `RecentObservationsDataProvider` onto `/climate-record` only — ✅ Done
 
 Once Stages 2-4 land, `RecentObservationsDataProvider.FetchTemperatureData`/`FetchPrecipitationData` ([RecentObservationsDataProvider.cs:74-128](../../ClimateExplorer.Web.Client/Services/RecentObservations/RecentObservationsDataProvider.cs#L74)) already do most of the needed merge shape — they just also merge in a second, now-redundant, fetch:
 
@@ -144,6 +153,54 @@ Once Stages 2-4 land, `RecentObservationsDataProvider.FetchTemperatureData`/`Fet
 
 - Existing `RecentObservationsDataProvider`-adjacent tests (calculator/view-model tests) should be unaffected since they operate on `RecentObservationsDataSet`, not the removed endpoint.
 - Add/port: temperature and precipitation fetch build a merged, deduplicated-by-date record list purely from `/climate-record`; unsupported location produces `UnsupportedTemperature()`/`UnsupportedPrecipitation()`; source metadata maps the open-station entry correctly for a multi-station BOM location and the single-station entry for GHCNd.
+
+#### Stage 5 implementation progress
+
+Completed 2026-07-14, implemented exactly as planned:
+
+- `RecentObservationsDataProvider.cs` no longer calls `IDataService.GetRecentObservations`, and its
+  `recentResponseCache`/`GetRecentObservations`/`AwaitAndEvictOnFailure`/`MergeDailyDataRecords`
+  members were deleted outright — all were self-contained to this class (confirmed by a whole-repo
+  grep; `RecentObservationsCalculator` has its own separate, unrelated private
+  `MergeDailyDataRecords`, left untouched). `FetchTemperatureData`/`FetchPrecipitationData` now call
+  `GetHistoricalRecords` only and use its `Records` directly with no client-side merge.
+- The unsupported check was replaced with the Stage 2 structural signal:
+  `!historicalMaxResponse.DataResolution.HasValue && !historicalMinResponse.DataResolution.HasValue`
+  for temperature, `!historicalResponse.DataResolution.HasValue` for precipitation.
+  `GetHistoricalRecords`'s adjustment-candidate loop no longer overwrites a fallback response's
+  `DataResolution` to a synthetic `Daily` value; it now returns the last attempted response verbatim
+  when every candidate comes back empty, so the structural signal reflects what the server actually
+  matched rather than a hard-coded guess.
+- `CreateSourceMetadata` was replaced by a small mapper (`MapSourceMetadata`) from
+  `ClimateRecordsResponse.SourceMetadata` (`List<DataSetMetadata>?`) to
+  `RecentObservationSourceMetadata`, picking the active station per Stage 2's
+  `Stations.SingleOrDefault(x => x.StationEndDate is null)` rule and taking `RetrievedAtUtc` from
+  the response's own `RetrievedDate`. `RecentObservationsPanel.razor`,
+  `RecentObservationRetrievalMetadataSelector`, and `RecentObservationsTabResult` were not touched —
+  they already consume the `RecentObservationSourceMetadata` shape unchanged.
+- `RecentObservationsServiceTests.cs` (2700+ lines, ~76 tests exercising the provider through
+  `RecentObservationsService`) previously mocked both `GetRecentObservations` ("recent") and
+  `GetClimateRecords` ("historical") and relied on the provider's own merge to combine them. Its
+  three shared test helpers (`CreateService`, `CreateTemperatureService`,
+  `CreateTemperatureServiceWithExtremes`) and several one-off inline setups were ported to mock only
+  `GetClimateRecords`, pre-merging what used to be "recent" and "historical" records with the same
+  date-keyed last-write-wins semantics the production merge used to apply, plus setting
+  `DataResolution = DataResolution.Daily` so the structural "supported" signal stays true. No test's
+  expected values changed — only how each mock response is assembled.
+  `CalculatePrecipitationRecordsPreservesSourceMetadataAcrossDifferentOptions` was rebuilt around a
+  `DataSetMetadata`/`DataSetStationMetadata` source instead of a `RecentObservationSourceMetadata`
+  set directly on a `RecentObservationSeries`. `Times.Once` verifications against
+  `GetRecentObservations` were removed; the corresponding `GetClimateRecords` verifications already
+  covered the caching behavior under test.
+- Checked `MergeDailyDataRecords`'s only other reference (`RecentObservationsCalculator`'s
+  independent copy) before relying on the deletion being safe, per the plan's instruction.
+- `IDataService.GetRecentObservations`/`DataService.GetRecentObservations` and the
+  `/recent-observations` endpoint itself were intentionally left in place — they are Stage 6
+  deletion targets, not part of this stage.
+
+Verification at completion: 380 unit tests passed (379 pre-existing plus Stage 4's new test); the
+complete solution built with zero warnings and errors. `git diff --stat` confirms only
+`RecentObservationsDataProvider.cs` and `RecentObservationsServiceTests.cs` changed for this stage.
 
 ## Stage 6: Delete `/recent-observations`
 
