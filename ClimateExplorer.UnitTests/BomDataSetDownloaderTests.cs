@@ -89,6 +89,43 @@ public sealed class BomDataSetDownloaderTests
             () => downloader.DownloadAsync(request, temporaryRoot, CancellationToken.None));
     }
 
+    [TestMethod]
+    public async Task ResolveAsync_LocationWithClosedAndOpenBomStations_ResolvesOnlyTheOpenStation()
+    {
+        var definitions = await DataSetDefinition.GetDataSetDefinitions(Path.Combine(Folders.MetaDataFolder, "DataFileMapping"));
+        var definition = definitions.Single(x => x.ShortName == "BOM");
+
+        // Station 001021 served this location until 1998-09-15; station 001019 (EndDate: null) has served
+        // it ever since. Requesting data for the location must resolve only the still-open station.
+        var locationId = definition.DataLocationMapping!.LocationIdToDataFileMappings
+            .First(x => x.Value.Any(y => y.Id == "001021")).Key;
+        var body = new PostDataSetsRequestBody
+        {
+            SeriesSpecifications =
+            [
+                new SeriesSpecification
+                {
+                    DataSetDefinitionId = definition.Id,
+                    DataType = DataType.TempMax,
+                    DataAdjustment = DataAdjustment.Unadjusted,
+                    LocationId = locationId,
+                },
+            ],
+            BinningRule = BinGranularities.ByYearAndDay,
+            BinAggregationFunction = ContainerAggregationFunctions.Mean,
+            CupSize = 1,
+            RequiredBinDataProportion = 1,
+            RequiredBucketDataProportion = 1,
+            RequiredCupDataProportion = 1,
+        };
+
+        var assets = await new DataSetSourceAssetResolver(Path.Combine(Folders.MetaDataFolder, "DataFileMapping"))
+            .ResolveAsync(body, CancellationToken.None);
+
+        Assert.HasCount(1, assets);
+        Assert.AreEqual(@"BOM\001019.zip", assets[0].RelativePath);
+    }
+
     private static async Task<DataSetDownloadRequest> ResolveStationRequest()
     {
         var definitions = await DataSetDefinition.GetDataSetDefinitions(Path.Combine(Folders.MetaDataFolder, "DataFileMapping"));

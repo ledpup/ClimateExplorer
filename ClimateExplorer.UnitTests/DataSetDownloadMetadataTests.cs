@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ClimateExplorer.Core;
+using ClimateExplorer.Core.Model;
 using ClimateExplorer.Data.Downloading.Orchestration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -19,12 +20,26 @@ public sealed class DataSetDownloadMetadataTests
 
         var assets = await resolver.ResolveAllAsync(CancellationToken.None);
 
-        Assert.HasCount(2093, assets);
+        // 92 closed BOM stations (205 total mapped BOM stations - 113 currently open, one per BOM location)
+        // are deliberately excluded from automatic retrieval; see IsAutomaticallyRetrievable.
+        Assert.HasCount(2000, assets);
         CollectionAssert.AreEquivalent(
             new[] { "bom-station", "direct-http", "ghcnd-station", "greenland-melt", "noaa-global-temperature", "ocean-acidity", "ozone", "sea-level" },
             assets.Select(x => x.DownloaderKey).Distinct().ToArray());
         Assert.AreEqual(assets.Count, assets.Select(x => x.AssetKey).Distinct().Count());
         Assert.IsTrue(assets.All(x => !x.RelativePath.Contains('[') && (x.DownloadUrl == null || !x.DownloadUrl.Contains('['))));
+    }
+
+    [TestMethod]
+    public async Task ResolveAllAsync_MultiStationBomLocation_ExcludesClosedStations()
+    {
+        var assets = await CreateResolver().ResolveAllAsync(CancellationToken.None);
+        var bomRelativePaths = assets.Where(x => x.DownloaderKey == "bom-station").Select(x => x.RelativePath).ToArray();
+
+        // Location cbb11150-ec74-4401-8357-fae6fef70768 was served by station 001021 until 1998-09-15,
+        // then by station 001019 (still open, EndDate: null) from 1998-09-16 onward.
+        Assert.Contains(@"BOM\001019.zip", bomRelativePaths);
+        Assert.DoesNotContain(@"BOM\001021.zip", bomRelativePaths);
     }
 
     [TestMethod]
@@ -145,6 +160,32 @@ public sealed class DataSetDownloadMetadataTests
         CollectionAssert.AreEquivalent(
             new[] { "TempMax", "TempMin", "Precipitation" },
             sharedAsset.Measurements.Select(x => x.MeasurementDefinition.DataType.ToString()).ToArray());
+    }
+
+    [TestMethod]
+    public async Task GetDataFileMappings_EveryLocationOfAnAutomaticallyManagedDataset_HasAtMostOneOpenStation()
+    {
+        // Automatic-retrieval resolution (see IsAutomaticallyRetrievable) assumes there is never more than
+        // one open (EndDate: null, non-blank Id) station per location; a location with two or more would
+        // resolve ambiguously as to which one is "the" currently-refreshed station. Zero is legitimate: a
+        // handful of locations are present in a mapping purely as an all-null placeholder (no real station
+        // for that provider at that location). This only applies to datasets that opt into automatic
+        // retrieval at all (a DataDownloaderKey somewhere) - manually-curated datasets such as ACORN-SAT
+        // model their entire station history as closed segments with no "currently open" concept.
+        var definitions = await DataSetDefinition.GetDataSetDefinitions(Path.Combine(Folders.MetaDataFolder, "DataFileMapping"));
+        var automaticallyManaged = definitions.Where(x =>
+            x.DataDownloaderKey != null || (x.MeasurementDefinitions?.Any(m => m.DataDownloaderKey != null) ?? false));
+
+        foreach (var definition in automaticallyManaged)
+        {
+            foreach (var (locationId, filters) in definition.DataLocationMapping!.LocationIdToDataFileMappings)
+            {
+                var openFilterCount = filters.Count(x => !string.IsNullOrWhiteSpace(x.Id) && x.EndDate is null);
+                Assert.IsTrue(
+                    openFilterCount <= 1,
+                    $"Dataset {definition.ShortName} location {locationId} has {openFilterCount} open stations, expected at most 1.");
+            }
+        }
     }
 
     private static DataSetSourceAssetResolver CreateResolver()

@@ -33,7 +33,7 @@ public sealed class DataSetSourceAssetResolver(string? dataFileMappingFolder = n
                 throw new InvalidOperationException($"Dataset '{dataSet.Id}' has no file mapping for location '{specification.LocationId}'.");
             }
 
-            var filters = mappedFilters!.Where(x => !string.IsNullOrWhiteSpace(x.Id)).ToList();
+            var filters = mappedFilters!.Where(IsAutomaticallyRetrievable).ToList();
             inputs.AddRange(filters.Select(filter => new ResolutionInput(dataSet, measurement, downloaderKey, filter)));
         }
 
@@ -120,7 +120,7 @@ public sealed class DataSetSourceAssetResolver(string? dataFileMappingFolder = n
 
                 var filters = dataSet.DataLocationMapping?.LocationIdToDataFileMappings.Values
                     .SelectMany(x => x)
-                    .Where(x => !string.IsNullOrWhiteSpace(x.Id))
+                    .Where(IsAutomaticallyRetrievable)
                     .DistinctBy(x => x.Id)
                     .ToList();
                 if (filters == null || filters.Count == 0)
@@ -134,6 +134,18 @@ public sealed class DataSetSourceAssetResolver(string? dataFileMappingFolder = n
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// A closed station (a mapping entry with an <see cref="DataFileFilterAndAdjustment.EndDate"/> in the
+    /// past) can never receive new data, so it is excluded from automatic retrieval entirely: its already
+    /// downloaded/packaged archive is read directly by <c>SeriesProvider</c> without ever being re-resolved
+    /// or freshness-checked here. Only the currently open station (the mapping entry with a null
+    /// <see cref="DataFileFilterAndAdjustment.EndDate"/>) is refreshed going forward.
+    /// </summary>
+    private static bool IsAutomaticallyRetrievable(DataFileFilterAndAdjustment filter)
+    {
+        return !string.IsNullOrWhiteSpace(filter.Id) && filter.EndDate is null;
     }
 
     private static string GetAssetKey(ResolutionInput input)
