@@ -82,6 +82,51 @@ public sealed class DataSetFreshnessPolicyTests
     }
 
     [TestMethod]
+    public void IsFresh_BomOrGhcndStationWithYesterdaysRecord_IsFreshRegardlessOfRetrievedDateAge()
+    {
+        var state = CreateState(Now.AddDays(-2), latestRecordDate: DateOnly.FromDateTime(Now.UtcDateTime).AddDays(-1));
+
+        Assert.IsTrue(policy.IsFresh(state, DataResolution.Daily, "bom-station"));
+        Assert.IsTrue(policy.IsFresh(state, DataResolution.Daily, "ghcnd-station"));
+    }
+
+    [TestMethod]
+    public void IsFresh_BomOrGhcndStationMissingYesterdaysRecord_IsFreshOnlyWithinSixHoursOfRetrieval()
+    {
+        var staleRecordDate = DateOnly.FromDateTime(Now.UtcDateTime).AddDays(-2);
+
+        Assert.IsTrue(policy.IsFresh(CreateState(Now.AddHours(-5).AddTicks(1), staleRecordDate), DataResolution.Daily, "bom-station"));
+        Assert.IsFalse(policy.IsFresh(CreateState(Now.AddHours(-6), staleRecordDate), DataResolution.Daily, "bom-station"));
+    }
+
+    [TestMethod]
+    public void IsFresh_BomOrGhcndStationWithFutureLatestRecordDate_TreatedAsMissingAndFallsBackToRetryWindow()
+    {
+        var futureRecordDate = DateOnly.FromDateTime(Now.UtcDateTime).AddDays(1);
+
+        Assert.IsTrue(policy.IsFresh(CreateState(Now.AddHours(-1), futureRecordDate), DataResolution.Daily, "bom-station"));
+        Assert.IsFalse(policy.IsFresh(CreateState(Now.AddHours(-7), futureRecordDate), DataResolution.Daily, "bom-station"));
+    }
+
+    [TestMethod]
+    public void IsFresh_OtherDownloaderKeyWithDailyResolution_StillUsesTwentyFourHourWindow()
+    {
+        var recentRecordDate = DateOnly.FromDateTime(Now.UtcDateTime);
+
+        Assert.IsTrue(policy.IsFresh(CreateState(Now.AddHours(-23), recentRecordDate), DataResolution.Daily, "direct-http"));
+        Assert.IsFalse(policy.IsFresh(CreateState(Now.AddHours(-25), recentRecordDate), DataResolution.Daily, "direct-http"));
+    }
+
+    [TestMethod]
+    public void IsFresh_NonDailyResolutionForBomOrGhcnd_StillUsesTimeBasedWindow()
+    {
+        var recentRecordDate = DateOnly.FromDateTime(Now.UtcDateTime);
+
+        Assert.IsTrue(policy.IsFresh(CreateState(Now.AddDays(-27), recentRecordDate), DataResolution.Monthly, "bom-station"));
+        Assert.IsFalse(policy.IsFresh(CreateState(Now.AddDays(-29), recentRecordDate), DataResolution.Monthly, "bom-station"));
+    }
+
+    [TestMethod]
     public void OldestFor_MultipleContributingSources_ReturnsOldestRetrievalDate()
     {
         var oldest = Now.AddHours(-5);
@@ -99,7 +144,7 @@ public sealed class DataSetFreshnessPolicyTests
         Assert.IsNull(result);
     }
 
-    private static DataSetSourceState CreateState(DateTimeOffset? retrievedDate)
+    private static DataSetSourceState CreateState(DateTimeOffset? retrievedDate, DateOnly? latestRecordDate = null)
     {
         return new DataSetSourceState
         {
@@ -108,6 +153,7 @@ public sealed class DataSetFreshnessPolicyTests
             Length = 1,
             Sha256 = "hash",
             RetrievedDate = retrievedDate,
+            LatestRecordDate = latestRecordDate,
         };
     }
 

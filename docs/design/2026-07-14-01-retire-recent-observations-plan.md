@@ -79,7 +79,7 @@ Implemented exactly as planned: `SourceMetadata` added to `ClimateRecordsRespons
 
 All three added in `ClimateExplorer.UnitTests/ClimateRecordsEndpointsTests.cs`.
 
-## Stage 3: Freshness — content-aware for `bom-station`/`ghcnd-station`
+## Stage 3: Freshness — content-aware for `bom-station`/`ghcnd-station` — ✅ Done
 
 **Decision: content-aware, not a shorter time window.** `bom-station` and `ghcnd-station` back the large majority of locations, and both providers publish daily (BOM every day; GHCNd daily in many networks, notably the US, even though not universal). That combination — high traffic and a source that genuinely updates daily — is exactly the case worth the extra mechanism. Most other automatically-managed datasets (Mauna Loa CO₂, ODGI, HadCET, Greenland, sea level, ozone, …) are both lower-traffic (one location or a handful of global series each) and don't publish same-day/next-day, so a blanket content-aware policy would just make them retry forever without ever catching up — the existing 24h/28-day time-based policy stays their default.
 
@@ -119,6 +119,8 @@ If BOM or GHCNd is down or simply hasn't published yet, the 6-hour retry keeps t
 - `IsFresh_BomOrGhcndStationWithFutureLatestRecordDate_TreatedAsMissingAndFallsBackToRetryWindow`.
 - `IsFresh_OtherDownloaderKeyWithDailyResolution_StillUsesTwentyFourHourWindow` — regression guard that every other daily dataset is unaffected.
 - `IsFresh_NonDailyResolutionForBomOrGhcnd_StillUsesTimeBasedWindow` — guards the resolution gate even though no current BOM/GHCNd measurement is non-daily.
+
+Implemented exactly as planned. New file `ClimateExplorer.UnitTests/DataSetDownloadValidatorTests.cs` covers the three `ValidateAsync` cases (constructing minimal `MeasurementDefinition`s against small on-disk CSVs, following the pattern in `DataFileSourceTests.cs`); the five `IsFresh` cases were added to the existing `DataSetFreshnessPolicyTests.cs`, extending its `CreateState` helper with an optional `latestRecordDate` parameter. `DataSetSourceUpdateCoordinator.GetCurrentStateAsync` and `RefreshAsync` were wired as specified (step 5 in "Mechanism" — the `PrepareAsync` response-level check at line ~75 was left on the plain `ICachedData` overload, as planned). Full solution build and all 379 `ClimateExplorer.UnitTests` pass.
 
 ## Stage 4: Lock in BOM-before-GHCNd consistency
 

@@ -7,11 +7,22 @@ using static ClimateExplorer.Core.Enums;
 
 public sealed class DataSetDownloadValidator
 {
-    public async Task ValidateAsync(
+    /// <summary>
+    /// Validates every measurement in the request and returns the latest daily record date seen,
+    /// so freshness checks for daily downloaders (see <see cref="DataSetFreshnessPolicy"/>) can tell
+    /// whether the source already has yesterday's/today's row without a separate parse. The result is
+    /// the minimum across the request's measurements (the worst-covered one), not the maximum, so a
+    /// lagging measurement bundled into the same archive as an up-to-date one isn't masked. Returns
+    /// null if none of the measurements are <see cref="DataResolution.Daily"/>.
+    /// </summary>
+    public async Task<DateOnly?> ValidateAsync(
         DataSetDownloadRequest request,
         string temporaryDirectory,
         CancellationToken cancellationToken)
     {
+        DateOnly? latestRecordDate = null;
+        var sawDailyMeasurement = false;
+
         foreach (var downloadMeasurement in request.Measurements)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -33,6 +44,20 @@ public sealed class DataSetDownloadValidator
             {
                 throw new InvalidDataException($"Downloaded source '{request.AssetKey}' contained no finite measurements.");
             }
+
+            if (downloadMeasurement.MeasurementDefinition.DataResolution == DataResolution.Daily)
+            {
+                sawDailyMeasurement = true;
+                var measurementLatestDate = records
+                    .Where(x => x.Value.HasValue && double.IsFinite(x.Value.Value) && x.Date.HasValue)
+                    .Max(x => x.Date);
+                if (measurementLatestDate.HasValue && (latestRecordDate is null || measurementLatestDate.Value < latestRecordDate.Value))
+                {
+                    latestRecordDate = measurementLatestDate.Value;
+                }
+            }
         }
+
+        return sawDailyMeasurement ? latestRecordDate : null;
     }
 }

@@ -146,7 +146,7 @@ public sealed class DataSetSourceUpdateCoordinator : IDataSetSourceUpdateCoordin
             if (state == null ||
                 !string.Equals(state.AssetKey, asset.AssetKey, StringComparison.Ordinal) ||
                 !string.Equals(state.RelativePath, asset.RelativePath, StringComparison.OrdinalIgnoreCase) ||
-                !asset.Measurements.All(x => freshnessPolicy.IsFresh(state, x.MeasurementDefinition.DataResolution)))
+                !asset.Measurements.All(x => freshnessPolicy.IsFresh(state, x.MeasurementDefinition.DataResolution, asset.DownloaderKey)))
             {
                 return null;
             }
@@ -196,7 +196,7 @@ public sealed class DataSetSourceUpdateCoordinator : IDataSetSourceUpdateCoordin
 
             using var workspace = workspaceFactory.Create();
             var artifact = await downloader.DownloadAsync(asset, workspace.Path, cancellationToken);
-            await validator.ValidateAsync(asset, workspace.Path, cancellationToken);
+            var latestRecordDate = await validator.ValidateAsync(asset, workspace.Path, cancellationToken);
             await sourceFileStore.PublishAsync(artifact.CandidateFilePath, asset.RelativePath, cancellationToken);
             var fileInfo = await sourceFileStore.GetFileInfoAsync(asset.RelativePath, cancellationToken)
                 ?? throw new FileNotFoundException("Published dataset source file was not found.");
@@ -207,6 +207,7 @@ public sealed class DataSetSourceUpdateCoordinator : IDataSetSourceUpdateCoordin
                 Length = fileInfo.Length,
                 Sha256 = fileInfo.Sha256,
                 RetrievedDate = timeProvider.GetUtcNow(),
+                LatestRecordDate = latestRecordDate,
             };
             await stateStore.PutAsync(state, cancellationToken);
             return state;

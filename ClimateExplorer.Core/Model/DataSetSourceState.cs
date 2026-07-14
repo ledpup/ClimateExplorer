@@ -13,4 +13,6 @@ public sealed class DataSetSourceState : ICachedData
     public required string Sha256 { get; set; }
 
     public DateTimeOffset? RetrievedDate { get; set; }
+
+    public DateOnly? LatestRecordDate { get; set; }
 }
