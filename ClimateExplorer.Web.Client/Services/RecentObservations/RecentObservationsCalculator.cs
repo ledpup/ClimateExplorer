@@ -1417,7 +1417,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
 
     private static string FormatPrecipitation(double value)
     {
-        return $"{value.ToString("0.#", CultureInfo.InvariantCulture)}mm";
+        return $"{value.ToString("0", CultureInfo.InvariantCulture)}mm";
     }
 
     private static string FormatAnomaly(double value, Metric metric)

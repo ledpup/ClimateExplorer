@@ -3,6 +3,7 @@ namespace ClimateExplorer.Web.Client.Components.Info;
 using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Core.Model;
 using Microsoft.AspNetCore.Components;
+using static ClimateExplorer.Core.Enums;
 
 public partial class PrecipitationAnomalyInfo
 {
@@ -16,6 +17,6 @@ public partial class PrecipitationAnomalyInfo
 
     protected override async Task OnInitializedAsync()
     {
-        AnomalyAsString = CalculatedAnomaly.ValueAsString("mm");
+        AnomalyAsString = CalculatedAnomaly.ValueAsString(UnitOfMeasure.Millimetres);
     }
 }
