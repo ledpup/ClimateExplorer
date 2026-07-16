@@ -19,9 +19,9 @@
                             <span class="recent-observation-detail-rank">@metric.HeadlineCaption</span>
                         </div>
                     }
-                    @if (!string.IsNullOrWhiteSpace(metric.HistoricalTrendText))
+                    @if (!string.IsNullOrWhiteSpace(metric.RecentTrendText))
                     {
-                        <span class="recent-observation-detail-record">@metric.HistoricalTrendText</span>
+                        <span class="recent-observation-detail-record">@metric.RecentTrendText</span>
                     }
                     @if (!string.IsNullOrWhiteSpace(metric.FirstHalfTrendText))
                     {

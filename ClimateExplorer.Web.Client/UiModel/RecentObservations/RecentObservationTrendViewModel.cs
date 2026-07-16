@@ -8,7 +8,7 @@ public sealed record RecentObservationTrendViewModel
     public int MinimumRequiredYears { get; init; }
     public string? HeadlineText { get; init; }
     public string? HeadlineCaption { get; init; }
-    public string? HistoricalTrendText { get; init; }
+    public string? RecentTrendText { get; init; }
     public string? FirstHalfTrendText { get; init; }
     public string? UnavailableReason { get; init; }
 }

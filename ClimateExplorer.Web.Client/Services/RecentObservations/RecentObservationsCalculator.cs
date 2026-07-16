@@ -1070,9 +1070,9 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             Label = metric.VariationLabel,
             Unit = metric.Unit,
             CompleteYearCount = trendSet.CompletePointCount,
-            HeadlineText = FormatTrendPerDecade(trendSet.RecentTrend, metric.Unit),
-            HeadlineCaption = FormatYearRange(trendSet.RecentTrend),
-            HistoricalTrendText = $"{FormatYearRange(trendSet.HistoricalTrend)}: {FormatTrendPerDecade(trendSet.HistoricalTrend, metric.Unit)}",
+            HeadlineText = FormatTrendPerDecade(trendSet.HistoricalTrend, metric.Unit),
+            HeadlineCaption = FormatYearRange(trendSet.HistoricalTrend),
+            RecentTrendText = $"{FormatYearRange(trendSet.RecentTrend)}: {FormatTrendPerDecade(trendSet.RecentTrend, metric.Unit)}",
             FirstHalfTrendText = $"{FormatYearRange(trendSet.FirstHalfTrend)}: {FormatTrendPerDecade(trendSet.FirstHalfTrend, metric.Unit)}",
         };
     }
