@@ -12,7 +12,7 @@ public class DataSetDefinitionsBuilder
             new()
             {
                 Id = Guid.Parse("b13afcaf-cdbc-4267-9def-9629c8066321"),
-                Name = "Australian Climate Observations Reference Network - Surface Air Temperature (ACORN-SAT)",
+                Name = "Australian Climate Observations Reference Network - Surface Air Temperature",
                 ShortName = "ACORN-SAT",
                 Description = "The Australian Climate Observations Reference Network - Surface Air Temperature (ACORN-SAT) data set is a homogenized daily maximum, minimum and mean temperature data set containing data from 112 locations across Australia extending from 1910 to the present.",
                 Publisher = "Australian Bureau of Meteorology",
@@ -55,12 +55,12 @@ public class DataSetDefinitionsBuilder
             new()
             {
                 Id = Guid.Parse("E5EEA4D6-5FD5-49AB-BF85-144A8921111E"),
-                Name = "Bureau of Meteorology",
-                ShortName = "BOM",
-                Description = null,
+                Name = "Climate Data Online",
+                ShortName = "CDO",
+                Description = "Climate Data Online (CDO) provides historical daily rainfall and maximum and minimum temperature observations from Bureau of Meteorology weather stations across Australia. The period of record varies by station and weather element, with some observations dating to the mid-1800s. Data are available from both operating and closed stations, and recent observations may not yet have completed quality control.",
                 Publisher = "Australian Bureau of Meteorology",
                 PublisherUrl = "https://www.bom.gov.au/",
-                MoreInformationUrl = "https://www.bom.gov.au/",
+                MoreInformationUrl = "https://www.bom.gov.au/climate/data/",
                 StationInfoUrl = "https://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
                 LocationInfoUrl = "https://www.bom.gov.au/climate/data/acorn-sat/stations/#/[primaryStation]",
                 DataDownloaderKey = "bom-station",
@@ -464,11 +464,11 @@ public class DataSetDefinitionsBuilder
             new()
             {
                 Id = Guid.Parse("0561CF7E-83F2-4617-AC61-4962A0E95093"),
-                Name = "Met Office Hadley Centre",
-                ShortName = "Hadley Centre",
-                Description = @"The Met Office Hadley Centre is one of the UK's foremost climate change research centres.
+                Name = "Hadley Centre Central England Temperature",
+                ShortName = "HadCET",
+                Description = @"The Hadley Centre Central England Temperature (HadCET) dataset provides daily and monthly mean, minimum and maximum temperatures representative of a roughly triangular area enclosed by Lancashire, London and Bristol.
 
-Our aim is to provide climate science and services to people and organisations, so they can make better decisions to stay safe and thrive. We do this by working with partners around the globe, carrying out world leading research.",
+The monthly mean series begins in 1659 and is the longest instrumental temperature record in the world, while daily mean temperatures begin in 1772 and minimum and maximum temperature series begin in 1878.",
                 Publisher = "Met Office",
                 PublisherUrl = "https://www.metoffice.gov.uk/",
                 MoreInformationUrl = "https://www.metoffice.gov.uk/hadobs/",
@@ -488,6 +488,16 @@ Our aim is to provide climate science and services to people and organisations, 
                         DataRowRegEx = @"^\s*(?<year>\d{4})\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+).*$",
                         DataFileSource = LooseSource(@"Met\meantemp_monthly_totals.txt"),
                         NullValue = "-99.9",
+                    },
+                    new()
+                    {
+                        DataAdjustment = DataAdjustment.Adjusted,
+                        DataType = DataType.TempMean,
+                        UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
+                        DataResolution = DataResolution.Daily,
+                        DataDownloadUrl = "https://www.metoffice.gov.uk/hadobs/hadcet/data/meantemp_daily_totals.txt",
+                        DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})\s+(?<value>-?[\d+\.\d+]*)$",
+                        DataFileSource = LooseSource(@"Met\meantemp_daily_totals.txt"),
                     },
                     new()
                     {
