@@ -42,6 +42,10 @@
             {
                 <RecentObservationVariations Metrics="@variationTab.Metrics" />
             }
+            else if (SelectedTab is RecentObservationTrendTabViewModel trendTab)
+            {
+                <RecentObservationTrend Metrics="@trendTab.Metrics" />
+            }
         </div>
     }
 </article>

@@ -109,6 +109,7 @@ public sealed record RecentObservationTileViewModel
         {
             RecentObservationRecordsTabViewModel records => records with { Metrics = StripRecordMetrics(records.Metrics) },
             RecentObservationVariationTabViewModel variation => variation with { Metrics = StripVariationMetrics(variation.Metrics) },
+            RecentObservationTrendTabViewModel trend => trend with { Metrics = StripTrendMetrics(trend.Metrics) },
             _ => tab,
         })];
     }
@@ -147,6 +148,19 @@ public sealed record RecentObservationTileViewModel
             CurrentPeriodText = null,
             StandardScoreLabel = null,
             StandardScoreValue = null,
+            UnavailableReason = "Recent observations are below the completeness threshold.",
+        })];
+    }
+
+    private static IReadOnlyList<RecentObservationTrendViewModel> StripTrendMetrics(
+        IReadOnlyList<RecentObservationTrendViewModel> metrics)
+    {
+        return [.. metrics.Select(metric => metric with
+        {
+            HeadlineText = null,
+            HeadlineCaption = null,
+            HistoricalTrendText = null,
+            FirstHalfTrendText = null,
             UnavailableReason = "Recent observations are below the completeness threshold.",
         })];
     }

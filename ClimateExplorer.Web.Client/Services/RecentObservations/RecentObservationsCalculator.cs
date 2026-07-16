@@ -5,6 +5,7 @@ using System.Globalization;
 using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.Stats;
+using ClimateExplorer.Core.Stats.Model;
 using ClimateExplorer.Web.Client.Services.RecentObservations;
 using ClimateExplorer.Web.Client.UiModel.RecentObservations;
 
@@ -12,6 +13,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
 {
     private const int LatestSevenDaysLength = 7;
     private const double MinimumHistoricalCoverage = 0.9d;
+    private const int RecentTrendWindowYears = 30;
 
     private readonly TimeProvider timeProvider;
 
@@ -922,6 +924,17 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             });
         }
 
+        var trendMetrics = BuildTrendMetrics(period, domain, distributions);
+        if (trendMetrics.Count > 0)
+        {
+            tabs.Add(new RecentObservationTrendTabViewModel
+            {
+                Key = MetricGroupKey.Trend,
+                Title = "Trend",
+                Metrics = trendMetrics,
+            });
+        }
+
         return tabs;
     }
 
@@ -987,6 +1000,80 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             StandardScoreValue = score.HasValue && double.IsFinite(score.Value) ? FormatStandardScore(score.Value) : null,
             ComparablePeriodCount = distribution.ComparablePeriodCount,
         };
+    }
+
+    private static IReadOnlyList<RecentObservationTrendViewModel> BuildTrendMetrics(
+        PeriodObservation period,
+        MetricDomain domain,
+        IReadOnlyDictionary<string, HistoricalValues> distributions)
+    {
+        var metrics = period.Kind == PeriodKind.Daily ? domain.DailyVariationMetrics : domain.VariationMetrics;
+        var result = new List<RecentObservationTrendViewModel>();
+
+        foreach (var metric in metrics)
+        {
+            if (period.MetricValues.ContainsKey(metric.Key))
+            {
+                result.Add(BuildTrendMetric(metric, distributions.GetValueOrDefault(metric.Key)));
+            }
+        }
+
+        return result;
+    }
+
+    private static List<DataPoint> BuildTrendPoints(HistoricalValues distribution)
+    {
+        return distribution.PeriodValues
+            .Where(x => x.Year.HasValue && x.Value.HasValue && double.IsFinite(x.Value.Value))
+            .Select(x => new DataPoint(x.Year!.Value, x.Value!.Value))
+            .ToList();
+    }
+
+    private static RecentObservationTrendViewModel BuildTrendMetric(Metric metric, HistoricalValues? distribution)
+    {
+        var points = distribution is null ? [] : BuildTrendPoints(distribution);
+        var trendSet = points.Count >= AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly
+            ? TrendWindowCalculator.Calculate(points, AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly, RecentTrendWindowYears)
+            : null;
+
+        if (trendSet is null)
+        {
+            return new RecentObservationTrendViewModel
+            {
+                Label = metric.VariationLabel,
+                Unit = metric.Unit,
+                CompleteYearCount = points.Count,
+                MinimumRequiredYears = AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly,
+                UnavailableReason = $"Less than {AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly} complete years of data. "
+                    + $"A minimum of {AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly} years is used across the site "
+                    + "(for example the warming anomaly and heating score) so long-term trends aren't skewed by short records.",
+            };
+        }
+
+        return new RecentObservationTrendViewModel
+        {
+            Label = metric.VariationLabel,
+            Unit = metric.Unit,
+            CompleteYearCount = trendSet.CompletePointCount,
+            HeadlineText = FormatTrendPerDecade(trendSet.RecentTrend, metric.Unit),
+            HeadlineCaption = "Latest 30-years",
+            HistoricalTrendText = $"Historical trend: {FormatTrendPerDecade(trendSet.HistoricalTrend, metric.Unit)}",
+            FirstHalfTrendText = $"First-half of records: {FormatTrendPerDecade(trendSet.FirstHalfTrend, metric.Unit)}",
+        };
+    }
+
+    private static string FormatTrendPerDecade(LinearRegressionResult trend, string unit)
+    {
+        if (!trend.Significance.IsSlopeSignificant)
+        {
+            return "No significant trend";
+        }
+
+        var perDecade = trend.Line.Slope * 10;
+        var sign = perDecade >= 0 ? "+" : string.Empty;
+        return unit == "°C"
+            ? $"{sign}{perDecade.ToString("0.00", CultureInfo.InvariantCulture)}°C /decade"
+            : $"{sign}{perDecade.ToString("0", CultureInfo.InvariantCulture)}mm /decade";
     }
 
     private static string CreateCurrentPeriodLabel(PeriodObservation period)
