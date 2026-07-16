@@ -116,10 +116,12 @@ public sealed class DataSetDownloadMetadataTests
         var assets = await CreateResolver().ResolveAllAsync(CancellationToken.None);
         var validator = new DataSetDownloadValidator();
 
-        foreach (var asset in assets.Where(x => x.DownloaderKey != "ghcnd-station"))
-        {
-            await validator.ValidateAsync(asset, Folders.SourceDataFolder, CancellationToken.None);
-        }
+        // Each asset's validation is an independent file read/parse, so run them concurrently -
+        // sequentially this loop covers ~2000 assets and dominates the test suite's run time.
+        await Parallel.ForEachAsync(
+            assets.Where(x => x.DownloaderKey != "ghcnd-station"),
+            new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
+            async (asset, token) => await validator.ValidateAsync(asset, Folders.SourceDataFolder, token));
 
         var ghcndAssets = assets.Where(x => x.DownloaderKey == "ghcnd-station").ToList();
         await validator.ValidateAsync(

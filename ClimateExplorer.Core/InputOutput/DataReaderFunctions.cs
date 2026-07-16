@@ -7,6 +7,8 @@ using static ClimateExplorer.Core.Enums;
 
 public static class DataReaderFunctions
 {
+    private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, Regex> DataRowRegExCache = new();
+
     private static readonly Dictionary<string, short> MonthNamesToNumeric = new()
     {
         { "jan", 1 },
@@ -40,7 +42,7 @@ public static class DataReaderFunctions
             ];
         }
 
-        var regEx = new Regex(measurementDefinition.DataRowRegEx!);
+        var regEx = DataRowRegExCache.GetOrAdd(measurementDefinition.DataRowRegEx!, static pattern => new Regex(pattern, RegexOptions.Compiled));
 
         var records = new Dictionary<string, DataRecord>();
         var dataFileSource = measurementDefinition.DataFileSource
