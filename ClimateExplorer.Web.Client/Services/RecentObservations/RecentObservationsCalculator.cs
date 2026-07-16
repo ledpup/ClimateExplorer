@@ -1056,10 +1056,15 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             Unit = metric.Unit,
             CompleteYearCount = trendSet.CompletePointCount,
             HeadlineText = FormatTrendPerDecade(trendSet.RecentTrend, metric.Unit),
-            HeadlineCaption = "Latest 30-years",
+            HeadlineCaption = FormatYearRange(trendSet.RecentTrend),
             HistoricalTrendText = $"Historical trend: {FormatTrendPerDecade(trendSet.HistoricalTrend, metric.Unit)}",
-            FirstHalfTrendText = $"First-half of records: {FormatTrendPerDecade(trendSet.FirstHalfTrend, metric.Unit)}",
+            FirstHalfTrendText = $"{FormatYearRange(trendSet.FirstHalfTrend)}: {FormatTrendPerDecade(trendSet.FirstHalfTrend, metric.Unit)}",
         };
+    }
+
+    private static string FormatYearRange(LinearRegressionResult trend)
+    {
+        return $"{trend.Input.MinimumX.ToString("0", CultureInfo.InvariantCulture)}-{trend.Input.MaximumX.ToString("0", CultureInfo.InvariantCulture)}";
     }
 
     private static string FormatTrendPerDecade(LinearRegressionResult trend, string unit)
