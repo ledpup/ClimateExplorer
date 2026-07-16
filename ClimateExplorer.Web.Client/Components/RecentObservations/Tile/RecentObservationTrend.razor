@@ -15,17 +15,17 @@
                     @if (!string.IsNullOrWhiteSpace(metric.HeadlineText))
                     {
                         <div class="recent-observation-detail-headline">
-                            <span class="recent-observation-detail-current">@metric.HeadlineText</span>
+                            <span class="recent-observation-detail-current @GetTrendValueClass(metric.HeadlineText, metric.IsHeadlinePositive)">@metric.HeadlineText</span>
                             <span class="recent-observation-detail-rank">@metric.HeadlineCaption</span>
                         </div>
                     }
-                    @if (!string.IsNullOrWhiteSpace(metric.RecentTrendText))
+                    @if (!string.IsNullOrWhiteSpace(metric.RecentTrendValueText))
                     {
-                        <span class="recent-observation-detail-record">@metric.RecentTrendText</span>
+                        <span class="recent-observation-detail-record">@metric.RecentTrendYearRange: <span class="@GetTrendValueClass(metric.RecentTrendValueText, metric.IsRecentTrendPositive)">@metric.RecentTrendValueText</span></span>
                     }
-                    @if (!string.IsNullOrWhiteSpace(metric.FirstHalfTrendText))
+                    @if (!string.IsNullOrWhiteSpace(metric.FirstHalfTrendValueText))
                     {
-                        <span class="recent-observation-detail-record">@metric.FirstHalfTrendText</span>
+                        <span class="recent-observation-detail-record">@metric.FirstHalfTrendYearRange: <span class="@GetTrendValueClass(metric.FirstHalfTrendValueText, metric.IsFirstHalfTrendPositive)">@metric.FirstHalfTrendValueText</span></span>
                     }
                 }
             </dd>

@@ -1071,15 +1071,25 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             Unit = metric.Unit,
             CompleteYearCount = trendSet.CompletePointCount,
             HeadlineText = FormatTrendPerDecade(trendSet.HistoricalTrend, metric.Unit),
+            IsHeadlinePositive = IsTrendPositive(trendSet.HistoricalTrend),
             HeadlineCaption = FormatYearRange(trendSet.HistoricalTrend),
-            RecentTrendText = $"{FormatYearRange(trendSet.RecentTrend)}: {FormatTrendPerDecade(trendSet.RecentTrend, metric.Unit)}",
-            FirstHalfTrendText = $"{FormatYearRange(trendSet.FirstHalfTrend)}: {FormatTrendPerDecade(trendSet.FirstHalfTrend, metric.Unit)}",
+            RecentTrendYearRange = FormatYearRange(trendSet.RecentTrend),
+            RecentTrendValueText = FormatTrendPerDecade(trendSet.RecentTrend, metric.Unit),
+            IsRecentTrendPositive = IsTrendPositive(trendSet.RecentTrend),
+            FirstHalfTrendYearRange = FormatYearRange(trendSet.FirstHalfTrend),
+            FirstHalfTrendValueText = FormatTrendPerDecade(trendSet.FirstHalfTrend, metric.Unit),
+            IsFirstHalfTrendPositive = IsTrendPositive(trendSet.FirstHalfTrend),
         };
     }
 
     private static string FormatYearRange(LinearRegressionResult trend)
     {
         return $"{trend.Input.MinimumX.ToString("0", CultureInfo.InvariantCulture)}-{trend.Input.MaximumX.ToString("0", CultureInfo.InvariantCulture)}";
+    }
+
+    private static bool IsTrendPositive(LinearRegressionResult trend)
+    {
+        return trend.Significance.IsSlopeSignificant && trend.Line.Slope > 0;
     }
 
     private static string FormatTrendPerDecade(LinearRegressionResult trend, string unit)

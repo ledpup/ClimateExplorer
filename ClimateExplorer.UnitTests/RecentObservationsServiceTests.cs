@@ -1197,8 +1197,8 @@ public class RecentObservationsServiceTests
 
         Assert.IsNull(precipitation.HeadlineText);
         Assert.IsNull(precipitation.HeadlineCaption);
-        Assert.IsNull(precipitation.RecentTrendText);
-        Assert.IsNull(precipitation.FirstHalfTrendText);
+        Assert.IsNull(precipitation.RecentTrendValueText);
+        Assert.IsNull(precipitation.FirstHalfTrendValueText);
         Assert.AreEqual("Recent observations are below the completeness threshold.", precipitation.UnavailableReason);
     }
 
@@ -2049,7 +2049,7 @@ public class RecentObservationsServiceTests
 
         Assert.AreEqual("Precipitation", precipitation.Label);
         Assert.AreEqual("Historical range: 77mm to 252mm", precipitation.HistoricalRangeText);
-        Assert.AreEqual("Typical variation: ±52.5mm", precipitation.TypicalVariationText);
+        Assert.AreEqual("Typical variation: ±53mm", precipitation.TypicalVariationText);
         Assert.IsTrue(precipitation.CurrentPeriodText!.StartsWith("Latest 7 days: ", StringComparison.Ordinal));
         Assert.AreEqual("standard score", precipitation.StandardScoreLabel);
         Assert.AreEqual("-3.0×", precipitation.StandardScoreValue);
@@ -2073,7 +2073,7 @@ public class RecentObservationsServiceTests
 
         Assert.AreEqual("Precipitation", precipitation.Label);
         Assert.AreEqual("Historical range: 1mm to 26mm", precipitation.HistoricalRangeText);
-        Assert.AreEqual("Typical variation: ±7.5mm", precipitation.TypicalVariationText);
+        Assert.AreEqual("Typical variation: ±8mm", precipitation.TypicalVariationText);
         Assert.IsTrue(precipitation.CurrentPeriodText!.StartsWith("14 June 2026: ", StringComparison.Ordinal));
         Assert.AreEqual("standard score", precipitation.StandardScoreLabel);
         Assert.AreEqual("-1.7×", precipitation.StandardScoreValue);
@@ -2144,8 +2144,10 @@ public class RecentObservationsServiceTests
         Assert.AreEqual("Precipitation", precipitation.Label);
         Assert.AreEqual("+70mm /decade", precipitation.HeadlineText);
         Assert.AreEqual("1960-2026", precipitation.HeadlineCaption);
-        Assert.AreEqual("1997-2026: +70mm /decade", precipitation.RecentTrendText);
-        Assert.AreEqual("1960-1992: +70mm /decade", precipitation.FirstHalfTrendText);
+        Assert.AreEqual("1997-2026", precipitation.RecentTrendYearRange);
+        Assert.AreEqual("+70mm /decade", precipitation.RecentTrendValueText);
+        Assert.AreEqual("1960-1992", precipitation.FirstHalfTrendYearRange);
+        Assert.AreEqual("+70mm /decade", precipitation.FirstHalfTrendValueText);
     }
 
     [TestMethod]
@@ -2324,7 +2326,8 @@ public class RecentObservationsServiceTests
         var averageMax = trend.Metrics.Single(x => x.Label == "Average max temp");
 
         Assert.AreEqual("+0.35°C /decade", averageMax.HeadlineText);
-        Assert.AreEqual("1997-2026: +0.35°C /decade", averageMax.RecentTrendText);
+        Assert.AreEqual("1997-2026", averageMax.RecentTrendYearRange);
+        Assert.AreEqual("+0.35°C /decade", averageMax.RecentTrendValueText);
     }
 
     [TestMethod]
@@ -2391,7 +2394,8 @@ public class RecentObservationsServiceTests
         var averageMax = trend.Metrics.Single(x => x.Label == "Average max temp");
 
         Assert.AreEqual("No significant trend", averageMax.HeadlineText);
-        Assert.AreEqual("1997-2026: No significant trend", averageMax.RecentTrendText);
+        Assert.AreEqual("1997-2026", averageMax.RecentTrendYearRange);
+        Assert.AreEqual("No significant trend", averageMax.RecentTrendValueText);
     }
 
     [TestMethod]

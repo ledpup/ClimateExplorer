@@ -159,8 +159,10 @@ public sealed record RecentObservationTileViewModel
         {
             HeadlineText = null,
             HeadlineCaption = null,
-            RecentTrendText = null,
-            FirstHalfTrendText = null,
+            RecentTrendYearRange = null,
+            RecentTrendValueText = null,
+            FirstHalfTrendYearRange = null,
+            FirstHalfTrendValueText = null,
             UnavailableReason = "Recent observations are below the completeness threshold.",
         })];
     }
