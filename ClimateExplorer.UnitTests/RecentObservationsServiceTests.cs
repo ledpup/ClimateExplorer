@@ -2124,8 +2124,13 @@ public class RecentObservationsServiceTests
     [TestMethod]
     public async Task GetPrecipitationRecords_TrendTab_RoundsToWholeMillimetresPerDecade()
     {
+        // The tile's own current period (2026) is now folded into the trend series
+        // (see comment in BuildTrendMetric), so the recent value must continue the
+        // same linear formula as the historical fixture or it reads as an outlier.
         var historicalRecords = CreateHistoricalRangeRecords(new DateOnly(2026, 6, 8), new DateOnly(2026, 6, 14), startYear: 1960, endYear: 2025);
-        var service = CreateService(historicalRecords: historicalRecords);
+        var service = CreateService(
+            historicalRecords: historicalRecords,
+            recentValue: date => (date.Year - 1960) + date.Day);
 
         var result = await service.GetPrecipitationRecords(
             CreateSouthernHemisphereLocation(),
@@ -2137,10 +2142,10 @@ public class RecentObservationsServiceTests
         var precipitation = trend.Metrics.Single();
 
         Assert.AreEqual("Precipitation", precipitation.Label);
-        Assert.AreEqual("+70mm per decade", precipitation.HeadlineText);
-        Assert.AreEqual("Latest 30-years", precipitation.HeadlineCaption);
-        Assert.AreEqual("Historical trend: +70mm per decade", precipitation.HistoricalTrendText);
-        Assert.AreEqual("First-half of records: +70mm per decade", precipitation.FirstHalfTrendText);
+        Assert.AreEqual("+70mm /decade", precipitation.HeadlineText);
+        Assert.AreEqual("1997-2026", precipitation.HeadlineCaption);
+        Assert.AreEqual("1960-2026: +70mm /decade", precipitation.HistoricalTrendText);
+        Assert.AreEqual("1960-1992: +70mm /decade", precipitation.FirstHalfTrendText);
     }
 
     [TestMethod]
@@ -2304,8 +2309,8 @@ public class RecentObservationsServiceTests
             startYear: 1960,
             endYear: 2025);
         var service = CreateTemperatureServiceWithExtremes(
-            recentMax: _ => 20d,
-            recentMin: _ => 10d,
+            recentMax: date => 10d + ((date.Year - 1960) * 0.035),
+            recentMin: date => 2d + ((date.Year - 1960) * 0.02),
             historicalMax,
             historicalMin);
 
@@ -2318,8 +2323,8 @@ public class RecentObservationsServiceTests
         var trend = (RecentObservationTrendTabViewModel)latestSevenDays.AvailableExpandedTabs.Single(x => x.Key == MetricGroupKey.Trend);
         var averageMax = trend.Metrics.Single(x => x.Label == "Average max temp");
 
-        Assert.AreEqual("+0.35°C per decade", averageMax.HeadlineText);
-        Assert.AreEqual("Historical trend: +0.35°C per decade", averageMax.HistoricalTrendText);
+        Assert.AreEqual("+0.35°C /decade", averageMax.HeadlineText);
+        Assert.AreEqual("1960-2026: +0.35°C /decade", averageMax.HistoricalTrendText);
     }
 
     [TestMethod]
@@ -2338,8 +2343,8 @@ public class RecentObservationsServiceTests
             startYear: 1960,
             endYear: 2025);
         var service = CreateTemperatureServiceWithExtremes(
-            recentMax: _ => 20d,
-            recentMin: _ => 10d,
+            recentMax: date => 30d - ((date.Year - 1960) * 0.025),
+            recentMin: date => 10d - ((date.Year - 1960) * 0.01),
             historicalMax,
             historicalMin);
 
@@ -2352,7 +2357,7 @@ public class RecentObservationsServiceTests
         var trend = (RecentObservationTrendTabViewModel)latestSevenDays.AvailableExpandedTabs.Single(x => x.Key == MetricGroupKey.Trend);
         var averageMax = trend.Metrics.Single(x => x.Label == "Average max temp");
 
-        Assert.AreEqual("-0.25°C per decade", averageMax.HeadlineText);
+        Assert.AreEqual("-0.25°C /decade", averageMax.HeadlineText);
     }
 
     [TestMethod]
@@ -2386,7 +2391,7 @@ public class RecentObservationsServiceTests
         var averageMax = trend.Metrics.Single(x => x.Label == "Average max temp");
 
         Assert.AreEqual("No significant trend", averageMax.HeadlineText);
-        Assert.AreEqual("Historical trend: No significant trend", averageMax.HistoricalTrendText);
+        Assert.AreEqual("1960-2026: No significant trend", averageMax.HistoricalTrendText);
     }
 
     [TestMethod]

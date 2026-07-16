@@ -1012,9 +1012,9 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
 
         foreach (var metric in metrics)
         {
-            if (period.MetricValues.ContainsKey(metric.Key))
+            if (period.MetricValues.TryGetValue(metric.Key, out var currentValue))
             {
-                result.Add(BuildTrendMetric(metric, distributions.GetValueOrDefault(metric.Key)));
+                result.Add(BuildTrendMetric(metric, currentValue, period.StartDate.Year, distributions.GetValueOrDefault(metric.Key)));
             }
         }
 
@@ -1029,9 +1029,24 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             .ToList();
     }
 
-    private static RecentObservationTrendViewModel BuildTrendMetric(Metric metric, HistoricalValues? distribution)
+    private static RecentObservationTrendViewModel BuildTrendMetric(
+        Metric metric,
+        MetricObservationValue currentValue,
+        int currentPeriodYear,
+        HistoricalValues? distribution)
     {
+        // The tile's own current period is sliced identically to every historical
+        // comparable (GetHistoricalDailyRangeDistributions/GetHistoricalDailyDateDistributions
+        // apply the same template start/end to every year), but is deliberately excluded
+        // from `distribution` since that population exists to rank the current value
+        // against history. A trend describes the whole time series though, so the
+        // current (possibly year-to-date) value belongs back in as its most recent point.
         var points = distribution is null ? [] : BuildTrendPoints(distribution);
+        if (currentValue.Value.HasValue && double.IsFinite(currentValue.Value.Value))
+        {
+            points.Add(new DataPoint(currentPeriodYear, currentValue.Value.Value));
+        }
+
         var trendSet = points.Count >= AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly
             ? TrendWindowCalculator.Calculate(points, AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly, RecentTrendWindowYears)
             : null;
@@ -1057,7 +1072,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             CompleteYearCount = trendSet.CompletePointCount,
             HeadlineText = FormatTrendPerDecade(trendSet.RecentTrend, metric.Unit),
             HeadlineCaption = FormatYearRange(trendSet.RecentTrend),
-            HistoricalTrendText = $"Historical trend: {FormatTrendPerDecade(trendSet.HistoricalTrend, metric.Unit)}",
+            HistoricalTrendText = $"{FormatYearRange(trendSet.HistoricalTrend)}: {FormatTrendPerDecade(trendSet.HistoricalTrend, metric.Unit)}",
             FirstHalfTrendText = $"{FormatYearRange(trendSet.FirstHalfTrend)}: {FormatTrendPerDecade(trendSet.FirstHalfTrend, metric.Unit)}",
         };
     }
