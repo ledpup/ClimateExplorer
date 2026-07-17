@@ -83,9 +83,7 @@ public class DataSetDefinitionViewModel
         var dsd = dsds.FirstOrDefault();
 
         var dataResolution = dataSubstitutes.FirstOrDefault(x => x.DataResolution is not null)?.DataResolution ?? DataResolution.Monthly;
-
         var mds = dsd!.MeasurementDefinitions!.Where(x => x.DataType == dataType && x.DataAdjustment == dataAdjustment);
-
         MeasurementDefinitionViewModel? md = null;
         if (mds.Count() == 1)
         {

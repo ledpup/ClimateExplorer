@@ -540,6 +540,12 @@
       {
         "Id": "023090",
         "StartDate": "1977-02-01",
+        "EndDate": "2018-0630",
+        "ValueAdjustment": null
+      },
+      {
+        "Id": "023000",
+        "StartDate": "2018-07-01",
         "EndDate": null,
         "ValueAdjustment": null
       }
