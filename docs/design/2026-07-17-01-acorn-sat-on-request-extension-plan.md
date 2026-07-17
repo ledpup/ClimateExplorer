@@ -1,7 +1,8 @@
 # Extend ACORN-SAT with recent CDO data on `/climate-record`
 
 - **Date:** 2026-07-17
-- **Status:** Proposed
+- **Status:** In progress — Stages 0 and 1 complete; Stage 2 (extension
+  cache/CDO orchestration) next
 - **Author:** Codex
 - **Scope:** `/climate-record`, ACORN-SAT/CDO record composition, dataset source coordination, extension decision/cache state, source metadata, Web API dependency injection, unit tests, and removal of `ClimateExplorer.Data.Bom.AcornSatUpdateFromRaw`
 - **Builds on:** [Automated dataset downloads for historical API data](2026-07-13-01-automated-dataset-downloads-plan.md) and [Retire the recent-observations endpoint](2026-07-14-01-retire-recent-observations-plan.md)
@@ -350,45 +351,95 @@ station-selection rules into the ACORN-SAT component.
 
 ## Implementation stages
 
-### Stage 0: Lock down current contracts and extract reusable build seams
+### Stage 0: Lock down current contracts and extract reusable build seams — done
 
-1. Add well-known ACORN-SAT/CDO dataset IDs and metadata contract tests.
-2. Change `IDataSetSourceUpdateCoordinator.PrepareAsync` and its implementation
-   to accept `ICachedData?`, keeping every existing `DataSet` call unchanged.
-3. Extract the dataset response-building seam needed to build from a prepared
-   daily series without duplicating `DataSetEndpoints` behavior.
-4. Add a `CancellationToken` to the `/climate-record` endpoint flow and pass it
-   through the new service and existing coordinator.
-5. Prove with existing endpoint tests that non-ACORN behavior and direct
-   `/dataset` download prohibition are unchanged.
+1. **Done.** Added `ClimateExplorer.WebApi/AcornSat/AcornSatDatasetIds.cs` (the
+   ACORN-SAT and CDO dataset definition GUIDs in one named location) plus
+   `AcornSatDatasetIdsTests.cs`, which resolves each ID through
+   `DataSetDefinition.GetDataSetDefinitions()` and asserts `ShortName`,
+   measurement adjustment, and that ACORN-SAT still has no
+   `DataDownloaderKey`.
+2. **Done.** `IDataSetSourceUpdateCoordinator.PrepareAsync` and
+   `DataSetSourceUpdateCoordinator` now accept `ICachedData?` instead of
+   `DataSet?` (mechanical change — `DataSetFreshnessPolicy.IsFresh` and
+   `DataSetRetrievalDate.OldestFor` already operated on `ICachedData`). Updated
+   the `IDataSetSourceUpdateCoordinator` test stubs in
+   `ClimateRecordsEndpointsTests.cs` and `DataSetEndpointSourceUpdateTests.cs`
+   to match.
+3. **Done.** Added `DataSetBuilder.BuildDataSetFromSeries(request, series)`,
+   which runs the same validation/filter/binning pipeline as `BuildDataSet`
+   but starts from a caller-supplied `SeriesProvider.Series` instead of
+   reading through `SeriesProvider`. Extracted
+   `DataSetEndpoints.BuildResponseDataSet(body, series, retrievedDate)` from
+   `PostDataSets`, so a future caller can build a `DataSet` response
+   (geographical entity, source metadata, binned records) from an
+   already-prepared series without duplicating that logic. `PostDataSets`
+   itself is behaviourally unchanged (verified by the existing test suite).
+4. **Done.** `ClimateRecordsEndpoints.GetClimateRecords` now takes a
+   `CancellationToken` parameter (bound automatically by minimal APIs) and
+   passes it to `DataSetEndpoints.PostDataSets`. Added
+   `GetClimateRecords_CallerCancelsRequest_PropagatesOperationCanceledException`,
+   which proves a cancelled token throws `OperationCanceledException` through
+   the endpoint rather than being swallowed.
+5. **Done.** Full existing test suite (413 tests) passes unchanged after all
+   of the above.
 
-### Stage 1: Implement and test the pure ACORN-SAT record extender
+### Stage 1: Implement and test the pure ACORN-SAT record extender — done
 
-1. Add the comparison/merge result models and decision enum.
-2. Implement the most-recent-complete-year completeness, overlap, date-set,
-   and 0.1-degree comparison rules with injected `TimeProvider`/date. The
-   compared/completeness year is whatever year ACORN-SAT's latest date closes
-   out, not necessarily `today`'s year minus one.
-3. Generate non-null, non-overlapping overlay records for every date after the
-   latest ACORN-SAT date through today, which may span more than one calendar
-   year.
-4. Generate the deterministic comparison signature and keep the component free
-   of HTTP, filesystem publication, endpoint, and cache concerns.
-5. Use real-shape fixtures for multi-station mappings, the
-   `023000`/`023090`/`023000` close-reopen history, all-null `002079`, and the
-   `046012` 2024 cutoff (as a multi-year-bridge case, not a rejection case).
+1. **Done.** Added `ClimateExplorer.Data.Downloading/Extenders/` with
+   `AcornSatExtensionDecision` (the six-value enum) and
+   `AcornSatRecordExtensionResult` (decision, comparison year, latest
+   ACORN-SAT date, signature, station IDs, overlay records,
+   `CdoContributed`).
+2. **Done.** `AcornSatRecordExtender.Extend(...)` computes the comparison year
+   as the latest year for which ACORN-SAT reaches 31 December (not
+   necessarily `today`'s year minus one), checks the non-null date sets match
+   over that year, and reproduces the retired executable's exact
+   `Math.Round(Math.Abs(diff), 1) > 0.1` tolerance semantics.
+3. **Done.** The overlay is every non-null CDO date strictly after the latest
+   ACORN-SAT date through `today`, which the implementation and tests confirm
+   can span more than one calendar year.
+4. **Done.** The comparison signature is a SHA-256 hash over the latest
+   ACORN-SAT date plus the ordered comparison-year date/value pairs; the
+   component takes no `HttpClient`, file path, or cache dependency.
+5. **Done.** `AcornSatRecordExtenderTests.cs` (18 tests) covers the ordinary
+   single prior-year case, the `046012`-style two-calendar-year bridge, the
+   Adelaide `023000`/`023090`/`023000` close-reopen history, the exact
+   0.1-degree boundary (accepted) versus an above-tolerance difference
+   (rejected), zero/one-sided/all-null comparison overlap, missing station,
+   missing/empty ACORN-SAT or CDO input, and comparison-signature
+   stability/invalidation.
 
-### Stage 2: Add the focused extension cache and CDO orchestration
+### Stage 2: Add the focused extension cache and CDO orchestration — in progress
 
-1. Add `AcornSatExtensionCacheEntry` and a cache wrapper over
-   `ClimateExplorerApiServices.LongtermCache`.
-2. Implement signature/station/data-type validation and conclusive versus
-   transient decision reuse.
-3. Resolve/prepare the CDO dependency through the existing source coordinator;
-   never call the BOM client directly.
-4. Coalesce extension recalculation by location/data type and implement
-   last-known-good overlay fallback.
-5. Add structured logs for cache reuse, comparison decisions, CDO contribution
+0. **Done, ahead of schedule.** Added `ClimateExplorer.WebApi/AcornSat/AcornSatStationResolver.cs`
+   (`AcornSatStationResolution`) implementing eligibility rule 2: resolves the
+   single non-blank adjusted ACORN-SAT station and the single open
+   (null-`EndDate`), non-blank CDO station for a location from
+   `DataSetDefinition.DataLocationMapping`. `AcornSatStationResolverTests.cs`
+   covers the Adelaide close/reopen history (both sides resolve to `023000`),
+   the all-null placeholder location
+   (`143983a0-240e-447f-8578-8daf2c0a246a`), an unknown location, and asserts
+   every real ACORN-SAT location resolves to exactly one open CDO station
+   (a regression guard for the mapping fix above).
+1. **Done.** Added `AcornSatExtensionCacheEntry`
+   (`ClimateExplorer.Data.Downloading/Extenders/AcornSatExtensionCacheEntry.cs`,
+   implements `ICachedData`, includes an `IsConclusive` helper for the
+   Eligible/AdjustmentsDetected-only reuse rule) and
+   `AcornSatExtensionCache` (`ClimateExplorer.WebApi/AcornSat/AcornSatExtensionCache.cs`),
+   a thin wrapper over `ICache` keyed by location + data type so callers never
+   see the underlying cache key format.
+   `AcornSatExtensionCacheTests.cs` covers the empty/round-trip/no-collision
+   cases against a fake `ICache`.
+2. Remaining: implement signature/station/data-type validation and conclusive
+   versus transient decision reuse (i.e. the service that calls
+   `AcornSatStationResolver`, `AcornSatRecordExtender`, and
+   `AcornSatExtensionCache` together).
+3. Remaining: resolve/prepare the CDO dependency through the existing source
+   coordinator; never call the BOM client directly.
+4. Remaining: coalesce extension recalculation by location/data type and
+   implement last-known-good overlay fallback.
+5. Remaining: add structured logs for cache reuse, comparison decisions, CDO contribution
    range/count, annual-signature invalidation, and fallback. Do not log the
    complete recordset.
 

@@ -3,6 +3,7 @@ namespace ClimateExplorer.WebApi;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
@@ -22,7 +23,8 @@ internal static class ClimateRecordsEndpoints
         int? skip = null,
         int? month = null,
         bool monthly = false,
-        int? day = null)
+        int? day = null,
+        CancellationToken cancellationToken = default)
     {
         var dataSetDefinitions = await MetadataEndpoints.GetDataSetDefinitions();
         var locationDsds = dataSetDefinitions.Where(x => x.LocationIds!.Contains(locationId)).ToList();
@@ -91,7 +93,8 @@ internal static class ClimateRecordsEndpoints
                 CupSize = ClimateExplorerApiConstants.DefaultCupSize,
             },
             services,
-            permitSourceUpdate: true);
+            permitSourceUpdate: true,
+            cancellationToken);
 
         static int YearOf(BinnedRecord r) => r.BinIdentifier switch
         {

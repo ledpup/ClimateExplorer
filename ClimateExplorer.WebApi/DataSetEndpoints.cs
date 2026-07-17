@@ -45,13 +45,41 @@ internal static class DataSetEndpoints
         var dsb = new DataSetBuilder();
 
         var series = await dsb.BuildDataSet(body);
+        var retrievedDate = sourcePreparation.Outcome == DataSetSourcePreparationOutcome.RefreshFailed
+            ? null
+            : sourcePreparation.RetrievedDate;
+        var returnDataSet = await BuildResponseDataSet(body, series, retrievedDate);
+
+        // If the BinningRule is ByYearAndDay (or ByDayOnly filtered to a specific year) then there is little
+        // to gain by caching the data because we haven't done any aggregation. Therefore, return early, before the cache step
+        if (body.BinningRule == BinGranularities.ByYearAndDay ||
+            (body.BinningRule == BinGranularities.ByDayOnly && body.FilterToYear.HasValue))
+        {
+            return returnDataSet;
+        }
+
+        await services.Cache.Put(cacheKey, returnDataSet);
+        return returnDataSet;
+    }
+
+    /// <summary>
+    /// Builds the response <see cref="DataSet"/> (geographical entity, source metadata, binned records) from
+    /// an already-built <see cref="DataSetBuilder.BuildDataSetResult"/>, independent of how that result's
+    /// series was obtained. Shared by the ordinary <see cref="SeriesProvider"/>-backed path above and by
+    /// callers (such as the ACORN-SAT on-request extension) that supply an already-composed series.
+    /// </summary>
+    internal static async Task<DataSet> BuildResponseDataSet(
+        PostDataSetsRequestBody body,
+        DataSetBuilder.BuildDataSetResult series,
+        DateTimeOffset? retrievedDate)
+    {
         var definitions = await DataSetDefinition.GetDataSetDefinitions();
         var spec = body.SeriesSpecifications![0];
 
         var geoEntity = await GeographicalEntity.GetGeographicalEntity(spec.LocationId);
         var sourceMetadata = await new DataSetMetadataBuilder().BuildAsync(body, definitions);
 
-        var returnDataSet =
+        return
             new DataSet
             {
                 GeographicalEntity = geoEntity,
@@ -72,20 +100,7 @@ internal static class DataSetEndpoints
                     ? series.RawDataRecords
                     : null,
                 SourceMetadata = sourceMetadata,
-                RetrievedDate = sourcePreparation.Outcome == DataSetSourcePreparationOutcome.RefreshFailed
-                    ? null
-                    : sourcePreparation.RetrievedDate,
+                RetrievedDate = retrievedDate,
             };
-
-        // If the BinningRule is ByYearAndDay (or ByDayOnly filtered to a specific year) then there is little
-        // to gain by caching the data because we haven't done any aggregation. Therefore, return early, before the cache step
-        if (body.BinningRule == BinGranularities.ByYearAndDay ||
-            (body.BinningRule == BinGranularities.ByDayOnly && body.FilterToYear.HasValue))
-        {
-            return returnDataSet;
-        }
-
-        await services.Cache.Put(cacheKey, returnDataSet);
-        return returnDataSet;
     }
 }

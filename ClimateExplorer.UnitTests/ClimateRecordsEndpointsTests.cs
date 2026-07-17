@@ -3,9 +3,11 @@ namespace ClimateExplorer.UnitTests;
 using System;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using ClimateExplorer.Core;
 using ClimateExplorer.Core.DataPreparation;
+using ClimateExplorer.Core.Interface;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Data.Downloading.Models;
 using ClimateExplorer.Data.Downloading.Orchestration;
@@ -60,6 +62,19 @@ public sealed class ClimateRecordsEndpointsTests
         Assert.IsEmpty(response.Records);
     }
 
+    [TestMethod]
+    public async Task GetClimateRecords_CallerCancelsRequest_PropagatesOperationCanceledException()
+    {
+        var ghcndLocationId = await GetSingleStationGhcndLocationId("AE000041196");
+        var coordinator = new CancellingSourceUpdateCoordinator();
+        var services = new ClimateExplorerApiServices(new MemoryCache(), new MemoryCache(), new HttpClient(), new HttpClient(), coordinator);
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+
+        await Assert.ThrowsExactlyAsync<OperationCanceledException>(() =>
+            ClimateRecordsEndpoints.GetClimateRecords(services, ghcndLocationId, DataType.TempMax, DataAdjustment.Unadjusted, cancellationToken: cts.Token));
+    }
+
     private static async Task<Guid> GetSingleStationGhcndLocationId(string stationId)
     {
         var definitions = await DataSetDefinition.GetDataSetDefinitions();
@@ -79,11 +94,24 @@ public sealed class ClimateRecordsEndpointsTests
     {
         public Task<DataSetSourcePreparationResult> PrepareAsync(
             PostDataSetsRequestBody request,
-            ClimateExplorer.Core.Interface.ICachedData? cachedData,
+            ICachedData? cachedData,
             bool permitSourceUpdate,
-            System.Threading.CancellationToken cancellationToken)
+            CancellationToken cancellationToken)
         {
             return Task.FromResult(result);
+        }
+    }
+
+    private sealed class CancellingSourceUpdateCoordinator : IDataSetSourceUpdateCoordinator
+    {
+        public Task<DataSetSourcePreparationResult> PrepareAsync(
+            PostDataSetsRequestBody request,
+            ICachedData? cachedData,
+            bool permitSourceUpdate,
+            CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            throw new InvalidOperationException("Expected cancellation to be observed before this point.");
         }
     }
 
