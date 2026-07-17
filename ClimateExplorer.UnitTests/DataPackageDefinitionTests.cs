@@ -15,7 +15,7 @@ public sealed class DataPackageDefinitionTests
     private static readonly IReadOnlyDictionary<string, string> StationByDataSet = new Dictionary<string, string>
     {
         ["ACORN-SAT"] = "001019",
-        ["BOM"] = "001019",
+        ["CDO"] = "001019",
         ["GHCNm"] = "AE000041196",
         ["GHCNmp"] = "AE000041196",
         ["GHCNd"] = "AE000041196",

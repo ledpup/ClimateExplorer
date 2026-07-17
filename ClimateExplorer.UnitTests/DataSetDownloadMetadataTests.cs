@@ -22,7 +22,7 @@ public sealed class DataSetDownloadMetadataTests
 
         // 92 closed BOM stations (205 total mapped BOM stations - 113 currently open, one per BOM location)
         // are deliberately excluded from automatic retrieval; see IsAutomaticallyRetrievable.
-        Assert.HasCount(2000, assets);
+        Assert.HasCount(2001, assets);
         CollectionAssert.AreEquivalent(
             new[] { "bom-station", "direct-http", "ghcnd-station", "greenland-melt", "noaa-global-temperature", "ocean-acidity", "ozone", "sea-level" },
             assets.Select(x => x.DownloaderKey).Distinct().ToArray());
@@ -61,11 +61,12 @@ public sealed class DataSetDownloadMetadataTests
         var assets = await CreateResolver().ResolveAllAsync(CancellationToken.None);
         var metAssets = assets.Where(x => x.RelativePath.StartsWith(@"Met\")).ToList();
 
-        Assert.HasCount(4, metAssets);
+        Assert.HasCount(5, metAssets);
         CollectionAssert.AreEquivalent(
             new[]
             {
                 "https://www.metoffice.gov.uk/hadobs/hadcet/data/meantemp_monthly_totals.txt",
+                "https://www.metoffice.gov.uk/hadobs/hadcet/data/meantemp_daily_totals.txt",
                 "https://www.metoffice.gov.uk/hadobs/hadcet/data/maxtemp_daily_totals.txt",
                 "https://www.metoffice.gov.uk/hadobs/hadcet/data/mintemp_daily_totals.txt",
                 "https://www.metoffice.gov.uk/hadobs/hadukp/data/daily/HadCEP_daily_totals.txt",

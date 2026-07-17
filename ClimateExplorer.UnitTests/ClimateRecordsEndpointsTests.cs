@@ -79,7 +79,7 @@ public sealed class ClimateRecordsEndpointsTests
     {
         public Task<DataSetSourcePreparationResult> PrepareAsync(
             PostDataSetsRequestBody request,
-            DataSet? cachedData,
+            ClimateExplorer.Core.Interface.ICachedData? cachedData,
             bool permitSourceUpdate,
             System.Threading.CancellationToken cancellationToken)
         {

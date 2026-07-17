@@ -1,6 +1,7 @@
 namespace ClimateExplorer.Data.Downloading.Orchestration;
 
 using ClimateExplorer.Core.DataPreparation;
+using ClimateExplorer.Core.Interface;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Data.Downloading.Downloaders;
 using ClimateExplorer.Data.Downloading.Models;
@@ -47,7 +48,7 @@ public sealed class DataSetSourceUpdateCoordinator : IDataSetSourceUpdateCoordin
 
     public async Task<DataSetSourcePreparationResult> PrepareAsync(
         PostDataSetsRequestBody request,
-        DataSet? cachedData,
+        ICachedData? cachedData,
         bool permitSourceUpdate,
         CancellationToken cancellationToken)
     {

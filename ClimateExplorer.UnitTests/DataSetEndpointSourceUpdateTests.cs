@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ClimateExplorer.Core;
 using ClimateExplorer.Core.DataPreparation;
+using ClimateExplorer.Core.Interface;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.WebApi;
 using ClimateExplorer.Data.Downloading.Models;
@@ -144,7 +145,7 @@ public sealed class DataSetEndpointSourceUpdateTests
 
         public Task<DataSetSourcePreparationResult> PrepareAsync(
             PostDataSetsRequestBody request,
-            DataSet? cachedData,
+            ICachedData? cachedData,
             bool permitSourceUpdate,
             CancellationToken cancellationToken)
         {
