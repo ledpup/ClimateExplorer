@@ -10,12 +10,16 @@
 ## Goal
 
 When `/climate-record` serves an adjusted ACORN-SAT daily temperature series,
-extend it through the current calendar year with unadjusted Bureau of
-Meteorology Climate Data Online (CDO) observations only when the most recent
-complete ACORN-SAT year demonstrates that the adjusted and CDO series are not
-materially different.
+extend it through today with unadjusted Bureau of Meteorology Climate Data
+Online (CDO) observations only when the most recent complete ACORN-SAT year
+demonstrates that the adjusted and CDO series are not materially different.
+ACORN-SAT can be more than one year stale for a given data type (see
+`046012`'s mean/minimum below), so the appended range can span more than one
+calendar year: it always runs from the day after ACORN-SAT's latest date
+through today, not just from 1 January of the request year.
 
-For a request made on 2026-07-10, the successful shape is:
+For a request made on 2026-07-10, the ordinary successful shape (ACORN-SAT
+complete through the prior year) is:
 
 1. read the packaged annual ACORN-SAT series through 2025-12-31;
 2. resolve and, if stale, refresh the open CDO station archive for the requested
@@ -23,9 +27,13 @@ For a request made on 2026-07-10, the successful shape is:
 3. compare ACORN-SAT and CDO over 2025;
 4. if the comparison proves that the series is eligible, append CDO values from
    2026-01-01 through 2026-07-10;
-5. cache the small eligibility decision/current-year overlay and return the
-   composed recordset without altering `ACORN-SAT.zip` or its build-time source
-   files.
+5. cache the small eligibility decision/overlay and return the composed
+   recordset without altering `ACORN-SAT.zip` or its build-time source files.
+
+When ACORN-SAT is stale by more than one year for a data type (e.g. `046012`'s
+mean/minimum, complete only through 2024-12-31), the same request instead
+compares over 2024 and, if eligible, appends CDO values from 2025-01-01
+through 2026-07-10 — a two-calendar-year overlay from one comparison.
 
 This is an explicit ACORN-SAT exception, not a new convention for HadCET,
 GHCNd, or every manually maintained dataset. ACORN-SAT must remain an
@@ -85,7 +93,7 @@ The normal response cache is not sufficient for this feature:
 - an unmanaged cached ACORN-SAT response has no CDO dependency for the source
   coordinator to freshness-check and could otherwise be returned indefinitely;
 - caching every full 100-plus-year daily station series would be much larger
-  than caching only the current-year overlay and eligibility state.
+  than caching only the (at most few-year) overlay and eligibility state.
 
 Use a focused ACORN-SAT extension cache. Continue reading the annual ACORN-SAT
 series through the existing data reader, as the endpoint already does, and
@@ -100,15 +108,32 @@ cache only the small exceptional result.
   history. The extension must compare the CDO series for the requested
   **location**, respecting those date ranges, rather than read one inferred
   filename.
-- At 112 real locations, 111 currently have the same adjusted station ID and
-  open CDO station ID. Location `70a07bb0-2220-402b-be83-f2c35edfdd12` is the
-  important exception: ACORN-SAT uses `023000`, while the open CDO mapping is
-  `023090` after a 1977 transition. The old filename assumption cannot handle
-  it.
+- At all 112 real locations, the adjusted station ID and the *open* CDO
+  station ID (the mapping entry with a null `EndDate`) now match. Location
+  `70a07bb0-2220-402b-be83-f2c35edfdd12` (Adelaide) is the interesting case: its
+  CDO mapping closes `023000` in 1977, opens `023090` from 1977-02-01 to
+  2018-06-30, then reopens `023000` from 2018-07-01 onward per
+  `primarysites.txt`. `DataFileMapping_Australia_unadjusted.json` has been
+  corrected to this three-entry mapping.
+  `DataReaderFunctions.GetDataRecords` reads each mapping entry independently
+  (own station file, own start/end filter) and merges by date, so the
+  close/reopen pattern composes correctly with no duplicate-date collision;
+  `DataSetSourceAssetResolver.IsAutomaticallyRetrievable` selects only the
+  null-`EndDate` entry as the automatically refreshed station, so CDO
+  correctly treats `023000` as open. The old filename assumption in the
+  retired executable could not have handled this three-entry history, but the
+  location-series reader used by this plan already does. The extension still
+  only needs the currently open station for its comparison/append work; the
+  historical `023090` segment matters for full-history reads, not for
+  eligibility.
 - The current packaged ACORN-SAT archive has every maximum-temperature file
   through 2025-12-31. Mean and minimum are also through that date except for
-  station `046012`, whose mean and minimum files stop at 2024-12-31. The new
-  flow must not bridge the missing 2025 year for those two measurements.
+  station `046012`, whose mean and minimum files stop at 2024-12-31. Because
+  CDO extension must now be able to cover more than one calendar year (see
+  below), `046012`'s mean/minimum is the motivating real case for a
+  multi-year append: given a matching 2024 comparison and no adjustments
+  detected, a request in 2026 should be eligible to fill 2025-01-01 through
+  today from CDO, not just the current calendar year.
 - A comparison of the current packaged sources found no differences greater
   than the executable's 0.1-degree tolerance in 2025 for 110 maximum, 110
   minimum, and 109 mean series with usable overlap. The remaining cases were
@@ -136,7 +161,8 @@ should return a structured result containing:
 - the latest ACORN-SAT date and a stable signature of all eligibility inputs
   from the ACORN-SAT series;
 - the adjusted and open CDO station IDs used for diagnostics/cache validation;
-- the current-year CDO overlay records, if eligible;
+- the CDO overlay records for the append range, if eligible (may span more
+  than one calendar year when ACORN-SAT is more than one year stale);
 - whether any CDO values were actually contributed.
 
 Keep Web API concerns outside this component. An
@@ -155,7 +181,7 @@ The overlay must be applied to daily `DataRecord` values before
 `DataSetBuilder` runs filters and binning. This makes all existing
 `/climate-record` shapes consistent:
 
-- daily results receive individual current-year days;
+- daily results receive individual overlay days across the whole append range;
 - `monthly=true` aggregates those same days using the existing monthly path;
 - month/day filters, ascending/descending ordering, `take`/`skip`, `TotalCount`,
   `StartYear`, and `EndYear` all see one composed series;
@@ -189,24 +215,30 @@ for one data type/location only when all of the following hold:
    `/climate-record`. Do not change direct `/dataset` behavior.
 2. The adjusted mapping contains a non-blank station and the CDO mapping can
    produce a location series with exactly one open non-blank station.
-3. The ACORN-SAT source reaches 31 December of `Y - 1`. Do not bridge multiple
-   missing years, and do not append when ACORN-SAT already contains any dates
-   in year `Y`.
-4. The comparison year is exactly `Y - 1` and contains at least one non-null
-   adjusted/CDO pair.
-5. The non-null date sets match. A value present only in ACORN-SAT or only in
-   CDO is insufficient evidence that raw current-year values can stand in for
-   the adjusted series.
-6. Every paired value is within the existing 0.1-degree tolerance. Preserve
-   the executable's intended one-decimal comparison semantics and cover the
-   exact boundary in tests; do not rely on untested binary floating-point
-   equality.
+3. ACORN-SAT reaches 31 December of some year `C` (the comparison year), where
+   `C` is the latest year for which ACORN-SAT has complete 31-December
+   coverage and `C < Y`. `C` is not required to be `Y - 1`: a data type such as
+   station `046012`'s mean/minimum, which currently stops at 2024-12-31, has
+   `C = 2024` even in a `Y = 2026` request, and the append range below then
+   spans both 2025 and 2026. Do not append when ACORN-SAT already contains any
+   date in year `Y`, and fail closed (`AcornNotThroughPreviousYear`) if
+   ACORN-SAT has no complete prior year at all.
+4. The non-null date sets match over comparison year `C`. A value present only
+   in ACORN-SAT or only in CDO for that year is insufficient evidence that raw
+   values from `C + 1` onward can stand in for the adjusted series.
+5. Every paired value in year `C` is within the existing 0.1-degree tolerance.
+   Preserve the executable's intended one-decimal comparison semantics and
+   cover the exact boundary in tests; do not rely on untested binary
+   floating-point equality.
 
-If those rules pass, select only non-null CDO records whose dates are between
-1 January of `Y` and `today`, inclusive. Never replace an ACORN-SAT date and
-never append a prior/future year. It is valid for the eligible overlay to be
-empty when CDO has not yet published a current-year value; return base
-ACORN-SAT in that case while retaining the eligibility decision.
+If those rules pass, select only non-null CDO records whose dates are after
+the latest ACORN-SAT date and no later than `today`, inclusive — that is, from
+`C + 1`-01-01 through `today`, which may span more than one calendar year when
+ACORN-SAT is more than one year stale. Never replace an ACORN-SAT date and
+never append a date on or before the latest ACORN-SAT date. It is valid for
+the eligible overlay to be empty when CDO has not yet published any value
+after that date; return base ACORN-SAT in that case while retaining the
+eligibility decision.
 
 Use a decision enum/reason rather than a bare boolean so logs and retry rules
 can distinguish:
@@ -234,7 +266,8 @@ and contain at least:
 - comparison year and decision/reason;
 - the latest adjusted date and a stable signature of the ACORN-SAT eligibility
   inputs (coverage plus comparison-year dates/values);
-- the current-year overlay records;
+- the overlay records for the append range (from the day after the latest
+  ACORN-SAT date through `today`; this may span more than one calendar year);
 - the successful CDO `RetrievedDate` and latest source record date, when known.
 
 The signature should be derived from the adjusted comparison-year records and
@@ -276,8 +309,9 @@ lock. This coalesces concurrent cold requests without coupling unrelated
 locations or measurements.
 
 Do not cache the full composed century-scale daily series. The annual base is
-read from `ACORN-SAT.zip`; the cache contains at most one current calendar year
-of values plus the small decision record.
+read from `ACORN-SAT.zip`; the cache contains only the append-range values
+(bounded by how stale ACORN-SAT is for that data type — ordinarily one
+calendar year, occasionally a few) plus the small decision record.
 
 ### Retrieval time and source provenance
 
@@ -331,13 +365,18 @@ station-selection rules into the ACORN-SAT component.
 ### Stage 1: Implement and test the pure ACORN-SAT record extender
 
 1. Add the comparison/merge result models and decision enum.
-2. Implement the previous-calendar-year completeness, overlap, date-set, and
-   0.1-degree comparison rules with injected `TimeProvider`/date.
-3. Generate only current-year, non-null, non-overlapping overlay records.
+2. Implement the most-recent-complete-year completeness, overlap, date-set,
+   and 0.1-degree comparison rules with injected `TimeProvider`/date. The
+   compared/completeness year is whatever year ACORN-SAT's latest date closes
+   out, not necessarily `today`'s year minus one.
+3. Generate non-null, non-overlapping overlay records for every date after the
+   latest ACORN-SAT date through today, which may span more than one calendar
+   year.
 4. Generate the deterministic comparison signature and keep the component free
    of HTTP, filesystem publication, endpoint, and cache concerns.
-5. Use real-shape fixtures for multi-station mappings, `023000`/`023090`,
-   all-null `002079`, and the `046012` 2024 cutoff.
+5. Use real-shape fixtures for multi-station mappings, the
+   `023000`/`023090`/`023000` close-reopen history, all-null `002079`, and the
+   `046012` 2024 cutoff (as a multi-year-bridge case, not a rejection case).
 
 ### Stage 2: Add the focused extension cache and CDO orchestration
 
@@ -382,18 +421,22 @@ Use `MethodName_StateUnderTest_ExpectedBehavior` for every new C# test.
 
 At minimum, cover:
 
-- an eligible request on 2026-07-10 appending only 2026-01-01 through
-  2026-07-10;
-- ACORN-SAT ending in 2024, already containing a 2026 date, or not reaching the
-  prior 31 December producing no overlay;
+- an eligible request on 2026-07-10 with ACORN-SAT complete through 2025
+  appending only 2026-01-01 through 2026-07-10;
+- an eligible request on 2026-07-10 with ACORN-SAT complete only through 2024
+  (as with `046012` mean/minimum) appending 2025-01-01 through 2026-07-10 —
+  a two-calendar-year overlay from a single 2024 comparison;
+- ACORN-SAT already containing a 2026 date, or having no complete prior year
+  at all, producing no overlay;
 - zero comparison overlap, one-sided non-null dates, and all-null comparison
   years failing closed;
 - exact equality, an accepted 0.1-degree boundary, and a rejected difference
   above tolerance for max/min and derived mean;
-- current-year nulls being omitted and an empty current-year CDO series leaving
+- overlay-range nulls being omitted and an empty CDO contribution leaving
   ACORN-SAT unchanged;
-- the CDO location series respecting historical mapping dates and resolving a
-  different open station ID from the adjusted station;
+- the CDO location series respecting historical mapping dates across a
+  closed/reopened station history (`023000` → `023090` → `023000`) while
+  still resolving the same open station ID as the adjusted station;
 - a matching annual signature reusing a conclusive decision, and a changed
   comparison year/value invalidating it;
 - a fresh CDO source reusing the cached overlay, a stale source refreshing and
@@ -444,8 +487,14 @@ builds. Do not run the website, Playwright, Lighthouse, or browser tests.
 - **The two sources can overlap unexpectedly.** Never overwrite an ACORN-SAT
   date. Treat current-year ACORN-SAT content as a reason not to extend.
 - **A year boundary can make yesterday's overlay stale.** Use `TimeProvider`,
-  compare only the immediately previous complete year, and let the new year
-  produce a new cache decision/overlay key state.
+  compare only ACORN-SAT's latest complete year (which may be more than one
+  year prior to `today`), and let the new year produce a new cache
+  decision/overlay key state.
+- **A multi-year append range means more can go wrong between the comparison
+  year and today.** The overlay still only depends on the single
+  comparison-year signature; do not require every intervening year to be
+  independently verified, since CDO's own validation already covers its whole
+  series.
 - **CDO is a bundled station asset.** Preserve the existing whole-ZIP refresh
   and validation semantics; do not publish a temperature-only partial archive.
 - **Concurrent requests can duplicate CPU work even when the download is
