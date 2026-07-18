@@ -1,0 +1,16 @@
+<label class="@CssClass">
+    <input type="checkbox"
+           class="climate-checkbox-input"
+           checked="@Checked"
+           disabled="@Disabled"
+           @onchange="OnChanged"
+           @attributes="AdditionalAttributes" />
+    @if (ChildContent is not null)
+    {
+        @ChildContent
+    }
+    else
+    {
+        @Text
+    }
+</label>

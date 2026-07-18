@@ -20,27 +20,6 @@
     margin-left: 8px;
 }
 
-/* ── Adjusted checkbox ───────────────────────────────────────────────────── */
-.adjusted-check {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    cursor: pointer;
-    font-size: 0.875rem;
-    color: #2a3d39;
-    user-select: none;
-    margin: 0;
-}
-
-.adjusted-input {
-    accent-color: #425f59;
-    width: 0.8rem;
-    height: 0.8rem;
-    cursor: pointer;
-    flex-shrink: 0;
-    margin: 0;
-}
-
 /* ── Filter row ──────────────────────────────────────────────────────────── */
 .filter-row {
     display: flex;
