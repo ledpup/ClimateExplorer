@@ -14,12 +14,6 @@ public sealed class RecentObservationsDataProvider : IRecentObservationsDataProv
     private readonly ILogger<RecentObservationsDataProvider>? logger;
     private readonly Dictionary<RecentObservationsDataCacheKey, Task<RecentObservationsDataSet>> cache = [];
 
-    // The recent-observations endpoint returns all series (max, min, precipitation)
-    // for a location in one call, so share that fetch across both tabs rather than
-    // requesting per data type. This avoids re-downloading the GHCNd station CSV
-    // (and re-fetching the BOM obs files) once per metric.
-    private readonly Dictionary<Guid, Task<RecentObservationsResponse>> recentResponseCache = [];
-
     public RecentObservationsDataProvider(
         IDataService dataService,
         ILogger<RecentObservationsDataProvider>? logger = null)
@@ -28,17 +22,17 @@ public sealed class RecentObservationsDataProvider : IRecentObservationsDataProv
         this.logger = logger;
     }
 
-    public Task<RecentObservationsDataSet> LoadTemperatureData(Location location)
+    public Task<RecentObservationsDataSet> LoadTemperatureData(Location location, DataAdjustment? preferredAdjustment = DataAdjustment.Adjusted)
     {
         return GetOrCreate(
-            new RecentObservationsDataCacheKey(location.Id, RecentObservationsTab.Temperature),
-            () => FetchTemperatureData(location.Id));
+            new RecentObservationsDataCacheKey(location.Id, RecentObservationsTab.Temperature, preferredAdjustment),
+            () => FetchTemperatureData(location.Id, preferredAdjustment));
     }
 
     public Task<RecentObservationsDataSet> LoadPrecipitationData(Location location)
     {
         return GetOrCreate(
-            new RecentObservationsDataCacheKey(location.Id, RecentObservationsTab.Precipitation),
+            new RecentObservationsDataCacheKey(location.Id, RecentObservationsTab.Precipitation, null),
             () => FetchPrecipitationData(location.Id));
     }
 
@@ -71,131 +65,65 @@ public sealed class RecentObservationsDataProvider : IRecentObservationsDataProv
         }
     }
 
-    private async Task<RecentObservationsDataSet> FetchTemperatureData(Guid locationId)
+    private async Task<RecentObservationsDataSet> FetchTemperatureData(Guid locationId, DataAdjustment? preferredAdjustment)
     {
-        var recentTask = GetRecentObservations(locationId);
-        var historicalMaxTask = GetHistoricalRecords(locationId, DataType.TempMax, DataAdjustment.Unadjusted);
-        var historicalMinTask = GetHistoricalRecords(locationId, DataType.TempMin, DataAdjustment.Unadjusted);
+        var historicalMaxTask = GetRecords(locationId, DataType.TempMax, preferredAdjustment);
+        var historicalMinTask = GetRecords(locationId, DataType.TempMin, preferredAdjustment);
 
-        await Task.WhenAll(recentTask, historicalMaxTask, historicalMinTask);
+        await Task.WhenAll(historicalMaxTask, historicalMinTask);
 
-        var recentResponse = await recentTask;
         var historicalMaxResponse = await historicalMaxTask;
         var historicalMinResponse = await historicalMinTask;
 
-        var recentMaxRecords = recentResponse.TempMax?.Records ?? [];
-        var recentMinRecords = recentResponse.TempMin?.Records ?? [];
-
-        var hasHistoricalMaxMin = historicalMaxResponse.Records.Count > 0 && historicalMinResponse.Records.Count > 0;
-        var meanRecords = hasHistoricalMaxMin
-            ? new List<DataRecord>()
-            : (await GetHistoricalRecords(locationId, DataType.TempMean, DataAdjustment.Unadjusted)).Records;
-
-        if (!recentResponse.IsSupported &&
-            !hasHistoricalMaxMin &&
-            meanRecords.Count == 0)
+        if (!historicalMaxResponse.DataResolution.HasValue && !historicalMinResponse.DataResolution.HasValue)
         {
             return RecentObservationsDataSet.UnsupportedTemperature();
         }
 
+        var hasHistoricalMaxMin = historicalMaxResponse.Records.Count > 0 && historicalMinResponse.Records.Count > 0;
+        var meanRecords = hasHistoricalMaxMin
+            ? new List<DataRecord>()
+            : (await GetRecords(locationId, DataType.TempMean, preferredAdjustment)).Records;
+
         return RecentObservationsDataSet.Temperature(
-            MergeDailyDataRecords(historicalMaxResponse.Records, recentMaxRecords),
-            MergeDailyDataRecords(historicalMinResponse.Records, recentMinRecords),
-            MergeDailyDataRecords(meanRecords, Array.Empty<DataRecord>()),
+            historicalMaxResponse.Records,
+            historicalMinResponse.Records,
+            meanRecords,
             hasHistoricalMaxMin,
-            CreateSourceMetadata(recentResponse.TempMax?.SourceMetadata, recentResponse.TempMin?.SourceMetadata));
+            CreateSourceMetadata(historicalMaxResponse, historicalMinResponse));
     }
 
     private async Task<RecentObservationsDataSet> FetchPrecipitationData(Guid locationId)
     {
-        var recentTask = GetRecentObservations(locationId);
-        var historicalTask = GetHistoricalRecords(locationId, DataType.Precipitation, null);
-        await Task.WhenAll(recentTask, historicalTask);
+        var historicalResponse = await GetRecords(locationId, DataType.Precipitation, null);
 
-        var recentResponse = await recentTask;
-        var historicalResponse = await historicalTask;
-
-        var recentPrecipitation = recentResponse.Precipitation;
-
-        if (recentPrecipitation is null && historicalResponse.Records.Count == 0)
+        if (!historicalResponse.DataResolution.HasValue)
         {
             return RecentObservationsDataSet.UnsupportedPrecipitation();
         }
 
         return RecentObservationsDataSet.Precipitation(
-            MergeDailyDataRecords(historicalResponse.Records, recentPrecipitation?.Records ?? []),
-            CreateSourceMetadata(recentPrecipitation?.SourceMetadata));
+            historicalResponse.Records,
+            CreateSourceMetadata(historicalResponse));
     }
 
-    private Task<RecentObservationsResponse> GetRecentObservations(Guid locationId)
-    {
-        if (recentResponseCache.TryGetValue(locationId, out var cached))
-        {
-            logger?.LogDebug("Using cached recent observations response for location {LocationId}", locationId);
-            return cached;
-        }
-
-        var task = dataService.GetRecentObservations(locationId);
-        recentResponseCache[locationId] = task;
-        return AwaitAndEvictOnFailure(locationId, task);
-    }
-
-    private async Task<RecentObservationsResponse> AwaitAndEvictOnFailure(Guid locationId, Task<RecentObservationsResponse> task)
-    {
-        try
-        {
-            return await task;
-        }
-        catch
-        {
-            if (recentResponseCache.TryGetValue(locationId, out var cachedTask) && ReferenceEquals(cachedTask, task))
-            {
-                recentResponseCache.Remove(locationId);
-            }
-
-            throw;
-        }
-    }
-
-    private async Task<ClimateRecordsResponse> GetHistoricalRecords(
+    private async Task<ClimateRecordsResponse> GetRecords(
         Guid locationId,
         DataType dataType,
         DataAdjustment? preferredAdjustment)
     {
+        ClimateRecordsResponse response = new() { DataType = dataType, DataAdjustment = preferredAdjustment };
+
         foreach (var adjustment in GetAdjustmentCandidates(dataType, preferredAdjustment))
         {
-            var response = await dataService.GetClimateRecords(locationId, dataType, adjustment, monthly: false);
+            response = (await dataService.GetClimateRecords(locationId, dataType, adjustment, monthly: false))!;
             if (response.Records.Count > 0)
             {
                 return response;
             }
         }
 
-        return new ClimateRecordsResponse
-        {
-            DataType = dataType,
-            DataAdjustment = preferredAdjustment,
-            DataResolution = DataResolution.Daily,
-        };
-    }
-
-    private static List<DataRecord> MergeDailyDataRecords(
-        IEnumerable<DataRecord> historicalRecords,
-        IEnumerable<DataRecord> recentRecords)
-    {
-        var recordsByDate = new SortedDictionary<DateOnly, DataRecord>();
-
-        foreach (var record in historicalRecords.Where(x => x.Date.HasValue && x.Value.HasValue))
-        {
-            recordsByDate[record.Date!.Value] = record;
-        }
-
-        foreach (var record in recentRecords.Where(x => x.Date.HasValue && x.Value.HasValue))
-        {
-            recordsByDate[record.Date!.Value] = record;
-        }
-
-        return [.. recordsByDate.Values];
+        return response;
     }
 
     private static IEnumerable<DataAdjustment?> GetAdjustmentCandidates(DataType dataType, DataAdjustment? preferredAdjustment)
@@ -214,10 +142,31 @@ public sealed class RecentObservationsDataProvider : IRecentObservationsDataProv
         yield return DataAdjustment.Unadjusted;
     }
 
-    private static IReadOnlyList<RecentObservationSourceMetadata> CreateSourceMetadata(params RecentObservationSourceMetadata?[] sourceMetadata)
+    private static IReadOnlyList<RecentObservationSourceMetadata> CreateSourceMetadata(params ClimateRecordsResponse[] responses)
     {
-        return [.. sourceMetadata.Where(x => x is not null).Select(x => x!)];
+        return [.. responses.SelectMany(MapSourceMetadata)];
     }
 
-    private readonly record struct RecentObservationsDataCacheKey(Guid LocationId, RecentObservationsTab Tab);
+    private static IEnumerable<RecentObservationSourceMetadata> MapSourceMetadata(ClimateRecordsResponse response)
+    {
+        if (response.SourceMetadata is null)
+        {
+            yield break;
+        }
+
+        foreach (var dataSetMetadata in response.SourceMetadata)
+        {
+            yield return new RecentObservationSourceMetadata
+            {
+                SourceCode = dataSetMetadata.SourceCode,
+                SourceName = dataSetMetadata.SourceName,
+                StationId = dataSetMetadata.Stations.SingleOrDefault(x => x.StationEndDate is null)?.StationId,
+                SourceUrl = dataSetMetadata.SourceUrl,
+                SourceUrlLabel = dataSetMetadata.SourceUrlLabel,
+                RetrievedAtUtc = response.RetrievedDate,
+            };
+        }
+    }
+
+    private readonly record struct RecentObservationsDataCacheKey(Guid LocationId, RecentObservationsTab Tab, DataAdjustment? Adjustment);
 }

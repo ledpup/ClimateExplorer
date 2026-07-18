@@ -12,7 +12,7 @@ public class DataSetDefinitionsBuilder
             new()
             {
                 Id = Guid.Parse("b13afcaf-cdbc-4267-9def-9629c8066321"),
-                Name = "Australian Climate Observations Reference Network - Surface Air Temperature (ACORN-SAT)",
+                Name = "Australian Climate Observations Reference Network - Surface Air Temperature",
                 ShortName = "ACORN-SAT",
                 Description = "The Australian Climate Observations Reference Network - Surface Air Temperature (ACORN-SAT) data set is a homogenized daily maximum, minimum and mean temperature data set containing data from 112 locations across Australia extending from 1910 to the present.",
                 Publisher = "Australian Bureau of Meteorology",
@@ -30,8 +30,7 @@ public class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
                         DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}),(?<value>-?\d*\.?\d*),*$",
-                        FolderName = @"Temperature\ACORN-SAT\daily_tmean",
-                        FileNameFormat = "tmean.[station].daily.csv",
+                        DataFileSource = ArchiveSource("ACORN-SAT.zip", "daily_tmean/tmean.[station].daily.csv"),
                     },
                     new()
                     {
@@ -40,8 +39,7 @@ public class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
                         DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}),(?<value>-?\d*\.?\d*),*$",
-                        FolderName = @"Temperature\ACORN-SAT\daily_tmax",
-                        FileNameFormat = "tmax.[station].daily.csv",
+                        DataFileSource = ArchiveSource("ACORN-SAT.zip", "daily_tmax/tmax.[station].daily.csv"),
                     },
                     new()
                     {
@@ -50,22 +48,22 @@ public class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
                         DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}),(?<value>-?\d*\.?\d*),*$",
-                        FolderName = @"Temperature\ACORN-SAT\daily_tmin",
-                        FileNameFormat = "tmin.[station].daily.csv",
+                        DataFileSource = ArchiveSource("ACORN-SAT.zip", "daily_tmin/tmin.[station].daily.csv"),
                     },
                 ],
             },
             new()
             {
                 Id = Guid.Parse("E5EEA4D6-5FD5-49AB-BF85-144A8921111E"),
-                Name = "Bureau of Meteorology",
-                ShortName = "BOM",
-                Description = null,
+                Name = "Climate Data Online",
+                ShortName = "CDO",
+                Description = "Climate Data Online (CDO) provides historical daily rainfall and maximum and minimum temperature observations from Bureau of Meteorology weather stations across Australia. The period of record varies by station and weather element, with some observations dating to the mid-1800s. Data are available from both operating and closed stations, and recent observations may not yet have completed quality control.",
                 Publisher = "Australian Bureau of Meteorology",
                 PublisherUrl = "https://www.bom.gov.au/",
-                MoreInformationUrl = "https://www.bom.gov.au/",
+                MoreInformationUrl = "https://www.bom.gov.au/climate/data/",
                 StationInfoUrl = "https://www.bom.gov.au/climate/averages/tables/cw_[station].shtml",
                 LocationInfoUrl = "https://www.bom.gov.au/climate/data/acorn-sat/stations/#/[primaryStation]",
+                DataDownloaderKey = "bom-station",
                 StationMetadataFileName = "Stations_Australia_unadjusted.json",
                 MeasurementDefinitions =
                 [
@@ -76,8 +74,7 @@ public class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
                         DataRowRegEx = @"^(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}),(?<value>.*)$",
-                        FolderName = @"Temperature_BOM\daily_tempmean",
-                        FileNameFormat = "[station]_daily_tempmean.csv",
+                        DataFileSource = ArchiveSource(@"BOM\[station].zip", "[station]_daily_tempmean.csv"),
                     },
                     new()
                     {
@@ -86,8 +83,7 @@ public class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
                         DataRowRegEx = @"^(?<productCode>.+),(?<station>\d{6}),(?<year>\d{4}),(?<month>\d{2}),(?<day>\d{2}),(?<value>.*),.*,.*$",
-                        FolderName = @"Temperature_BOM\daily_tempmax",
-                        FileNameFormat = "[station]_daily_tempmax.csv",
+                        DataFileSource = ArchiveSource(@"BOM\[station].zip", "[station]_daily_tempmax.csv"),
                     },
                     new()
                     {
@@ -96,8 +92,7 @@ public class DataSetDefinitionsBuilder
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
                         DataRowRegEx = @"^(?<productCode>.+),(?<station>\d{6}),(?<year>\d{4}),(?<month>\d{2}),(?<day>\d{2}),(?<value>.*),.*,.*$",
-                        FolderName = @"Temperature_BOM\daily_tempmin",
-                        FileNameFormat = "[station]_daily_tempmin.csv",
+                        DataFileSource = ArchiveSource(@"BOM\[station].zip", "[station]_daily_tempmin.csv"),
                     },
                     new()
                     {
@@ -106,8 +101,7 @@ public class DataSetDefinitionsBuilder
                         DataResolution = DataResolution.Daily,
                         DataAdjustment = null,
                         DataRowRegEx = @"^(?<productCode>.+),(?<station>\d{6}),(?<year>\d{4}),(?<month>\d{2}),(?<day>\d{2}),(?<value>.*),.*,.*$",
-                        FolderName = @"Precipitation\BOM",
-                        FileNameFormat = "[station]_daily_rainfall.csv",
+                        DataFileSource = ArchiveSource(@"BOM\[station].zip", "[station]_daily_rainfall.csv"),
                     },
                     new()
                     {
@@ -116,8 +110,7 @@ public class DataSetDefinitionsBuilder
                         DataResolution = DataResolution.Daily,
                         DataAdjustment = null,
                         DataRowRegEx = @"^(?<productCode>.+),(?<station>\d{6}),(?<year>\d{4}),(?<month>\d{2}),(?<day>\d{2}),(?<value>.*)$",
-                        FolderName = @"Solar\BOM",
-                        FileNameFormat = "[station]_daily_solarradiation.csv",
+                        DataFileSource = ArchiveSource(@"BOM\[station].zip", "[station]_daily_solarradiation.csv"),
                     },
                 ],
             },
@@ -142,8 +135,7 @@ public class DataSetDefinitionsBuilder
                         DataResolution = DataResolution.Monthly,
                         RowDataType = RowDataType.TwelveMonthsPerRow,
                         DataRowRegEx = @"^(?<year>\d{4}),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+)$",
-                        FolderName = @"Temperature\GHCNm\Adjusted",
-                        FileNameFormat = "[station].csv",
+                        DataFileSource = ArchiveSource("GHCNm.zip", "Temperature/Adjusted/[station].csv"),
                         NullValue = "-9999",
                         ValueAdjustment = 100.0f,
                     },
@@ -155,8 +147,7 @@ public class DataSetDefinitionsBuilder
                         DataResolution = DataResolution.Monthly,
                         RowDataType = RowDataType.TwelveMonthsPerRow,
                         DataRowRegEx = @"^(?<year>\d{4}),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+)$",
-                        FolderName = @"Temperature\GHCNm\Unadjusted",
-                        FileNameFormat = "[station].csv",
+                        DataFileSource = ArchiveSource("GHCNm.zip", "Temperature/Unadjusted/[station].csv"),
                         NullValue = "-9999",
                         ValueAdjustment = 100.0f,
                     },
@@ -183,8 +174,7 @@ public class DataSetDefinitionsBuilder
                         DataResolution = DataResolution.Monthly,
                         RowDataType = RowDataType.TwelveMonthsPerRow,
                         DataRowRegEx = @"^(?<year>\d{4}),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+),(-?\d+)$",
-                        FolderName = @"Precipitation\GHCNm",
-                        FileNameFormat = "[station].csv",
+                        DataFileSource = ArchiveSource("GHCNm.zip", "Precipitation/[station].csv"),
                         NullValue = "-9999",
                         ValueAdjustment = 10.0f,
                     },
@@ -201,6 +191,7 @@ public class DataSetDefinitionsBuilder
                 PublisherUrl = "https://www.noaa.gov/",
                 MoreInformationUrl = "https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-daily",
                 DataDownloadUrl = "https://www.ncei.noaa.gov/data/global-historical-climatology-network-daily/access/[station].csv",
+                DataDownloaderKey = "ghcnd-station",
                 StationMetadataFileName = "Stations_ghcnm_adjusted.json",
                 MeasurementDefinitions =
                 [
@@ -212,8 +203,7 @@ public class DataSetDefinitionsBuilder
                         DataResolution = DataResolution.Daily,
                         RowDataType = RowDataType.OneValuePerRow,
                         DataRowRegEx = @"^(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}),(?<value>-?[\d+\.\d+]*),(?<tmin>-?[\d+\.\d+]*)$",
-                        FolderName = @"GHCNd\Temperature",
-                        FileNameFormat = "[station].csv",
+                        DataFileSource = ArchiveSource(@"GHCNd\[station].zip", "Temperature/[station].csv"),
                         NullValue = "9999",
                         ValueAdjustment = 10.0f,
                     },
@@ -225,8 +215,7 @@ public class DataSetDefinitionsBuilder
                         DataResolution = DataResolution.Daily,
                         RowDataType = RowDataType.OneValuePerRow,
                         DataRowRegEx = @"^(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}),(?<tmax>-?[\d+\.\d+]*),(?<value>-?[\d+\.\d+]*)$",
-                        FolderName = @"GHCNd\Temperature",
-                        FileNameFormat = "[station].csv",
+                        DataFileSource = ArchiveSource(@"GHCNd\[station].zip", "Temperature/[station].csv"),
                         NullValue = "9999",
                         ValueAdjustment = 10.0f,
                     },
@@ -243,6 +232,7 @@ public class DataSetDefinitionsBuilder
                 PublisherUrl = "https://www.noaa.gov/",
                 MoreInformationUrl = "https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-daily",
                 DataDownloadUrl = "https://www.ncei.noaa.gov/data/global-historical-climatology-network-daily/access/[station].csv",
+                DataDownloaderKey = "ghcnd-station",
                 StationMetadataFileName = "Stations_ghcnm_adjusted.json",
                 MeasurementDefinitions =
                 [
@@ -254,8 +244,7 @@ public class DataSetDefinitionsBuilder
                         DataResolution = DataResolution.Daily,
                         RowDataType = RowDataType.OneValuePerRow,
                         DataRowRegEx = @"^(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}),(?<value>[\d+\.\d+]*)$",
-                        FolderName = @"GHCNd\Precipitation",
-                        FileNameFormat = "[station].csv",
+                        DataFileSource = ArchiveSource(@"GHCNd\[station].zip", "Precipitation/[station].csv"),
                         NullValue = "9999",
                         ValueAdjustment = 10.0f,
                     },
@@ -272,6 +261,7 @@ public class DataSetDefinitionsBuilder
                     Niño 3.4 conditions of +0.4 deg C or higher are considered El Niño, and -0.4 deg C or lower are considered La Niña.",
                 MoreInformationUrl = "https://psl.noaa.gov/data/timeseries/month/",
                 DataDownloadUrl = "https://psl.noaa.gov/data/timeseries/month/data/nino34.long.anom.data",
+                DataDownloaderKey = "direct-http",
                 MeasurementDefinitions =
                 [
                     new()
@@ -281,8 +271,7 @@ public class DataSetDefinitionsBuilder
                         DataResolution = DataResolution.Monthly,
                         DataAdjustment = null,
                         RowDataType = RowDataType.TwelveMonthsPerRow,
-                        FolderName = @"Ocean",
-                        FileNameFormat = "nino34.long.anom.data.txt",
+                        DataFileSource = LooseSource(@"Nino34\nino34.long.anom.data.txt"),
                         DataRowRegEx = @"^\s*(?<year>\d{4})\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
                         NullValue = "-99.99",
                     },
@@ -299,6 +288,7 @@ public class DataSetDefinitionsBuilder
                 PublisherUrl = "https://www.noaa.gov/",
                 MoreInformationUrl = "https://gml.noaa.gov/ccgg/trends/mlo.html",
                 DataDownloadUrl = "https://gml.noaa.gov/webdata/ccgg/trends/co2/co2_mm_mlo.txt",
+                DataDownloaderKey = "direct-http",
                 MeasurementDefinitions =
                 [
                     new()
@@ -308,8 +298,16 @@ public class DataSetDefinitionsBuilder
                         DataResolution = DataResolution.Monthly,
                         DataAdjustment = null,
                         DataRowRegEx = @"^\s+(?<year>\d+)\s+(?<month>\d+)\s+(?<decimalDate>\d+\.\d+)\s+(?<value>\d+\.\d+).*$",
-                        FolderName = @"Atmosphere\GHGs",
-                        FileNameFormat = "co2_mm_mlo.txt",
+                        DataFileSource = LooseSource(@"CO2\co2_mm_mlo.txt"),
+                    },
+                    new()
+                    {
+                        DataType = DataType.CO2Deseasoned,
+                        UnitOfMeasure = UnitOfMeasure.PartsPerMillion,
+                        DataResolution = DataResolution.Monthly,
+                        DataAdjustment = null,
+                        DataRowRegEx = @"^\s+(?<year>\d+)\s+(?<month>\d+)\s+(?<decimalDate>\d+\.\d+)\s+(?<co2>\d+\.\d+)\s+(?<value>\d+\.\d+).*$",
+                        DataFileSource = LooseSource(@"CO2\co2_mm_mlo.txt"),
                     },
                 ],
             },
@@ -323,6 +321,7 @@ public class DataSetDefinitionsBuilder
                 PublisherUrl = "https://www.noaa.gov/",
                 MoreInformationUrl = "https://gml.noaa.gov/ccgg/trends_ch4/",
                 DataDownloadUrl = "https://gml.noaa.gov/webdata/ccgg/trends/ch4/ch4_mm_gl.txt",
+                DataDownloaderKey = "direct-http",
                 MeasurementDefinitions =
                 [
                     new()
@@ -332,8 +331,7 @@ public class DataSetDefinitionsBuilder
                         DataResolution = DataResolution.Monthly,
                         DataAdjustment = null,
                         DataRowRegEx = @"^\s+(?<year>\d+)\s+(?<month>\d+)\s+(?<decimalDate>\d+\.\d+)\s+(?<value>\d+\.\d+).*$",
-                        FolderName = @"Atmosphere\GHGs",
-                        FileNameFormat = "ch4_mm_gl.txt",
+                        DataFileSource = LooseSource(@"Methane\ch4_mm_gl.txt"),
                     },
                 ],
             },
@@ -347,6 +345,7 @@ public class DataSetDefinitionsBuilder
                 PublisherUrl = "https://www.noaa.gov/",
                 MoreInformationUrl = "https://gml.noaa.gov/ccgg/trends_n2o/",
                 DataDownloadUrl = "https://gml.noaa.gov/webdata/ccgg/trends/n2o/n2o_mm_gl.txt",
+                DataDownloaderKey = "direct-http",
                 MeasurementDefinitions =
                 [
                     new()
@@ -356,8 +355,7 @@ public class DataSetDefinitionsBuilder
                         DataResolution = DataResolution.Monthly,
                         DataAdjustment = null,
                         DataRowRegEx = @"^\s+(?<year>\d+)\s+(?<month>\d+)\s+(?<decimalDate>\d+\.\d+)\s+(?<value>\d+\.\d+).*$",
-                        FolderName = @"Atmosphere\GHGs",
-                        FileNameFormat = "n2o_mm_gl.txt",
+                        DataFileSource = LooseSource(@"NitrousOxide\n2o_mm_gl.txt"),
                     },
                 ],
             },
@@ -379,6 +377,7 @@ public class DataSetDefinitionsBuilder
         For monitoring the IOD, Australian climatologists consider sustained values above +0.4 °C as typical of a positive IOD, and values below −0.4 °C as typical of a negative IOD.",
                 MoreInformationUrl = "https://www.bom.gov.au/climate/enso",
                 DataDownloadUrl = "https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/dmi.had.long.data",
+                DataDownloaderKey = "direct-http",
                 MeasurementDefinitions =
                 [
                     new()
@@ -389,8 +388,7 @@ public class DataSetDefinitionsBuilder
                         DataAdjustment = null,
                         RowDataType = RowDataType.TwelveMonthsPerRow,
                         DataRowRegEx = @"^\s*(?<year>\d{4})\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)$",
-                        FolderName = @"Ocean",
-                        FileNameFormat = "dmi.had.long.data.txt",
+                        DataFileSource = LooseSource(@"IOD\dmi.had.long.data.txt"),
                         NullValue = "-9999",
                     },
                 ],
@@ -404,6 +402,7 @@ public class DataSetDefinitionsBuilder
                 Description = "The daily Sea Ice Index provides a quick look at Arctic-wide changes in sea ice. It provides consistently processed daily ice extent and concentration images and data since 1979.",
                 MoreInformationUrl = "https://nsidc.org/data/seaice_index/",
                 DataDownloadUrl = "https://masie_web.apps.nsidc.org/pub/DATASETS/NOAA/G02135/north/daily/data/N_seaice_extent_daily_v4.0.csv",
+                DataDownloaderKey = "direct-http",
                 MeasurementDefinitions =
                 [
                     new()
@@ -413,8 +412,7 @@ public class DataSetDefinitionsBuilder
                         DataResolution = DataResolution.Daily,
                         DataAdjustment = null,
                         DataRowRegEx = @"^(?<year>\d+),\s+(?<month>\d+),\s+(?<day>\d+),\s+(?<value>\d+\.\d+).*$",
-                        FolderName = @"Ice",
-                        FileNameFormat = "N_seaice_extent_daily_v4.0.csv",
+                        DataFileSource = LooseSource(@"ArcticSeaIce\N_seaice_extent_daily_v4.0.csv"),
                     },
                 ],
             },
@@ -426,6 +424,7 @@ public class DataSetDefinitionsBuilder
                 Description = "The daily Sea Ice Index provides a quick look at Antarctic-wide changes in sea ice. It provides consistently processed daily ice extent and concentration images and data since 1979.",
                 MoreInformationUrl = "https://nsidc.org/data/seaice_index/",
                 DataDownloadUrl = "https://masie_web.apps.nsidc.org/pub/DATASETS/NOAA/G02135/south/daily/data/S_seaice_extent_daily_v4.0.csv",
+                DataDownloaderKey = "direct-http",
                 MeasurementDefinitions =
                 [
                     new()
@@ -435,8 +434,7 @@ public class DataSetDefinitionsBuilder
                         DataResolution = DataResolution.Daily,
                         DataAdjustment = null,
                         DataRowRegEx = @"^(?<year>\d+),\s+(?<month>\d+),\s+(?<day>\d+),\s+(?<value>\d+\.\d+).*$",
-                        FolderName = @"Ice",
-                        FileNameFormat = "S_seaice_extent_daily_v4.0.csv",
+                        DataFileSource = LooseSource(@"AntarcticSeaIce\S_seaice_extent_daily_v4.0.csv"),
                     },
                 ],
             },
@@ -447,7 +445,8 @@ public class DataSetDefinitionsBuilder
                 ShortName = "Greenland ice melt",
                 Description = "Greenland ice melt area since 1979",
                 MoreInformationUrl = "https://nsidc.org/greenland-today",
-                DataDownloadUrl = "https://nsidc.org/api/greenland/melt_area/{year}",
+                DataDownloadUrl = null,
+                DataDownloaderKey = "greenland-melt",
                 MeasurementDefinitions =
                 [
                     new()
@@ -457,8 +456,7 @@ public class DataSetDefinitionsBuilder
                         DataResolution = DataResolution.Daily,
                         DataAdjustment = null,
                         DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}),(?<value>\d*).*$",
-                        FolderName = @"Ice",
-                        FileNameFormat = "greenland-melt-area.csv",
+                        DataFileSource = LooseSource(@"Greenland\greenland-melt-area.csv"),
                     },
                 ],
             },
@@ -466,16 +464,16 @@ public class DataSetDefinitionsBuilder
             new()
             {
                 Id = Guid.Parse("0561CF7E-83F2-4617-AC61-4962A0E95093"),
-                Name = "Met Office Hadley Centre",
-                ShortName = "Hadley Centre",
-                Description = @"The Met Office Hadley Centre is one of the UK's foremost climate change research centres.
+                Name = "Hadley Centre Central England Temperature",
+                ShortName = "HadCET",
+                Description = @"The Hadley Centre Central England Temperature (HadCET) dataset provides daily and monthly mean, minimum and maximum temperatures representative of a roughly triangular area enclosed by Lancashire, London and Bristol.
 
-Our aim is to provide climate science and services to people and organisations, so they can make better decisions to stay safe and thrive. We do this by working with partners around the globe, carrying out world leading research.",
+The monthly mean series begins in 1659 and is the longest instrumental temperature record in the world, while daily mean temperatures begin in 1772 and minimum and maximum temperature series begin in 1878.",
                 Publisher = "Met Office",
                 PublisherUrl = "https://www.metoffice.gov.uk/",
                 MoreInformationUrl = "https://www.metoffice.gov.uk/hadobs/",
                 StationInfoUrl = "https://www.metoffice.gov.uk/hadobs/",
-                DataDownloadUrl = "https://www.metoffice.gov.uk/hadobs/hadcet/data/download.html",
+                DataDownloaderKey = "direct-http",
                 StationMetadataFileName = "Stations_UK_HadObs.json",
                 MeasurementDefinitions =
                 [
@@ -485,11 +483,21 @@ Our aim is to provide climate science and services to people and organisations, 
                         DataType = DataType.TempMean,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Monthly,
+                        DataDownloadUrl = "https://www.metoffice.gov.uk/hadobs/hadcet/data/meantemp_monthly_totals.txt",
                         RowDataType = RowDataType.TwelveMonthsPerRow,
                         DataRowRegEx = @"^\s*(?<year>\d{4})\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+)\s+(-?\d+\.?\d+).*$",
-                        FolderName = @"Temperature\Met",
-                        FileNameFormat = "meantemp_monthly_totals.txt",
+                        DataFileSource = LooseSource(@"Met\meantemp_monthly_totals.txt"),
                         NullValue = "-99.9",
+                    },
+                    new()
+                    {
+                        DataAdjustment = DataAdjustment.Adjusted,
+                        DataType = DataType.TempMean,
+                        UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
+                        DataResolution = DataResolution.Daily,
+                        DataDownloadUrl = "https://www.metoffice.gov.uk/hadobs/hadcet/data/meantemp_daily_totals.txt",
+                        DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})\s+(?<value>-?[\d+\.\d+]*)$",
+                        DataFileSource = LooseSource(@"Met\meantemp_daily_totals.txt"),
                     },
                     new()
                     {
@@ -497,9 +505,9 @@ Our aim is to provide climate science and services to people and organisations, 
                         DataType = DataType.TempMax,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
+                        DataDownloadUrl = "https://www.metoffice.gov.uk/hadobs/hadcet/data/maxtemp_daily_totals.txt",
                         DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})\s+(?<value>-?[\d+\.\d+]*)$",
-                        FolderName = @"Temperature\Met",
-                        FileNameFormat = "maxtemp_daily_totals.txt",
+                        DataFileSource = LooseSource(@"Met\maxtemp_daily_totals.txt"),
                     },
                     new()
                     {
@@ -507,19 +515,19 @@ Our aim is to provide climate science and services to people and organisations, 
                         DataType = DataType.TempMin,
                         UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
                         DataResolution = DataResolution.Daily,
+                        DataDownloadUrl = "https://www.metoffice.gov.uk/hadobs/hadcet/data/mintemp_daily_totals.txt",
                         DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})\s+(?<value>-?[\d+\.\d+]*)$",
-                        FolderName = @"Temperature\Met",
-                        FileNameFormat = "mintemp_daily_totals.txt",
+                        DataFileSource = LooseSource(@"Met\mintemp_daily_totals.txt"),
                     },
                     new()
                     {
                         DataType = DataType.Precipitation,
                         UnitOfMeasure = UnitOfMeasure.Millimetres,
                         DataResolution = DataResolution.Daily,
+                        DataDownloadUrl = "https://www.metoffice.gov.uk/hadobs/hadukp/data/daily/HadCEP_daily_totals.txt",
                         DataAdjustment = null,
                         DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})\s+(?<value>-?[\d+\.\d+]*)$",
-                        FolderName = @"Precipitation\Met",
-                        FileNameFormat = "HadCEP_daily_totals.txt",
+                        DataFileSource = LooseSource(@"Met\HadCEP_daily_totals.txt"),
                     },
                 ],
             },
@@ -533,6 +541,7 @@ Our aim is to provide climate science and services to people and organisations, 
                 Publisher = "WDC-SILSO, Royal Observatory of Belgium, Brussels",
                 MoreInformationUrl = "https://sidc.be/SILSO/newdataset",
                 DataDownloadUrl = "https://sidc.be/SILSO/DATA/SN_d_tot_V2.0.txt",
+                DataDownloaderKey = "direct-http",
                 MeasurementDefinitions =
                 [
                     new MeasurementDefinition
@@ -542,8 +551,7 @@ Our aim is to provide climate science and services to people and organisations, 
                         DataResolution = DataResolution.Daily,
                         DataAdjustment = null,
                         DataRowRegEx = @"^(?<year>\d{4})\s+(?<month>\d+)\s(?<day>\d{2})\s\d{4}\.\d{3}\s+(?<value>-?\d+).*$",
-                        FolderName = @"Solar",
-                        FileNameFormat = "SN_d_tot_V2.0.txt",
+                        DataFileSource = LooseSource(@"Sunspots\SN_d_tot_V2.0.txt"),
                         NullValue = "-1",
                     },
                 ],
@@ -557,6 +565,7 @@ Our aim is to provide climate science and services to people and organisations, 
                 Publisher = "National Oceanic and Atmospheric Administration (NOAA)",
                 MoreInformationUrl = "https://www.ncei.noaa.gov/products/climate-data-records/total-solar-irradiance",
                 DataDownloadUrl = "https://www.ncei.noaa.gov/data/total-solar-irradiance/access/ancillary-data/tsi-ssi_v03r00_observed-tsi-composite_s19780101_e20250630_c20250917.txt",
+                DataDownloaderKey = "direct-http",
                 MeasurementDefinitions =
                 [
                     new MeasurementDefinition
@@ -566,8 +575,7 @@ Our aim is to provide climate science and services to people and organisations, 
                         DataResolution = DataResolution.Daily,
                         DataAdjustment = null,
                         DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}),+(?<value>-?\d+\.*\d*),.*$$",
-                        FolderName = @"Solar",
-                        FileNameFormat = "tsi-ssi_v02r01_observed-tsi-composite.txt",
+                        DataFileSource = LooseSource(@"TSI\tsi-ssi_v02r01_observed-tsi-composite.txt"),
                         NullValue = "-99.000000",
                     },
                 ],
@@ -583,7 +591,8 @@ Our aim is to provide climate science and services to people and organisations, 
 The reference period used to calculate the anomalies is 1971–2000.",
                 Publisher = "National Oceanic and Atmospheric Administration (NOAA)",
                 MoreInformationUrl = "https://www.ncei.noaa.gov/products/land-based-station/noaa-global-temp",
-                DataDownloadUrl = "https://www.ncei.noaa.gov/data/noaa-global-surface-temperature/v6/access/timeseries/aravg.mon.[station].v6.0.0.[year][month].asc",
+                DataDownloadUrl = null,
+                DataDownloaderKey = "noaa-global-temperature",
                 StationMetadataFileName = "Stations_NoaaGlobalTemp.json",
                 MeasurementDefinitions =
                 [
@@ -594,8 +603,7 @@ The reference period used to calculate the anomalies is 1971–2000.",
                         DataResolution = DataResolution.Monthly,
                         DataAdjustment = null,
                         DataRowRegEx = @"^(?<year>\d{4})\s+(?<month>\d+)\s+(?<value>-?\d+\.\d+).*$",
-                        FolderName = @"Temperature\NOAAGlobalTemp",
-                        FileNameFormat = "aravg.mon.[station].v6.0.0.202512.asc",
+                        DataFileSource = LooseSource(@"NOAAGlobalTemp\aravg.mon.[station].v6.0.0.asc"),
                         NullValue = null,
                     },
                 ],
@@ -621,8 +629,7 @@ The reference period used to calculate the anomalies is 1971–2000.",
                         DataResolution = DataResolution.Yearly,
                         DataAdjustment = null,
                         DataRowRegEx = @"^\""(?<station>\w+)\"",.*,(?<year>\d{4}),(?<value>\d+\.\d+),.*$",
-                        FolderName = @"Atmosphere",
-                        FileNameFormat = "GCB2025v15_MtCO2_flat.csv",
+                        DataFileSource = LooseSource(@"CO2Emissions\GCB2025v15_MtCO2_flat.csv"),
                         NullValue = null,
                     },
                 ],
@@ -640,6 +647,7 @@ Aerosols have the greatest potential influence on the record and in general have
                 PublisherUrl = "https://www.noaa.gov/",
                 MoreInformationUrl = "https://gml.noaa.gov/grad/mloapt.html",
                 DataDownloadUrl = "https://gml.noaa.gov/webdata/grad/mloapt/mauna_loa_transmission.dat",
+                DataDownloaderKey = "direct-http",
                 MeasurementDefinitions =
                 [
                     new MeasurementDefinition
@@ -649,8 +657,7 @@ Aerosols have the greatest potential influence on the record and in general have
                         DataResolution = DataResolution.Monthly,
                         DataAdjustment = null,
                         DataRowRegEx = @"^(?<month>\w+)-(?<year>\d{4})\s+\d*\.\d*\s+(?<value>-?\d+\.\d+).*$",
-                        FolderName = @"Atmosphere",
-                        FileNameFormat = "mauna_loa_transmission.dat",
+                        DataFileSource = LooseSource(@"AtmosphericTransmission\mauna_loa_transmission.dat"),
                         NullValue = null,
                     },
                 ],
@@ -670,7 +677,7 @@ The ozone hole area is calculated as the area with ozone values below 220 DU sou
                 PublisherUrl = "https://www.copernicus.eu/",
                 MoreInformationUrl = "https://atmosphere.copernicus.eu/monitoring-ozone-layer",
                 DataDownloadUrl = "https://sites.ecmwf.int/data/cams/ozone_monitoring/data/cams_ozone_monitoring_sh_ozone_area.csv",
-                AlterDownloadedFile = true,
+                DataDownloaderKey = "ozone",
                 MeasurementDefinitions =
                 [
                     new MeasurementDefinition
@@ -680,8 +687,7 @@ The ozone hole area is calculated as the area with ozone values below 220 DU sou
                         DataResolution = DataResolution.Daily,
                         DataAdjustment = null,
                         DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}),(?<value>-?\d+\.\d+)$",
-                        FolderName = @"Atmosphere",
-                        FileNameFormat = "cams_ozone_monitoring_sh_ozone_area_reduced.csv",
+                        DataFileSource = LooseSource(@"OzoneHoleArea\cams_ozone_monitoring_sh_ozone_area_reduced.csv"),
                         NullValue = null,
                     },
                 ],
@@ -696,7 +702,7 @@ The ozone hole area is calculated as the area with ozone values below 220 DU sou
                 PublisherUrl = "https://www.copernicus.eu/",
                 MoreInformationUrl = "https://atmosphere.copernicus.eu/monitoring-ozone-layer",
                 DataDownloadUrl = "https://sites.ecmwf.int/data/cams/ozone_monitoring/data/cams_ozone_monitoring_sh_ozone_minimum.csv",
-                AlterDownloadedFile = true,
+                DataDownloaderKey = "ozone",
                 MeasurementDefinitions =
                 [
                     new MeasurementDefinition
@@ -706,8 +712,7 @@ The ozone hole area is calculated as the area with ozone values below 220 DU sou
                         DataResolution = DataResolution.Daily,
                         DataAdjustment = null,
                         DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}),(?<value>-?\d+\.\d+)$",
-                        FolderName = @"Atmosphere",
-                        FileNameFormat = "cams_ozone_monitoring_sh_ozone_minimum_reduced.csv",
+                        DataFileSource = LooseSource(@"OzoneHoleColumn\cams_ozone_monitoring_sh_ozone_minimum_reduced.csv"),
                         NullValue = null,
                     },
                 ],
@@ -724,6 +729,7 @@ Two different indices are calculated, one that is relevant for the ozone layer o
                 PublisherUrl = "https://www.noaa.gov/",
                 MoreInformationUrl = "https://gml.noaa.gov/odgi/",
                 DataDownloadUrl = "https://gml.noaa.gov/odgi/odgi_[station].csv",
+                DataDownloaderKey = "direct-http",
                 MeasurementDefinitions =
                 [
                     new MeasurementDefinition
@@ -733,8 +739,7 @@ Two different indices are calculated, one that is relevant for the ozone layer o
                         DataResolution = DataResolution.Yearly,
                         DataAdjustment = null,
                         DataRowRegEx = @"^(?<year>\d{4}),.*,(?<value>\d+\.\d+)$",
-                        FolderName = @"Atmosphere\ODGI",
-                        FileNameFormat = "odgi_[station].csv",
+                        DataFileSource = LooseSource(@"ODGI\odgi_[station].csv"),
                         NullValue = null,
                     },
                 ],
@@ -751,7 +756,7 @@ Only altimetry measurements between 66°S and 66°N have been processed. An inve
                 PublisherUrl = "https://www.noaa.gov/",
                 MoreInformationUrl = "https://www.star.nesdis.noaa.gov/socd/lsa/SeaLevelRise/LSA_SLR_timeseries_global.php",
                 DataDownloadUrl = "https://www.star.nesdis.noaa.gov/socd/lsa/SeaLevelRise/slr/slr_sla_gbl_free_ref_90.csv",
-                AlterDownloadedFile = true,
+                DataDownloaderKey = "sea-level",
                 MeasurementDefinitions =
                 [
                     new MeasurementDefinition
@@ -761,8 +766,7 @@ Only altimetry measurements between 66°S and 66°N have been processed. An inve
                         DataResolution = DataResolution.Daily,
                         DataAdjustment = null,
                         DataRowRegEx = @"^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2}),(?<value>-?\d+\.\d+)$",
-                        FolderName = @"Ocean",
-                        FileNameFormat = "slr_sla_gbl_free_ref_90_reduced.csv",
+                        DataFileSource = LooseSource(@"SeaLevel\slr_sla_gbl_free_ref_90_reduced.csv"),
                         NullValue = null,
                     },
                 ],
@@ -778,6 +782,7 @@ This AMO time-series is from NOAA/NCEI, using the ERSSTV5 dataset. It is a sea-s
                 PublisherUrl = "https://www.noaa.gov/",
                 MoreInformationUrl = "https://psl.noaa.gov/data/timeseries/AMO/",
                 DataDownloadUrl = "https://www1.ncdc.noaa.gov/pub/data/cmb/ersst/v5/index/ersst.v5.amo.dat",
+                DataDownloaderKey = "direct-http",
                 MeasurementDefinitions =
                 [
                     new MeasurementDefinition
@@ -787,8 +792,7 @@ This AMO time-series is from NOAA/NCEI, using the ERSSTV5 dataset. It is a sea-s
                         DataResolution = DataResolution.Monthly,
                         DataAdjustment = null,
                         DataRowRegEx = @"^(?<year>\d{4})\s+(?<month>\d+)\s+(?<value>-?\d+\.\d+)$",
-                        FolderName = @"Ocean",
-                        FileNameFormat = "ersst.v5.amo.dat",
+                        DataFileSource = LooseSource(@"AMO\ersst.v5.amo.dat"),
                         NullValue = null,
                     },
                 ],
@@ -804,7 +808,7 @@ The mean seawater pH is calculated from the mean seawater dissolved inorganic ca
                 PublisherUrl = "https://www.noaa.gov/",
                 MoreInformationUrl = "https://hahana.soest.hawaii.edu/hot/",
                 DataDownloadUrl = "https://hahana.soest.hawaii.edu/hot/hotco2/HOT_surface_CO2.txt",
-                AlterDownloadedFile = true,
+                DataDownloaderKey = "ocean-acidity",
                 MeasurementDefinitions =
                 [
                     new MeasurementDefinition
@@ -814,8 +818,7 @@ The mean seawater pH is calculated from the mean seawater dissolved inorganic ca
                         DataResolution = DataResolution.Monthly,
                         DataAdjustment = null,
                         DataRowRegEx = @"^(?<year>\d{4}),(?<month>\d+),(?<value>-?\d+\.\d+)$",
-                        FolderName = @"Ocean",
-                        FileNameFormat = "HOT_surface_CO2_reduced.csv",
+                        DataFileSource = LooseSource(@"OceanAcidity\HOT_surface_CO2_reduced.csv"),
                         NullValue = null,
                     },
                 ],
@@ -823,5 +826,22 @@ The mean seawater pH is calculated from the mean seawater dissolved inorganic ca
         };
 
         return dataSetDefinitions;
+    }
+
+    private static DataFileSourceDefinition LooseSource(string filePathFormat)
+    {
+        return new DataFileSourceDefinition
+        {
+            FilePathFormat = filePathFormat,
+        };
+    }
+
+    private static DataFileSourceDefinition ArchiveSource(string filePathFormat, string archiveEntryPathFormat)
+    {
+        return new DataFileSourceDefinition
+        {
+            FilePathFormat = filePathFormat,
+            ArchiveEntryPathFormat = archiveEntryPathFormat,
+        };
     }
 }

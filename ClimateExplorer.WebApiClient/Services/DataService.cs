@@ -93,7 +93,7 @@ public class DataService : IDataService
         return result!;
     }
 
-    public async Task<IEnumerable<Location>> GetLocations(bool permitCreateCache = true)
+    public async Task<IEnumerable<Location>?> GetLocations(bool permitCreateCache = true, bool fromCacheOnly = false)
     {
         var url = $"/location";
         
@@ -105,6 +105,11 @@ public class DataService : IDataService
         var result = dataServiceCache.Get<Location[]>(url);
         if (result == null)
         {
+            if (fromCacheOnly)
+            {
+                return null;
+            }
+
             result = await httpClient.GetFromJsonAsync<Location[]>(url);
 
             dataServiceCache.Put(url, result!);
@@ -216,7 +221,7 @@ public class DataService : IDataService
         return result!;
     }
 
-    public async Task<ClimateRecordsResponse> GetClimateRecords(Guid locationId, DataType dataType = DataType.TempMax, DataAdjustment? dataAdjustment = null, bool ascending = false, int? take = null, int? skip = null, int? month = null, bool monthly = false, int? day = null)
+    public async Task<ClimateRecordsResponse?> GetClimateRecords(Guid locationId, DataType dataType = DataType.TempMax, DataAdjustment? dataAdjustment = null, bool ascending = false, int? take = null, int? skip = null, int? month = null, bool monthly = false, int? day = null, bool fromCacheOnly = false)
     {
         var url = "/climate-record";
         url = QueryHelpers.AddQueryString(url, "locationId", locationId.ToString());
@@ -254,27 +259,19 @@ public class DataService : IDataService
         }
 
         var result = dataServiceCache.Get<ClimateRecordsResponse>(url);
+
         if (result == null)
         {
+            if (fromCacheOnly)
+            {
+                return null;
+            }
+
             result = await httpClient.GetFromJsonAsync<ClimateRecordsResponse>(url, jsonSerializerOptions);
 
             dataServiceCache.Put(url, result!);
         }
 
-        return result!;
-    }
-
-    public async Task<RecentObservationsResponse> GetRecentObservations(Guid locationId, bool isLocationSupported = false)
-    {
-        var url = "/recent-observations";
-        url = QueryHelpers.AddQueryString(url, "locationId", locationId.ToString());
-
-        if (isLocationSupported)
-        {
-            url = QueryHelpers.AddQueryString(url, "isLocationSupported", "true");
-        }
-
-        var result = await httpClient.GetFromJsonAsync<RecentObservationsResponse>(url, jsonSerializerOptions);
         return result!;
     }
 }

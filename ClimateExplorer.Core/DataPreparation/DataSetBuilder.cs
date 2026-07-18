@@ -17,12 +17,24 @@ public class DataSetBuilder
         // Reads raw data (from one or multiple sources) & derive a series from it as per the request
         var series = await SeriesProvider.GetSeriesDataRecordsForRequest(request.SeriesDerivationType, request.SeriesSpecifications!);
 
+        Console.WriteLine("GetSeriesDataRecordsForRequest completed in " + sw.Elapsed);
+
+        return BuildDataSetFromSeries(request, series);
+    }
+
+    /// <summary>
+    /// Builds a result from a series the caller has already prepared (e.g. an ACORN-SAT series extended
+    /// with a CDO overlay), sharing the same validation, filtering, and binning pipeline as
+    /// <see cref="BuildDataSet"/> instead of reading through <see cref="SeriesProvider"/>.
+    /// </summary>
+    public BuildDataSetResult BuildDataSetFromSeries(PostDataSetsRequestBody request, SeriesProvider.Series series)
+    {
+        ValidateRequest(request);
+
         if (series.DataRecords != null && series.DataRecords.All(x => x.Value == null))
         {
             throw new Exception("All data records in the series are null. Check the raw input file");
         }
-
-        Console.WriteLine("GetSeriesDataRecordsForRequest completed in " + sw.Elapsed);
 
         if (request.MinimumDataResolution != null && series.DataResolution < request.MinimumDataResolution)
         {

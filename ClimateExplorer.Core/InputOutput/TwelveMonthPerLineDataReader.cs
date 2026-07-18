@@ -5,18 +5,23 @@ using ClimateExplorer.Core.Model;
 
 public static class TwelveMonthPerLineDataReader
 {
-    public static async Task<List<DataRecord>> GetTwelveMonthsPerRowData(MeasurementDefinition measurementDefinition, List<DataFileFilterAndAdjustment>? dataFileFilterAndAdjustments)
+    public static async Task<List<DataRecord>> GetTwelveMonthsPerRowData(
+        MeasurementDefinition measurementDefinition,
+        List<DataFileFilterAndAdjustment>? dataFileFilterAndAdjustments,
+        string datasetsFolder = "Datasets")
     {
-        var dataPath = $@"{measurementDefinition.FolderName}\{measurementDefinition!.FileNameFormat!}";
+        var station = string.Empty;
         if (dataFileFilterAndAdjustments != null)
         {
-            dataPath = dataPath.Replace("[station]", dataFileFilterAndAdjustments!.Single().Id);
+            station = dataFileFilterAndAdjustments!.Single().Id;
         }
 
-        var records = await DataReaderFunctions.GetLinesInDataFileWithCascade(dataPath);
+        var dataFileSource = measurementDefinition.DataFileSource
+            ?? throw new InvalidOperationException("Every measurement definition must have an explicit data file source.");
+        var records = await DataReaderFunctions.GetLinesInDataFileSource(dataFileSource, station, datasetsFolder);
         if (records == null)
         {
-            throw new Exception("Unable to read data " + dataPath);
+            throw new Exception("Unable to read data " + dataFileSource.FilePathFormat);
         }
 
         var regEx = new Regex(measurementDefinition.DataRowRegEx!);

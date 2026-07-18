@@ -1,0 +1,34 @@
+@namespace ClimateExplorer.Web.Client.Components.RecentObservations
+
+<dl class="recent-observation-detail-metrics">
+    @foreach (var metric in Metrics)
+    {
+        <div class="recent-observation-detail-metric">
+            <dt>@metric.Label</dt>
+            <dd>
+                <div class="recent-observation-detail-headline day-records">
+                    <span class="recent-observation-detail-current">@metric.CurrentValue</span>
+                    @if (metric.CurrentValueDate.HasValue)
+                    {
+                        <span class="recent-observation-detail-current-date">· @RecentObservationTileDisplay.FormatCurrentMetricDate(metric.CurrentValueDate.Value)</span>
+                    }
+                </div>
+                @if (!string.IsNullOrWhiteSpace(metric.RecordStatusText))
+                {
+                    <span class="recent-observation-status status-@RecentObservationTileDisplay.StatusClass(metric.RecordStatus)">@metric.RecordStatusText</span>
+                }
+                else if (!string.IsNullOrWhiteSpace(metric.RankText))
+                {
+                    <span class="recent-observation-detail-rank day-records">@metric.RankText</span>
+                }
+                @foreach (var record in metric.Records)
+                {
+                    <span class="recent-observation-detail-record">
+                        <span class="recent-observation-detail-record-label">@record.Label:</span>
+                        <span class="recent-observation-detail-record-value">@record.Value</span><span class="recent-observation-detail-record-date">@RecentObservationTileDisplay.FormatDayRecordOccurrence(record)</span>
+                    </span>
+                }
+            </dd>
+        </div>
+    }
+</dl>

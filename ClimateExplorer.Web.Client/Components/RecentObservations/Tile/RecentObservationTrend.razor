@@ -1,0 +1,34 @@
+@namespace ClimateExplorer.Web.Client.Components.RecentObservations
+
+<dl class="recent-observation-detail-metrics">
+    @foreach (var metric in Metrics)
+    {
+        <div class="recent-observation-detail-metric">
+            <dt>@metric.Label</dt>
+            <dd>
+                @if (!string.IsNullOrWhiteSpace(metric.UnavailableReason))
+                {
+                    <span class="recent-observation-detail-record">@metric.UnavailableReason</span>
+                }
+                else
+                {
+                    @if (!string.IsNullOrWhiteSpace(metric.HeadlineText))
+                    {
+                        <div class="recent-observation-detail-headline">
+                            <span class="recent-observation-detail-current @ValueClassifier.GetValueClass(metric.HeadlineText, metric.IsHeadlinePositive)">@metric.HeadlineText</span>
+                            <span class="recent-observation-detail-rank">@metric.HeadlineCaption</span>
+                        </div>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(metric.RecentTrendValueText))
+                    {
+                        <span class="recent-observation-detail-record">@metric.RecentTrendYearRange: <span class="@ValueClassifier.GetValueClass(metric.RecentTrendValueText, metric.IsRecentTrendPositive)">@metric.RecentTrendValueText</span></span>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(metric.FirstHalfTrendValueText))
+                    {
+                        <span class="recent-observation-detail-record">@metric.FirstHalfTrendYearRange: <span class="@ValueClassifier.GetValueClass(metric.FirstHalfTrendValueText, metric.IsFirstHalfTrendPositive)">@metric.FirstHalfTrendValueText</span></span>
+                    }
+                }
+            </dd>
+        </div>
+    }
+</dl>

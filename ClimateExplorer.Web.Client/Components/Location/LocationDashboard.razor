@@ -2,6 +2,7 @@
 @using ClimateExplorer.Core.Model
 @using ClimateExplorer.Web.Client.Components.ClimateRecords
 @using ClimateExplorer.Web.Client.Components.Common
+@using ClimateExplorer.Web.Client.Components.RecentObservations
 @using static ClimateExplorer.Core.Enums
 
 <Collapsible @ref="LocationCollapsible" Title="@Location?.DisplayTitle" CompactTitle="@Location?.CodeTitle" MinimalTitle="@Location?.Name" OnShowOrHide="OverviewShowOrHideHandler" CollapserSize="Collapsible.CollapserSizes.ExtraLarge">
@@ -75,7 +76,7 @@
 </SidePanel>
 
 <SidePanel @ref="recentObservationsSidePanel" Title="@("Recent observations for " + Location?.Name)" Width="85%">
-    <RecentObservationsPanel Location="@Location" />
+    <RecentObservationsPanel Location="@Location" DataSetDefinitions="@DataSetDefinitions" />
 </SidePanel>
 
 <LocationDataSetMetadataSidePanel @ref="dataSetMetadataSidePanel" DataSetDefinitions="@DataSetDefinitions" Width="50%" />

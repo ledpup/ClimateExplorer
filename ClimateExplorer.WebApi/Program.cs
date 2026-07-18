@@ -1,7 +1,16 @@
 #pragma warning disable SA1200 // Using directives should be placed correctly
+using System;
+using System.IO;
+using System.Net.Http;
 using System.Text.Json.Serialization;
+using ClimateExplorer.Data.Downloading.Downloaders;
+using ClimateExplorer.Data.Downloading.Orchestration;
+using ClimateExplorer.Data.Downloading.Storage;
+using ClimateExplorer.Data.Downloading.Transformers;
+using ClimateExplorer.Data.Downloading.Workspace;
 using ClimateExplorer.Data.Ghcnd;
 using ClimateExplorer.WebApi;
+using ClimateExplorer.WebApi.AcornSat;
 using ClimateExplorer.WebApi.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http.Json;
@@ -46,12 +55,62 @@ builder.Services.Configure<JsonOptions>(
 
 builder.Logging.AddConsole();
 
+var everydayCache = new FileBackedTwoLayerCache("cache");
+var longtermCache = new FileBackedTwoLayerCache("cache-longterm");
+
+builder.Services.AddSingleton(TimeProvider.System);
+builder.Services.AddSingleton<DataSetFreshnessPolicy>();
+builder.Services.AddSingleton<DataSetAssetLockProvider>();
+builder.Services.AddSingleton<DataSetDownloadWorkspaceFactory>();
+builder.Services.AddSingleton<DataSetDownloadValidator>();
+builder.Services.AddSingleton(new DataSetSourceAssetResolver());
+builder.Services.AddSingleton(new DataSetSourceFileStore("Datasets"));
+builder.Services.AddSingleton<IDataSetSourceStateStore>(
+    new FileDataSetSourceStateStore(Path.Combine(Path.GetTempPath(), "ClimateExplorer", "DataSetSourceState")));
+builder.Services.AddSingleton(CreateDataSetSourceHttpClient());
+builder.Services.AddSingleton<DataSetHttpFileDownloader>();
+builder.Services.AddSingleton<IDataSetDownloader, DirectHttpDataSetDownloader>();
+builder.Services.AddSingleton<IDataSetDownloader>(
+    new GhcndDataSetDownloader(GhcndHttpClientFactory.CreateHttpClient()));
+builder.Services.AddSingleton<IDataSetDownloader>(
+    new BomDataSetDownloader(new BomDailyDataClient(BomHttpClientFactory.CreateBomHttpClient())));
+builder.Services.AddSingleton<IDataSetDownloader>(
+    services => new NoaaGlobalTempDataSetDownloader(
+        services.GetRequiredService<DataSetHttpFileDownloader>(),
+        services.GetRequiredService<TimeProvider>()));
+builder.Services.AddSingleton<IDataSetDownloader>(
+    services => new GreenlandDataSetDownloader(
+        new GreenlandMeltDataClient(services.GetRequiredService<HttpClient>()),
+        services.GetRequiredService<DataSetSourceFileStore>(),
+        services.GetRequiredService<TimeProvider>()));
+builder.Services.AddSingleton<IDataSetDownloader>(
+    services => new TransformingDataSetDownloader(
+        "ocean-acidity",
+        services.GetRequiredService<DataSetHttpFileDownloader>(),
+        new OceanAciditySourceFileTransformer()));
+builder.Services.AddSingleton<IDataSetDownloader>(
+    services => new TransformingDataSetDownloader(
+        "sea-level",
+        services.GetRequiredService<DataSetHttpFileDownloader>(),
+        new SeaLevelSourceFileTransformer()));
+builder.Services.AddSingleton<IDataSetDownloader>(
+    services => new TransformingDataSetDownloader(
+        "ozone",
+        services.GetRequiredService<DataSetHttpFileDownloader>(),
+        new OzoneSourceFileTransformer()));
+builder.Services.AddSingleton<DataSetSourceUpdateCoordinator>();
+builder.Services.AddSingleton<IDataSetSourceUpdateCoordinator>(
+    services => services.GetRequiredService<DataSetSourceUpdateCoordinator>());
 builder.Services.AddSingleton(
-    new ClimateExplorerApiServices(
-        new FileBackedTwoLayerCache("cache"),
-        new FileBackedTwoLayerCache("cache-longterm"),
+    services => new ClimateExplorerApiServices(
+        everydayCache,
+        longtermCache,
         BomHttpClientFactory.CreateBomHttpClient(),
-        GhcndHttpClientFactory.CreateHttpClient()));
+        GhcndHttpClientFactory.CreateHttpClient(),
+        services.GetRequiredService<IDataSetSourceUpdateCoordinator>(),
+        services.GetRequiredService<ILogger<ClimateExplorerApiServices>>()));
+builder.Services.AddSingleton(new AcornSatExtensionCache(everydayCache));
+builder.Services.AddSingleton<AcornSatClimateRecordService>();
 
 var app = builder.Build();
 app.UseCors();
@@ -59,3 +118,13 @@ app.UseCors();
 app.MapClimateExplorerEndpoints();
 
 app.Run();
+
+static HttpClient CreateDataSetSourceHttpClient()
+{
+    var client = new HttpClient
+    {
+        Timeout = TimeSpan.FromMinutes(2),
+    };
+    client.DefaultRequestHeaders.UserAgent.ParseAdd("ClimateExplorer/1.0 dataset-refresh");
+    return client;
+}

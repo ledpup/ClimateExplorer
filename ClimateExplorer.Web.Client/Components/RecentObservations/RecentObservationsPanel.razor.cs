@@ -1,11 +1,13 @@
-namespace ClimateExplorer.Web.Client.Components.Location;
+namespace ClimateExplorer.Web.Client.Components.RecentObservations;
 
 using System.Globalization;
 using ClimateExplorer.Core.Model;
+using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Services;
 using ClimateExplorer.Web.Client.Services.RecentObservations;
 using ClimateExplorer.Web.Client.UiModel.RecentObservations;
 using Microsoft.AspNetCore.Components;
+using static ClimateExplorer.Core.Enums;
 
 public partial class RecentObservationsPanel
 {
@@ -18,9 +20,13 @@ public partial class RecentObservationsPanel
     private string referenceDateInputValue = string.Empty;
     private string? referenceDateValidationMessage;
     private ComparisonEndMode selectedComparisonEndMode = ComparisonEndMode.FullDataset;
+    private DataAdjustment? selectedDataAdjustment = DataAdjustment.Adjusted;
 
     [Parameter]
     public Location? Location { get; set; }
+
+    [Parameter]
+    public IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
 
     [Inject]
     private IRecentObservationsService RecentObservationsService { get; set; } = default!;
@@ -43,6 +49,7 @@ public partial class RecentObservationsPanel
     private string AddDayButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.Daily, "day");
     private string AddMonthButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.PreviousMonth, "month");
     private string AddSeasonButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.PreviousSeason, "season");
+    private string AddYearButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.PreviousYear, "year");
     private string ExpandCollapseAllLabel => CurrentState.ExpansionStates.CreateToggleAllLabel(CurrentExpansionTargets);
     private bool HasExpandableCurrentTiles => CurrentState.ExpansionStates.HasExpandableTile(CurrentExpansionTargets);
     private bool AreAllExpandableCurrentTilesExpanded => CurrentState.ExpansionStates.AreAllExpandableTilesExpanded(CurrentExpansionTargets);
@@ -56,11 +63,14 @@ public partial class RecentObservationsPanel
     private bool IsAddEarlierDayDisabled => !periodSelection.CanAddEarlierDay(GetAvailableOffsets(RecentObservationPeriodKind.Daily));
     private bool IsAddEarlierMonthDisabled => !periodSelection.CanAddEarlierMonth(GetAvailableOffsets(RecentObservationPeriodKind.PreviousMonth));
     private bool IsAddEarlierSeasonDisabled => !periodSelection.CanAddEarlierSeason(GetAvailableOffsets(RecentObservationPeriodKind.PreviousSeason));
+    private bool IsAddEarlierYearDisabled => !periodSelection.CanAddEarlierYear(GetAvailableOffsets(RecentObservationPeriodKind.PreviousYear));
     private IReadOnlyList<RecentObservationSourceMetadata> CurrentSourceMetadata => CurrentState.Result?.SourceMetadata ?? [];
     private RecentObservationSourceMetadata? ObservationSourceMetadata => CurrentSourceMetadata
         .FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.SourceName) && !string.IsNullOrWhiteSpace(x.StationId));
     private IReadOnlyList<RecentObservationSourceMetadata> CurrentRetrievalMetadata =>
         RecentObservationRetrievalMetadataSelector.Select(CurrentSourceMetadata);
+    private DataAdjustment? SelectedDataAdjustment => selectedDataAdjustment;
+    private List<DataAdjustment?> AvailableDataAdjustments { get; set; } = [];
 
     protected override async Task OnParametersSetAsync()
     {
@@ -74,6 +84,7 @@ public partial class RecentObservationsPanel
             selectedComparisonEndMode = ComparisonEndMode.FullDataset;
             temperatureState.Reset();
             precipitationState.Reset();
+            UpdateAvailableDataAdjustments();
         }
 
         if (Location is not null)
@@ -86,6 +97,38 @@ public partial class RecentObservationsPanel
     {
         ActiveTab = tab;
         await EnsureTabLoaded(tab);
+    }
+
+    private void UpdateAvailableDataAdjustments()
+    {
+        if (Location is null || DataSetDefinitions is null)
+        {
+            AvailableDataAdjustments = [];
+            selectedDataAdjustment = DataAdjustment.Adjusted;
+            return;
+        }
+
+        AvailableDataAdjustments = [.. DataSetDefinitions
+            .Where(x => x.LocationIds != null && x.LocationIds.Contains(Location.Id))
+            .SelectMany(x => x.MeasurementDefinitions ?? [])
+            .Where(x => x.DataType is DataType.TempMax or DataType.TempMin or DataType.TempMean)
+            .Where(x => x.DataResolution == DataResolution.Daily)
+            .Select(x => x.DataAdjustment)
+            .Distinct()];
+
+        selectedDataAdjustment = AvailableDataAdjustments.Contains(DataAdjustment.Adjusted)
+            ? DataAdjustment.Adjusted
+            : AvailableDataAdjustments.FirstOrDefault();
+    }
+
+    private async Task OnAdjustedChanged(bool value)
+    {
+        selectedDataAdjustment = value
+            ? DataAdjustment.Adjusted
+            : AvailableDataAdjustments.FirstOrDefault(x => x != DataAdjustment.Adjusted);
+
+        temperatureState.Reset();
+        await EnsureTabLoaded(RecentObservationsTab.Temperature);
     }
 
     private async Task RetryCurrentTab()
@@ -120,7 +163,7 @@ public partial class RecentObservationsPanel
         {
             state.DataSet = tab switch
             {
-                RecentObservationsTab.Temperature => await RecentObservationsService.LoadTemperatureData(Location),
+                RecentObservationsTab.Temperature => await RecentObservationsService.LoadTemperatureData(Location, SelectedDataAdjustment),
                 RecentObservationsTab.Precipitation => await RecentObservationsService.LoadPrecipitationData(Location),
                 _ => throw new NotImplementedException(),
             };
@@ -150,6 +193,11 @@ public partial class RecentObservationsPanel
     private void AddEarlierSeason()
     {
         periodSelection.AddEarlierSeason(GetAvailableOffsets(RecentObservationPeriodKind.PreviousSeason));
+    }
+
+    private void AddEarlierYear()
+    {
+        periodSelection.AddEarlierYear(GetAvailableOffsets(RecentObservationPeriodKind.PreviousYear));
     }
 
     private void RemoveTile(RecentObservationTileViewModel tile)
@@ -281,6 +329,7 @@ public partial class RecentObservationsPanel
             PreviousDayCount = RecentObservationPeriodSelection.MaximumPreviousDayCount,
             PreviousMonthCount = RecentObservationPeriodSelection.MaximumPreviousMonthCount,
             PreviousSeasonCount = RecentObservationPeriodSelection.MaximumPreviousSeasonCount,
+            PreviousYearCount = RecentObservationPeriodSelection.MaximumPreviousYearCount,
         };
     }
 

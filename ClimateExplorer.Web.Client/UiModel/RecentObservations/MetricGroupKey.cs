@@ -6,4 +6,5 @@ public enum MetricGroupKey
     PeriodRecords,
     DayRecords,
     Variation,
+    Trend,
 }

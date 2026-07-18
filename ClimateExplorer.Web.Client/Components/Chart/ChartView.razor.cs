@@ -116,7 +116,8 @@ public partial class ChartView : IAsyncDisposable
     /// The chart type applied to the chart control. If any series is in "Bar" mode, we switch
     /// the entire chart to Bar type to ensure it renders, at the cost of a small misalignment
     /// between grid lines and datapoints for any line series that are being displayed.
-    /// Otherwise, we display in "Line" mode to avoid that cost.
+    /// Otherwise, we display in "Line" mode to avoid that cost. "Scatter" series are also rendered
+    /// using "Line" mode, as a line dataset with no connecting line and larger points.
     /// </summary>
     private ChartType InternalChartType { get; set; }
 

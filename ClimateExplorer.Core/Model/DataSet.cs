@@ -2,10 +2,11 @@
 
 using System.Text.Json.Serialization;
 using ClimateExplorer.Core.DataPreparation;
+using ClimateExplorer.Core.Interface;
 using ClimateExplorer.Core.ViewModel;
 using static ClimateExplorer.Core.Enums;
 
-public class DataSet
+public class DataSet : ICachedData
 {
     private double? mean;
     public DataSet()
@@ -121,6 +122,8 @@ public class DataSet
             return mean;
         }
     }
+
+    public DateTimeOffset? RetrievedDate { get; set; }
 
     public override string ToString()
     {

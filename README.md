@@ -4,7 +4,7 @@
 
 ClimateExplorer.net has two main sections;
  1. [local climate change information](https://climateexplorer.net/) about a specific location
- 1. [regional and global charts](https://climateexplorer.net/regionalandglobal) to show what is happening with greenhouse gases, ice melt, sea-level rise, ocean temperatures, etc.
+ 1. [global charts](https://climateexplorer.net/global) to show what is happening with greenhouse gases, ice melt, sea-level rise, ocean temperatures, etc.
 
 This github site is the digital repository for everything used to bring [the website](https://climateexplorer.net/) together.
 

@@ -86,7 +86,7 @@ public class ChartStateUrlServiceTests
         var service = CreateService();
 
         var url = service.BuildRelativeUrl(
-            "regionalandglobal",
+            "global",
             new ChartState
             {
                 ChartAllData = false,
@@ -95,7 +95,7 @@ public class ChartStateUrlServiceTests
                 Series = [],
             });
 
-        Assert.AreEqual("regionalandglobal?chartAllData=false&groupingDays=14&groupingThreshold=70", url);
+        Assert.AreEqual("global?chartAllData=false&groupingDays=14&groupingThreshold=70", url);
     }
 
     private static ChartStateUrlService CreateService()

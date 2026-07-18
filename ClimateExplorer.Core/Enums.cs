@@ -35,6 +35,8 @@ public static class Enums
         Ozone,
 
         SeaLevel,
+
+        CO2Deseasoned,
     }
 
     public enum DataResolution

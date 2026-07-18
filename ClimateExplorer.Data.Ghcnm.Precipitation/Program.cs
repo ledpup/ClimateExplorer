@@ -59,8 +59,7 @@ var measurementDefinition = new MeasurementDefinition
     UnitOfMeasure = UnitOfMeasure.Millimetres,
     NullValue = "99999",
     DataRowRegEx = @"^(?<station>\w+),.*,.*,.*,.*,(?<year>\d{4})(?<month>\d{2}),\s*(?<value>-?[\d+]*),.*,.*,\w,\d+$",
-    FolderName = @"Download",
-    FileNameFormat = "[station].csv",
+    DataFileSource = new DataFileSourceDefinition { FilePathFormat = "[station].csv" },
 };
 
 var stationsWithData = new List<Station>();
@@ -68,7 +67,7 @@ var stationsWithData = new List<Station>();
 var dataSetDefinitions = DataSetDefinitionsBuilder.BuildDataSetDefinitions();
 var ghcnmp = dataSetDefinitions.Single(x => x.ShortName == "GHCNmp");
 
-var outputFolder = Folders.SourceDataFolder + ghcnmp.MeasurementDefinitions!.Single().FolderName;
+var outputFolder = Path.Combine(Folders.SourceDataFolder, "Precipitation", "GHCNm");
 
 try
 {
@@ -94,7 +93,7 @@ foreach (var station in stations)
     List<DataRecord>? dataRecords = null;
     try
     {
-        dataRecords = await DataReaderFunctions.GetDataRecords(measurementDefinition, dataFileFilterAndAdjustments);
+        dataRecords = await DataReaderFunctions.GetDataRecords(measurementDefinition, dataFileFilterAndAdjustments, "Download");
     }
     catch (FileLoadException ex)
     {

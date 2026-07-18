@@ -36,7 +36,7 @@ Both pages inherit `ChartablePage` (abstract `ComponentBase`).
 - Has `SuggestedCharts` (full) and `SuggestedChartsMini` (collapsed header) preset selector
 - Uses `Blazored.LocalStorage` for site-overview panel dismissal tracking
 
-### `RegionalAndGlobal` — `/regionalandglobal`
+### `Global` — `/global`
 - No map, no `LocationInfo`
 - `SuggestedCharts` (full, in a `Collapsible`) + `ChartView`
 
@@ -48,7 +48,7 @@ Provides: `DataService`, `NavManager`, `Exporter`, `JsRuntime`, `Logger`, `DataS
 ## Component Hierarchy
 
 ```
-ChartablePage (Index / RegionalAndGlobal)
+ChartablePage (Index / Global)
 ├── SuggestedCharts / SuggestedChartsMini
 ├── MapContainer              (Index only)
 ├── LocationInfo              (Index only)

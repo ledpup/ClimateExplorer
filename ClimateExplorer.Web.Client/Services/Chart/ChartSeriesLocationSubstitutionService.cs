@@ -103,6 +103,18 @@ public sealed class ChartSeriesLocationSubstitutionService : IChartSeriesLocatio
             .Where(x => x.DataType == oldMd.DataType && x.DataAdjustment == oldMd.DataAdjustment)
             .ToArray();
 
+        if (candidateMds.Length > 1)
+        {
+            var resolutionMatchedMds = candidateMds
+                .Where(x => x.DataResolution == oldMd.DataResolution)
+                .ToArray();
+
+            if (resolutionMatchedMds.Length > 0)
+            {
+                candidateMds = resolutionMatchedMds;
+            }
+        }
+
         switch (candidateMds.Length)
         {
             case 0:

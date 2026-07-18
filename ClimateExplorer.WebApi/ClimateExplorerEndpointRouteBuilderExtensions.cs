@@ -1,6 +1,9 @@
 namespace ClimateExplorer.WebApi;
 
+using System.Threading;
+using ClimateExplorer.Core.DataPreparation;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
 
 internal static class ClimateExplorerEndpointRouteBuilderExtensions
 {
@@ -18,7 +21,12 @@ internal static class ClimateExplorerEndpointRouteBuilderExtensions
         app.MapGet("/region", LocationEndpoints.GetRegions);
         app.MapGet("/heating-score-table", MetadataEndpoints.GetHeatingScoreTable);
         app.MapGet("/climate-record", ClimateRecordsEndpoints.GetClimateRecords);
-        app.MapGet("/recent-observations", RecentObservationsEndpoints.GetRecentObservations);
-        app.MapPost("/dataset", DataSetEndpoints.PostDataSets);
+
+        // permitSourceUpdate is deliberately not a bindable parameter here: requests hitting /dataset
+        // directly must never trigger a new external data download via ClimateExplorer.Data.Downloading.
+        app.MapPost(
+            "/dataset",
+            (PostDataSetsRequestBody body, [FromServices] ClimateExplorerApiServices services, CancellationToken cancellationToken) =>
+                DataSetEndpoints.PostDataSets(body, services, permitSourceUpdate: false, cancellationToken));
     }
 }

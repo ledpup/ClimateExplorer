@@ -104,7 +104,7 @@ public partial class Locations
         var log = new LogAugmenter(Logger!, nameof(OnInitializedAsync));
         log.LogInformation("Starting");
 
-        allLocations = [.. await DataService!.GetLocations()];
+        allLocations = [.. (await DataService!.GetLocations())!];
         dataSetDefinitions = [.. await DataService!.GetDataSetDefinitions()];
 
         foreach (var dsd in dataSetDefinitions)
@@ -176,6 +176,7 @@ public partial class Locations
         DataType.SeaIceExtent => "Sea ice",
         DataType.OzoneHoleArea => "Ozone",
         DataType.SeaLevel => "Sea level",
+        DataType.CO2Deseasoned => "CO₂ deseasoned",
         _ => dt.ToString(),
     };
 

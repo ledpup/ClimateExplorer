@@ -2,6 +2,7 @@
 
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
+using static ClimateExplorer.Core.Enums;
 
 public static class AnomalyCalculator
 {
@@ -35,14 +36,14 @@ public static class AnomalyCalculator
                 .ToArray());
     }
 
-    public static string ValueAsString(this CalculatedAnomaly? calculatedAnomaly, string unitofMeasure = "°C")
+    public static string ValueAsString(this CalculatedAnomaly? calculatedAnomaly, UnitOfMeasure unitOfMeasure)
     {
         if (calculatedAnomaly == null)
         {
             return "NA";
         }
 
-        return $"{(calculatedAnomaly.AnomalyValue >= 0 ? "+" : string.Empty)}{string.Format("{0:0.0}", calculatedAnomaly.AnomalyValue)}{unitofMeasure}";
+        return $"{(calculatedAnomaly.AnomalyValue >= 0 ? "+" : string.Empty)}{string.Format(unitOfMeasure == UnitOfMeasure.DegreesCelsius ? "{0:0.0}" : "{0:0}", calculatedAnomaly.AnomalyValue)}{(unitOfMeasure == UnitOfMeasure.DegreesCelsius ? "°C" : "mm")}";
     }
 
     private static CalculatedAnomaly CalculateAnomaly(YearAndValue[] dataPoints)

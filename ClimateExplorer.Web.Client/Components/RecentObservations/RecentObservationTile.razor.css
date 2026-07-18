@@ -10,11 +10,11 @@
     width: 100%;
 }
 
-.recent-observation-tile.removable .recent-observation-period {
+.recent-observation-tile.removable ::deep .recent-observation-period {
     padding-right: 1.75rem;
 }
 
-.recent-observation-remove {
+.recent-observation-tile ::deep .recent-observation-remove {
     opacity: 0.42;
     padding: 0.45rem;
     position: absolute;
@@ -23,8 +23,8 @@
     transform: scale(0.72);
 }
 
-.recent-observation-remove:focus,
-.recent-observation-remove:hover {
+.recent-observation-tile ::deep .recent-observation-remove:focus,
+.recent-observation-tile ::deep .recent-observation-remove:hover {
     opacity: 0.78;
 }
 
@@ -53,7 +53,7 @@
     background: #f7f7f7;
 }
 
-.recent-observation-period {
+.recent-observation-tile ::deep .recent-observation-period {
     color: #596f6a;
     font-size: 0.82rem;
     font-weight: 700;
@@ -61,21 +61,21 @@
     text-transform: uppercase;
 }
 
-.recent-observation-tile h3 {
+.recent-observation-tile ::deep .recent-observation-headline {
     color: #253b36;
     font-size: 1.2rem;
     line-height: 1.2;
     margin: 0 0 0.45rem;
 }
 
-.recent-observation-percentile {
+.recent-observation-tile ::deep .recent-observation-percentile {
     color: #40534f;
     font-size: 0.95rem;
     line-height: 1.35;
     margin: 0 0 0.9rem;
 }
 
-.recent-observation-primary {
+.recent-observation-tile ::deep .recent-observation-primary {
     align-items: baseline;
     border-top: 1px solid rgb(66 95 89 / 18%);
     display: flex;
@@ -84,7 +84,7 @@
     padding-top: 0.75rem;
 }
 
-.recent-observation-primary-label {
+.recent-observation-tile ::deep .recent-observation-primary-label {
     color: #596f6a;
     flex: 1 1 auto;
     font-size: 0.82rem;
@@ -92,21 +92,21 @@
     min-width: 0;
 }
 
-.recent-observation-primary-value,
-.recent-observation-stats dd {
+.recent-observation-tile ::deep .recent-observation-primary-value,
+.recent-observation-tile ::deep .recent-observation-stats dd {
     align-items: baseline;
     display: flex;
     gap: 0.35rem;
 }
 
-.recent-observation-primary-value {
+.recent-observation-tile ::deep .recent-observation-primary-value {
     flex: 0 0 auto;
     flex-wrap: nowrap;
     justify-content: flex-end;
     white-space: nowrap;
 }
 
-.recent-observation-status {
+.recent-observation-tile ::deep .recent-observation-status {
     border-radius: 999px;
     display: inline-block;
     font-size: 0.68rem;
@@ -118,46 +118,46 @@
     white-space: nowrap;
 }
 
-.recent-observation-status.status-new {
+.recent-observation-tile ::deep .recent-observation-status.status-new {
     background: #d8efe0;
     color: #1f6b41;
 }
 
-.recent-observation-status.status-equal {
+.recent-observation-tile ::deep .recent-observation-status.status-equal {
     background: #e7eef0;
     color: #3a5b73;
 }
 
-.recent-observation-primary strong {
+.recent-observation-tile ::deep .recent-observation-primary strong {
     color: #1f2f2c;
     font-size: 1.55rem;
     line-height: 1;
     white-space: nowrap;
 }
 
-.recent-observation-historical-range {
+.recent-observation-tile ::deep .recent-observation-historical-range {
     display: grid;
     gap: 0.5rem 0.8rem;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     margin: 0.75rem 0 0;
 }
 
-.recent-observation-historical-range div {
+.recent-observation-tile ::deep .recent-observation-historical-range div {
     min-width: 0;
 }
 
-.recent-observation-historical-range div:only-child {
+.recent-observation-tile ::deep .recent-observation-historical-range div:only-child {
     grid-column: 1 / -1;
 }
 
-.recent-observation-historical-range dt {
+.recent-observation-tile ::deep .recent-observation-historical-range dt {
     color: #5c726d;
     font-size: 0.75rem;
     font-weight: 700;
     margin: 0;
 }
 
-.recent-observation-historical-range dd {
+.recent-observation-tile ::deep .recent-observation-historical-range dd {
     color: #253b36;
     font-size: 1rem;
     font-weight: 700;
@@ -165,36 +165,36 @@
     overflow-wrap: anywhere;
 }
 
-.recent-observation-historical-occurred {
+.recent-observation-tile ::deep .recent-observation-historical-occurred {
     color: #596f6a;
     font-weight: 600;
     white-space: nowrap;
 }
 
-.recent-observation-stats {
+.recent-observation-tile ::deep .recent-observation-stats {
     display: grid;
     gap: 0.55rem 0.8rem;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     margin: 0.9rem 0 0;
 }
 
-.recent-observation-supporting-stats {
+.recent-observation-tile ::deep .recent-observation-supporting-stats {
     border-top: 1px solid rgb(66 95 89 / 12%);
     padding-top: 0.75rem;
 }
 
-.recent-observation-stats div {
+.recent-observation-tile ::deep .recent-observation-stats div {
     min-width: 0;
 }
 
-.recent-observation-stats dt {
+.recent-observation-tile ::deep .recent-observation-stats dt {
     color: #697d78;
     font-size: 0.74rem;
     font-weight: 700;
     margin: 0;
 }
 
-.recent-observation-stats dd {
+.recent-observation-tile ::deep .recent-observation-stats dd {
     color: #263a35;
     flex-wrap: wrap;
     font-size: 0.92rem;
@@ -203,11 +203,11 @@
     overflow-wrap: anywhere;
 }
 
-.recent-observation-stat-value {
+.recent-observation-tile ::deep .recent-observation-stat-value {
     display: inline-block;
 }
 
-.recent-observation-note {
+.recent-observation-tile ::deep .recent-observation-note {
     color: #5d6d69;
     font-size: 0.78rem;
     line-height: 1.35;
@@ -219,7 +219,7 @@
     padding-bottom: 2.4rem;
 }
 
-.recent-observation-expand {
+.recent-observation-tile ::deep .recent-observation-expand {
     background: none;
     border: none;
     color: #595959;
@@ -232,12 +232,12 @@
     user-select: none;
 }
 
-.recent-observation-expand:hover,
-.recent-observation-expand:focus {
+.recent-observation-tile ::deep .recent-observation-expand:hover,
+.recent-observation-tile ::deep .recent-observation-expand:focus {
     color: #0071c1;
 }
 
-.recent-observation-chevron.oi {
+.recent-observation-tile ::deep .recent-observation-chevron.oi {
     display: inline-block;
     font-size: 1.2rem;
     transform: rotate(0deg);
@@ -245,17 +245,17 @@
     transition: transform 0.15s ease-in-out;
 }
 
-.recent-observation-chevron.oi.expanded {
+.recent-observation-tile ::deep .recent-observation-chevron.oi.expanded {
     transform: rotate(90deg);
 }
 
-.recent-observation-detail {
+.recent-observation-tile ::deep .recent-observation-detail {
     border-top: 1px solid rgb(66 95 89 / 18%);
     margin-top: 0.9rem;
     padding-top: 0.75rem;
 }
 
-.recent-observation-detail-toggle {
+.recent-observation-tile ::deep .recent-observation-detail-toggle {
     display: inline-flex;
     border: 1px solid #cdddd8;
     border-radius: 6px;
@@ -263,7 +263,7 @@
     margin-bottom: 0.8rem;
 }
 
-.recent-observation-detail-toggle-option {
+.recent-observation-tile ::deep .recent-observation-detail-toggle-option {
     background: #f4f8f6;
     border: none;
     color: #45605a;
@@ -273,34 +273,34 @@
     padding: 0.32rem 0.7rem;
 }
 
-.recent-observation-detail-toggle-option + .recent-observation-detail-toggle-option {
+.recent-observation-tile ::deep .recent-observation-detail-toggle-option + .recent-observation-detail-toggle-option {
     border-left: 1px solid #cdddd8;
 }
 
-.recent-observation-detail-toggle-option.selected {
+.recent-observation-tile ::deep .recent-observation-detail-toggle-option.selected {
     background: #425f59;
     color: #fff;
 }
 
-.recent-observation-detail-metrics {
+.recent-observation-tile ::deep .recent-observation-detail-metrics {
     display: grid;
     gap: 0.6rem 0.8rem;
     grid-template-columns: 1fr;
     margin: 0;
 }
 
-.recent-observation-detail-metric {
+.recent-observation-tile ::deep .recent-observation-detail-metric {
     min-width: 0;
 }
 
-.recent-observation-detail-metric dt {
+.recent-observation-tile ::deep .recent-observation-detail-metric dt {
     color: #697d78;
     font-size: 0.74rem;
     font-weight: 700;
     margin: 0;
 }
 
-.recent-observation-detail-metric dd {
+.recent-observation-tile ::deep .recent-observation-detail-metric dd {
     color: #263a35;
     display: flex;
     flex-direction: column;
@@ -308,54 +308,62 @@
     margin: 0.1rem 0 0;
 }
 
-.recent-observation-detail-headline {
+.recent-observation-tile ::deep .recent-observation-detail-headline {
     align-items: baseline;
     column-gap: 0.5rem;
     display: flex;
     flex-wrap: wrap;
 }
 
-.recent-observation-detail-current {
+.recent-observation-tile ::deep .recent-observation-detail-current {
     font-size: 1.05rem;
     font-weight: 700;
 }
 
-.recent-observation-detail-current-date {
+.recent-observation-tile ::deep .negative-value {
+    color: #0b5fa5;
+}
+
+.recent-observation-tile ::deep .positive-value {
+    color: #b3261e;
+}
+
+.recent-observation-tile ::deep .recent-observation-detail-current-date {
     color: #697d78;
     font-size: 0.86rem;
     font-weight: 600;
 }
 
-.recent-observation-detail-rank {
+.recent-observation-tile ::deep .recent-observation-detail-rank {
     color: #697d78;
     font-size: 0.78rem;
     font-weight: 600;
 }
 
-.recent-observation-detail-rank.day-records {
+.recent-observation-tile ::deep .recent-observation-detail-rank.day-records {
     display: block;
 }
 
-.recent-observation-detail-record {
+.recent-observation-tile ::deep .recent-observation-detail-record {
     color: #5c726d;
     font-size: 0.8rem;
     font-weight: 600;
 }
 
-.recent-observation-detail-record-label {
+.recent-observation-tile ::deep .recent-observation-detail-record-label {
     color: #697d78;
 }
 
-.recent-observation-detail-record-value {
+.recent-observation-tile ::deep .recent-observation-detail-record-value {
     color: #4d625d;
 }
 
-.recent-observation-detail-record-date {
+.recent-observation-tile ::deep .recent-observation-detail-record-date {
     color: #697d78;
 }
 
 @media (min-width: 768px) {
-    .recent-observation-detail-metrics {
+    .recent-observation-tile ::deep .recent-observation-detail-metrics {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }

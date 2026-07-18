@@ -15,7 +15,7 @@ public class BuildStaticContent
         writer.WriteStartElement("urlset", "http://www.sitemaps.org/schemas/sitemap/0.9");
 
         WriteTag(writer, "https://climateexplorer.net/");
-        WriteTag(writer, "https://climateexplorer.net/regionalandglobal");
+        WriteTag(writer, "https://climateexplorer.net/global");
         WriteTag(writer, "https://climateexplorer.net/locations");
         WriteTag(writer, "https://climateexplorer.net/about");
         WriteTag(writer, "https://climateexplorer.net/blog");

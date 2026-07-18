@@ -5,6 +5,7 @@ using System.Globalization;
 using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.Stats;
+using ClimateExplorer.Core.Stats.Model;
 using ClimateExplorer.Web.Client.Services.RecentObservations;
 using ClimateExplorer.Web.Client.UiModel.RecentObservations;
 
@@ -12,6 +13,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
 {
     private const int LatestSevenDaysLength = 7;
     private const double MinimumHistoricalCoverage = 0.9d;
+    private const int RecentTrendWindowYears = 30;
 
     private readonly TimeProvider timeProvider;
 
@@ -84,6 +86,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             options.PreviousDayCount,
             options.PreviousMonthCount,
             options.PreviousSeasonCount,
+            options.PreviousYearCount,
             dataSet.NoPeriodsMessage,
             dataSet.EmptyMessage,
             dataSet.SourceMetadata);
@@ -116,6 +119,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             options.PreviousDayCount,
             options.PreviousMonthCount,
             options.PreviousSeasonCount,
+            options.PreviousYearCount,
             dataSet.NoPeriodsMessage,
             dataSet.EmptyMessage,
             dataSet.SourceMetadata);
@@ -132,6 +136,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         int previousDayCount,
         int previousMonthCount,
         int previousSeasonCount,
+        int previousYearCount,
         string noPeriodsMessage,
         string emptyMessage,
         IReadOnlyList<RecentObservationSourceMetadata> sourceMetadata)
@@ -139,6 +144,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         previousDayCount = Math.Clamp(previousDayCount, RecentObservationPeriodSelection.DefaultPreviousDayCount, RecentObservationPeriodSelection.MaximumPreviousDayCount);
         previousMonthCount = Math.Clamp(previousMonthCount, 0, RecentObservationPeriodSelection.MaximumPreviousMonthCount);
         previousSeasonCount = Math.Clamp(previousSeasonCount, 0, RecentObservationPeriodSelection.MaximumPreviousSeasonCount);
+        previousYearCount = Math.Clamp(previousYearCount, 0, RecentObservationPeriodSelection.MaximumPreviousYearCount);
         minimumRankSampleSize = Math.Max(1, minimumRankSampleSize);
 
         var referenceDate = ResolveReferenceDate(daily, requestedReferenceDate);
@@ -170,7 +176,8 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             domain,
             previousDayCount,
             previousMonthCount,
-            previousSeasonCount);
+            previousSeasonCount,
+            previousYearCount);
         if (periods.Count == 0)
         {
             return new RecentObservationsTabResult
@@ -329,7 +336,8 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         MetricDomain domain,
         int previousDayCount,
         int previousMonthCount,
-        int previousSeasonCount)
+        int previousSeasonCount,
+        int previousYearCount)
     {
         var periods = new List<PeriodObservation>();
 
@@ -347,8 +355,17 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             PeriodKind.LatestSevenDays,
             domain);
 
-        var monthStart = new DateOnly(referenceDate.Year, referenceDate.Month, 1);
-        AddRangePeriod(periods, GetRecordsInRange(daily, monthStart, referenceDate), monthStart, referenceDate, PeriodKind.CurrentMonth, domain);
+        var currentMonthToDate = GetCurrentMonthToDatePeriod(referenceDate);
+        if (currentMonthToDate is not null)
+        {
+            AddRangePeriod(
+                periods,
+                GetRecordsInRange(daily, currentMonthToDate.StartDate, currentMonthToDate.EndDate),
+                currentMonthToDate.StartDate,
+                currentMonthToDate.EndDate,
+                PeriodKind.CurrentMonth,
+                domain);
+        }
 
         foreach (var previousMonth in GetPreviousMonthPeriods(referenceDate, previousMonthCount))
         {
@@ -391,10 +408,38 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
                 periodOffset: index + 1);
         }
 
-        var ytdStart = new DateOnly(referenceDate.Year, 1, 1);
-        AddRangePeriod(periods, GetRecordsInRange(daily, ytdStart, referenceDate), ytdStart, referenceDate, PeriodKind.YearToDate, domain);
+        var yearToDate = GetYearToDatePeriod(referenceDate);
+        if (yearToDate is not null)
+        {
+            AddRangePeriod(
+                periods,
+                GetRecordsInRange(daily, yearToDate.StartDate, yearToDate.EndDate),
+                yearToDate.StartDate,
+                yearToDate.EndDate,
+                PeriodKind.YearToDate,
+                domain);
+        }
+
+        foreach (var previousYear in GetPreviousYearPeriods(referenceDate, previousYearCount))
+        {
+            AddRangePeriod(
+                periods,
+                GetRecordsInRange(daily, previousYear.StartDate, previousYear.EndDate),
+                previousYear.StartDate,
+                previousYear.EndDate,
+                PeriodKind.PreviousYear,
+                domain,
+                periodOffset: previousYear.Offset);
+        }
 
         return periods;
+    }
+
+    private static CurrentPeriod? GetCurrentMonthToDatePeriod(DateOnly referenceDate)
+    {
+        return referenceDate.Day == 1
+            ? null
+            : new CurrentPeriod(new DateOnly(referenceDate.Year, referenceDate.Month, 1), referenceDate);
     }
 
     private static MeteorologicalSeasonPeriod? GetCurrentSeasonToDatePeriod(DateOnly referenceDate, double latitude)
@@ -405,6 +450,13 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         }
 
         return MeteorologicalSeasonCalculator.GetCurrentSeason(referenceDate, latitude) with { EndDate = referenceDate };
+    }
+
+    private static CurrentPeriod? GetYearToDatePeriod(DateOnly referenceDate)
+    {
+        return referenceDate.Month == 1
+            ? null
+            : new CurrentPeriod(new DateOnly(referenceDate.Year, 1, 1), referenceDate);
     }
 
     private static PeriodObservation CreateDailyPeriod(string title, DailyObservation record, MetricDomain domain, int periodOffset)
@@ -872,6 +924,17 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             });
         }
 
+        var trendMetrics = BuildTrendMetrics(period, domain, distributions);
+        if (trendMetrics.Count > 0)
+        {
+            tabs.Add(new RecentObservationTrendTabViewModel
+            {
+                Key = MetricGroupKey.Trend,
+                Title = "Trend",
+                Metrics = trendMetrics,
+            });
+        }
+
         return tabs;
     }
 
@@ -914,7 +977,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         }
 
         var average = values.Average();
-        var standardDeviation = StandardDeviation.PopulationStandardDeviation(values);
+        var standardDeviation = StandardDeviationCalculator.PopulationStandardDeviation(values);
         var score = standardDeviation is > 0d
             ? (currentValue.Value.Value - average) / standardDeviation.Value
             : (double?)null;
@@ -937,6 +1000,110 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             StandardScoreValue = score.HasValue && double.IsFinite(score.Value) ? FormatStandardScore(score.Value) : null,
             ComparablePeriodCount = distribution.ComparablePeriodCount,
         };
+    }
+
+    private static IReadOnlyList<RecentObservationTrendViewModel> BuildTrendMetrics(
+        PeriodObservation period,
+        MetricDomain domain,
+        IReadOnlyDictionary<string, HistoricalValues> distributions)
+    {
+        var metrics = period.Kind == PeriodKind.Daily ? domain.DailyVariationMetrics : domain.VariationMetrics;
+        var result = new List<RecentObservationTrendViewModel>();
+
+        foreach (var metric in metrics)
+        {
+            if (period.MetricValues.TryGetValue(metric.Key, out var currentValue))
+            {
+                result.Add(BuildTrendMetric(metric, currentValue, period.StartDate.Year, distributions.GetValueOrDefault(metric.Key)));
+            }
+        }
+
+        return result;
+    }
+
+    private static List<DataPoint> BuildTrendPoints(HistoricalValues distribution)
+    {
+        return distribution.PeriodValues
+            .Where(x => x.Year.HasValue && x.Value.HasValue && double.IsFinite(x.Value.Value))
+            .Select(x => new DataPoint(x.Year!.Value, x.Value!.Value))
+            .ToList();
+    }
+
+    private static RecentObservationTrendViewModel BuildTrendMetric(
+        Metric metric,
+        MetricObservationValue currentValue,
+        int currentPeriodYear,
+        HistoricalValues? distribution)
+    {
+        // The tile's own current period is sliced identically to every historical
+        // comparable (GetHistoricalDailyRangeDistributions/GetHistoricalDailyDateDistributions
+        // apply the same template start/end to every year), but is deliberately excluded
+        // from `distribution` since that population exists to rank the current value
+        // against history. A trend describes the whole time series though, so the
+        // current (possibly year-to-date) value belongs back in as its most recent point.
+        var points = distribution is null ? [] : BuildTrendPoints(distribution);
+        if (currentValue.Value.HasValue && double.IsFinite(currentValue.Value.Value))
+        {
+            points.Add(new DataPoint(currentPeriodYear, currentValue.Value.Value));
+        }
+
+        var trendSet = points.Count >= AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly
+            ? TrendWindowCalculator.Calculate(points, AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly, RecentTrendWindowYears)
+            : null;
+
+        if (trendSet is null)
+        {
+            return new RecentObservationTrendViewModel
+            {
+                Label = metric.VariationLabel,
+                Unit = metric.Unit,
+                CompleteYearCount = points.Count,
+                MinimumRequiredYears = AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly,
+                UnavailableReason = $"Less than {AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly} complete years of data. "
+                    + $"A minimum of {AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly} years is used across the site "
+                    + "(for example the warming anomaly and heating score) so long-term trends aren't skewed by short records.",
+            };
+        }
+
+        return new RecentObservationTrendViewModel
+        {
+            Label = metric.VariationLabel,
+            Unit = metric.Unit,
+            CompleteYearCount = trendSet.CompletePointCount,
+            HeadlineText = FormatTrendPerDecade(trendSet.HistoricalTrend, metric.Unit),
+            IsHeadlinePositive = IsTrendPositive(trendSet.HistoricalTrend),
+            HeadlineCaption = FormatYearRange(trendSet.HistoricalTrend),
+            RecentTrendYearRange = FormatYearRange(trendSet.RecentTrend),
+            RecentTrendValueText = FormatTrendPerDecade(trendSet.RecentTrend, metric.Unit),
+            IsRecentTrendPositive = IsTrendPositive(trendSet.RecentTrend),
+            FirstHalfTrendYearRange = FormatYearRange(trendSet.FirstHalfTrend),
+            FirstHalfTrendValueText = FormatTrendPerDecade(trendSet.FirstHalfTrend, metric.Unit),
+            IsFirstHalfTrendPositive = IsTrendPositive(trendSet.FirstHalfTrend),
+        };
+    }
+
+    private static string FormatYearRange(LinearRegressionResult trend)
+    {
+        return $"{trend.Input.MinimumX.ToString("0", CultureInfo.InvariantCulture)}-{trend.Input.MaximumX.ToString("0", CultureInfo.InvariantCulture)}";
+    }
+
+    private static bool IsTrendPositive(LinearRegressionResult trend)
+    {
+        return trend.Significance.IsSlopeSignificant && trend.Line.Slope > 0;
+    }
+
+    private static string FormatTrendPerDecade(LinearRegressionResult trend, string unit)
+    {
+        if (!trend.Significance.IsSlopeSignificant)
+        {
+            return "No significant trend";
+        }
+
+        var perDecade = trend.Line.Slope * 10;
+        var sign = perDecade >= 0 ? "+" : string.Empty;
+        return unit == "°C"
+            ? $"{sign}{perDecade.ToString("0.00", CultureInfo.InvariantCulture)}°C /decade"
+            : $"{sign}{perDecade.ToString("0", CultureInfo.InvariantCulture)}mm /decade";
     }
 
     private static string CreateCurrentPeriodLabel(PeriodObservation period)
@@ -1093,6 +1260,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             PeriodKind.CurrentSeason => RecentObservationPeriodKind.CurrentSeason,
             PeriodKind.PreviousSeason => RecentObservationPeriodKind.PreviousSeason,
             PeriodKind.YearToDate => RecentObservationPeriodKind.YearToDate,
+            PeriodKind.PreviousYear => RecentObservationPeriodKind.PreviousYear,
             _ => throw new NotImplementedException(),
         };
     }
@@ -1187,6 +1355,18 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         }
     }
 
+    private static IEnumerable<PreviousYearPeriod> GetPreviousYearPeriods(DateOnly referenceDate, int previousYearCount)
+    {
+        for (var offset = 1; offset <= previousYearCount; offset++)
+        {
+            var year = referenceDate.Year - offset;
+            yield return new PreviousYearPeriod(
+                new DateOnly(year, 1, 1),
+                new DateOnly(year, 12, 31),
+                offset);
+        }
+    }
+
     private static int? GetStartYear(IReadOnlyCollection<DailyObservation> records)
     {
         return records.Count == 0 ? null : records.Min(x => x.Date.Year);
@@ -1214,6 +1394,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             PeriodKind.PreviousMonth when previousMonthOffset == 1 => $"Last month - {MonthName(startDate.Month)} {startDate.Year}",
             PeriodKind.PreviousMonth => $"{MonthName(startDate.Month)} {startDate.Year}",
             PeriodKind.YearToDate => $"{endDate.Year} to date",
+            PeriodKind.PreviousYear => startDate.Year.ToString(CultureInfo.InvariantCulture),
             _ => string.Empty,
         };
     }
@@ -1232,7 +1413,9 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
 
         if (period.StartDate.Month == 1 && period.StartDate.Day == 1)
         {
-            return "year to date";
+            return IsFullCalendarYear(period.StartDate, period.EndDate)
+                ? "year"
+                : "year to date";
         }
 
         if (period.StartDate.Day == 1 && period.StartDate.Month == period.EndDate.Month)
@@ -1264,6 +1447,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
                 : $"{MonthName(endDate.Month)} to date",
             PeriodKind.PreviousMonth => MonthName(endDate.Month),
             PeriodKind.YearToDate => "year to date",
+            PeriodKind.PreviousYear => "year",
             _ => string.Empty,
         };
     }
@@ -1287,8 +1471,18 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
                 : $"{MonthName(endDate.Month)}-to-date periods",
             PeriodKind.PreviousMonth => $"{MonthName(endDate.Month)}s",
             PeriodKind.YearToDate => "year-to-date periods",
+            PeriodKind.PreviousYear => "years",
             _ => "comparable periods",
         };
+    }
+
+    private static bool IsFullCalendarYear(DateOnly startDate, DateOnly endDate)
+    {
+        return startDate.Month == 1 &&
+            startDate.Day == 1 &&
+            endDate.Month == 12 &&
+            endDate.Day == 31 &&
+            startDate.Year == endDate.Year;
     }
 
     private static string CreateDailyPeriodTitle(DateOnly date, DateOnly referenceDate, DateOnly today)
@@ -1340,7 +1534,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
 
     private static string FormatPrecipitation(double value)
     {
-        return $"{value.ToString("0.#", CultureInfo.InvariantCulture)}mm";
+        return $"{value.ToString("0", CultureInfo.InvariantCulture)}mm";
     }
 
     private static string FormatAnomaly(double value, Metric metric)
@@ -1650,6 +1844,10 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
 
     private sealed record PreviousMonthPeriod(DateOnly StartDate, DateOnly EndDate, int Offset);
 
+    private sealed record PreviousYearPeriod(DateOnly StartDate, DateOnly EndDate, int Offset);
+
+    private sealed record CurrentPeriod(DateOnly StartDate, DateOnly EndDate);
+
     private sealed record PreviousDayPeriod<TRecord>(TRecord Record, string Title, int Offset);
 
     private sealed record HistoricalValues(
@@ -1702,6 +1900,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         CurrentSeason,
         PreviousSeason,
         YearToDate,
+        PreviousYear,
     }
 
     private enum PeriodComparisonMode

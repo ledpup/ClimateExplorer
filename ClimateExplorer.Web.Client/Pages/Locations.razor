@@ -3,6 +3,7 @@
 @using ClimateExplorer.Web.Client.Components.ClimateRecords
 @using ClimateExplorer.Web.Client.Components.Common
 @using ClimateExplorer.Web.Client.Components.Location
+@using ClimateExplorer.Web.Client.Components.RecentObservations
 
 <PageTitle>ClimateExplorer - Locations</PageTitle>
 
@@ -172,7 +173,7 @@
 </SidePanel>
 
 <SidePanel @ref="recentObservationsSidePanel" Title="@("Recent observations for " + Location?.Name)" Width="85%">
-    <RecentObservationsPanel Location="@Location" />
+    <RecentObservationsPanel Location="@Location" DataSetDefinitions="@DataSetDefinitions" />
 </SidePanel>
 
 <LocationDataSetMetadataSidePanel @ref="dataSetMetadataSidePanel" DataSetDefinitions="@DataSetDefinitions" Width="50%" />

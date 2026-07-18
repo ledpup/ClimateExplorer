@@ -1,0 +1,35 @@
+.co2-nav-tile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 0 20px;
+}
+
+.co2-value {
+    font-family: 'Century Gothic', 'Futura', 'Trebuchet MS', 'Segoe UI', sans-serif;
+    font-weight: 700;
+    font-size: 3rem;
+    line-height: 1;
+    letter-spacing: 1px;
+    color: #fff;
+    text-shadow:
+        1px 1px 0 #aaa,
+        2px 2px 0 #bbb,
+        3px 3px 0 #999,
+        4px 4px 6px rgba(0, 0, 0, 0.35);
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+}
+
+    .co2-value.co2-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+@media (max-width: 767px) {
+    .co2-value {
+        font-size: 1.6rem;
+    }
+}

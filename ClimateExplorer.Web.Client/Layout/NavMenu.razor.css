@@ -112,6 +112,15 @@
     display: none;
 }
 
+::deep .co2-nav-item {
+    display: flex !important;
+    align-items: center;
+    height: 65px;
+    margin-right: 0;
+    margin-left: auto;
+    font-weight: normal;
+}
+
 ::deep .notification-nav-item {
     display: inline-flex;
     align-items: center;

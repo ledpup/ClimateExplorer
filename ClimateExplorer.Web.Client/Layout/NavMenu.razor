@@ -1,4 +1,5 @@
 @using Blazorise
+@using ClimateExplorer.Web.Client.Components.Co2
 @using ClimateExplorer.Web.Client.Components.Notifications
 
 <!-- this div is necessary to get Blazor to apply a randomly-generated attribute to a DOM element so that CSS isolation will work & we can 
@@ -27,7 +28,7 @@
                     <BarItem Class="desktop-secondary-nav-item">
                         @if (item.OpensSiteOverview)
                         {
-                            <button class="nav-link nav-button info-nav-link" @onclick="() => SiteOverviewService!.RequestShow()">
+                            <button class="nav-link nav-button info-nav-link" aria-label="Site overview" @onclick="() => SiteOverviewService!.RequestShow()">
                                 <i class="fas fa-circle-info"></i>
                             </button>
                         }
@@ -50,7 +51,7 @@
                             {
                                 if (item.OpensSiteOverview)
                                 {
-                                    <button class="dropdown-item info-menu-item" @onclick="() => SiteOverviewService!.RequestShow()">
+                                    <button class="dropdown-item info-menu-item" aria-label="Site overview" @onclick="() => SiteOverviewService!.RequestShow()">
                                         <i class="fas fa-circle-info"></i> @item.Text
                                     </button>
                                 }
@@ -63,6 +64,14 @@
                     </Dropdown>
                 </BarItem>
             </BarStart>
+            @if (IsMobileDevice == false)
+            {
+                <BarEnd>
+                    <BarItem Class="co2-nav-item">
+                        <Co2NavTile />
+                    </BarItem>
+                </BarEnd>
+            }
         </BarMenu>
     </Bar>
 </div>

@@ -82,7 +82,17 @@ public class DataSetDefinitionViewModel
         // TODO: add a UI control to allow the user to select between them
         var dsd = dsds.FirstOrDefault();
 
-        var md = dsd!.MeasurementDefinitions!.Single(x => x.DataType == dataType && x.DataAdjustment == dataAdjustment);
+        var dataResolution = dataSubstitutes.FirstOrDefault(x => x.DataResolution is not null)?.DataResolution ?? DataResolution.Monthly;
+        var mds = dsd!.MeasurementDefinitions!.Where(x => x.DataType == dataType && x.DataAdjustment == dataAdjustment);
+        MeasurementDefinitionViewModel? md = null;
+        if (mds.Count() == 1)
+        {
+            md = mds.Single();
+        }
+        else if (mds.Count() > 1)
+        {
+            md = mds.SingleOrDefault(x => x.DataResolution == dataResolution);
+        }
 
         return
             new DataSetAndMeasurementDefinition

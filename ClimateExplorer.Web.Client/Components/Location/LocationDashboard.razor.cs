@@ -140,7 +140,7 @@ public partial class LocationDashboard
         LoadStripeData = true;
         StripeLoadingIndicatorVisible = true;
 
-        WarmingAnomalyAsString = Location!.WarmingAnomaly == null ? "NA" : new CalculatedAnomaly { AnomalyValue = Location.WarmingAnomaly.Value }.ValueAsString();
+        WarmingAnomalyAsString = Location!.WarmingAnomaly == null ? "NA" : new CalculatedAnomaly { AnomalyValue = Location.WarmingAnomaly.Value }.ValueAsString(UnitOfMeasure.DegreesCelsius);
 
         if (Location?.RecordHigh is not null)
         {

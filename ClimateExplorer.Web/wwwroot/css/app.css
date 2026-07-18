@@ -240,6 +240,26 @@ th {
     color: var(--climate-color-link-hover);
 }
 
+.climate-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    color: #2a3d39;
+    user-select: none;
+    margin: 0;
+}
+
+.climate-checkbox-input {
+    accent-color: var(--climate-color-control-text);
+    width: 0.8rem;
+    height: 0.8rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin: 0;
+}
+
 .climate-tabs .nav-tabs {
     border-bottom: 2px solid #c4d4d1;
 }

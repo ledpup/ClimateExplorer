@@ -18,8 +18,8 @@ var tempMaxStations = tempMaxFiles.Select(x => new DataFileFilterAndAdjustment {
 var mdTempMax = bom.MeasurementDefinitions!.Single(x => x.DataType == Enums.DataType.TempMax);
 var mdTempMin = bom.MeasurementDefinitions!.Single(x => x.DataType == Enums.DataType.TempMin);
 
-mdTempMax.FolderName = tempMaxFolder;
-mdTempMin.FolderName = tempMinFolder;
+mdTempMax.DataFileSource = new DataFileSourceDefinition { FilePathFormat = "[station]_daily_tempmax.csv" };
+mdTempMin.DataFileSource = new DataFileSourceDefinition { FilePathFormat = "[station]_daily_tempmin.csv" };
 
 if (Directory.Exists(tempMeanFolder))
 {
@@ -31,8 +31,8 @@ await Parallel.ForEachAsync(tempMaxStations, async (station, token) =>
 {
     Console.WriteLine($"Processing station {station.Id}");
 
-    var maxRecords = (await DataReaderFunctions.GetDataRecords(mdTempMax, [station])).Where(x => x.Value != null);
-    var minRecords = (await DataReaderFunctions.GetDataRecords(mdTempMin, [station])).Where(x => x.Value != null).ToLookup(x => x.Key, x => x);
+    var maxRecords = (await DataReaderFunctions.GetDataRecords(mdTempMax, [station], tempMaxFolder)).Where(x => x.Value != null);
+    var minRecords = (await DataReaderFunctions.GetDataRecords(mdTempMin, [station], tempMinFolder)).Where(x => x.Value != null).ToLookup(x => x.Key, x => x);
     var meanRecords = new List<DataRecord>();
 
     foreach (var maxRecord in maxRecords)

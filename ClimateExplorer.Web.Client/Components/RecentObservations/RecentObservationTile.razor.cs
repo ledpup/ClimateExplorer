@@ -1,24 +1,60 @@
-namespace ClimateExplorer.Web.Client.Components.Location;
+namespace ClimateExplorer.Web.Client.Components.RecentObservations;
 
-using System.Globalization;
 using ClimateExplorer.Web.Client.UiModel.RecentObservations;
+using Microsoft.AspNetCore.Components;
 
 public partial class RecentObservationTile
 {
+    [Parameter]
+    [EditorRequired]
+    public RecentObservationTileViewModel Tile { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public RecentObservationTileExpansionState Expansion { get; set; } = default!;
+
+    [Parameter]
+    public bool IsRemovable { get; set; }
+
+    [Parameter]
+    public string RemoveButtonLabel { get; set; } = "Remove tile";
+
+    [Parameter]
+    public EventCallback OnRemove { get; set; }
+
+    [Parameter]
+    public EventCallback OnExpansionChanged { get; set; }
+
+    private string RemovableClass => IsRemovable ? "removable" : string.Empty;
+
+    private string ExpandableClass => Tile.AvailableExpandedTabs.Count > 0 ? "expandable" : string.Empty;
+
+    private string ExpandLabel => Expansion.IsExpanded ? "Hide statistics" : "Show statistics";
+
+    private RecentObservationExpandedTabViewModel? SelectedTab =>
+        Tile.AvailableExpandedTabs.FirstOrDefault(tab => Expansion.IsGroupSelected(tab.Key))
+        ?? (Tile.AvailableExpandedTabs.Count > 0 ? Tile.AvailableExpandedTabs[0] : null);
+
     private bool IsDayRecordsSelected => SelectedTab?.Key == MetricGroupKey.DayRecords;
 
-    private static string FormatCurrentMetricDate(DateOnly date)
+    private string ToneClass => Tile.Tone switch
     {
-        return date.ToString("d MMM", CultureInfo.InvariantCulture);
+        RecentObservationTileTone.TemperatureWarm => "temperature-warm",
+        RecentObservationTileTone.TemperatureCool => "temperature-cool",
+        RecentObservationTileTone.PrecipitationWet => "precipitation-wet",
+        RecentObservationTileTone.PrecipitationDry => "precipitation-dry",
+        RecentObservationTileTone.Unavailable => "unavailable",
+        _ => "neutral",
+    };
+
+    protected override void OnParametersSet()
+    {
+        Expansion.EnsureSelection(Tile.AvailableExpandedTabs);
     }
 
-    private string FormatRecordOccurrence(RecentObservationMetricRecordViewModel record)
+    private async Task ToggleExpanded()
     {
-        if (IsDayRecordsSelected && record.Date.HasValue)
-        {
-            return $" · {record.Date.Value.ToString("d MMM yyyy", CultureInfo.InvariantCulture)}";
-        }
-
-        return record.Year is not null ? $" ({record.Year})" : string.Empty;
+        Expansion.Toggle();
+        await OnExpansionChanged.InvokeAsync();
     }
 }

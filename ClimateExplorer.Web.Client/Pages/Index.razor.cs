@@ -177,7 +177,7 @@ public partial class Index : ChartablePage
 
         if (LocationDictionary is null && Location is not null)
         {
-            StartDeferredLocationDictionaryLoad();
+            await StartDeferredLocationDictionaryLoad();
         }
 
         await base.OnAfterRenderAsync(firstRender);
@@ -339,10 +339,17 @@ public partial class Index : ChartablePage
         return await DataService!.GetLocationById(Guid.Parse(DefaultLocationId));
     }
 
-    private void StartDeferredLocationDictionaryLoad()
+    private async Task StartDeferredLocationDictionaryLoad()
     {
         if (LocationDictionary is not null || DeferredLocationDictionaryLoadCts is not null)
         {
+            return;
+        }
+
+        var locations = await DataService!.GetLocations(fromCacheOnly: true);
+        if (locations is not null)
+        {
+            LocationDictionary = locations.ToDictionary(x => x.Id, x => x);
             return;
         }
 
@@ -383,7 +390,7 @@ public partial class Index : ChartablePage
 
     private async Task LoadLocationDictionaryAsync()
     {
-        LocationDictionary = (await DataService!.GetLocations(false)).ToDictionary(x => x.Id, x => x);
+        LocationDictionary = (await DataService!.GetLocations())!.ToDictionary(x => x.Id, x => x);
 
         if (Location is not null)
         {
