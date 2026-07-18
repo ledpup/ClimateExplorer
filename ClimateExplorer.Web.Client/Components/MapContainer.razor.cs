@@ -146,6 +146,11 @@ public partial class MapContainer
 
             Logger!.LogInformation("Created map markers");
         }
+        catch (JSDisconnectedException)
+        {
+            // The circuit was torn down while a JS interop call was in flight (e.g. the user
+            // navigated away). Creating markers is moot at that point, so ignore it.
+        }
         finally
         {
             mapLifecycleLock.Release();
