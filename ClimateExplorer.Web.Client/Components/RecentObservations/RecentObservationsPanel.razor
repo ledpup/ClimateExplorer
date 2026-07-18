@@ -34,7 +34,7 @@
 
                     @if (ActiveTab == RecentObservationsTab.Temperature)
                     {
-                        <DelayedTooltip Text="By using data from nearby stations, adjusted temperatures are corrected for non-climatic influences such as station relocations and instrument changes.<br>Uncheck to see raw, unmodified measurements." Multiline="true">
+                        <DelayedTooltip Text="<p>By using data from nearby stations, adjusted temperatures are corrected for non-climatic influences such as station relocations and instrument changes.</p><p>Uncheck to see raw, unmodified measurements.</p><p>If disabled, there is only adjusted or raw data available, not both.</p>" Multiline="true">
                             <ClimateCheckbox Text="Adjusted"
                                               Checked="@(SelectedDataAdjustment == DataAdjustment.Adjusted)"
                                               CheckedChanged="OnAdjustedChanged"
