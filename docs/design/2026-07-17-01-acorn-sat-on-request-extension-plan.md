@@ -1,9 +1,8 @@
 # Extend ACORN-SAT with recent CDO data on `/climate-record`
 
 - **Date:** 2026-07-17
-- **Status:** In progress — Stages 0, 1, 2, and 3 complete and verified
-  end-to-end against the running Web API; Stage 4 (remove the obsolete
-  executable) next
+- **Status:** Done — Stages 0 through 4 complete; verified end-to-end against
+  the running Web API and the full unit test suite (430 tests)
 - **Author:** Codex
 - **Scope:** `/climate-record`, ACORN-SAT/CDO record composition, dataset source coordination, extension decision/cache state, source metadata, Web API dependency injection, unit tests, and removal of `ClimateExplorer.Data.Bom.AcornSatUpdateFromRaw`
 - **Builds on:** [Automated dataset downloads for historical API data](2026-07-13-01-automated-dataset-downloads-plan.md) and [Retire the recent-observations endpoint](2026-07-14-01-retire-recent-observations-plan.md)
@@ -528,16 +527,25 @@ station-selection rules into the ACORN-SAT component.
    verification, alongside the `086338.zip`/`094029.zip` changes already
    present before this work began.
 
-### Stage 4: Remove the obsolete executable
+### Stage 4: Remove the obsolete executable — done
 
-1. Delete `ClimateExplorer.Data.Bom.AcornSatUpdateFromRaw`, including its two
-   unused parser classes and package references.
-2. Remove its project/configuration/nesting entries from
-   `ClimateExplorer.sln`, preserving unrelated solution changes.
-3. Confirm no scripts, documentation, or build jobs reference the project.
-4. Keep `ClimateExplorer.DataPipeline.BuildAcornSatArchive` unchanged so a
-   manually supplied annual ACORN-SAT release still produces the deployed
-   `ACORN-SAT.zip`.
+1. **Done.** Deleted `ClimateExplorer.Data.Bom.AcornSatUpdateFromRaw/Program.cs`
+   and its two unused parser classes (`AcornSatFileParser.cs`,
+   `HqNewFileParser.cs`) and the project file, then removed the leftover
+   `bin`/`obj`/`.lscache` build-artifact directory (gitignored, so it carried
+   no tracked content).
+2. **Done.** Removed the project's `Project(...)`/configuration/nesting
+   entries from `ClimateExplorer.sln` (15 lines) in the prior commit;
+   unrelated solution entries are untouched.
+3. **Done.** Searched the repository for `AcornSatUpdateFromRaw` outside the
+   deleted directory: no remaining hits in any `.cs`, `.sln`, `.md`,
+   `.csproj`, or workflow file.
+4. **Done.** `ClimateExplorer.DataPipeline.BuildAcornSatArchive` was not
+   touched by this stage; it still produces `ACORN-SAT.zip` from a manually
+   supplied annual release.
+5. **Done.** `dotnet build ClimateExplorer.sln` succeeds with the project
+   gone, and the full `ClimateExplorer.UnitTests` suite passes (430 tests, 0
+   failed).
 
 ## Tests and acceptance criteria
 
