@@ -13,8 +13,12 @@ ClimateExplorer data is updated yearly, usually from mid-January. All data is so
 1. If a new version of ACORN-SAT has been released, update the version number for the FTP download in the AcornSatDownloader.DownloadAndExtractData function in ClimateExplorer.Data.Bom
 1. Run **ClimateExplorer.Data.Bom**
 1. Run **ClimateExplorer.Data.Bom.CreateTempMean** (this will calculate a mean record from the min and max records downloaded in ClimateExplorer.Data.Bom)
-1. Optionally run **ClimateExplorer.Data.Bom.AcornSatUpdateFromRaw** (do this step if doing the update at the start of the year, not at the time of a new version of ACORN-SAT)
 1. Build **ClimateExplorer.DataPipeline** (zips up the records for use by ClimateExplorer.WebApi)
+
+Note: bridging the gap between the packaged ACORN-SAT release and the current date no longer requires a
+separate step here. `/climate-record` extends an adjusted ACORN-SAT series with current CDO observations
+on request when the two series agree over the latest complete year (see
+docs/design/2026-07-17-01-acorn-sat-on-request-extension-plan.md).
 
 ## Update GHCN data:
 

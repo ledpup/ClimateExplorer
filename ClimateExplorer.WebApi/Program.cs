@@ -10,6 +10,7 @@ using ClimateExplorer.Data.Downloading.Transformers;
 using ClimateExplorer.Data.Downloading.Workspace;
 using ClimateExplorer.Data.Ghcnd;
 using ClimateExplorer.WebApi;
+using ClimateExplorer.WebApi.AcornSat;
 using ClimateExplorer.WebApi.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http.Json;
@@ -108,6 +109,8 @@ builder.Services.AddSingleton(
         GhcndHttpClientFactory.CreateHttpClient(),
         services.GetRequiredService<IDataSetSourceUpdateCoordinator>(),
         services.GetRequiredService<ILogger<ClimateExplorerApiServices>>()));
+builder.Services.AddSingleton(new AcornSatExtensionCache(longtermCache));
+builder.Services.AddSingleton<AcornSatClimateRecordService>();
 
 var app = builder.Build();
 app.UseCors();

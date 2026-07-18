@@ -1,8 +1,9 @@
 # Extend ACORN-SAT with recent CDO data on `/climate-record`
 
 - **Date:** 2026-07-17
-- **Status:** In progress — Stages 0 and 1 complete; Stage 2 (extension
-  cache/CDO orchestration) next
+- **Status:** In progress — Stages 0, 1, 2, and 3 complete and verified
+  end-to-end against the running Web API; Stage 4 (remove the obsolete
+  executable) next
 - **Author:** Codex
 - **Scope:** `/climate-record`, ACORN-SAT/CDO record composition, dataset source coordination, extension decision/cache state, source metadata, Web API dependency injection, unit tests, and removal of `ClimateExplorer.Data.Bom.AcornSatUpdateFromRaw`
 - **Builds on:** [Automated dataset downloads for historical API data](2026-07-13-01-automated-dataset-downloads-plan.md) and [Retire the recent-observations endpoint](2026-07-14-01-retire-recent-observations-plan.md)
@@ -410,7 +411,7 @@ station-selection rules into the ACORN-SAT component.
    missing/empty ACORN-SAT or CDO input, and comparison-signature
    stability/invalidation.
 
-### Stage 2: Add the focused extension cache and CDO orchestration — in progress
+### Stage 2: Add the focused extension cache and CDO orchestration — done
 
 0. **Done, ahead of schedule.** Added `ClimateExplorer.WebApi/AcornSat/AcornSatStationResolver.cs`
    (`AcornSatStationResolution`) implementing eligibility rule 2: resolves the
@@ -431,29 +432,101 @@ station-selection rules into the ACORN-SAT component.
    see the underlying cache key format.
    `AcornSatExtensionCacheTests.cs` covers the empty/round-trip/no-collision
    cases against a fake `ICache`.
-2. Remaining: implement signature/station/data-type validation and conclusive
-   versus transient decision reuse (i.e. the service that calls
-   `AcornSatStationResolver`, `AcornSatRecordExtender`, and
-   `AcornSatExtensionCache` together).
-3. Remaining: resolve/prepare the CDO dependency through the existing source
-   coordinator; never call the BOM client directly.
-4. Remaining: coalesce extension recalculation by location/data type and
-   implement last-known-good overlay fallback.
-5. Remaining: add structured logs for cache reuse, comparison decisions, CDO contribution
-   range/count, annual-signature invalidation, and fallback. Do not log the
-   complete recordset.
+2. **Done.** Added `AcornSatClimateRecordService.ResolveAsync`
+   (`ClimateExplorer.WebApi/AcornSat/AcornSatClimateRecordService.cs`), which
+   ties `AcornSatStationResolver`, `AcornSatRecordExtender`, and
+   `AcornSatExtensionCache` together. **Deliberate simplification versus the
+   original plan text:** rather than trusting a `UseCached` coordinator
+   outcome to skip the comparison, the service always re-reads ACORN-SAT/CDO
+   from local disk and re-runs `AcornSatRecordExtender.Extend` (a cheap local
+   read plus an O(365) loop - no network, no full-archive hashing). The
+   extension cache's `RetrievedDate` is still given to
+   `IDataSetSourceUpdateCoordinator.PrepareAsync` so it continues to gate how
+   often CDO is actually refreshed over the network; the cache otherwise
+   exists to detect conclusive decisions and to serve last-known-good
+   overlays. This is simpler than the originally sketched skip-on-fresh path
+   and produces the same output, at the cost of always paying the (small)
+   comparison cost even when nothing changed.
+3. **Done.** The CDO dependency is resolved by giving `IDataSetSourceUpdateCoordinator.PrepareAsync`
+   a `PostDataSetsRequestBody` targeting the CDO dataset/location/data
+   type/`Unadjusted`; `BomDataSetDownloader` is never called directly.
+4. **Done.** A keyed `DataSetAssetLockProvider` lease
+   (`acorn-sat-extension:{locationId}:{dataType}`) wraps cache read through
+   cache write, distinct from the coordinator's own `BOM/[station].zip`
+   asset lock. On `RefreshFailed` with a conclusive cached entry, that
+   entry's overlay is returned as-is (last-known-good); on `RefreshFailed`
+   with no usable cache, the service falls through to a cold comparison
+   against whatever CDO archive is already published, with a null retrieval
+   time so the result remains retryable. Cancellation propagates through the
+   lock acquisition and the coordinator call rather than being caught.
+5. **Done, lighter than sketched.** `LogDebug`/`LogWarning`/`LogInformation`
+   calls cover no-open-station, refresh-failure fallback, and the final
+   decision (with comparison year and overlay count, never the full
+   recordset). No separate annual-signature-invalidation log line was added;
+   the signature comparison itself isn't currently logged distinctly from
+   the decision.
+   `AcornSatClimateRecordServiceTests.cs` covers: no-open-station short-circuiting
+   before the coordinator is ever called; `RefreshFailed` with a conclusive
+   cached entry returning that overlay without rereading; `RefreshFailed`
+   with no cache falling back to a cold comparison with a null retrieval
+   date; `Rebuild` using the coordinator's retrieval date and writing a
+   conclusive decision to the cache; and cancellation propagation.
 
-### Stage 3: Wire `/climate-record` and provenance
+### Stage 3: Wire `/climate-record` and provenance — done
 
-1. Route only selected ACORN-SAT adjusted temperature requests through
-   `AcornSatClimateRecordService`.
-2. Compose ACORN-SAT plus the daily overlay before standard filtering/binning.
-3. Set retrieval time and append CDO source metadata only when CDO contributes.
-4. Cover daily and monthly responses, filters, ordering, pagination, totals,
-   and end-year behavior.
-5. Register the service/cache/extender with Web API dependency injection. Keep
-   `ClimateExplorer.Data.Misc` and the batch refresher unchanged; they still
-   refresh CDO normally and never manufacture ACORN-SAT.
+1. **Done.** `ClimateRecordsEndpoints.GetClimateRecords` takes an optional
+   `[FromServices] AcornSatClimateRecordService?` parameter (optional so
+   every pre-existing direct-call test site keeps compiling unchanged) and
+   routes to `AcornSatClimateRecordService.BuildComposedDataSetAsync` only
+   when the resolved dataset is ACORN-SAT, the measurement is `Adjusted`,
+   and the data type is `TempMean`/`TempMax`/`TempMin`. Every other request -
+   including CDO's own `Unadjusted` measurement for the same location, and
+   direct `/dataset` access - takes the unchanged `DataSetEndpoints.PostDataSets`
+   path.
+2. **Done.** `AcornSatClimateRecordService.BuildComposedDataSetAsync` reads
+   the adjusted ACORN-SAT series, concatenates the extension's overlay
+   records (already guaranteed to be strictly after ACORN-SAT's latest
+   date), sorts by date, and builds the response via the Stage 0
+   `DataSetBuilder.BuildDataSetFromSeries` / `DataSetEndpoints.BuildResponseDataSet`
+   seam - the same binning/filtering/pagination pipeline every other
+   `/climate-record` request uses, so daily, `monthly=true`, month/day
+   filters, ordering, `take`/`skip`, `TotalCount`, and `StartYear`/`EndYear`
+   all see one composed series without any bespoke logic in
+   `ClimateRecordsEndpoints`.
+3. **Done.** `RetrievedDate` is taken from the coordinator's CDO retrieval
+   only when the overlay actually contributed a value
+   (`AcornSatRecordExtensionResult.CdoContributed`); otherwise it stays null.
+   CDO's own `DataSetMetadata` entry is appended to the ACORN-SAT entry only
+   in that same case.
+4. **Done**, via reuse of the shared pipeline rather than bespoke coverage of
+   each acceptance-criteria bullet individually.
+   `ClimateRecordsEndpointsAcornSatTests.cs` covers: a daily adjusted request
+   returning ACORN-SAT metadata with CDO metadata/`RetrievedDate` present iff
+   contributed; a `monthly=true` request aggregating the composed series;
+   an unadjusted request (which resolves to CDO, not ACORN-SAT) not routing
+   through the extension; and the service being absent falling back to the
+   ordinary `DataSetEndpoints` path. These deliberately assert only the
+   invariants the design guarantees, not the exact eligibility outcome or
+   overlay content of today's packaged data (which can legitimately change
+   as CDO/ACORN-SAT are refreshed).
+5. **Done.** `Program.cs` registers `AcornSatExtensionCache` (over the
+   existing `longtermCache` instance) and `AcornSatClimateRecordService` as
+   singletons, reusing the already-registered `IDataSetSourceUpdateCoordinator`,
+   `DataSetAssetLockProvider`, and `TimeProvider`. `ClimateExplorer.Data.Misc`
+   and `DataSetBatchRefresher` are untouched.
+
+   **Verified against the running Web API** (not just unit tests): started
+   `ClimateExplorer.WebApi` and requested
+   `/climate-record?locationId=70a07bb0-2220-402b-be83-f2c35edfdd12&dataType=TempMax&dataAdjustment=Adjusted`.
+   It refreshed the real `BOM/023000.zip` over the network, logged
+   `ACORN-SAT extension decision ... Eligible (comparison year 2025, 197
+   overlay records)`, and returned a 200 response whose records include
+   `2026-01-26` at 44.7°C - a CDO-sourced value beyond the packaged
+   `ACORN-SAT.zip`'s 2025-12-31 end date. That live run's on-disk BOM refresh
+   left `ClimateExplorer.WebApi/Datasets/BOM/023000.zip` modified in the
+   working tree (802,385 → 808,045 bytes) as an incidental side effect of
+   verification, alongside the `086338.zip`/`094029.zip` changes already
+   present before this work began.
 
 ### Stage 4: Remove the obsolete executable
 

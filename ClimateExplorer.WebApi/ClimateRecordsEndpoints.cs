@@ -1,3 +1,4 @@
+#nullable enable
 namespace ClimateExplorer.WebApi;
 
 using System;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
+using ClimateExplorer.WebApi.AcornSat;
 using Microsoft.AspNetCore.Mvc;
 using static ClimateExplorer.Core.Enums;
 
@@ -24,13 +26,14 @@ internal static class ClimateRecordsEndpoints
         int? month = null,
         bool monthly = false,
         int? day = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        [FromServices] AcornSatClimateRecordService? acornSatClimateRecordService = null)
     {
         var dataSetDefinitions = await MetadataEndpoints.GetDataSetDefinitions();
         var locationDsds = dataSetDefinitions.Where(x => x.LocationIds!.Contains(locationId)).ToList();
 
-        MeasurementDefinitionViewModel md = null;
-        DataSetDefinitionViewModel matchingDsd = null;
+        MeasurementDefinitionViewModel? md = null;
+        DataSetDefinitionViewModel? matchingDsd = null;
 
         var suitableResolutions = monthly ? [DataResolution.Daily, DataResolution.Monthly] : new[] { DataResolution.Daily };
         foreach (var resolution in suitableResolutions)
@@ -68,33 +71,42 @@ internal static class ClimateRecordsEndpoints
             : md.DataResolution;
 
         var fn = dataType == DataType.Precipitation ? ContainerAggregationFunctions.Sum : ContainerAggregationFunctions.Mean;
-        var dataSet = await DataSetEndpoints.PostDataSets(
-            new PostDataSetsRequestBody
-            {
-                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                BinningRule = md.DataResolution == DataResolution.Daily && !monthly ? BinGranularities.ByYearAndDay : BinGranularities.ByYearAndMonth,
-                SeriesTransformation = SeriesTransformations.Identity,
-                SeriesSpecifications =
-                [
-                    new SeriesSpecification
-                    {
-                        DataSetDefinitionId = matchingDsd.Id,
-                        DataType = dataType,
-                        LocationId = locationId,
-                        DataAdjustment = dataAdjustment,
-                    },
-                ],
-                BinAggregationFunction = fn,
-                BucketAggregationFunction = fn,
-                CupAggregationFunction = fn,
-                RequiredBinDataProportion = 1,
-                RequiredBucketDataProportion = 1,
-                RequiredCupDataProportion = ClimateExplorerApiConstants.DefaultCupDataProportion,
-                CupSize = ClimateExplorerApiConstants.DefaultCupSize,
-            },
-            services,
-            permitSourceUpdate: true,
-            cancellationToken);
+        var requestBody = new PostDataSetsRequestBody
+        {
+            SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+            BinningRule = md.DataResolution == DataResolution.Daily && !monthly ? BinGranularities.ByYearAndDay : BinGranularities.ByYearAndMonth,
+            SeriesTransformation = SeriesTransformations.Identity,
+            SeriesSpecifications =
+            [
+                new SeriesSpecification
+                {
+                    DataSetDefinitionId = matchingDsd.Id,
+                    DataType = dataType,
+                    LocationId = locationId,
+                    DataAdjustment = dataAdjustment,
+                },
+            ],
+            BinAggregationFunction = fn,
+            BucketAggregationFunction = fn,
+            CupAggregationFunction = fn,
+            RequiredBinDataProportion = 1,
+            RequiredBucketDataProportion = 1,
+            RequiredCupDataProportion = ClimateExplorerApiConstants.DefaultCupDataProportion,
+            CupSize = ClimateExplorerApiConstants.DefaultCupSize,
+        };
+
+        // ACORN-SAT is an explicit exception (see docs/design/2026-07-17-01-acorn-sat-on-request-extension-plan.md):
+        // an adjusted temperature request through /climate-record may be extended with current CDO
+        // observations. Every other request - including direct /dataset access to the same measurement -
+        // takes the ordinary path below.
+        var isAcornSatAdjustedTemperatureRequest =
+            matchingDsd.Id == AcornSatDatasetIds.AcornSat &&
+            md.DataAdjustment == DataAdjustment.Adjusted &&
+            dataType is DataType.TempMean or DataType.TempMax or DataType.TempMin;
+
+        var dataSet = isAcornSatAdjustedTemperatureRequest && acornSatClimateRecordService != null
+            ? await acornSatClimateRecordService.BuildComposedDataSetAsync(requestBody, cancellationToken)
+            : await DataSetEndpoints.PostDataSets(requestBody, services, permitSourceUpdate: true, cancellationToken);
 
         static int YearOf(BinnedRecord r) => r.BinIdentifier switch
         {
