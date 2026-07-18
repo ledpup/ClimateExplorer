@@ -320,11 +320,11 @@
     font-weight: 700;
 }
 
-.recent-observation-tile ::deep .negative-trend {
+.recent-observation-tile ::deep .negative-value {
     color: #0b5fa5;
 }
 
-.recent-observation-tile ::deep .positive-trend {
+.recent-observation-tile ::deep .positive-value {
     color: #b3261e;
 }
 

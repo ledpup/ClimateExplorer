@@ -15,7 +15,7 @@
                     @if (!string.IsNullOrWhiteSpace(metric.StandardScoreValue))
                     {
                         <div class="recent-observation-detail-headline">
-                            <span class="recent-observation-detail-current">@metric.StandardScoreValue</span>
+                            <span class="recent-observation-detail-current @ValueClassifier.GetValueClass(metric.StandardScoreValue, metric.StandardScore > 0)">@metric.StandardScoreValue</span>
                             <span class="recent-observation-detail-rank">@metric.StandardScoreLabel</span>
                         </div>
                     }
