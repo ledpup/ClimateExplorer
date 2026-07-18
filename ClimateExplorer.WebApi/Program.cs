@@ -55,7 +55,7 @@ builder.Services.Configure<JsonOptions>(
 
 builder.Logging.AddConsole();
 
-var responseCache = new FileBackedTwoLayerCache("cache");
+var everydayCache = new FileBackedTwoLayerCache("cache");
 var longtermCache = new FileBackedTwoLayerCache("cache-longterm");
 
 builder.Services.AddSingleton(TimeProvider.System);
@@ -103,13 +103,13 @@ builder.Services.AddSingleton<IDataSetSourceUpdateCoordinator>(
     services => services.GetRequiredService<DataSetSourceUpdateCoordinator>());
 builder.Services.AddSingleton(
     services => new ClimateExplorerApiServices(
-        responseCache,
+        everydayCache,
         longtermCache,
         BomHttpClientFactory.CreateBomHttpClient(),
         GhcndHttpClientFactory.CreateHttpClient(),
         services.GetRequiredService<IDataSetSourceUpdateCoordinator>(),
         services.GetRequiredService<ILogger<ClimateExplorerApiServices>>()));
-builder.Services.AddSingleton(new AcornSatExtensionCache(longtermCache));
+builder.Services.AddSingleton(new AcornSatExtensionCache(everydayCache));
 builder.Services.AddSingleton<AcornSatClimateRecordService>();
 
 var app = builder.Build();
