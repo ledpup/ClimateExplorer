@@ -112,6 +112,7 @@ public partial class RecentObservationsPanel
             .Where(x => x.LocationIds != null && x.LocationIds.Contains(Location.Id))
             .SelectMany(x => x.MeasurementDefinitions ?? [])
             .Where(x => x.DataType is DataType.TempMax or DataType.TempMin or DataType.TempMean)
+            .Where(x => x.DataResolution == DataResolution.Daily)
             .Select(x => x.DataAdjustment)
             .Distinct()];
 

@@ -32,12 +32,13 @@
                     <ClimateButton Text="@AddSeasonButtonLabel" Disabled="@IsAddEarlierSeasonDisabled" OnClick="AddEarlierSeason" />
                     <ClimateButton Text="@AddYearButtonLabel" Disabled="@IsAddEarlierYearDisabled" OnClick="AddEarlierYear" />
 
-                    @if (ActiveTab == RecentObservationsTab.Temperature && AvailableDataAdjustments.Count > 1)
+                    @if (ActiveTab == RecentObservationsTab.Temperature)
                     {
                         <DelayedTooltip Text="By using data from nearby stations, adjusted temperatures are corrected for non-climatic influences such as station relocations and instrument changes.<br>Uncheck to see raw, unmodified measurements." Multiline="true">
                             <ClimateCheckbox Text="Adjusted"
                                               Checked="@(SelectedDataAdjustment == DataAdjustment.Adjusted)"
-                                              CheckedChanged="OnAdjustedChanged" />
+                                              CheckedChanged="OnAdjustedChanged"
+                                              Disabled="@(AvailableDataAdjustments.Count == 1)" />
                         </DelayedTooltip>
                     }
 

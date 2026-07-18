@@ -68,14 +68,12 @@
             </DelayedTooltip>
         }
     }
-    @if (AvailableDataAdjustments.Count > 1)
-    {
-        <DelayedTooltip Text="By using data from nearby stations, adjusted temperatures are corrected for non-climatic influences such as station relocations and instrument changes.<br>Uncheck to see raw, unmodified measurements." Multiline="true">
-            <ClimateCheckbox Text="Adjusted"
-                              Checked="@(SelectedDataAdjustment == DataAdjustment.Adjusted)"
-                              CheckedChanged="OnAdjustedChanged" />
-        </DelayedTooltip>
-    }
+    <DelayedTooltip Text="By using data from nearby stations, adjusted temperatures are corrected for non-climatic influences such as station relocations and instrument changes.<br>Uncheck to see raw, unmodified measurements." Multiline="true">
+        <ClimateCheckbox Text="Adjusted"
+                            Checked="@(SelectedDataAdjustment == DataAdjustment.Adjusted)"
+                            CheckedChanged="OnAdjustedChanged"
+                            Disabled="@(AvailableDataAdjustments.Count == 1)" />
+    </DelayedTooltip>
     <DelayedTooltip Text="Toggle sort order">
         <ClimateButton Text="@SortLabel" Icon="@SortToggleIcon" Class="sort-toggle-btn" OnClick="OnSortToggled" />
     </DelayedTooltip>
