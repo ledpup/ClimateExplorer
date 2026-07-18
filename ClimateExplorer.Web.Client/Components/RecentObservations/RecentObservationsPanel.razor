@@ -3,6 +3,7 @@
 @using ClimateExplorer.Web.Client.Components.Common
 @using ClimateExplorer.Web.Client.Components.RecentObservations
 @using ClimateExplorer.Web.Client.UiModel.RecentObservations
+@using static ClimateExplorer.Core.Enums
 
 <div class="recent-observations-panel">
     <RecentObservationTabs SelectedTab="@ActiveTab" SelectedTabChanged="@OnTabChanged" />
@@ -31,8 +32,7 @@
                     <ClimateButton Text="@AddSeasonButtonLabel" Disabled="@IsAddEarlierSeasonDisabled" OnClick="AddEarlierSeason" />
                     <ClimateButton Text="@AddYearButtonLabel" Disabled="@IsAddEarlierYearDisabled" OnClick="AddEarlierYear" />
 
-                    // TODO: restore this feature when we have adjusted data available for more stations
-@*                     @if (AvailableDataAdjustments.Count > 1)
+                    @if (ActiveTab == RecentObservationsTab.Temperature && AvailableDataAdjustments.Count > 1)
                     {
                         <DelayedTooltip Text="By using data from nearby stations, adjusted temperatures are corrected for non-climatic influences such as station relocations and instrument changes.<br>Uncheck to see raw, unmodified measurements." Multiline="true">
                             <label class="adjusted-check">
@@ -42,7 +42,7 @@
                                 Adjusted
                             </label>
                         </DelayedTooltip>
-                    } *@
+                    }
 
                     @if (HasExpandableCurrentTiles)
                     {
@@ -80,111 +80,72 @@
                 </div>
 
                 <div style="max-width: 1024px;">
-                    <Collapsible Title="Configuration and source" InitiallyShowContents="false">
-                        <Content>
-                            <h3 class="mt-4 mb-3">Configuration</h3>
-                            <div class="recent-observations-config-grid mb-3">
-                                @if (CurrentState.Result?.ReferenceDate is not null)
+                    <h3 class="mt-4 mb-3">Configuration</h3>
+                    <div class="recent-observations-config-grid mb-3">
+                        @if (CurrentState.Result?.ReferenceDate is not null)
+                        {
+                            <div class="recent-observations-config-field">
+                                <DelayedTooltip Text="Set a custom reference date to view the most recent observations as of that date." Style="display: block">
+                                    <div class="recent-observations-config-control recent-observations-reference-date-control">
+                                        <label for="@ReferenceDateInputId">View as of</label>
+                                        <input id="@ReferenceDateInputId"
+                                            type="text"
+                                            class="form-control form-control-sm @ReferenceDateInputValidationClass"
+                                            placeholder="YYYY-MM-DD"
+                                            value="@referenceDateInputValue"
+                                            aria-describedby="@ReferenceDateHelpId"
+                                            aria-invalid="@(!string.IsNullOrWhiteSpace(referenceDateValidationMessage))"
+                                            @oninput="OnReferenceDateInput"
+                                            @onchange="OnReferenceDateChanged" />
+                                        <ClimateButton Icon="fas fa-rotate-left"
+                                                        Class="recent-observations-reference-date-reset"
+                                                        AriaLabel="Reset to latest reference date"
+                                                        title="Reset to latest reference date"
+                                                        Disabled="@IsResetReferenceDateDisabled"
+                                                        OnClick="ResetReferenceDate" />
+                                    </div>
+                                </DelayedTooltip>
+                                @if (!string.IsNullOrWhiteSpace(referenceDateValidationMessage))
                                 {
-                                    <div class="recent-observations-config-field">
-                                        <DelayedTooltip Text="Set a custom reference date to view the most recent observations as of that date." Style="display: block">
-                                            <div class="recent-observations-config-control recent-observations-reference-date-control">
-                                                <label for="@ReferenceDateInputId">View as of</label>
-                                                <input id="@ReferenceDateInputId"
-                                                    type="text"
-                                                    class="form-control form-control-sm @ReferenceDateInputValidationClass"
-                                                    placeholder="YYYY-MM-DD"
-                                                    value="@referenceDateInputValue"
-                                                    aria-describedby="@ReferenceDateHelpId"
-                                                    aria-invalid="@(!string.IsNullOrWhiteSpace(referenceDateValidationMessage))"
-                                                    @oninput="OnReferenceDateInput"
-                                                    @onchange="OnReferenceDateChanged" />
-                                                <ClimateButton Icon="fas fa-rotate-left"
-                                                               Class="recent-observations-reference-date-reset"
-                                                               AriaLabel="Reset to latest reference date"
-                                                               title="Reset to latest reference date"
-                                                               Disabled="@IsResetReferenceDateDisabled"
-                                                               OnClick="ResetReferenceDate" />
-                                            </div>
-                                        </DelayedTooltip>
-                                        @if (!string.IsNullOrWhiteSpace(referenceDateValidationMessage))
-                                        {
-                                            <div class="invalid-feedback d-block">@referenceDateValidationMessage</div>
-                                        }
-                                        @if (!string.IsNullOrWhiteSpace(CurrentState.Result.ReferenceDateNote))
-                                        {
-                                            <span class="recent-observations-reference-date-note">@CurrentState.Result.ReferenceDateNote</span>
-                                        }
-                                    </div>
-                                    <div class="recent-observations-config-field">
-                                        <DelayedTooltip Text="Choose whether comparisons use data available up until the selected reference date or the station's full record." Style="display: block">
-                                            <div class="recent-observations-config-control">
-                                                <label for="@ComparisonRangeInputId">Comparison range</label>
-                                                <Select TValue="ComparisonEndMode"
-                                                        ElementId="@ComparisonRangeInputId"
-                                                        Value="@selectedComparisonEndMode"
-                                                        ValueChanged="@OnComparisonEndModeChanged"
-                                                        Size="Size.Small">
-                                                    <SelectItem Value="@ComparisonEndMode.FullDataset">Entire dataset</SelectItem>
-                                                    <SelectItem Value="@ComparisonEndMode.ReferenceDate">Up to view date</SelectItem>
-                                                </Select>
-                                            </div>
-                                        </DelayedTooltip>
-                                    </div>
+                                    <div class="invalid-feedback d-block">@referenceDateValidationMessage</div>
                                 }
-                                <div class="recent-observations-config-field">
-                                    <DelayedTooltip Text="Historical comparisons are shown when sufficient data is available.<br />Completeness threshold sets the minimum percentage of observations required." Style="display: block">
-                                        <div class="recent-observations-config-control recent-observations-threshold">
-                                            <label for="recent-observations-completeness-threshold">Completeness threshold %</label>
-                                            <input id="recent-observations-completeness-threshold"
-                                                type="number"
-                                                class="form-control form-control-sm"
-                                                min="@RecentObservationCompletenessThreshold.MinimumPercentage"
-                                                max="@RecentObservationCompletenessThreshold.MaximumPercentage"
-                                                step="1"
-                                                value="@CompletenessThresholdPercent"
-                                                @oninput="OnCompletenessThresholdChanged" />
-                                        </div>
-                                    </DelayedTooltip>
+                                @if (!string.IsNullOrWhiteSpace(CurrentState.Result.ReferenceDateNote))
+                                {
+                                    <span class="recent-observations-reference-date-note">@CurrentState.Result.ReferenceDateNote</span>
+                                }
+                            </div>
+                            <div class="recent-observations-config-field">
+                                <DelayedTooltip Text="Choose whether comparisons use data available up until the selected reference date or the station's full record." Style="display: block">
+                                    <div class="recent-observations-config-control">
+                                        <label for="@ComparisonRangeInputId">Comparison range</label>
+                                        <Select TValue="ComparisonEndMode"
+                                                ElementId="@ComparisonRangeInputId"
+                                                Value="@selectedComparisonEndMode"
+                                                ValueChanged="@OnComparisonEndModeChanged"
+                                                Size="Size.Small">
+                                            <SelectItem Value="@ComparisonEndMode.FullDataset">Entire dataset</SelectItem>
+                                            <SelectItem Value="@ComparisonEndMode.ReferenceDate">Up to view date</SelectItem>
+                                        </Select>
+                                    </div>
+                                </DelayedTooltip>
+                            </div>
+                        }
+                        <div class="recent-observations-config-field">
+                            <DelayedTooltip Text="Historical comparisons are shown when sufficient data is available.<br />Completeness threshold sets the minimum percentage of observations required." Style="display: block">
+                                <div class="recent-observations-config-control recent-observations-threshold">
+                                    <label for="recent-observations-completeness-threshold">Completeness threshold %</label>
+                                    <input id="recent-observations-completeness-threshold"
+                                        type="number"
+                                        class="form-control form-control-sm"
+                                        min="@RecentObservationCompletenessThreshold.MinimumPercentage"
+                                        max="@RecentObservationCompletenessThreshold.MaximumPercentage"
+                                        step="1"
+                                        value="@CompletenessThresholdPercent"
+                                        @oninput="OnCompletenessThresholdChanged" />
                                 </div>
-                            </div>
-                            
-                            <div>
-                                <h3 class="mt-4">Observations source</h3>
-                                <ul class="recent-observations-notes">
-                                    @if (CurrentState.Result?.ReferenceDate is not null)
-                                    {
-                                        <li>Observations range from <b>@FormatDateLong(CurrentState.Result.MinimumReferenceDate)</b> to <b>@FormatDateLong(CurrentState.Result.MaximumReferenceDate)</b></li>
-                                    }
-                                    @if (ObservationSourceMetadata is { } sourceMetadata)
-                                    {
-                                        <li>Data retrieved from the @sourceMetadata.SourceName station <b>@sourceMetadata.StationId</b>.</li>
-                                    }
-                                    @if (CurrentRetrievalMetadata.Count > 0)
-                                    {
-                                        <li class="recent-observations-provenance-note">
-                                            Data retrieval:
-                                            <ul>
-                                                @for (var index = 0; index < CurrentRetrievalMetadata.Count; index++)
-                                                {
-                                                    var retrievalMetadata = CurrentRetrievalMetadata[index];
-                                                    <li>
-                                                        <a class="recent-observations-source-link" href="@retrievalMetadata.SourceUrl" target="_blank" rel="noopener noreferrer">@FormatSourceUrlLabel(retrievalMetadata)</a>
-                                                        on @FormatUtcTimestamp(retrievalMetadata.RetrievedAtUtc) UTC
-                                                    </li>
-                                                }
-                                            </ul>
-                                        </li>
-                                    }
-                                </ul>
-                                <h3 class="mt-4">Notes</h3>
-                                <ul>
-                                    <li>Raw/unadjusted data: recent observations and historical comparisons are using data that has not been adjusted by scientists to remove artificial, non-climate-related biases. Other areas of ClimateExplorer provides adjusted and raw data options.</li>
-                                    <li>Comparisons such as latest 7 days, month-to-date and year-to-date tiles are compared with equivalent historical periods.</li>
-                                </ul>
-                            </div>
-                        </Content>
-                    </Collapsible>
+                            </DelayedTooltip>
+                        </div>
+                    </div>
                 </div>
             }
             else

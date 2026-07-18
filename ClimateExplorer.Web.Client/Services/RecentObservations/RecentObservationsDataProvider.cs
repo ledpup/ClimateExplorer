@@ -22,17 +22,17 @@ public sealed class RecentObservationsDataProvider : IRecentObservationsDataProv
         this.logger = logger;
     }
 
-    public Task<RecentObservationsDataSet> LoadTemperatureData(Location location)
+    public Task<RecentObservationsDataSet> LoadTemperatureData(Location location, DataAdjustment? preferredAdjustment = DataAdjustment.Adjusted)
     {
         return GetOrCreate(
-            new RecentObservationsDataCacheKey(location.Id, RecentObservationsTab.Temperature),
-            () => FetchTemperatureData(location.Id));
+            new RecentObservationsDataCacheKey(location.Id, RecentObservationsTab.Temperature, preferredAdjustment),
+            () => FetchTemperatureData(location.Id, preferredAdjustment));
     }
 
     public Task<RecentObservationsDataSet> LoadPrecipitationData(Location location)
     {
         return GetOrCreate(
-            new RecentObservationsDataCacheKey(location.Id, RecentObservationsTab.Precipitation),
+            new RecentObservationsDataCacheKey(location.Id, RecentObservationsTab.Precipitation, null),
             () => FetchPrecipitationData(location.Id));
     }
 
@@ -65,10 +65,10 @@ public sealed class RecentObservationsDataProvider : IRecentObservationsDataProv
         }
     }
 
-    private async Task<RecentObservationsDataSet> FetchTemperatureData(Guid locationId)
+    private async Task<RecentObservationsDataSet> FetchTemperatureData(Guid locationId, DataAdjustment? preferredAdjustment)
     {
-        var historicalMaxTask = GetRecords(locationId, DataType.TempMax, DataAdjustment.Unadjusted);
-        var historicalMinTask = GetRecords(locationId, DataType.TempMin, DataAdjustment.Unadjusted);
+        var historicalMaxTask = GetRecords(locationId, DataType.TempMax, preferredAdjustment);
+        var historicalMinTask = GetRecords(locationId, DataType.TempMin, preferredAdjustment);
 
         await Task.WhenAll(historicalMaxTask, historicalMinTask);
 
@@ -83,7 +83,7 @@ public sealed class RecentObservationsDataProvider : IRecentObservationsDataProv
         var hasHistoricalMaxMin = historicalMaxResponse.Records.Count > 0 && historicalMinResponse.Records.Count > 0;
         var meanRecords = hasHistoricalMaxMin
             ? new List<DataRecord>()
-            : (await GetRecords(locationId, DataType.TempMean, DataAdjustment.Unadjusted)).Records;
+            : (await GetRecords(locationId, DataType.TempMean, preferredAdjustment)).Records;
 
         return RecentObservationsDataSet.Temperature(
             historicalMaxResponse.Records,
@@ -168,5 +168,5 @@ public sealed class RecentObservationsDataProvider : IRecentObservationsDataProv
         }
     }
 
-    private readonly record struct RecentObservationsDataCacheKey(Guid LocationId, RecentObservationsTab Tab);
+    private readonly record struct RecentObservationsDataCacheKey(Guid LocationId, RecentObservationsTab Tab, DataAdjustment? Adjustment);
 }

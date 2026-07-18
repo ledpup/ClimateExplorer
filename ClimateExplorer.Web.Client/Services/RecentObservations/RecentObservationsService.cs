@@ -3,6 +3,7 @@ namespace ClimateExplorer.Web.Client.Services;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.Client.Services.RecentObservations;
 using ClimateExplorer.Web.Client.UiModel.RecentObservations;
+using static ClimateExplorer.Core.Enums;
 
 public sealed class RecentObservationsService : IRecentObservationsService
 {
@@ -17,9 +18,9 @@ public sealed class RecentObservationsService : IRecentObservationsService
         this.calculator = calculator;
     }
 
-    public Task<RecentObservationsDataSet> LoadTemperatureData(Location location)
+    public Task<RecentObservationsDataSet> LoadTemperatureData(Location location, DataAdjustment? preferredAdjustment = DataAdjustment.Unadjusted)
     {
-        return dataProvider.LoadTemperatureData(location);
+        return dataProvider.LoadTemperatureData(location, preferredAdjustment);
     }
 
     public Task<RecentObservationsDataSet> LoadPrecipitationData(Location location)
