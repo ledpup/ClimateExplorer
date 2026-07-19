@@ -21,6 +21,7 @@ public partial class RecentObservationsPanel
     private string? referenceDateValidationMessage;
     private ComparisonEndMode selectedComparisonEndMode = ComparisonEndMode.FullDataset;
     private DataAdjustment? selectedDataAdjustment = DataAdjustment.Adjusted;
+    private bool synchroniseTabs = true;
 
     [Parameter]
     public Location? Location { get; set; }
@@ -212,6 +213,19 @@ public partial class RecentObservationsPanel
 
     private void OnTileExpansionChanged()
     {
+    }
+
+    private void OnTileGroupSelected(MetricGroupKey? key)
+    {
+        if (!synchroniseTabs)
+        {
+            return;
+        }
+
+        foreach (var tile in CurrentTiles)
+        {
+            CurrentState.ExpansionStates.GetOrAdd(GetTileKey(tile)).SelectGroup(key);
+        }
     }
 
     private void OnCompletenessThresholdChanged(ChangeEventArgs e)

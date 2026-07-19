@@ -8,6 +8,8 @@ public partial class DelayedLoadingIndicator : IDisposable
 
     private bool delaying = false;
 
+    private bool disposed;
+
     private CancellationTokenSource cts = new();
 
     [Parameter]
@@ -24,6 +26,7 @@ public partial class DelayedLoadingIndicator : IDisposable
 
     public void Dispose()
     {
+        disposed = true;
         cts.Cancel();
         cts.Dispose();
     }
@@ -57,11 +60,26 @@ public partial class DelayedLoadingIndicator : IDisposable
         }
 
         delaying = false;
+
+        if (disposed)
+        {
+            return;
+        }
+
         var currentIndicatorState = showIndicator;
         showIndicator = Visible;
         if (currentIndicatorState != showIndicator)
         {
-            await InvokeAsync(StateHasChanged);
+            try
+            {
+                await InvokeAsync(StateHasChanged);
+            }
+            catch (Exception)
+            {
+                // The render tree may already be torn down by this point (e.g. Interactive
+                // Auto's Server-to-WebAssembly handoff), even though our own Dispose() may not
+                // have run yet. There's nothing left to update in that case.
+            }
         }
     }
 }

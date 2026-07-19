@@ -20,7 +20,7 @@
                         <button type="button"
                                 class="recent-observation-detail-toggle-option @(Expansion.IsGroupSelected(tab.Key) ? "selected" : string.Empty)"
                                 aria-pressed="@(Expansion.IsGroupSelected(tab.Key) ? "true" : "false")"
-                                @onclick="@(() => Expansion.SelectGroup(tab.Key))">
+                                @onclick="@(() => SelectGroup(tab.Key))">
                             @tab.Title
                         </button>
                     }
