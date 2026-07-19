@@ -51,6 +51,12 @@
                             <span class="oi oi-chevron-right recent-observations-toggle-all-chevron @(AreAllExpandableCurrentTilesExpanded ? "expanded" : string.Empty)" aria-hidden="true"></span>
                             @ExpandCollapseAllLabel
                         </ClimateButton>
+
+                        <DelayedTooltip Text="When on, selecting a statistics tab (e.g. Trend) on one tile applies it to all expanded tiles." Style="display: block">
+                            <ClimateCheckbox Text="Synchronise tabs"
+                                              Checked="@synchroniseTabs"
+                                              CheckedChanged="@(value => synchroniseTabs = value)" />
+                        </DelayedTooltip>
                     }
                 </div>
 
@@ -58,21 +64,21 @@
                     @foreach (var tile in TilesBeforeMonthControls)
                     {
                         <div class="recent-observation-tile-slot" @key="GetTileKey(tile)">
-                            <RecentObservationTile Tile="@tile" Expansion="@GetTileExpansionState(tile)" IsRemovable="@IsRemovableTile(tile)" RemoveButtonLabel="@CreateRemoveTileLabel(tile)" OnRemove="@(() => RemoveTile(tile))" OnExpansionChanged="@OnTileExpansionChanged" />
+                            <RecentObservationTile Tile="@tile" Expansion="@GetTileExpansionState(tile)" IsRemovable="@IsRemovableTile(tile)" RemoveButtonLabel="@CreateRemoveTileLabel(tile)" OnRemove="@(() => RemoveTile(tile))" OnExpansionChanged="@OnTileExpansionChanged" OnGroupSelected="@OnTileGroupSelected" />
                         </div>
                     }
 
                     @foreach (var tile in SeasonTiles)
                     {
                         <div class="recent-observation-tile-slot" @key="GetTileKey(tile)">
-                            <RecentObservationTile Tile="@tile" Expansion="@GetTileExpansionState(tile)" IsRemovable="@IsRemovableTile(tile)" RemoveButtonLabel="@CreateRemoveTileLabel(tile)" OnRemove="@(() => RemoveTile(tile))" OnExpansionChanged="@OnTileExpansionChanged" />
+                            <RecentObservationTile Tile="@tile" Expansion="@GetTileExpansionState(tile)" IsRemovable="@IsRemovableTile(tile)" RemoveButtonLabel="@CreateRemoveTileLabel(tile)" OnRemove="@(() => RemoveTile(tile))" OnExpansionChanged="@OnTileExpansionChanged" OnGroupSelected="@OnTileGroupSelected" />
                         </div>
                     }
 
                     @foreach (var tile in TilesAfterSeasonControls)
                     {
                         <div class="recent-observation-tile-slot" @key="GetTileKey(tile)">
-                            <RecentObservationTile Tile="@tile" Expansion="@GetTileExpansionState(tile)" IsRemovable="@IsRemovableTile(tile)" RemoveButtonLabel="@CreateRemoveTileLabel(tile)" OnRemove="@(() => RemoveTile(tile))" OnExpansionChanged="@OnTileExpansionChanged" />
+                            <RecentObservationTile Tile="@tile" Expansion="@GetTileExpansionState(tile)" IsRemovable="@IsRemovableTile(tile)" RemoveButtonLabel="@CreateRemoveTileLabel(tile)" OnRemove="@(() => RemoveTile(tile))" OnExpansionChanged="@OnTileExpansionChanged" OnGroupSelected="@OnTileGroupSelected" />
                         </div>
                     }
                 </div>

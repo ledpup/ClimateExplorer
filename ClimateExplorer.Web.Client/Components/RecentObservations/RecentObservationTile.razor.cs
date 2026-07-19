@@ -25,6 +25,9 @@ public partial class RecentObservationTile
     [Parameter]
     public EventCallback OnExpansionChanged { get; set; }
 
+    [Parameter]
+    public EventCallback<MetricGroupKey?> OnGroupSelected { get; set; }
+
     private string RemovableClass => IsRemovable ? "removable" : string.Empty;
 
     private string ExpandableClass => Tile.AvailableExpandedTabs.Count > 0 ? "expandable" : string.Empty;
@@ -56,5 +59,11 @@ public partial class RecentObservationTile
     {
         Expansion.Toggle();
         await OnExpansionChanged.InvokeAsync();
+    }
+
+    private async Task SelectGroup(MetricGroupKey? key)
+    {
+        Expansion.SelectGroup(key);
+        await OnGroupSelected.InvokeAsync(key);
     }
 }
