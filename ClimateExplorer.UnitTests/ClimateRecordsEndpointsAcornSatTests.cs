@@ -104,7 +104,7 @@ public sealed class ClimateRecordsEndpointsAcornSatTests
 
     private static void AssertCdoMetadataConsistentWithRetrievedDate(ClimateRecordsResponse response)
     {
-        var cdoContributed = response.SourceMetadata!.Any(x => x.SourceCode == "CDO");
+        var cdoContributed = response.SourceMetadata!.Any(x => x.SourceCode == "BOM-CDO");
         if (cdoContributed)
         {
             Assert.AreEqual(RetrievedDate, response.RetrievedDate);

@@ -93,7 +93,7 @@ public sealed class BomDataSetDownloaderTests
     public async Task ResolveAsync_LocationWithClosedAndOpenBomStations_ResolvesOnlyTheOpenStation()
     {
         var definitions = await DataSetDefinition.GetDataSetDefinitions(Path.Combine(Folders.MetaDataFolder, "DataFileMapping"));
-        var definition = definitions.Single(x => x.ShortName == "CDO");
+        var definition = definitions.Single(x => x.ShortName == "BOM-CDO");
 
         // Station 001021 served this location until 1998-09-15; station 001019 (EndDate: null) has served
         // it ever since. Requesting data for the location must resolve only the still-open station.
@@ -129,7 +129,7 @@ public sealed class BomDataSetDownloaderTests
     private static async Task<DataSetDownloadRequest> ResolveStationRequest()
     {
         var definitions = await DataSetDefinition.GetDataSetDefinitions(Path.Combine(Folders.MetaDataFolder, "DataFileMapping"));
-        var definition = definitions.Single(x => x.ShortName == "CDO");
+        var definition = definitions.Single(x => x.ShortName == "BOM-CDO");
         var locationId = definition.DataLocationMapping!.LocationIdToDataFileMappings
             .First(x => x.Value.Any(y => y.Id == "001019")).Key;
         var body = new PostDataSetsRequestBody
