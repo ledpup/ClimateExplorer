@@ -44,7 +44,7 @@
             }
             else if (SelectedTab is RecentObservationTrendTabViewModel trendTab)
             {
-                <RecentObservationTrend Metrics="@trendTab.Metrics" />
+                <RecentObservationTrend Metrics="@trendTab.Metrics" OnDownloadRequested="@OnTrendDownloadRequested" />
             }
         </div>
     }

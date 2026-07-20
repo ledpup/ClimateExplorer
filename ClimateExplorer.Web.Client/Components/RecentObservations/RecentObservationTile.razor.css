@@ -367,3 +367,110 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
+
+.recent-observation-tile ::deep .recent-observation-trend-about {
+    align-items: center;
+    display: flex;
+}
+
+.recent-observation-tile ::deep .trends-overview p {
+    line-height: 1.45;
+    margin: 0 0 0.9rem;
+}
+
+.recent-observation-tile ::deep .trends-about-unavailable {
+    color: #5d6d69;
+}
+
+.recent-observation-tile ::deep .trends-stat-section-title {
+    color: #253b36;
+    font-size: 0.95rem;
+    margin: 1.1rem 0 0.4rem;
+}
+
+.recent-observation-tile ::deep .trends-stat-table {
+    margin: 0;
+}
+
+.recent-observation-tile ::deep .trends-stat-row {
+    align-items: baseline;
+    border-top: 1px solid rgb(66 95 89 / 12%);
+    display: flex;
+    gap: 0.6rem;
+    justify-content: space-between;
+    padding: 0.4rem 0;
+}
+
+.recent-observation-tile ::deep .trends-stat-row dt {
+    color: #45605a;
+    flex: 1 1 auto;
+    font-size: 0.85rem;
+}
+
+.recent-observation-tile ::deep .trends-stat-row.emphasized dt {
+    font-weight: 700;
+}
+
+.recent-observation-tile ::deep .trends-stat-row dd {
+    align-items: center;
+    display: flex;
+    gap: 0.3rem;
+    margin: 0;
+}
+
+.recent-observation-tile ::deep .trends-stat-value {
+    color: #263a35;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.recent-observation-tile ::deep .trends-stat-row.emphasized .trends-stat-value {
+    font-weight: 700;
+}
+
+.recent-observation-tile ::deep .trends-stat-expand {
+    background: none;
+    border: none;
+    color: #595959;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0.15rem;
+}
+
+.recent-observation-tile ::deep .trends-stat-expand:hover,
+.recent-observation-tile ::deep .trends-stat-expand:focus {
+    color: #0071c1;
+}
+
+.recent-observation-tile ::deep .trends-stat-explanation {
+    background: #f4f8f6;
+    border-radius: 6px;
+    color: #40534f;
+    font-size: 0.85rem;
+    line-height: 1.45;
+    margin: 0.3rem 0 0.5rem;
+    padding: 0.6rem 0.75rem;
+}
+
+.recent-observation-tile ::deep .trends-stat-explanation p {
+    margin: 0 0 0.5rem;
+}
+
+.recent-observation-tile ::deep .trends-stat-explanation p:last-child {
+    margin-bottom: 0;
+}
+
+.recent-observation-tile ::deep .trends-download {
+    background: none;
+    border: 1px solid #cdddd8;
+    border-radius: 6px;
+    color: #45605a;
+    cursor: pointer;
+    margin-top: 0.9rem;
+    padding: 0.4rem 0.6rem;
+}
+
+.recent-observation-tile ::deep .trends-download:hover,
+.recent-observation-tile ::deep .trends-download:focus {
+    background: #f4f8f6;
+}

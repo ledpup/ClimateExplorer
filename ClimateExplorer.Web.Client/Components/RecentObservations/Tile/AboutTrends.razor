@@ -1,0 +1,54 @@
+@namespace ClimateExplorer.Web.Client.Components.RecentObservations
+@using Blazorise
+@using ClimateExplorer.Web.Client.Components.Common
+@using ClimateExplorer.Web.Client.UiModel.RecentObservations
+
+<Modal @ref="modal" Size="ModalSize.Large">
+    <ModalContent>
+        <ModalHeader>
+            <ModalTitle>About this trend</ModalTitle>
+            <CloseButton />
+        </ModalHeader>
+        <ModalBody>
+            <div class="climate-tabs trends-about-tabs">
+                <Tabs SelectedTab="@selectedMetricKey" SelectedTabChanged="@OnMetricTabChanged">
+                    <Items>
+                        <Tab Name="@OverviewTabName">Overview</Tab>
+                        @foreach (var metric in Metrics)
+                        {
+                            <Tab Name="@metric.Label">@metric.Label</Tab>
+                        }
+                    </Items>
+                </Tabs>
+            </div>
+
+            @if (selectedMetricKey == OverviewTabName)
+            {
+                <TrendsOverviewExplainer />
+            }
+            else if (SelectedMetric is { } metric)
+            {
+                @if (!string.IsNullOrWhiteSpace(metric.UnavailableReason))
+                {
+                    <p class="trends-about-unavailable">@metric.UnavailableReason</p>
+                }
+                else
+                {
+                    <div class="recent-observation-detail-toggle" role="group" aria-label="Time window">
+                        <button type="button" class="recent-observation-detail-toggle-option @(selectedWindow == TrendWindow.Full ? "selected" : string.Empty)" @onclick="@(() => SelectWindow(TrendWindow.Full))">Full recordset</button>
+                        <button type="button" class="recent-observation-detail-toggle-option @(selectedWindow == TrendWindow.Recent ? "selected" : string.Empty)" @onclick="@(() => SelectWindow(TrendWindow.Recent))">Last 30 years</button>
+                        <button type="button" class="recent-observation-detail-toggle-option @(selectedWindow == TrendWindow.FirstHalf ? "selected" : string.Empty)" @onclick="@(() => SelectWindow(TrendWindow.FirstHalf))">First half of recordset</button>
+                    </div>
+
+                    <TrendStatTable Sections="@BuildSections(metric, selectedWindow)" />
+
+                    <DelayedTooltip Text="Download the yearly data behind this trend">
+                        <button type="button" class="trends-download" aria-label="Download the yearly data behind this trend" @onclick="@(() => OnDownloadClicked(metric, selectedWindow))">
+                            <i class="fas fa-download" aria-hidden="true"></i>
+                        </button>
+                    </DelayedTooltip>
+                }
+            }
+        </ModalBody>
+    </ModalContent>
+</Modal>

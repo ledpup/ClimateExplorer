@@ -63,21 +63,21 @@
                     @foreach (var tile in TilesBeforeMonthControls)
                     {
                         <div class="recent-observation-tile-slot" @key="GetTileKey(tile)">
-                            <RecentObservationTile Tile="@tile" Expansion="@GetTileExpansionState(tile)" IsRemovable="@IsRemovableTile(tile)" RemoveButtonLabel="@CreateRemoveTileLabel(tile)" OnRemove="@(() => RemoveTile(tile))" OnExpansionChanged="@OnTileExpansionChanged" OnGroupSelected="@OnTileGroupSelected" />
+                            <RecentObservationTile Tile="@tile" Expansion="@GetTileExpansionState(tile)" IsRemovable="@IsRemovableTile(tile)" RemoveButtonLabel="@CreateRemoveTileLabel(tile)" OnRemove="@(() => RemoveTile(tile))" OnExpansionChanged="@OnTileExpansionChanged" OnGroupSelected="@OnTileGroupSelected" OnTrendDownloadRequested="@OnTrendDownloadRequested" />
                         </div>
                     }
 
                     @foreach (var tile in SeasonTiles)
                     {
                         <div class="recent-observation-tile-slot" @key="GetTileKey(tile)">
-                            <RecentObservationTile Tile="@tile" Expansion="@GetTileExpansionState(tile)" IsRemovable="@IsRemovableTile(tile)" RemoveButtonLabel="@CreateRemoveTileLabel(tile)" OnRemove="@(() => RemoveTile(tile))" OnExpansionChanged="@OnTileExpansionChanged" OnGroupSelected="@OnTileGroupSelected" />
+                            <RecentObservationTile Tile="@tile" Expansion="@GetTileExpansionState(tile)" IsRemovable="@IsRemovableTile(tile)" RemoveButtonLabel="@CreateRemoveTileLabel(tile)" OnRemove="@(() => RemoveTile(tile))" OnExpansionChanged="@OnTileExpansionChanged" OnGroupSelected="@OnTileGroupSelected" OnTrendDownloadRequested="@OnTrendDownloadRequested" />
                         </div>
                     }
 
                     @foreach (var tile in TilesAfterSeasonControls)
                     {
                         <div class="recent-observation-tile-slot" @key="GetTileKey(tile)">
-                            <RecentObservationTile Tile="@tile" Expansion="@GetTileExpansionState(tile)" IsRemovable="@IsRemovableTile(tile)" RemoveButtonLabel="@CreateRemoveTileLabel(tile)" OnRemove="@(() => RemoveTile(tile))" OnExpansionChanged="@OnTileExpansionChanged" OnGroupSelected="@OnTileGroupSelected" />
+                            <RecentObservationTile Tile="@tile" Expansion="@GetTileExpansionState(tile)" IsRemovable="@IsRemovableTile(tile)" RemoveButtonLabel="@CreateRemoveTileLabel(tile)" OnRemove="@(() => RemoveTile(tile))" OnExpansionChanged="@OnTileExpansionChanged" OnGroupSelected="@OnTileGroupSelected" OnTrendDownloadRequested="@OnTrendDownloadRequested" />
                         </div>
                     }
                 </div>

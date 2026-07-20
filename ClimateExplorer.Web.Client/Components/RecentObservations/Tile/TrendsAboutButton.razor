@@ -1,0 +1,13 @@
+@namespace ClimateExplorer.Web.Client.Components.RecentObservations
+@using ClimateExplorer.Web.Client.Components.Common
+
+<DelayedTooltip Text="About this trend">
+    <ClimateButton Icon="fas fa-info" Class="climate-button--stacked trends-about-button" OnClick="@OnClick" AriaLabel="About this trend">
+        <span class="label">About trends</span>
+    </ClimateButton>
+</DelayedTooltip>
+
+@code {
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+}

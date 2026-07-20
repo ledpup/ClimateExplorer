@@ -1,0 +1,63 @@
+@namespace ClimateExplorer.Web.Client.Components.RecentObservations
+@using ClimateExplorer.Web.Client.UiModel.RecentObservations
+
+@foreach (var section in Sections)
+{
+    <h4 class="trends-stat-section-title">@section.Title</h4>
+    <dl class="trends-stat-table">
+        @foreach (var row in section.Rows)
+        {
+            <div class="trends-stat-row @(row.IsEmphasized ? "emphasized" : string.Empty)">
+                <dt>@row.Label</dt>
+                <dd>
+                    <span class="trends-stat-value">@row.Value</span>
+                    @if (row.HasExplanation)
+                    {
+                        <button type="button"
+                                class="trends-stat-expand"
+                                aria-expanded="@(IsExpanded(row) ? "true" : "false")"
+                                aria-label="@($"About {row.Label}")"
+                                @onclick="@(() => ToggleExpanded(row))">
+                            <span class="oi oi-chevron-right recent-observation-chevron @(IsExpanded(row) ? "expanded" : string.Empty)" aria-hidden="true"></span>
+                        </button>
+                    }
+                </dd>
+            </div>
+            @if (row.HasExplanation && IsExpanded(row))
+            {
+                <div class="trends-stat-explanation">
+                    @if (!string.IsNullOrWhiteSpace(row.AbstractExplanation))
+                    {
+                        <p>@row.AbstractExplanation</p>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(row.ClimateExplanation))
+                    {
+                        <p>@row.ClimateExplanation</p>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(row.WorkedExample))
+                    {
+                        <p>@row.WorkedExample</p>
+                    }
+                </div>
+            }
+        }
+    </dl>
+}
+
+@code {
+    private readonly HashSet<string> expandedRowLabels = [];
+
+    [Parameter]
+    [EditorRequired]
+    public IReadOnlyList<TrendStatSection> Sections { get; set; } = [];
+
+    private bool IsExpanded(TrendStatRow row) => expandedRowLabels.Contains(row.Label);
+
+    private void ToggleExpanded(TrendStatRow row)
+    {
+        if (!expandedRowLabels.Add(row.Label))
+        {
+            expandedRowLabels.Remove(row.Label);
+        }
+    }
+}

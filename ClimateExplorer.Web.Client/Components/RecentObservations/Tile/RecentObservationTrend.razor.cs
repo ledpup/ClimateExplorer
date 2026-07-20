@@ -5,7 +5,17 @@ using Microsoft.AspNetCore.Components;
 
 public partial class RecentObservationTrend
 {
+    private AboutTrends? aboutTrends;
+
     [Parameter]
     [EditorRequired]
     public IReadOnlyList<RecentObservationTrendViewModel> Metrics { get; set; } = [];
+
+    [Parameter]
+    public EventCallback<TrendDownloadRequest> OnDownloadRequested { get; set; }
+
+    private Task ShowAboutTrends()
+    {
+        return aboutTrends!.Show();
+    }
 }

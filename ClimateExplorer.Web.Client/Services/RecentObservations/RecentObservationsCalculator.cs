@@ -1068,24 +1068,32 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         var ordered = points.OrderBy(x => x.X).ToList();
         var recentCount = Math.Min(RecentTrendWindowYears, ordered.Count);
         var firstHalfCount = ordered.Count / 2;
+        var recentPoints = ordered.TakeLast(recentCount).ToList();
+        var firstHalfPoints = ordered.Take(firstHalfCount).ToList();
 
         return new RecentObservationTrendViewModel
         {
             Label = metric.VariationLabel,
             Unit = metric.Unit,
             CompleteYearCount = trendSet.CompletePointCount,
-            HeadlineText = FormatTrendPerDecade(trendSet.HistoricalTrend, metric.Unit),
-            IsHeadlinePositive = IsTrendPositive(trendSet.HistoricalTrend),
+            HeadlineText = TrendFormatting.FormatPerDecade(trendSet.HistoricalTrend, metric.Unit),
+            IsHeadlinePositive = TrendFormatting.IsTrendPositive(trendSet.HistoricalTrend),
             HeadlineCaption = FormatYearRange(trendSet.HistoricalTrend),
             FullPeriodTooltip = BuildYearRangeTooltip(ordered),
             RecentTrendYearRange = FormatYearRange(trendSet.RecentTrend),
-            RecentTrendValueText = FormatTrendPerDecade(trendSet.RecentTrend, metric.Unit),
-            IsRecentTrendPositive = IsTrendPositive(trendSet.RecentTrend),
-            RecentTrendTooltip = BuildYearRangeTooltip(ordered.TakeLast(recentCount)),
+            RecentTrendValueText = TrendFormatting.FormatPerDecade(trendSet.RecentTrend, metric.Unit),
+            IsRecentTrendPositive = TrendFormatting.IsTrendPositive(trendSet.RecentTrend),
+            RecentTrendTooltip = BuildYearRangeTooltip(recentPoints),
             FirstHalfTrendYearRange = FormatYearRange(trendSet.FirstHalfTrend),
-            FirstHalfTrendValueText = FormatTrendPerDecade(trendSet.FirstHalfTrend, metric.Unit),
-            IsFirstHalfTrendPositive = IsTrendPositive(trendSet.FirstHalfTrend),
-            FirstHalfTrendTooltip = BuildYearRangeTooltip(ordered.Take(firstHalfCount)),
+            FirstHalfTrendValueText = TrendFormatting.FormatPerDecade(trendSet.FirstHalfTrend, metric.Unit),
+            IsFirstHalfTrendPositive = TrendFormatting.IsTrendPositive(trendSet.FirstHalfTrend),
+            FirstHalfTrendTooltip = BuildYearRangeTooltip(firstHalfPoints),
+            FullPeriodTrend = trendSet.HistoricalTrend,
+            RecentTrend = trendSet.RecentTrend,
+            FirstHalfTrend = trendSet.FirstHalfTrend,
+            FullPeriodPoints = ordered,
+            RecentTrendPoints = recentPoints,
+            FirstHalfTrendPoints = firstHalfPoints,
         };
     }
 
@@ -1107,25 +1115,6 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             : $"Missing years: {string.Join(", ", missingYears)}.";
 
         return $"<p>{minYear}-{maxYear} ({years.Count} of {yearSpan} years).</p><p>{missingText}</p>";
-    }
-
-    private static bool IsTrendPositive(LinearRegressionResult trend)
-    {
-        return trend.Significance.IsSlopeSignificant && trend.Line.Slope > 0;
-    }
-
-    private static string FormatTrendPerDecade(LinearRegressionResult trend, string unit)
-    {
-        if (!trend.Significance.IsSlopeSignificant)
-        {
-            return "No significant trend";
-        }
-
-        var perDecade = trend.Line.Slope * 10;
-        var sign = perDecade >= 0 ? "+" : string.Empty;
-        return unit == "°C"
-            ? $"{sign}{perDecade.ToString("0.00", CultureInfo.InvariantCulture)}°C /decade"
-            : $"{sign}{perDecade.ToString("0", CultureInfo.InvariantCulture)}mm /decade";
     }
 
     private static string CreateCurrentPeriodLabel(PeriodObservation period)

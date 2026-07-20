@@ -1,6 +1,12 @@
 @namespace ClimateExplorer.Web.Client.Components.RecentObservations
 
 <dl class="recent-observation-detail-metrics">
+    @if (Metrics.Count == 1)
+    {
+        <div class="recent-observation-detail-metric recent-observation-trend-about">
+            <TrendsAboutButton OnClick="@ShowAboutTrends" />
+        </div>
+    }
     @foreach (var metric in Metrics)
     {
         <div class="recent-observation-detail-metric">
@@ -37,4 +43,11 @@
             </dd>
         </div>
     }
+    @if (Metrics.Count > 1)
+    {
+        <div class="recent-observation-detail-metric recent-observation-trend-about">
+            <TrendsAboutButton OnClick="@ShowAboutTrends" />
+        </div>
+    }
 </dl>
+<AboutTrends @ref="aboutTrends" Metrics="@Metrics" DownloadRequested="@OnDownloadRequested" />
