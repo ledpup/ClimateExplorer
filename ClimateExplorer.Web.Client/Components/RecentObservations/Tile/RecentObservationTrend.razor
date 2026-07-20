@@ -14,18 +14,24 @@
                 {
                     @if (!string.IsNullOrWhiteSpace(metric.HeadlineText))
                     {
-                        <div class="recent-observation-detail-headline">
-                            <span class="recent-observation-detail-current @ValueClassifier.GetValueClass(metric.HeadlineText, metric.IsHeadlinePositive)">@metric.HeadlineText</span>
-                            <span class="recent-observation-detail-rank">@metric.HeadlineCaption</span>
-                        </div>
+                        <DelayedTooltip Text="@metric.FullPeriodTooltip" Multiline="true">
+                            <div class="recent-observation-detail-headline">
+                                <span class="recent-observation-detail-current @ValueClassifier.GetValueClass(metric.HeadlineText, metric.IsHeadlinePositive)">@metric.HeadlineText</span>
+                                <span class="recent-observation-detail-rank">full period</span>
+                            </div>
+                        </DelayedTooltip>
                     }
                     @if (!string.IsNullOrWhiteSpace(metric.RecentTrendValueText))
                     {
-                        <span class="recent-observation-detail-record">@metric.RecentTrendYearRange: <span class="@ValueClassifier.GetValueClass(metric.RecentTrendValueText, metric.IsRecentTrendPositive)">@metric.RecentTrendValueText</span></span>
+                        <DelayedTooltip Text="@metric.RecentTrendTooltip" Multiline="true">
+                            <span class="recent-observation-detail-record">Last 30 years: <span class="@ValueClassifier.GetValueClass(metric.RecentTrendValueText, metric.IsRecentTrendPositive)">@metric.RecentTrendValueText</span></span>
+                        </DelayedTooltip>
                     }
                     @if (!string.IsNullOrWhiteSpace(metric.FirstHalfTrendValueText))
                     {
-                        <span class="recent-observation-detail-record">@metric.FirstHalfTrendYearRange: <span class="@ValueClassifier.GetValueClass(metric.FirstHalfTrendValueText, metric.IsFirstHalfTrendPositive)">@metric.FirstHalfTrendValueText</span></span>
+                        <DelayedTooltip Text="@metric.FirstHalfTrendTooltip" Multiline="true">
+                            <span class="recent-observation-detail-record">Early period: <span class="@ValueClassifier.GetValueClass(metric.FirstHalfTrendValueText, metric.IsFirstHalfTrendPositive)">@metric.FirstHalfTrendValueText</span></span>
+                        </DelayedTooltip>
                     }
                 }
             </dd>
