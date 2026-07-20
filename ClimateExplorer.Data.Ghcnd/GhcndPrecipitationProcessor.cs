@@ -27,7 +27,10 @@ public static class GhcndPrecipitationProcessor
         });
     }
 
-    public static List<OutputRowPrecipitation> FilterSufficientData(IEnumerable<OutputRowPrecipitation> records)
+    // Used to decide whether a station's data is worth including at all (e.g. excludes stations with only
+    // a handful of scattered readings across their history). This is a station-level inclusion gate, not a
+    // data filter - it does not remove any rows, including partial years such as the current, in-progress year.
+    public static bool HasSufficientData(IEnumerable<OutputRowPrecipitation> records)
     {
         var yearRecordCount = new Dictionary<string, int>();
         foreach (var record in records)
@@ -41,11 +44,6 @@ public static class GhcndPrecipitationProcessor
             yearRecordCount[year] += record.Precipitation == GhcndConstants.NullRecord ? 0 : 1;
         }
 
-        var yearsWithMinimumNumberOfRecords = yearRecordCount
-            .Where(x => x.Value > 300)
-            .Select(x => x.Key)
-            .ToHashSet();
-
-        return records.Where(x => yearsWithMinimumNumberOfRecords.Contains(x.Date!.Substring(0, 4))).ToList();
+        return yearRecordCount.Values.Any(x => x > 300);
     }
 }
