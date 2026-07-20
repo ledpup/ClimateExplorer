@@ -80,15 +80,14 @@ void ProcessTemperature(Station station, List<GhcndInputRow> rows)
 {
     var temperatureRecords = GhcndTemperatureProcessor.CreateRecords(rows);
     GhcndTemperatureProcessor.ValidateRecords(temperatureRecords, station.Id, logger);
-    var cleanedRecords = GhcndTemperatureProcessor.FilterSufficientData(temperatureRecords);
 
-    if (cleanedRecords.Count < 10)
+    if (!GhcndTemperatureProcessor.HasSufficientData(temperatureRecords))
     {
         logger.LogInformation($"Insufficient temperature data exists for {station.Id}. It will be excluded from the dataset.");
         return;
     }
 
-    WriteCsv($@"{temperatureFolder}\{station.Id}.csv", cleanedRecords);
+    WriteCsv($@"{temperatureFolder}\{station.Id}.csv", temperatureRecords);
     stationsWithTempData.Add(station);
 }
 
@@ -96,15 +95,14 @@ void ProcessPrecipitation(Station station, List<GhcndInputRow> rows)
 {
     var precipitationRecords = GhcndPrecipitationProcessor.CreateRecords(rows);
     GhcndPrecipitationProcessor.ValidateRecords(precipitationRecords, station.Id, logger);
-    var cleanedRecords = GhcndPrecipitationProcessor.FilterSufficientData(precipitationRecords);
 
-    if (cleanedRecords.Count < 10)
+    if (!GhcndPrecipitationProcessor.HasSufficientData(precipitationRecords))
     {
         logger.LogInformation($"Insufficient precipitation data exists for {station.Id}. It will be excluded from the dataset.");
         return;
     }
 
-    WriteCsv($@"{precipitationFolder}\{station.Id}.csv", cleanedRecords);
+    WriteCsv($@"{precipitationFolder}\{station.Id}.csv", precipitationRecords);
     stationsWithPrcpData.Add(station);
 }
 

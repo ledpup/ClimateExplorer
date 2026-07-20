@@ -9,11 +9,14 @@ public sealed record RecentObservationTrendViewModel
     public string? HeadlineText { get; init; }
     public bool IsHeadlinePositive { get; init; }
     public string? HeadlineCaption { get; init; }
+    public string? FullPeriodTooltip { get; init; }
     public string? RecentTrendYearRange { get; init; }
     public string? RecentTrendValueText { get; init; }
     public bool IsRecentTrendPositive { get; init; }
+    public string? RecentTrendTooltip { get; init; }
     public string? FirstHalfTrendYearRange { get; init; }
     public string? FirstHalfTrendValueText { get; init; }
     public bool IsFirstHalfTrendPositive { get; init; }
+    public string? FirstHalfTrendTooltip { get; init; }
     public string? UnavailableReason { get; init; }
 }

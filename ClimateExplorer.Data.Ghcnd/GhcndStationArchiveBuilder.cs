@@ -31,8 +31,7 @@ public static class GhcndStationArchiveBuilder
         {
             temperatureRecords = GhcndTemperatureProcessor.CreateRecords(rows);
             GhcndTemperatureProcessor.ValidateRecords(temperatureRecords, stationId, NullLogger.Instance);
-            temperatureRecords = GhcndTemperatureProcessor.FilterSufficientData(temperatureRecords);
-            if (temperatureRecords.Count < 10)
+            if (!GhcndTemperatureProcessor.HasSufficientData(temperatureRecords))
             {
                 throw new InvalidDataException($"GHCNd returned insufficient temperature observations for station '{stationId}'.");
             }
@@ -43,8 +42,7 @@ public static class GhcndStationArchiveBuilder
         {
             precipitationRecords = GhcndPrecipitationProcessor.CreateRecords(rows);
             GhcndPrecipitationProcessor.ValidateRecords(precipitationRecords, stationId, NullLogger.Instance);
-            precipitationRecords = GhcndPrecipitationProcessor.FilterSufficientData(precipitationRecords);
-            if (precipitationRecords.Count < 10)
+            if (!GhcndPrecipitationProcessor.HasSufficientData(precipitationRecords))
             {
                 throw new InvalidDataException($"GHCNd returned insufficient precipitation observations for station '{stationId}'.");
             }

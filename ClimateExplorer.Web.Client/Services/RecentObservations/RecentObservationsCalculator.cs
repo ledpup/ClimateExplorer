@@ -1065,6 +1065,10 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             };
         }
 
+        var ordered = points.OrderBy(x => x.X).ToList();
+        var recentCount = Math.Min(RecentTrendWindowYears, ordered.Count);
+        var firstHalfCount = ordered.Count / 2;
+
         return new RecentObservationTrendViewModel
         {
             Label = metric.VariationLabel,
@@ -1073,18 +1077,36 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             HeadlineText = FormatTrendPerDecade(trendSet.HistoricalTrend, metric.Unit),
             IsHeadlinePositive = IsTrendPositive(trendSet.HistoricalTrend),
             HeadlineCaption = FormatYearRange(trendSet.HistoricalTrend),
+            FullPeriodTooltip = BuildYearRangeTooltip(ordered),
             RecentTrendYearRange = FormatYearRange(trendSet.RecentTrend),
             RecentTrendValueText = FormatTrendPerDecade(trendSet.RecentTrend, metric.Unit),
             IsRecentTrendPositive = IsTrendPositive(trendSet.RecentTrend),
+            RecentTrendTooltip = BuildYearRangeTooltip(ordered.TakeLast(recentCount)),
             FirstHalfTrendYearRange = FormatYearRange(trendSet.FirstHalfTrend),
             FirstHalfTrendValueText = FormatTrendPerDecade(trendSet.FirstHalfTrend, metric.Unit),
             IsFirstHalfTrendPositive = IsTrendPositive(trendSet.FirstHalfTrend),
+            FirstHalfTrendTooltip = BuildYearRangeTooltip(ordered.Take(firstHalfCount)),
         };
     }
 
     private static string FormatYearRange(LinearRegressionResult trend)
     {
         return $"{trend.Input.MinimumX.ToString("0", CultureInfo.InvariantCulture)}-{trend.Input.MaximumX.ToString("0", CultureInfo.InvariantCulture)}";
+    }
+
+    private static string BuildYearRangeTooltip(IEnumerable<DataPoint> segmentPoints)
+    {
+        var years = segmentPoints.Select(x => (int)Math.Round(x.X)).OrderBy(x => x).ToList();
+        var minYear = years[0];
+        var maxYear = years[^1];
+        var yearSpan = maxYear - minYear + 1;
+        var missingYears = Enumerable.Range(minYear, yearSpan).Except(years).ToList();
+
+        var missingText = missingYears.Count == 0
+            ? "No years are missing."
+            : $"Missing years: {string.Join(", ", missingYears)}.";
+
+        return $"<p>{minYear}-{maxYear} ({years.Count} of {yearSpan} years).</p><p>{missingText}</p>";
     }
 
     private static bool IsTrendPositive(LinearRegressionResult trend)

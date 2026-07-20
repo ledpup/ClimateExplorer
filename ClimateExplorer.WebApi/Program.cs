@@ -56,7 +56,7 @@ builder.Services.Configure<JsonOptions>(
 builder.Logging.AddConsole();
 
 var everydayCache = new FileBackedTwoLayerCache("cache");
-var longtermCache = new FileBackedTwoLayerCache("cache-longterm");
+var yearLongCache = new FileBackedTwoLayerCache("cache-longterm");
 
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddSingleton<DataSetFreshnessPolicy>();
@@ -104,7 +104,7 @@ builder.Services.AddSingleton<IDataSetSourceUpdateCoordinator>(
 builder.Services.AddSingleton(
     services => new ClimateExplorerApiServices(
         everydayCache,
-        longtermCache,
+        yearLongCache,
         BomHttpClientFactory.CreateBomHttpClient(),
         GhcndHttpClientFactory.CreateHttpClient(),
         services.GetRequiredService<IDataSetSourceUpdateCoordinator>(),

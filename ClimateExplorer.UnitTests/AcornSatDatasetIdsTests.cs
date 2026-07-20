@@ -29,7 +29,7 @@ public sealed class AcornSatDatasetIdsTests
 
         var dsd = definitions.Single(x => x.Id == AcornSatDatasetIds.Cdo);
 
-        Assert.AreEqual("CDO", dsd.ShortName);
+        Assert.AreEqual("BOM-CDO", dsd.ShortName);
         Assert.IsTrue(dsd.MeasurementDefinitions!.Any(x => x.DataAdjustment == DataAdjustment.Unadjusted && x.DataType == DataType.TempMax));
         Assert.AreEqual("bom-station", dsd.DataDownloaderKey);
     }

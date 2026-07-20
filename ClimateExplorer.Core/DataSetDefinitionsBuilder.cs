@@ -55,8 +55,8 @@ public class DataSetDefinitionsBuilder
             new()
             {
                 Id = Guid.Parse("E5EEA4D6-5FD5-49AB-BF85-144A8921111E"),
-                Name = "Climate Data Online",
-                ShortName = "CDO",
+                Name = "Australian Bureau of Meteorology Climate Data Online",
+                ShortName = "BOM-CDO",
                 Description = "Climate Data Online (CDO) provides historical daily rainfall and maximum and minimum temperature observations from Bureau of Meteorology weather stations across Australia. The period of record varies by station and weather element, with some observations dating to the mid-1800s. Data are available from both operating and closed stations, and recent observations may not yet have completed quality control.",
                 Publisher = "Australian Bureau of Meteorology",
                 PublisherUrl = "https://www.bom.gov.au/",

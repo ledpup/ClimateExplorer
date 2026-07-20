@@ -35,7 +35,10 @@ public static class GhcndTemperatureProcessor
         });
     }
 
-    public static List<OutputRowTemperature> FilterSufficientData(IEnumerable<OutputRowTemperature> records)
+    // Used to decide whether a station's data is worth including at all (e.g. excludes stations with only
+    // a handful of scattered readings across their history). This is a station-level inclusion gate, not a
+    // data filter - it does not remove any rows, including partial years such as the current, in-progress year.
+    public static bool HasSufficientData(IEnumerable<OutputRowTemperature> records)
     {
         var yearRecordCount = new Dictionary<string, TempYearCount>();
         foreach (var record in records)
@@ -50,12 +53,7 @@ public static class GhcndTemperatureProcessor
             yearRecordCount[year].TMin += record.Tmin == GhcndConstants.NullRecord ? 0 : 1;
         }
 
-        var yearsWithMinimumNumberOfRecords = yearRecordCount
-            .Where(x => x.Value.TMax > 300 && x.Value.TMin > 300)
-            .Select(x => x.Key)
-            .ToHashSet();
-
-        return records.Where(x => yearsWithMinimumNumberOfRecords.Contains(x.Date!.Substring(0, 4))).ToList();
+        return yearRecordCount.Values.Any(x => x.TMax > 300 && x.TMin > 300);
     }
 
     private sealed class TempYearCount

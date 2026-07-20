@@ -71,6 +71,6 @@ public sealed class AcornSatStationResolverTests
         var definitions = await DataSetDefinition.GetDataSetDefinitions();
         return (
             definitions.Single(x => x.ShortName == "ACORN-SAT"),
-            definitions.Single(x => x.ShortName == "CDO"));
+            definitions.Single(x => x.ShortName == "BOM-CDO"));
     }
 }
