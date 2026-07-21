@@ -34,9 +34,14 @@
                     {
                         <p>@row.ClimateExplanation</p>
                     }
-                    @if (!string.IsNullOrWhiteSpace(row.WorkedExample))
+                    @if (row.WorkedExamples is { Count: > 0 } workedExamples)
                     {
-                        <p>@row.WorkedExample</p>
+                        <ul class="trends-stat-worked-examples">
+                            @foreach (var example in workedExamples)
+                            {
+                                <li>@example</li>
+                            }
+                        </ul>
                     }
                 </div>
             }

@@ -40,9 +40,9 @@ internal static class TrendStatSectionBuilder
             "Slope",
             TrendFormatting.FormatPerDecade(trend, unit),
             IsEmphasized: true,
-            AbstractExplanation: "The slope is the change in the fitted value for every one-unit increase in X - here, the average change from one calendar year to the next.",
-            ClimateExplanation: $"This site shows rates per decade because a per-decade number is large enough to read without implying year-to-year precision. The underlying per-year rate is {FormatSigned(slope, 5)}{unit}/year, with a 95% confidence interval of {FormatSigned(trend.Significance.SlopeConfidenceInterval.Lower, 5)}{unit} to {FormatSigned(trend.Significance.SlopeConfidenceInterval.Upper, 5)}{unit} per year - the range of per-year rates the data are consistent with.",
-            WorkedExample: slopeWorkedExample);
+            AbstractExplanation: $"The slope is the change in the fitted value for every one-unit increase in X - here, the average change from one calendar year to the next. The per-year rate is {FormatSigned(slope, 5)}{unit}/year, with a 95% confidence interval of {FormatSigned(trend.Significance.SlopeConfidenceInterval.Lower, 5)}{unit} to {FormatSigned(trend.Significance.SlopeConfidenceInterval.Upper, 5)}{unit} per year - the range of per-year rates the data are consistent with.",
+            ClimateExplanation: $"This site shows rates per decade because a per-decade number is large enough to read without implying year-to-year precision.",
+            WorkedExamples: slopeWorkedExample is null ? null : [slopeWorkedExample]);
 
         var yInterceptRow = new TrendStatRow(
             "Y-intercept",
@@ -50,7 +50,7 @@ internal static class TrendStatSectionBuilder
             IsEmphasized: false,
             AbstractExplanation: "The Y-intercept is the fitted value of Y when X = 0 - the value the line predicts for calendar year 0.",
             ClimateExplanation: $"Year 0 is thousands of years before this record began, so this is a mathematical artefact of extending the fitted line backwards, not a real prediction for any actual year. Its own 95% confidence interval is {TrendFormatting.FormatValue(interceptStats.ConfidenceInterval.Lower, unit)} to {TrendFormatting.FormatValue(interceptStats.ConfidenceInterval.Upper, unit)}.",
-            WorkedExample: null);
+            WorkedExamples: null);
 
         var xInterceptClimateExplanation = xIntercept.ConfidenceInterval is { } xInterceptCi
             ? $"0{unit} crossing the fitted line for an absolute {metric.Label.ToLowerInvariant()} lands far outside any plausible year and carries no climate meaning; it's shown only because it's part of the standard regression report this table mirrors. Its 95% confidence interval is {xInterceptCi.Lower.ToString("0", CultureInfo.InvariantCulture)} to {xInterceptCi.Upper.ToString("0", CultureInfo.InvariantCulture)}."
@@ -62,7 +62,7 @@ internal static class TrendStatSectionBuilder
             IsEmphasized: false,
             AbstractExplanation: "The X-intercept is the X value (year) where the fitted line crosses Y = 0.",
             ClimateExplanation: xInterceptClimateExplanation,
-            WorkedExample: null);
+            WorkedExamples: null);
 
         var reciprocalRow = BuildReciprocalSlopeRow(metric, slope);
 
@@ -80,7 +80,7 @@ internal static class TrendStatSectionBuilder
             IsEmphasized: false,
             AbstractExplanation: "1/Slope is the reciprocal of the rate - how many units of X it takes for Y to change by one unit.",
             ClimateExplanation: $"In years, this reads as \"about {Math.Abs(reciprocal).ToString("0", CultureInfo.InvariantCulture)} years for {perUnitLabel} of change at this rate\" - the most directly tangible number in this table.",
-            WorkedExample: null);
+            WorkedExamples: null);
     }
 
     private static TrendStatSection BuildGoodnessOfFit(RecentObservationTrendViewModel metric, LinearRegressionResult trend)
@@ -94,7 +94,7 @@ internal static class TrendStatSectionBuilder
             IsEmphasized: true,
             AbstractExplanation: "R² is the proportion of year-to-year variance explained by the straight line, from 0 to 1.",
             ClimateExplanation: $"{rSquaredPercent}% of the year-to-year variation lines up with the long-term trend; the remaining {noisePercent}% is short-term natural variability the straight line doesn't capture.",
-            WorkedExample: null);
+            WorkedExamples: null);
 
         var syxRow = new TrendStatRow(
             "Sy.x",
@@ -102,7 +102,7 @@ internal static class TrendStatSectionBuilder
             IsEmphasized: false,
             AbstractExplanation: "Sy.x is the typical size of a residual - how far a single year's value scatters from the fitted line, in the same units as Y.",
             ClimateExplanation: $"A typical year here differs from the smooth long-term trend by about {TrendFormatting.FormatValue(trend.Fit.ResidualStandardError, metric.Unit)}, which is why a single unusually hot, cold, wet or dry year doesn't by itself change the assessment of the long-term trend.",
-            WorkedExample: null);
+            WorkedExamples: null);
 
         return new TrendStatSection("Goodness of Fit", [rSquaredRow, syxRow]);
     }
@@ -120,9 +120,9 @@ internal static class TrendStatSectionBuilder
             "P value",
             FormatPValue(trend.Significance.PValue),
             IsEmphasized: true,
-            AbstractExplanation: "The p-value is the probability of seeing a slope this far from zero, purely by chance, if the true long-term trend were actually zero.",
-            ClimateExplanation: $"This site treats a trend as significant when P is below {trend.Significance.Alpha.ToString("0.00", CultureInfo.InvariantCulture)} (see the Overview tab for why). See below for whether that threshold is met here.",
-            WorkedExample: null);
+            AbstractExplanation: "The p-value is the probability that a trend this strong could show up by random chance, even if there's no real change happening over time.",
+            ClimateExplanation: $"ClimateExplorer calls a trend \"significant\" when that likelihood is below 5% (the p-value <  {trend.Significance.Alpha.ToString("0.00", CultureInfo.InvariantCulture)}). \"Significant\" means the trend is probably real, not that it's necessarily large. It's a statement about how surprising the data would be under the assumption of no effect.",
+            WorkedExamples: null);
 
         var deviationRow = new TrendStatRow(
             "Deviation from zero?",
@@ -141,16 +141,22 @@ internal static class TrendStatSectionBuilder
         var intercept = trend.Line.Intercept;
         var equationText = $"Y = {slope.ToString("0.00000", CultureInfo.InvariantCulture)}·X {(intercept >= 0 ? "+" : "-")} {Math.Abs(intercept).ToString("0.00", CultureInfo.InvariantCulture)}";
 
-        var earlyX = trend.Input.MinimumX;
+        var earlyX = trend.Input.MinimumX - 25;
         var lateX = trend.Input.MaximumX + 25;
+        var laterX = trend.Input.MaximumX + 50;
+        var nowX = DateTime.Now.Year;
         var earlyPrediction = LinearRegressionCalculator.Predict(trend, earlyX);
         var latePrediction = LinearRegressionCalculator.Predict(trend, lateX);
+        var laterPrediction = LinearRegressionCalculator.Predict(trend, laterX);
+        var nowPrediction = LinearRegressionCalculator.Predict(trend, nowX);
 
-        var workedExample =
-            $"For example: in {earlyX.ToString("0", CultureInfo.InvariantCulture)} this line predicts {TrendFormatting.FormatValue(earlyPrediction.PredictedY, metric.Unit)} " +
-            $"(95% range for that year's actual value: {TrendFormatting.FormatValue(earlyPrediction.ObservationPredictionInterval.Lower, metric.Unit)} to {TrendFormatting.FormatValue(earlyPrediction.ObservationPredictionInterval.Upper, metric.Unit)}). " +
-            $"In {lateX.ToString("0", CultureInfo.InvariantCulture)} it predicts {TrendFormatting.FormatValue(latePrediction.PredictedY, metric.Unit)} " +
-            $"({TrendFormatting.FormatValue(latePrediction.ObservationPredictionInterval.Lower, metric.Unit)} to {TrendFormatting.FormatValue(latePrediction.ObservationPredictionInterval.Upper, metric.Unit)}).";
+        var workedExamples = new List<string>
+        {
+            $"In {earlyX.ToString("0", CultureInfo.InvariantCulture)} this line predicts {TrendFormatting.FormatValue(earlyPrediction.PredictedY, metric.Unit)} (95% range for that year's actual value: {TrendFormatting.FormatValue(earlyPrediction.ObservationPredictionInterval.Lower, metric.Unit)} to {TrendFormatting.FormatValue(earlyPrediction.ObservationPredictionInterval.Upper, metric.Unit)}).",
+            BuildNowExample(metric, nowX, nowPrediction),
+            $"In {lateX.ToString("0", CultureInfo.InvariantCulture)} it predicts {TrendFormatting.FormatValue(latePrediction.PredictedY, metric.Unit)} ({TrendFormatting.FormatValue(latePrediction.ObservationPredictionInterval.Lower, metric.Unit)} to {TrendFormatting.FormatValue(latePrediction.ObservationPredictionInterval.Upper, metric.Unit)}).",
+            $"In {laterX.ToString("0", CultureInfo.InvariantCulture)} it predicts {TrendFormatting.FormatValue(laterPrediction.PredictedY, metric.Unit)} ({TrendFormatting.FormatValue(laterPrediction.ObservationPredictionInterval.Lower, metric.Unit)} to {TrendFormatting.FormatValue(laterPrediction.ObservationPredictionInterval.Upper, metric.Unit)}).",
+        };
 
         var row = new TrendStatRow(
             "Equation",
@@ -158,9 +164,30 @@ internal static class TrendStatSectionBuilder
             IsEmphasized: true,
             AbstractExplanation: "This is the best-fit line itself - plug in any X (year) to get the fitted Y for that year.",
             ClimateExplanation: "The range shown alongside each prediction is the 95% range for one year's actual value, not just the uncertainty in the fitted line itself - it's wider than the slope's own confidence interval because it also accounts for ordinary year-to-year natural variability.",
-            WorkedExample: workedExample);
+            WorkedExamples: workedExamples);
 
         return new TrendStatSection("Equation", [row]);
+    }
+
+    private static string BuildNowExample(RecentObservationTrendViewModel metric, int nowX, RegressionPrediction nowPrediction)
+    {
+        var unit = metric.Unit;
+        var predictedText = $"In {nowX.ToString("0", CultureInfo.InvariantCulture)}, it predicts {TrendFormatting.FormatValue(nowPrediction.PredictedY, metric.Unit)} ({TrendFormatting.FormatValue(nowPrediction.ObservationPredictionInterval.Lower, metric.Unit)} to {TrendFormatting.FormatValue(nowPrediction.ObservationPredictionInterval.Upper, metric.Unit)}).";
+        var actualPoint = metric.FullPeriodPoints.FirstOrDefault(p => (int)Math.Round(p.X) == nowX);
+        if (actualPoint is null)
+        {
+            return predictedText;
+        }
+
+        var difference = actualPoint.Y - nowPrediction.PredictedY;
+        var comparison = Math.Abs(difference) < 0.005
+            ? "almost exactly matches the predicted value"
+            : difference > 0
+                ? $"is {TrendFormatting.FormatValue(difference, unit)} above the predicted value"
+                : $"is {TrendFormatting.FormatValue(Math.Abs(difference), unit)} below the predicted value";
+
+        return
+            $"{predictedText} The {nowX.ToString("0", CultureInfo.InvariantCulture)} measured value is {TrendFormatting.FormatValue(actualPoint.Y, unit)}, which {comparison}.";
     }
 
     private static TrendStatSection BuildData(RecentObservationTrendViewModel metric, LinearRegressionResult trend)
@@ -184,7 +211,7 @@ internal static class TrendStatSectionBuilder
             IsEmphasized: false,
             AbstractExplanation: $"Out of the {yearSpan} calendar years from {minYear} to {maxYear}, this many have no data point.",
             ClimateExplanation: missingText,
-            WorkedExample: null);
+            WorkedExamples: null);
 
         return new TrendStatSection("Data", [countRow, totalRow, replicatesRow, missingRow]);
     }

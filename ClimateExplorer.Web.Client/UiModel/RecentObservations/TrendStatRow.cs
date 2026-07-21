@@ -6,7 +6,7 @@ public sealed record TrendStatRow(
     bool IsEmphasized,
     string? AbstractExplanation,
     string? ClimateExplanation,
-    string? WorkedExample)
+    IReadOnlyList<string>? WorkedExamples)
 {
-    public bool HasExplanation => AbstractExplanation is not null || ClimateExplanation is not null || WorkedExample is not null;
+    public bool HasExplanation => AbstractExplanation is not null || ClimateExplanation is not null || WorkedExamples is not null;
 }

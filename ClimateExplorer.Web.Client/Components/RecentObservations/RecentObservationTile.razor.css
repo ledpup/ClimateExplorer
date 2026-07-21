@@ -461,6 +461,23 @@
     margin-bottom: 0;
 }
 
+.recent-observation-tile ::deep .trends-stat-worked-examples {
+    margin: 0 0 0.5rem;
+    padding-left: 1.1rem;
+}
+
+.recent-observation-tile ::deep .trends-stat-worked-examples:last-child {
+    margin-bottom: 0;
+}
+
+.recent-observation-tile ::deep .trends-stat-worked-examples li {
+    margin: 0 0 0.35rem;
+}
+
+.recent-observation-tile ::deep .trends-stat-worked-examples li:last-child {
+    margin-bottom: 0;
+}
+
 .recent-observation-tile ::deep .trends-download {
     background: none;
     border: 1px solid #cdddd8;

@@ -1,7 +1,7 @@
 namespace ClimateExplorer.Web.Client.Components.RecentObservations;
 
-using Blazorise;
 using ClimateExplorer.Core.Stats.Model;
+using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.UiModel.RecentObservations;
 using Microsoft.AspNetCore.Components;
 
@@ -9,7 +9,7 @@ public partial class AboutTrends
 {
     private const string OverviewTabName = "Overview";
 
-    private Modal? modal;
+    private SidePanel? sidePanel;
     private string selectedMetricKey = OverviewTabName;
     private TrendWindow selectedWindow = TrendWindow.Full;
 
@@ -24,7 +24,7 @@ public partial class AboutTrends
 
     public Task Show()
     {
-        return modal!.Show();
+        return sidePanel!.ShowAsync();
     }
 
     private static IReadOnlyList<TrendStatSection> BuildSections(RecentObservationTrendViewModel metric, TrendWindow window)
