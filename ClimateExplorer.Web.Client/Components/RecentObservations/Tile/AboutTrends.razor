@@ -5,7 +5,7 @@
 
 <Modal @ref="modal" Size="ModalSize.Large">
     <ModalContent>
-        <ModalHeader>
+        <ModalHeader Class="custom-modal-header">
             <ModalTitle>About this trend</ModalTitle>
             <CloseButton />
         </ModalHeader>
@@ -35,9 +35,9 @@
                 else
                 {
                     <div class="recent-observation-detail-toggle" role="group" aria-label="Time window">
-                        <button type="button" class="recent-observation-detail-toggle-option @(selectedWindow == TrendWindow.Full ? "selected" : string.Empty)" @onclick="@(() => SelectWindow(TrendWindow.Full))">Full recordset</button>
+                        <button type="button" class="recent-observation-detail-toggle-option @(selectedWindow == TrendWindow.Full ? "selected" : string.Empty)" @onclick="@(() => SelectWindow(TrendWindow.Full))">Full period</button>
                         <button type="button" class="recent-observation-detail-toggle-option @(selectedWindow == TrendWindow.Recent ? "selected" : string.Empty)" @onclick="@(() => SelectWindow(TrendWindow.Recent))">Last 30 years</button>
-                        <button type="button" class="recent-observation-detail-toggle-option @(selectedWindow == TrendWindow.FirstHalf ? "selected" : string.Empty)" @onclick="@(() => SelectWindow(TrendWindow.FirstHalf))">First half of recordset</button>
+                        <button type="button" class="recent-observation-detail-toggle-option @(selectedWindow == TrendWindow.FirstHalf ? "selected" : string.Empty)" @onclick="@(() => SelectWindow(TrendWindow.FirstHalf))">Early period</button>
                     </div>
 
                     <TrendStatTable Sections="@BuildSections(metric, selectedWindow)" />

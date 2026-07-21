@@ -1,7 +1,7 @@
 # "About trends" button and full-statistics modal
 
 - **Date:** 2026-07-20
-- **Status:** Proposed
+- **Status:** Implemented 2026-07-20
 - **Author:** Claude
 - **Scope:** `ClimateExplorer.Core/Stats` (two new derived-statistics methods), `ClimateExplorer.Web.Client/Components/RecentObservations/Tile/RecentObservationTrend.razor*` (one new grid item, no other changes), `ClimateExplorer.Web.Client/UiModel/RecentObservations/RecentObservationTrendViewModel.cs`, `ClimateExplorer.Web.Client/Services/RecentObservations/RecentObservationsCalculator.cs`, `ClimateExplorer.Web.Client/Components/Common/ClimateButton*`, `ClimateExplorer.Web.Client/Services/Exporter.cs`/`IExporter.cs`, `ClimateExplorer.Web.Client/Components/RecentObservations/RecentObservationsPanel.razor*`
 - **Builds on:** [Linear Regression Utility](2026-07-11-01-linear-regression.md), [Recent Observations: Trend expanded tab](2026-07-16-01-recent-observations-trend-tab-plan.md)
@@ -685,3 +685,42 @@ open inside the modal (see the modal markup above).
   `ExtraLarge` modal rather than the narrower spaces they're currently used
   in — flagged above as expected to work (same component tree, same scoped
   CSS) but worth a quick check once built.
+
+## Addendum — implementation notes
+
+Implemented as designed, with a few implementation-time decisions:
+
+- `LinearRegressionCalculator.CalculateInterceptStatistics`/`CalculateXIntercept`
+  and the `InterceptStatistics`/`XInterceptStatistics` records were added
+  exactly as specified. The X-intercept confidence interval uses the
+  quadratic form of Fieller's theorem (equivalent to inverting the fitted-mean
+  confidence band at Y = 0). Unit tests reuse the existing
+  `linear-regression-1-canberra-temp-all.csv` fixture and assert against the
+  task's own worked numbers (Y-intercept CI -34.81 to -20.65, X-intercept
+  1357 with CI 1226 to 1449).
+- `FormatTrendPerDecade`/`IsTrendPositive` were extracted out of
+  `RecentObservationsCalculator` into a shared internal `TrendFormatting`
+  helper (`Services/RecentObservations/TrendFormatting.cs`), since the
+  modal's Slope row needed to reuse the tile's exact wording rather than
+  duplicate it.
+- The Equation row's worked example uses the trend's own `MinimumX` and
+  `MaximumX + 25` rather than literal 1900/2100, per the plan's own
+  implementation-time note — this avoids predicting decades before a
+  30-year or first-half window's own data begins.
+- Worked-example text refers to "this location" rather than the location's
+  name, since `Location` isn't available at `RecentObservationTrend`'s depth
+  (same reasoning the plan already gives for the download button bubbling up
+  instead of calling `IExporter` directly — threading a new parameter down
+  two component levels for display text alone wasn't worth it).
+- The modal uses `ModalSize.Large` (not `ExtraLarge`) and the header uses
+  the site's existing `.custom-modal-header` class (dark green background,
+  white close button), matching every other modal on the site rather than
+  introducing a one-off style.
+- `.recent-observation-trend-about` centers the About button horizontally
+  as well as vertically within its grid cell.
+- Per `AGENTS.md`, the website/dev servers and Playwright/browser tests were
+  not run. Verification was `dotnet build ClimateExplorer.sln` (clean) and
+  `dotnet test ClimateExplorer.UnitTests` (436 passed, including the new
+  intercept/X-intercept tests). Visual confirmation of the modal, tab
+  navigation, expand rows, and download button in an actual browser is
+  outstanding and left to manual QA.

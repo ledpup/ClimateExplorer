@@ -1,7 +1,9 @@
 # Agent Notes
 
 - A plan or analysis document goes in docs/design. See [readme](docs/design/README.md)
-- Do not run the website, Playwright, Lighthouse, or browser tests.
+- Do not run the website, Playwright, Lighthouse, or browser tests. This includes starting
+  `dotnet run`/dev servers for the Web or WebApi projects for manual or automated UI verification.
+  Verify with `dotnet build` and the unit test suite only.
 
 ## C#
 
