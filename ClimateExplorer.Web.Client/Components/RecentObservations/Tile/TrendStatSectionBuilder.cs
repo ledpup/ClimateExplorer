@@ -199,8 +199,26 @@ internal static class TrendStatSectionBuilder
             ? "∞"
             : trend.Significance.FStatistic.ToString("0.0", CultureInfo.InvariantCulture);
 
-        var fRow = new TrendStatRow("F", fStatisticText, IsEmphasized: true, null, null, null);
-        var dfRow = new TrendStatRow("DFn, DFd", $"1, {trend.Significance.DegreesOfFreedom}", IsEmphasized: true, null, null, null);
+        var count = trend.Significance.DegreesOfFreedom + 2;
+        var tStatisticText = double.IsInfinity(trend.Significance.TStatistic)
+            ? "∞"
+            : trend.Significance.TStatistic.ToString("0.0", CultureInfo.InvariantCulture);
+
+        var fRow = new TrendStatRow(
+            "F",
+            fStatisticText,
+            IsEmphasized: false,
+            AbstractExplanation: "F is a ratio comparing how much variance the regression line explains to how much variance is left over as noise - essentially variance explained by the slope ÷ residual variance, each divided by their degrees of freedom. A larger F means the line is capturing a real pattern relative to the scatter around it.",
+            ClimateExplanation: $"F = {fStatisticText} here, {(double.IsPositiveInfinity(trend.Significance.FStatistic) ? "which is as far above 1 as this can go" : "well above the 1 you'd expect if the slope were truly zero")}. For a simple linear regression like this, it's mathematically the same test as \"is the slope different from zero\" (see the Slope ÷ SE worked example in Best-fit values above) - F equals the square of the slope's t-statistic, so F = {fStatisticText} corresponds to t ≈ {tStatisticText}.",
+            WorkedExamples: null);
+
+        var dfRow = new TrendStatRow(
+            "DFn, DFd",
+            $"1, {trend.Significance.DegreesOfFreedom}",
+            IsEmphasized: false,
+            AbstractExplanation: "DFn (degrees of freedom, numerator) is the number of predictors in the model. DFd (degrees of freedom, denominator) is the residual degrees of freedom: n − 2 for simple linear regression (n data points, minus 2 for the two parameters estimated - slope and intercept).",
+            ClimateExplanation: $"DFn = 1 because this is a simple linear regression with a single X variable (year). DFd = {trend.Significance.DegreesOfFreedom} tells you there are {count} data points here (n − 2 = {trend.Significance.DegreesOfFreedom}).",
+            WorkedExamples: null);
 
         var pValueRow = new TrendStatRow(
             "P value",
@@ -247,7 +265,7 @@ internal static class TrendStatSectionBuilder
         var row = new TrendStatRow(
             "Equation",
             equationText,
-            IsEmphasized: true,
+            IsEmphasized: false,
             AbstractExplanation: "This is the best-fit line itself - plug in any X (year) to get the fitted Y for that year.",
             ClimateExplanation: "The range shown alongside each prediction is the 95% prediction range for one year's actual value, not just the uncertainty in the fitted line itself - it's wider than the slope's own confidence interval because it also accounts for ordinary year-to-year natural variability.",
             WorkedExamples: workedExamples);

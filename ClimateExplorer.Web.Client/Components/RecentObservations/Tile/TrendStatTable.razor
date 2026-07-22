@@ -3,8 +3,8 @@
 
 @foreach (var section in Sections)
 {
-    <h4 class="trends-stat-section-title">@section.Title</h4>
-    <dl class="trends-stat-table">
+    <h3 class="trends-stat-section-title">@section.Title</h3>
+    <dl class="trends-stat-table mb-4">
         @foreach (var row in section.Rows)
         {
             <div class="trends-stat-row @(row.IsEmphasized ? "emphasized" : string.Empty)">

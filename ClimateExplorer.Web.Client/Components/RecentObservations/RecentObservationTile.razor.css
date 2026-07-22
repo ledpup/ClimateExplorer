@@ -397,9 +397,9 @@
     align-items: baseline;
     border-top: 1px solid rgb(66 95 89 / 12%);
     display: flex;
-    gap: 0.6rem;
+    gap: 0.4rem;
     justify-content: space-between;
-    padding: 0.4rem 0;
+    padding: 0.2rem 0;
 }
 
 .recent-observation-tile ::deep .trends-stat-row dt {
@@ -409,7 +409,7 @@
 }
 
 .recent-observation-tile ::deep .trends-stat-row.emphasized dt {
-    font-weight: 700;
+    font-weight: 800;
 }
 
 .recent-observation-tile ::deep .trends-stat-row dd {
