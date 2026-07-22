@@ -7,16 +7,22 @@ using ClimateExplorer.Web.Client.Services.RecentObservations;
 using ClimateExplorer.Web.Client.UiModel.RecentObservations;
 
 // Builds the GraphPad-style full statistical breakdown shown in the About-trends modal for one
-// metric/window combination. The 95% CI for slope/Y-intercept/X-intercept is deliberately not a
-// section of its own - a stat and its own interval are one concept, so that content is folded into
-// the explanation of the corresponding Best-fit-values row instead of repeated as separate rows.
+// metric/window combination. Slope/Y-intercept/X-intercept/1-Slope each appear in three tiers:
+// Summary (what does this mean), Best-fit values (what are the numbers and how precise is each
+// one), and 95% Confidence Intervals (what range are we confident in) - deliberately three
+// separate sections rather than one, so each answers a single question.
 internal static class TrendStatSectionBuilder
 {
     public static IReadOnlyList<TrendStatSection> Build(RecentObservationTrendViewModel metric, LinearRegressionResult trend)
     {
+        var interceptStats = LinearRegressionCalculator.CalculateInterceptStatistics(trend);
+        var xIntercept = LinearRegressionCalculator.CalculateXIntercept(trend);
+
         return
         [
-            BuildBestFitValues(metric, trend),
+            BuildSummary(metric, trend, xIntercept),
+            BuildBestFitValues(metric, trend, interceptStats, xIntercept),
+            BuildConfidenceIntervals(metric, trend, interceptStats, xIntercept),
             BuildGoodnessOfFit(metric, trend),
             BuildSignificance(trend),
             BuildEquation(metric, trend),
@@ -24,13 +30,11 @@ internal static class TrendStatSectionBuilder
         ];
     }
 
-    private static TrendStatSection BuildBestFitValues(RecentObservationTrendViewModel metric, LinearRegressionResult trend)
+    private static TrendStatSection BuildSummary(RecentObservationTrendViewModel metric, LinearRegressionResult trend, XInterceptStatistics xIntercept)
     {
         var unit = metric.Unit;
         var slope = trend.Line.Slope;
         var intercept = trend.Line.Intercept;
-        var interceptStats = LinearRegressionCalculator.CalculateInterceptStatistics(trend);
-        var xIntercept = LinearRegressionCalculator.CalculateXIntercept(trend);
 
         var slopeWorkedExample = trend.Significance.IsSlopeSignificant
             ? $"At this rate, the fitted line implies a change of about {FormatSigned(slope * 100, 1)}{unit} per century."
@@ -40,8 +44,8 @@ internal static class TrendStatSectionBuilder
             "Slope",
             TrendFormatting.FormatPerDecade(trend, unit),
             IsEmphasized: true,
-            AbstractExplanation: $"The slope is the change in the fitted value for every one-unit increase in X - here, the average change from one calendar year to the next. The per-year rate is {FormatSigned(slope, 5)}{unit}/year, with a 95% confidence interval of {FormatSigned(trend.Significance.SlopeConfidenceInterval.Lower, 5)}{unit} to {FormatSigned(trend.Significance.SlopeConfidenceInterval.Upper, 5)}{unit} per year - the range of per-year rates the data are consistent with.",
-            ClimateExplanation: $"This site shows rates per decade because a per-decade number is large enough to read without implying year-to-year precision.",
+            AbstractExplanation: $"The slope is the change in the fitted value for every one-unit increase in X - here, the average change from one calendar year to the next. The per-year rate is {FormatSigned(slope, 5)}{unit}/year.",
+            ClimateExplanation: "This site shows rates per decade because a per-decade number is large enough to read without implying year-to-year precision.",
             WorkedExamples: slopeWorkedExample is null ? null : [slopeWorkedExample]);
 
         var yInterceptRow = new TrendStatRow(
@@ -49,27 +53,23 @@ internal static class TrendStatSectionBuilder
             TrendFormatting.FormatValue(intercept, unit),
             IsEmphasized: false,
             AbstractExplanation: "The Y-intercept is the fitted value of Y when X = 0 - the value the line predicts for calendar year 0.",
-            ClimateExplanation: $"Year 0 is thousands of years before this record began, so this is a mathematical artefact of extending the fitted line backwards, not a real prediction for any actual year. Its own 95% confidence interval is {TrendFormatting.FormatValue(interceptStats.ConfidenceInterval.Lower, unit)} to {TrendFormatting.FormatValue(interceptStats.ConfidenceInterval.Upper, unit)}.",
+            ClimateExplanation: "Year 0 is thousands of years before this record began, so this is a mathematical artefact of extending the fitted line backwards, not a real prediction for any actual year.",
             WorkedExamples: null);
-
-        var xInterceptClimateExplanation = xIntercept.ConfidenceInterval is { } xInterceptCi
-            ? $"0{unit} crossing the fitted line for an absolute {metric.Label.ToLowerInvariant()} lands far outside any plausible year and carries no climate meaning; it's shown only because it's part of the standard regression report this table mirrors. Its 95% confidence interval is {xInterceptCi.Lower.ToString("0", CultureInfo.InvariantCulture)} to {xInterceptCi.Upper.ToString("0", CultureInfo.InvariantCulture)}."
-            : $"0{unit} crossing the fitted line for an absolute {metric.Label.ToLowerInvariant()} lands far outside any plausible year and carries no climate meaning; it's shown only because it's part of the standard regression report this table mirrors. Its confidence interval is undefined here: the slope isn't estimated precisely enough, relative to its own size, for Fieller's theorem to produce a finite range.";
 
         var xInterceptRow = new TrendStatRow(
             "X-intercept",
             xIntercept.Value.ToString("0", CultureInfo.InvariantCulture),
             IsEmphasized: false,
             AbstractExplanation: "The X-intercept is the X value (year) where the fitted line crosses Y = 0.",
-            ClimateExplanation: xInterceptClimateExplanation,
+            ClimateExplanation: $"0{unit} crossing the fitted line for an absolute {metric.Label.ToLowerInvariant()} lands far outside any plausible year and carries no climate meaning; it's shown only because it's part of the standard regression report this table mirrors.",
             WorkedExamples: null);
 
-        var reciprocalRow = BuildReciprocalSlopeRow(metric, slope);
+        var reciprocalRow = BuildReciprocalSlopeSummaryRow(metric, slope);
 
-        return new TrendStatSection("Best-fit values", [slopeRow, yInterceptRow, xInterceptRow, reciprocalRow]);
+        return new TrendStatSection("Summary", [slopeRow, yInterceptRow, xInterceptRow, reciprocalRow]);
     }
 
-    private static TrendStatRow BuildReciprocalSlopeRow(RecentObservationTrendViewModel metric, double slope)
+    private static TrendStatRow BuildReciprocalSlopeSummaryRow(RecentObservationTrendViewModel metric, double slope)
     {
         var reciprocal = 1 / slope;
         var perUnitLabel = metric.Unit == "°C" ? "1°C" : "1mm/decade";
@@ -79,8 +79,90 @@ internal static class TrendStatSectionBuilder
             reciprocal.ToString("0.00", CultureInfo.InvariantCulture),
             IsEmphasized: false,
             AbstractExplanation: "1/Slope is the reciprocal of the rate - how many units of X it takes for Y to change by one unit.",
-            ClimateExplanation: $"In years, this reads as \"about {Math.Abs(reciprocal).ToString("0", CultureInfo.InvariantCulture)} years for {perUnitLabel} of change at this rate\" - the most directly tangible number in this table.",
+            ClimateExplanation: $"In years, this reads as \"about {Math.Abs(reciprocal).ToString("0", CultureInfo.InvariantCulture)} years for {perUnitLabel} of change at this rate\".",
             WorkedExamples: null);
+    }
+
+    private static TrendStatSection BuildBestFitValues(RecentObservationTrendViewModel metric, LinearRegressionResult trend, InterceptStatistics interceptStats, XInterceptStatistics xIntercept)
+    {
+        var unit = metric.Unit;
+        var slope = trend.Line.Slope;
+        var intercept = trend.Line.Intercept;
+        var slopeSe = trend.Significance.SlopeStandardError;
+
+        var slopeRow = new TrendStatRow(
+            "Slope",
+            $"{FormatSigned(slope, 5)}{unit}/year ± {slopeSe.ToString("0.00000", CultureInfo.InvariantCulture)}{unit}/year",
+            IsEmphasized: true,
+            AbstractExplanation: "The standard error (SE) measures how precisely the slope is estimated from this data - a smaller SE means the fitted rate is more tightly pinned down.",
+            ClimateExplanation: $"Here the per-year rate is {FormatSigned(slope, 5)}{unit}/year with a standard error of {slopeSe.ToString("0.00000", CultureInfo.InvariantCulture)}{unit}/year, meaning repeated sampling of similarly-sized records would be expected to produce slope estimates clustered within about one SE of this value.",
+            WorkedExamples: [$"Slope ÷ SE = {trend.Significance.TStatistic.ToString("0.0", CultureInfo.InvariantCulture)} is the t-statistic used to test whether this trend differs from zero (see \"Is slope significantly non-zero?\" below)."]);
+
+        var yInterceptRow = new TrendStatRow(
+            "Y-intercept",
+            $"{TrendFormatting.FormatValue(intercept, unit)} ± {TrendFormatting.FormatValue(interceptStats.StandardError, unit)}",
+            IsEmphasized: false,
+            AbstractExplanation: "The Y-intercept's SE reflects how precisely the fitted line's value at X = 0 is known.",
+            ClimateExplanation: "This SE is typically large relative to the intercept's own size, because year 0 is so far outside the observed data that extending the line there amplifies even small uncertainty in the slope.",
+            WorkedExamples: null);
+
+        var xInterceptRow = new TrendStatRow(
+            "X-intercept",
+            xIntercept.Value.ToString("0", CultureInfo.InvariantCulture),
+            IsEmphasized: false,
+            AbstractExplanation: "The X-intercept is a ratio of two fitted quantities (-intercept ÷ slope) rather than something with its own standard error, so no ± SE is shown here.",
+            ClimateExplanation: "GraphPad-style tables show only the point estimate for a ratio like this; its range is deferred to Fieller's theorem in the confidence-interval section below.",
+            WorkedExamples: null);
+
+        var reciprocalRow = new TrendStatRow(
+            "1/Slope",
+            (1 / slope).ToString("0.00", CultureInfo.InvariantCulture),
+            IsEmphasized: false,
+            AbstractExplanation: "1/Slope is also a ratio rather than a directly fitted quantity, so it has no simple standard error either.",
+            ClimateExplanation: "Its uncertainty is asymmetric - a slope estimated too low pushes 1/Slope up more than a symmetrically-too-high slope pushes it down - which is another reason only a point estimate is shown here.",
+            WorkedExamples: null);
+
+        return new TrendStatSection("Best-fit values", [slopeRow, yInterceptRow, xInterceptRow, reciprocalRow]);
+    }
+
+    private static TrendStatSection BuildConfidenceIntervals(RecentObservationTrendViewModel metric, LinearRegressionResult trend, InterceptStatistics interceptStats, XInterceptStatistics xIntercept)
+    {
+        var unit = metric.Unit;
+        var slopeCi = trend.Significance.SlopeConfidenceInterval;
+
+        var slopeRow = new TrendStatRow(
+            "Slope",
+            $"{FormatSigned(slopeCi.Lower, 5)}{unit}/year to {FormatSigned(slopeCi.Upper, 5)}{unit}/year",
+            IsEmphasized: true,
+            AbstractExplanation: "The 95% confidence interval is the range of slopes the data are consistent with - the range you'd expect to capture the true rate 95% of the time, were this sampling process repeated.",
+            ClimateExplanation: $"The data here are consistent with a per-year rate anywhere from {FormatSigned(slopeCi.Lower, 5)}{unit} to {FormatSigned(slopeCi.Upper, 5)}{unit} per year.",
+            WorkedExamples: null);
+
+        var yInterceptRow = new TrendStatRow(
+            "Y-intercept",
+            $"{TrendFormatting.FormatValue(interceptStats.ConfidenceInterval.Lower, unit)} to {TrendFormatting.FormatValue(interceptStats.ConfidenceInterval.Upper, unit)}",
+            IsEmphasized: false,
+            AbstractExplanation: "Same idea as the slope's interval, applied to the fitted value at X = 0.",
+            ClimateExplanation: "Like the Y-intercept point estimate itself, this range describes a mathematical extrapolation to year 0, not a real climate quantity.",
+            WorkedExamples: null);
+
+        var xInterceptClimateExplanation = xIntercept.ConfidenceInterval is { } xInterceptCi
+            ? $"The data are consistent with the fitted line crossing 0{unit} anywhere from {xInterceptCi.Lower.ToString("0", CultureInfo.InvariantCulture)} to {xInterceptCi.Upper.ToString("0", CultureInfo.InvariantCulture)} - as with the point estimate, this carries no climate meaning."
+            : "This interval is undefined here: the slope isn't estimated precisely enough, relative to its own size, for Fieller's theorem to produce a finite range.";
+
+        var xInterceptValue = xIntercept.ConfidenceInterval is { } ci
+            ? $"{ci.Lower.ToString("0", CultureInfo.InvariantCulture)} to {ci.Upper.ToString("0", CultureInfo.InvariantCulture)}"
+            : "Undefined";
+
+        var xInterceptRow = new TrendStatRow(
+            "X-intercept",
+            xInterceptValue,
+            IsEmphasized: false,
+            AbstractExplanation: "Because the X-intercept is a ratio of two correlated estimates, its interval is computed using Fieller's theorem rather than a simple ± SE, and can come out asymmetric around the point estimate.",
+            ClimateExplanation: xInterceptClimateExplanation,
+            WorkedExamples: null);
+
+        return new TrendStatSection("95% Confidence Intervals", [slopeRow, yInterceptRow, xInterceptRow]);
     }
 
     private static TrendStatSection BuildGoodnessOfFit(RecentObservationTrendViewModel metric, LinearRegressionResult trend)
@@ -163,7 +245,7 @@ internal static class TrendStatSectionBuilder
             equationText,
             IsEmphasized: true,
             AbstractExplanation: "This is the best-fit line itself - plug in any X (year) to get the fitted Y for that year.",
-            ClimateExplanation: "The range shown alongside each prediction is the 95% range for one year's actual value, not just the uncertainty in the fitted line itself - it's wider than the slope's own confidence interval because it also accounts for ordinary year-to-year natural variability.",
+            ClimateExplanation: "The range shown alongside each prediction is the 95% prediction range for one year's actual value, not just the uncertainty in the fitted line itself - it's wider than the slope's own confidence interval because it also accounts for ordinary year-to-year natural variability.",
             WorkedExamples: workedExamples);
 
         return new TrendStatSection("Equation", [row]);

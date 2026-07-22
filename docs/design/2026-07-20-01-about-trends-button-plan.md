@@ -486,15 +486,49 @@ definition, the climate-specific meaning, and the worked example.
 
 **Row-by-row content** (■ = emphasized; ▸ = has an expand row):
 
+The `Slope`/`Y-intercept`/`X-intercept`/`1/Slope` values are shown in **three
+separate sections**, each doing one job, rather than one "Best-fit values"
+section with the interval folded into each row's expand text. This split
+(added after the section originally shipped as a single "Best-fit values"
+block) exists because a single row was being asked to answer three different
+questions at once — "what does this mean," "what's the number and how precise
+is it," and "what range are we confident in" — and conflating them made the
+expand text long and repetitive:
+
+- **Summary** — the headline, in plain language, with no confidence-interval
+  numbers at all. Same rows/values the section always showed (`Slope` as the
+  per-decade rate via `FormatTrendPerDecade`, `Y-intercept`/`X-intercept`/
+  `1/Slope` as point estimates), but the abstract/climate text is trimmed down
+  to definition + one climate-framing sentence, dropping every "its 95% CI
+  is..." aside that used to live in this row's expand text.
+- **Best-fit values** — point estimate **± SE** for `Slope` and `Y-intercept`
+  (`LinearRegressionCalculator`'s own `SlopeStandardError` and
+  `CalculateInterceptStatistics().StandardError`); `X-intercept` and `1/Slope`
+  show the point estimate only, with expand text explaining *why* no ± SE is
+  shown for those two — both are ratios of two fitted quantities rather than
+  directly-fitted values, so they don't have a simple standard error the way
+  `Slope`/`Y-intercept` do.
+- **95% Confidence Intervals** — `Slope`, `Y-intercept`, `X-intercept` as
+  `lower to upper` ranges (no `1/Slope` row — it has no CI for the same
+  ratio-without-a-simple-SE reason `X-intercept` doesn't get a ± SE in the
+  Best-fit values section above). `X-intercept`'s row is where the
+  Fieller's-theorem "sometimes this interval is undefined" caveat is
+  surfaced, gated on whether `XInterceptStatistics.ConfidenceInterval` is
+  non-null (in practice, whenever the trend is far from significant).
+
 | Section | Row | ■ | ▸ | Content |
 |---|---|---|---|---|
-| Best-fit values | Slope | ■ | ▸ | Abstract: change in Y per unit X. Climate: °C (or mm) per decade — reuses the exact wording `FormatTrendPerDecade` already produces. Worked example: "at this rate, {location} would be predicted to warm/cool by {slope×100} °C per century" (a scale-up of the same number, not a new calculation). |
+| Summary | Slope | ■ | ▸ | Abstract: change in Y per unit X, plus the per-year rate. Climate: why the tile itself shows a per-decade number (reuses the exact wording `FormatTrendPerDecade` already produces). Worked example: "at this rate, the fitted line implies a change of about {slope×100} °C per century" (a scale-up of the same number, not a new calculation). |
 | | Y-intercept | | ▸ | Abstract: predicted Y when X = 0 (year 0). Climate: explicitly **not** a real prediction — year 0 is thousands of years outside the observed record, so this is a mathematical artifact of extending the fitted line, not a forecast. This row's expand exists specifically to pre-empt the most common misreading of a regression readout. |
 | | X-intercept | | ▸ | Abstract: X where the fitted line crosses Y = 0. Climate: same caveat as Y-intercept — 0 °C (or 0 mm) crossing the fitted line, for a location's *absolute* mean/max/min temperature or precipitation total, lands far outside any plausible year and carries no climate meaning; shown only because it's part of the standard regression report this table mirrors. |
-| | 1/Slope | | ▸ | Abstract: reciprocal of the rate. Climate: "years per 1 °C of change" (temperature) or "years per 1 mm/decade of change" (precipitation) — e.g. the task's own example (`1/Slope = 48.94`) reads as "≈ 49 years for 1 °C of warming at this rate." This is the most directly tangible row in the table and gets the most concrete worked example. |
-| 95% CI | Slope | ■ | | Folded into the Slope expand above (a stat and its own interval are one concept) — plain-language: "the data are consistent with a per-decade rate anywhere in this range." |
-| | Y-intercept | | | Folded into Y-intercept's expand above. |
-| | X-intercept | | | Folded into X-intercept's expand above; also where the Fieller's-theorem "sometimes this interval is undefined" caveat is surfaced, gated behind `IsSlopeSignificant` (see below). |
+| | 1/Slope | | ▸ | Abstract: reciprocal of the rate. Climate: "years per 1 °C of change" (temperature) or "years per 1 mm/decade of change" (precipitation) — e.g. the task's own example (`1/Slope = 48.94`) reads as "≈ 49 years for 1 °C of warming at this rate." This is the most directly tangible row in the table. |
+| Best-fit values | Slope | ■ | ▸ | Value: point estimate ± SE, both per year. Abstract: what a standard error is. Climate: this trend's own SE, in context. Worked example: `Slope ÷ SE` is the t-statistic used in the significance test below — ties this section to "Is slope significantly non-zero?" instead of repeating that explanation. |
+| | Y-intercept | | ▸ | Value: point estimate ± SE. Abstract/Climate: same shape as Slope, using `CalculateInterceptStatistics().StandardError`. |
+| | X-intercept | | ▸ | Value: point estimate only (no ± SE). Abstract/Climate: X-intercept is a ratio of two fitted quantities, not a directly-fitted value, so it has no simple SE — its range is deferred to the CI section below. |
+| | 1/Slope | | ▸ | Value: point estimate only. Abstract/Climate: same ratio-without-a-simple-SE reasoning as X-intercept, plus the asymmetric-uncertainty point (a too-low slope pushes 1/Slope up more than a symmetrically-too-high slope pushes it down). |
+| 95% Confidence Intervals | Slope | ■ | ▸ | Value: `lower to upper`, per year. Abstract: what a 95% CI means in general. Climate: the range of per-year rates the data are consistent with. |
+| | Y-intercept | | ▸ | Value: `lower to upper`. Abstract/Climate: same CI framing as Slope, with the same "not a real climate quantity" caveat as its Summary/Best-fit rows. |
+| | X-intercept | | ▸ | Value: `lower to upper`, or "Undefined" when Fieller's `g < 1` condition fails. Abstract: why this needs Fieller's theorem instead of a simple ± SE-based interval, and why it can be asymmetric. Climate: the undefined case is explained inline rather than just hidden. |
 | Goodness of Fit | R² | ■ | ▸ | Abstract: proportion of year-to-year variance explained by the straight line (0–1). Climate: how much of the year-to-year ups and downs is "the trend" versus natural variability/noise — e.g. `R² = 0.56` reads as "56% of the year-to-year variation lines up with the long-term trend; the rest is short-term natural variability." |
 | | Sy.x | | ▸ | Abstract: typical size of a residual (scatter around the line), same units as Y. Climate: typical year-to-year deviation from the smooth trend — directly explains, using this trend's own `Sy.x`, why a single hot or cold year doesn't change the assessment of the long-term trend. |
 | Is slope significantly non-zero? | F, DFn/DFd, P value, Deviation from zero? | ■ | ▸ (one, shared) | A single expand covering all four (they're one significance test read four ways): what a p-value means, this site's `α = 0.05` cutoff, and a pointer to the modal's own Overview tab for the fuller p-value/significance explanation rather than repeating it per trend. |
@@ -724,3 +758,38 @@ Implemented as designed, with a few implementation-time decisions:
   intercept/X-intercept tests). Visual confirmation of the modal, tab
   navigation, expand rows, and download button in an actual browser is
   outstanding and left to manual QA.
+
+## Addendum 2 — splitting "Best-fit values" into Summary / Best-fit values / 95% Confidence Intervals
+
+The single "Best-fit values" section (`Slope`/`Y-intercept`/`X-intercept`/
+`1/Slope`, each row's expand text folding in its own 95% CI) was split into
+the three sections described in
+[the full-statistics table](#the-full-statistics-table) above:
+
+- `TrendStatSectionBuilder.BuildSummary` — same row set, values, and row
+  order as the original `BuildBestFitValues`, but with every "its 95%
+  confidence interval is..." sentence removed from the expand text.
+- `TrendStatSectionBuilder.BuildBestFitValues` — now genuinely GraphPad-style:
+  point estimate ± SE for `Slope`/`Y-intercept` (reusing
+  `RegressionSignificance.SlopeStandardError` and
+  `CalculateInterceptStatistics().StandardError`, both already computed for
+  the original section), point estimate only for `X-intercept`/`1/Slope`
+  since neither is a directly-fitted value.
+- `TrendStatSectionBuilder.BuildConfidenceIntervals` — the interval text that
+  used to live inside each row's expand, now its own section with its own
+  `lower to upper` values; `X-intercept`'s "Undefined" case (Fieller's
+  `g < 1`) is unchanged, just moved here.
+
+**Expand-state bug found and fixed while making this change:**
+`TrendStatTable.razor` tracked which rows were expanded in a
+`HashSet<string>` keyed only by `row.Label`. That was harmless while every
+row label across all sections was unique, but `Slope`/`Y-intercept`/
+`X-intercept`/`1/Slope` now appear in three sections each — expanding
+`Slope` in Summary would also have shown it pre-expanded in Best-fit values
+and 95% Confidence Intervals. Fixed by keying on `(section.Title,
+row.Label)` instead, so each section's rows expand independently.
+
+No changes were needed to `TrendStatRow`/`TrendStatSection`, `AboutTrends`,
+or the download/export path — this was contained entirely to
+`TrendStatSectionBuilder.cs` and the expand-state key in
+`TrendStatTable.razor`.

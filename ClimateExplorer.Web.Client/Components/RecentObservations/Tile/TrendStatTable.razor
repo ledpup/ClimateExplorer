@@ -15,15 +15,15 @@
                     {
                         <button type="button"
                                 class="trends-stat-expand"
-                                aria-expanded="@(IsExpanded(row) ? "true" : "false")"
+                                aria-expanded="@(IsExpanded(section, row) ? "true" : "false")"
                                 aria-label="@($"About {row.Label}")"
-                                @onclick="@(() => ToggleExpanded(row))">
-                            <span class="oi oi-chevron-right recent-observation-chevron @(IsExpanded(row) ? "expanded" : string.Empty)" aria-hidden="true"></span>
+                                @onclick="@(() => ToggleExpanded(section, row))">
+                            <span class="oi oi-chevron-right recent-observation-chevron @(IsExpanded(section, row) ? "expanded" : string.Empty)" aria-hidden="true"></span>
                         </button>
                     }
                 </dd>
             </div>
-            @if (row.HasExplanation && IsExpanded(row))
+            @if (row.HasExplanation && IsExpanded(section, row))
             {
                 <div class="trends-stat-explanation">
                     @if (!string.IsNullOrWhiteSpace(row.AbstractExplanation))
@@ -50,19 +50,19 @@
 }
 
 @code {
-    private readonly HashSet<string> expandedRowLabels = [];
+    private readonly HashSet<(string SectionTitle, string RowLabel)> expandedRows = [];
 
     [Parameter]
     [EditorRequired]
     public IReadOnlyList<TrendStatSection> Sections { get; set; } = [];
 
-    private bool IsExpanded(TrendStatRow row) => expandedRowLabels.Contains(row.Label);
+    private bool IsExpanded(TrendStatSection section, TrendStatRow row) => expandedRows.Contains((section.Title, row.Label));
 
-    private void ToggleExpanded(TrendStatRow row)
+    private void ToggleExpanded(TrendStatSection section, TrendStatRow row)
     {
-        if (!expandedRowLabels.Add(row.Label))
+        if (!expandedRows.Add((section.Title, row.Label)))
         {
-            expandedRowLabels.Remove(row.Label);
+            expandedRows.Remove((section.Title, row.Label));
         }
     }
 }
