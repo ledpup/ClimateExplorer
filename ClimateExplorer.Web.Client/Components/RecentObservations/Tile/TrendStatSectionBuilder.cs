@@ -231,7 +231,7 @@ internal static class TrendStatSectionBuilder
         var deviationRow = new TrendStatRow(
             "Deviation from zero?",
             trend.Significance.IsSlopeSignificant ? "Significant" : "Not significant",
-            IsEmphasized: true,
+            IsEmphasized: false,
             null,
             null,
             null);
@@ -305,16 +305,17 @@ internal static class TrendStatSectionBuilder
 
         var (minYear, maxYear, missingYears) = DescribeMissingYears(points);
         var yearSpan = maxYear - minYear + 1;
-        var missingText = missingYears.Count == 0
-            ? "No years are missing."
-            : $"Missing years: {string.Join(", ", missingYears)}.";
+
+        var missingAbstractExplanation = missingYears.Count == 0
+            ? $"There are {yearSpan} calendar years from {minYear} to {maxYear}, and every one of them has a data point."
+            : $"Out of the {yearSpan} calendar years from {minYear} to {maxYear}, this many have no data point.";
 
         var missingRow = new TrendStatRow(
             "Number of missing values",
             missingYears.Count.ToString(CultureInfo.InvariantCulture),
             IsEmphasized: false,
-            AbstractExplanation: $"Out of the {yearSpan} calendar years from {minYear} to {maxYear}, this many have no data point.",
-            ClimateExplanation: missingText,
+            AbstractExplanation: missingAbstractExplanation,
+            ClimateExplanation: missingYears.Count == 0 ? null : $"Missing years: {string.Join(", ", missingYears)}.",
             WorkedExamples: null);
 
         return new TrendStatSection("Data", [countRow, totalRow, replicatesRow, missingRow]);

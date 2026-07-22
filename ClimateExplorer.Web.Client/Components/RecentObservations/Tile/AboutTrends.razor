@@ -3,7 +3,7 @@
 @using ClimateExplorer.Web.Client.Components.Common
 @using ClimateExplorer.Web.Client.UiModel.RecentObservations
 
-<SidePanel @ref="sidePanel" Title="About trends" Width="50%">
+<SidePanel @ref="sidePanel" Title="About trends" Width="min(50%, 700px)">
     <div class="climate-tabs trends-about-tabs">
         <Tabs SelectedTab="@selectedMetricKey" SelectedTabChanged="@OnMetricTabChanged">
             <Items>
