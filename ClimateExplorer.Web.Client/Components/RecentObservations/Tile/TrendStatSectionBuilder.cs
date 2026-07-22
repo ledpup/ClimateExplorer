@@ -40,12 +40,16 @@ internal static class TrendStatSectionBuilder
             ? $"At this rate, the fitted line implies a change of about {FormatSigned(slope * 100, 1)}{unit} per century."
             : null;
 
+        var slopeClimateExplanation = trend.Significance.IsSlopeSignificant
+            ? "This site shows rates per decade because a per-decade number is large enough to read without implying year-to-year precision."
+            : $"The fitted rate here is {TrendFormatting.FormatPerDecadeValue(trend, unit)}, but it isn't statistically significant (see \"Is slope significantly non-zero?\" below), so it's shown as \"No significant trend\" above rather than as a number that could be mistaken for a reliable rate.";
+
         var slopeRow = new TrendStatRow(
             "Slope",
             TrendFormatting.FormatPerDecade(trend, unit),
             IsEmphasized: true,
             AbstractExplanation: $"The slope is the change in the fitted value for every one-unit increase in X - here, the average change from one calendar year to the next. The per-year rate is {FormatSigned(slope, 5)}{unit}/year.",
-            ClimateExplanation: "This site shows rates per decade because a per-decade number is large enough to read without implying year-to-year precision.",
+            ClimateExplanation: slopeClimateExplanation,
             WorkedExamples: slopeWorkedExample is null ? null : [slopeWorkedExample]);
 
         var yInterceptRow = new TrendStatRow(

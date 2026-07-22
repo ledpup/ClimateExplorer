@@ -14,11 +14,15 @@ internal static class TrendFormatting
 
     public static string FormatPerDecade(LinearRegressionResult trend, string unit)
     {
-        if (!trend.Significance.IsSlopeSignificant)
-        {
-            return "No significant trend";
-        }
+        return trend.Significance.IsSlopeSignificant
+            ? FormatPerDecadeValue(trend, unit)
+            : "No significant trend";
+    }
 
+    // The per-decade rate regardless of significance, for use where the fitted value itself
+    // needs to be shown or discussed even though it isn't headlined as a trend.
+    public static string FormatPerDecadeValue(LinearRegressionResult trend, string unit)
+    {
         var perDecade = trend.Line.Slope * 10;
         var sign = perDecade >= 0 ? "+" : string.Empty;
         return unit == "°C"
