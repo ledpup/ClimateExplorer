@@ -300,7 +300,18 @@ internal static class TrendStatSectionBuilder
         var maxReplicates = points.Count == 0 ? 1 : points.GroupBy(p => p.X).Max(g => g.Count());
 
         var countRow = new TrendStatRow("Number of X values", trend.Input.Count.ToString(CultureInfo.InvariantCulture), IsEmphasized: false, null, null, null);
-        var totalRow = new TrendStatRow("Total number of values", points.Count.ToString(CultureInfo.InvariantCulture), IsEmphasized: false, null, null, null);
+
+        var totalRowClimateExplanation = maxReplicates > 1
+            ? $"Here {maxReplicates} years have more than one observation, so this total is higher than the number of distinct years."
+            : "Here every year in this window has at most one data point, so this total is the same as \"Number of X values\" above.";
+
+        var totalRow = new TrendStatRow(
+            "Total number of values",
+            points.Count.ToString(CultureInfo.InvariantCulture),
+            IsEmphasized: false,
+            AbstractExplanation: "This is the total number of (X, Y) observations that went into the fit, counting every Y value even if several share the same X. It matches \"Number of X values\" above unless some years have more than one observation (see \"Maximum number of Y replicates\" below).",
+            ClimateExplanation: totalRowClimateExplanation,
+            WorkedExamples: null);
         var replicatesRow = new TrendStatRow("Maximum number of Y replicates", maxReplicates.ToString(CultureInfo.InvariantCulture), IsEmphasized: false, null, null, null);
 
         var (minYear, maxYear, missingYears) = DescribeMissingYears(points);
