@@ -9,6 +9,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
 {
     private readonly IRecentObservationsDataProvider dataProvider;
     private readonly IRecentObservationsCalculator calculator;
+    private readonly Dictionary<(RecentObservationsDataSet DataSet, RecentObservationsOptions Options), RecentObservationsTabResult> resultCache = [];
 
     public RecentObservationsService(
         IRecentObservationsDataProvider dataProvider,
@@ -33,7 +34,15 @@ public sealed class RecentObservationsService : IRecentObservationsService
         RecentObservationsDataSet dataSet,
         RecentObservationsOptions options)
     {
-        return calculator.Calculate(location, dataSet, options);
+        var key = (dataSet, options);
+        if (resultCache.TryGetValue(key, out var cached))
+        {
+            return cached;
+        }
+
+        var result = calculator.Calculate(location, dataSet, options);
+        resultCache[key] = result;
+        return result;
     }
 
     public async Task<RecentObservationsTabResult> GetTemperatureRecords(

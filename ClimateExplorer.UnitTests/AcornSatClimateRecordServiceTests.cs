@@ -38,6 +38,38 @@ public sealed class AcornSatClimateRecordServiceTests
     }
 
     [TestMethod]
+    public async Task ResolveAsync_UseCachedWithConclusiveCachedEntry_ReturnsCachedOverlayWithoutRereading()
+    {
+        var cache = new MemoryCache();
+        var extensionCache = new AcornSatExtensionCache(cache);
+        var cachedEntry = new AcornSatExtensionCacheEntry
+        {
+            LocationId = AdelaideLocationId,
+            DataType = DataType.TempMax,
+            AdjustedStationId = "023000",
+            OpenCdoStationId = "023000",
+            ComparisonYear = 2025,
+            Decision = AcornSatExtensionDecision.Eligible,
+            LatestAcornSatDate = new DateOnly(2025, 12, 31),
+            ComparisonSignature = "cached-signature",
+            OverlayRecords = [new ClimateExplorer.Core.Model.DataRecord(new DateOnly(2026, 1, 1), 21.3)],
+            RetrievedDate = new DateTimeOffset(2026, 7, 9, 0, 0, 0, TimeSpan.Zero),
+        };
+        await extensionCache.PutAsync(cachedEntry);
+
+        var coordinator = new StubCoordinator(new DataSetSourcePreparationResult(DataSetSourcePreparationOutcome.UseCached, cachedEntry.RetrievedDate));
+        var service = CreateService(coordinator, cache);
+
+        var outcome = await service.ResolveAsync(AdelaideLocationId, DataType.TempMax, CancellationToken.None);
+
+        Assert.AreEqual(AcornSatExtensionDecision.Eligible, outcome.Extension.Decision);
+        Assert.AreEqual("cached-signature", outcome.Extension.ComparisonSignature);
+        Assert.AreEqual(1, outcome.Extension.OverlayRecords.Count);
+        Assert.AreEqual(cachedEntry.RetrievedDate, outcome.RetrievedDate);
+        Assert.AreEqual(1, coordinator.CallCount, "The coordinator should still be asked once, to discover the CDO source is fresh.");
+    }
+
+    [TestMethod]
     public async Task ResolveAsync_RefreshFailedWithConclusiveCachedEntry_ReturnsCachedOverlayWithoutRereading()
     {
         var cache = new MemoryCache();
