@@ -434,18 +434,31 @@ station-selection rules into the ACORN-SAT component.
 2. **Done.** Added `AcornSatClimateRecordService.ResolveAsync`
    (`ClimateExplorer.WebApi/AcornSat/AcornSatClimateRecordService.cs`), which
    ties `AcornSatStationResolver`, `AcornSatRecordExtender`, and
-   `AcornSatExtensionCache` together. **Deliberate simplification versus the
-   original plan text:** rather than trusting a `UseCached` coordinator
-   outcome to skip the comparison, the service always re-reads ACORN-SAT/CDO
-   from local disk and re-runs `AcornSatRecordExtender.Extend` (a cheap local
-   read plus an O(365) loop - no network, no full-archive hashing). The
-   extension cache's `RetrievedDate` is still given to
-   `IDataSetSourceUpdateCoordinator.PrepareAsync` so it continues to gate how
-   often CDO is actually refreshed over the network; the cache otherwise
-   exists to detect conclusive decisions and to serve last-known-good
-   overlays. This is simpler than the originally sketched skip-on-fresh path
-   and produces the same output, at the cost of always paying the (small)
-   comparison cost even when nothing changed.
+   `AcornSatExtensionCache` together. **Revised 2026-07-28:** the initial
+   implementation deliberately simplified away the original plan's
+   `UseCached`-skips-the-comparison path, always re-reading ACORN-SAT/CDO
+   from local disk and re-running `AcornSatRecordExtender.Extend` on every
+   request, on the assumption that this was "cheap." In practice this made
+   every `/climate-record` request for an ACORN-SAT-covered adjusted
+   temperature series pay for a full ACORN-SAT archive read (twice — once in
+   `ResolveAsync`, once again in `BuildComposedDataSetAsync`) plus a CDO
+   archive read and comparison, every time, even when the CDO source hadn't
+   changed since the last request — more work than most other datasets'
+   entire download (e.g. GHCNd is a single file). The service now follows
+   the original plan: when `IDataSetSourceUpdateCoordinator.PrepareAsync`
+   returns `UseCached` for the CDO request, it returns
+   `AcornSatExtensionOutcome.FromCacheEntry(cachedEntry)` immediately,
+   skipping both series reads and the comparison, the same way the
+   `RefreshFailed`-with-conclusive-cache branch already did. This is safe
+   because `PrepareAsync` can only return `UseCached` when a non-null cached
+   entry was supplied, and an entry is only ever persisted (via
+   `extensionCache.PutAsync`) when its decision is conclusive
+   (`AcornSatExtensionCacheEntry.IsConclusive`), so a `UseCached` outcome
+   always comes with a reusable overlay. The extension cache's
+   `RetrievedDate` is still given to `PrepareAsync` so it continues to gate
+   how often CDO is actually refreshed over the network; recomputation now
+   only happens on `Rebuild` (CDO changed) or a non-conclusive/missing cache
+   entry.
 3. **Done.** The CDO dependency is resolved by giving `IDataSetSourceUpdateCoordinator.PrepareAsync`
    a `PostDataSetsRequestBody` targeting the CDO dataset/location/data
    type/`Unadjusted`; `BomDataSetDownloader` is never called directly.

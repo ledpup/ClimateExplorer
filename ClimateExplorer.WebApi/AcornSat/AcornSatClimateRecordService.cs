@@ -52,6 +52,15 @@ internal sealed class AcornSatClimateRecordService(
 
         var preparation = await coordinator.PrepareAsync(cdoRequest, cachedEntry, permitSourceUpdate: true, cancellationToken);
 
+        if (preparation.Outcome == DataSetSourcePreparationOutcome.UseCached && cachedEntry is { IsConclusive: true })
+        {
+            logger.LogDebug(
+                "CDO source fresh for {LocationId}/{DataType}; reusing cached ACORN-SAT extension decision without re-reading series",
+                locationId,
+                dataType);
+            return AcornSatExtensionOutcome.FromCacheEntry(cachedEntry);
+        }
+
         if (preparation.Outcome == DataSetSourcePreparationOutcome.RefreshFailed)
         {
             logger.LogWarning(
