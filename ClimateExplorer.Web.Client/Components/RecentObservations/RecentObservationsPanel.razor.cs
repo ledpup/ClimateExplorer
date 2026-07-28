@@ -88,7 +88,7 @@ public partial class RecentObservationsPanel
             UpdateAvailableDataAdjustments();
         }
 
-        if (Location is not null)
+        if (Location is not null && GetState(ActiveTab).DataSet is null)
         {
             await EnsureTabLoaded(ActiveTab);
         }

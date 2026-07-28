@@ -924,14 +924,15 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             });
         }
 
-        var trendMetrics = BuildTrendMetrics(period, domain, distributions);
-        if (trendMetrics.Count > 0)
+        var trendMetricKeys = period.Kind == PeriodKind.Daily ? domain.DailyVariationMetrics : domain.VariationMetrics;
+        if (trendMetricKeys.Any(metric => period.MetricValues.ContainsKey(metric.Key)))
         {
             tabs.Add(new RecentObservationTrendTabViewModel
             {
                 Key = MetricGroupKey.Trend,
                 Title = "Trend",
-                Metrics = trendMetrics,
+                MetricsFactory = new Lazy<IReadOnlyList<RecentObservationTrendViewModel>>(
+                    () => BuildTrendMetrics(period, domain, distributions)),
             });
         }
 
