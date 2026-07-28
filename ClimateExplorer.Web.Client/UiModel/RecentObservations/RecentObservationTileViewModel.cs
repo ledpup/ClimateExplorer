@@ -109,7 +109,10 @@ public sealed record RecentObservationTileViewModel
         {
             RecentObservationRecordsTabViewModel records => records with { Metrics = StripRecordMetrics(records.Metrics) },
             RecentObservationVariationTabViewModel variation => variation with { Metrics = StripVariationMetrics(variation.Metrics) },
-            RecentObservationTrendTabViewModel trend => trend with { Metrics = StripTrendMetrics(trend.Metrics) },
+            RecentObservationTrendTabViewModel trend => trend with
+            {
+                MetricsFactory = new Lazy<IReadOnlyList<RecentObservationTrendViewModel>>(() => StripTrendMetrics(trend.Metrics)),
+            },
             _ => tab,
         })];
     }
