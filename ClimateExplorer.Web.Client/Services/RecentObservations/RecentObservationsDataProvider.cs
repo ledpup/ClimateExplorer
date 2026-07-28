@@ -25,15 +25,28 @@ public sealed class RecentObservationsDataProvider : IRecentObservationsDataProv
     public Task<RecentObservationsDataSet> LoadTemperatureData(Location location, DataAdjustment? preferredAdjustment = DataAdjustment.Adjusted)
     {
         return GetOrCreate(
-            new RecentObservationsDataCacheKey(location.Id, RecentObservationsTab.Temperature, preferredAdjustment),
+            new RecentObservationsDataCacheKey(location.Id, ObservationDomainCatalog.TemperatureKey, preferredAdjustment),
             () => FetchTemperatureData(location.Id, preferredAdjustment));
     }
 
     public Task<RecentObservationsDataSet> LoadPrecipitationData(Location location)
     {
         return GetOrCreate(
-            new RecentObservationsDataCacheKey(location.Id, RecentObservationsTab.Precipitation, null),
+            new RecentObservationsDataCacheKey(location.Id, ObservationDomainCatalog.PrecipitationKey, null),
             () => FetchPrecipitationData(location.Id));
+    }
+
+    public Task<RecentObservationsDataSet> LoadData(Guid contextId, ObservationDomain domain, DataAdjustment? preferredAdjustment = null)
+    {
+        return GetOrCreate(
+            new RecentObservationsDataCacheKey(contextId, domain.Key, preferredAdjustment),
+            () => domain.Key switch
+            {
+                ObservationDomainCatalog.TemperatureKey => FetchTemperatureData(contextId, preferredAdjustment),
+                ObservationDomainCatalog.PrecipitationKey => FetchPrecipitationData(contextId),
+                ObservationDomainCatalog.Co2Key => FetchCo2Data(contextId, preferredAdjustment),
+                _ => throw new NotSupportedException($"Unknown observation domain '{domain.Key}'."),
+            });
     }
 
     private async Task<RecentObservationsDataSet> GetOrCreate(
@@ -42,11 +55,11 @@ public sealed class RecentObservationsDataProvider : IRecentObservationsDataProv
     {
         if (cache.TryGetValue(key, out var cached))
         {
-            logger?.LogDebug("Using cached recent observations {Tab} data for location {LocationId}", key.Tab, key.LocationId);
+            logger?.LogDebug("Using cached recent observations {Domain} data for location {LocationId}", key.DomainKey, key.LocationId);
             return await cached;
         }
 
-        logger?.LogInformation("Loading recent observations {Tab} data for location {LocationId}", key.Tab, key.LocationId);
+        logger?.LogInformation("Loading recent observations {Domain} data for location {LocationId}", key.DomainKey, key.LocationId);
         var task = fetch();
         cache[key] = task;
 
@@ -67,8 +80,8 @@ public sealed class RecentObservationsDataProvider : IRecentObservationsDataProv
 
     private async Task<RecentObservationsDataSet> FetchTemperatureData(Guid locationId, DataAdjustment? preferredAdjustment)
     {
-        var historicalMaxTask = GetRecords(locationId, DataType.TempMax, preferredAdjustment);
-        var historicalMinTask = GetRecords(locationId, DataType.TempMin, preferredAdjustment);
+        var historicalMaxTask = GetRecords(locationId, DataType.TempMax, preferredAdjustment, supportsAdjustment: true);
+        var historicalMinTask = GetRecords(locationId, DataType.TempMin, preferredAdjustment, supportsAdjustment: true);
 
         await Task.WhenAll(historicalMaxTask, historicalMinTask);
 
@@ -83,7 +96,7 @@ public sealed class RecentObservationsDataProvider : IRecentObservationsDataProv
         var hasHistoricalMaxMin = historicalMaxResponse.Records.Count > 0 && historicalMinResponse.Records.Count > 0;
         var meanRecords = hasHistoricalMaxMin
             ? new List<DataRecord>()
-            : (await GetRecords(locationId, DataType.TempMean, preferredAdjustment)).Records;
+            : (await GetRecords(locationId, DataType.TempMean, preferredAdjustment, supportsAdjustment: true)).Records;
 
         return RecentObservationsDataSet.Temperature(
             historicalMaxResponse.Records,
@@ -95,7 +108,7 @@ public sealed class RecentObservationsDataProvider : IRecentObservationsDataProv
 
     private async Task<RecentObservationsDataSet> FetchPrecipitationData(Guid locationId)
     {
-        var historicalResponse = await GetRecords(locationId, DataType.Precipitation, null);
+        var historicalResponse = await GetRecords(locationId, DataType.Precipitation, null, supportsAdjustment: false);
 
         if (!historicalResponse.DataResolution.HasValue)
         {
@@ -107,14 +120,29 @@ public sealed class RecentObservationsDataProvider : IRecentObservationsDataProv
             CreateSourceMetadata(historicalResponse));
     }
 
+    private async Task<RecentObservationsDataSet> FetchCo2Data(Guid contextId, DataAdjustment? preferredAdjustment)
+    {
+        var response = await GetRecords(contextId, DataType.CO2, preferredAdjustment, supportsAdjustment: false);
+
+        if (!response.DataResolution.HasValue)
+        {
+            return RecentObservationsDataSet.UnsupportedCo2();
+        }
+
+        return RecentObservationsDataSet.Co2(
+            response.Records,
+            CreateSourceMetadata(response));
+    }
+
     private async Task<ClimateRecordsResponse> GetRecords(
         Guid locationId,
         DataType dataType,
-        DataAdjustment? preferredAdjustment)
+        DataAdjustment? preferredAdjustment,
+        bool supportsAdjustment)
     {
         ClimateRecordsResponse response = new() { DataType = dataType, DataAdjustment = preferredAdjustment };
 
-        foreach (var adjustment in GetAdjustmentCandidates(dataType, preferredAdjustment))
+        foreach (var adjustment in GetAdjustmentCandidates(supportsAdjustment, preferredAdjustment))
         {
             response = (await dataService.GetClimateRecords(locationId, dataType, adjustment, monthly: false))!;
             if (response.Records.Count > 0)
@@ -126,9 +154,9 @@ public sealed class RecentObservationsDataProvider : IRecentObservationsDataProv
         return response;
     }
 
-    private static IEnumerable<DataAdjustment?> GetAdjustmentCandidates(DataType dataType, DataAdjustment? preferredAdjustment)
+    private static IEnumerable<DataAdjustment?> GetAdjustmentCandidates(bool supportsAdjustment, DataAdjustment? preferredAdjustment)
     {
-        if (dataType == DataType.Precipitation)
+        if (!supportsAdjustment)
         {
             yield return null;
             yield break;
@@ -168,5 +196,5 @@ public sealed class RecentObservationsDataProvider : IRecentObservationsDataProv
         }
     }
 
-    private readonly record struct RecentObservationsDataCacheKey(Guid LocationId, RecentObservationsTab Tab, DataAdjustment? Adjustment);
+    private readonly record struct RecentObservationsDataCacheKey(Guid LocationId, string DomainKey, DataAdjustment? Adjustment);
 }

@@ -1,8 +1,8 @@
 <DelayedTooltip @key="Value.HasValue" Text="@TooltipText" Multiline="true">
-    <div class="co2-nav-tile">
+    <button type="button" class="co2-nav-tile" aria-label="View recent atmospheric CO₂ observations" @onclick="OnClick">
         @if (Value.HasValue)
         {
             <span class="co2-value @(IsVisible ? "co2-visible" : string.Empty)">@Value.Value.ToString("F0")</span>
         }
-    </div>
+    </button>
 </DelayedTooltip>

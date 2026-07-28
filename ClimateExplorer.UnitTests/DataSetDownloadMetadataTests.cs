@@ -22,7 +22,7 @@ public sealed class DataSetDownloadMetadataTests
 
         // 92 closed BOM stations (205 total mapped BOM stations - 113 currently open, one per BOM location)
         // are deliberately excluded from automatic retrieval; see IsAutomaticallyRetrievable.
-        Assert.HasCount(2001, assets);
+        Assert.HasCount(2002, assets);
         CollectionAssert.AreEquivalent(
             new[] { "bom-station", "direct-http", "ghcnd-station", "greenland-melt", "noaa-global-temperature", "ocean-acidity", "ozone", "sea-level" },
             assets.Select(x => x.DownloaderKey).Distinct().ToArray());
@@ -85,6 +85,20 @@ public sealed class DataSetDownloadMetadataTests
         CollectionAssert.AreEquivalent(
             new[] { "CO2", "CO2Deseasoned" },
             asset.Measurements.Select(x => x.MeasurementDefinition.DataType.ToString()).ToArray());
+    }
+
+    [TestMethod]
+    public async Task ResolveAllAsync_DailyMaunaLoaSource_ResolvesItsOwnAsset()
+    {
+        var assets = await CreateResolver().ResolveAllAsync(CancellationToken.None);
+
+        var asset = assets.Single(x => x.RelativePath == @"CO2\co2_daily_mlo.txt");
+
+        Assert.AreEqual("direct-http", asset.DownloaderKey);
+        Assert.AreEqual("https://gml.noaa.gov/webdata/ccgg/trends/co2/co2_daily_mlo.txt", asset.DownloadUrl);
+        Assert.HasCount(1, asset.Measurements);
+        Assert.AreEqual("CO2", asset.Measurements.Single().MeasurementDefinition.DataType.ToString());
+        Assert.AreEqual(Core.Enums.DataResolution.Daily, asset.Measurements.Single().MeasurementDefinition.DataResolution);
     }
 
     [TestMethod]

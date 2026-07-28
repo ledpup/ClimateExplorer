@@ -40,6 +40,17 @@ public partial class DataSetDefinitionsBuilder
                         DataRowRegEx = @"^\s+(?<year>\d+)\s+(?<month>\d+)\s+(?<decimalDate>\d+\.\d+)\s+(?<co2>\d+\.\d+)\s+(?<value>\d+\.\d+).*$",
                         DataFileSource = LooseSource(@"CO2\co2_mm_mlo.txt"),
                     },
+                    new()
+                    {
+                        DataType = DataType.CO2,
+                        UnitOfMeasure = UnitOfMeasure.PartsPerMillion,
+                        DataResolution = DataResolution.Daily,
+                        DataAdjustment = null,
+                        DataRowRegEx = @"^\s*(?<year>\d+)\s+(?<month>\d+)\s+(?<day>\d+)\s+(?<decimalDate>\d+\.\d+)\s+(?<value>\d+\.\d+).*$",
+                        DataDownloadUrl = "https://gml.noaa.gov/webdata/ccgg/trends/co2/co2_daily_mlo.txt",
+                        DataDownloaderKey = "direct-http",
+                        DataFileSource = LooseSource(@"CO2\co2_daily_mlo.txt"),
+                    },
                 ],
             },
             new()

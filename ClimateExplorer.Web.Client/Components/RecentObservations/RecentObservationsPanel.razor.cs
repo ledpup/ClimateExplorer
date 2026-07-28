@@ -1,3 +1,4 @@
+#pragma warning disable SA1204
 namespace ClimateExplorer.Web.Client.Components.RecentObservations;
 
 using System.Globalization;
@@ -11,11 +12,10 @@ using static ClimateExplorer.Core.Enums;
 
 public partial class RecentObservationsPanel
 {
-    private readonly RecentObservationsTabState temperatureState = new();
-    private readonly RecentObservationsTabState precipitationState = new();
+    private readonly Dictionary<string, RecentObservationsTabState> tabStates = [];
     private readonly RecentObservationPeriodSelection periodSelection = new();
     private float completenessThreshold = RecentObservationCompletenessThreshold.Default;
-    private Guid? internalLocationId;
+    private Guid? internalContextId;
     private DateOnly? selectedReferenceDate;
     private string referenceDateInputValue = string.Empty;
     private string? referenceDateValidationMessage;
@@ -24,7 +24,7 @@ public partial class RecentObservationsPanel
     private bool synchroniseTabs = true;
 
     [Parameter]
-    public Location? Location { get; set; }
+    public RecentObservationsContext? Context { get; set; }
 
     [Parameter]
     public IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
@@ -35,8 +35,9 @@ public partial class RecentObservationsPanel
     [Inject]
     private ILogger<RecentObservationsPanel> Logger { get; set; } = default!;
 
-    private RecentObservationsTab ActiveTab { get; set; } = RecentObservationsTab.Temperature;
-    private RecentObservationsTabState CurrentState => GetState(ActiveTab);
+    private string? ActiveTabKey { get; set; }
+    private ObservationDomain? ActiveDomain => Context?.Domains.FirstOrDefault(x => x.Key == ActiveTabKey) ?? Context?.Domains.FirstOrDefault();
+    private RecentObservationsTabState CurrentState => ActiveDomain is null ? new RecentObservationsTabState() : GetState(ActiveDomain.Key);
     private IReadOnlyList<RecentObservationTileViewModel> CurrentTiles => CurrentState.Result?
         .ApplyCompletenessThreshold(completenessThreshold)
         .Tiles
@@ -56,10 +57,10 @@ public partial class RecentObservationsPanel
     private bool AreAllExpandableCurrentTilesExpanded => CurrentState.ExpansionStates.AreAllExpandableTilesExpanded(CurrentExpansionTargets);
     private IEnumerable<RecentObservationTileExpansionTarget> CurrentExpansionTargets =>
         CurrentTiles.Select(tile => new RecentObservationTileExpansionTarget(GetTileKey(tile), IsExpandableTile(tile)));
-    private string ReferenceDateInputId => $"recent-observations-reference-date-{ActiveTab.ToString().ToLowerInvariant()}";
+    private string ReferenceDateInputId => $"recent-observations-reference-date-{ActiveDomain?.Key ?? "none"}";
     private string ReferenceDateHelpId => $"{ReferenceDateInputId}-help";
     private string ReferenceDateInputValidationClass => string.IsNullOrWhiteSpace(referenceDateValidationMessage) ? string.Empty : "is-invalid";
-    private string ComparisonRangeInputId => $"recent-observations-comparison-range-{ActiveTab.ToString().ToLowerInvariant()}";
+    private string ComparisonRangeInputId => $"recent-observations-comparison-range-{ActiveDomain?.Key ?? "none"}";
     private bool IsResetReferenceDateDisabled => CurrentState.Result?.ReferenceDate == CurrentState.Result?.MaximumReferenceDate;
     private bool IsAddEarlierDayDisabled => !periodSelection.CanAddEarlierDay(GetAvailableOffsets(RecentObservationPeriodKind.Daily));
     private bool IsAddEarlierMonthDisabled => !periodSelection.CanAddEarlierMonth(GetAvailableOffsets(RecentObservationPeriodKind.PreviousMonth));
@@ -75,34 +76,41 @@ public partial class RecentObservationsPanel
 
     protected override async Task OnParametersSetAsync()
     {
-        if (Location?.Id != internalLocationId)
+        if (Context?.Id != internalContextId)
         {
-            internalLocationId = Location?.Id;
+            internalContextId = Context?.Id;
             periodSelection.Reset();
             selectedReferenceDate = null;
             referenceDateInputValue = string.Empty;
             referenceDateValidationMessage = null;
             selectedComparisonEndMode = ComparisonEndMode.FullDataset;
-            temperatureState.Reset();
-            precipitationState.Reset();
+            tabStates.Clear();
+            ActiveTabKey = Context?.Domains.FirstOrDefault()?.Key;
             UpdateAvailableDataAdjustments();
         }
 
-        if (Location is not null && GetState(ActiveTab).DataSet is null)
+        if (Context is not null && ActiveDomain is not null && GetState(ActiveDomain.Key).DataSet is null)
         {
-            await EnsureTabLoaded(ActiveTab);
+            await EnsureTabLoaded(ActiveDomain);
         }
     }
 
-    private async Task OnTabChanged(RecentObservationsTab tab)
+    private async Task OnTabChanged(string domainKey)
     {
-        ActiveTab = tab;
-        await EnsureTabLoaded(tab);
+        var domain = Context?.Domains.FirstOrDefault(x => x.Key == domainKey);
+        if (domain is null)
+        {
+            return;
+        }
+
+        ActiveTabKey = domainKey;
+        await EnsureTabLoaded(domain);
     }
 
     private void UpdateAvailableDataAdjustments()
     {
-        if (Location is null || DataSetDefinitions is null)
+        var domain = ActiveDomain;
+        if (Context is null || domain is null || !domain.SupportsAdjustment || DataSetDefinitions is null)
         {
             AvailableDataAdjustments = [];
             selectedDataAdjustment = DataAdjustment.Adjusted;
@@ -110,9 +118,9 @@ public partial class RecentObservationsPanel
         }
 
         AvailableDataAdjustments = [.. DataSetDefinitions
-            .Where(x => x.LocationIds != null && x.LocationIds.Contains(Location.Id))
+            .Where(x => x.LocationIds != null && x.LocationIds.Contains(Context.Id))
             .SelectMany(x => x.MeasurementDefinitions ?? [])
-            .Where(x => x.DataType is DataType.TempMax or DataType.TempMin or DataType.TempMean)
+            .Where(x => domain.DataTypeRequests.Contains(x.DataType))
             .Where(x => x.DataResolution == DataResolution.Daily)
             .Select(x => x.DataAdjustment)
             .Distinct()];
@@ -124,28 +132,40 @@ public partial class RecentObservationsPanel
 
     private async Task OnAdjustedChanged(bool value)
     {
-        selectedDataAdjustment = value
-            ? DataAdjustment.Adjusted
-            : AvailableDataAdjustments.FirstOrDefault(x => x != DataAdjustment.Adjusted);
-
-        temperatureState.Reset();
-        await EnsureTabLoaded(RecentObservationsTab.Temperature);
-    }
-
-    private async Task RetryCurrentTab()
-    {
-        GetState(ActiveTab).Reset();
-        await EnsureTabLoaded(ActiveTab);
-    }
-
-    private async Task EnsureTabLoaded(RecentObservationsTab tab)
-    {
-        if (Location is null)
+        var domain = ActiveDomain;
+        if (domain is null)
         {
             return;
         }
 
-        var state = GetState(tab);
+        selectedDataAdjustment = value
+            ? DataAdjustment.Adjusted
+            : AvailableDataAdjustments.FirstOrDefault(x => x != DataAdjustment.Adjusted);
+
+        GetState(domain.Key).Reset();
+        await EnsureTabLoaded(domain);
+    }
+
+    private async Task RetryCurrentTab()
+    {
+        var domain = ActiveDomain;
+        if (domain is null)
+        {
+            return;
+        }
+
+        GetState(domain.Key).Reset();
+        await EnsureTabLoaded(domain);
+    }
+
+    private async Task EnsureTabLoaded(ObservationDomain domain)
+    {
+        if (Context is null)
+        {
+            return;
+        }
+
+        var state = GetState(domain.Key);
         if (state.IsLoading)
         {
             return;
@@ -153,7 +173,7 @@ public partial class RecentObservationsPanel
 
         if (state.DataSet is not null)
         {
-            RecalculateTab(tab, updateSelectedReferenceDate: tab == ActiveTab);
+            RecalculateTab(domain, updateSelectedReferenceDate: domain.Key == ActiveDomain?.Key);
             return;
         }
 
@@ -162,18 +182,13 @@ public partial class RecentObservationsPanel
 
         try
         {
-            state.DataSet = tab switch
-            {
-                RecentObservationsTab.Temperature => await RecentObservationsService.LoadTemperatureData(Location, SelectedDataAdjustment),
-                RecentObservationsTab.Precipitation => await RecentObservationsService.LoadPrecipitationData(Location),
-                _ => throw new NotImplementedException(),
-            };
-            RecalculateTab(tab, updateSelectedReferenceDate: tab == ActiveTab);
+            state.DataSet = await RecentObservationsService.LoadData(Context.Id, domain, domain.SupportsAdjustment ? SelectedDataAdjustment : null);
+            RecalculateTab(domain, updateSelectedReferenceDate: domain.Key == ActiveDomain?.Key);
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "Unable to load recent {Tab} observations for location {LocationId}", tab, Location.Id);
-            state.ErrorMessage = $"Unable to load recent {tab.ToString().ToLowerInvariant()} observations.";
+            Logger.LogError(ex, "Unable to load recent {Domain} observations for {ContextId}", domain.Key, Context.Id);
+            state.ErrorMessage = $"Unable to load recent {domain.TabLabel.ToLowerInvariant()} observations.";
         }
         finally
         {
@@ -257,7 +272,10 @@ public partial class RecentObservationsPanel
         periodSelection.Reset();
         RecalculateLoadedTabs();
 
-        await EnsureTabLoaded(ActiveTab);
+        if (ActiveDomain is not null)
+        {
+            await EnsureTabLoaded(ActiveDomain);
+        }
     }
 
     private async Task ResetReferenceDate()
@@ -267,7 +285,10 @@ public partial class RecentObservationsPanel
         periodSelection.Reset();
         RecalculateLoadedTabs();
 
-        await EnsureTabLoaded(ActiveTab);
+        if (ActiveDomain is not null)
+        {
+            await EnsureTabLoaded(ActiveDomain);
+        }
     }
 
     private bool TryValidateReferenceDateInput(string input, out DateOnly referenceDate)
@@ -300,29 +321,39 @@ public partial class RecentObservationsPanel
         selectedComparisonEndMode = comparisonEndMode;
         RecalculateLoadedTabs();
 
-        await EnsureTabLoaded(ActiveTab);
+        if (ActiveDomain is not null)
+        {
+            await EnsureTabLoaded(ActiveDomain);
+        }
     }
 
     private void RecalculateLoadedTabs()
     {
-        RecalculateTab(RecentObservationsTab.Temperature, updateSelectedReferenceDate: ActiveTab == RecentObservationsTab.Temperature);
-        RecalculateTab(RecentObservationsTab.Precipitation, updateSelectedReferenceDate: ActiveTab == RecentObservationsTab.Precipitation);
-    }
-
-    private void RecalculateTab(RecentObservationsTab tab, bool updateSelectedReferenceDate)
-    {
-        if (Location is null)
+        if (Context is null)
         {
             return;
         }
 
-        var state = GetState(tab);
+        foreach (var domain in Context.Domains)
+        {
+            RecalculateTab(domain, updateSelectedReferenceDate: domain.Key == ActiveDomain?.Key);
+        }
+    }
+
+    private void RecalculateTab(ObservationDomain domain, bool updateSelectedReferenceDate)
+    {
+        if (Context is null)
+        {
+            return;
+        }
+
+        var state = GetState(domain.Key);
         if (state.DataSet is null)
         {
             return;
         }
 
-        state.Result = RecentObservationsService.Calculate(Location, state.DataSet, CreateOptions());
+        state.Result = RecentObservationsService.Calculate(Context.Latitude, state.DataSet, CreateOptions());
         if (updateSelectedReferenceDate && state.Result.ReferenceDate.HasValue)
         {
             selectedReferenceDate = state.Result.ReferenceDate;
@@ -369,14 +400,15 @@ public partial class RecentObservationsPanel
             : metadata.SourceUrlLabel;
     }
 
-    private RecentObservationsTabState GetState(RecentObservationsTab tab)
+    private RecentObservationsTabState GetState(string domainKey)
     {
-        return tab switch
+        if (!tabStates.TryGetValue(domainKey, out var state))
         {
-            RecentObservationsTab.Temperature => temperatureState,
-            RecentObservationsTab.Precipitation => precipitationState,
-            _ => throw new NotImplementedException(),
-        };
+            state = new RecentObservationsTabState();
+            tabStates[domainKey] = state;
+        }
+
+        return state;
     }
 
     private bool IsBeforeMonthControls(RecentObservationTileViewModel tile)

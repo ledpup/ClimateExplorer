@@ -51,6 +51,36 @@ public class RecentObservationComparisonTests
     }
 
     [TestMethod]
+    public void Co2HeadlineUsesOrdinalForVeryHighPeriods()
+    {
+        var result = RecentObservationComparison.Rank(19d, [10d, 11d, 12d, 13d, 20d])!;
+
+        var headline = RecentObservationComparison.BuildCo2Headline("May", result);
+
+        Assert.AreEqual("2nd highest May", headline);
+    }
+
+    [TestMethod]
+    public void Co2HeadlineUsesNeutralVocabularyForNewRecord()
+    {
+        var result = RecentObservationComparison.Rank(21d, [10d, 11d, 12d, 13d, 20d])!;
+
+        var headline = RecentObservationComparison.BuildCo2Headline("May", result);
+
+        Assert.AreEqual("Highest May", headline);
+    }
+
+    [TestMethod]
+    public void Co2PercentileSentenceUsesDominantHighDirection()
+    {
+        var result = RecentObservationComparison.Rank(8d, [1d, 2d, 3d, 4d, 5d, 6d, 7d, 9d, 10d])!;
+
+        var sentence = RecentObservationComparison.BuildCo2PercentileSentence(1958, result);
+
+        Assert.AreEqual("Higher than 70% of comparable periods", sentence);
+    }
+
+    [TestMethod]
     [DataRow(1, "1st")]
     [DataRow(2, "2nd")]
     [DataRow(3, "3rd")]
