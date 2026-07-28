@@ -181,12 +181,21 @@ public static class SeriesProvider
 
         var dsd = definitions.Single(x => x.Id == seriesSpecification.DataSetDefinitionId);
 
-        var measurementDefinition =
+        var candidateMeasurementDefinitions =
             dsd.MeasurementDefinitions?
-            .SingleOrDefault(
+            .Where(
                 x =>
                 x.DataType == seriesSpecification.DataType &&
-                x.DataAdjustment == seriesSpecification.DataAdjustment);
+                x.DataAdjustment == seriesSpecification.DataAdjustment)
+            .ToList();
+
+        // Some datasets define the same DataType/DataAdjustment at more than one resolution (e.g. CO2
+        // daily + monthly). Use the caller-specified resolution to disambiguate; if none was specified,
+        // fall back to Monthly to match the historical default in DataSetDefinitionViewModel.
+        var measurementDefinition =
+            candidateMeasurementDefinitions?.Count > 1
+            ? candidateMeasurementDefinitions.SingleOrDefault(x => x.DataResolution == (seriesSpecification.DataResolution ?? DataResolution.Monthly))
+            : candidateMeasurementDefinitions?.SingleOrDefault();
 
         if (measurementDefinition == null)
         {

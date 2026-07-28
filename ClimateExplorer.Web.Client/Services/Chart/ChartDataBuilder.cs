@@ -82,6 +82,7 @@ public sealed class ChartDataBuilder : IChartDataBuilder
                 DataSetDefinitionId = sss.DataSetDefinition!.Id,
                 DataType = sss.MeasurementDefinition!.DataType,
                 DataAdjustment = sss.MeasurementDefinition.DataAdjustment,
+                DataResolution = sss.MeasurementDefinition.DataResolution,
                 LocationId = sss.LocationId,
             };
     }
