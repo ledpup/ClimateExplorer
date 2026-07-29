@@ -17,6 +17,9 @@ public partial class DataSetDefinitionsBuilder
                 Description = @"The Niño 3.4 index is calculated as a 3-month running average of sea surface temperature measurements around the equator in the East Pacific (5 deg N to 5 deg C, 170 deg W to 120 deg W), and then expressed as an anomaly (i.e. difference from the average).
 
                     Niño 3.4 conditions of +0.4 deg C or higher are considered El Niño, and -0.4 deg C or lower are considered La Niña.",
+                Publisher = "National Oceanic and Atmospheric Administration (NOAA)",
+                PublisherUrl = "https://www.noaa.gov/",
+                PublisherDivision = "Physical Sciences Laboratory",
                 MoreInformationUrl = "https://psl.noaa.gov/data/timeseries/month/",
                 DataDownloadUrl = "https://psl.noaa.gov/data/timeseries/month/data/nino34.long.anom.data",
                 DataDownloaderKey = "direct-http",
@@ -50,6 +53,8 @@ public partial class DataSetDefinitionsBuilder
         A positive IOD period is characterised by cooler than average water in the tropical eastern Indian Ocean and warmer than average water in the tropical western Indian Ocean. Conversely, a negative IOD period is characterised by warmer than average water in the tropical eastern Indian Ocean and cooler than average water in the tropical western Indian Ocean.
 
         For monitoring the IOD, Australian climatologists consider sustained values above +0.4 °C as typical of a positive IOD, and values below −0.4 °C as typical of a negative IOD.",
+                Publisher = "Australian Bureau of Meteorology",
+                PublisherUrl = "https://www.bom.gov.au/",
                 MoreInformationUrl = "https://www.bom.gov.au/climate/enso",
                 DataDownloadUrl = "https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/dmi.had.long.data",
                 DataDownloaderKey = "direct-http",
@@ -75,8 +80,10 @@ public partial class DataSetDefinitionsBuilder
                 ShortName = "AMO",
                 Description = @"The Atlantic Multi-decadal Oscillation (AMO) has been identified as a coherent mode of natural variability occurring in the North Atlantic Ocean with an estimated period of 60-80 years.
 
-This AMO time-series is from NOAA/NCEI, using the ERSSTV5 dataset. It is a sea-surface temperature anomaly (SSTA) North Atlantic 0-60N",
+This AMO time-series is from NOAA/NCEI, using the ERSSTV5 dataset. It is a sea-surface temperature anomaly (SSTA) North Atlantic 0-60N. ERSSTV5 is used in preference to the original Kaplan SST dataset, because Kaplan SST is no longer updated.",
+                Publisher = "National Oceanic and Atmospheric Administration (NOAA)",
                 PublisherUrl = "https://www.noaa.gov/",
+                PublisherDivision = "Physical Sciences Laboratory",
                 MoreInformationUrl = "https://psl.noaa.gov/data/timeseries/AMO/",
                 DataDownloadUrl = "https://www1.ncdc.noaa.gov/pub/data/cmb/ersst/v5/index/ersst.v5.amo.dat",
                 DataDownloaderKey = "direct-http",
@@ -102,6 +109,7 @@ This AMO time-series is from NOAA/NCEI, using the ERSSTV5 dataset. It is a sea-s
                 Description = @"Station ALOHA (22°45'N, 158°00'W) is a deep water (~4,800 m) location approximately 100 km north of the Hawaiian Island of Oahu. The Hawaii Ocean Time-series (HOT) surface CO₂ system data product (HOT_surface_CO2.txt) is created after taking cruises to the station (every 1-2 months) for measurements, beginning in 1988.
 
 The mean seawater pH is calculated from the mean seawater dissolved inorganic carbon (DIC - equal to the total CO₂) concentration and mean seawater total alkalinity (TA) at 25 °C, on the total scale.",
+                Publisher = "National Oceanic and Atmospheric Administration (NOAA)",
                 PublisherUrl = "https://www.noaa.gov/",
                 MoreInformationUrl = "https://hahana.soest.hawaii.edu/hot/",
                 DataDownloadUrl = "https://hahana.soest.hawaii.edu/hot/hotco2/HOT_surface_CO2.txt",
