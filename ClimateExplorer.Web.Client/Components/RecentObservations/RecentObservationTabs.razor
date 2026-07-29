@@ -3,26 +3,28 @@
 @using ClimateExplorer.Web.Client.UiModel.RecentObservations
 
 <div class="climate-tabs recent-observation-tabs">
-    <Tabs SelectedTab="@SelectedTab.ToString()" SelectedTabChanged="@OnSelectedTabChanged">
+    <Tabs SelectedTab="@SelectedTab" SelectedTabChanged="@OnSelectedTabChanged">
         <Items>
-            <Tab Name="@RecentObservationsTab.Temperature.ToString()">Temperature</Tab>
-            <Tab Name="@RecentObservationsTab.Precipitation.ToString()">Precipitation</Tab>
+            @foreach (var domain in Domains)
+            {
+                <Tab Name="@domain.Key">@domain.TabLabel</Tab>
+            }
         </Items>
     </Tabs>
 </div>
 
 @code {
     [Parameter]
-    public RecentObservationsTab SelectedTab { get; set; }
+    public IReadOnlyList<ObservationDomain> Domains { get; set; } = [];
 
     [Parameter]
-    public EventCallback<RecentObservationsTab> SelectedTabChanged { get; set; }
+    public string? SelectedTab { get; set; }
+
+    [Parameter]
+    public EventCallback<string> SelectedTabChanged { get; set; }
 
     private async Task OnSelectedTabChanged(string selectedTab)
     {
-        if (Enum.TryParse<RecentObservationsTab>(selectedTab, out var tab))
-        {
-            await SelectedTabChanged.InvokeAsync(tab);
-        }
+        await SelectedTabChanged.InvokeAsync(selectedTab);
     }
 }

@@ -12,6 +12,13 @@ public partial class Co2NavTile : IDisposable
     private static readonly Guid AtmosphereLocationId = Region.RegionId(Region.Atmosphere);
 
     private CancellationTokenSource? cancellationTokenSource;
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+
+    [Inject]
+    private IDataService DataService { get; set; } = default!;
+
     private double? Value { get; set; }
     private short? MeasurementYear { get; set; }
     private short? MeasurementMonth { get; set; }
@@ -21,9 +28,6 @@ public partial class Co2NavTile : IDisposable
         Value.HasValue && MeasurementMonth.HasValue
             ? $"<p>Atmospheric CO₂ (deseasonalised)</p><p>{Value.Value.ToString("F2")} parts per million</p><p>Recorded {CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(MeasurementMonth.Value)} {MeasurementYear}</p><p>From Mauna Loa Observatory</p>"
             : null;
-
-    [Inject]
-    private IDataService DataService { get; set; } = default!;
 
     public void Dispose()
     {

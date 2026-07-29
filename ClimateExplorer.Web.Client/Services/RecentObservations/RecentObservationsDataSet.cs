@@ -6,7 +6,7 @@ using ClimateExplorer.Web.Client.UiModel.RecentObservations;
 public sealed class RecentObservationsDataSet
 {
     private RecentObservationsDataSet(
-        RecentObservationsTab tab,
+        string domainKey,
         bool isSupported,
         string unsupportedMessage,
         string emptyMessage,
@@ -15,10 +15,11 @@ public sealed class RecentObservationsDataSet
         IReadOnlyList<DataRecord>? temperatureMinRecords = null,
         IReadOnlyList<DataRecord>? temperatureMeanRecords = null,
         IReadOnlyList<DataRecord>? precipitationRecords = null,
+        IReadOnlyList<DataRecord>? co2Records = null,
         IReadOnlyList<RecentObservationSourceMetadata>? sourceMetadata = null,
         bool hasHistoricalTemperatureMaxMin = false)
     {
-        Tab = tab;
+        DomainKey = domainKey;
         IsSupported = isSupported;
         UnsupportedMessage = unsupportedMessage;
         EmptyMessage = emptyMessage;
@@ -27,11 +28,12 @@ public sealed class RecentObservationsDataSet
         TemperatureMinRecords = temperatureMinRecords ?? [];
         TemperatureMeanRecords = temperatureMeanRecords ?? [];
         PrecipitationRecords = precipitationRecords ?? [];
+        Co2Records = co2Records ?? [];
         SourceMetadata = sourceMetadata ?? [];
         HasHistoricalTemperatureMaxMin = hasHistoricalTemperatureMaxMin;
     }
 
-    public RecentObservationsTab Tab { get; }
+    public string DomainKey { get; }
     public bool IsSupported { get; }
 
     internal string UnsupportedMessage { get; }
@@ -41,6 +43,7 @@ public sealed class RecentObservationsDataSet
     internal IReadOnlyList<DataRecord> TemperatureMinRecords { get; }
     internal IReadOnlyList<DataRecord> TemperatureMeanRecords { get; }
     internal IReadOnlyList<DataRecord> PrecipitationRecords { get; }
+    internal IReadOnlyList<DataRecord> Co2Records { get; }
     internal IReadOnlyList<RecentObservationSourceMetadata> SourceMetadata { get; }
     internal bool HasHistoricalTemperatureMaxMin { get; }
 
@@ -52,7 +55,7 @@ public sealed class RecentObservationsDataSet
         IReadOnlyList<RecentObservationSourceMetadata>? sourceMetadata = null)
     {
         return new RecentObservationsDataSet(
-            RecentObservationsTab.Temperature,
+            ObservationDomainCatalog.TemperatureKey,
             isSupported: true,
             unsupportedMessage: "Recent temperature observations are not available for this location.",
             emptyMessage: "No recent temperature observations are available yet.",
@@ -67,7 +70,7 @@ public sealed class RecentObservationsDataSet
     internal static RecentObservationsDataSet UnsupportedTemperature()
     {
         return new RecentObservationsDataSet(
-            RecentObservationsTab.Temperature,
+            ObservationDomainCatalog.TemperatureKey,
             isSupported: false,
             unsupportedMessage: "Recent temperature observations are not available for this location.",
             emptyMessage: "No recent temperature observations are available yet.",
@@ -79,7 +82,7 @@ public sealed class RecentObservationsDataSet
         IReadOnlyList<RecentObservationSourceMetadata>? sourceMetadata = null)
     {
         return new RecentObservationsDataSet(
-            RecentObservationsTab.Precipitation,
+            ObservationDomainCatalog.PrecipitationKey,
             isSupported: true,
             unsupportedMessage: "Recent precipitation observations are not available for this location.",
             emptyMessage: "No recent precipitation observations are available yet.",
@@ -91,10 +94,34 @@ public sealed class RecentObservationsDataSet
     internal static RecentObservationsDataSet UnsupportedPrecipitation()
     {
         return new RecentObservationsDataSet(
-            RecentObservationsTab.Precipitation,
+            ObservationDomainCatalog.PrecipitationKey,
             isSupported: false,
             unsupportedMessage: "Recent precipitation observations are not available for this location.",
             emptyMessage: "No recent precipitation observations are available yet.",
             noPeriodsMessage: "No recent precipitation observation periods can be calculated yet.");
+    }
+
+    internal static RecentObservationsDataSet Co2(
+        IReadOnlyList<DataRecord> records,
+        IReadOnlyList<RecentObservationSourceMetadata>? sourceMetadata = null)
+    {
+        return new RecentObservationsDataSet(
+            ObservationDomainCatalog.Co2Key,
+            isSupported: true,
+            unsupportedMessage: "Recent CO₂ observations are not available.",
+            emptyMessage: "No recent CO₂ observations are available yet.",
+            noPeriodsMessage: "No recent CO₂ observation periods can be calculated yet.",
+            co2Records: records,
+            sourceMetadata: sourceMetadata);
+    }
+
+    internal static RecentObservationsDataSet UnsupportedCo2()
+    {
+        return new RecentObservationsDataSet(
+            ObservationDomainCatalog.Co2Key,
+            isSupported: false,
+            unsupportedMessage: "Recent CO₂ observations are not available.",
+            emptyMessage: "No recent CO₂ observations are available yet.",
+            noPeriodsMessage: "No recent CO₂ observation periods can be calculated yet.");
     }
 }

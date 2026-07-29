@@ -23,7 +23,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
     }
 
     public RecentObservationsTabResult Calculate(
-        Location location,
+        double? latitude,
         RecentObservationsDataSet dataSet,
         RecentObservationsOptions options)
     {
@@ -38,16 +38,17 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             };
         }
 
-        return dataSet.Tab switch
+        return dataSet.DomainKey switch
         {
-            RecentObservationsTab.Temperature => CalculateTemperature(location, dataSet, options),
-            RecentObservationsTab.Precipitation => CalculatePrecipitation(location, dataSet, options),
-            _ => throw new NotImplementedException(),
+            ObservationDomainCatalog.TemperatureKey => CalculateTemperature(latitude, dataSet, options),
+            ObservationDomainCatalog.PrecipitationKey => CalculatePrecipitation(latitude, dataSet, options),
+            ObservationDomainCatalog.Co2Key => CalculateCo2(dataSet, options),
+            _ => throw new NotSupportedException($"Unknown observation domain '{dataSet.DomainKey}'."),
         };
     }
 
     private RecentObservationsTabResult CalculateTemperature(
-        Location location,
+        double? latitude,
         RecentObservationsDataSet dataSet,
         RecentObservationsOptions options)
     {
@@ -76,7 +77,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         }
 
         return BuildTiles(
-            location,
+            latitude,
             daily,
             TemperatureDomain,
             history,
@@ -89,11 +90,12 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             options.PreviousYearCount,
             dataSet.NoPeriodsMessage,
             dataSet.EmptyMessage,
-            dataSet.SourceMetadata);
+            dataSet.SourceMetadata,
+            supportsSeasonTiles: true);
     }
 
     private RecentObservationsTabResult CalculatePrecipitation(
-        Location location,
+        double? latitude,
         RecentObservationsDataSet dataSet,
         RecentObservationsOptions options)
     {
@@ -109,7 +111,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         }
 
         return BuildTiles(
-            location,
+            latitude,
             daily,
             PrecipitationDomain,
             new HistoricalDailySeries(daily, GetStartYear(daily)),
@@ -122,11 +124,45 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             options.PreviousYearCount,
             dataSet.NoPeriodsMessage,
             dataSet.EmptyMessage,
-            dataSet.SourceMetadata);
+            dataSet.SourceMetadata,
+            supportsSeasonTiles: true);
+    }
+
+    private RecentObservationsTabResult CalculateCo2(
+        RecentObservationsDataSet dataSet,
+        RecentObservationsOptions options)
+    {
+        var daily = BuildDailyCo2(dataSet.Co2Records);
+        if (daily.Count == 0)
+        {
+            return new RecentObservationsTabResult
+            {
+                EmptyMessage = dataSet.EmptyMessage,
+                SourceMetadata = dataSet.SourceMetadata,
+                ComparisonEndMode = options.ComparisonEndMode,
+            };
+        }
+
+        return BuildTiles(
+            null,
+            daily,
+            Co2Domain,
+            new HistoricalDailySeries(daily, GetStartYear(daily)),
+            options.ReferenceDate,
+            options.ComparisonEndMode,
+            options.MinimumRankSampleSize,
+            options.PreviousDayCount,
+            options.PreviousMonthCount,
+            options.PreviousSeasonCount,
+            options.PreviousYearCount,
+            dataSet.NoPeriodsMessage,
+            dataSet.EmptyMessage,
+            dataSet.SourceMetadata,
+            supportsSeasonTiles: false);
     }
 
     private RecentObservationsTabResult BuildTiles(
-        Location location,
+        double? latitude,
         List<DailyObservation> daily,
         MetricDomain domain,
         HistoricalDailySeries history,
@@ -139,7 +175,8 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         int previousYearCount,
         string noPeriodsMessage,
         string emptyMessage,
-        IReadOnlyList<RecentObservationSourceMetadata> sourceMetadata)
+        IReadOnlyList<RecentObservationSourceMetadata> sourceMetadata,
+        bool supportsSeasonTiles)
     {
         previousDayCount = Math.Clamp(previousDayCount, RecentObservationPeriodSelection.DefaultPreviousDayCount, RecentObservationPeriodSelection.MaximumPreviousDayCount);
         previousMonthCount = Math.Clamp(previousMonthCount, 0, RecentObservationPeriodSelection.MaximumPreviousMonthCount);
@@ -172,12 +209,13 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             observationsAsOfReferenceDate,
             referenceDate.ReferenceDate.Value,
             today,
-            location.Coordinates.Latitude,
+            latitude,
             domain,
             previousDayCount,
             previousMonthCount,
             previousSeasonCount,
-            previousYearCount);
+            previousYearCount,
+            supportsSeasonTiles);
         if (periods.Count == 0)
         {
             return new RecentObservationsTabResult
@@ -274,6 +312,14 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             .OrderBy(x => x.Date)];
     }
 
+    private static List<DailyObservation> BuildDailyCo2(IEnumerable<DataRecord> records)
+    {
+        return [.. records
+            .Where(x => x.Date.HasValue && x.Value.HasValue)
+            .Select(x => new DailyObservation(x.Date!.Value, null, null, null, null, x.Value!.Value))
+            .OrderBy(x => x.Date)];
+    }
+
     private static List<DailyObservation> BuildDailyTemperatureMean(IEnumerable<DataRecord> records)
     {
         return [.. records
@@ -332,12 +378,13 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         List<DailyObservation> daily,
         DateOnly referenceDate,
         DateOnly today,
-        double latitude,
+        double? latitude,
         MetricDomain domain,
         int previousDayCount,
         int previousMonthCount,
         int previousSeasonCount,
-        int previousYearCount)
+        int previousYearCount,
+        bool supportsSeasonTiles)
     {
         var periods = new List<PeriodObservation>();
 
@@ -379,7 +426,9 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
                 previousMonthOffset: previousMonth.Offset);
         }
 
-        var currentSeasonToDate = GetCurrentSeasonToDatePeriod(referenceDate, latitude);
+        var currentSeasonToDate = supportsSeasonTiles && latitude.HasValue
+            ? GetCurrentSeasonToDatePeriod(referenceDate, latitude.Value)
+            : null;
         if (currentSeasonToDate is not null)
         {
             AddRangePeriod(
@@ -393,7 +442,9 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
                 isSeasonToDate: true);
         }
 
-        var previousSeasons = MeteorologicalSeasonCalculator.GetPreviousSeasons(referenceDate, latitude, previousSeasonCount);
+        var previousSeasons = supportsSeasonTiles && latitude.HasValue
+            ? MeteorologicalSeasonCalculator.GetPreviousSeasons(referenceDate, latitude.Value, previousSeasonCount)
+            : Array.Empty<MeteorologicalSeasonPeriod>();
         for (var index = 0; index < previousSeasons.Count; index++)
         {
             var previousSeason = previousSeasons[index];
@@ -1124,9 +1175,12 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
 
         var perDecade = trend.Line.Slope * 10;
         var sign = perDecade >= 0 ? "+" : string.Empty;
-        return unit == "°C"
-            ? $"{sign}{perDecade.ToString("0.00", CultureInfo.InvariantCulture)}°C /decade"
-            : $"{sign}{perDecade.ToString("0", CultureInfo.InvariantCulture)}mm /decade";
+        return unit switch
+        {
+            "°C" => $"{sign}{perDecade.ToString("0.00", CultureInfo.InvariantCulture)}°C /decade",
+            "ppm" => $"{sign}{perDecade.ToString("0.0", CultureInfo.InvariantCulture)} ppm /decade",
+            _ => $"{sign}{perDecade.ToString("0", CultureInfo.InvariantCulture)}mm /decade",
+        };
     }
 
     private static string CreateCurrentPeriodLabel(PeriodObservation period)
@@ -1297,6 +1351,11 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             null => RecentObservationTileTone.Unavailable,
             _ => RecentObservationTileTone.Neutral,
         };
+    }
+
+    private static RecentObservationTileTone GetCo2Tone(RecentObservationComparisonResult? ranking)
+    {
+        return ranking is null ? RecentObservationTileTone.Unavailable : RecentObservationTileTone.Neutral;
     }
 
     private static bool IsWithinEquivalentRange(DateOnly date, DateOnly templateStart, DateOnly templateEnd)
@@ -1560,6 +1619,11 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         return $"{value.ToString("0", CultureInfo.InvariantCulture)}mm";
     }
 
+    private static string FormatCo2(double value)
+    {
+        return $"{value.ToString("0.0", CultureInfo.InvariantCulture)} ppm";
+    }
+
     private static string FormatAnomaly(double value, Metric metric)
     {
         return $"{(value >= 0 ? "+" : string.Empty)}{metric.Format(value)}";
@@ -1734,6 +1798,28 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         "Precipitation",
         "mm");
 
+    private static readonly Metric Co2Metric = new(
+        "co2.value",
+        "Mean CO₂",
+        "Mean CO₂",
+        x => x.Co2,
+        MetricAggregation.Mean,
+        FormatCo2,
+        "Mean CO₂",
+        "CO₂",
+        "ppm");
+
+    private static readonly Metric DailyCo2Metric = new(
+        "co2.value",
+        "CO₂",
+        "CO₂",
+        x => x.Co2,
+        MetricAggregation.Mean,
+        FormatCo2,
+        "CO₂",
+        "CO₂",
+        "ppm");
+
     private static readonly MetricDomain TemperatureDomain = new(
         MeanTemperatureMetric,
         [AverageMaxTemperatureMetric, AverageMinTemperatureMetric],
@@ -1774,7 +1860,26 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         (_, startYear, ranking) => RecentObservationComparison.BuildPrecipitationPercentileSentence(startYear, ranking),
         GetPrecipitationTone);
 
-    private sealed record DailyObservation(DateOnly Date, double? Max, double? Min, double? Mean, double? Precipitation);
+    private static readonly MetricDomain Co2Domain = new(
+        Co2Metric,
+        [],
+        [
+            new MetricGroup(MetricGroupKey.PeriodRecords, "Period records", [Co2Metric]),
+        ],
+        [
+            new MetricGroup(MetricGroupKey.Day, "Day", [DailyCo2Metric]),
+        ],
+        [Co2Metric],
+        [DailyCo2Metric],
+        "Mean CO₂",
+        ShowHistoricalMin: true,
+        "Highest",
+        "Lowest",
+        RecentObservationComparison.BuildCo2Headline,
+        (_, startYear, ranking) => RecentObservationComparison.BuildCo2PercentileSentence(startYear, ranking),
+        GetCo2Tone);
+
+    private sealed record DailyObservation(DateOnly Date, double? Max, double? Min, double? Mean, double? Precipitation, double? Co2 = null);
 
     private sealed record ReferenceDateResolution(
         DateOnly? ReferenceDate,

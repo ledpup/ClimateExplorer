@@ -10,8 +10,15 @@ public interface IRecentObservationsService
 
     Task<RecentObservationsDataSet> LoadPrecipitationData(Location location);
 
+    Task<RecentObservationsDataSet> LoadData(Guid contextId, ObservationDomain domain, DataAdjustment? preferredAdjustment = null);
+
     RecentObservationsTabResult Calculate(
         Location location,
+        RecentObservationsDataSet dataSet,
+        RecentObservationsOptions options);
+
+    RecentObservationsTabResult Calculate(
+        double? latitude,
         RecentObservationsDataSet dataSet,
         RecentObservationsOptions options);
 

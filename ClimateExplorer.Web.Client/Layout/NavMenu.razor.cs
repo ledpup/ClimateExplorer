@@ -1,6 +1,9 @@
 namespace ClimateExplorer.Web.Client.Layout;
 
+using ClimateExplorer.Core.ViewModel;
+using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.Services;
+using ClimateExplorer.WebApiClient.Services;
 using CurrentDevice;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
@@ -21,6 +24,9 @@ public partial class NavMenu : IDisposable
                     SecondaryNavItem.SiteOverview("site overview"),
                 ];
 
+    private SidePanel? co2SidePanel;
+    private IEnumerable<DataSetDefinitionViewModel>? dataSetDefinitions;
+
     [Inject]
     public ISiteOverviewService? SiteOverviewService { get; set; }
 
@@ -29,6 +35,9 @@ public partial class NavMenu : IDisposable
 
     [Inject]
     protected ICurrentDeviceService? CurrentDeviceService { get; set; }
+
+    [Inject]
+    private IDataService? DataService { get; set; }
 
     private bool? IsMobileDevice { get; set; }
 
@@ -60,6 +69,11 @@ public partial class NavMenu : IDisposable
         NavigationManager!.LocationChanged += OnLocationChanged;
     }
 
+    protected override async Task OnInitializedAsync()
+    {
+        dataSetDefinitions = await DataService!.GetDataSetDefinitions();
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
@@ -74,6 +88,11 @@ public partial class NavMenu : IDisposable
     private static bool IsLocal(string path)
     {
         return path.StartsWith("/location") && !path.StartsWith("/locations");
+    }
+
+    private Task ShowCo2PanelAsync()
+    {
+        return co2SidePanel?.ShowAsync() ?? Task.CompletedTask;
     }
 
     private bool IsLocalPage()

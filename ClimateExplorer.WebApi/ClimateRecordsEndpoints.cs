@@ -84,6 +84,7 @@ internal static class ClimateRecordsEndpoints
                     DataType = dataType,
                     LocationId = locationId,
                     DataAdjustment = dataAdjustment,
+                    DataResolution = md.DataResolution,
                 },
             ],
             BinAggregationFunction = fn,

@@ -63,6 +63,32 @@ public sealed class ClimateRecordsEndpointsTests
     }
 
     [TestMethod]
+    public async Task GetClimateRecords_Co2Daily_ResolvesDailyDefinitionDespiteMonthlyDefinitionSameTypeAndAdjustment()
+    {
+        // Regression test: the Mauna Loa CO2 dataset defines DataType.CO2 with DataAdjustment=null at
+        // both Daily and Monthly resolution. Before the DataResolution disambiguation fix, SeriesProvider
+        // could not tell these two MeasurementDefinitions apart and threw
+        // "Sequence contains more than one matching element".
+        var atmosphereLocationId = Region.RegionId(Region.Atmosphere);
+
+        var response = await ClimateRecordsEndpoints.GetClimateRecords(CreateServices(), atmosphereLocationId, DataType.CO2, monthly: false);
+
+        Assert.AreEqual(DataResolution.Daily, response.DataResolution);
+        Assert.IsNotEmpty(response.Records);
+    }
+
+    [TestMethod]
+    public async Task GetClimateRecords_Co2Monthly_ResolvesMonthlyDefinitionDespiteDailyDefinitionSameTypeAndAdjustment()
+    {
+        var atmosphereLocationId = Region.RegionId(Region.Atmosphere);
+
+        var response = await ClimateRecordsEndpoints.GetClimateRecords(CreateServices(), atmosphereLocationId, DataType.CO2, monthly: true);
+
+        Assert.AreEqual(DataResolution.Monthly, response.DataResolution);
+        Assert.IsNotEmpty(response.Records);
+    }
+
+    [TestMethod]
     public async Task GetClimateRecords_CallerCancelsRequest_PropagatesOperationCanceledException()
     {
         var ghcndLocationId = await GetSingleStationGhcndLocationId("AE000041196");

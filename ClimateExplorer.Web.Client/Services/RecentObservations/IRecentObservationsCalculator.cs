@@ -1,12 +1,11 @@
 namespace ClimateExplorer.Web.Client.Services.RecentObservations;
 
-using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.Client.UiModel.RecentObservations;
 
 public interface IRecentObservationsCalculator
 {
     RecentObservationsTabResult Calculate(
-        Location location,
+        double? latitude,
         RecentObservationsDataSet dataSet,
         RecentObservationsOptions options);
 }

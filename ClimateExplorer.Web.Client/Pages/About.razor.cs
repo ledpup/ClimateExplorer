@@ -1,6 +1,7 @@
 namespace ClimateExplorer.Web.Client.Pages;
 
 using ClimateExplorer.Core.Model;
+using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.WebApiClient.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -10,6 +11,7 @@ public partial class About
     private ApiMetadataModel? apiMetadata;
     private ElementReference contentElement;
     private List<TocItem> tocItems = [];
+    private List<PublisherGroup> dataSourceGroups = [];
     private bool pipelineModalVisible = false;
 
     [Inject]
@@ -34,6 +36,9 @@ public partial class About
 
         apiMetadata = await DataService.GetAbout();
 
+        var dataSetDefinitions = await DataService.GetDataSetDefinitions();
+        dataSourceGroups = BuildDataSourceGroups(dataSetDefinitions);
+
         await base.OnInitializedAsync();
     }
 
@@ -44,6 +49,32 @@ public partial class About
             await BuildTocAsync();
             StateHasChanged();
         }
+    }
+
+    private static List<PublisherGroup> BuildDataSourceGroups(IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions)
+    {
+        return
+            dataSetDefinitions
+            .Where(x => x.Publisher != null)
+            .GroupBy(x => x.Publisher!)
+            .Select(publisherGroup =>
+                new PublisherGroup
+                {
+                    Publisher = publisherGroup.Key,
+                    PublisherUrl = publisherGroup.Select(x => x.PublisherUrl).FirstOrDefault(x => x != null),
+                    Divisions =
+                        publisherGroup
+                        .GroupBy(x => x.PublisherDivision)
+                        .Select(divisionGroup =>
+                            new DivisionGroup
+                            {
+                                Name = divisionGroup.Key,
+                                PublisherDescription = divisionGroup.Select(x => x.PublisherDescription).FirstOrDefault(x => x != null),
+                                Items = divisionGroup.ToList(),
+                            })
+                        .ToList(),
+                })
+            .ToList();
     }
 
     private async Task BuildTocAsync()
@@ -97,5 +128,19 @@ public partial class About
     {
         public required string Text { get; set; }
         public int Index { get; set; }
+    }
+
+    private class PublisherGroup
+    {
+        public required string Publisher { get; set; }
+        public string? PublisherUrl { get; set; }
+        public required List<DivisionGroup> Divisions { get; set; }
+    }
+
+    private class DivisionGroup
+    {
+        public string? Name { get; set; }
+        public string? PublisherDescription { get; set; }
+        public required List<DataSetDefinitionViewModel> Items { get; set; }
     }
 }

@@ -4,6 +4,9 @@
     justify-content: center;
     height: 100%;
     padding: 0 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
 }
 
 .co2-value {

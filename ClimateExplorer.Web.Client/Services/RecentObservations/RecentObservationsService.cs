@@ -9,7 +9,7 @@ public sealed class RecentObservationsService : IRecentObservationsService
 {
     private readonly IRecentObservationsDataProvider dataProvider;
     private readonly IRecentObservationsCalculator calculator;
-    private readonly Dictionary<(RecentObservationsDataSet DataSet, RecentObservationsOptions Options), RecentObservationsTabResult> resultCache = [];
+    private readonly Dictionary<(RecentObservationsDataSet DataSet, RecentObservationsOptions Options, double? Latitude), RecentObservationsTabResult> resultCache = [];
 
     public RecentObservationsService(
         IRecentObservationsDataProvider dataProvider,
@@ -29,18 +29,31 @@ public sealed class RecentObservationsService : IRecentObservationsService
         return dataProvider.LoadPrecipitationData(location);
     }
 
+    public Task<RecentObservationsDataSet> LoadData(Guid contextId, ObservationDomain domain, DataAdjustment? preferredAdjustment = null)
+    {
+        return dataProvider.LoadData(contextId, domain, preferredAdjustment);
+    }
+
     public RecentObservationsTabResult Calculate(
         Location location,
         RecentObservationsDataSet dataSet,
         RecentObservationsOptions options)
     {
-        var key = (dataSet, options);
+        return Calculate(location.Coordinates.Latitude, dataSet, options);
+    }
+
+    public RecentObservationsTabResult Calculate(
+        double? latitude,
+        RecentObservationsDataSet dataSet,
+        RecentObservationsOptions options)
+    {
+        var key = (dataSet, options, latitude);
         if (resultCache.TryGetValue(key, out var cached))
         {
             return cached;
         }
 
-        var result = calculator.Calculate(location, dataSet, options);
+        var result = calculator.Calculate(latitude, dataSet, options);
         resultCache[key] = result;
         return result;
     }
