@@ -8,10 +8,10 @@ on:
     branches:
       - master
     paths:
-      - ClimateExplorer.Core/*
-      - ClimateExplorer.SourceData/*
-      - ClimateExplorer.DataPipeline/*
-      - ClimateExplorer.WebApi/*
+      - ClimateExplorer.Core/**
+      - ClimateExplorer.SourceData/**
+      - ClimateExplorer.DataPipeline/**
+      - ClimateExplorer.WebApi/**
 
   workflow_dispatch:
 
