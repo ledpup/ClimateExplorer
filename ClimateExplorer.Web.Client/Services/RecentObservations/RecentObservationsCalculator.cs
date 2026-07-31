@@ -917,8 +917,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         var groups = new List<RecentObservationMetricGroupViewModel>();
 
         // A daily tile is a single day's observation - max/min/mean, not aggregates
-        // across days, so it uses its own records group. The expanded-tab layer
-        // renames this to "Records" once the Variation tab is added.
+        // across days, so it uses its own Ranking group backed by daily metrics.
         var groupDefinitions = period.Kind == PeriodKind.Daily ? domain.DailyGroups : domain.Groups;
 
         foreach (var group in groupDefinitions)
@@ -959,7 +958,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             tabs.Add(new RecentObservationRankingsTabViewModel
             {
                 Key = group.Key,
-                Title = group.Key == MetricGroupKey.Day ? "Ranking" : group.Title,
+                Title = group.Title,
                 Metrics = group.Metrics,
             });
         }
@@ -1839,7 +1838,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             new MetricGroup(MetricGroupKey.DailyRankings, "Daily ranking", [HighestDailyMaxTemperatureMetric, LowestDailyMaxTemperatureMetric, HighestDailyMinTemperatureMetric, LowestDailyMinTemperatureMetric]),
         ],
         [
-            new MetricGroup(MetricGroupKey.Day, "Day", [DailyMaxTemperatureMetric, DailyMinTemperatureMetric, DailyMeanTemperatureMetric]),
+            new MetricGroup(MetricGroupKey.Ranking, "Ranking", [DailyMaxTemperatureMetric, DailyMinTemperatureMetric, DailyMeanTemperatureMetric]),
         ],
         [AverageMaxTemperatureMetric, AverageMinTemperatureMetric, MeanTemperatureMetric],
         [DailyMaxTemperatureMetric, DailyMinTemperatureMetric, DailyMeanTemperatureMetric],
@@ -1859,7 +1858,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             new MetricGroup(MetricGroupKey.DailyRankings, "Daily ranking", [HighestDailyPrecipitationMetric]),
         ],
         [
-            new MetricGroup(MetricGroupKey.Day, "Day", [DailyPrecipitationMetric]),
+            new MetricGroup(MetricGroupKey.Ranking, "Ranking", [DailyPrecipitationMetric]),
         ],
         [PrecipitationMetric],
         [DailyPrecipitationMetric],
@@ -1878,7 +1877,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             new MetricGroup(MetricGroupKey.Ranking, "Ranking", [Co2Metric]),
         ],
         [
-            new MetricGroup(MetricGroupKey.Day, "Day", [DailyCo2Metric]),
+            new MetricGroup(MetricGroupKey.Ranking, "Ranking", [DailyCo2Metric]),
         ],
         [Co2Metric],
         [DailyCo2Metric],

@@ -1968,9 +1968,9 @@ public class RecentObservationsServiceTests
 
         Assert.HasCount(3, dailyTiles);
         Assert.IsTrue(dailyTiles.All(x => x.MetricGroups.Count == 1));
-        Assert.IsTrue(dailyTiles.All(x => x.MetricGroups[0].Key == MetricGroupKey.Day));
+        Assert.IsTrue(dailyTiles.All(x => x.MetricGroups[0].Key == MetricGroupKey.Ranking));
         Assert.IsTrue(dailyTiles.All(x => x.AvailableExpandedTabs.Count == 4));
-        Assert.IsTrue(dailyTiles.All(x => x.AvailableExpandedTabs[0].Key == MetricGroupKey.Day));
+        Assert.IsTrue(dailyTiles.All(x => x.AvailableExpandedTabs[0].Key == MetricGroupKey.Ranking));
         Assert.IsTrue(dailyTiles.All(x => x.AvailableExpandedTabs[0].Title == "Ranking"));
         Assert.IsTrue(dailyTiles.All(x => x.AvailableExpandedTabs[1].Key == MetricGroupKey.Average));
         Assert.IsTrue(dailyTiles.All(x => x.AvailableExpandedTabs[1].Title == "Average"));
@@ -2017,7 +2017,7 @@ public class RecentObservationsServiceTests
             previousSeasonCount: 0);
         var dailyTile = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.Daily);
         var dayGroup = dailyTile.MetricGroups.Single();
-        Assert.AreEqual(MetricGroupKey.Day, dayGroup.Key);
+        Assert.AreEqual(MetricGroupKey.Ranking, dayGroup.Key);
         var total = dayGroup.Metrics.Single();
 
         Assert.AreEqual("Precipitation", total.Label);
@@ -2670,7 +2670,7 @@ public class RecentObservationsServiceTests
 
         // Single group → the UI hides the Period / Daily extremes toggle.
         var day = daily.MetricGroups.Single();
-        Assert.AreEqual(MetricGroupKey.Day, day.Key);
+        Assert.AreEqual(MetricGroupKey.Ranking, day.Key);
         CollectionAssert.AreEqual(
             new[] { "Maximum", "Minimum", "Mean" },
             day.Metrics.Select(x => x.Label).ToArray());
