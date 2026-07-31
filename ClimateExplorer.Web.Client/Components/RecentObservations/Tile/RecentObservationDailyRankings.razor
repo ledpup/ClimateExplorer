@@ -6,7 +6,7 @@
         <div class="recent-observation-detail-metric">
             <dt>@metric.Label</dt>
             <dd>
-                <div class="recent-observation-detail-headline day-records">
+                <div class="recent-observation-detail-headline daily-rankings">
                     <span class="recent-observation-detail-current">@metric.CurrentValue</span>
                     @if (metric.CurrentValueDate.HasValue)
                     {
@@ -19,7 +19,7 @@
                 }
                 else if (!string.IsNullOrWhiteSpace(metric.RankText))
                 {
-                    <span class="recent-observation-detail-rank day-records">@metric.RankText</span>
+                    <span class="recent-observation-detail-rank daily-rankings">@metric.RankText</span>
                 }
                 @foreach (var record in metric.Records)
                 {

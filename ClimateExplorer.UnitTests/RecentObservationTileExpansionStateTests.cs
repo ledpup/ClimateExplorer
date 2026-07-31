@@ -9,8 +9,8 @@ public class RecentObservationTileExpansionStateTests
 {
     private static readonly IReadOnlyList<RecentObservationMetricGroupViewModel> Groups =
     [
-        new RecentObservationMetricGroupViewModel { Key = MetricGroupKey.PeriodRecords },
-        new RecentObservationMetricGroupViewModel { Key = MetricGroupKey.DayRecords },
+        new RecentObservationMetricGroupViewModel { Key = MetricGroupKey.Ranking },
+        new RecentObservationMetricGroupViewModel { Key = MetricGroupKey.DailyRankings },
     ];
 
     [TestMethod]
@@ -41,9 +41,9 @@ public class RecentObservationTileExpansionStateTests
 
         state.EnsureSelection(Groups);
 
-        Assert.AreEqual(MetricGroupKey.PeriodRecords, state.SelectedGroupKey);
-        Assert.IsTrue(state.IsGroupSelected(MetricGroupKey.PeriodRecords));
-        Assert.IsFalse(state.IsGroupSelected(MetricGroupKey.DayRecords));
+        Assert.AreEqual(MetricGroupKey.Ranking, state.SelectedGroupKey);
+        Assert.IsTrue(state.IsGroupSelected(MetricGroupKey.Ranking));
+        Assert.IsFalse(state.IsGroupSelected(MetricGroupKey.DailyRankings));
     }
 
     [TestMethod]
@@ -51,11 +51,11 @@ public class RecentObservationTileExpansionStateTests
     {
         var state = new RecentObservationTileExpansionState();
         state.EnsureSelection(Groups);
-        state.SelectGroup(MetricGroupKey.DayRecords);
+        state.SelectGroup(MetricGroupKey.DailyRankings);
 
         state.EnsureSelection(Groups);
 
-        Assert.AreEqual(MetricGroupKey.DayRecords, state.SelectedGroupKey);
+        Assert.AreEqual(MetricGroupKey.DailyRankings, state.SelectedGroupKey);
     }
 
     [TestMethod]
@@ -63,7 +63,7 @@ public class RecentObservationTileExpansionStateTests
     {
         var tabs = new RecentObservationExpandedTabViewModel[]
         {
-            new RecentObservationMetricGroupViewModel { Key = MetricGroupKey.PeriodRecords },
+            new RecentObservationMetricGroupViewModel { Key = MetricGroupKey.Ranking },
             new RecentObservationVariationTabViewModel { Key = MetricGroupKey.Variation },
         };
         var state = new RecentObservationTileExpansionState();
@@ -80,7 +80,7 @@ public class RecentObservationTileExpansionStateTests
     public void EnsureSelectionClearsWhenNoGroups()
     {
         var state = new RecentObservationTileExpansionState();
-        state.SelectGroup(MetricGroupKey.PeriodRecords);
+        state.SelectGroup(MetricGroupKey.Ranking);
 
         state.EnsureSelection([]);
 
@@ -94,10 +94,10 @@ public class RecentObservationTileExpansionStateTests
         state.EnsureSelection(Groups);
         state.Toggle();
 
-        state.SelectGroup(MetricGroupKey.DayRecords);
+        state.SelectGroup(MetricGroupKey.DailyRankings);
 
         Assert.IsTrue(state.IsExpanded);
-        Assert.IsTrue(state.IsGroupSelected(MetricGroupKey.DayRecords));
+        Assert.IsTrue(state.IsGroupSelected(MetricGroupKey.DailyRankings));
     }
 
     [TestMethod]

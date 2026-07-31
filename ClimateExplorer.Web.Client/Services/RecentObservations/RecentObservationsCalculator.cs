@@ -923,7 +923,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
 
         foreach (var group in groupDefinitions)
         {
-            var metrics = new List<RecentObservationRecordsViewModel>();
+            var metrics = new List<RecentObservationRankingsViewModel>();
             foreach (var metric in group.Metrics)
             {
                 if (period.MetricValues.TryGetValue(metric.Key, out var value))
@@ -956,7 +956,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
 
         foreach (var group in recordGroups)
         {
-            tabs.Add(new RecentObservationRecordsTabViewModel
+            tabs.Add(new RecentObservationRankingsTabViewModel
             {
                 Key = group.Key,
                 Title = group.Key == MetricGroupKey.Day ? "Records" : group.Title,
@@ -1203,7 +1203,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         return $"{FormatDayMonth(date)} {date.Year}";
     }
 
-    private static RecentObservationRecordsViewModel BuildMetric(Metric metric, MetricObservationValue currentValue, HistoricalValues? distribution)
+    private static RecentObservationRankingsViewModel BuildMetric(Metric metric, MetricObservationValue currentValue, HistoricalValues? distribution)
     {
         var ranking = distribution is null
             ? null
@@ -1211,7 +1211,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
 
         if (ranking is null || distribution is null)
         {
-            return new RecentObservationRecordsViewModel
+            return new RecentObservationRankingsViewModel
             {
                 Label = metric.DetailLabel,
                 CurrentValue = metric.Format(currentValue.Value!.Value),
@@ -1229,7 +1229,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         // for the comparison date as plain reference context (no rank of their own).
         var status = RecentObservationComparison.DetermineRecordStatus(ranking);
 
-        return new RecentObservationRecordsViewModel
+        return new RecentObservationRankingsViewModel
         {
             Label = metric.DetailLabel,
             CurrentValue = metric.Format(currentValue.Value!.Value),
@@ -1824,8 +1824,8 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         MeanTemperatureMetric,
         [AverageMaxTemperatureMetric, AverageMinTemperatureMetric],
         [
-            new MetricGroup(MetricGroupKey.PeriodRecords, "Period records", [AverageMaxTemperatureMetric, AverageMinTemperatureMetric, MeanTemperatureMetric]),
-            new MetricGroup(MetricGroupKey.DayRecords, "Day records", [HighestDailyMaxTemperatureMetric, LowestDailyMaxTemperatureMetric, HighestDailyMinTemperatureMetric, LowestDailyMinTemperatureMetric]),
+            new MetricGroup(MetricGroupKey.Ranking, "Ranking", [AverageMaxTemperatureMetric, AverageMinTemperatureMetric, MeanTemperatureMetric]),
+            new MetricGroup(MetricGroupKey.DailyRankings, "Daily ranking", [HighestDailyMaxTemperatureMetric, LowestDailyMaxTemperatureMetric, HighestDailyMinTemperatureMetric, LowestDailyMinTemperatureMetric]),
         ],
         [
             new MetricGroup(MetricGroupKey.Day, "Day", [DailyMaxTemperatureMetric, DailyMinTemperatureMetric, DailyMeanTemperatureMetric]),
@@ -1844,8 +1844,8 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         PrecipitationMetric,
         [],
         [
-            new MetricGroup(MetricGroupKey.PeriodRecords, "Period records", [PrecipitationMetric]),
-            new MetricGroup(MetricGroupKey.DayRecords, "Day records", [HighestDailyPrecipitationMetric]),
+            new MetricGroup(MetricGroupKey.Ranking, "Ranking", [PrecipitationMetric]),
+            new MetricGroup(MetricGroupKey.DailyRankings, "Daily ranking", [HighestDailyPrecipitationMetric]),
         ],
         [
             new MetricGroup(MetricGroupKey.Day, "Day", [DailyPrecipitationMetric]),
@@ -1864,7 +1864,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         Co2Metric,
         [],
         [
-            new MetricGroup(MetricGroupKey.PeriodRecords, "Period records", [Co2Metric]),
+            new MetricGroup(MetricGroupKey.Ranking, "Ranking", [Co2Metric]),
         ],
         [
             new MetricGroup(MetricGroupKey.Day, "Day", [DailyCo2Metric]),

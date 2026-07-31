@@ -26,7 +26,7 @@ public sealed class RecentObservationTileExpansionState
 
     // <summary>
     // Ensures a sensible selected tab once tabs are known. Defaults to the
-    // first tab (e.g. "Period records") and only fills a missing/stale selection.
+    // first tab (e.g. "Ranking") and only fills a missing/stale selection.
     // </summary>
     public void EnsureSelection(IReadOnlyList<RecentObservationExpandedTabViewModel> tabs)
     {

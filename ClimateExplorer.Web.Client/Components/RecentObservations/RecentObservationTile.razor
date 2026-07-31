@@ -27,15 +27,15 @@
                 </div>
             }
 
-            @if (SelectedTab is RecentObservationRecordsTabViewModel recordsTab)
+            @if (SelectedTab is RecentObservationRankingsTabViewModel rankingsTab)
             {
-                @if (IsDayRecordsSelected)
+                @if (IsDailyRankingsSelected)
                 {
-                    <RecentObservationDayRecords Metrics="@recordsTab.Metrics" />
+                    <RecentObservationDailyRankings Metrics="@rankingsTab.Metrics" />
                 }
                 else
                 {
-                    <RecentObservationPeriodRecords Metrics="@recordsTab.Metrics" />
+                    <RecentObservationRanking Metrics="@rankingsTab.Metrics" />
                 }
             }
             else if (SelectedTab is RecentObservationVariationTabViewModel variationTab)

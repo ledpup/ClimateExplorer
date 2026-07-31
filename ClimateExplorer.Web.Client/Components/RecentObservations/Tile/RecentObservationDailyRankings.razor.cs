@@ -3,9 +3,9 @@ namespace ClimateExplorer.Web.Client.Components.RecentObservations;
 using ClimateExplorer.Web.Client.UiModel.RecentObservations;
 using Microsoft.AspNetCore.Components;
 
-public partial class RecentObservationPeriodRecords
+public partial class RecentObservationDailyRankings
 {
     [Parameter]
     [EditorRequired]
-    public IReadOnlyList<RecentObservationRecordsViewModel> Metrics { get; set; } = [];
+    public IReadOnlyList<RecentObservationRankingsViewModel> Metrics { get; set; } = [];
 }

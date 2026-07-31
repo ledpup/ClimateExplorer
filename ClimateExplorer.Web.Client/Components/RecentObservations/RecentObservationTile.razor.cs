@@ -38,7 +38,7 @@ public partial class RecentObservationTile
         Tile.AvailableExpandedTabs.FirstOrDefault(tab => Expansion.IsGroupSelected(tab.Key))
         ?? (Tile.AvailableExpandedTabs.Count > 0 ? Tile.AvailableExpandedTabs[0] : null);
 
-    private bool IsDayRecordsSelected => SelectedTab?.Key == MetricGroupKey.DayRecords;
+    private bool IsDailyRankingsSelected => SelectedTab?.Key == MetricGroupKey.DailyRankings;
 
     private string ToneClass => Tile.Tone switch
     {
