@@ -1658,8 +1658,8 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         x => x.Mean,
         MetricAggregation.Mean,
         FormatTemperature,
-        "Mean temperature",
-        "Mean temperature",
+        "Average mean",
+        "Mean",
         "°C");
 
     private static readonly Metric AverageMaxTemperatureMetric = new(
@@ -1669,8 +1669,8 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         x => x.Max,
         MetricAggregation.Mean,
         FormatTemperature,
-        "Average maximum temperature",
-        "Average max temp",
+        "Average maximum",
+        "Maximum",
         "°C");
 
     private static readonly Metric AverageMinTemperatureMetric = new(
@@ -1680,8 +1680,8 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         x => x.Min,
         MetricAggregation.Mean,
         FormatTemperature,
-        "Average minimum temperature",
-        "Average min temp",
+        "Average minimum",
+        "Minimum",
         "°C");
 
     private static readonly Metric HighestDailyMaxTemperatureMetric = new(

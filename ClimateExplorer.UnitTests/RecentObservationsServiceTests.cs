@@ -1307,7 +1307,7 @@ public class RecentObservationsServiceTests
         Assert.IsTrue(latestSevenDays.MetricGroups
             .Single(group => group.Key == MetricGroupKey.Ranking)
             .Metrics
-            .Where(metric => metric.Label != "Mean temperature")
+            .Where(metric => metric.Label != "Average mean")
             .All(metric => metric.RecordStatus == RecentObservationRecordStatus.NewRecord));
     }
 
@@ -1398,7 +1398,7 @@ public class RecentObservationsServiceTests
                     [
                         new RecentObservationRankingsViewModel
                         {
-                            Label = "Average maximum temperature",
+                            Label = "Average maximum",
                             CurrentValue = "30.0°C",
                             RecordStatus = RecentObservationRecordStatus.NewRecord,
                             RecordStatusText = "New record",
@@ -1925,7 +1925,7 @@ public class RecentObservationsServiceTests
     }
 
     [TestMethod]
-    public async Task DailyTilesExposeRecordsAndVariationExpandedTabs()
+    public async Task DailyTilesExposesExpandedTabs()
     {
         var service = CreateService();
 
@@ -1943,7 +1943,7 @@ public class RecentObservationsServiceTests
         Assert.IsTrue(dailyTiles.All(x => x.MetricGroups[0].Key == MetricGroupKey.Day));
         Assert.IsTrue(dailyTiles.All(x => x.AvailableExpandedTabs.Count == 3));
         Assert.IsTrue(dailyTiles.All(x => x.AvailableExpandedTabs[0].Key == MetricGroupKey.Day));
-        Assert.IsTrue(dailyTiles.All(x => x.AvailableExpandedTabs[0].Title == "Records"));
+        Assert.IsTrue(dailyTiles.All(x => x.AvailableExpandedTabs[0].Title == "Ranking"));
         Assert.IsTrue(dailyTiles.All(x => x.AvailableExpandedTabs[1].Key == MetricGroupKey.Variation));
         Assert.IsTrue(dailyTiles.All(x => x.AvailableExpandedTabs[1].Title == "Variation"));
         Assert.IsTrue(dailyTiles.All(x => x.AvailableExpandedTabs[2].Key == MetricGroupKey.Trend));
@@ -2190,10 +2190,10 @@ public class RecentObservationsServiceTests
 
         var period = latestSevenDays.MetricGroups.Single(x => x.Key == MetricGroupKey.Ranking);
         CollectionAssert.AreEqual(
-            new[] { "Average maximum temperature", "Average minimum temperature", "Mean temperature" },
+            new[] { "Average maximum", "Average minimum", "Average mean" },
             period.Metrics.Select(x => x.Label).ToArray());
 
-        var avgMax = period.Metrics.Single(x => x.Label == "Average maximum temperature");
+        var avgMax = period.Metrics.Single(x => x.Label == "Average maximum");
         Assert.AreEqual("31.0°C", avgMax.CurrentValue);
         Assert.AreEqual(RecentObservationRecordStatus.NewRecord, avgMax.RecordStatus);
         Assert.AreEqual("New record", avgMax.RecordStatusText);
@@ -2246,7 +2246,7 @@ public class RecentObservationsServiceTests
         var latestSevenDaysVariation = (RecentObservationVariationTabViewModel)latestSevenDays.AvailableExpandedTabs.Single(x => x.Key == MetricGroupKey.Variation);
 
         CollectionAssert.AreEqual(
-            new[] { "Average max temp", "Average min temp", "Mean temperature" },
+            new[] { "Maximum", "Minimum", "Mean" },
             latestSevenDaysVariation.Metrics.Select(x => x.Label).ToArray());
         Assert.AreEqual("Historical range: 0.0°C to 25.0°C", latestSevenDaysVariation.Metrics[0].HistoricalRangeText);
         Assert.AreEqual("Typical variation: ±7.5°C", latestSevenDaysVariation.Metrics[0].TypicalVariationText);
@@ -2291,7 +2291,7 @@ public class RecentObservationsServiceTests
         var trend = (RecentObservationTrendTabViewModel)latestSevenDays.AvailableExpandedTabs.Single(x => x.Key == MetricGroupKey.Trend);
 
         CollectionAssert.AreEqual(
-            new[] { "Average max temp", "Average min temp", "Mean temperature" },
+            new[] { "Maximum", "Minimum", "Mean" },
             trend.Metrics.Select(x => x.Label).ToArray());
     }
 
@@ -2323,7 +2323,7 @@ public class RecentObservationsServiceTests
             previousSeasonCount: 0);
         var latestSevenDays = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays);
         var trend = (RecentObservationTrendTabViewModel)latestSevenDays.AvailableExpandedTabs.Single(x => x.Key == MetricGroupKey.Trend);
-        var averageMax = trend.Metrics.Single(x => x.Label == "Average max temp");
+        var averageMax = trend.Metrics.Single(x => x.Label == "Maximum");
 
         Assert.AreEqual("+0.35°C /decade", averageMax.HeadlineText);
         Assert.AreEqual("1997-2026", averageMax.RecentTrendYearRange);
@@ -2358,7 +2358,7 @@ public class RecentObservationsServiceTests
             previousSeasonCount: 0);
         var latestSevenDays = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays);
         var trend = (RecentObservationTrendTabViewModel)latestSevenDays.AvailableExpandedTabs.Single(x => x.Key == MetricGroupKey.Trend);
-        var averageMax = trend.Metrics.Single(x => x.Label == "Average max temp");
+        var averageMax = trend.Metrics.Single(x => x.Label == "Maximum");
 
         Assert.AreEqual("-0.25°C /decade", averageMax.HeadlineText);
     }
@@ -2391,7 +2391,7 @@ public class RecentObservationsServiceTests
             previousSeasonCount: 0);
         var latestSevenDays = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays);
         var trend = (RecentObservationTrendTabViewModel)latestSevenDays.AvailableExpandedTabs.Single(x => x.Key == MetricGroupKey.Trend);
-        var averageMax = trend.Metrics.Single(x => x.Label == "Average max temp");
+        var averageMax = trend.Metrics.Single(x => x.Label == "Maximum");
 
         Assert.AreEqual("No significant trend", averageMax.HeadlineText);
         Assert.AreEqual("1997-2026", averageMax.RecentTrendYearRange);
