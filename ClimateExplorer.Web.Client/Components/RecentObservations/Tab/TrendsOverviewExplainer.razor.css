@@ -1,0 +1,34 @@
+.trends-slope-example {
+    border-collapse: collapse;
+    margin: 0 0 0.9rem;
+    width: 100%;
+}
+
+.trends-slope-example th,
+.trends-slope-example td {
+    border-top: 1px solid rgb(66 95 89 / 12%);
+    padding: 0.3rem 0.5rem;
+    text-align: right;
+}
+
+.trends-slope-example th:first-child,
+.trends-slope-example td:first-child {
+    text-align: left;
+}
+
+.trends-slope-example th {
+    color: #697d78;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.trends-slope-example td {
+    color: #4d625d;
+    font-size: 0.9rem;
+}
+
+.trends-slope-example-sum td {
+    border-top: 1px solid rgb(66 95 89 / 30%);
+    color: #253b36;
+    font-weight: 700;
+}

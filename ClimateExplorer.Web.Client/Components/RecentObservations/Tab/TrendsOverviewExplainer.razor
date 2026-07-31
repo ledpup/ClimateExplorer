@@ -13,7 +13,7 @@
         <strong>Why rates are shown per decade.</strong> The underlying calculation works in whatever
         units the data uses - degrees per year, millimetres per year - but a per-year number is small
         enough to look like noise. Multiplying by ten to get a per-decade rate makes the number large
-        enough to read at a glance, without implying the precision changes year to year.
+        enough to read at a glance.
     </p>
 
     <p>
@@ -24,6 +24,53 @@
         When a trend doesn't clear that bar, showing a specific number such as
         "+0.08°C per decade" would overstate confidence the data doesn't support, so the tile shows
         "No significant trend" instead.
+    </p>
+
+    <p>
+        <strong>How the slope itself is worked out.</strong> Picture each year in the record as a point:
+        <em>x</em> is the year, <em>y</em> is that year's value (temperature, rainfall, whatever the
+        metric is). The line's slope, written β ("beta"), comes from this formula:
+    </p>
+
+    <SlopeFormulaFigure />
+
+    <p>
+        Working through it: for every year, take how far that year is from the average year (x − x̄),
+        and how far that year's value is from the average value (y − ȳ), and multiply the two together.
+        Add up that product for every year in the record - that's the sum on top. The sum on the bottom
+        does the same thing with just the years: how far each year is from the average year, squared,
+        and added up across the whole record. Divide one sum by the other and the result is the slope -
+        how much the fitted line rises for each extra year.
+    </p>
+
+    <p>
+        <strong>A small worked example.</strong> Say a station has three years of data: 2001 at 14.00°C,
+        2002 at 14.05°C, 2003 at 14.10°C. The average year is 2002 and the average temperature is 14.05°C.
+    </p>
+
+    <table class="trends-slope-example">
+        <thead>
+            <tr>
+                <th scope="col">Year (x)</th>
+                <th scope="col">Temp °C (y)</th>
+                <th scope="col">x − x̄</th>
+                <th scope="col">y − ȳ</th>
+                <th scope="col">(x−x̄)(y−ȳ)</th>
+                <th scope="col">(x−x̄)²</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>2001</td><td>14.00</td><td>−1</td><td>−0.05</td><td>0.05</td><td>1</td></tr>
+            <tr><td>2002</td><td>14.05</td><td>0</td><td>0.00</td><td>0.00</td><td>0</td></tr>
+            <tr><td>2003</td><td>14.10</td><td>1</td><td>0.05</td><td>0.05</td><td>1</td></tr>
+            <tr class="trends-slope-example-sum"><td colspan="4">Sum</td><td>0.10</td><td>2</td></tr>
+        </tbody>
+    </table>
+
+    <p>
+        The slope is the sum on top divided by the sum on the bottom: 0.10 ÷ 2 = 0.05°C per year - the
+        +0.5°C per decade the tile would display, once that per-year figure is multiplied by ten as
+        described next.
     </p>
 
     <p>
