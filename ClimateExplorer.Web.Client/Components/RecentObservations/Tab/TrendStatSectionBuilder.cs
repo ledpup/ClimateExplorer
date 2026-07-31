@@ -225,7 +225,7 @@ internal static class TrendStatSectionBuilder
             FormatPValue(trend.Significance.PValue),
             IsEmphasized: true,
             AbstractExplanation: "The p-value is the probability that a trend this strong could show up by random chance, even if there's no real change happening over time.",
-            ClimateExplanation: $"ClimateExplorer calls a trend \"significant\" when that likelihood is below 5% (the p-value <  {trend.Significance.Alpha.ToString("0.00", CultureInfo.InvariantCulture)}). \"Significant\" means the trend is probably real, not that it's necessarily large. It's a statement about how surprising the data would be under the assumption of no effect.",
+            ClimateExplanation: $"This site calls a trend \"significant\" when that likelihood is below 5% (the p-value <  {trend.Significance.Alpha.ToString("0.00", CultureInfo.InvariantCulture)}). \"Significant\" means the trend is probably real, not that it's necessarily large. It's a statement about how surprising the data would be under the assumption of no effect.",
             WorkedExamples: null);
 
         var deviationRow = new TrendStatRow(

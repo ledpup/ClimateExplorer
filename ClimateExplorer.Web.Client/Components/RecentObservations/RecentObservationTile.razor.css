@@ -446,7 +446,7 @@
 .recent-observation-tile ::deep .trends-stat-explanation {
     background: #f4f8f6;
     border-radius: 6px;
-    color: #40534f;
+    color: #000;
     font-size: 0.85rem;
     line-height: 1.45;
     margin: 0.3rem 0 0.5rem;

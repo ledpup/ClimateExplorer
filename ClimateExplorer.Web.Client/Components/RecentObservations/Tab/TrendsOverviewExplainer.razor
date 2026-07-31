@@ -34,6 +34,11 @@
 
     <SlopeFormulaFigure />
 
+    <ul>
+        <li>x̄ is the average year across the record</li>
+        <li>ȳ is the average value</li>
+    </ul>
+
     <p>
         Working through it: for every year, take how far that year is from the average year (x − x̄),
         and how far that year's value is from the average value (y − ȳ), and multiply the two together.
@@ -72,6 +77,53 @@
         +0.5°C per decade the tile would display, once that per-year figure is multiplied by ten as
         described next.
     </p>
+
+    <p>
+        <strong>Limitations of linear regression: non-linearity.</strong> Ordinary least squares forces a single, constant rate of change
+        onto the whole record, but warming (or drying, or any other trend) doesn't necessarily happen at
+        a constant pace. It can accelerate, plateau, or reverse over different stretches of the same
+        record. A single slope fitted across a century of data can hide a period of little change early
+        on followed by faster change more recently - or the reverse. The fitted line is the best
+        <em>straight-line</em> summary of the data, not proof that the underlying process is actually
+        linear.
+    </p>
+
+    <p>
+        The site offers three time windows - <strong>full period</strong>, <strong>last 30
+        years</strong>, and <strong>early period</strong> (the first half of the record).
+        Comparing the slope across these windows is a simple way to check for
+        non-linearity: if the last-30-years rate is noticeably steeper than the early-period rate, the
+        full-period figure is averaging over a change of pace rather than describing a single, unchanging
+        rate. If the three windows broadly agree, that's evidence the trend has been reasonably constant.
+        Neither window is "more correct" than the others - they're different lenses on the same data, and
+        the gap between them is often as informative as any one number on its own.
+    </p>
+
+    <p>
+        <strong>Other limitations to keep in mind.</strong>
+    </p>
+    <ul>
+        <li>
+            <strong>Sensitivity to endpoints.</strong> Because the line is fitted to minimise squared
+            distances, a single unusually hot, cold, wet or dry year at either end of a short window can
+            shift the slope noticeably - short windows are more exposed to this than long ones.
+        </li>
+        <li>
+            <strong>Autocorrelation.</strong> Consecutive years in a climate record aren't independent -
+            a warm year tends to be followed by another warm year. The standard p-value calculation
+            assumes independent observations, so it can understate the true uncertainty in a slope.
+        </li>
+        <li>
+            <strong>Extrapolation.</strong> The fitted line describes the record it was fitted to. Using
+            it to project temperatures, rainfall, or anything else beyond the edges of the available data
+            assumes the same rate continues indefinitely, which the data itself cannot confirm.
+        </li>
+        <li>
+            <strong>Missing or uneven data.</strong> Gaps or an uneven spread of years across the record
+            can pull the fitted line away from what a complete record would show, especially over shorter
+            windows.
+        </li>
+    </ul>
 
     <p>
         <strong>What's on these pages.</strong> The tile's own rows only ever show the per-decade
