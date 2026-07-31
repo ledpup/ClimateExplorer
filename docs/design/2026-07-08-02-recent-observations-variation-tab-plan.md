@@ -360,3 +360,13 @@ The second pass completed variation behavior:
 - Added service/unit coverage for non-day tab order, daily tab order,
   precipitation variation formatting, daily precipitation variation, zero
   standard-deviation handling, and temperature variation labels.
+
+A later cleanup pass (2026-07-31) removed the `MetricGroupKey.Day` /
+`MetricGroupKey.Ranking` split entirely: day tiles and non-day tiles both now
+declare their single-value comparison group as `MetricGroupKey.Ranking` with
+title `"Ranking"`, since the two had become functionally identical (same view
+model, same rendering component, and the expanded-tab title was already
+overridden to `"Ranking"` for `Day` groups). `MetricGroup` definitions for
+daily metrics (`DailyMaxTemperatureMetric`, `DailyPrecipitationMetric`,
+`DailyCo2Metric`, etc.) now use the `Ranking` key/title directly, and the
+title-override branch in `BuildExpandedTabs` was deleted.

@@ -5,6 +5,6 @@ namespace ClimateExplorer.Web.Client.UiModel.RecentObservations;
 /// Kept as the existing type name while expanded tabs are generalized beyond
 /// record/rank metrics.
 /// </summary>
-public sealed record RecentObservationMetricGroupViewModel : RecentObservationRecordsTabViewModel
+public sealed record RecentObservationMetricGroupViewModel : RecentObservationRankingsTabViewModel
 {
 }

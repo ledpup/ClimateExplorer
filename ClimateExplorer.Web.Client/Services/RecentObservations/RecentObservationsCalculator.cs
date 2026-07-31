@@ -917,13 +917,12 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         var groups = new List<RecentObservationMetricGroupViewModel>();
 
         // A daily tile is a single day's observation - max/min/mean, not aggregates
-        // across days, so it uses its own records group. The expanded-tab layer
-        // renames this to "Records" once the Variation tab is added.
+        // across days, so it uses its own Ranking group backed by daily metrics.
         var groupDefinitions = period.Kind == PeriodKind.Daily ? domain.DailyGroups : domain.Groups;
 
         foreach (var group in groupDefinitions)
         {
-            var metrics = new List<RecentObservationRecordsViewModel>();
+            var metrics = new List<RecentObservationRankingsViewModel>();
             foreach (var metric in group.Metrics)
             {
                 if (period.MetricValues.TryGetValue(metric.Key, out var value))
@@ -956,10 +955,10 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
 
         foreach (var group in recordGroups)
         {
-            tabs.Add(new RecentObservationRecordsTabViewModel
+            tabs.Add(new RecentObservationRankingsTabViewModel
             {
                 Key = group.Key,
-                Title = group.Key == MetricGroupKey.Day ? "Records" : group.Title,
+                Title = group.Title,
                 Metrics = group.Metrics,
             });
         }
@@ -967,6 +966,13 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         var variationMetrics = BuildVariationMetrics(period, domain, distributions);
         if (variationMetrics.Count > 0)
         {
+            tabs.Add(new RecentObservationAverageTabViewModel
+            {
+                Key = MetricGroupKey.Average,
+                Title = "Average",
+                Metrics = variationMetrics,
+            });
+
             tabs.Add(new RecentObservationVariationTabViewModel
             {
                 Key = MetricGroupKey.Variation,
@@ -1033,6 +1039,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         var score = standardDeviation is > 0d
             ? (currentValue.Value.Value - average) / standardDeviation.Value
             : (double?)null;
+        var anomaly = currentValue.Value.Value - average;
 
         return new RecentObservationVariationViewModel
         {
@@ -1050,6 +1057,9 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             CurrentPeriodText = $"{currentPeriodLabel}: {metric.Format(currentValue.Value.Value)}",
             StandardScoreLabel = score.HasValue && double.IsFinite(score.Value) ? "standard score" : null,
             StandardScoreValue = score.HasValue && double.IsFinite(score.Value) ? FormatStandardScore(score.Value) : null,
+            Anomaly = anomaly,
+            AnomalyText = FormatAnomaly(anomaly, metric),
+            AnomalyDirectionText = anomaly >= 0 ? "above average" : "below average",
             ComparablePeriodCount = distribution.ComparablePeriodCount,
         };
     }
@@ -1203,7 +1213,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         return $"{FormatDayMonth(date)} {date.Year}";
     }
 
-    private static RecentObservationRecordsViewModel BuildMetric(Metric metric, MetricObservationValue currentValue, HistoricalValues? distribution)
+    private static RecentObservationRankingsViewModel BuildMetric(Metric metric, MetricObservationValue currentValue, HistoricalValues? distribution)
     {
         var ranking = distribution is null
             ? null
@@ -1211,7 +1221,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
 
         if (ranking is null || distribution is null)
         {
-            return new RecentObservationRecordsViewModel
+            return new RecentObservationRankingsViewModel
             {
                 Label = metric.DetailLabel,
                 CurrentValue = metric.Format(currentValue.Value!.Value),
@@ -1229,7 +1239,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         // for the comparison date as plain reference context (no rank of their own).
         var status = RecentObservationComparison.DetermineRecordStatus(ranking);
 
-        return new RecentObservationRecordsViewModel
+        return new RecentObservationRankingsViewModel
         {
             Label = metric.DetailLabel,
             CurrentValue = metric.Format(currentValue.Value!.Value),
@@ -1658,8 +1668,8 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         x => x.Mean,
         MetricAggregation.Mean,
         FormatTemperature,
-        "Mean temperature",
-        "Mean temperature",
+        "Average mean",
+        "Mean",
         "°C");
 
     private static readonly Metric AverageMaxTemperatureMetric = new(
@@ -1669,8 +1679,8 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         x => x.Max,
         MetricAggregation.Mean,
         FormatTemperature,
-        "Average maximum temperature",
-        "Average max temp",
+        "Average maximum",
+        "Maximum",
         "°C");
 
     private static readonly Metric AverageMinTemperatureMetric = new(
@@ -1680,8 +1690,8 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         x => x.Min,
         MetricAggregation.Mean,
         FormatTemperature,
-        "Average minimum temperature",
-        "Average min temp",
+        "Average minimum",
+        "Minimum",
         "°C");
 
     private static readonly Metric HighestDailyMaxTemperatureMetric = new(
@@ -1824,11 +1834,11 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         MeanTemperatureMetric,
         [AverageMaxTemperatureMetric, AverageMinTemperatureMetric],
         [
-            new MetricGroup(MetricGroupKey.PeriodRecords, "Period records", [AverageMaxTemperatureMetric, AverageMinTemperatureMetric, MeanTemperatureMetric]),
-            new MetricGroup(MetricGroupKey.DayRecords, "Day records", [HighestDailyMaxTemperatureMetric, LowestDailyMaxTemperatureMetric, HighestDailyMinTemperatureMetric, LowestDailyMinTemperatureMetric]),
+            new MetricGroup(MetricGroupKey.Ranking, "Ranking", [AverageMaxTemperatureMetric, AverageMinTemperatureMetric, MeanTemperatureMetric]),
+            new MetricGroup(MetricGroupKey.DailyRankings, "Daily ranking", [HighestDailyMaxTemperatureMetric, LowestDailyMaxTemperatureMetric, HighestDailyMinTemperatureMetric, LowestDailyMinTemperatureMetric]),
         ],
         [
-            new MetricGroup(MetricGroupKey.Day, "Day", [DailyMaxTemperatureMetric, DailyMinTemperatureMetric, DailyMeanTemperatureMetric]),
+            new MetricGroup(MetricGroupKey.Ranking, "Ranking", [DailyMaxTemperatureMetric, DailyMinTemperatureMetric, DailyMeanTemperatureMetric]),
         ],
         [AverageMaxTemperatureMetric, AverageMinTemperatureMetric, MeanTemperatureMetric],
         [DailyMaxTemperatureMetric, DailyMinTemperatureMetric, DailyMeanTemperatureMetric],
@@ -1844,11 +1854,11 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         PrecipitationMetric,
         [],
         [
-            new MetricGroup(MetricGroupKey.PeriodRecords, "Period records", [PrecipitationMetric]),
-            new MetricGroup(MetricGroupKey.DayRecords, "Day records", [HighestDailyPrecipitationMetric]),
+            new MetricGroup(MetricGroupKey.Ranking, "Ranking", [PrecipitationMetric]),
+            new MetricGroup(MetricGroupKey.DailyRankings, "Daily ranking", [HighestDailyPrecipitationMetric]),
         ],
         [
-            new MetricGroup(MetricGroupKey.Day, "Day", [DailyPrecipitationMetric]),
+            new MetricGroup(MetricGroupKey.Ranking, "Ranking", [DailyPrecipitationMetric]),
         ],
         [PrecipitationMetric],
         [DailyPrecipitationMetric],
@@ -1864,10 +1874,10 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         Co2Metric,
         [],
         [
-            new MetricGroup(MetricGroupKey.PeriodRecords, "Period records", [Co2Metric]),
+            new MetricGroup(MetricGroupKey.Ranking, "Ranking", [Co2Metric]),
         ],
         [
-            new MetricGroup(MetricGroupKey.Day, "Day", [DailyCo2Metric]),
+            new MetricGroup(MetricGroupKey.Ranking, "Ranking", [DailyCo2Metric]),
         ],
         [Co2Metric],
         [DailyCo2Metric],

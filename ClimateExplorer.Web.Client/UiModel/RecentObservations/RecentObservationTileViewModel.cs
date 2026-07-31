@@ -98,7 +98,7 @@ public sealed record RecentObservationTileViewModel
     {
         return [.. groups.Select(group => group with
         {
-            Metrics = StripRecordMetrics(group.Metrics),
+            Metrics = StripRankingMetrics(group.Metrics),
         })];
     }
 
@@ -107,7 +107,8 @@ public sealed record RecentObservationTileViewModel
     {
         return [.. tabs.Select(tab => tab switch
         {
-            RecentObservationRecordsTabViewModel records => records with { Metrics = StripRecordMetrics(records.Metrics) },
+            RecentObservationRankingsTabViewModel rankings => rankings with { Metrics = StripRankingMetrics(rankings.Metrics) },
+            RecentObservationAverageTabViewModel average => average with { Metrics = StripVariationMetrics(average.Metrics) },
             RecentObservationVariationTabViewModel variation => variation with { Metrics = StripVariationMetrics(variation.Metrics) },
             RecentObservationTrendTabViewModel trend => trend with
             {
@@ -117,8 +118,8 @@ public sealed record RecentObservationTileViewModel
         })];
     }
 
-    private static IReadOnlyList<RecentObservationRecordsViewModel> StripRecordMetrics(
-        IReadOnlyList<RecentObservationRecordsViewModel> metrics)
+    private static IReadOnlyList<RecentObservationRankingsViewModel> StripRankingMetrics(
+        IReadOnlyList<RecentObservationRankingsViewModel> metrics)
     {
         return [.. metrics.Select(metric => metric with
         {
@@ -151,6 +152,9 @@ public sealed record RecentObservationTileViewModel
             CurrentPeriodText = null,
             StandardScoreLabel = null,
             StandardScoreValue = null,
+            Anomaly = null,
+            AnomalyText = null,
+            AnomalyDirectionText = null,
             UnavailableReason = "Recent observations are below the completeness threshold.",
         })];
     }
