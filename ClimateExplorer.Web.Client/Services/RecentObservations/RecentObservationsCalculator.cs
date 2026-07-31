@@ -967,6 +967,13 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         var variationMetrics = BuildVariationMetrics(period, domain, distributions);
         if (variationMetrics.Count > 0)
         {
+            tabs.Add(new RecentObservationAverageTabViewModel
+            {
+                Key = MetricGroupKey.Average,
+                Title = "Average",
+                Metrics = variationMetrics,
+            });
+
             tabs.Add(new RecentObservationVariationTabViewModel
             {
                 Key = MetricGroupKey.Variation,
@@ -1033,6 +1040,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
         var score = standardDeviation is > 0d
             ? (currentValue.Value.Value - average) / standardDeviation.Value
             : (double?)null;
+        var anomaly = currentValue.Value.Value - average;
 
         return new RecentObservationVariationViewModel
         {
@@ -1050,6 +1058,9 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             CurrentPeriodText = $"{currentPeriodLabel}: {metric.Format(currentValue.Value.Value)}",
             StandardScoreLabel = score.HasValue && double.IsFinite(score.Value) ? "standard score" : null,
             StandardScoreValue = score.HasValue && double.IsFinite(score.Value) ? FormatStandardScore(score.Value) : null,
+            Anomaly = anomaly,
+            AnomalyText = FormatAnomaly(anomaly, metric),
+            AnomalyDirectionText = anomaly >= 0 ? "above average" : "below average",
             ComparablePeriodCount = distribution.ComparablePeriodCount,
         };
     }

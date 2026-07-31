@@ -5,6 +5,7 @@ public enum MetricGroupKey
     Day,
     Ranking,
     DailyRankings,
+    Average,
     Variation,
     Trend,
 }

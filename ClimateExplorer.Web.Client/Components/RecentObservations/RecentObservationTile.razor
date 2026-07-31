@@ -38,6 +38,10 @@
                     <RecentObservationRanking Metrics="@rankingsTab.Metrics" />
                 }
             }
+            else if (SelectedTab is RecentObservationAverageTabViewModel averageTab)
+            {
+                <RecentObservationAverages Metrics="@averageTab.Metrics" />
+            }
             else if (SelectedTab is RecentObservationVariationTabViewModel variationTab)
             {
                 <RecentObservationVariations Metrics="@variationTab.Metrics" />

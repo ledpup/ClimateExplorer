@@ -1176,6 +1176,34 @@ public class RecentObservationsServiceTests
     }
 
     [TestMethod]
+    public async Task CompletenessThresholdSuppressesAverageBelowThreshold()
+    {
+        var historicalRecords = CreateHistoricalRangeRecords(new DateOnly(2026, 6, 8), new DateOnly(2026, 6, 14));
+        var service = CreateService(
+            historicalRecords: historicalRecords,
+            includeRecentRecord: date => date != new DateOnly(2026, 6, 9) && date != new DateOnly(2026, 6, 12));
+
+        var result = await service.GetPrecipitationRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: 1,
+            previousMonthCount: 0,
+            previousSeasonCount: 0);
+        var latestSevenDays = result
+            .ApplyCompletenessThreshold(RecentObservationCompletenessThreshold.Default)
+            .Tiles
+            .Single(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays);
+        var average = (RecentObservationAverageTabViewModel)latestSevenDays.AvailableExpandedTabs.Single(x => x.Key == MetricGroupKey.Average);
+        var precipitation = average.Metrics.Single();
+
+        Assert.IsNull(precipitation.Anomaly);
+        Assert.IsNull(precipitation.AnomalyText);
+        Assert.IsNull(precipitation.AnomalyDirectionText);
+        Assert.IsNull(precipitation.HistoricalAverageText);
+        Assert.IsNull(precipitation.CurrentPeriodText);
+        Assert.AreEqual("Recent observations are below the completeness threshold.", precipitation.UnavailableReason);
+    }
+
+    [TestMethod]
     public async Task ApplyCompletenessThreshold_TrendTab_StripsNumbersAndSetsThresholdUnavailableReason()
     {
         var historicalRecords = CreateHistoricalRangeRecords(new DateOnly(2026, 6, 8), new DateOnly(2026, 6, 14), startYear: 1960, endYear: 2025);
@@ -1876,10 +1904,10 @@ public class RecentObservationsServiceTests
         var latestSevenDays = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays);
 
         CollectionAssert.AreEqual(
-            new[] { MetricGroupKey.Ranking, MetricGroupKey.DailyRankings, MetricGroupKey.Variation, MetricGroupKey.Trend },
+            new[] { MetricGroupKey.Ranking, MetricGroupKey.DailyRankings, MetricGroupKey.Average, MetricGroupKey.Variation, MetricGroupKey.Trend },
             latestSevenDays.AvailableExpandedTabs.Select(x => x.Key).ToArray());
         CollectionAssert.AreEqual(
-            new[] { "Ranking", "Daily ranking", "Variation", "Trend" },
+            new[] { "Ranking", "Daily ranking", "Average", "Variation", "Trend" },
             latestSevenDays.AvailableExpandedTabs.Select(x => x.Title).ToArray());
     }
 
@@ -1897,10 +1925,10 @@ public class RecentObservationsServiceTests
         var latestSevenDays = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays);
 
         CollectionAssert.AreEqual(
-            new[] { MetricGroupKey.Ranking, MetricGroupKey.DailyRankings, MetricGroupKey.Variation, MetricGroupKey.Trend },
+            new[] { MetricGroupKey.Ranking, MetricGroupKey.DailyRankings, MetricGroupKey.Average, MetricGroupKey.Variation, MetricGroupKey.Trend },
             latestSevenDays.AvailableExpandedTabs.Select(x => x.Key).ToArray());
         CollectionAssert.AreEqual(
-            new[] { "Ranking", "Daily ranking", "Variation", "Trend" },
+            new[] { "Ranking", "Daily ranking", "Average", "Variation", "Trend" },
             latestSevenDays.AvailableExpandedTabs.Select(x => x.Title).ToArray());
     }
 
@@ -1941,13 +1969,15 @@ public class RecentObservationsServiceTests
         Assert.HasCount(3, dailyTiles);
         Assert.IsTrue(dailyTiles.All(x => x.MetricGroups.Count == 1));
         Assert.IsTrue(dailyTiles.All(x => x.MetricGroups[0].Key == MetricGroupKey.Day));
-        Assert.IsTrue(dailyTiles.All(x => x.AvailableExpandedTabs.Count == 3));
+        Assert.IsTrue(dailyTiles.All(x => x.AvailableExpandedTabs.Count == 4));
         Assert.IsTrue(dailyTiles.All(x => x.AvailableExpandedTabs[0].Key == MetricGroupKey.Day));
         Assert.IsTrue(dailyTiles.All(x => x.AvailableExpandedTabs[0].Title == "Ranking"));
-        Assert.IsTrue(dailyTiles.All(x => x.AvailableExpandedTabs[1].Key == MetricGroupKey.Variation));
-        Assert.IsTrue(dailyTiles.All(x => x.AvailableExpandedTabs[1].Title == "Variation"));
-        Assert.IsTrue(dailyTiles.All(x => x.AvailableExpandedTabs[2].Key == MetricGroupKey.Trend));
-        Assert.IsTrue(dailyTiles.All(x => x.AvailableExpandedTabs[2].Title == "Trend"));
+        Assert.IsTrue(dailyTiles.All(x => x.AvailableExpandedTabs[1].Key == MetricGroupKey.Average));
+        Assert.IsTrue(dailyTiles.All(x => x.AvailableExpandedTabs[1].Title == "Average"));
+        Assert.IsTrue(dailyTiles.All(x => x.AvailableExpandedTabs[2].Key == MetricGroupKey.Variation));
+        Assert.IsTrue(dailyTiles.All(x => x.AvailableExpandedTabs[2].Title == "Variation"));
+        Assert.IsTrue(dailyTiles.All(x => x.AvailableExpandedTabs[3].Key == MetricGroupKey.Trend));
+        Assert.IsTrue(dailyTiles.All(x => x.AvailableExpandedTabs[3].Title == "Trend"));
     }
 
     [TestMethod]
@@ -1970,9 +2000,9 @@ public class RecentObservationsServiceTests
             .Where(x => x.PeriodKind == RecentObservationPeriodKind.Daily)
             .ToList();
 
-        Assert.IsTrue(dailyTiles.All(x => x.AvailableExpandedTabs.Count == 3));
-        Assert.IsTrue(dailyTiles.All(x => x.AvailableExpandedTabs[2].Key == MetricGroupKey.Trend));
-        Assert.IsTrue(dailyTiles.All(x => x.AvailableExpandedTabs[2].Title == "Trend"));
+        Assert.IsTrue(dailyTiles.All(x => x.AvailableExpandedTabs.Count == 4));
+        Assert.IsTrue(dailyTiles.All(x => x.AvailableExpandedTabs[3].Key == MetricGroupKey.Trend));
+        Assert.IsTrue(dailyTiles.All(x => x.AvailableExpandedTabs[3].Title == "Trend"));
     }
 
     [TestMethod]
@@ -2054,6 +2084,69 @@ public class RecentObservationsServiceTests
         Assert.AreEqual("standard score", precipitation.StandardScoreLabel);
         Assert.AreEqual("-3.0×", precipitation.StandardScoreValue);
         Assert.AreEqual(26, precipitation.ComparablePeriodCount);
+    }
+
+    [TestMethod]
+    public async Task GetPrecipitationRecords_AverageTab_ExposesAnomalyBelowHistoricalAverage()
+    {
+        var historicalRecords = CreateHistoricalRangeRecords(new DateOnly(2026, 6, 8), new DateOnly(2026, 6, 14));
+        var service = CreateService(historicalRecords: historicalRecords);
+
+        var result = await service.GetPrecipitationRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: 1,
+            previousMonthCount: 0,
+            previousSeasonCount: 0);
+        var latestSevenDays = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays);
+        var average = (RecentObservationAverageTabViewModel)latestSevenDays.AvailableExpandedTabs.Single(x => x.Key == MetricGroupKey.Average);
+        var precipitation = average.Metrics.Single();
+
+        Assert.AreEqual("Precipitation", precipitation.Label);
+        Assert.AreEqual(164.5d, precipitation.HistoricalAverage);
+        Assert.AreEqual(7d, precipitation.CurrentValue);
+        Assert.AreEqual(-157.5d, precipitation.Anomaly!.Value, 0.0001d);
+        Assert.AreEqual("below average", precipitation.AnomalyDirectionText);
+        Assert.IsTrue(precipitation.AnomalyText!.StartsWith("-", StringComparison.Ordinal));
+        Assert.AreEqual("Historical average: 165mm", precipitation.HistoricalAverageText);
+        Assert.IsTrue(precipitation.CurrentPeriodText!.StartsWith("Latest 7 days: ", StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public async Task GetPrecipitationRecords_AverageTab_ExposesAnomalyAboveHistoricalAverage()
+    {
+        var historicalRecords = CreateHistoricalRangeRecords(new DateOnly(2026, 6, 8), new DateOnly(2026, 6, 14));
+        var service = CreateService(historicalRecords: historicalRecords, recentValue: _ => 60d);
+
+        var result = await service.GetPrecipitationRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: 1,
+            previousMonthCount: 0,
+            previousSeasonCount: 0);
+        var latestSevenDays = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays);
+        var average = (RecentObservationAverageTabViewModel)latestSevenDays.AvailableExpandedTabs.Single(x => x.Key == MetricGroupKey.Average);
+        var precipitation = average.Metrics.Single();
+
+        Assert.AreEqual("above average", precipitation.AnomalyDirectionText);
+        Assert.IsTrue(precipitation.AnomalyText!.StartsWith("+", StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public async Task GetPrecipitationRecords_DailyAverageTab_UsesDailyObservationLabel()
+    {
+        var historicalRecords = CreateHistoricalSameDateRecords(new DateOnly(2026, 6, 14), startYear: 2000, endYear: 2025, valueOffset: 0d);
+        var service = CreateService(historicalRecords: historicalRecords);
+
+        var result = await service.GetPrecipitationRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: 1,
+            previousMonthCount: 0,
+            previousSeasonCount: 0);
+        var daily = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.Daily);
+        var average = (RecentObservationAverageTabViewModel)daily.AvailableExpandedTabs.Single(x => x.Key == MetricGroupKey.Average);
+        var precipitation = average.Metrics.Single();
+
+        Assert.AreEqual("Precipitation", precipitation.Label);
+        Assert.IsTrue(precipitation.CurrentPeriodText!.StartsWith("14 June 2026: ", StringComparison.Ordinal));
     }
 
     [TestMethod]

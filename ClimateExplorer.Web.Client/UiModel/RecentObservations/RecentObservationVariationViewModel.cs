@@ -16,6 +16,9 @@ public sealed record RecentObservationVariationViewModel
     public string? CurrentPeriodText { get; init; }
     public string? StandardScoreLabel { get; init; }
     public string? StandardScoreValue { get; init; }
+    public double? Anomaly { get; init; }
+    public string? AnomalyText { get; init; }
+    public string? AnomalyDirectionText { get; init; }
     public string? UnavailableReason { get; init; }
     public int ComparablePeriodCount { get; init; }
 }

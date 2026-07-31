@@ -108,6 +108,7 @@ public sealed record RecentObservationTileViewModel
         return [.. tabs.Select(tab => tab switch
         {
             RecentObservationRankingsTabViewModel rankings => rankings with { Metrics = StripRankingMetrics(rankings.Metrics) },
+            RecentObservationAverageTabViewModel average => average with { Metrics = StripVariationMetrics(average.Metrics) },
             RecentObservationVariationTabViewModel variation => variation with { Metrics = StripVariationMetrics(variation.Metrics) },
             RecentObservationTrendTabViewModel trend => trend with
             {
@@ -151,6 +152,9 @@ public sealed record RecentObservationTileViewModel
             CurrentPeriodText = null,
             StandardScoreLabel = null,
             StandardScoreValue = null,
+            Anomaly = null,
+            AnomalyText = null,
+            AnomalyDirectionText = null,
             UnavailableReason = "Recent observations are below the completeness threshold.",
         })];
     }
