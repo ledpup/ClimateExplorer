@@ -68,6 +68,7 @@ public static class ClimateDataHelper
             DataAdjustment = measurementForLocation.MeasurementDefinition!.DataAdjustment,
             DataSetDefinitionId = measurementForLocation.DataSetDefinition!.Id,
             DataType = measurementForLocation.MeasurementDefinition.DataType,
+            DataResolution = measurementForLocation.MeasurementDefinition.DataResolution,
             LocationId = location.Id,
         };
 

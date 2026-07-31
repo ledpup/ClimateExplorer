@@ -84,6 +84,8 @@ internal static class MetadataEndpoints
                     Description = x.Description,
                     Publisher = x.Publisher,
                     PublisherUrl = x.PublisherUrl,
+                    PublisherDescription = x.PublisherDescription,
+                    PublisherDivision = x.PublisherDivision,
                     LocationIds = x.DataLocationMapping?.LocationIdToDataFileMappings.Keys.ToHashSet(),
                     MeasurementDefinitions = x.MeasurementDefinitions.Select(x => x.ToViewModel()).ToList(),
                 })

@@ -131,6 +131,14 @@
                 <div class="title">Published by</div>
                 <div class="value">
                     <a href="@DataSetDefinition.PublisherUrl" target="_blank" rel="noopener noreferrer">@DataSetDefinition.Publisher</a>
+                    @if (!string.IsNullOrWhiteSpace(DataSetDefinition.PublisherDivision))
+                    {
+                        <text> &mdash; @DataSetDefinition.PublisherDivision</text>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(DataSetDefinition.PublisherDescription))
+                    {
+                        <p class="publisher-description">@((MarkupString)DataSetDefinition.PublisherDescription.Replace("\r\n", "<br>"))</p>
+                    }
                 </div>
             </div>
         }

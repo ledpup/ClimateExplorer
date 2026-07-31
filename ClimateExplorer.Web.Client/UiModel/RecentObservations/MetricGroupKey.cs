@@ -2,9 +2,9 @@
 
 public enum MetricGroupKey
 {
-    Day,
-    PeriodRecords,
-    DayRecords,
+    Ranking,
+    DailyRankings,
+    Average,
     Variation,
     Trend,
 }

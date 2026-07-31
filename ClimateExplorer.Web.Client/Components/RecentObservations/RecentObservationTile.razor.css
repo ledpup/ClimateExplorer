@@ -340,7 +340,7 @@
     font-weight: 600;
 }
 
-.recent-observation-tile ::deep .recent-observation-detail-rank.day-records {
+.recent-observation-tile ::deep .recent-observation-detail-rank.daily-rankings {
     display: block;
 }
 

@@ -1,6 +1,8 @@
 @using Blazorise
 @using ClimateExplorer.Web.Client.Components.Co2
 @using ClimateExplorer.Web.Client.Components.Notifications
+@using ClimateExplorer.Web.Client.Components.RecentObservations
+@using ClimateExplorer.Web.Client.UiModel.RecentObservations
 
 <!-- this div is necessary to get Blazor to apply a randomly-generated attribute to a DOM element so that CSS isolation will work & we can 
      style the navbar's inner elements https://github.com/Megabit/Blazorise/issues/1599 -->
@@ -68,10 +70,14 @@
             {
                 <BarEnd>
                     <BarItem Class="co2-nav-item">
-                        <Co2NavTile />
+                        <Co2NavTile OnClick="ShowCo2PanelAsync" />
                     </BarItem>
                 </BarEnd>
             }
         </BarMenu>
     </Bar>
 </div>
+
+<SidePanel @ref="co2SidePanel" Title="Atmospheric CO₂" Width="85%">
+    <RecentObservationsPanel Context="@RecentObservationsContext.ForAtmosphere()" DataSetDefinitions="@dataSetDefinitions" />
+</SidePanel>

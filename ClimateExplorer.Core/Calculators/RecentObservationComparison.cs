@@ -164,6 +164,71 @@ public static class RecentObservationComparison
         return "Near average rainfall";
     }
 
+    public static string BuildCo2Headline(string comparisonLabel, RecentObservationComparisonResult ranking)
+    {
+        if (ranking.IsNewHighRecord)
+        {
+            return $"Highest {comparisonLabel}";
+        }
+
+        if (ranking.IsNewLowRecord)
+        {
+            return $"Lowest {comparisonLabel}";
+        }
+
+        if (ranking.IsTiedHighRecord && ranking.HighRank == 1)
+        {
+            return $"Equal highest {comparisonLabel}";
+        }
+
+        if (ranking.IsTiedLowRecord && ranking.LowRank == 1)
+        {
+            return $"Equal lowest {comparisonLabel}";
+        }
+
+        if (ranking.Direction == RecentObservationComparisonDirection.High)
+        {
+            if (ranking.HighRank <= 5 && !ranking.IsTiedHighRecord)
+            {
+                return $"{FormatOrdinal(ranking.HighRank)} highest {comparisonLabel}";
+            }
+
+            if (ranking.HighPercentile >= 95d)
+            {
+                return "Top 5% highest";
+            }
+
+            if (ranking.HighPercentile >= 90d)
+            {
+                return "Top 10% highest";
+            }
+
+            return ranking.HighPercentile >= 75d ? "Higher than usual" : "Near average";
+        }
+
+        if (ranking.Direction == RecentObservationComparisonDirection.Low)
+        {
+            if (ranking.LowRank <= 5 && !ranking.IsTiedLowRecord)
+            {
+                return $"{FormatOrdinal(ranking.LowRank)} lowest {comparisonLabel}";
+            }
+
+            if (ranking.LowPercentile >= 95d)
+            {
+                return "Top 5% lowest";
+            }
+
+            if (ranking.LowPercentile >= 90d)
+            {
+                return "Top 10% lowest";
+            }
+
+            return ranking.LowPercentile >= 75d ? "Lower than usual" : "Near average";
+        }
+
+        return "Near average";
+    }
+
     public static string BuildTemperaturePercentileSentence(string comparisonLabelPlural, int? startYear, RecentObservationComparisonResult ranking)
     {
         var direction = ranking.Direction == RecentObservationComparisonDirection.Low ? "Cooler" : "Warmer";
@@ -174,6 +239,13 @@ public static class RecentObservationComparison
     public static string BuildPrecipitationPercentileSentence(int? startYear, RecentObservationComparisonResult ranking)
     {
         var direction = ranking.Direction == RecentObservationComparisonDirection.Low ? "Drier" : "Wetter";
+        var percentile = ranking.Direction == RecentObservationComparisonDirection.Low ? ranking.LowPercentile : ranking.HighPercentile;
+        return $"{direction} than {FormatPercent(percentile)}% of comparable periods";
+    }
+
+    public static string BuildCo2PercentileSentence(int? startYear, RecentObservationComparisonResult ranking)
+    {
+        var direction = ranking.Direction == RecentObservationComparisonDirection.Low ? "Lower" : "Higher";
         var percentile = ranking.Direction == RecentObservationComparisonDirection.Low ? ranking.LowPercentile : ranking.HighPercentile;
         return $"{direction} than {FormatPercent(percentile)}% of comparable periods";
     }

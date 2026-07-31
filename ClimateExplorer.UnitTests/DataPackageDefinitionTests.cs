@@ -65,15 +65,26 @@ public sealed class DataPackageDefinitionTests
     }
 
     [TestMethod]
-    public void BuildDataSetDefinitions_SharedCo2Measurements_ResolveToSamePhysicalAsset()
+    public void BuildDataSetDefinitions_SharedMonthlyCo2Measurements_ResolveToSamePhysicalAsset()
     {
         var definition = DataSetDefinitionsBuilder.BuildDataSetDefinitions().Single(x => x.ShortName == "Carbon Dioxide (CO₂)");
-        var physicalPaths = definition.MeasurementDefinitions!
+        var monthlyPhysicalPaths = definition.MeasurementDefinitions!
+            .Where(x => x.DataResolution == Core.Enums.DataResolution.Monthly)
             .Select(x => x.DataFileSource.FilePathFormat)
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToArray();
 
-        Assert.HasCount(1, physicalPaths);
+        Assert.HasCount(1, monthlyPhysicalPaths);
+    }
+
+    [TestMethod]
+    public void BuildDataSetDefinitions_DailyCo2Measurement_ResolvesToItsOwnPhysicalAsset()
+    {
+        var definition = DataSetDefinitionsBuilder.BuildDataSetDefinitions().Single(x => x.ShortName == "Carbon Dioxide (CO₂)");
+        var dailyMeasurement = definition.MeasurementDefinitions!.Single(x => x.DataResolution == Core.Enums.DataResolution.Daily);
+        var monthlyPhysicalPath = definition.MeasurementDefinitions!.First(x => x.DataResolution == Core.Enums.DataResolution.Monthly).DataFileSource.FilePathFormat;
+
+        Assert.IsFalse(string.Equals(monthlyPhysicalPath, dailyMeasurement.DataFileSource.FilePathFormat, StringComparison.OrdinalIgnoreCase));
     }
 
     private static string GetSolutionRoot()
