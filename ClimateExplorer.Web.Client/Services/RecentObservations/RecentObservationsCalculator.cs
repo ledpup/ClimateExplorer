@@ -959,7 +959,7 @@ public sealed class RecentObservationsCalculator : IRecentObservationsCalculator
             tabs.Add(new RecentObservationRankingsTabViewModel
             {
                 Key = group.Key,
-                Title = group.Key == MetricGroupKey.Day ? "Records" : group.Title,
+                Title = group.Key == MetricGroupKey.Day ? "Ranking" : group.Title,
                 Metrics = group.Metrics,
             });
         }
