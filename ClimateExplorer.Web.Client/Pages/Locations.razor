@@ -174,7 +174,7 @@
 </SidePanel>
 
 <SidePanel @ref="recentObservationsSidePanel" Title="@("Recent observations for " + Location?.Name)" Width="85%">
-    <RecentObservationsPanel Context="@RecentObservationsContext.ForLocation(Location)" DataSetDefinitions="@DataSetDefinitions" />
+    <RecentObservationsPanel Context="@RecentObservationsContext.ForLocation(Location)" Location="@Location" DataSetDefinitions="@DataSetDefinitions" />
 </SidePanel>
 
 <LocationDataSetMetadataSidePanel @ref="dataSetMetadataSidePanel" DataSetDefinitions="@DataSetDefinitions" Width="50%" />

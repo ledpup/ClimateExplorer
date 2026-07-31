@@ -28,6 +28,9 @@ public partial class RecentObservationsPanel
     public RecentObservationsContext? Context { get; set; }
 
     [Parameter]
+    public Location? Location { get; set; }
+
+    [Parameter]
     public IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
 
     [Inject]
@@ -45,8 +48,6 @@ public partial class RecentObservationsPanel
     [Inject]
     private NavigationManager NavManager { get; set; } = default!;
 
-    private RecentObservationsTab ActiveTab { get; set; } = RecentObservationsTab.Temperature;
-    private RecentObservationsTabState CurrentState => GetState(ActiveTab);
     private string? ActiveTabKey { get; set; }
     private ObservationDomain? ActiveDomain => Context?.Domains.FirstOrDefault(x => x.Key == ActiveTabKey) ?? Context?.Domains.FirstOrDefault();
     private RecentObservationsTabState CurrentState => ActiveDomain is null ? new RecentObservationsTabState() : GetState(ActiveDomain.Key);
