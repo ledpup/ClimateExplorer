@@ -20,6 +20,7 @@ public sealed class DataPackageDefinitionTests
         ["GHCNmp"] = "AE000041196",
         ["GHCNd"] = "AE000041196",
         ["GHCNdp"] = "AE000041196",
+        ["ECA&D"] = "NLM00006260",
         ["Global temp"] = "land.90S.90N",
         ["ODGI"] = "table1",
     };

@@ -9,7 +9,12 @@ public partial class DataSetDefinitionsBuilder
     {
         var dataSetDefinitions = new List<DataSetDefinition>();
 
+        // Declaration order decides which dataset serves a location that more than one covers:
+        // ClimateRecordsEndpoints walks this list and takes the first match on
+        // (DataType, DataAdjustment, DataResolution). BOM precedes GHCNd, and ECA&D precedes it too, so
+        // European locations registered with ECA&D get its more frequently updated series.
         dataSetDefinitions.AddRange(BuildBomDataSetDefinitions());
+        dataSetDefinitions.AddRange(BuildEcadDataSetDefinitions());
         dataSetDefinitions.AddRange(BuildGhcnDataSetDefinitions());
         dataSetDefinitions.AddRange(BuildAtmosphereDataSetDefinitions());
         dataSetDefinitions.AddRange(BuildOceanDataSetDefinitions());

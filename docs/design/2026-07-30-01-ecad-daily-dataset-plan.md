@@ -1,7 +1,9 @@
 # Add European Climate Assessment & Dataset (ECA&D) as a preferred daily source
 
 - **Date:** 2026-07-30
-- **Status:** Proposed
+- **Status:** Implemented (non-blended). Blended remains deferred — see "Out of scope".
+  Implementation notes, including where the built thing differs from what was planned,
+  are in "What implementation resolved" at the end.
 - **Author:** Patrick Lea (with Claude)
 - **Scope:** `ClimateExplorer.Core` (`Station`, `DataSetDefinitionsBuilder`), a new `ClimateExplorer.Data.Ecad` offline build tool, `ClimateExplorer.Data.Downloading` (new `EcadDataSetDownloader`), `ClimateExplorer.WebApi` (DI wiring), `ClimateExplorer.Data.Ghcnd` (WMO ID extraction, for the future blended path)
 - **Branch context:** `issues/eca-and-d`
@@ -311,17 +313,107 @@ generic latest-record-date tracking applies for free, no change needed there.
   last published record; parameter-variant fallback (only the 12-12 UTC variant
   populated still yields a value); merge preserves previously-published rows;
   unmatched/missing station id fails loudly.
+- `EcadApiClientTests.cs` (added after the first full run was throttled): a 429 is
+  waited out and retried, an implausible reset fails rather than sleeping on it, and
+  retries are bounded.
 - Extend `DataSetDownloadMetadataTests.cs`'s downloader-key list; check whether it
   needs the same carve-out `ghcnd-station` gets from the generic "every asset
   matches its configured reader" loop before assuming it does.
+  **Measured, and it does:** validating all 193 ECA&D assets took the test from 27s to
+  1m18s. Unlike GHCNd's assets, which come in three different measurement shapes, every
+  ECA&D asset is structurally identical, so three sampled stations prove the same
+  contract — the reference station, the 1781 series whose early rows have empty
+  temperature columns, and the shortest series. Whole-set checking lives in
+  `EcadStationArchiveBuilder`, which refuses to write a station with an empty column.
+  Full suite: 487 tests, 44s.
 
-## Open questions to resolve during implementation, not here
+## Open questions resolved during implementation
 
-- Exact property name/shape for a station's reported parameter codes on
-  `ecad-nonblended` (the `rr2`/`sd3`/`dd1`/`fg1` hint from a bbox query) — if it
-  exists, use it instead of requesting the full ~20-variant superset per station.
-- Whether `ecad-nonblended`'s `/locations` bulk listing paginates.
-- Exact CoverageJSON null representation for missing days (not exercised here).
+All three were answered against the live API. See "What implementation resolved"
+below for the things the plan got wrong that only showed up once built.
+
+- **Station parameter codes.** The hint held, and it is richer than expected. Each
+  `/locations` feature carries `properties.provider.{contributor}.{code}` mapping to a
+  list of `[first, last]` intervals — so the listing gives not just *which* variants a
+  station reports but *when* it reported each of them. That is what selects the one
+  variant per family in the offline tool, and what decides whether a station is still
+  live. Across all 193 matched stations, **no station reports more than one current
+  variant per family**, so the plan's "one convention per station" assumption holds
+  exactly; the matcher still rejects a station if that ever stops being true.
+- **Pagination.** The `/locations` listing does not paginate. One response carries all
+  22,247 stations (~10 MB); `limit` is ignored. It is read from a stream rather than a
+  string for that reason.
+- **Null representation.** A missing day is JSON `null` in both the value array and its
+  `_q` quality flag array. Quality flag `0` means valid; anything else is discarded
+  rather than published, matching `GhcndTemperatureProcessor`'s handling of GHCNd flags.
+
+## What implementation resolved
+
+Things the plan assumed that turned out otherwise, recorded so the blended fast-follow
+doesn't re-derive them:
+
+- **The query limit is a data-point budget, not a date range.** The 413 is
+  `timePoints * parameterCount * stationCount > 300,000`, and the server counts each
+  requested parameter *twice* — once for the value, once for its `_q` ancillary. Four
+  parameters therefore allow 37,500 days, not 75,000. `EcadQueryWindowCalculator`
+  encodes this; getting the factor of two wrong fails at exactly double the range.
+- **A 404 is the normal answer for an up-to-date source, not a failure.** The plan said
+  to throw when a station "404s or returns no coverage". That would break every refresh
+  the moment the source caught up: a window with no observations returns **404**
+  (`"The query returned no data for the selected stations."`), while an unknown station
+  returns **400** (`"...do not exist."`). The downloader treats 404 as "nothing new" and
+  republishes what it has; only 400 is a hard failure.
+- **Parameter variants are not contiguous.** There is no `tg23`, and the `tx` family
+  runs to 21 rather than 19. Candidate lists are read from the collection's own
+  `parameter_names` catalogue, because requesting a code outside it fails the whole
+  query with a 400.
+- **There is a request quota, and a full build sits right on it.** Undocumented in the
+  plan and only found by hitting it: 400 requests per window, reported via
+  `X-RateLimit-Limit` / `-Remaining` / `-Reset`, with a 429 (and an HTML body) once
+  spent. The first full run was throttled half way through and, because a per-station
+  `catch` treated the 429 as "this station's data is unusable", it published a mapping
+  containing only the 91 stations that got through — silently dropping the rest off the
+  site. Three changes came out of that:
+  - `EcadApiClient` waits out `X-RateLimit-Reset` and retries, bounded by a retry count
+    and a maximum wait, so ordinary throttling is not an error but a stuck window is.
+  - The build tool abandons the run rather than publishing if more than a handful of
+    stations fail. A partial mapping is worse than no new mapping, because it removes
+    working locations.
+  - Each station is bootstrapped from its own first observation date (which the
+    `/locations` listing gives) rather than from an arbitrary early date, which keeps
+    most stations inside a single request and roughly halves the requests a full build
+    needs.
+- **Per-station zip, not loose CSV.** A European station's full history is ~1.3 MB of
+  CSV; 193 of them checked in twice (`Datasets` and `SourceData`) would add ~500 MB.
+  Stored as `Ecad\Unadjusted\[station].zip` — matching how BOM and GHCNd already store
+  per-station daily sources — it is ~85 MB total.
+- **Every measurement is required per station.** `DataSetDownloadValidator` fails an
+  asset if *any* bundled measurement has no finite values, and all four ECA&D
+  measurements share one file, so a station missing precipitation cannot be mapped at
+  all. The matcher enforces this up front rather than leaving the runtime to report
+  "contained no finite measurements". This is the main reason 193 stations matched out
+  of a much larger set of geographically plausible ones.
+- **A dead station must not outrank a live one.** Ranking every nearby station and
+  checking the winner afterwards let a station that stopped reporting in 2004 win on
+  name and cost the location its match. Candidates are filtered to stations that can
+  actually serve all four measurements *before* ranking.
+- **Station list source.** The plan named `Folders.SelectedStationsFile`, which is a
+  build output of `ClimateExplorer.Data.Ghcnm` and is not present at the configured path.
+  The tool reconciles against `Stations_ghcnm_adjusted.json` (new
+  `Folders.GhcnStationMetadataFile`) instead — the checked-in set the site actually
+  serves, and the same file ECA&D's `StationMetadataFileName` points at.
+- **Station metadata display.** The preferred option in the plan worked: the mapped `Id`
+  stays the GHCN station id everywhere, so `Stations_ghcnm_adjusted.json` is reused
+  unmodified and no `Stations_ecad.json` was needed. ECA&D's own `ecad_XXXXXXX` id
+  appears only in `MetaData/EcadNonBlendedStationIds.json` and is translated inside the
+  downloader.
+- **Matching outcome.** 193 of 1,901 GHCN stations matched. Rejections are logged with a
+  reason: 8 could not be told apart from a neighbour or had no corroborating name (for
+  example `BOURNEMOUTH` against ECA&D's `Hurn` — the same airport, but nothing in the
+  data says so), and the rest are locations where ECA&D's nearby station has stopped
+  reporting. Where several registrations of the same station exist (identical normalised
+  names, which happens when two participants contribute the same site), the one
+  reporting most recently is taken, and that choice is logged rather than made silently.
 
 ## Out of scope
 

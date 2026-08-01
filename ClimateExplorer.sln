@@ -58,6 +58,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClimateExplorer.CachingTool
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClimateExplorer.Data.Downloading", "ClimateExplorer.Data.Downloading\ClimateExplorer.Data.Downloading.csproj", "{B3E348EF-1F85-4DEC-A667-D82D2050F5CB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClimateExplorer.Data.Ecad", "ClimateExplorer.Data.Ecad\ClimateExplorer.Data.Ecad.csproj", "{02353278-9644-4FD6-84CC-2EE8A2FA1F5C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -296,6 +298,18 @@ Global
 		{B3E348EF-1F85-4DEC-A667-D82D2050F5CB}.Release|x64.Build.0 = Release|Any CPU
 		{B3E348EF-1F85-4DEC-A667-D82D2050F5CB}.Release|x86.ActiveCfg = Release|Any CPU
 		{B3E348EF-1F85-4DEC-A667-D82D2050F5CB}.Release|x86.Build.0 = Release|Any CPU
+		{02353278-9644-4FD6-84CC-2EE8A2FA1F5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02353278-9644-4FD6-84CC-2EE8A2FA1F5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02353278-9644-4FD6-84CC-2EE8A2FA1F5C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{02353278-9644-4FD6-84CC-2EE8A2FA1F5C}.Debug|x64.Build.0 = Debug|Any CPU
+		{02353278-9644-4FD6-84CC-2EE8A2FA1F5C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{02353278-9644-4FD6-84CC-2EE8A2FA1F5C}.Debug|x86.Build.0 = Debug|Any CPU
+		{02353278-9644-4FD6-84CC-2EE8A2FA1F5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02353278-9644-4FD6-84CC-2EE8A2FA1F5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02353278-9644-4FD6-84CC-2EE8A2FA1F5C}.Release|x64.ActiveCfg = Release|Any CPU
+		{02353278-9644-4FD6-84CC-2EE8A2FA1F5C}.Release|x64.Build.0 = Release|Any CPU
+		{02353278-9644-4FD6-84CC-2EE8A2FA1F5C}.Release|x86.ActiveCfg = Release|Any CPU
+		{02353278-9644-4FD6-84CC-2EE8A2FA1F5C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -313,6 +327,7 @@ Global
 		{55EFD2B7-CF33-4D5A-BBC7-7D19742DE029} = {F3EDC6D9-6967-4DC9-827C-141F081FA91E}
 		{F46E5FF2-88F8-4638-910E-B5B4253754FD} = {F3EDC6D9-6967-4DC9-827C-141F081FA91E}
 		{B3E348EF-1F85-4DEC-A667-D82D2050F5CB} = {F3EDC6D9-6967-4DC9-827C-141F081FA91E}
+		{02353278-9644-4FD6-84CC-2EE8A2FA1F5C} = {F3EDC6D9-6967-4DC9-827C-141F081FA91E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4F67DF1E-4405-495A-9FC1-1408F179D95C}

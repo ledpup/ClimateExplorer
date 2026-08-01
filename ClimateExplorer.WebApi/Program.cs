@@ -8,6 +8,7 @@ using ClimateExplorer.Data.Downloading.Orchestration;
 using ClimateExplorer.Data.Downloading.Storage;
 using ClimateExplorer.Data.Downloading.Transformers;
 using ClimateExplorer.Data.Downloading.Workspace;
+using ClimateExplorer.Data.Ecad;
 using ClimateExplorer.Data.Ghcnd;
 using ClimateExplorer.WebApi;
 using ClimateExplorer.WebApi.AcornSat;
@@ -74,6 +75,12 @@ builder.Services.AddSingleton<IDataSetDownloader>(
     new GhcndDataSetDownloader(GhcndHttpClientFactory.CreateHttpClient()));
 builder.Services.AddSingleton<IDataSetDownloader>(
     new BomDataSetDownloader(new BomDailyDataClient(BomHttpClientFactory.CreateBomHttpClient())));
+builder.Services.AddSingleton<IDataSetDownloader>(
+    services => new EcadDataSetDownloader(
+        new EcadApiClient(EcadApiClient.CreateHttpClient()),
+        services.GetRequiredService<DataSetSourceFileStore>(),
+        EcadStationCrosswalk.LoadAsync(Path.Combine("MetaData", EcadStationCrosswalk.FileName)).GetAwaiter().GetResult(),
+        services.GetRequiredService<ILogger<EcadDataSetDownloader>>()));
 builder.Services.AddSingleton<IDataSetDownloader>(
     services => new NoaaGlobalTempDataSetDownloader(
         services.GetRequiredService<DataSetHttpFileDownloader>(),

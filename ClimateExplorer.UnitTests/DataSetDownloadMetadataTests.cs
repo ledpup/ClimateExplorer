@@ -22,9 +22,10 @@ public sealed class DataSetDownloadMetadataTests
 
         // 92 closed BOM stations (205 total mapped BOM stations - 113 currently open, one per BOM location)
         // are deliberately excluded from automatic retrieval; see IsAutomaticallyRetrievable.
-        Assert.HasCount(2002, assets);
+        // 193 of the assets are ECA&D stations, one per European location it was matched to.
+        Assert.HasCount(2195, assets);
         CollectionAssert.AreEquivalent(
-            new[] { "bom-station", "direct-http", "ghcnd-station", "greenland-melt", "noaa-global-temperature", "ocean-acidity", "ozone", "sea-level" },
+            new[] { "bom-station", "direct-http", "ecad-station", "ghcnd-station", "greenland-melt", "noaa-global-temperature", "ocean-acidity", "ozone", "sea-level" },
             assets.Select(x => x.DownloaderKey).Distinct().ToArray());
         Assert.AreEqual(assets.Count, assets.Select(x => x.AssetKey).Distinct().Count());
         Assert.IsTrue(assets.All(x => !x.RelativePath.Contains('[') && (x.DownloadUrl == null || !x.DownloadUrl.Contains('['))));
@@ -134,7 +135,7 @@ public sealed class DataSetDownloadMetadataTests
         // Each asset's validation is an independent file read/parse, so run them concurrently -
         // sequentially this loop covers ~2000 assets and dominates the test suite's run time.
         await Parallel.ForEachAsync(
-            assets.Where(x => x.DownloaderKey != "ghcnd-station"),
+            assets.Where(x => x.DownloaderKey is not ("ghcnd-station" or "ecad-station")),
             new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
             async (asset, token) => await validator.ValidateAsync(asset, Folders.SourceDataFolder, token));
 
@@ -151,6 +152,23 @@ public sealed class DataSetDownloadMetadataTests
             ghcndAssets.First(x => x.Measurements.Count == 1 && x.Measurements[0].MeasurementDefinition.DataType == Core.Enums.DataType.Precipitation),
             Folders.SourceDataFolder,
             CancellationToken.None);
+
+        // ECA&D gets the same sampled treatment as GHCNd, for the same reason and with more justification:
+        // validating all 193 of its stations costs ~51 seconds, and unlike GHCNd's assets - which come in
+        // three different measurement shapes - every ECA&D asset is structurally identical, four
+        // measurements read out of one file by four column expressions, so a station exercises all four and
+        // the other 192 re-prove the same contract. The three sampled span what does vary: De Bilt as the
+        // reference station, the 1781 series whose early rows have empty temperature columns (the case that
+        // breaks a column expression written without allowing for blanks), and the shortest, most recent
+        // series. Individual station files are checked exhaustively where that belongs -
+        // EcadStationArchiveBuilder refuses to write a station with an empty column, so one never gets here.
+        foreach (var station in new[] { "NLM00006260", "GM000010962", "AUM00011231" })
+        {
+            var asset = assets.Single(x => x.RelativePath == Path.Combine("Ecad", "Unadjusted", $"{station}.zip"));
+
+            Assert.HasCount(4, asset.Measurements);
+            await validator.ValidateAsync(asset, Folders.SourceDataFolder, CancellationToken.None);
+        }
     }
 
     [TestMethod]

@@ -6,6 +6,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\ClimateExplorer.Core\ClimateExplorer.Core.csproj" />
+    <ProjectReference Include="..\ClimateExplorer.Data.Ecad\ClimateExplorer.Data.Ecad.csproj" />
     <ProjectReference Include="..\ClimateExplorer.Data.Ghcnd\ClimateExplorer.Data.Ghcnd.csproj" />
   </ItemGroup>
 </Project>

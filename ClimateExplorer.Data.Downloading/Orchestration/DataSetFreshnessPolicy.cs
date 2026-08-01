@@ -11,7 +11,7 @@ public sealed class DataSetFreshnessPolicy(TimeProvider timeProvider)
     /// freshness check (see the <see cref="DataSetSourceState"/> overload) is worth the extra retry cost.
     /// Every other downloader keeps using the plain time-since-fetch window below.
     /// </summary>
-    private static readonly HashSet<string> ContentAwareDownloaderKeys = ["bom-station", "ghcnd-station"];
+    private static readonly HashSet<string> ContentAwareDownloaderKeys = ["bom-station", "ecad-station", "ghcnd-station"];
 
     public bool IsFresh(ICachedData? cachedData, DataResolution dataResolution)
     {

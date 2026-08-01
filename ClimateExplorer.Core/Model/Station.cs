@@ -8,6 +8,16 @@ public class Station
     public required string Id { get; set; }
     public string? Name { get; set; }
     public string? CountryCode { get; set; }
+
+    /// <summary>
+    /// The station's WMO number, where NOAA's ghcnd-stations.txt publishes one (columns 81-85). Only a
+    /// minority of GHCN stations carry one. It is the deterministic join key to WIGOS-style station ids
+    /// ("0-20000-0-{wmoId:00000}") used by EUMETNET's blended collections; the non-blended ECA&D
+    /// collection exposes no WMO id at all, so <see cref="ClimateExplorer.Core"/>'s ECA&D integration
+    /// links stations by coordinate and name instead.
+    /// </summary>
+    public string? WmoId { get; set; }
+
     public Coordinates? Coordinates { get; set; }
     public int? FirstYear { get; set; }
     public int? LastYear { get; set; }
