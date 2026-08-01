@@ -256,29 +256,27 @@
 }
 
 .recent-observation-tile ::deep .recent-observation-detail-toggle {
-    display: inline-flex;
-    border: 1px solid #cdddd8;
-    border-radius: 6px;
-    overflow: hidden;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
     margin-bottom: 0.8rem;
 }
 
 .recent-observation-tile ::deep .recent-observation-detail-toggle-option {
     background: #f4f8f6;
-    border: none;
+    border: 1px solid #cdddd8;
+    border-radius: 6px;
     color: #45605a;
     cursor: pointer;
+    flex: 0 1 auto;
     font-size: 0.78rem;
     font-weight: 700;
     padding: 0.32rem 0.7rem;
 }
 
-.recent-observation-tile ::deep .recent-observation-detail-toggle-option + .recent-observation-detail-toggle-option {
-    border-left: 1px solid #cdddd8;
-}
-
 .recent-observation-tile ::deep .recent-observation-detail-toggle-option.selected {
     background: #425f59;
+    border-color: #425f59;
     color: #fff;
 }
 
@@ -366,6 +364,28 @@
     .recent-observation-tile ::deep .recent-observation-detail-metrics {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+
+    .recent-observation-tile ::deep .recent-observation-detail-toggle {
+        display: inline-flex;
+        flex-wrap: nowrap;
+        gap: 0;
+        border: 1px solid #cdddd8;
+        border-radius: 6px;
+        overflow: hidden;
+    }
+
+    .recent-observation-tile ::deep .recent-observation-detail-toggle-option {
+        border: none;
+        border-radius: 0;
+    }
+
+    .recent-observation-tile ::deep .recent-observation-detail-toggle-option + .recent-observation-detail-toggle-option {
+        border-left: 1px solid #cdddd8;
+    }
+
+    .recent-observation-tile ::deep .recent-observation-detail-toggle-option.selected {
+        border-color: transparent;
+    }
 }
 
 .recent-observation-tile ::deep .recent-observation-trend-about {
@@ -439,7 +459,7 @@
 }
 
 .recent-observation-tile ::deep .trends-stat-row dd {
-    align-items: center;
+    align-items: flex-start;
     display: flex;
     gap: 0.3rem;
     margin: 0;
@@ -450,7 +470,8 @@
 .recent-observation-tile ::deep .trends-stat-value {
     color: #263a35;
     font-weight: 600;
-    white-space: nowrap;
+    min-width: 0;
+    overflow-wrap: anywhere;
 }
 
 .recent-observation-tile ::deep .trends-stat-row.emphasized .trends-stat-value {

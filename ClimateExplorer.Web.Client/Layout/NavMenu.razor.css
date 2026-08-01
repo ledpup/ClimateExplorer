@@ -121,6 +121,12 @@
     font-weight: normal;
 }
 
+::deep .navbar-nav.ms-auto {
+    padding-left: 0;
+    flex: 0 0 auto;
+    width: auto;
+}
+
 ::deep .notification-nav-item {
     display: inline-flex;
     align-items: center;
@@ -265,9 +271,17 @@
         padding-left: 8px;
     }
 
+    ::deep .navbar-nav.ms-auto {
+        padding-left: 0;
+    }
+
     ::deep .nav-item {
         flex: 0 0 auto;
         margin-right: 4px;
+    }
+
+    ::deep .nav-item.co2-nav-item:last-child {
+        margin-right: 0;
     }
 
     ::deep .navbar-nav .nav-link {
