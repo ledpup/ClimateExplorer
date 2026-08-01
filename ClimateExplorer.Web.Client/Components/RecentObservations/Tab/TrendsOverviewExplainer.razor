@@ -82,7 +82,9 @@
         described next.
     </p>
 
-    <h3>Limitations of linear regression: non-linearity</h3>
+    <h3>Limitations of linear regression</h3>
+    
+    <h4>Non-linearity</h4>
     <p>
         Ordinary least squares forces a single, constant rate of change
         onto the whole record, but warming (or drying, or any other trend) doesn't necessarily happen at
@@ -103,34 +105,34 @@
         Neither window is "more correct" than the others - they're different lenses on the same data, and
         the gap between them is often as informative as any one number on its own.
     </p>
+    
+    <h4>Sensitivity to endpoints</h4>
+    <p>
+        Because the line is fitted to minimise squared
+        distances, a single unusually hot, cold, wet or dry year at either end of a short window can
+        shift the slope noticeably - short windows are more exposed to this than long ones.
+    </p>
 
-    <h3>Other limitations to keep in mind</h3>
-    <ul>
-        <li>
-            <h4>Sensitivity to endpoints</h4>
-            Because the line is fitted to minimise squared
-            distances, a single unusually hot, cold, wet or dry year at either end of a short window can
-            shift the slope noticeably - short windows are more exposed to this than long ones.
-        </li>
-        <li>
-            <h4>Autocorrelation</h4>
-            Consecutive years in a climate record aren't independent -
-            a warm year tends to be followed by another warm year. The standard p-value calculation
-            assumes independent observations, so it can understate the true uncertainty in a slope.
-        </li>
-        <li>
-            <h4>Extrapolation</h4>
-            The fitted line describes the record it was fitted to. Using
-            it to project temperatures, rainfall, or anything else beyond the edges of the available data
-            assumes the same rate continues indefinitely, which the data itself cannot confirm.
-        </li>
-        <li>
-            <h4>Missing or uneven data</h4>
-            Gaps or an uneven spread of years across the record
-            can pull the fitted line away from what a complete record would show, especially over shorter
-            windows.
-        </li>
-    </ul>
+    <h4>Autocorrelation</h4>
+    <p>
+        Consecutive years in a climate record aren't independent -
+        a warm year tends to be followed by another warm year. The standard p-value calculation
+        assumes independent observations, so it can understate the true uncertainty in a slope.
+    </p>
+
+    <h4>Extrapolation</h4>
+    <p>
+        The fitted line describes the record it was fitted to. Using
+        it to project temperatures, rainfall, or anything else beyond the edges of the available data
+        assumes the same rate continues indefinitely, which the data itself cannot confirm.
+    </p>
+
+    <h4>Missing or uneven data</h4>
+    <p>
+        Gaps or an uneven spread of years across the record
+        can pull the fitted line away from what a complete record would show, especially over shorter
+        windows.
+    </p>
 
     <h3>What's on these pages</h3>
     <p>
