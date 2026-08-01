@@ -9,15 +9,17 @@
         for the full mathematical background.
     </p>
 
+    <h3>Why rates are shown per decade</h3>
     <p>
-        <strong>Why rates are shown per decade.</strong> The underlying calculation works in whatever
+        The underlying calculation works in whatever
         units the data uses - degrees per year, millimetres per year - but a per-year number is small
         enough to look like noise. Multiplying by ten to get a per-decade rate makes the number large
         enough to read at a glance.
     </p>
 
+    <h3>Why some trends say "No significant trend" instead of a number</h3>
     <p>
-        <strong>Why some trends say "No significant trend" instead of a number.</strong> Every slope
+        Every slope
         estimated from real, noisy data comes with uncertainty - a p-value, the probability of seeing
         a slope this far from zero by chance alone if the true long-term trend were actually zero.
         This site treats a slope as significant when that p-value is below 0.05.
@@ -26,8 +28,9 @@
         "No significant trend" instead.
     </p>
 
+    <h3>How the slope itself is worked out</h3>
     <p>
-        <strong>How the slope itself is worked out.</strong> Picture each year in the record as a point:
+        Picture each year in the record as a point:
         <em>x</em> is the year, <em>y</em> is that year's value (temperature, rainfall, whatever the
         metric is). The line's slope, written β ("beta"), comes from this formula:
     </p>
@@ -48,8 +51,9 @@
         how much the fitted line rises for each extra year.
     </p>
 
+    <h3>A small worked example</h3>
     <p>
-        <strong>A small worked example.</strong> Say a station has three years of data: 2001 at 14.00°C,
+        Say a station has three years of data: 2001 at 14.00°C,
         2002 at 14.05°C, 2003 at 14.10°C. The average year is 2002 and the average temperature is 14.05°C.
     </p>
 
@@ -78,8 +82,9 @@
         described next.
     </p>
 
+    <h3>Limitations of linear regression: non-linearity</h3>
     <p>
-        <strong>Limitations of linear regression: non-linearity.</strong> Ordinary least squares forces a single, constant rate of change
+        Ordinary least squares forces a single, constant rate of change
         onto the whole record, but warming (or drying, or any other trend) doesn't necessarily happen at
         a constant pace. It can accelerate, plateau, or reverse over different stretches of the same
         record. A single slope fitted across a century of data can hide a period of little change early
@@ -99,34 +104,37 @@
         the gap between them is often as informative as any one number on its own.
     </p>
 
-    <p>
-        <strong>Other limitations to keep in mind.</strong>
-    </p>
+    <h3>Other limitations to keep in mind</h3>
     <ul>
         <li>
-            <strong>Sensitivity to endpoints.</strong> Because the line is fitted to minimise squared
+            <h4>Sensitivity to endpoints</h4>
+            Because the line is fitted to minimise squared
             distances, a single unusually hot, cold, wet or dry year at either end of a short window can
             shift the slope noticeably - short windows are more exposed to this than long ones.
         </li>
         <li>
-            <strong>Autocorrelation.</strong> Consecutive years in a climate record aren't independent -
+            <h4>Autocorrelation</h4>
+            Consecutive years in a climate record aren't independent -
             a warm year tends to be followed by another warm year. The standard p-value calculation
             assumes independent observations, so it can understate the true uncertainty in a slope.
         </li>
         <li>
-            <strong>Extrapolation.</strong> The fitted line describes the record it was fitted to. Using
+            <h4>Extrapolation</h4>
+            The fitted line describes the record it was fitted to. Using
             it to project temperatures, rainfall, or anything else beyond the edges of the available data
             assumes the same rate continues indefinitely, which the data itself cannot confirm.
         </li>
         <li>
-            <strong>Missing or uneven data.</strong> Gaps or an uneven spread of years across the record
+            <h4>Missing or uneven data</h4>
+            Gaps or an uneven spread of years across the record
             can pull the fitted line away from what a complete record would show, especially over shorter
             windows.
         </li>
     </ul>
 
+    <h3>What's on these pages</h3>
     <p>
-        <strong>What's on these pages.</strong> The tile's own rows only ever show the per-decade
+        The tile's own rows only ever show the per-decade
         rate, or "No significant trend" - nothing else. R², the p-value, confidence intervals, the
         fitted equation, and everything else in a full statistical breakdown are only available here,
         one metric and time window at a time.

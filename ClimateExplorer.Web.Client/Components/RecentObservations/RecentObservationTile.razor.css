@@ -391,7 +391,7 @@
 
 .recent-observation-tile ::deep .trends-stat-table {
     display: grid;
-    grid-template-columns: max-content 1fr;
+    grid-template-columns: 1fr 1fr;
     margin: 0 0 0 1.1rem;
 }
 
