@@ -390,22 +390,48 @@
 }
 
 .recent-observation-tile ::deep .trends-stat-table {
-    margin: 0;
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    margin: 0 0 0 1.1rem;
 }
 
 .recent-observation-tile ::deep .trends-stat-row {
-    align-items: baseline;
+    display: contents;
+}
+
+.recent-observation-tile ::deep .trends-stat-row.expandable {
+    cursor: pointer;
+}
+
+.recent-observation-tile ::deep .trends-stat-row dt,
+.recent-observation-tile ::deep .trends-stat-row dd {
     border-top: 1px solid rgb(66 95 89 / 12%);
-    display: flex;
-    gap: 0.4rem;
-    justify-content: space-between;
-    padding: 0.2rem 0;
+    padding-bottom: 0.35rem;
+    padding-top: 0.35rem;
+}
+
+.recent-observation-tile ::deep .trends-stat-row:nth-child(even of .trends-stat-row) dt,
+.recent-observation-tile ::deep .trends-stat-row:nth-child(even of .trends-stat-row) dd {
+    background-color: #f2f2f2;
+}
+
+.recent-observation-tile ::deep .trends-stat-row.expandable:hover dt,
+.recent-observation-tile ::deep .trends-stat-row.expandable:hover dd {
+    background-color: #e0edeb;
+}
+
+.recent-observation-tile ::deep .trends-stat-row.expandable:focus-visible dt,
+.recent-observation-tile ::deep .trends-stat-row.expandable:focus-visible dd {
+    background-color: #e0edeb;
+    outline: 2px solid #0071c1;
+    outline-offset: -2px;
 }
 
 .recent-observation-tile ::deep .trends-stat-row dt {
     color: #45605a;
-    flex: 1 1 auto;
     font-size: 0.85rem;
+    padding-left: 0.4rem;
+    padding-right: 0.6rem;
 }
 
 .recent-observation-tile ::deep .trends-stat-row.emphasized dt {
@@ -417,6 +443,8 @@
     display: flex;
     gap: 0.3rem;
     margin: 0;
+    min-width: 0;
+    padding-right: 0.4rem;
 }
 
 .recent-observation-tile ::deep .trends-stat-value {
@@ -429,17 +457,14 @@
     font-weight: 700;
 }
 
-.recent-observation-tile ::deep .trends-stat-expand {
-    background: none;
-    border: none;
+.recent-observation-tile ::deep .trends-stat-chevron.oi {
     color: #595959;
-    cursor: pointer;
-    line-height: 1;
-    padding: 0.15rem;
+    flex-shrink: 0;
+    margin-left: auto;
 }
 
-.recent-observation-tile ::deep .trends-stat-expand:hover,
-.recent-observation-tile ::deep .trends-stat-expand:focus {
+.recent-observation-tile ::deep .trends-stat-row.expandable:hover .trends-stat-chevron.oi,
+.recent-observation-tile ::deep .trends-stat-row.expandable:focus-visible .trends-stat-chevron.oi {
     color: #0071c1;
 }
 
@@ -448,6 +473,7 @@
     border-radius: 6px;
     color: #000;
     font-size: 0.85rem;
+    grid-column: 1 / -1;
     line-height: 1.45;
     margin: 0.3rem 0 0.5rem;
     padding: 0.6rem 0.75rem;

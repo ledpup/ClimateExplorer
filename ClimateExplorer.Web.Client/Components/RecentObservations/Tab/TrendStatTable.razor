@@ -1,5 +1,6 @@
 @namespace ClimateExplorer.Web.Client.Components.RecentObservations
 @using ClimateExplorer.Web.Client.UiModel.RecentObservations
+@using Microsoft.AspNetCore.Components.Web
 
 @foreach (var section in Sections)
 {
@@ -7,19 +8,19 @@
     <dl class="trends-stat-table mb-4">
         @foreach (var row in section.Rows)
         {
-            <div class="trends-stat-row @(row.IsEmphasized ? "emphasized" : string.Empty)">
+            <div class="trends-stat-row @(row.IsEmphasized ? "emphasized" : string.Empty) @(row.HasExplanation ? "expandable" : string.Empty)"
+                 role="@(row.HasExplanation ? "button" : null)"
+                 tabindex="@(row.HasExplanation ? "0" : null)"
+                 aria-expanded="@(row.HasExplanation ? (IsExpanded(section, row) ? "true" : "false") : null)"
+                 aria-label="@(row.HasExplanation ? $"About {row.Label}" : null)"
+                 @onclick="@(() => { if (row.HasExplanation) { ToggleExpanded(section, row); } })"
+                 @onkeydown="@(e => OnRowKeyDown(e, section, row))">
                 <dt>@row.Label</dt>
                 <dd>
                     <span class="trends-stat-value">@row.Value</span>
                     @if (row.HasExplanation)
                     {
-                        <button type="button"
-                                class="trends-stat-expand"
-                                aria-expanded="@(IsExpanded(section, row) ? "true" : "false")"
-                                aria-label="@($"About {row.Label}")"
-                                @onclick="@(() => ToggleExpanded(section, row))">
-                            <span class="oi oi-chevron-right recent-observation-chevron @(IsExpanded(section, row) ? "expanded" : string.Empty)" aria-hidden="true"></span>
-                        </button>
+                        <span class="oi oi-chevron-right recent-observation-chevron trends-stat-chevron @(IsExpanded(section, row) ? "expanded" : string.Empty)" aria-hidden="true"></span>
                     }
                 </dd>
             </div>
@@ -63,6 +64,14 @@
         if (!expandedRows.Add((section.Title, row.Label)))
         {
             expandedRows.Remove((section.Title, row.Label));
+        }
+    }
+
+    private void OnRowKeyDown(KeyboardEventArgs e, TrendStatSection section, TrendStatRow row)
+    {
+        if (row.HasExplanation && e.Key is "Enter" or " ")
+        {
+            ToggleExpanded(section, row);
         }
     }
 }
