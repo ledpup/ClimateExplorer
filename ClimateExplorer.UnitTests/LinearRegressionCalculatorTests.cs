@@ -231,6 +231,79 @@ public class LinearRegressionCalculatorTests
     }
 
     [TestMethod]
+    public void CalculateInterceptStatistics_CanberraTemperatureAll_MatchesReferenceResults()
+    {
+        var result = LinearRegressionCalculator.Calculate(
+            ReadFixture("Climate", "linear-regression-1-canberra-temp-all.csv"));
+
+        var intercept = LinearRegressionCalculator.CalculateInterceptStatistics(result);
+
+        Assert.AreEqual(-27.73, result.Line.Intercept, 0.005);
+        Assert.AreEqual(-34.81, intercept.ConfidenceInterval.Lower, 0.05);
+        Assert.AreEqual(-20.65, intercept.ConfidenceInterval.Upper, 0.05);
+    }
+
+    [TestMethod]
+    public void CalculateXIntercept_CanberraTemperatureAll_MatchesReferenceResults()
+    {
+        var result = LinearRegressionCalculator.Calculate(
+            ReadFixture("Climate", "linear-regression-1-canberra-temp-all.csv"));
+
+        var xIntercept = LinearRegressionCalculator.CalculateXIntercept(result);
+
+        Assert.AreEqual(1357, xIntercept.Value, 1);
+        Assert.IsNotNull(xIntercept.ConfidenceInterval);
+        Assert.AreEqual(1226, xIntercept.ConfidenceInterval.Lower, 5);
+        Assert.AreEqual(1449, xIntercept.ConfidenceInterval.Upper, 5);
+    }
+
+    [TestMethod]
+    public void CalculateXIntercept_NotSignificantTrend_ReturnsNullConfidenceInterval()
+    {
+        var result = LinearRegressionCalculator.Calculate(
+            ReadFixture("Climate", "linear-regression-3-canberra-temp-first-half.csv"));
+
+        Assert.IsFalse(result.Significance.IsSlopeSignificant);
+
+        var xIntercept = LinearRegressionCalculator.CalculateXIntercept(result);
+
+        Assert.IsNull(xIntercept.ConfidenceInterval);
+        Assert.AreEqual(-result.Line.Intercept / result.Line.Slope, xIntercept.Value, 1e-9);
+    }
+
+    [TestMethod]
+    public void CalculateInterceptStatistics_PerfectPositiveLine_ReturnsCollapsedInterval()
+    {
+        var result = LinearRegressionCalculator.Calculate(
+        [
+            new DataPoint(1, 3),
+            new DataPoint(2, 5),
+            new DataPoint(3, 7),
+            new DataPoint(4, 9),
+        ]);
+
+        var intercept = LinearRegressionCalculator.CalculateInterceptStatistics(result);
+
+        Assert.AreEqual(0, intercept.StandardError, 1e-12);
+        Assert.AreEqual(1, intercept.ConfidenceInterval.Lower, 1e-12);
+        Assert.AreEqual(1, intercept.ConfidenceInterval.Upper, 1e-12);
+    }
+
+    [TestMethod]
+    public void CalculateInterceptStatistics_NullRegression_ThrowsArgumentNullException()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(
+            () => LinearRegressionCalculator.CalculateInterceptStatistics(null!));
+    }
+
+    [TestMethod]
+    public void CalculateXIntercept_NullRegression_ThrowsArgumentNullException()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(
+            () => LinearRegressionCalculator.CalculateXIntercept(null!));
+    }
+
+    [TestMethod]
     public void Calculate_NullPoints_ThrowsArgumentNullException()
     {
         Assert.ThrowsExactly<ArgumentNullException>(

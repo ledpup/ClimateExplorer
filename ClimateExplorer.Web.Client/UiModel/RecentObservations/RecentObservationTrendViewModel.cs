@@ -1,5 +1,7 @@
 namespace ClimateExplorer.Web.Client.UiModel.RecentObservations;
 
+using ClimateExplorer.Core.Stats.Model;
+
 public sealed record RecentObservationTrendViewModel
 {
     public string Label { get; init; } = string.Empty;
@@ -19,4 +21,14 @@ public sealed record RecentObservationTrendViewModel
     public bool IsFirstHalfTrendPositive { get; init; }
     public string? FirstHalfTrendTooltip { get; init; }
     public string? UnavailableReason { get; init; }
+
+    // The full LinearRegressionResult and the exact point list each was calculated from - carried
+    // through so the About-trends modal can render the full statistical breakdown and the download
+    // button can export data that reproduces the regression, without recalculating anything.
+    public LinearRegressionResult? FullPeriodTrend { get; init; }
+    public LinearRegressionResult? RecentTrend { get; init; }
+    public LinearRegressionResult? FirstHalfTrend { get; init; }
+    public IReadOnlyList<DataPoint> FullPeriodPoints { get; init; } = [];
+    public IReadOnlyList<DataPoint> RecentTrendPoints { get; init; } = [];
+    public IReadOnlyList<DataPoint> FirstHalfTrendPoints { get; init; } = [];
 }

@@ -1,0 +1,134 @@
+@namespace ClimateExplorer.Web.Client.Components.RecentObservations
+
+<div class="trends-overview">
+    <p>
+        A trend here is a simple (ordinary least squares) linear regression: the straight line
+        through a set of yearly values that minimises the sum of the squared vertical distances
+        from each year's value to the line. See
+        <a href="https://en.wikipedia.org/wiki/Simple_linear_regression" target="_blank" rel="noopener noreferrer">Wikipedia: Simple linear regression</a>
+        for the full mathematical background.
+    </p>
+
+    <p>
+        <strong>Why rates are shown per decade.</strong> The underlying calculation works in whatever
+        units the data uses - degrees per year, millimetres per year - but a per-year number is small
+        enough to look like noise. Multiplying by ten to get a per-decade rate makes the number large
+        enough to read at a glance.
+    </p>
+
+    <p>
+        <strong>Why some trends say "No significant trend" instead of a number.</strong> Every slope
+        estimated from real, noisy data comes with uncertainty - a p-value, the probability of seeing
+        a slope this far from zero by chance alone if the true long-term trend were actually zero.
+        This site treats a slope as significant when that p-value is below 0.05.
+        When a trend doesn't clear that bar, showing a specific number such as
+        "+0.08°C per decade" would overstate confidence the data doesn't support, so the tile shows
+        "No significant trend" instead.
+    </p>
+
+    <p>
+        <strong>How the slope itself is worked out.</strong> Picture each year in the record as a point:
+        <em>x</em> is the year, <em>y</em> is that year's value (temperature, rainfall, whatever the
+        metric is). The line's slope, written β ("beta"), comes from this formula:
+    </p>
+
+    <SlopeFormulaFigure />
+
+    <ul>
+        <li>x̄ is the average year across the record</li>
+        <li>ȳ is the average value</li>
+    </ul>
+
+    <p>
+        Working through it: for every year, take how far that year is from the average year (x − x̄),
+        and how far that year's value is from the average value (y − ȳ), and multiply the two together.
+        Add up that product for every year in the record - that's the sum on top. The sum on the bottom
+        does the same thing with just the years: how far each year is from the average year, squared,
+        and added up across the whole record. Divide one sum by the other and the result is the slope -
+        how much the fitted line rises for each extra year.
+    </p>
+
+    <p>
+        <strong>A small worked example.</strong> Say a station has three years of data: 2001 at 14.00°C,
+        2002 at 14.05°C, 2003 at 14.10°C. The average year is 2002 and the average temperature is 14.05°C.
+    </p>
+
+    <table class="trends-slope-example">
+        <thead>
+            <tr>
+                <th scope="col">Year (x)</th>
+                <th scope="col">Temp °C (y)</th>
+                <th scope="col">x − x̄</th>
+                <th scope="col">y − ȳ</th>
+                <th scope="col">(x−x̄)(y−ȳ)</th>
+                <th scope="col">(x−x̄)²</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>2001</td><td>14.00</td><td>−1</td><td>−0.05</td><td>0.05</td><td>1</td></tr>
+            <tr><td>2002</td><td>14.05</td><td>0</td><td>0.00</td><td>0.00</td><td>0</td></tr>
+            <tr><td>2003</td><td>14.10</td><td>1</td><td>0.05</td><td>0.05</td><td>1</td></tr>
+            <tr class="trends-slope-example-sum"><td colspan="4">Sum</td><td>0.10</td><td>2</td></tr>
+        </tbody>
+    </table>
+
+    <p>
+        The slope is the sum on top divided by the sum on the bottom: 0.10 ÷ 2 = 0.05°C per year - the
+        +0.5°C per decade the tile would display, once that per-year figure is multiplied by ten as
+        described next.
+    </p>
+
+    <p>
+        <strong>Limitations of linear regression: non-linearity.</strong> Ordinary least squares forces a single, constant rate of change
+        onto the whole record, but warming (or drying, or any other trend) doesn't necessarily happen at
+        a constant pace. It can accelerate, plateau, or reverse over different stretches of the same
+        record. A single slope fitted across a century of data can hide a period of little change early
+        on followed by faster change more recently - or the reverse. The fitted line is the best
+        <em>straight-line</em> summary of the data, not proof that the underlying process is actually
+        linear.
+    </p>
+
+    <p>
+        The site offers three time windows - <strong>full period</strong>, <strong>last 30
+        years</strong>, and <strong>early period</strong> (the first half of the record).
+        Comparing the slope across these windows is a simple way to check for
+        non-linearity: if the last-30-years rate is noticeably steeper than the early-period rate, the
+        full-period figure is averaging over a change of pace rather than describing a single, unchanging
+        rate. If the three windows broadly agree, that's evidence the trend has been reasonably constant.
+        Neither window is "more correct" than the others - they're different lenses on the same data, and
+        the gap between them is often as informative as any one number on its own.
+    </p>
+
+    <p>
+        <strong>Other limitations to keep in mind.</strong>
+    </p>
+    <ul>
+        <li>
+            <strong>Sensitivity to endpoints.</strong> Because the line is fitted to minimise squared
+            distances, a single unusually hot, cold, wet or dry year at either end of a short window can
+            shift the slope noticeably - short windows are more exposed to this than long ones.
+        </li>
+        <li>
+            <strong>Autocorrelation.</strong> Consecutive years in a climate record aren't independent -
+            a warm year tends to be followed by another warm year. The standard p-value calculation
+            assumes independent observations, so it can understate the true uncertainty in a slope.
+        </li>
+        <li>
+            <strong>Extrapolation.</strong> The fitted line describes the record it was fitted to. Using
+            it to project temperatures, rainfall, or anything else beyond the edges of the available data
+            assumes the same rate continues indefinitely, which the data itself cannot confirm.
+        </li>
+        <li>
+            <strong>Missing or uneven data.</strong> Gaps or an uneven spread of years across the record
+            can pull the fitted line away from what a complete record would show, especially over shorter
+            windows.
+        </li>
+    </ul>
+
+    <p>
+        <strong>What's on these pages.</strong> The tile's own rows only ever show the per-decade
+        rate, or "No significant trend" - nothing else. R², the p-value, confidence intervals, the
+        fitted equation, and everything else in a full statistical breakdown are only available here,
+        one metric and time window at a time.
+    </p>
+</div>

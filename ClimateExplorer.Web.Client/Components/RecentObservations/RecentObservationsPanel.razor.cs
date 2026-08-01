@@ -8,6 +8,7 @@ using ClimateExplorer.Web.Client.Services;
 using ClimateExplorer.Web.Client.Services.RecentObservations;
 using ClimateExplorer.Web.Client.UiModel.RecentObservations;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using static ClimateExplorer.Core.Enums;
 
 public partial class RecentObservationsPanel
@@ -27,6 +28,9 @@ public partial class RecentObservationsPanel
     public RecentObservationsContext? Context { get; set; }
 
     [Parameter]
+    public Location? Location { get; set; }
+
+    [Parameter]
     public IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
 
     [Inject]
@@ -34,6 +38,15 @@ public partial class RecentObservationsPanel
 
     [Inject]
     private ILogger<RecentObservationsPanel> Logger { get; set; } = default!;
+
+    [Inject]
+    private IExporter Exporter { get; set; } = default!;
+
+    [Inject]
+    private IJSRuntime JsRuntime { get; set; } = default!;
+
+    [Inject]
+    private NavigationManager NavManager { get; set; } = default!;
 
     private string? ActiveTabKey { get; set; }
     private ObservationDomain? ActiveDomain => Context?.Domains.FirstOrDefault(x => x.Key == ActiveTabKey) ?? Context?.Domains.FirstOrDefault();
@@ -241,6 +254,20 @@ public partial class RecentObservationsPanel
         {
             CurrentState.ExpansionStates.GetOrAdd(GetTileKey(tile)).SelectGroup(key);
         }
+    }
+
+    private async Task OnTrendDownloadRequested(TrendDownloadRequest request)
+    {
+        if (Location is null)
+        {
+            return;
+        }
+
+        var fileStream = Exporter.ExportTrendData(Logger, Location, request.DataTypeLabel, request.WindowLabel, request.Points, NavManager.Uri);
+        var fileName = $"{Location.Name}-{request.DataTypeLabel}-{request.WindowLabel}-trend-data.csv";
+
+        using var streamRef = new DotNetStreamReference(stream: fileStream);
+        await JsRuntime.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
     }
 
     private void OnCompletenessThresholdChanged(ChangeEventArgs e)

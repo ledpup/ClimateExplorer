@@ -49,6 +49,73 @@ public static class LinearRegressionCalculator
             alpha);
     }
 
+    /// <summary>
+    /// The Y-intercept is the fitted mean at X = 0, so its standard error and confidence interval
+    /// are exactly what <see cref="Predict"/> already computes at that point - the leverage term
+    /// <c>(1/n) + (x - meanX)^2/Sxx</c> reduces to the textbook intercept-SE formula when x = 0.
+    /// </summary>
+    public static InterceptStatistics CalculateInterceptStatistics(LinearRegressionResult regression, double alpha = 0.05)
+    {
+        ArgumentNullException.ThrowIfNull(regression);
+        ValidateAlpha(alpha);
+
+        var prediction = Predict(regression, 0, alpha);
+        var tCritical = StudentTDistributionCalculator.TwoTailedCriticalValue(alpha, regression.Significance.DegreesOfFreedom);
+        var marginOfError = prediction.MeanConfidenceInterval.Upper - prediction.PredictedY;
+        var standardError = marginOfError / tCritical;
+
+        return new InterceptStatistics(standardError, prediction.MeanConfidenceInterval);
+    }
+
+    /// <summary>
+    /// The X-intercept is the X where the fitted line crosses Y = 0. Its point estimate is a simple
+    /// ratio (-intercept/slope), but because the intercept and slope are correlated estimates, its
+    /// confidence interval is not a simple ratio of their own intervals. This uses Fieller's theorem
+    /// (Fieller, 1954; Draper &amp; Smith, <i>Applied Regression Analysis</i>, S5.3), equivalent to
+    /// finding the X values where the fitted-mean confidence band (see <see cref="Predict"/>) touches
+    /// zero: solving <c>(intercept + slope*X)^2 = (t*s)^2 * (1/n + (X-meanX)^2/Sxx)</c> for X. This is
+    /// a quadratic in X whose leading coefficient is <c>slope^2 * (1-g)</c>, where
+    /// <c>g = (t*s)^2 / (slope^2 * Sxx)</c>; when g is not less than 1 (the slope is not estimated
+    /// precisely enough relative to its own size) the confidence interval is unbounded, so
+    /// <see cref="XInterceptStatistics.ConfidenceInterval"/> is <see langword="null"/> in that case.
+    /// </summary>
+    public static XInterceptStatistics CalculateXIntercept(LinearRegressionResult regression, double alpha = 0.05)
+    {
+        ArgumentNullException.ThrowIfNull(regression);
+        ValidateAlpha(alpha);
+
+        var slope = regression.Line.Slope;
+        var intercept = regression.Line.Intercept;
+        var value = -intercept / slope;
+
+        var tCritical = StudentTDistributionCalculator.TwoTailedCriticalValue(alpha, regression.Significance.DegreesOfFreedom);
+        var meanX = regression.Input.MeanX;
+        var sumSquaredXDeviations = regression.Input.SumSquaredXDeviations;
+        var tSquaredSSquared = Square(tCritical) * Square(regression.Fit.ResidualStandardError);
+        var g = tSquaredSSquared / (Square(slope) * sumSquaredXDeviations);
+
+        if (!(g < 1))
+        {
+            return new XInterceptStatistics(value, null);
+        }
+
+        var a = Square(slope) * (1 - g);
+        var b = 2 * slope * (intercept + (g * slope * meanX));
+        var c = Square(intercept) - (tSquaredSSquared / regression.Input.Count) - (g * Square(slope) * Square(meanX));
+
+        var discriminant = Square(b) - (4 * a * c);
+        if (discriminant < 0)
+        {
+            return new XInterceptStatistics(value, null);
+        }
+
+        var sqrtDiscriminant = Math.Sqrt(discriminant);
+        var root1 = (-b - sqrtDiscriminant) / (2 * a);
+        var root2 = (-b + sqrtDiscriminant) / (2 * a);
+
+        return new XInterceptStatistics(value, new ConfidenceInterval(Math.Min(root1, root2), Math.Max(root1, root2)));
+    }
+
     private static DataPoint[] ValidatePoints(IEnumerable<DataPoint> points)
     {
         ArgumentNullException.ThrowIfNull(points);

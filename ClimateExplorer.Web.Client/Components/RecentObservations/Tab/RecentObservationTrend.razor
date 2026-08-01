@@ -37,4 +37,8 @@
             </dd>
         </div>
     }
+    <div class="recent-observation-detail-metric recent-observation-trend-about">
+        <TrendsAboutButton OnClick="@ShowAboutTrends" />
+    </div>
 </dl>
+<AboutTrends @ref="aboutTrends" Metrics="@Metrics" DownloadRequested="@OnDownloadRequested" />

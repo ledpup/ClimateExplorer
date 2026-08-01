@@ -28,6 +28,9 @@ public partial class RecentObservationTile
     [Parameter]
     public EventCallback<MetricGroupKey?> OnGroupSelected { get; set; }
 
+    [Parameter]
+    public EventCallback<TrendDownloadRequest> OnTrendDownloadRequested { get; set; }
+
     private string RemovableClass => IsRemovable ? "removable" : string.Empty;
 
     private string ExpandableClass => Tile.AvailableExpandedTabs.Count > 0 ? "expandable" : string.Empty;

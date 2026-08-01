@@ -1,0 +1,19 @@
+.trends-slope-formula {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 0.9rem 0;
+}
+
+.trends-slope-formula svg {
+    max-width: 100%;
+    height: auto;
+    color: #253b36;
+}
+
+.trends-slope-formula figcaption {
+    color: #697d78;
+    font-size: 0.82rem;
+    text-align: center;
+}

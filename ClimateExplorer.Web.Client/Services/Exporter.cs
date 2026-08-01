@@ -3,6 +3,7 @@
 using System.Globalization;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
+using ClimateExplorer.Core.Stats.Model;
 using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.UiModel;
 using static ClimateExplorer.Core.Enums;
@@ -97,6 +98,31 @@ public class Exporter : IExporter
                 });
                 rank++;
             }
+        }
+
+        var bytes = new byte[] { 0xEF, 0xBB, 0xBF }.Concat(data.SelectMany(s => System.Text.Encoding.UTF8.GetBytes(s + Environment.NewLine))).ToArray();
+        return new MemoryStream(bytes);
+    }
+
+    public Stream ExportTrendData(ILogger logger, Location location, string dataTypeLabel, string windowLabel, IReadOnlyList<DataPoint> points, string sourceUri)
+    {
+        logger.LogInformation("ExportTrendData for {Location} {DataType} {Window} with {Count} points", location.FullTitle, dataTypeLabel, windowLabel, points.Count);
+
+        var baseUri = new Uri(sourceUri);
+        var locationUrl = $"{baseUri.GetLeftPart(UriPartial.Authority)}/location/{location.UrlReadyName()}";
+
+        var data = new List<string>
+        {
+            $"Exported from, \"{locationUrl}\"",
+            $"{location.FullTitle},{location.Coordinates.ToFriendlyString(true)}",
+            $"{dataTypeLabel} - {windowLabel}",
+            string.Empty,
+            "Year,Value",
+        };
+
+        foreach (var point in points.OrderBy(x => x.X))
+        {
+            data.Add($"{point.X.ToString("0", CultureInfo.InvariantCulture)},{point.Y.ToString("0.00", CultureInfo.InvariantCulture)}");
         }
 
         var bytes = new byte[] { 0xEF, 0xBB, 0xBF }.Concat(data.SelectMany(s => System.Text.Encoding.UTF8.GetBytes(s + Environment.NewLine))).ToArray();
