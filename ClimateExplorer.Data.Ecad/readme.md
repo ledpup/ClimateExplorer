@@ -1,5 +1,9 @@
 # ClimateExplorer.Data.Ecad
 
+**Shelved 2026-08-01** — working, but a live-vs-live freshness check found the update-frequency
+premise this integration was built on doesn't hold broadly enough to justify it. See "Did this
+actually help?" in the design doc linked below before reactivating or extending this.
+
 Builds ClimateExplorer's coverage of the [European Climate Assessment & Dataset](https://www.ecad.eu/),
 read from the `ecad-nonblended` collection of EUMETNET's MeteoGate API. Run manually and
 periodically, like the other `ClimateExplorer.Data.*` tools. The design and the reasoning behind

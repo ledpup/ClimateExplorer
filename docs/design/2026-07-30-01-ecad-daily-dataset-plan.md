@@ -1,9 +1,12 @@
 # Add European Climate Assessment & Dataset (ECA&D) as a preferred daily source
 
 - **Date:** 2026-07-30
-- **Status:** Implemented (non-blended). Blended remains deferred — see "Out of scope".
-  Implementation notes, including where the built thing differs from what was planned,
-  are in "What implementation resolved" at the end.
+- **Status:** Shelved 2026-08-01. Fully implemented and working — see "What implementation
+  resolved" — but a post-implementation measurement (below, "Did this actually help?")
+  found the premise doesn't hold at the scale assumed, and the benefit doesn't justify
+  the complexity added. Left on branch `issues/eca-and-d`, not merged. Revisit if ECA&D's
+  or GHCNd's own update cadence changes, or if the filtering idea in that section gets
+  built — don't restart from scratch, the station matcher and downloader are sound.
 - **Author:** Patrick Lea (with Claude)
 - **Scope:** `ClimateExplorer.Core` (`Station`, `DataSetDefinitionsBuilder`), a new `ClimateExplorer.Data.Ecad` offline build tool, `ClimateExplorer.Data.Downloading` (new `EcadDataSetDownloader`), `ClimateExplorer.WebApi` (DI wiring), `ClimateExplorer.Data.Ghcnd` (WMO ID extraction, for the future blended path)
 - **Branch context:** `issues/eca-and-d`
@@ -414,6 +417,57 @@ doesn't re-derive them:
   reporting. Where several registrations of the same station exist (identical normalised
   names, which happens when two participants contribute the same site), the one
   reporting most recently is taken, and that choice is logged rather than made silently.
+
+## Did this actually help? (2026-08-01, post-implementation)
+
+The plan's whole justification was "ECA&D updates more frequently than GHCNd does for
+European stations." That was never verified against live data before building — it came
+from an announcement, not a measurement. After the full build ran, a live-vs-live check
+found the premise mostly doesn't hold.
+
+**Method:** for a random sample of 20 of the 184 overlapping locations, fetched GHCNd's
+current `.csv` directly from NCEI (not the checked-in dataset files, which only reflect
+whenever they were last refreshed and are not a fair comparison point) and compared its
+latest date to ECA&D's latest date from the build performed the same day.
+
+**Result:**
+
+| Outcome | Count (of 20) | Detail |
+|---|---|---|
+| ECA&D ahead by 1 day | 14 | the typical case — GHCNd was already current |
+| ECA&D ahead by 281–526 days | 3 | GHCNd had gone genuinely dormant for these stations |
+| **GHCNd ahead by 90–116 days** | 3 | ECA&D's own ingestion had stalled; GHCNd was fresher |
+
+**Median improvement: 1 day.** GHCNd's daily ingestion is not the slow, batch-updated
+source the plan assumed — for most European stations it was already current, batched
+roughly weekly, sometimes closer to real-time than ECA&D's own most recent batch. The
+real win is concentrated in a minority of stations where GHCNd has gone properly
+dormant (not lagged — stopped), and ECA&D kept reporting. That minority is real (3/20 in
+this sample, extrapolating to roughly 25–30 of the 193 matched stations) but it is not
+"European stations" as a class, which is what the plan staked the whole integration on.
+
+Worse, for a similarly sized minority, **ECA&D is currently the staler source**, and
+because it is declared ahead of GHCNd by ID alone with no per-location freshness check,
+those locations would get served worse data than before this integration existed.
+
+**Net assessment:** a new project (`ClimateExplorer.Data.Ecad`), a new downloader, a
+station-matching/reconciliation step, rate-limit handling, ~46MB of checked-in data
+(doubled across `Datasets`/`SourceData`), and ongoing manual-tool upkeep — for a median
+1-day improvement and a real benefit at an estimated two or three dozen stations, some
+of which is offset by regressions elsewhere. Too much complexity for too little, too
+unevenly distributed, a benefit.
+
+**If this gets reactivated:** the fix that would make it worth it is filtering the
+mapping to *only* locations where ECA&D is actually fresher than GHCNd's live data, not
+matching everything within reach. That means the build tool doing a live GHCNd
+freshness check per matched station (an extra ~184 requests, all outside the ECA&D rate
+limit since they hit a different host) and excluding a location if GHCNd is currently
+ahead — plus periodically re-running that check, since "currently ahead" is a snapshot,
+not a permanent property (both sources' ingestion pipelines evidently have quiet periods).
+That is a materially different, smaller, self-correcting integration than "declare ECA&D
+first for every matched location" — worth designing as a fresh stage against this
+document, not worth open-heart surgery on `DataSetDefinitionsBuilder.Ecad.cs`'s
+declaration-order approach.
 
 ## Out of scope
 
