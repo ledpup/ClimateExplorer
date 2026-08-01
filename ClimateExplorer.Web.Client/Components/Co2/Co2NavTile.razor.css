@@ -32,7 +32,11 @@
     }
 
 @media (max-width: 767px) {
+    .co2-nav-tile {
+        padding: 0 8px;
+    }
+
     .co2-value {
-        font-size: 1.6rem;
+        font-size: 1.4rem;
     }
 }

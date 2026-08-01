@@ -66,14 +66,11 @@
                     </Dropdown>
                 </BarItem>
             </BarStart>
-            @if (IsMobileDevice == false)
-            {
-                <BarEnd>
-                    <BarItem Class="co2-nav-item">
-                        <Co2NavTile OnClick="ShowCo2PanelAsync" />
-                    </BarItem>
-                </BarEnd>
-            }
+            <BarEnd>
+                <BarItem Class="co2-nav-item">
+                    <Co2NavTile OnClick="ShowCo2PanelAsync" />
+                </BarItem>
+            </BarEnd>
         </BarMenu>
     </Bar>
 </div>
