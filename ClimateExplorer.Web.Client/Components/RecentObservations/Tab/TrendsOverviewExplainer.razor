@@ -83,56 +83,68 @@
     </p>
 
     <h3>Limitations of linear regression</h3>
-    
-    <h4>Non-linearity</h4>
-    <p>
-        Ordinary least squares forces a single, constant rate of change
-        onto the whole record, but warming (or drying, or any other trend) doesn't necessarily happen at
-        a constant pace. It can accelerate, plateau, or reverse over different stretches of the same
-        record. A single slope fitted across a century of data can hide a period of little change early
-        on followed by faster change more recently - or the reverse. The fitted line is the best
-        <em>straight-line</em> summary of the data, not proof that the underlying process is actually
-        linear.
-    </p>
 
-    <p>
-        The site offers three time windows - <strong>full period</strong>, <strong>last 30
-        years</strong>, and <strong>early period</strong> (the first half of the record).
-        Comparing the slope across these windows is a simple way to check for
-        non-linearity: if the last-30-years rate is noticeably steeper than the early-period rate, the
-        full-period figure is averaging over a change of pace rather than describing a single, unchanging
-        rate. If the three windows broadly agree, that's evidence the trend has been reasonably constant.
-        Neither window is "more correct" than the others - they're different lenses on the same data, and
-        the gap between them is often as informative as any one number on its own.
-    </p>
-    
-    <h4>Sensitivity to endpoints</h4>
-    <p>
-        Because the line is fitted to minimise squared
-        distances, a single unusually hot, cold, wet or dry year at either end of a short window can
-        shift the slope noticeably - short windows are more exposed to this than long ones.
-    </p>
+    <ul>
+        <li>
+            <h4>Non-linearity</h4>
+            <p>
+                Ordinary least squares forces a single, constant rate of change
+                onto the whole record, but warming (or drying, or any other trend) doesn't necessarily happen at
+                a constant pace. It can accelerate, plateau, or reverse over different stretches of the same
+                record. A single slope fitted across a century of data can hide a period of little change early
+                on followed by faster change more recently - or the reverse. The fitted line is the best
+                <em>straight-line</em> summary of the data, not proof that the underlying process is actually
+                linear.
+            </p>
 
-    <h4>Autocorrelation</h4>
-    <p>
-        Consecutive years in a climate record aren't independent -
-        a warm year tends to be followed by another warm year. The standard p-value calculation
-        assumes independent observations, so it can understate the true uncertainty in a slope.
-    </p>
+            <p>
+                The site offers three time windows - <strong>full period</strong>, <strong>last 30
+                years</strong>, and <strong>early period</strong> (the first half of the record).
+                Comparing the slope across these windows is a simple way to check for
+                non-linearity: if the last-30-years rate is noticeably steeper than the early-period rate, the
+                full-period figure is averaging over a change of pace rather than describing a single, unchanging
+                rate. If the three windows broadly agree, that's evidence the trend has been reasonably constant.
+                Neither window is "more correct" than the others - they're different lenses on the same data, and
+                the gap between them is often as informative as any one number on its own.
+            </p>
+        </li>
+        
+        <li>
+            <h4>Sensitivity to endpoints</h4>
+            <p>
+                Because the line is fitted to minimise squared
+                distances, a single unusually hot, cold, wet or dry year at either end of a short window can
+                shift the slope noticeably - short windows are more exposed to this than long ones.
+            </p>
+        </li>
 
-    <h4>Extrapolation</h4>
-    <p>
-        The fitted line describes the record it was fitted to. Using
-        it to project temperatures, rainfall, or anything else beyond the edges of the available data
-        assumes the same rate continues indefinitely, which the data itself cannot confirm.
-    </p>
+        <li>
+            <h4>Autocorrelation</h4>
+            <p>
+                Consecutive years in a climate record aren't independent -
+                a warm year tends to be followed by another warm year. The standard p-value calculation
+                assumes independent observations, so it can understate the true uncertainty in a slope.
+            </p>
+        </li>
 
-    <h4>Missing or uneven data</h4>
-    <p>
-        Gaps or an uneven spread of years across the record
-        can pull the fitted line away from what a complete record would show, especially over shorter
-        windows.
-    </p>
+        <li>
+            <h4>Extrapolation</h4>
+            <p>
+                The fitted line describes the record it was fitted to. Using
+                it to project temperatures, rainfall, or anything else beyond the edges of the available data
+                assumes the same rate continues indefinitely, which the data itself cannot confirm.
+            </p>
+        </li>
+
+        <li>
+            <h4>Missing or uneven data</h4>
+            <p>
+                Gaps or an uneven spread of years across the record
+                can pull the fitted line away from what a complete record would show, especially over shorter
+                windows.
+            </p>
+        </li>
+    </ul>
 
     <h3>What's on these pages</h3>
     <p>
