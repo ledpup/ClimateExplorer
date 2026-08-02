@@ -80,8 +80,11 @@ internal sealed class AcornSatClimateRecordService(
         }
 
         var today = DateOnly.FromDateTime(timeProvider.GetUtcNow().UtcDateTime);
-        var acornSatSeries = await ReadSeries(acornSatDataSet.Id, locationId, dataType, DataAdjustment.Adjusted);
-        var cdoSeries = await ReadSeries(cdoDataSet.Id, locationId, dataType, DataAdjustment.Unadjusted);
+        var acornSatSeriesTask = ReadSeries(acornSatDataSet.Id, locationId, dataType, DataAdjustment.Adjusted);
+        var cdoSeriesTask = ReadSeries(cdoDataSet.Id, locationId, dataType, DataAdjustment.Unadjusted);
+        await Task.WhenAll(acornSatSeriesTask, cdoSeriesTask);
+        var acornSatSeries = await acornSatSeriesTask;
+        var cdoSeries = await cdoSeriesTask;
 
         var extension = AcornSatRecordExtender.Extend(
             acornSatSeries.DataRecords,
@@ -120,7 +123,7 @@ internal sealed class AcornSatClimateRecordService(
             extension.ComparisonYear,
             extension.OverlayRecords.Count);
 
-        return new AcornSatExtensionOutcome(extension, retrievedDate);
+        return new AcornSatExtensionOutcome(extension, retrievedDate, acornSatSeries);
     }
 
     /// <summary>
@@ -134,7 +137,8 @@ internal sealed class AcornSatClimateRecordService(
         var spec = body.SeriesSpecifications!.Single();
         var outcome = await ResolveAsync(spec.LocationId, spec.DataType, cancellationToken);
 
-        var acornSatSeries = await ReadSeries(AcornSatDatasetIds.AcornSat, spec.LocationId, spec.DataType, DataAdjustment.Adjusted);
+        var acornSatSeries = outcome.AcornSatSeries
+            ?? await ReadSeries(AcornSatDatasetIds.AcornSat, spec.LocationId, spec.DataType, DataAdjustment.Adjusted);
         var composedRecords = acornSatSeries.DataRecords!
             .Concat(outcome.Extension.OverlayRecords)
             .OrderBy(x => x.Date)
