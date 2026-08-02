@@ -27,12 +27,14 @@ public sealed class BomDataSetDownloader(BomDailyDataClient client) : IDataSetDo
         }
 
         var stationId = stationIds[0];
-        var contents = new Dictionary<DataType, string>();
-        foreach (var dataType in new[] { DataType.TempMax, DataType.TempMin, DataType.Precipitation, DataType.SolarRadiation })
-        {
-            contents.Add(dataType, await client.DownloadCsvAsync(stationId, GetObservationCode(dataType), cancellationToken));
-        }
+        var dataTypes = new[] { DataType.TempMax, DataType.TempMin, DataType.Precipitation, DataType.SolarRadiation };
+        var downloadTasks = dataTypes.ToDictionary(
+            dataType => dataType,
+            dataType => client.DownloadCsvAsync(stationId, GetObservationCode(dataType), cancellationToken));
 
+        await Task.WhenAll(downloadTasks.Values);
+
+        var contents = dataTypes.ToDictionary(dataType => dataType, dataType => downloadTasks[dataType].Result);
         contents.Add(DataType.TempMean, CreateMeanTemperature(request, stationId, contents[DataType.TempMax], contents[DataType.TempMin]));
         var candidatePath = DataSetDownloadPath.Resolve(temporaryDirectory, request.RelativePath);
         Directory.CreateDirectory(Path.GetDirectoryName(candidatePath)!);
