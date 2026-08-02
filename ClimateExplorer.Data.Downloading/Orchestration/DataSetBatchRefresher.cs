@@ -1,25 +1,38 @@
 namespace ClimateExplorer.Data.Downloading.Orchestration;
 
+using System.Collections.Concurrent;
+
 public sealed class DataSetBatchRefresher(
     DataSetSourceAssetResolver assetResolver,
-    DataSetSourceUpdateCoordinator coordinator) : IDataSetBatchRefresher
+    DataSetSourceUpdateCoordinator coordinator,
+    int maxDegreeOfParallelism = 5) : IDataSetBatchRefresher
 {
     private readonly DataSetSourceAssetResolver assetResolver = assetResolver;
     private readonly DataSetSourceUpdateCoordinator coordinator = coordinator;
+    private readonly int maxDegreeOfParallelism = maxDegreeOfParallelism;
 
     public async Task RefreshAllAsync(CancellationToken cancellationToken = default)
     {
         var assets = await assetResolver.ResolveAllAsync(cancellationToken);
-        var failures = new List<string>();
+        var failures = new ConcurrentBag<string>();
 
-        foreach (var asset in assets)
+        var parallelOptions = new ParallelOptions
         {
-            var states = await coordinator.EnsureCurrentAsync([asset], forceRefresh: true, permitSourceUpdate: true, cancellationToken);
-            if (states == null)
+            MaxDegreeOfParallelism = maxDegreeOfParallelism,
+            CancellationToken = cancellationToken,
+        };
+
+        await Parallel.ForEachAsync(
+            assets,
+            parallelOptions,
+            async (asset, token) =>
             {
-                failures.Add(asset.AssetKey);
-            }
-        }
+                var states = await coordinator.EnsureCurrentAsync([asset], forceRefresh: true, permitSourceUpdate: true, token);
+                if (states == null)
+                {
+                    failures.Add(asset.AssetKey);
+                }
+            });
 
         if (failures.Count > 0)
         {
