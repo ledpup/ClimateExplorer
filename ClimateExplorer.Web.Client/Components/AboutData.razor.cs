@@ -1,4 +1,4 @@
-namespace ClimateExplorer.Web.Client.Components.ChartSeries;
+namespace ClimateExplorer.Web.Client.Components;
 
 using Blazorise;
 using ClimateExplorer.Core.Model;

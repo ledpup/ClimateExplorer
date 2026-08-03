@@ -1,4 +1,4 @@
-namespace ClimateExplorer.Web.Client.Components;
+namespace ClimateExplorer.Web.Client.Components.Chart;
 
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;

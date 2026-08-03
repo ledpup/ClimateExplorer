@@ -1,8 +1,9 @@
-namespace ClimateExplorer.Web.Client.Components.ChartSeries;
+namespace ClimateExplorer.Web.Client.Components.Chart;
 
 using Blazorise;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
+using ClimateExplorer.Web.Client.Components;
 using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
 using Microsoft.AspNetCore.Components;
