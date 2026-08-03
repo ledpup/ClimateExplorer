@@ -89,15 +89,15 @@ public sealed partial class RecentObservationsCalculator
             HeadlineText = TrendFormatting.FormatPerDecade(trendSet.HistoricalTrend, metric.Unit),
             IsHeadlinePositive = TrendFormatting.IsTrendPositive(trendSet.HistoricalTrend),
             HeadlineCaption = FormatYearRange(trendSet.HistoricalTrend),
-            FullPeriodTooltip = BuildYearRangeTooltip(ordered),
+            FullPeriodTooltip = BuildTrendTooltip(ordered, trendSet.HistoricalTrend, metric.Unit),
             RecentTrendYearRange = FormatYearRange(trendSet.RecentTrend),
             RecentTrendValueText = TrendFormatting.FormatPerDecade(trendSet.RecentTrend, metric.Unit),
             IsRecentTrendPositive = TrendFormatting.IsTrendPositive(trendSet.RecentTrend),
-            RecentTrendTooltip = BuildYearRangeTooltip(recentPoints),
+            RecentTrendTooltip = BuildTrendTooltip(recentPoints, trendSet.RecentTrend, metric.Unit),
             FirstHalfTrendYearRange = FormatYearRange(trendSet.FirstHalfTrend),
             FirstHalfTrendValueText = TrendFormatting.FormatPerDecade(trendSet.FirstHalfTrend, metric.Unit),
             IsFirstHalfTrendPositive = TrendFormatting.IsTrendPositive(trendSet.FirstHalfTrend),
-            FirstHalfTrendTooltip = BuildYearRangeTooltip(firstHalfPoints),
+            FirstHalfTrendTooltip = BuildTrendTooltip(firstHalfPoints, trendSet.FirstHalfTrend, metric.Unit),
             FullPeriodTrend = trendSet.HistoricalTrend,
             RecentTrend = trendSet.RecentTrend,
             FirstHalfTrend = trendSet.FirstHalfTrend,
@@ -112,7 +112,7 @@ public sealed partial class RecentObservationsCalculator
         return $"{trend.Input.MinimumX.ToString("0", CultureInfo.InvariantCulture)}-{trend.Input.MaximumX.ToString("0", CultureInfo.InvariantCulture)}";
     }
 
-    private static string BuildYearRangeTooltip(IEnumerable<DataPoint> segmentPoints)
+    private static string BuildTrendTooltip(IEnumerable<DataPoint> segmentPoints, LinearRegressionResult trend, string unit)
     {
         var years = segmentPoints.Select(x => (int)Math.Round(x.X)).OrderBy(x => x).ToList();
         var minYear = years[0];
@@ -121,9 +121,18 @@ public sealed partial class RecentObservationsCalculator
         var missingYears = Enumerable.Range(minYear, yearSpan).Except(years).ToList();
 
         var missingText = missingYears.Count == 0
-            ? "No years are missing."
+            ? string.Empty
             : $"Missing years: {string.Join(", ", missingYears)}.";
 
-        return $"<p>{minYear}-{maxYear} ({years.Count} of {yearSpan} years).</p><p>{missingText}</p>";
+        var pValueText = TrendFormatting.FormatPValue(trend.Significance.PValue);
+        var rSquaredText = trend.Fit.RSquared.ToString("0.00", CultureInfo.InvariantCulture);
+
+        var statsText = trend.Significance.IsSlopeSignificant
+            ? $"Trend: ordinary least squares. p = {pValueText}, R² = {rSquaredText}."
+            : $"Not statistically significant (p = {pValueText}, ordinary least squares). "
+                + $"The fitted rate is {TrendFormatting.FormatPerDecadeValue(trend, unit)}, but the year-to-year scatter is too "
+                + "large relative to the number of years for this to be distinguished from no trend at all.";
+
+        return $"<p>{statsText}</p><p>Years {minYear}-{maxYear} ({years.Count} of {yearSpan}).</p>{(string.IsNullOrEmpty(missingText) ? string.Empty : $"<p>{missingText}</p>")}";
     }
 }
