@@ -1068,9 +1068,9 @@ public class RecentObservationsServiceTests
             .Single(x => x.PeriodStartDate == new DateOnly(2026, 6, 13));
 
         Assert.IsTrue(generatedDay.HasComparison);
-        Assert.AreEqual("Mean temperature", generatedDay.PrimaryLabel);
+        Assert.AreEqual("Mean", generatedDay.PrimaryLabel);
         CollectionAssert.AreEqual(new[] { "Historical average", "Anomaly" }, generatedDay.Stats.Select(x => x.Label).ToArray());
-        CollectionAssert.AreEqual(new[] { "Max temp", "Min temp" }, generatedDay.SupportingStats.Select(x => x.Label).ToArray());
+        CollectionAssert.AreEqual(new[] { "Maximum", "Minimum" }, generatedDay.SupportingStats.Select(x => x.Label).ToArray());
         Assert.AreEqual($"Warmest {dayLabel}", generatedDay.HistoricalMaxLabel);
         Assert.AreEqual("36.0°C", generatedDay.HistoricalMaxValue);
         Assert.AreEqual($"Coolest {dayLabel}", generatedDay.HistoricalMinLabel);
@@ -1257,7 +1257,7 @@ public class RecentObservationsServiceTests
             new[] { "Historical average", "Anomaly" },
             latestSevenDays.Stats.Select(x => x.Label).ToArray());
         CollectionAssert.AreEqual(
-            new[] { "Average max temp", "Average min temp" },
+            new[] { "Average maximum", "Average minimum" },
             latestSevenDays.SupportingStats.Select(x => x.Label).ToArray());
     }
 

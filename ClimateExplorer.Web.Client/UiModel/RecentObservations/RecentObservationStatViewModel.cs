@@ -8,4 +8,5 @@ public sealed record RecentObservationStatViewModel
     public string Value { get; init; } = string.Empty;
     public RecentObservationRecordStatus RecordStatus { get; init; }
     public string? RecordStatusText { get; init; }
+    public double? AnomalyValue { get; init; }
 }

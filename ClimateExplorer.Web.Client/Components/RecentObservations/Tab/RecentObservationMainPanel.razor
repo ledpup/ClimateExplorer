@@ -28,7 +28,7 @@
             <div>
                 <dt>@stat.Label</dt>
                 <dd>
-                    <span class="recent-observation-stat-value">@stat.Value</span>
+                    <span class="recent-observation-stat-value @(stat.AnomalyValue.HasValue ? ValueClassifier.GetValueClass(stat.Value, stat.AnomalyValue.Value >= 0) : null)">@stat.Value</span>
                     @if (!string.IsNullOrWhiteSpace(stat.RecordStatusText))
                     {
                         <span class="recent-observation-status status-@RecentObservationTileDisplay.StatusClass(stat.RecordStatus)">@stat.RecordStatusText</span>

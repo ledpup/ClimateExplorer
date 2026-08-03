@@ -36,4 +36,11 @@ internal static class TrendFormatting
             ? $"{value.ToString("0.00", CultureInfo.InvariantCulture)}°C"
             : $"{value.ToString("0", CultureInfo.InvariantCulture)}mm";
     }
+
+    public static string FormatPValue(double pValue)
+    {
+        return pValue < 0.0001
+            ? "< 0.0001"
+            : pValue.ToString("0.0000", CultureInfo.InvariantCulture);
+    }
 }
