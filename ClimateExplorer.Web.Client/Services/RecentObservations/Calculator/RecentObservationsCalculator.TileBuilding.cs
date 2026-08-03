@@ -42,7 +42,7 @@ public sealed partial class RecentObservationsCalculator
         if (ranking is not null)
         {
             stats.Add(new RecentObservationStatViewModel { Label = "Historical average", Value = domain.Primary.Format(ranking.HistoricalAverage) });
-            stats.Add(new RecentObservationStatViewModel { Label = "Anomaly", Value = FormatAnomaly(ranking.Anomaly, domain.Primary) });
+            stats.Add(new RecentObservationStatViewModel { Label = "Anomaly", Value = FormatAnomaly(ranking.Anomaly, domain.Primary), AnomalyValue = ranking.Anomaly });
         }
 
         var showHistoricalRange = ranking is not null && historicalValues.CanShowHistoricalRange;
