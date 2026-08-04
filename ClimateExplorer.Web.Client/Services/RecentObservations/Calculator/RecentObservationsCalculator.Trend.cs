@@ -127,12 +127,18 @@ public sealed partial class RecentObservationsCalculator
         var pValueText = TrendFormatting.FormatPValue(trend.Significance.PValue);
         var rSquaredText = trend.Fit.RSquared.ToString("0.00", CultureInfo.InvariantCulture);
 
-        var statsText = trend.Significance.IsSlopeSignificant
-            ? $"Trend: ordinary least squares. p = {pValueText}, R² = {rSquaredText}."
-            : $"Not statistically significant (p = {pValueText}, ordinary least squares). "
-                + $"The fitted rate is {TrendFormatting.FormatPerDecadeValue(trend, unit)}, but the year-to-year scatter is too "
-                + "large relative to the number of years for this to be distinguished from no trend at all.";
+        var statsText = $"p = {pValueText}, R² = {rSquaredText}, method = ordinary least squares.";
 
-        return $"<p>{statsText}</p><p>Years {minYear}-{maxYear} ({years.Count} of {yearSpan}).</p>{(string.IsNullOrEmpty(missingText) ? string.Empty : $"<p>{missingText}</p>")}";
+        string? notSignificantText = null;
+        if (!trend.Significance.IsSlopeSignificant)
+        {
+            notSignificantText = $"The fitted rate is {TrendFormatting.FormatPerDecadeValue(trend, unit)}, but the year-to-year scatter is too "
+                                + "large relative to the number of years for this to be distinguished from no trend at all.";
+        }
+
+        return $"<p>{statsText}</p>"
+                + (string.IsNullOrEmpty(notSignificantText) ? string.Empty : $"<p>{notSignificantText}</p>")
+                + $"<p>Years {minYear}-{maxYear} ({years.Count} of {yearSpan}).</p>"
+                + (string.IsNullOrEmpty(missingText) ? string.Empty : $"<p>{missingText}</p>");
     }
 }
