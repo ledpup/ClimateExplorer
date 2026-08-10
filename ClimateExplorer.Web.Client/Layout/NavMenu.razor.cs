@@ -13,11 +13,11 @@ public partial class NavMenu : IDisposable
                 [
                     (string.Empty, "local"),
                     ("global", "global"),
+                    ("locations", "locations"),
                 ];
 
     private readonly SecondaryNavItem[] secondaryItems =
                 [
-                    SecondaryNavItem.Link("locations", "locations"),
                     SecondaryNavItem.Link("blog", "blog"),
                     SecondaryNavItem.Link("about", "about"),
                     SecondaryNavItem.SiteOverview("site overview"),
