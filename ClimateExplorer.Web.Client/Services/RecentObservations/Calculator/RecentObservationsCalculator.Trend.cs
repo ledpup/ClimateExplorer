@@ -5,6 +5,7 @@ using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Core.Stats;
 using ClimateExplorer.Core.Stats.Model;
 using ClimateExplorer.Web.Client.Services.RecentObservations;
+using ClimateExplorer.Web.Client.Services.Trends;
 using ClimateExplorer.Web.Client.UiModel.RecentObservations;
 
 // Builds the "Trend" tab: the full-period, recent-window and first-half linear trends for

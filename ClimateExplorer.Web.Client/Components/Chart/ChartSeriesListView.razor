@@ -4,8 +4,9 @@
     {
         <ChartSeriesView 
             @key="@cs.Id"
-            ChartSeries="@cs" 
+            ChartSeries="@cs"
             SourceMetadata="@GetSourceMetadata(cs)"
+            Trend="@GetTrend(cs)"
             OnSeriesChanged="@OnSeriesChangedInternal"
             OnDuplicateSeries="@OnDuplicateSeries"
             OnRemoveSeries="@OnRemoveSeries"

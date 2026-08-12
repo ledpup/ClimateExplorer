@@ -1,0 +1,233 @@
+namespace ClimateExplorer.UnitTests;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using ClimateExplorer.Core.Stats;
+using ClimateExplorer.Core.Stats.Model;
+using ClimateExplorer.Web.Client.Services.Trends;
+using ClimateExplorer.Web.Client.UiModel.Trends;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+[TestClass]
+public class ChartSeriesTrendCalculatorTests
+{
+    private static readonly TrendStatSubject Subject = new("Maximum temperature", "°C");
+
+    [TestMethod]
+    public void Calculate_FewerYearsThanTheMinimum_ReportsUnavailableAndProjectsNothing()
+    {
+        var points = CreatePerfectLine(1960, ChartSeriesTrendCalculator.MinimumYearsForTrend - 1, slope: 0.02);
+
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendWindow.Full, predictionYears: 20);
+
+        Assert.IsNotNull(result.UnavailableReason);
+        Assert.IsEmpty(result.Windows);
+        Assert.IsNull(result.Projection);
+        Assert.IsFalse(result.HasSignificantWindow);
+    }
+
+    [TestMethod]
+    public void Calculate_ExactlyTheMinimumYears_FitsAllThreeWindows()
+    {
+        var points = CreatePerfectLine(1960, ChartSeriesTrendCalculator.MinimumYearsForTrend, slope: 0.02);
+
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendWindow.Full, predictionYears: 20);
+
+        Assert.IsNull(result.UnavailableReason);
+        Assert.HasCount(3, result.Windows);
+        Assert.IsNotNull(result.GetWindow(TrendWindow.Full));
+        Assert.IsNotNull(result.GetWindow(TrendWindow.Recent));
+        Assert.IsNotNull(result.GetWindow(TrendWindow.FirstHalf));
+    }
+
+    [TestMethod]
+    public void Calculate_EarlyPeriodWindow_MatchesTrendWindowCalculatorFirstHalf()
+    {
+        // The chart's "early period" must stay the same thing the Recent Observations tab calls the
+        // first half - the first half of the available points, not the first half of the calendar
+        // span and not the first 30 years.
+        var points = CreatePerfectLine(1900, 101, slope: 0.03);
+
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendWindow.FirstHalf, predictionYears: 5);
+        var reference = TrendWindowCalculator.Calculate(
+            points,
+            ChartSeriesTrendCalculator.MinimumYearsForTrend,
+            ChartSeriesTrendCalculator.RecentWindowYears);
+
+        var earlyPeriod = result.GetWindow(TrendWindow.FirstHalf)!;
+
+        Assert.IsNotNull(reference);
+        Assert.AreEqual(reference.FirstHalfTrend.Line.Slope, earlyPeriod.Regression.Line.Slope, 1e-12);
+        Assert.HasCount(101 / 2, earlyPeriod.Points);
+        Assert.AreEqual(1900, earlyPeriod.FirstYear);
+        Assert.AreEqual(1949, earlyPeriod.LastYear);
+    }
+
+    [TestMethod]
+    public void Calculate_RecentWindow_UsesTheLastThirtyYears()
+    {
+        var points = CreatePerfectLine(1900, 101, slope: 0.03);
+
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendWindow.Recent, predictionYears: 5);
+        var recent = result.GetWindow(TrendWindow.Recent)!;
+
+        Assert.HasCount(ChartSeriesTrendCalculator.RecentWindowYears, recent.Points);
+        Assert.AreEqual(1971, recent.FirstYear);
+        Assert.AreEqual(2000, recent.LastYear);
+    }
+
+    [TestMethod]
+    public void Calculate_SignificantTrend_ProjectsFromTheYearAfterTheLastDataYear()
+    {
+        var points = CreatePerfectLine(1900, 101, slope: 0.03);
+
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendWindow.Full, predictionYears: 10);
+
+        Assert.IsNotNull(result.Projection);
+        Assert.AreEqual(2000, result.LastDataYear);
+        Assert.HasCount(10, result.Projection!.Predictions);
+        Assert.AreEqual(2001, result.Projection.FirstYear);
+        Assert.AreEqual(2010, result.Projection.LastYear);
+    }
+
+    [TestMethod]
+    public void Calculate_SignificantTrend_ProjectedValuesFollowTheFittedLine()
+    {
+        var points = CreatePerfectLine(1900, 101, slope: 0.03);
+
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendWindow.Full, predictionYears: 5);
+        var regression = result.GetWindow(TrendWindow.Full)!.Regression;
+
+        foreach (var prediction in result.Projection!.Predictions)
+        {
+            Assert.AreEqual(regression.Line.Predict(prediction.X), prediction.PredictedY, 1e-9);
+        }
+    }
+
+    [TestMethod]
+    public void Calculate_SignificantTrend_CarriesBothIntervalBoundsForEachProjectedYear()
+    {
+        // The interval bounds aren't rendered yet, but they are computed now so the prediction-band
+        // overlay doesn't need the data model to change.
+        var points = CreateNoisyLine(1900, 101, slope: 0.03, noise: 0.2);
+
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendWindow.Full, predictionYears: 5);
+
+        foreach (var prediction in result.Projection!.Predictions)
+        {
+            Assert.IsLessThan(prediction.PredictedY, prediction.MeanConfidenceInterval.Lower);
+            Assert.IsGreaterThan(prediction.PredictedY, prediction.MeanConfidenceInterval.Upper);
+
+            // The observation interval also allows for year-to-year scatter, so it is always wider.
+            Assert.IsLessThan(prediction.MeanConfidenceInterval.Lower, prediction.ObservationPredictionInterval.Lower);
+            Assert.IsGreaterThan(prediction.MeanConfidenceInterval.Upper, prediction.ObservationPredictionInterval.Upper);
+        }
+    }
+
+    [TestMethod]
+    public void Calculate_NoSignificantWindow_ProjectsNothingButStillReportsAllThreeWindows()
+    {
+        var points = CreateFlatNoise(1900, 101);
+
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendWindow.Full, predictionYears: 20);
+
+        Assert.IsNull(result.UnavailableReason);
+        Assert.HasCount(3, result.Windows);
+        Assert.IsFalse(result.HasSignificantWindow);
+        Assert.IsEmpty(result.SignificantWindows);
+        Assert.IsNull(result.Projection);
+    }
+
+    [TestMethod]
+    public void Calculate_PredictionYearsAboveTheMaximum_ClampsToTheMaximum()
+    {
+        var points = CreatePerfectLine(1900, 101, slope: 0.03);
+
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendWindow.Full, predictionYears: 5000);
+
+        Assert.HasCount(TrendPredictionRange.Maximum, result.Projection!.Predictions);
+    }
+
+    [TestMethod]
+    public void Calculate_PredictionYearsBelowTheMinimum_ClampsToTheMinimum()
+    {
+        var points = CreatePerfectLine(1900, 101, slope: 0.03);
+
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendWindow.Full, predictionYears: 0);
+
+        Assert.HasCount(TrendPredictionRange.Minimum, result.Projection!.Predictions);
+    }
+
+    [TestMethod]
+    public void Calculate_UnsortedPoints_ProjectsFromTheLatestYearRegardless()
+    {
+        var points = CreatePerfectLine(1900, 101, slope: 0.03).OrderBy(x => -x.X).ToList();
+
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendWindow.Full, predictionYears: 3);
+
+        Assert.AreEqual(2000, result.LastDataYear);
+        Assert.AreEqual(2001, result.Projection!.FirstYear);
+    }
+
+    [TestMethod]
+    public void ResolveWindow_RequestedWindowIsSignificant_KeepsTheRequestedWindow()
+    {
+        var significant = new[] { TrendWindow.Full, TrendWindow.Recent };
+
+        var result = ChartSeriesTrendCalculator.ResolveWindow(significant, TrendWindow.Recent);
+
+        Assert.AreEqual(TrendWindow.Recent, result);
+    }
+
+    [TestMethod]
+    public void ResolveWindow_RequestedWindowIsNotSignificant_FallsBackInPriorityOrder()
+    {
+        var significant = new[] { TrendWindow.FirstHalf, TrendWindow.Recent };
+
+        var result = ChartSeriesTrendCalculator.ResolveWindow(significant, TrendWindow.Full);
+
+        Assert.AreEqual(TrendWindow.Recent, result);
+    }
+
+    [TestMethod]
+    public void ResolveWindow_NothingRequested_PrefersTheFullPeriod()
+    {
+        var significant = new[] { TrendWindow.FirstHalf, TrendWindow.Recent, TrendWindow.Full };
+
+        var result = ChartSeriesTrendCalculator.ResolveWindow(significant, requestedWindow: null);
+
+        Assert.AreEqual(TrendWindow.Full, result);
+    }
+
+    [TestMethod]
+    public void ResolveWindow_NoSignificantWindows_ReturnsNull()
+    {
+        var result = ChartSeriesTrendCalculator.ResolveWindow([], TrendWindow.Full);
+
+        Assert.IsNull(result);
+    }
+
+    private static List<DataPoint> CreatePerfectLine(int startYear, int count, double slope)
+    {
+        return [.. Enumerable.Range(0, count).Select(i => new DataPoint(startYear + i, 10 + (slope * i)))];
+    }
+
+    private static List<DataPoint> CreateNoisyLine(int startYear, int count, double slope, double noise)
+    {
+        var random = new Random(20260812);
+
+        return
+        [
+            .. Enumerable
+                .Range(0, count)
+                .Select(i => new DataPoint(startYear + i, 10 + (slope * i) + ((random.NextDouble() - 0.5) * noise))),
+        ];
+    }
+
+    private static List<DataPoint> CreateFlatNoise(int startYear, int count)
+    {
+        // Alternating values around a constant mean: plenty of scatter, no underlying trend.
+        return [.. Enumerable.Range(0, count).Select(i => new DataPoint(startYear + i, 10 + (i % 2 == 0 ? 1 : -1)))];
+    }
+}

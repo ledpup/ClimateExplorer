@@ -177,6 +177,40 @@ public static class ChartLogic
         };
     }
 
+    /// <summary>
+    /// The dataset for a trend's forward projection. Dashed and thinner than the series it came
+    /// from, so that "projected" is legible without relying on the colour offset alone, and pinned
+    /// to the parent's y-axis so the two are read against the same scale.
+    /// </summary>
+    public static LineChartDataset<double?> GetTrendChartDataset(
+        string label,
+        List<double?> values,
+        ChartColor chartColor,
+        string yAxisId)
+    {
+        var colour = Enumerable.Repeat((string)chartColor, values.Count).ToList();
+
+        return
+            new LineChartDataset<double?>
+            {
+                Label = label,
+                Data = values,
+                BackgroundColor = colour,
+                BorderColor = colour,
+                Fill = false,
+                PointRadius = 0f,
+                PointHoverRadius = 3f,
+                ShowLine = true,
+                PointBorderColor = colour,
+                PointHoverBackgroundColor = colour,
+                BorderDash = [6, 4],
+                BorderWidth = 3,
+                SpanGaps = false,
+
+                YAxisID = yAxisId,
+            };
+    }
+
     public static ChartTrendlineData CreateTrendline(int datasetIndex, ChartColor colour)
     {
         return

@@ -5,7 +5,10 @@ using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Infrastructure;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.Stats;
+using ClimateExplorer.Core.Stats.Model;
+using ClimateExplorer.Web.Client.Services.Trends;
 using ClimateExplorer.Web.Client.UiModel;
+using ClimateExplorer.Web.Client.UiModel.Trends;
 using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
 using ClimateExplorer.WebApiClient.Services;
@@ -123,6 +126,129 @@ public sealed class ChartDataBuilder : IChartDataBuilder
     private static bool HasFiniteValue(DataSet? dataSet)
     {
         return dataSet?.DataRecords.Any(x => x.Value.HasValue && !double.IsNaN(x.Value.Value) && !double.IsInfinity(x.Value.Value)) == true;
+    }
+
+    /// <summary>
+    /// Fits the three trend windows for every series with the trend module switched on, records why
+    /// any window can't be offered, and returns the bin array extended to cover the furthest
+    /// forward projection.
+    /// </summary>
+    private static BinIdentifier[] ApplyTrends(
+        List<SeriesWithData> renderableChartSeries,
+        BinIdentifier[] chartBins,
+        BinGranularities binGranularity,
+        List<UserNotification> messages)
+    {
+        var seriesWantingTrends = renderableChartSeries.Where(x => x.ChartSeries!.ShowTrend).ToList();
+
+        if (seriesWantingTrends.Count == 0)
+        {
+            return chartBins;
+        }
+
+        // A trend regresses a value against a calendar year and projects one value per year, so it
+        // only has meaning when the x-axis is years. Other granularities can still carry the
+        // setting (from a shared URL, or from switching grouping with a trend active).
+        if (binGranularity != BinGranularities.ByYear)
+        {
+            messages.Add(new UserNotification
+            {
+                Message = "Trends are only available when the chart is grouped by year, so no trend line was added.",
+                Type = UiModel.NotificationType.Info,
+            });
+
+            return chartBins;
+        }
+
+        var binIdsToPlot = new HashSet<string>(chartBins.Select(x => x.Id));
+
+        foreach (var cs in seriesWantingTrends)
+        {
+            var csd = cs.ChartSeries!;
+            var subject = new TrendStatSubject(csd.GetFriendlyTitleShort(), ResolveTrendUnit(csd));
+
+            var trend = ChartSeriesTrendCalculator.Calculate(
+                subject,
+                BuildTrendPoints(cs.PreProcessedDataSet!, binIdsToPlot),
+                csd.TrendPeriod,
+                csd.TrendPredictionYears);
+
+            cs.Trend = trend;
+
+            // The window that ended up being drawn is written back to the definition, so the
+            // dropdown, the URL and the chart all agree - the user's request may have been for a
+            // window that isn't significant for this data.
+            csd.TrendPeriod = trend.Projection?.Window;
+
+            var notification = ChartSeriesTrendNotificationBuilder.Build(
+                subject.Label,
+                trend,
+                cs.SourceDataSet.GeographicalEntity?.Name,
+                locationId: null);
+
+            if (notification is not null)
+            {
+                messages.Add(notification);
+            }
+        }
+
+        return ExtendBinsForProjections(chartBins, seriesWantingTrends);
+    }
+
+    private static BinIdentifier[] ExtendBinsForProjections(BinIdentifier[] chartBins, List<SeriesWithData> seriesWantingTrends)
+    {
+        var lastProjectedYear = seriesWantingTrends
+            .Select(x => x.Trend?.Projection?.LastYear ?? 0)
+            .DefaultIfEmpty(0)
+            .Max();
+
+        if (chartBins.Length == 0 || chartBins[^1] is not YearBinIdentifier lastBin || lastProjectedYear <= lastBin.Year)
+        {
+            return chartBins;
+        }
+
+        var extraBins = Enumerable
+            .Range(lastBin.Year + 1, lastProjectedYear - lastBin.Year)
+            .Select(year => new YearBinIdentifier((short)year));
+
+        return [.. chartBins, .. extraBins];
+    }
+
+    private static List<DataPoint> BuildTrendPoints(DataSet dataSet, HashSet<string> binIdsToPlot)
+    {
+        var points = new List<DataPoint>();
+
+        foreach (var record in dataSet.DataRecords)
+        {
+            if (record.BinId is null
+                || !binIdsToPlot.Contains(record.BinId)
+                || !record.Value.HasValue
+                || !double.IsFinite(record.Value.Value))
+            {
+                continue;
+            }
+
+            if (BinIdentifier.Parse(record.BinId) is YearBinIdentifier yearBin)
+            {
+                points.Add(new DataPoint(yearBin.Year, record.Value.Value));
+            }
+        }
+
+        return points;
+    }
+
+    /// <summary>
+    /// A transformed series is no longer in its source unit - "day of year if frost" is a day
+    /// number, a custom expression is a count - so no unit is claimed rather than the wrong one.
+    /// </summary>
+    private static string ResolveTrendUnit(ChartSeriesDefinition csd)
+    {
+        if (csd.SeriesTransformation is not (SeriesTransformations.Identity or SeriesTransformations.Negate))
+        {
+            return string.Empty;
+        }
+
+        return UnitOfMeasureLabelShort(csd.SourceSeriesSpecifications!.First().MeasurementDefinition!.UnitOfMeasure);
     }
 
     private async Task<List<SeriesWithData>> RetrieveDataSets(
@@ -332,6 +458,12 @@ public sealed class ChartDataBuilder : IChartDataBuilder
                 chartBins = BinHelpers.EnumerateBinsInRange(chartStartBin, chartEndBin).ToArray();
 
                 startYears = GetStartYears(renderableChartSeries);
+
+                // Trends are fitted over what is actually plotted, so this has to happen once the
+                // bin range is known. It also has to happen before gap filling, because a trend
+                // projection extends the bin array past the end of the data and the gap-filling
+                // pass below is what gives every other series null records for those extra bins.
+                chartBins = ApplyTrends(renderableChartSeries, chartBins, binGranularity, messages);
 
                 break;
 

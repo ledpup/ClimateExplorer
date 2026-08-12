@@ -3,6 +3,7 @@
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
+using ClimateExplorer.Web.Client.UiModel.Trends;
 using ClimateExplorer.Web.UiModel;
 using static ClimateExplorer.Core.Enums;
 
@@ -109,7 +110,42 @@ public static class ChartSeriesListSerializer
                 GroupingThreshold = ParseNullableFloat(segments[16]),
                 DataAvailable = bool.Parse(segments[17]),
                 MinimumDataResolution = (DataResolution?)ParseNullableEnum<DataResolution>(segments[18]),
+
+                // The trend fields were added after links containing 19 segments were already being
+                // shared, so they are read defensively rather than positionally - an older URL is
+                // simply a series with the trend module switched off.
+                ShowTrend = ParseOptionalBool(segments, 19),
+                TrendPeriod = (TrendWindow?)ParseOptionalNullableEnum<TrendWindow>(segments, 20),
+                TrendPredictionYears = TrendPredictionRange.Clamp(
+                    ParseOptionalInt(segments, 21, TrendPredictionRange.Default)),
             };
+    }
+
+    private static string? GetOptionalSegment(string[] segments, int index)
+    {
+        return index < segments.Length && !string.IsNullOrWhiteSpace(segments[index])
+            ? segments[index]
+            : null;
+    }
+
+    private static bool ParseOptionalBool(string[] segments, int index)
+    {
+        return GetOptionalSegment(segments, index) is { } value && bool.TryParse(value, out var parsed) && parsed;
+    }
+
+    private static int ParseOptionalInt(string[] segments, int index, int fallback)
+    {
+        return GetOptionalSegment(segments, index) is { } value && int.TryParse(value, out var parsed)
+            ? parsed
+            : fallback;
+    }
+
+    private static object? ParseOptionalNullableEnum<T>(string[] segments, int index)
+        where T : struct, System.Enum
+    {
+        return GetOptionalSegment(segments, index) is { } value && Enum.TryParse<T>(value, out var parsed)
+            ? parsed
+            : null;
     }
 
     private static SourceSeriesSpecification[] ParseSourceSeriesSpecifications(string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IDictionary<Guid, Location>? locations, IEnumerable<Region> regions, DataResolution? dataResolution)
@@ -256,6 +292,9 @@ public static class ChartSeriesListSerializer
                 Uri.EscapeDataString(csd.CustomTransformation ?? string.Empty),
                 csd.GroupingThreshold,
                 csd.DataAvailable,
-                csd.MinimumDataResolution);
+                csd.MinimumDataResolution,
+                csd.ShowTrend,
+                csd.TrendPeriod,
+                csd.TrendPredictionYears);
     }
 }

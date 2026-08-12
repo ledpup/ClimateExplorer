@@ -1,43 +1,55 @@
-namespace ClimateExplorer.Web.Client.Components.RecentObservations;
+namespace ClimateExplorer.Web.Client.Services.Trends;
 
 using System.Globalization;
 using ClimateExplorer.Core.Stats;
 using ClimateExplorer.Core.Stats.Model;
-using ClimateExplorer.Web.Client.Services.RecentObservations;
-using ClimateExplorer.Web.Client.UiModel.RecentObservations;
+using ClimateExplorer.Web.Client.UiModel.Trends;
 
-// Builds the GraphPad-style full statistical breakdown shown in the About-trends modal for one
-// metric/window combination. Slope/Y-intercept/X-intercept/1-Slope each appear in three tiers:
-// Summary (what does this mean), Best-fit values (what are the numbers and how precise is each
-// one), and 95% Confidence Intervals (what range are we confident in) - deliberately three
-// separate sections rather than one, so each answers a single question.
+// Builds the GraphPad-style full statistical breakdown shown for one subject/window combination -
+// used by both the Recent Observations About-trends panel and the chart's trend panel.
+// Slope/Y-intercept/X-intercept/1-Slope each appear in three tiers: Summary (what does this mean),
+// Best-fit values (what are the numbers and how precise is each one), and 95% Confidence Intervals
+// (what range are we confident in) - deliberately three separate sections rather than one, so each
+// answers a single question.
 internal static class TrendStatSectionBuilder
 {
-    public static IReadOnlyList<TrendStatSection> Build(RecentObservationTrendViewModel metric, LinearRegressionResult trend)
+    /// <param name="subject">What the trend describes - supplies the label and unit.</param>
+    /// <param name="trend">The regression for the window being described.</param>
+    /// <param name="windowPoints">The points <paramref name="trend"/> was fitted to.</param>
+    /// <param name="fullPeriodPoints">
+    /// Every point in the record, regardless of window. Used only to look up the current year's
+    /// measured value, so that a trend fitted to an early window can still be compared against what
+    /// actually happened.
+    /// </param>
+    public static IReadOnlyList<TrendStatSection> Build(
+        TrendStatSubject subject,
+        LinearRegressionResult trend,
+        IReadOnlyList<DataPoint> windowPoints,
+        IReadOnlyList<DataPoint> fullPeriodPoints)
     {
         var interceptStats = LinearRegressionCalculator.CalculateInterceptStatistics(trend);
         var xIntercept = LinearRegressionCalculator.CalculateXIntercept(trend);
 
         return
         [
-            BuildSummary(metric, trend, xIntercept),
-            BuildBestFitValues(metric, trend, interceptStats, xIntercept),
-            BuildConfidenceIntervals(metric, trend, interceptStats, xIntercept),
-            BuildGoodnessOfFit(metric, trend),
+            BuildSummary(subject, trend, xIntercept),
+            BuildBestFitValues(subject, trend, interceptStats, xIntercept),
+            BuildConfidenceIntervals(subject, trend, interceptStats, xIntercept),
+            BuildGoodnessOfFit(subject, trend),
             BuildSignificance(trend),
-            BuildEquation(metric, trend),
-            BuildData(metric, trend),
+            BuildEquation(subject, trend, fullPeriodPoints),
+            BuildData(windowPoints, trend),
         ];
     }
 
-    private static TrendStatSection BuildSummary(RecentObservationTrendViewModel metric, LinearRegressionResult trend, XInterceptStatistics xIntercept)
+    private static TrendStatSection BuildSummary(TrendStatSubject subject, LinearRegressionResult trend, XInterceptStatistics xIntercept)
     {
-        var unit = metric.Unit;
+        var unit = subject.Unit;
         var slope = trend.Line.Slope;
         var intercept = trend.Line.Intercept;
 
         var slopeWorkedExample = trend.Significance.IsSlopeSignificant
-            ? $"At this rate, the fitted line implies a change of about {FormatSigned(slope * 100, 1)}{unit} per century."
+            ? $"At this rate, the fitted line implies a change of about {FormatSignedValue(slope * 100, unit)} per century."
             : null;
 
         var slopeClimateExplanation = trend.Significance.IsSlopeSignificant
@@ -48,7 +60,7 @@ internal static class TrendStatSectionBuilder
             "Slope",
             TrendFormatting.FormatPerDecade(trend, unit),
             IsEmphasized: true,
-            AbstractExplanation: $"The slope is the change in the fitted value for every one-unit increase in X - here, the average change from one calendar year to the next. The per-year rate is {FormatSigned(slope, 5)}{unit}/year.",
+            AbstractExplanation: $"The slope is the change in the fitted value for every one-unit increase in X - here, the average change from one calendar year to the next. The per-year rate is {TrendFormatting.FormatPerYearRate(slope, unit)}.",
             ClimateExplanation: slopeClimateExplanation,
             WorkedExamples: slopeWorkedExample is null ? null : [slopeWorkedExample]);
 
@@ -65,18 +77,18 @@ internal static class TrendStatSectionBuilder
             xIntercept.Value.ToString("0", CultureInfo.InvariantCulture),
             IsEmphasized: false,
             AbstractExplanation: "The X-intercept is the X value (year) where the fitted line crosses Y = 0.",
-            ClimateExplanation: $"0{unit} crossing the fitted line for an absolute {metric.Label.ToLowerInvariant()} lands far outside any plausible year and carries no climate meaning; it's shown only because it's part of the standard regression report this table mirrors.",
+            ClimateExplanation: $"{TrendFormatting.FormatUnitAmount(0, unit)} crossing the fitted line for an absolute {subject.Label.ToLowerInvariant()} lands far outside any plausible year and carries no climate meaning; it's shown only because it's part of the standard regression report this table mirrors.",
             WorkedExamples: null);
 
-        var reciprocalRow = BuildReciprocalSlopeSummaryRow(metric, slope);
+        var reciprocalRow = BuildReciprocalSlopeSummaryRow(subject, slope);
 
         return new TrendStatSection("Summary", [slopeRow, yInterceptRow, xInterceptRow, reciprocalRow]);
     }
 
-    private static TrendStatRow BuildReciprocalSlopeSummaryRow(RecentObservationTrendViewModel metric, double slope)
+    private static TrendStatRow BuildReciprocalSlopeSummaryRow(TrendStatSubject subject, double slope)
     {
         var reciprocal = 1 / slope;
-        var perUnitLabel = metric.Unit == "°C" ? "1°C" : "1mm/decade";
+        var perUnitLabel = TrendFormatting.FormatUnitAmount(1, subject.Unit);
 
         return new TrendStatRow(
             "1/Slope",
@@ -87,19 +99,20 @@ internal static class TrendStatSectionBuilder
             WorkedExamples: null);
     }
 
-    private static TrendStatSection BuildBestFitValues(RecentObservationTrendViewModel metric, LinearRegressionResult trend, InterceptStatistics interceptStats, XInterceptStatistics xIntercept)
+    private static TrendStatSection BuildBestFitValues(TrendStatSubject subject, LinearRegressionResult trend, InterceptStatistics interceptStats, XInterceptStatistics xIntercept)
     {
-        var unit = metric.Unit;
+        var unit = subject.Unit;
         var slope = trend.Line.Slope;
         var intercept = trend.Line.Intercept;
         var slopeSe = trend.Significance.SlopeStandardError;
+        var slopeSeText = TrendFormatting.FormatPerYearMagnitude(slopeSe, unit);
 
         var slopeRow = new TrendStatRow(
             "Slope",
-            $"{FormatSigned(slope, 5)}{unit}/year ± {slopeSe.ToString("0.00000", CultureInfo.InvariantCulture)}{unit}/year",
+            $"{TrendFormatting.FormatPerYearRate(slope, unit)} ± {slopeSeText}",
             IsEmphasized: true,
             AbstractExplanation: "The standard error (SE) measures how precisely the slope is estimated from this data - a smaller SE means the fitted rate is more tightly pinned down.",
-            ClimateExplanation: $"Here the per-year rate is {FormatSigned(slope, 5)}{unit}/year with a standard error of {slopeSe.ToString("0.00000", CultureInfo.InvariantCulture)}{unit}/year, meaning repeated sampling of similarly-sized records would be expected to produce slope estimates clustered within about one SE of this value.",
+            ClimateExplanation: $"Here the per-year rate is {TrendFormatting.FormatPerYearRate(slope, unit)} with a standard error of {slopeSeText}, meaning repeated sampling of similarly-sized records would be expected to produce slope estimates clustered within about one SE of this value.",
             WorkedExamples: [$"Slope ÷ SE = {trend.Significance.TStatistic.ToString("0.0", CultureInfo.InvariantCulture)} is the t-statistic used to test whether this trend differs from zero (see \"Is slope significantly non-zero?\" below)."]);
 
         var yInterceptRow = new TrendStatRow(
@@ -129,17 +142,17 @@ internal static class TrendStatSectionBuilder
         return new TrendStatSection("Best-fit values", [slopeRow, yInterceptRow, xInterceptRow, reciprocalRow]);
     }
 
-    private static TrendStatSection BuildConfidenceIntervals(RecentObservationTrendViewModel metric, LinearRegressionResult trend, InterceptStatistics interceptStats, XInterceptStatistics xIntercept)
+    private static TrendStatSection BuildConfidenceIntervals(TrendStatSubject subject, LinearRegressionResult trend, InterceptStatistics interceptStats, XInterceptStatistics xIntercept)
     {
-        var unit = metric.Unit;
+        var unit = subject.Unit;
         var slopeCi = trend.Significance.SlopeConfidenceInterval;
 
         var slopeRow = new TrendStatRow(
             "Slope",
-            $"{FormatSigned(slopeCi.Lower, 5)}{unit}/year to {FormatSigned(slopeCi.Upper, 5)}{unit}/year",
+            $"{TrendFormatting.FormatPerYearRate(slopeCi.Lower, unit)} to {TrendFormatting.FormatPerYearRate(slopeCi.Upper, unit)}",
             IsEmphasized: true,
             AbstractExplanation: "The 95% confidence interval is the range of slopes the data are consistent with - the range you'd expect to capture the true rate 95% of the time, were this sampling process repeated.",
-            ClimateExplanation: $"The data here are consistent with a per-year rate anywhere from {FormatSigned(slopeCi.Lower, 5)}{unit} to {FormatSigned(slopeCi.Upper, 5)}{unit} per year.",
+            ClimateExplanation: $"The data here are consistent with a per-year rate anywhere from {TrendFormatting.FormatPerYearRate(slopeCi.Lower, unit)} to {TrendFormatting.FormatPerYearRate(slopeCi.Upper, unit)}.",
             WorkedExamples: null);
 
         var yInterceptRow = new TrendStatRow(
@@ -151,7 +164,7 @@ internal static class TrendStatSectionBuilder
             WorkedExamples: null);
 
         var xInterceptClimateExplanation = xIntercept.ConfidenceInterval is { } xInterceptCi
-            ? $"The data are consistent with the fitted line crossing 0{unit} anywhere from {xInterceptCi.Lower.ToString("0", CultureInfo.InvariantCulture)} to {xInterceptCi.Upper.ToString("0", CultureInfo.InvariantCulture)} - as with the point estimate, this carries no climate meaning."
+            ? $"The data are consistent with the fitted line crossing {TrendFormatting.FormatUnitAmount(0, unit)} anywhere from {xInterceptCi.Lower.ToString("0", CultureInfo.InvariantCulture)} to {xInterceptCi.Upper.ToString("0", CultureInfo.InvariantCulture)} - as with the point estimate, this carries no climate meaning."
             : "This interval is undefined here: the slope isn't estimated precisely enough, relative to its own size, for Fieller's theorem to produce a finite range.";
 
         var xInterceptValue = xIntercept.ConfidenceInterval is { } ci
@@ -169,7 +182,7 @@ internal static class TrendStatSectionBuilder
         return new TrendStatSection("95% Confidence Intervals", [slopeRow, yInterceptRow, xInterceptRow]);
     }
 
-    private static TrendStatSection BuildGoodnessOfFit(RecentObservationTrendViewModel metric, LinearRegressionResult trend)
+    private static TrendStatSection BuildGoodnessOfFit(TrendStatSubject subject, LinearRegressionResult trend)
     {
         var rSquaredPercent = (trend.Fit.RSquared * 100).ToString("0", CultureInfo.InvariantCulture);
         var noisePercent = (100 - (trend.Fit.RSquared * 100)).ToString("0", CultureInfo.InvariantCulture);
@@ -184,10 +197,10 @@ internal static class TrendStatSectionBuilder
 
         var syxRow = new TrendStatRow(
             "Sy.x",
-            TrendFormatting.FormatValue(trend.Fit.ResidualStandardError, metric.Unit),
+            TrendFormatting.FormatValue(trend.Fit.ResidualStandardError, subject.Unit),
             IsEmphasized: false,
             AbstractExplanation: "Sy.x is the typical size of a residual - how far a single year's value scatters from the fitted line, in the same units as Y.",
-            ClimateExplanation: $"A typical year here differs from the smooth long-term trend by about {TrendFormatting.FormatValue(trend.Fit.ResidualStandardError, metric.Unit)}, which is why a single unusually hot, cold, wet or dry year doesn't by itself change the assessment of the long-term trend.",
+            ClimateExplanation: $"A typical year here differs from the smooth long-term trend by about {TrendFormatting.FormatValue(trend.Fit.ResidualStandardError, subject.Unit)}, which is why a single unusually hot, cold, wet or dry year doesn't by itself change the assessment of the long-term trend.",
             WorkedExamples: null);
 
         return new TrendStatSection("Goodness of Fit", [rSquaredRow, syxRow]);
@@ -239,7 +252,7 @@ internal static class TrendStatSectionBuilder
         return new TrendStatSection("Is slope significantly non-zero?", [fRow, dfRow, pValueRow, deviationRow]);
     }
 
-    private static TrendStatSection BuildEquation(RecentObservationTrendViewModel metric, LinearRegressionResult trend)
+    private static TrendStatSection BuildEquation(TrendStatSubject subject, LinearRegressionResult trend, IReadOnlyList<DataPoint> fullPeriodPoints)
     {
         var slope = trend.Line.Slope;
         var intercept = trend.Line.Intercept;
@@ -256,10 +269,10 @@ internal static class TrendStatSectionBuilder
 
         var workedExamples = new List<string>
         {
-            $"In {earlyX.ToString("0", CultureInfo.InvariantCulture)} this line predicts {TrendFormatting.FormatValue(earlyPrediction.PredictedY, metric.Unit)} (95% range for that year's actual value: {TrendFormatting.FormatValue(earlyPrediction.ObservationPredictionInterval.Lower, metric.Unit)} to {TrendFormatting.FormatValue(earlyPrediction.ObservationPredictionInterval.Upper, metric.Unit)}).",
-            BuildNowExample(metric, nowX, nowPrediction),
-            $"In {lateX.ToString("0", CultureInfo.InvariantCulture)} it predicts {TrendFormatting.FormatValue(latePrediction.PredictedY, metric.Unit)} ({TrendFormatting.FormatValue(latePrediction.ObservationPredictionInterval.Lower, metric.Unit)} to {TrendFormatting.FormatValue(latePrediction.ObservationPredictionInterval.Upper, metric.Unit)}).",
-            $"In {laterX.ToString("0", CultureInfo.InvariantCulture)} it predicts {TrendFormatting.FormatValue(laterPrediction.PredictedY, metric.Unit)} ({TrendFormatting.FormatValue(laterPrediction.ObservationPredictionInterval.Lower, metric.Unit)} to {TrendFormatting.FormatValue(laterPrediction.ObservationPredictionInterval.Upper, metric.Unit)}).",
+            $"In {earlyX.ToString("0", CultureInfo.InvariantCulture)} this line predicts {TrendFormatting.FormatValue(earlyPrediction.PredictedY, subject.Unit)} (95% range for that year's actual value: {TrendFormatting.FormatValue(earlyPrediction.ObservationPredictionInterval.Lower, subject.Unit)} to {TrendFormatting.FormatValue(earlyPrediction.ObservationPredictionInterval.Upper, subject.Unit)}).",
+            BuildNowExample(subject, nowX, nowPrediction, fullPeriodPoints),
+            $"In {lateX.ToString("0", CultureInfo.InvariantCulture)} it predicts {TrendFormatting.FormatValue(latePrediction.PredictedY, subject.Unit)} ({TrendFormatting.FormatValue(latePrediction.ObservationPredictionInterval.Lower, subject.Unit)} to {TrendFormatting.FormatValue(latePrediction.ObservationPredictionInterval.Upper, subject.Unit)}).",
+            $"In {laterX.ToString("0", CultureInfo.InvariantCulture)} it predicts {TrendFormatting.FormatValue(laterPrediction.PredictedY, subject.Unit)} ({TrendFormatting.FormatValue(laterPrediction.ObservationPredictionInterval.Lower, subject.Unit)} to {TrendFormatting.FormatValue(laterPrediction.ObservationPredictionInterval.Upper, subject.Unit)}).",
         };
 
         var row = new TrendStatRow(
@@ -273,11 +286,11 @@ internal static class TrendStatSectionBuilder
         return new TrendStatSection("Equation", [row]);
     }
 
-    private static string BuildNowExample(RecentObservationTrendViewModel metric, int nowX, RegressionPrediction nowPrediction)
+    private static string BuildNowExample(TrendStatSubject subject, int nowX, RegressionPrediction nowPrediction, IReadOnlyList<DataPoint> fullPeriodPoints)
     {
-        var unit = metric.Unit;
-        var predictedText = $"In {nowX.ToString("0", CultureInfo.InvariantCulture)}, it predicts {TrendFormatting.FormatValue(nowPrediction.PredictedY, metric.Unit)} ({TrendFormatting.FormatValue(nowPrediction.ObservationPredictionInterval.Lower, metric.Unit)} to {TrendFormatting.FormatValue(nowPrediction.ObservationPredictionInterval.Upper, metric.Unit)}).";
-        var actualPoint = metric.FullPeriodPoints.FirstOrDefault(p => (int)Math.Round(p.X) == nowX);
+        var unit = subject.Unit;
+        var predictedText = $"In {nowX.ToString("0", CultureInfo.InvariantCulture)}, it predicts {TrendFormatting.FormatValue(nowPrediction.PredictedY, unit)} ({TrendFormatting.FormatValue(nowPrediction.ObservationPredictionInterval.Lower, unit)} to {TrendFormatting.FormatValue(nowPrediction.ObservationPredictionInterval.Upper, unit)}).";
+        var actualPoint = fullPeriodPoints.FirstOrDefault(p => (int)Math.Round(p.X) == nowX);
         if (actualPoint is null)
         {
             return predictedText;
@@ -294,9 +307,8 @@ internal static class TrendStatSectionBuilder
             $"{predictedText} The {nowX.ToString("0", CultureInfo.InvariantCulture)} measured value is {TrendFormatting.FormatValue(actualPoint.Y, unit)}, which {comparison}.";
     }
 
-    private static TrendStatSection BuildData(RecentObservationTrendViewModel metric, LinearRegressionResult trend)
+    private static TrendStatSection BuildData(IReadOnlyList<DataPoint> points, LinearRegressionResult trend)
     {
-        var points = GetPoints(metric, trend);
         var maxReplicates = points.Count == 0 ? 1 : points.GroupBy(p => p.X).Max(g => g.Count());
 
         var countRow = new TrendStatRow("Number of X values", trend.Input.Count.ToString(CultureInfo.InvariantCulture), IsEmphasized: false, null, null, null);
@@ -332,21 +344,6 @@ internal static class TrendStatSectionBuilder
         return new TrendStatSection("Data", [countRow, totalRow, replicatesRow, missingRow]);
     }
 
-    private static IReadOnlyList<DataPoint> GetPoints(RecentObservationTrendViewModel metric, LinearRegressionResult trend)
-    {
-        if (ReferenceEquals(trend, metric.FullPeriodTrend))
-        {
-            return metric.FullPeriodPoints;
-        }
-
-        if (ReferenceEquals(trend, metric.RecentTrend))
-        {
-            return metric.RecentTrendPoints;
-        }
-
-        return metric.FirstHalfTrendPoints;
-    }
-
     private static (int MinYear, int MaxYear, IReadOnlyList<int> MissingYears) DescribeMissingYears(IReadOnlyList<DataPoint> points)
     {
         var years = points.Select(x => (int)Math.Round(x.X)).OrderBy(x => x).ToList();
@@ -357,10 +354,9 @@ internal static class TrendStatSectionBuilder
         return (minYear, maxYear, missingYears);
     }
 
-    private static string FormatSigned(double value, int decimalPlaces)
+    private static string FormatSignedValue(double value, string unit)
     {
-        var format = "0." + new string('0', decimalPlaces);
-        var text = value.ToString(format, CultureInfo.InvariantCulture);
-        return value >= 0 ? $"+{text}" : text;
+        var sign = value >= 0 ? "+" : string.Empty;
+        return $"{sign}{TrendFormatting.FormatValue(value, unit)}";
     }
 }

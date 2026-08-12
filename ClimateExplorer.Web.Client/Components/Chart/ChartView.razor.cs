@@ -8,6 +8,7 @@ using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.Services.Chart;
+using ClimateExplorer.Web.Client.Services.Trends;
 using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
@@ -487,7 +488,87 @@ public partial class ChartView : IAsyncDisposable
             dataSetIndex++;
         }
 
+        // Trend projections are appended only once every real series has been added, because the
+        // ChartTrendlineData built above addresses its series by dataset index - interleaving trend
+        // datasets would silently point those overlays at the wrong series.
+        await AddTrendDataSetsToChart();
+
         return trendlines;
+    }
+
+    private async Task AddTrendDataSetsToChart()
+    {
+        var binIndexesByYear = BuildBinIndexesByYear();
+
+        if (binIndexesByYear.Count == 0)
+        {
+            return;
+        }
+
+        foreach (var chartSeries in ChartSeriesWithData!)
+        {
+            if (chartSeries.Trend?.Projection is not { } projection)
+            {
+                continue;
+            }
+
+            var values = new List<double?>(new double?[ChartBins!.Length]);
+            var plotted = false;
+
+            foreach (var prediction in projection.Predictions)
+            {
+                if (binIndexesByYear.TryGetValue((int)Math.Round(prediction.X), out var index))
+                {
+                    values[index] = prediction.PredictedY;
+                    plotted = true;
+                }
+            }
+
+            if (!plotted)
+            {
+                continue;
+            }
+
+            var csd = chartSeries.ChartSeries!;
+            var unitOfMeasure = chartSeries.ProcessedDataSet!.MeasurementDefinition!.UnitOfMeasure;
+
+            await chart!.AddDataSet(
+                ChartLogic.GetTrendChartDataset(
+                    $"{csd.GetFriendlyTitleShort()} | {TrendWindowLabel.Get(projection.Window)} trend",
+                    values,
+                    ChartColor.FromHtmlColorCode(TrendSeriesColour.Derive(csd.Colour!)),
+                    ChartLogic.GetYAxisId(csd.SeriesTransformation, csd.CustomTransformation, unitOfMeasure, csd.Aggregation)));
+        }
+    }
+
+    /// <summary>
+    /// The last year the chart holds real data for. This is <c>chartEndBin</c> rather than the last
+    /// bin, because the bin array is deliberately extended past the data to make room for trend
+    /// projections.
+    /// </summary>
+    private short LastYearWithData()
+    {
+        return chartEndBin is YearBinIdentifier yearBin ? yearBin.Year : short.MaxValue;
+    }
+
+    private Dictionary<int, int> BuildBinIndexesByYear()
+    {
+        var binIndexesByYear = new Dictionary<int, int>();
+
+        if (ChartBins is null)
+        {
+            return binIndexesByYear;
+        }
+
+        for (var i = 0; i < ChartBins.Length; i++)
+        {
+            if (ChartBins[i] is YearBinIdentifier yearBin)
+            {
+                binIndexesByYear[yearBin.Year] = i;
+            }
+        }
+
+        return binIndexesByYear;
     }
 
     private async Task OnSelectedBinGranularityChanged(BinGranularities value, bool rebuildDataSets = true)
@@ -530,6 +611,13 @@ public partial class ChartView : IAsyncDisposable
 
         var year = (short)(startYear + e.Index);
 
+        // Clicks can land on a projected year (the bins run past the end of the data whenever a
+        // trend is displayed) or on a trend dataset itself. Neither has source data to filter to.
+        if (e.DatasetIndex >= ChartSeriesWithData!.Count || year > LastYearWithData())
+        {
+            return;
+        }
+
         var sourceDataSet = ChartSeriesWithData![e.DatasetIndex].SourceDataSet!;
 
         await YearFilterRequested.InvokeAsync(new YearAndDataTypeFilter(year) { DataType = sourceDataSet.DataType, DataAdjustment = sourceDataSet.DataAdjustment, UnitOfMeasure = sourceDataSet.MeasurementDefinition!.UnitOfMeasure });
@@ -545,7 +633,13 @@ public partial class ChartView : IAsyncDisposable
 
     private async Task OnDownloadDataClicked()
     {
-        await DownloadRequested.InvokeAsync(new DataDownloadPackage { ChartSeriesWithData = ChartSeriesWithData!, Bins = ChartBins!, BinGranularity = SelectedBinGranularity });
+        // Bins past the end of the data exist only to make room for trend projections; exporting
+        // them would append rows of empty values to the CSV.
+        var binsWithData = ChartBins!
+            .Where(x => x is not YearBinIdentifier yearBin || yearBin.Year <= LastYearWithData())
+            .ToArray();
+
+        await DownloadRequested.InvokeAsync(new DataDownloadPackage { ChartSeriesWithData = ChartSeriesWithData!, Bins = binsWithData, BinGranularity = SelectedBinGranularity });
     }
 
     private async Task ShowAddDataSetModal()

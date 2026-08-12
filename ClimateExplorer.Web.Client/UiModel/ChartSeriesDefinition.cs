@@ -4,6 +4,7 @@ using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using ClimateExplorer.Core;
 using ClimateExplorer.Core.DataPreparation;
+using ClimateExplorer.Web.Client.UiModel.Trends;
 using ClimateExplorer.Web.UiLogic;
 using static ClimateExplorer.Core.Enums;
 
@@ -37,6 +38,14 @@ public class ChartSeriesDefinition
     // Rendering option fields
     public SeriesDisplayStyle DisplayStyle { get; set; }
     public bool ShowTrendline { get; set; }
+
+    // Trend module fields. ShowTrend is what asks for the three trend windows to be fitted at all;
+    // TrendPeriod is which of them to project forward, and is only ever set to a window that came
+    // back statistically significant (the data builder resolves it, since only it knows what was
+    // significant for the data actually loaded).
+    public bool ShowTrend { get; set; }
+    public TrendWindow? TrendPeriod { get; set; }
+    public int TrendPredictionYears { get; set; } = TrendPredictionRange.Default;
 
     // Editing mode fields
 
@@ -342,6 +351,21 @@ public class ChartSeriesDefinition
                 return false;
             }
 
+            if (x.ShowTrend != y.ShowTrend)
+            {
+                return false;
+            }
+
+            if (x.TrendPeriod != y.TrendPeriod)
+            {
+                return false;
+            }
+
+            if (x.TrendPredictionYears != y.TrendPredictionYears)
+            {
+                return false;
+            }
+
             if (x.Smoothing != y.Smoothing)
             {
                 return false;
@@ -419,6 +443,9 @@ public class ChartSeriesDefinition
                 obj.BinGranularity.GetHashCode() ^
                 obj.DisplayStyle.GetHashCode() ^
                 obj.ShowTrendline.GetHashCode() ^
+                obj.ShowTrend.GetHashCode() ^
+                obj.TrendPeriod.GetHashCode() ^
+                obj.TrendPredictionYears.GetHashCode() ^
                 obj.Smoothing.GetHashCode() ^
                 obj.SmoothingWindow.GetHashCode() ^
                 obj.Value.GetHashCode() ^
@@ -473,6 +500,9 @@ public class ChartSeriesDefinition
                 obj.DisplayStyle.GetHashCode() ^
                 obj.IsLocked.GetHashCode() ^
                 obj.ShowTrendline.GetHashCode() ^
+                obj.ShowTrend.GetHashCode() ^
+                obj.TrendPeriod.GetHashCode() ^
+                obj.TrendPredictionYears.GetHashCode() ^
                 obj.Smoothing.GetHashCode() ^
                 obj.SmoothingWindow.GetHashCode() ^
                 obj.Value.GetHashCode() ^
