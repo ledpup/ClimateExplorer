@@ -252,18 +252,18 @@
                                     </span>
                                 </div>
                             </DelayedTooltip>
-                            <DelayedTooltip Text="@YearsToPredictTooltip" Style="display: block">
+                            <DelayedTooltip Text="@PredictUntilTooltip" Style="display: block">
                                 <div class="form-row">
-                                    <span class="form-label">Years to predict</span>
+                                    <span class="form-label">Predict until</span>
                                     <span class="form-control-wrap">
                                         <Validation @ref="predictionYearsValidation" Validator="ValidatePredictionYears">
                                             <TextInput Value="@predictionYearsText"
                                                        ValueChanged="@OnPredictionYearsChanged"
                                                        Disabled="@(SelectableTrendPeriods.Count == 0)"
                                                        Immediate="false"
-                                                       aria-label="Years to predict">
+                                                       aria-label="Predict until">
                                                 <Feedback>
-                                                    <ValidationError>Enter a whole number of years from @TrendPredictionRange.Minimum to @TrendPredictionRange.Maximum</ValidationError>
+                                                    <ValidationError>@PredictUntilValidationMessage</ValidationError>
                                                 </Feedback>
                                             </TextInput>
                                         </Validation>

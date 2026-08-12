@@ -554,3 +554,30 @@ it walks through is unchanged and remains accurate for both.
 
 `dotnet build` on the solution is clean; the unit suite passes at 478 tests (three added:
 the new window's own fit, its position in `Windows`, and its place in the fallback priority).
+
+## Addendum 4 — default prediction length and "Predict until" year (2026-08-12)
+
+Two follow-up changes to the years-to-predict control:
+
+- `TrendPredictionRange.Default` changed from 20 to **50**.
+- The control is relabelled **"Predict until"** and now displays/edits a **calendar year**
+  rather than a duration. `ChartSeriesDefinition.TrendPredictionYears` still stores a duration
+  (years past the end of the record) unchanged - that's what `ChartSeriesTrendCalculator`,
+  persistence and every existing bound (1-100) already assume, and changing its meaning to an
+  absolute year would have disturbed all of that for no benefit. Only the view converts: the text
+  box shows `anchorYear + TrendPredictionYears` and, on commit, stores
+  `enteredYear - anchorYear` back into `TrendPredictionYears`.
+
+  The anchor is the series' own last real data year (`Trend.LastDataYear`) once the trend has been
+  fitted - which is always true whenever the field is enabled, since it's only enabled when
+  `SelectableTrendPeriods` is non-empty, which itself requires a non-null `Trend`. Before that (the
+  field is disabled but still needs to show something) it falls back to `DateTime.Now.Year`. The
+  validation message and tooltip both compute their year bounds from the same anchor, so a series
+  whose data ends in 2020 is told "enter a year from 2021 to 2120", not the fixed 1-100 the old
+  duration-based message gave.
+
+### Verification
+
+`dotnet build` on the solution is clean; the unit suite is unaffected (still 478 passing) - this
+was a presentation-layer change with no new calculation-layer behaviour to test beyond what
+`TrendPredictionRange` and `ChartSeriesTrendCalculator` already cover.

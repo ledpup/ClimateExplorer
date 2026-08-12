@@ -85,8 +85,23 @@ public partial class ChartSeriesView
             ? "Not enough data"
             : "No significant trend";
 
-    private string YearsToPredictTooltip =>
-        $"How many years past the end of the data to project the trend ({TrendPredictionRange.Minimum}-{TrendPredictionRange.Maximum})";
+    /// <summary>
+    /// The year the trend's projection is measured forward from. The projection is always a count
+    /// of years past the end of the real data (<see cref="ChartSeriesDefinition.TrendPredictionYears"/>),
+    /// but is shown and edited in the UI as a calendar year for readability - this is what that
+    /// year is counted from. Once the trend has been fitted, that's the series' own last data year;
+    /// beforehand (the field is disabled in that case, but still needs something to display) it
+    /// falls back to the current year as the closest available estimate.
+    /// </summary>
+    private int PredictUntilAnchorYear => Trend?.LastDataYear ?? DateTime.Now.Year;
+
+    private int PredictUntilYear => PredictUntilAnchorYear + (ChartSeries?.TrendPredictionYears ?? TrendPredictionRange.Default);
+
+    private string PredictUntilTooltip =>
+        $"The calendar year to project the trend forward to ({PredictUntilAnchorYear + TrendPredictionRange.Minimum}-{PredictUntilAnchorYear + TrendPredictionRange.Maximum})";
+
+    private string PredictUntilValidationMessage =>
+        $"Enter a year from {PredictUntilAnchorYear + TrendPredictionRange.Minimum} to {PredictUntilAnchorYear + TrendPredictionRange.Maximum}";
 
     public string GenerateStyleForOuterDiv()
     {
@@ -124,12 +139,13 @@ public partial class ChartSeriesView
         }
 
         // Keep the text box in step with the definition, including when a value arriving from a URL
-        // has been clamped into range. The input commits on blur rather than per keystroke, so this
+        // has been clamped into range, or the anchor year has just become known (Trend went from
+        // null to a real result). The input commits on blur rather than per keystroke, so this
         // doesn't fight with typing.
         if (!int.TryParse(predictionYearsText, NumberStyles.Integer, CultureInfo.InvariantCulture, out var current)
-            || current != ChartSeries.TrendPredictionYears)
+            || current != PredictUntilYear)
         {
-            predictionYearsText = ChartSeries.TrendPredictionYears.ToString(CultureInfo.InvariantCulture);
+            predictionYearsText = PredictUntilYear.ToString(CultureInfo.InvariantCulture);
         }
     }
 
@@ -266,7 +282,8 @@ public partial class ChartSeriesView
             return;
         }
 
-        var years = int.Parse(value, NumberStyles.Integer, CultureInfo.InvariantCulture);
+        var targetYear = int.Parse(value, NumberStyles.Integer, CultureInfo.InvariantCulture);
+        var years = targetYear - PredictUntilAnchorYear;
 
         if (years == ChartSeries!.TrendPredictionYears)
         {
@@ -284,8 +301,8 @@ public partial class ChartSeriesView
     {
         var text = Convert.ToString(e.Value);
 
-        e.Status = int.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out var years)
-            && TrendPredictionRange.IsValid(years)
+        e.Status = int.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out var targetYear)
+            && TrendPredictionRange.IsValid(targetYear - PredictUntilAnchorYear)
                 ? ValidationStatus.Success
                 : ValidationStatus.Error;
     }
