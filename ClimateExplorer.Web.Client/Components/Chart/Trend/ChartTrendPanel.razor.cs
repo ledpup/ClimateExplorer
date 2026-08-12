@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.Components;
 
 /// <summary>
 /// The chart's "About trends" side panel: the shared overview of what a trend is, plus the full
-/// statistical breakdown for all three periods - including the ones that weren't significant enough
-/// to be offered in the dropdown, which is where a user goes to find out why.
+/// statistical breakdown for every period - including the ones that weren't significant enough to
+/// be offered in the dropdown, which is where a user goes to find out why.
 /// </summary>
 public partial class ChartTrendPanel
 {

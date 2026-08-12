@@ -3,8 +3,8 @@ namespace ClimateExplorer.Web.Client.UiModel.Trends;
 using ClimateExplorer.Core.Stats.Model;
 
 /// <summary>
-/// Everything the trend module knows about one chart series, computed in a single pass: all three
-/// windows fitted, which of them are significant enough to offer in the dropdown, and the forward
+/// Everything the trend module knows about one chart series, computed in a single pass: every
+/// window fitted, which of them are significant enough to offer in the dropdown, and the forward
 /// projection for the one currently selected.
 /// </summary>
 /// <remarks>
@@ -15,7 +15,7 @@ public sealed record ChartSeriesTrend
 {
     public required TrendStatSubject Subject { get; init; }
 
-    /// <summary>All three windows, in Full/Recent/FirstHalf order. Empty when the series had too few years.</summary>
+    /// <summary>Every window, in dropdown/tab display order. Empty when the series had too few years.</summary>
     public IReadOnlyList<ChartSeriesTrendWindowResult> Windows { get; init; } = [];
 
     /// <summary>Every plotted point in the series, whichever window is selected.</summary>

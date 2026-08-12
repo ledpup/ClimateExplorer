@@ -39,7 +39,7 @@ public class ChartSeriesDefinition
     public SeriesDisplayStyle DisplayStyle { get; set; }
     public bool ShowTrendline { get; set; }
 
-    // Trend module fields. ShowTrend is what asks for the three trend windows to be fitted at all;
+    // Trend module fields. ShowTrend is what asks for the trend windows to be fitted at all;
     // TrendPeriod is which of them to project forward, and is only ever set to a window that came
     // back statistically significant (the data builder resolves it, since only it knows what was
     // significant for the data actually loaded).

@@ -5,14 +5,14 @@ using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.Client.UiModel.Trends;
 
 /// <summary>
-/// Explains, in one notification per series, why any of the three trend periods is missing from the
-/// trend dropdown.
+/// Explains, in one notification per series, why any trend period is missing from the trend
+/// dropdown.
 /// </summary>
 /// <remarks>
-/// All three windows are fitted in a single pass, so this is where that pass reports itself: a
-/// period that isn't statistically significant is not offered as an option, and this is the only
-/// place the user is told why. One notification per series rather than one per window, because the
-/// three results are produced together and read together.
+/// Every window is fitted in a single pass, so this is where that pass reports itself: a period
+/// that isn't statistically significant is not offered as an option, and this is the only place the
+/// user is told why. One notification per series rather than one per window, because the results
+/// are produced together and read together.
 /// </remarks>
 public static class ChartSeriesTrendNotificationBuilder
 {
@@ -49,21 +49,21 @@ public static class ChartSeriesTrendNotificationBuilder
         if (!trend.HasSignificantWindow)
         {
             return Create(
-                $"{Escape(seriesTitle)}: none of the three trend periods produce a statistically significant trend, so no trend line was added. "
+                $"{Escape(seriesTitle)}: none of the trend periods produce a statistically significant trend, so no trend line was added. "
                 + $"{detail} A period is only offered when its p-value is below {threshold}. "
-                + "Open <b>About trends</b> for the full statistics on all three periods.",
+                + "Open <b>About trends</b> for the full statistics on every period.",
                 NotificationType.Warning,
                 locationName,
                 locationId);
         }
 
         var subject = rejected.Count == 1
-            ? "one of the three trend periods isn't statistically significant, so it isn't offered as an option"
-            : $"{NumberWord(rejected.Count)} of the three trend periods aren't statistically significant, so they aren't offered as options";
+            ? "one of the trend periods isn't statistically significant, so it isn't offered as an option"
+            : $"{NumberWord(rejected.Count)} of the trend periods aren't statistically significant, so they aren't offered as options";
 
         return Create(
             $"{Escape(seriesTitle)}: {subject}. {detail} A period is only offered when its p-value is below {threshold}. "
-            + "Open <b>About trends</b> for the full statistics on all three periods.",
+            + "Open <b>About trends</b> for the full statistics on every period.",
             NotificationType.Info,
             locationName,
             locationId);

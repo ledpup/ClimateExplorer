@@ -129,7 +129,7 @@ public sealed class ChartDataBuilder : IChartDataBuilder
     }
 
     /// <summary>
-    /// Fits the three trend windows for every series with the trend module switched on, records why
+    /// Fits the trend windows for every series with the trend module switched on, records why
     /// any window can't be offered, and returns the bin array extended to cover the furthest
     /// forward projection.
     /// </summary>

@@ -4,5 +4,6 @@ public enum TrendWindow
 {
     Full,
     Recent,
+    RecentDecade,
     FirstHalf,
 }

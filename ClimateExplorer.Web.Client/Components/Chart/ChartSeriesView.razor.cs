@@ -77,7 +77,7 @@ public partial class ChartSeriesView
 
     /// <summary>
     /// What the disabled dropdown says when there is nothing to select - either the trends haven't
-    /// been fitted yet, or none of the three periods cleared the significance threshold.
+    /// been fitted yet, or none of the periods cleared the significance threshold.
     /// </summary>
     private string UnavailableTrendPeriodValue => Trend is null
         ? "Calculating…"

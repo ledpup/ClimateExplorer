@@ -6,15 +6,17 @@ using ClimateExplorer.Core.Stats.Model;
 using ClimateExplorer.Web.Client.UiModel.Trends;
 
 /// <summary>
-/// Fits the three trend windows for one chart series and projects the selected one forward.
+/// Fits the trend windows for one chart series and projects the selected one forward.
 /// </summary>
 /// <remarks>
-/// The windows, the minimum data requirement and the significance test are all deliberately the
-/// same as the Recent Observations trend tab's, via the shared
-/// <see cref="TrendWindowCalculator"/>, so the chart and the tile never disagree about whether a
-/// location has a trend. All three windows are fitted in one pass because the dropdown can only
-/// offer the significant ones, and the About-trends panel shows the statistics for all three
-/// regardless.
+/// The full-period, last-30-years and early-period windows, the minimum data requirement and the
+/// significance test are all deliberately the same as the Recent Observations trend tab's, via the
+/// shared <see cref="TrendWindowCalculator"/>, so the chart and the tile never disagree about
+/// whether a location has a trend. The chart additionally offers a shorter last-10-years window,
+/// fitted the same way (the last N points, then an ordinary least squares fit) but not part of
+/// <see cref="TrendWindowCalculator"/>'s shared three, since the Recent Observations tile has no
+/// use for it. Every window is fitted in one pass because the dropdown can only offer the
+/// significant ones, and the About-trends panel shows the statistics for all of them regardless.
 /// </remarks>
 public static class ChartSeriesTrendCalculator
 {
@@ -26,13 +28,16 @@ public static class ChartSeriesTrendCalculator
 
     public const int RecentWindowYears = 30;
 
+    public const int RecentDecadeWindowYears = 10;
+
     /// <summary>
     /// Which window to fall back to when the user hasn't chosen one, or when the one they chose is
     /// no longer significant. Most-recently-relevant first, since a trend module switched on for
     /// the first time is more often asked "what's happening lately?" than "what's the whole record
     /// done?".
     /// </summary>
-    private static readonly TrendWindow[] SelectionPriority = [TrendWindow.Recent, TrendWindow.Full, TrendWindow.FirstHalf];
+    private static readonly TrendWindow[] SelectionPriority =
+        [TrendWindow.Recent, TrendWindow.RecentDecade, TrendWindow.Full, TrendWindow.FirstHalf];
 
     public static ChartSeriesTrend Calculate(
         TrendStatSubject subject,
@@ -64,12 +69,23 @@ public static class ChartSeriesTrendCalculator
         }
 
         var recentCount = Math.Min(RecentWindowYears, ordered.Count);
+        var recentDecadeCount = Math.Min(RecentDecadeWindowYears, ordered.Count);
         var firstHalfCount = ordered.Count / 2;
 
+        // The last-10-years window uses the same logic as the shared last-30-years window (the
+        // last N points, then an ordinary least squares fit) but isn't part of
+        // TrendWindowCalculator's fixed three, so it's fitted directly here rather than by widening
+        // that shared method's return shape for a window only the chart offers.
+        var recentDecadePoints = ordered.TakeLast(recentDecadeCount).ToList();
+        var recentDecadeRegression = LinearRegressionCalculator.Calculate(recentDecadePoints);
+
+        // Declared in dropdown/tab display order: most-recently-relevant first, matching
+        // SelectionPriority above.
         var windows = new List<ChartSeriesTrendWindowResult>
         {
-            new(TrendWindow.Full, trendSet.HistoricalTrend, ordered),
             new(TrendWindow.Recent, trendSet.RecentTrend, [.. ordered.TakeLast(recentCount)]),
+            new(TrendWindow.RecentDecade, recentDecadeRegression, recentDecadePoints),
+            new(TrendWindow.Full, trendSet.HistoricalTrend, ordered),
             new(TrendWindow.FirstHalf, trendSet.FirstHalfTrend, [.. ordered.Take(firstHalfCount)]),
         };
 

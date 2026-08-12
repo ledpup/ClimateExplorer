@@ -511,3 +511,46 @@ whole record done?", and the full period is still one dropdown selection away.
 
 `dotnet build` on the solution is clean; the unit suite passes at 475 tests (down 8 from the
 `TrendSeriesColourTests` removal, up by the priority-order test change).
+
+## Addendum 3 — fourth trend window: "Last 10 years" (2026-08-12)
+
+Added a fourth window, `TrendWindow.RecentDecade`, fitted with the same logic as the existing
+last-30-years window (the last N points, then an ordinary least squares fit) but with N = 10
+(`ChartSeriesTrendCalculator.RecentDecadeWindowYears`). It sits second in the dropdown and in the
+About-trends panel's tabs.
+
+### Where it's computed, and why not in `TrendWindowCalculator`
+
+`TrendWindowCalculator` is shared with the Recent Observations trend tab and returns a fixed
+three-window `TrendWindowSet` (`HistoricalTrend`/`RecentTrend`/`FirstHalfTrend`) that the tile's
+view model and its tab layout are built around. The tile has no use for a 10-year window and
+wasn't asked to grow one, so widening that shared method's return shape - or the tile's UI - was
+out of scope. `ChartSeriesTrendCalculator` instead fits the 10-year window directly with
+`LinearRegressionCalculator.Calculate` over `ordered.TakeLast(Math.Min(10, ordered.Count))`, using
+the same points-in/regression-out shape `TrendWindowCalculator` uses internally for its own
+recent-window - so "the same logic as Last 30 years" is exact, just not routed through the shared
+type. The Recent Observations tab is completely unaffected by this change.
+
+### Display order and default selection
+
+`ChartSeriesTrendCalculator.Calculate` now declares its `windows` list in the order it should
+appear - `Recent, RecentDecade, Full, FirstHalf` - since both the chart's dropdown and the
+About-trends panel's tabs enumerate `ChartSeriesTrend.Windows` directly with no separate ordering
+step. `SelectionPriority` (the fallback used when nothing is requested, or the requested window
+stopped being significant) was extended to match: `Recent, RecentDecade, Full, FirstHalf`, so the
+newly-added window sits directly behind the 30-year one as a fallback too.
+
+### Wording generalised rather than hardcoded to a count
+
+`ChartSeriesTrendNotificationBuilder` and `ChartTrendPanel.razor` previously said "three trend
+periods" / "on all three periods". Rather than bumping that to "four" - which would need bumping
+again for any future window - the wording was made count-agnostic ("the trend periods" / "on every
+period"). The shared `TrendsOverviewExplainer` (used by both this panel and the Recent
+Observations one) similarly no longer claims an exact count of time windows, since that count now
+differs between its two consumers; the concrete full-period/last-30-years/early-period comparison
+it walks through is unchanged and remains accurate for both.
+
+### Verification
+
+`dotnet build` on the solution is clean; the unit suite passes at 478 tests (three added:
+the new window's own fit, its position in `Windows`, and its place in the fallback priority).

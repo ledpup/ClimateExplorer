@@ -32,7 +32,7 @@ public class ChartSeriesTrendNotificationBuilderTests
 
         Assert.IsNotNull(notification);
         Assert.AreEqual(NotificationType.Warning, notification!.Type);
-        StringAssert.Contains(notification.Message, "none of the three trend periods produce a statistically significant trend");
+        StringAssert.Contains(notification.Message, "none of the trend periods produce a statistically significant trend");
         StringAssert.Contains(notification.Message, "no trend line was added");
         Assert.AreEqual("Hobart", notification.LocationName);
     }
@@ -47,6 +47,7 @@ public class ChartSeriesTrendNotificationBuilderTests
         Assert.IsNotNull(notification);
         StringAssert.Contains(notification!.Message, "Full period");
         StringAssert.Contains(notification.Message, "Last 30 years");
+        StringAssert.Contains(notification.Message, "Last 10 years");
         StringAssert.Contains(notification.Message, "Early period");
         StringAssert.Contains(notification.Message, "p = ");
         StringAssert.Contains(notification.Message, "0.05");

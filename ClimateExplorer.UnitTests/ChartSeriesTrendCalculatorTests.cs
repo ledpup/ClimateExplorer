@@ -28,17 +28,30 @@ public class ChartSeriesTrendCalculatorTests
     }
 
     [TestMethod]
-    public void Calculate_ExactlyTheMinimumYears_FitsAllThreeWindows()
+    public void Calculate_ExactlyTheMinimumYears_FitsEveryWindow()
     {
         var points = CreatePerfectLine(1960, ChartSeriesTrendCalculator.MinimumYearsForTrend, slope: 0.02);
 
         var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendWindow.Full, predictionYears: 20);
 
         Assert.IsNull(result.UnavailableReason);
-        Assert.HasCount(3, result.Windows);
+        Assert.HasCount(4, result.Windows);
         Assert.IsNotNull(result.GetWindow(TrendWindow.Full));
         Assert.IsNotNull(result.GetWindow(TrendWindow.Recent));
+        Assert.IsNotNull(result.GetWindow(TrendWindow.RecentDecade));
         Assert.IsNotNull(result.GetWindow(TrendWindow.FirstHalf));
+    }
+
+    [TestMethod]
+    public void Calculate_WindowsAreInDropdownDisplayOrder()
+    {
+        var points = CreatePerfectLine(1960, ChartSeriesTrendCalculator.MinimumYearsForTrend, slope: 0.02);
+
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendWindow.Full, predictionYears: 20);
+
+        CollectionAssert.AreEqual(
+            new[] { TrendWindow.Recent, TrendWindow.RecentDecade, TrendWindow.Full, TrendWindow.FirstHalf },
+            result.Windows.Select(x => x.Window).ToList());
     }
 
     [TestMethod]
@@ -75,6 +88,25 @@ public class ChartSeriesTrendCalculatorTests
         Assert.HasCount(ChartSeriesTrendCalculator.RecentWindowYears, recent.Points);
         Assert.AreEqual(1971, recent.FirstYear);
         Assert.AreEqual(2000, recent.LastYear);
+    }
+
+    [TestMethod]
+    public void Calculate_RecentDecadeWindow_UsesTheLastTenYearsWithTheSameLogicAsRecentWindow()
+    {
+        var points = CreatePerfectLine(1900, 101, slope: 0.03);
+
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendWindow.RecentDecade, predictionYears: 5);
+        var recentDecade = result.GetWindow(TrendWindow.RecentDecade)!;
+
+        Assert.HasCount(ChartSeriesTrendCalculator.RecentDecadeWindowYears, recentDecade.Points);
+        Assert.AreEqual(1991, recentDecade.FirstYear);
+        Assert.AreEqual(2000, recentDecade.LastYear);
+
+        // Same underlying logic as the last-30-years window (the last N points, then an OLS fit
+        // over just that subset) - a perfectly linear series should agree on slope regardless of
+        // which of the two "last N years" windows fitted it.
+        var recent = result.GetWindow(TrendWindow.Recent)!;
+        Assert.AreEqual(recent.Regression.Line.Slope, recentDecade.Regression.Line.Slope, 1e-9);
     }
 
     [TestMethod]
@@ -126,14 +158,14 @@ public class ChartSeriesTrendCalculatorTests
     }
 
     [TestMethod]
-    public void Calculate_NoSignificantWindow_ProjectsNothingButStillReportsAllThreeWindows()
+    public void Calculate_NoSignificantWindow_ProjectsNothingButStillReportsEveryWindow()
     {
         var points = CreateFlatNoise(1900, 101);
 
         var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendWindow.Full, predictionYears: 20);
 
         Assert.IsNull(result.UnavailableReason);
-        Assert.HasCount(3, result.Windows);
+        Assert.HasCount(4, result.Windows);
         Assert.IsFalse(result.HasSignificantWindow);
         Assert.IsEmpty(result.SignificantWindows);
         Assert.IsNull(result.Projection);
@@ -193,11 +225,21 @@ public class ChartSeriesTrendCalculatorTests
     [TestMethod]
     public void ResolveWindow_NothingRequested_PrefersTheRecentPeriod()
     {
-        var significant = new[] { TrendWindow.FirstHalf, TrendWindow.Recent, TrendWindow.Full };
+        var significant = new[] { TrendWindow.FirstHalf, TrendWindow.Recent, TrendWindow.Full, TrendWindow.RecentDecade };
 
         var result = ChartSeriesTrendCalculator.ResolveWindow(significant, requestedWindow: null);
 
         Assert.AreEqual(TrendWindow.Recent, result);
+    }
+
+    [TestMethod]
+    public void ResolveWindow_RecentPeriodNotSignificant_PrefersTheRecentDecadeNext()
+    {
+        var significant = new[] { TrendWindow.FirstHalf, TrendWindow.Full, TrendWindow.RecentDecade };
+
+        var result = ChartSeriesTrendCalculator.ResolveWindow(significant, requestedWindow: null);
+
+        Assert.AreEqual(TrendWindow.RecentDecade, result);
     }
 
     [TestMethod]
