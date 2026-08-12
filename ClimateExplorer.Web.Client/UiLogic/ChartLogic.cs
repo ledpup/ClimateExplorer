@@ -178,9 +178,11 @@ public static class ChartLogic
     }
 
     /// <summary>
-    /// The dataset for a trend's forward projection. Dashed and thinner than the series it came
-    /// from, so that "projected" is legible without relying on the colour offset alone, and pinned
-    /// to the parent's y-axis so the two are read against the same scale.
+    /// The dataset for a trend's forward projection: unconnected points in the same colour as the
+    /// series they came from, styled like <see cref="GetScatterChartDataset"/>. No line is drawn at
+    /// all - a year-by-year scatter reads as "projected, not measured" on its own, without needing a
+    /// dash pattern or a colour offset from the real data. Pinned to the parent's y-axis so the two
+    /// are read against the same scale.
     /// </summary>
     public static LineChartDataset<double?> GetTrendChartDataset(
         string label,
@@ -198,14 +200,12 @@ public static class ChartLogic
                 BackgroundColor = colour,
                 BorderColor = colour,
                 Fill = false,
-                PointRadius = 0f,
-                PointHoverRadius = 3f,
-                ShowLine = true,
+                PointRadius = 3f,
+                PointHoverRadius = 5f,
+                ShowLine = false,
                 PointBorderColor = colour,
                 PointHoverBackgroundColor = colour,
-                BorderDash = [6, 4],
-                BorderWidth = 3,
-                SpanGaps = false,
+                BorderWidth = 0,
 
                 YAxisID = yAxisId,
             };

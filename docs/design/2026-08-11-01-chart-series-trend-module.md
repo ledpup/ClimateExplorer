@@ -484,3 +484,30 @@ retired.
 AGENTS.md, no dev server or browser testing was run — the rendering path (Chart.js dataset
 construction, the side panel, the new controls) is covered by compilation and by the unit-tested
 logic behind it, not by visual verification.
+
+## Addendum 2 — rendering and default-window revision (2026-08-12)
+
+Two changes made after visual review of the first cut:
+
+### Trend series rendering: scatter points, not a line
+
+The colour-offset-plus-dashed-line rendering (both the HSL transform and the dashed/dotted line
+variants tried in between) is gone. The trend projection is now drawn as **unconnected points in
+the same colour and, implicitly, the same visual weight as the real data** — `ShowLine = false`,
+`PointRadius = 3f`, `BorderWidth = 0`, mirroring `GetScatterChartDataset` exactly. A year-by-year
+scatter reads as "projected, not measured" on its own; a dashed or dotted line at the parent's
+colour and width still read as a continuation of the real series. `TrendSeriesColour` and its
+tests were deleted as a result — there is no colour transform left to derive.
+
+### Default trend window: Recent, not Full
+
+`TrendWindow`'s declaration order became `Recent, Full, FirstHalf`, and
+`ChartSeriesTrendCalculator.SelectionPriority` was changed to match. Switching the trend module on
+for a series now defaults to the last-30-years window rather than the full period. Rationale: a
+user turning the module on is more often asking "what's happening lately?" than "what has the
+whole record done?", and the full period is still one dropdown selection away.
+
+### Verification
+
+`dotnet build` on the solution is clean; the unit suite passes at 475 tests (down 8 from the
+`TrendSeriesColourTests` removal, up by the priority-order test change).

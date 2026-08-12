@@ -28,9 +28,11 @@ public static class ChartSeriesTrendCalculator
 
     /// <summary>
     /// Which window to fall back to when the user hasn't chosen one, or when the one they chose is
-    /// no longer significant. Longest-and-most-robust first.
+    /// no longer significant. Most-recently-relevant first, since a trend module switched on for
+    /// the first time is more often asked "what's happening lately?" than "what's the whole record
+    /// done?".
     /// </summary>
-    private static readonly TrendWindow[] SelectionPriority = [TrendWindow.Full, TrendWindow.Recent, TrendWindow.FirstHalf];
+    private static readonly TrendWindow[] SelectionPriority = [TrendWindow.Recent, TrendWindow.Full, TrendWindow.FirstHalf];
 
     public static ChartSeriesTrend Calculate(
         TrendStatSubject subject,

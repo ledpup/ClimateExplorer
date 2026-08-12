@@ -191,13 +191,13 @@ public class ChartSeriesTrendCalculatorTests
     }
 
     [TestMethod]
-    public void ResolveWindow_NothingRequested_PrefersTheFullPeriod()
+    public void ResolveWindow_NothingRequested_PrefersTheRecentPeriod()
     {
         var significant = new[] { TrendWindow.FirstHalf, TrendWindow.Recent, TrendWindow.Full };
 
         var result = ChartSeriesTrendCalculator.ResolveWindow(significant, requestedWindow: null);
 
-        Assert.AreEqual(TrendWindow.Full, result);
+        Assert.AreEqual(TrendWindow.Recent, result);
     }
 
     [TestMethod]

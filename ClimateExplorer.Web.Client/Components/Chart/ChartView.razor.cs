@@ -536,7 +536,7 @@ public partial class ChartView : IAsyncDisposable
                 ChartLogic.GetTrendChartDataset(
                     $"{csd.GetFriendlyTitleShort()} | {TrendWindowLabel.Get(projection.Window)} trend",
                     values,
-                    ChartColor.FromHtmlColorCode(TrendSeriesColour.Derive(csd.Colour!)),
+                    ChartColor.FromHtmlColorCode(csd.Colour!),
                     ChartLogic.GetYAxisId(csd.SeriesTransformation, csd.CustomTransformation, unitOfMeasure, csd.Aggregation)));
         }
     }
