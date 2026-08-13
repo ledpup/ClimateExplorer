@@ -151,7 +151,7 @@ public static class Enums
             UnitOfMeasure.DegreesCelsius => 1,
             UnitOfMeasure.DegreesCelsiusAnomaly => 1,
             UnitOfMeasure.Millimetres => 0,
-            _ => throw new NotImplementedException(),
+            _ => 1,
         };
     }
 

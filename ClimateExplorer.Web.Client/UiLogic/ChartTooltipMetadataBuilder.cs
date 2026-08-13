@@ -6,6 +6,7 @@ using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.UiModel;
+using static ClimateExplorer.Core.Enums;
 
 /// <summary>
 /// Builds the per-series data the chart's external tooltip needs: a trimmed "Location | Data type | Unit"
@@ -25,10 +26,12 @@ public static class ChartTooltipMetadataBuilder
     private static ChartTooltipSeriesInfo BuildForSeries(SeriesWithData series)
     {
         var dataSet = series.PreProcessedDataSet ?? series.SourceDataSet;
+        var unitOfMeasure = dataSet.MeasurementDefinition!.UnitOfMeasure;
 
         return new ChartTooltipSeriesInfo
         {
-            Label = series.ChartSeries!.GetTooltipLabel(dataSet.MeasurementDefinition!.UnitOfMeasure),
+            Label = series.ChartSeries!.GetTooltipLabel(unitOfMeasure),
+            Rounding = UnitOfMeasureRounding(unitOfMeasure),
             Anomaly = BuildAnomaly(series, dataSet),
         };
     }

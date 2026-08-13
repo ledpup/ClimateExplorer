@@ -211,11 +211,22 @@
             return tooltipElement;
         }
 
-        // Number of decimal places to use when formatting an anomaly (vs Last 30 / vs Avg / vs Early)
-        // figure, inferred from how chart.js formatted the hovered value itself, so the two line up.
+        // Number of decimal places to use when a series has no rounding info from .NET (shouldn't
+        // normally happen - every series gets one from Enums.UnitOfMeasureRounding), inferred from how
+        // chart.js formatted the hovered value itself.
         function decimalPlacesOf(formattedValue) {
             const match = /\.(\d+)/.exec(String(formattedValue).replace(/[^0-9.\-]/g, ""));
             return match ? match[1].length : 0;
+        }
+
+        // Renders a hovered value using its series' Enums.UnitOfMeasureRounding decimal places, falling
+        // back to chart.js's own formatting if we don't have rounding info for this point.
+        function formatValue(point, rounding) {
+            if (point.raw === null || point.raw === undefined) {
+                return point.formattedValue;
+            }
+
+            return Number(point.raw).toFixed(rounding ?? decimalPlacesOf(point.formattedValue));
         }
 
         function formatSignedDiff(diff, decimalPlaces) {
@@ -247,7 +258,8 @@
                 // simple label/value rows.
                 const simpleRows = rows.map(({ point, info, colour }) => {
                     const label = info?.label ?? point.dataset.label;
-                    return `<div class="chart-external-tooltip-row"><span class="chart-external-tooltip-key" style="background:${colour.backgroundColor}; border-color:${colour.borderColor};"></span><span class="chart-external-tooltip-label">${label}: <b>${point.formattedValue}</b></span></div>`;
+                    const value = formatValue(point, info?.rounding);
+                    return `<div class="chart-external-tooltip-row"><span class="chart-external-tooltip-key" style="background:${colour.backgroundColor}; border-color:${colour.borderColor};"></span><span class="chart-external-tooltip-label">${label}: <b>${value}</b></span></div>`;
                 }).join("");
 
                 return `${title}${simpleRows}`;
@@ -256,19 +268,20 @@
             const tableRows = rows.map(({ point, info, colour }) => {
                 const label = info?.label ?? point.dataset.label;
                 const swatch = `<span class="chart-external-tooltip-key" style="background:${colour.backgroundColor}; border-color:${colour.borderColor};"></span>`;
+                const value = formatValue(point, info?.rounding);
 
                 if (!info?.anomaly || point.raw === null || point.raw === undefined) {
-                    return `<tr><td class="chart-external-tooltip-series">${swatch}${label}</td><td class="chart-external-tooltip-value">${point.formattedValue}</td><td colspan="3">–</td></tr>`;
+                    return `<tr><td class="chart-external-tooltip-series">${swatch}${label}</td><td class="chart-external-tooltip-value">${value}</td><td colspan="3">–</td></tr>`;
                 }
 
-                const decimalPlaces = decimalPlacesOf(point.formattedValue);
-                const value = Number(point.raw);
+                const decimalPlaces = info.rounding ?? decimalPlacesOf(point.formattedValue);
+                const rawValue = Number(point.raw);
                 const cells = [info.anomaly.last30, info.anomaly.fullPeriod, info.anomaly.early].map(period => {
-                    const diff = value - period.average;
+                    const diff = rawValue - period.average;
                     return `<td class="${diffClass(diff)}">${formatSignedDiff(diff, decimalPlaces)}</td>`;
                 }).join("");
 
-                return `<tr><td class="chart-external-tooltip-series">${swatch}${label}</td><td class="chart-external-tooltip-value">${point.formattedValue}</td>${cells}</tr>`;
+                return `<tr><td class="chart-external-tooltip-series">${swatch}${label}</td><td class="chart-external-tooltip-value">${value}</td>${cells}</tr>`;
             }).join("");
 
             const table =

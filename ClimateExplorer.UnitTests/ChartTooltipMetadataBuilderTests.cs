@@ -26,6 +26,19 @@ public class ChartTooltipMetadataBuilderTests
     }
 
     [TestMethod]
+    public void Build_UsesUnitOfMeasureRoundingForTheSeriesUnit()
+    {
+        var celsiusSeries = CreateSeriesWithData(BinGranularities.ByYear, YearRange(1990, 2019), UnitOfMeasure.DegreesCelsius);
+        var millimetreSeries = CreateSeriesWithData(BinGranularities.ByYear, YearRange(1990, 2019), UnitOfMeasure.Millimetres);
+
+        var result = ChartTooltipMetadataBuilder.Build([celsiusSeries, millimetreSeries]);
+
+        Assert.HasCount(2, result);
+        Assert.AreEqual(UnitOfMeasureRounding(UnitOfMeasure.DegreesCelsius), result[0].Rounding);
+        Assert.AreEqual(UnitOfMeasureRounding(UnitOfMeasure.Millimetres), result[1].Rounding);
+    }
+
+    [TestMethod]
     public void Build_NonByYearGranularity_ReturnsNullAnomalyForThatSeries()
     {
         var series = CreateSeriesWithData(BinGranularities.ByYearAndMonth, YearRange(1950, 2019));
@@ -144,7 +157,7 @@ public class ChartTooltipMetadataBuilderTests
         };
     }
 
-    private static DataSet BuildDataSet(List<BinnedRecord> records)
+    private static DataSet BuildDataSet(List<BinnedRecord> records, UnitOfMeasure unitOfMeasure = UnitOfMeasure.DegreesCelsius)
     {
         return new DataSet
         {
@@ -153,13 +166,13 @@ public class ChartTooltipMetadataBuilderTests
                 DataType = DataType.TempMean,
                 DataAdjustment = DataAdjustment.Adjusted,
                 DataResolution = DataResolution.Daily,
-                UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
+                UnitOfMeasure = unitOfMeasure,
             },
             DataRecords = records,
         };
     }
 
-    private static SeriesWithData CreateSeriesWithData(BinGranularities binGranularity, List<BinnedRecord> records)
+    private static SeriesWithData CreateSeriesWithData(BinGranularities binGranularity, List<BinnedRecord> records, UnitOfMeasure unitOfMeasure = UnitOfMeasure.DegreesCelsius)
     {
         var chartSeries = new ChartSeriesDefinition
         {
@@ -172,7 +185,7 @@ public class ChartTooltipMetadataBuilderTests
             Value = SeriesValueOptions.Value,
         };
 
-        var dataSet = BuildDataSet(records);
+        var dataSet = BuildDataSet(records, unitOfMeasure);
 
         return new SeriesWithData
         {
