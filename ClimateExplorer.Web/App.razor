@@ -230,42 +230,45 @@
             return "";
         }
 
-        function buildTooltipHtml(tooltip, seriesMeta) {
+        function buildTooltipHtml(tooltip, seriesInfo) {
             const title = (tooltip.title ?? []).map(x => `<div class="chart-external-tooltip-title">${x}</div>`).join("");
             const points = tooltip.dataPoints ?? [];
 
-            const rowsWithMeta = points
-                .map((point, index) => ({ point, index, meta: seriesMeta?.[point.datasetIndex] }))
-                .filter(x => x.meta);
+            const rows = points.map((point, index) => ({
+                point,
+                info: seriesInfo?.[point.datasetIndex],
+                colour: tooltip.labelColors?.[index] ?? { backgroundColor: "#425f59", borderColor: "#425f59" },
+            }));
 
-            if (rowsWithMeta.length === 0) {
+            const hasAnomalyData = rows.some(x => x.info?.anomaly);
+
+            if (!hasAnomalyData) {
                 // No series in this tooltip has anomaly period data (e.g. non-yearly chart) - keep the
                 // simple label/value rows.
-                const rows = points.map((point, index) => {
-                    const colour = tooltip.labelColors?.[index] ?? { backgroundColor: "#425f59", borderColor: "#425f59" };
-                    return `<div class="chart-external-tooltip-row"><span class="chart-external-tooltip-key" style="background:${colour.backgroundColor}; border-color:${colour.borderColor};"></span><span class="chart-external-tooltip-label">${point.dataset.label}: <b>${point.formattedValue}</b></span></div>`;
+                const simpleRows = rows.map(({ point, info, colour }) => {
+                    const label = info?.label ?? point.dataset.label;
+                    return `<div class="chart-external-tooltip-row"><span class="chart-external-tooltip-key" style="background:${colour.backgroundColor}; border-color:${colour.borderColor};"></span><span class="chart-external-tooltip-label">${label}: <b>${point.formattedValue}</b></span></div>`;
                 }).join("");
 
-                return `${title}${rows}`;
+                return `${title}${simpleRows}`;
             }
 
-            const tableRows = points.map((point, index) => {
-                const colour = tooltip.labelColors?.[index] ?? { backgroundColor: "#425f59", borderColor: "#425f59" };
+            const tableRows = rows.map(({ point, info, colour }) => {
+                const label = info?.label ?? point.dataset.label;
                 const swatch = `<span class="chart-external-tooltip-key" style="background:${colour.backgroundColor}; border-color:${colour.borderColor};"></span>`;
-                const meta = seriesMeta?.[point.datasetIndex];
 
-                if (!meta || point.raw === null || point.raw === undefined) {
-                    return `<tr><td class="chart-external-tooltip-series">${swatch}${point.dataset.label}</td><td class="chart-external-tooltip-value">${point.formattedValue}</td><td colspan="3">–</td></tr>`;
+                if (!info?.anomaly || point.raw === null || point.raw === undefined) {
+                    return `<tr><td class="chart-external-tooltip-series">${swatch}${label}</td><td class="chart-external-tooltip-value">${point.formattedValue}</td><td colspan="3">–</td></tr>`;
                 }
 
                 const decimalPlaces = decimalPlacesOf(point.formattedValue);
                 const value = Number(point.raw);
-                const cells = [meta.last30, meta.fullPeriod, meta.early].map(period => {
+                const cells = [info.anomaly.last30, info.anomaly.fullPeriod, info.anomaly.early].map(period => {
                     const diff = value - period.average;
                     return `<td class="${diffClass(diff)}">${formatSignedDiff(diff, decimalPlaces)}</td>`;
                 }).join("");
 
-                return `<tr><td class="chart-external-tooltip-series">${swatch}${point.dataset.label}</td><td class="chart-external-tooltip-value">${point.formattedValue}</td>${cells}</tr>`;
+                return `<tr><td class="chart-external-tooltip-series">${swatch}${label}</td><td class="chart-external-tooltip-value">${point.formattedValue}</td>${cells}</tr>`;
             }).join("");
 
             const table =
@@ -274,7 +277,7 @@
             return `${title}${table}`;
         }
 
-        function configureChartTooltip(wrapperElement, seriesMeta) {
+        function configureChartTooltip(wrapperElement, seriesInfo) {
             const canvas = wrapperElement.querySelector("canvas");
             if (!canvas || typeof Chart === "undefined") return;
 
@@ -295,7 +298,7 @@
                     return;
                 }
 
-                tooltipElement.innerHTML = buildTooltipHtml(tooltip, seriesMeta);
+                tooltipElement.innerHTML = buildTooltipHtml(tooltip, seriesInfo);
                 tooltipElement.style.opacity = 1;
 
                 const horizontalPadding = 8;

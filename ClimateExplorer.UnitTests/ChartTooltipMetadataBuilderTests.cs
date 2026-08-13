@@ -15,25 +15,37 @@ using static ClimateExplorer.Core.Enums;
 public class ChartTooltipMetadataBuilderTests
 {
     [TestMethod]
-    public void Build_NonByYearGranularity_ReturnsNullForThatSeries()
-    {
-        var series = CreateSeriesWithData(BinGranularities.ByYearAndMonth, YearRange(1950, 2019));
-
-        var result = ChartTooltipMetadataBuilder.Build([series]);
-
-        Assert.HasCount(1, result);
-        Assert.IsNull(result[0]);
-    }
-
-    [TestMethod]
-    public void Build_ByYearWithFewerThanMinimumYears_ReturnsNullForThatSeries()
+    public void Build_SingleLocationSeries_LabelIsLocationDataTypeUnit()
     {
         var series = CreateSeriesWithData(BinGranularities.ByYear, YearRange(1990, 2019)); // 30 years
 
         var result = ChartTooltipMetadataBuilder.Build([series]);
 
         Assert.HasCount(1, result);
-        Assert.IsNull(result[0]);
+        Assert.AreEqual("Testville | Mean temperature | °C", result[0].Label);
+    }
+
+    [TestMethod]
+    public void Build_NonByYearGranularity_ReturnsNullAnomalyForThatSeries()
+    {
+        var series = CreateSeriesWithData(BinGranularities.ByYearAndMonth, YearRange(1950, 2019));
+
+        var result = ChartTooltipMetadataBuilder.Build([series]);
+
+        Assert.HasCount(1, result);
+        Assert.IsNull(result[0].Anomaly);
+        Assert.IsFalse(string.IsNullOrWhiteSpace(result[0].Label));
+    }
+
+    [TestMethod]
+    public void Build_ByYearWithFewerThanMinimumYears_ReturnsNullAnomalyForThatSeries()
+    {
+        var series = CreateSeriesWithData(BinGranularities.ByYear, YearRange(1990, 2019)); // 30 years
+
+        var result = ChartTooltipMetadataBuilder.Build([series]);
+
+        Assert.HasCount(1, result);
+        Assert.IsNull(result[0].Anomaly);
     }
 
     [TestMethod]
@@ -45,14 +57,14 @@ public class ChartTooltipMetadataBuilderTests
         var result = ChartTooltipMetadataBuilder.Build([series]);
 
         Assert.HasCount(1, result);
-        var meta = result[0];
-        Assert.IsNotNull(meta);
-        Assert.AreEqual(1950, meta!.FullPeriod.FirstYear);
-        Assert.AreEqual(2019, meta.FullPeriod.LastYear);
-        Assert.AreEqual(0, meta.FullPeriod.MissingYears);
-        Assert.AreEqual(10.0, meta.FullPeriod.Average);
-        Assert.AreEqual(10.0, meta.Last30.Average);
-        Assert.AreEqual(10.0, meta.Early.Average);
+        var anomaly = result[0].Anomaly;
+        Assert.IsNotNull(anomaly);
+        Assert.AreEqual(1950, anomaly!.FullPeriod.FirstYear);
+        Assert.AreEqual(2019, anomaly.FullPeriod.LastYear);
+        Assert.AreEqual(0, anomaly.FullPeriod.MissingYears);
+        Assert.AreEqual(10.0, anomaly.FullPeriod.Average);
+        Assert.AreEqual(10.0, anomaly.Last30.Average);
+        Assert.AreEqual(10.0, anomaly.Early.Average);
     }
 
     [TestMethod]
@@ -85,9 +97,9 @@ public class ChartTooltipMetadataBuilderTests
         var result = ChartTooltipMetadataBuilder.Build([series]);
 
         Assert.HasCount(1, result);
-        Assert.IsNotNull(result[0]);
-        Assert.AreEqual(1950, result[0]!.FullPeriod.FirstYear);
-        Assert.AreEqual(2019, result[0]!.FullPeriod.LastYear);
+        Assert.IsNotNull(result[0].Anomaly);
+        Assert.AreEqual(1950, result[0].Anomaly!.FullPeriod.FirstYear);
+        Assert.AreEqual(2019, result[0].Anomaly!.FullPeriod.LastYear);
     }
 
     [TestMethod]
@@ -100,9 +112,12 @@ public class ChartTooltipMetadataBuilderTests
         var result = ChartTooltipMetadataBuilder.Build([longSeries, shortSeries, monthlySeries]);
 
         Assert.HasCount(3, result);
-        Assert.IsNotNull(result[0]);
-        Assert.IsNull(result[1]);
-        Assert.IsNull(result[2]);
+        Assert.IsNotNull(result[0].Anomaly);
+        Assert.IsNull(result[1].Anomaly);
+        Assert.IsNull(result[2].Anomaly);
+
+        // Every series still gets a label, regardless of anomaly eligibility.
+        Assert.IsTrue(result.All(x => !string.IsNullOrWhiteSpace(x.Label)));
     }
 
     private static List<BinnedRecord> YearRange(int firstYear, int lastYear)

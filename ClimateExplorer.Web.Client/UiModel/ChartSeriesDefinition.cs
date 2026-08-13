@@ -173,6 +173,24 @@ public class ChartSeriesDefinition
         return $"CSD: {BinGranularity} | {Smoothing} | {Aggregation} | {Value} | {DisplayStyle}";
     }
 
+    /// <summary>
+    /// A trimmed label for the chart tooltip: "Location | Data type | Unit". Unlike FriendlyTitle/
+    /// GetFriendlyTitleShort (used for the chart legend), this deliberately omits adjustment,
+    /// aggregation, smoothing, and other how-it-was-computed detail that isn't needed once you're
+    /// reading values off the tooltip.
+    /// </summary>
+    public string GetTooltipLabel(UnitOfMeasure unitOfMeasure)
+    {
+        var descriptor =
+            SourceSeriesSpecifications!.Length == 1
+            ? BuildTooltipDescriptorForSeries(SourceSeriesSpecifications.Single())
+            : GetFriendlyTitleShort();
+
+        var unitLabel = Enums.UnitOfMeasureLabelShort(unitOfMeasure);
+
+        return string.IsNullOrWhiteSpace(descriptor) ? unitLabel : $"{descriptor} | {unitLabel}";
+    }
+
     public string GetFriendlyTitleShort()
     {
         switch (SeriesDerivationType)
@@ -259,6 +277,23 @@ public class ChartSeriesDefinition
         if (uomLabel != null)
         {
             segments.Add(uomLabel);
+        }
+
+        return string.Join(" | ", segments);
+    }
+
+    private static string BuildTooltipDescriptorForSeries(SourceSeriesSpecification sss)
+    {
+        var segments = new List<string>();
+
+        if (sss.LocationName != null)
+        {
+            segments.Add(sss.LocationName);
+        }
+
+        if (sss.MeasurementDefinition != null)
+        {
+            segments.Add(MapDataTypeToFriendlyName(sss.MeasurementDefinition.DataType));
         }
 
         return string.Join(" | ", segments);
