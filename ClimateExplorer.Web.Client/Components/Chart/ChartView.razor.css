@@ -175,7 +175,7 @@
 
 ::deep .chart-external-tooltip-table th {
     font-weight: 600;
-    font-size: x-small;
+    font-size: 0.75rem;
     color: #666;
     text-align: right;
     padding: 0 0 4px 10px;
