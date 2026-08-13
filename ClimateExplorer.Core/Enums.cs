@@ -151,6 +151,9 @@ public static class Enums
             UnitOfMeasure.DegreesCelsius => 1,
             UnitOfMeasure.DegreesCelsiusAnomaly => 1,
             UnitOfMeasure.Millimetres => 0,
+            UnitOfMeasure.MegaTonnes => 0,
+            UnitOfMeasure.MillionSqKm => 1,
+            UnitOfMeasure.SqKm => 0,
             _ => 1,
         };
     }
