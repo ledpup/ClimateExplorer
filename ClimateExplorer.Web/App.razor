@@ -211,7 +211,118 @@
             return tooltipElement;
         }
 
-        function configureChartTooltip(wrapperElement) {
+        // Number of decimal places to use when formatting an anomaly (vs Last 30 / vs Avg / vs Early)
+        // figure, inferred from how chart.js formatted the hovered value itself, so the two line up.
+        function decimalPlacesOf(formattedValue) {
+            const match = /\.(\d+)/.exec(String(formattedValue).replace(/[^0-9.\-]/g, ""));
+            return match ? match[1].length : 0;
+        }
+
+        function formatSignedDiff(diff, decimalPlaces) {
+            const rounded = Number(diff.toFixed(decimalPlaces));
+            const sign = rounded > 0 ? "+" : rounded < 0 ? "−" : "±";
+            return `${sign}${Math.abs(rounded).toFixed(decimalPlaces)}`;
+        }
+
+        function diffClass(diff) {
+            if (diff > 0) return "chart-external-tooltip-positive";
+            if (diff < 0) return "chart-external-tooltip-negative";
+            return "";
+        }
+
+        function missingYearsText(missingYears) {
+            if (!missingYears || missingYears <= 0) return "";
+            return missingYears === 1 ? "1 missing year" : `${missingYears} missing years`;
+        }
+
+        // Groups the given rows' period info (last30 / fullPeriod / early) so that, in the common case
+        // where every series shares the same period boundaries, we print one line per period rather than
+        // repeating identical ranges once per series.
+        function buildPeriodsLegend(rowsWithMeta) {
+            const periodDefs = [
+                { key: "last30", label: "Last 30" },
+                { key: "fullPeriod", label: "Average" },
+                { key: "early", label: "Early" },
+            ];
+
+            const lines = [];
+
+            periodDefs.forEach(def => {
+                const groups = new Map();
+
+                rowsWithMeta.forEach(row => {
+                    const period = row.meta[def.key];
+                    const signature = `${period.firstYear}-${period.lastYear}|${period.missingYears}`;
+                    if (!groups.has(signature)) {
+                        groups.set(signature, { period, labels: [] });
+                    }
+
+                    groups.get(signature).labels.push(row.seriesLabel);
+                });
+
+                groups.forEach(({ period, labels }) => {
+                    const namePrefix = groups.size > 1 ? ` (${labels.join(", ")})` : "";
+                    const missingText = missingYearsText(period.missingYears);
+                    lines.push(
+                        `<div class="chart-external-tooltip-period-row">`
+                        + `<span class="chart-external-tooltip-period-label">${def.label}${namePrefix}</span>`
+                        + `<span>${period.firstYear}–${period.lastYear}</span>`
+                        + `<span class="chart-external-tooltip-period-missing">${missingText}</span>`
+                        + `</div>`);
+                });
+            });
+
+            return lines.join("");
+        }
+
+        function buildTooltipHtml(tooltip, seriesMeta) {
+            const title = (tooltip.title ?? []).map(x => `<div class="chart-external-tooltip-title">${x}</div>`).join("");
+            const points = tooltip.dataPoints ?? [];
+
+            const rowsWithMeta = points
+                .map((point, index) => ({ point, index, meta: seriesMeta?.[point.datasetIndex] }))
+                .filter(x => x.meta);
+
+            if (rowsWithMeta.length === 0) {
+                // No series in this tooltip has anomaly period data (e.g. non-yearly chart) - keep the
+                // simple label/value rows.
+                const rows = points.map((point, index) => {
+                    const colour = tooltip.labelColors?.[index] ?? { backgroundColor: "#425f59", borderColor: "#425f59" };
+                    return `<div class="chart-external-tooltip-row"><span class="chart-external-tooltip-key" style="background:${colour.backgroundColor}; border-color:${colour.borderColor};"></span><span class="chart-external-tooltip-label">${point.dataset.label}: <b>${point.formattedValue}</b></span></div>`;
+                }).join("");
+
+                return `${title}${rows}`;
+            }
+
+            const tableRows = points.map((point, index) => {
+                const colour = tooltip.labelColors?.[index] ?? { backgroundColor: "#425f59", borderColor: "#425f59" };
+                const swatch = `<span class="chart-external-tooltip-key" style="background:${colour.backgroundColor}; border-color:${colour.borderColor};"></span>`;
+                const meta = seriesMeta?.[point.datasetIndex];
+
+                if (!meta || point.raw === null || point.raw === undefined) {
+                    return `<tr><td class="chart-external-tooltip-series">${swatch}${point.dataset.label}</td><td class="chart-external-tooltip-value">${point.formattedValue}</td><td colspan="3">–</td></tr>`;
+                }
+
+                const decimalPlaces = decimalPlacesOf(point.formattedValue);
+                const value = Number(point.raw);
+                const cells = [meta.last30, meta.fullPeriod, meta.early].map(period => {
+                    const diff = value - period.average;
+                    return `<td class="${diffClass(diff)}">${formatSignedDiff(diff, decimalPlaces)}</td>`;
+                }).join("");
+
+                return `<tr><td class="chart-external-tooltip-series">${swatch}${point.dataset.label}</td><td class="chart-external-tooltip-value">${point.formattedValue}</td>${cells}</tr>`;
+            }).join("");
+
+            const table =
+                `<table class="chart-external-tooltip-table"><thead><tr><th></th><th>Value</th><th>vs Last 30</th><th>vs Avg</th><th>vs Early</th></tr></thead><tbody>${tableRows}</tbody></table>`;
+
+            const seriesLabels = rowsWithMeta.map(x => ({ meta: x.meta, seriesLabel: x.point.dataset.label }));
+            const periodsLegend = `<div class="chart-external-tooltip-periods">${buildPeriodsLegend(seriesLabels)}</div>`;
+
+            return `${title}${table}${periodsLegend}`;
+        }
+
+        function configureChartTooltip(wrapperElement, seriesMeta) {
             const canvas = wrapperElement.querySelector("canvas");
             if (!canvas || typeof Chart === "undefined") return;
 
@@ -232,13 +343,7 @@
                     return;
                 }
 
-                const title = (tooltip.title ?? []).map(x => `<div class="chart-external-tooltip-title">${x}</div>`).join("");
-                const rows = (tooltip.dataPoints ?? []).map((point, index) => {
-                    const colour = tooltip.labelColors?.[index] ?? { backgroundColor: "#425f59", borderColor: "#425f59" };
-                    return `<div class="chart-external-tooltip-row"><span class="chart-external-tooltip-key" style="background:${colour.backgroundColor}; border-color:${colour.borderColor};"></span><span class="chart-external-tooltip-label">${point.dataset.label}: <b>${point.formattedValue}</b></span></div>`;
-                }).join("");
-
-                tooltipElement.innerHTML = `${title}${rows}`;
+                tooltipElement.innerHTML = buildTooltipHtml(tooltip, seriesMeta);
                 tooltipElement.style.opacity = 1;
 
                 const horizontalPadding = 8;

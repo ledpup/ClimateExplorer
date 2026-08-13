@@ -167,3 +167,69 @@
 ::deep .chart-external-tooltip-label {
     color: #000;
 }
+
+::deep .chart-external-tooltip-table {
+    border-collapse: collapse;
+    font-size: small;
+}
+
+::deep .chart-external-tooltip-table th {
+    font-weight: 600;
+    font-size: x-small;
+    color: #666;
+    text-align: right;
+    padding: 0 0 4px 10px;
+}
+
+::deep .chart-external-tooltip-table th:first-child {
+    padding-left: 0;
+}
+
+::deep .chart-external-tooltip-table td {
+    text-align: right;
+    padding: 2px 0 2px 10px;
+    white-space: nowrap;
+}
+
+::deep .chart-external-tooltip-table td.chart-external-tooltip-series {
+    text-align: left;
+    padding-left: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+::deep .chart-external-tooltip-table td.chart-external-tooltip-value {
+    font-weight: 600;
+}
+
+::deep .chart-external-tooltip-positive {
+    color: #d13f3f;
+}
+
+::deep .chart-external-tooltip-negative {
+    color: #3f5fd1;
+}
+
+::deep .chart-external-tooltip-periods {
+    margin-top: 8px;
+    padding-top: 6px;
+    border-top: 1px solid #e0e0e0;
+    font-size: x-small;
+    color: #666;
+}
+
+::deep .chart-external-tooltip-period-row {
+    display: flex;
+    gap: 8px;
+    justify-content: space-between;
+}
+
+::deep .chart-external-tooltip-period-label {
+    font-weight: 600;
+    color: #425f59;
+}
+
+::deep .chart-external-tooltip-period-missing {
+    color: #999;
+}

@@ -338,7 +338,8 @@ public partial class ChartView : IAsyncDisposable
 
         await chart.Update();
 
-        await JsRuntime!.InvokeVoidAsync("configureChartTooltip", chartWrapper);
+        var tooltipMetadata = ChartTooltipMetadataBuilder.Build(ChartSeriesWithData!);
+        await JsRuntime!.InvokeVoidAsync("configureChartTooltip", chartWrapper, tooltipMetadata);
         await JsRuntime!.InvokeVoidAsync("registerChartHoverCursor", chartWrapper);
 
         // The below line is required to get the chart.js component to honour the styling applied on the parent div
