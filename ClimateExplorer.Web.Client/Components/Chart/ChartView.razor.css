@@ -210,26 +210,3 @@
 ::deep .chart-external-tooltip-negative {
     color: #3f5fd1;
 }
-
-::deep .chart-external-tooltip-periods {
-    margin-top: 8px;
-    padding-top: 6px;
-    border-top: 1px solid #e0e0e0;
-    font-size: x-small;
-    color: #666;
-}
-
-::deep .chart-external-tooltip-period-row {
-    display: flex;
-    gap: 8px;
-    justify-content: space-between;
-}
-
-::deep .chart-external-tooltip-period-label {
-    font-weight: 600;
-    color: #425f59;
-}
-
-::deep .chart-external-tooltip-period-missing {
-    color: #999;
-}

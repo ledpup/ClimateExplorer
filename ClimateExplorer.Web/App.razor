@@ -230,51 +230,6 @@
             return "";
         }
 
-        function missingYearsText(missingYears) {
-            if (!missingYears || missingYears <= 0) return "";
-            return missingYears === 1 ? "1 missing year" : `${missingYears} missing years`;
-        }
-
-        // Groups the given rows' period info (last30 / fullPeriod / early) so that, in the common case
-        // where every series shares the same period boundaries, we print one line per period rather than
-        // repeating identical ranges once per series.
-        function buildPeriodsLegend(rowsWithMeta) {
-            const periodDefs = [
-                { key: "last30", label: "Last 30" },
-                { key: "fullPeriod", label: "Average" },
-                { key: "early", label: "Early" },
-            ];
-
-            const lines = [];
-
-            periodDefs.forEach(def => {
-                const groups = new Map();
-
-                rowsWithMeta.forEach(row => {
-                    const period = row.meta[def.key];
-                    const signature = `${period.firstYear}-${period.lastYear}|${period.missingYears}`;
-                    if (!groups.has(signature)) {
-                        groups.set(signature, { period, labels: [] });
-                    }
-
-                    groups.get(signature).labels.push(row.seriesLabel);
-                });
-
-                groups.forEach(({ period, labels }) => {
-                    const namePrefix = groups.size > 1 ? ` (${labels.join(", ")})` : "";
-                    const missingText = missingYearsText(period.missingYears);
-                    lines.push(
-                        `<div class="chart-external-tooltip-period-row">`
-                        + `<span class="chart-external-tooltip-period-label">${def.label}${namePrefix}</span>`
-                        + `<span>${period.firstYear}–${period.lastYear}</span>`
-                        + `<span class="chart-external-tooltip-period-missing">${missingText}</span>`
-                        + `</div>`);
-                });
-            });
-
-            return lines.join("");
-        }
-
         function buildTooltipHtml(tooltip, seriesMeta) {
             const title = (tooltip.title ?? []).map(x => `<div class="chart-external-tooltip-title">${x}</div>`).join("");
             const points = tooltip.dataPoints ?? [];
@@ -316,10 +271,7 @@
             const table =
                 `<table class="chart-external-tooltip-table"><thead><tr><th></th><th>Value</th><th>vs Last 30</th><th>vs Avg</th><th>vs Early</th></tr></thead><tbody>${tableRows}</tbody></table>`;
 
-            const seriesLabels = rowsWithMeta.map(x => ({ meta: x.meta, seriesLabel: x.point.dataset.label }));
-            const periodsLegend = `<div class="chart-external-tooltip-periods">${buildPeriodsLegend(seriesLabels)}</div>`;
-
-            return `${title}${table}${periodsLegend}`;
+            return `${title}${table}`;
         }
 
         function configureChartTooltip(wrapperElement, seriesMeta) {
