@@ -42,9 +42,9 @@ public class TrendWindowCalculatorTests
 
         Assert.IsNotNull(sortedResult);
         Assert.IsNotNull(shuffledResult);
-        Assert.AreEqual(sortedResult.HistoricalTrend.Line.Slope, shuffledResult.HistoricalTrend.Line.Slope, 1e-9);
-        Assert.AreEqual(sortedResult.RecentTrend.Line.Slope, shuffledResult.RecentTrend.Line.Slope, 1e-9);
-        Assert.AreEqual(sortedResult.FirstHalfTrend.Line.Slope, shuffledResult.FirstHalfTrend.Line.Slope, 1e-9);
+        Assert.AreEqual(sortedResult.HistoricalTrend.Curve.Slope, shuffledResult.HistoricalTrend.Curve.Slope, 1e-9);
+        Assert.AreEqual(sortedResult.RecentTrend.Curve.Slope, shuffledResult.RecentTrend.Curve.Slope, 1e-9);
+        Assert.AreEqual(sortedResult.FirstHalfTrend.Curve.Slope, shuffledResult.FirstHalfTrend.Curve.Slope, 1e-9);
     }
 
     [TestMethod]
@@ -66,9 +66,9 @@ public class TrendWindowCalculatorTests
         var result = TrendWindowCalculator.Calculate(points, minimumCompletePoints: 60, recentWindowSize: 30);
 
         Assert.IsNotNull(result);
-        Assert.AreEqual(0.1, result.HistoricalTrend.Line.Slope, 1e-9);
-        Assert.AreEqual(0.1, result.RecentTrend.Line.Slope, 1e-9);
-        Assert.AreEqual(0.1, result.FirstHalfTrend.Line.Slope, 1e-9);
+        Assert.AreEqual(0.1, result.HistoricalTrend.Curve.Slope, 1e-9);
+        Assert.AreEqual(0.1, result.RecentTrend.Curve.Slope, 1e-9);
+        Assert.AreEqual(0.1, result.FirstHalfTrend.Curve.Slope, 1e-9);
     }
 
     [TestMethod]
@@ -88,9 +88,9 @@ public class TrendWindowCalculatorTests
         var result = TrendWindowCalculator.Calculate(points, minimumCompletePoints: 60, recentWindowSize: 30);
 
         Assert.IsNotNull(result);
-        Assert.AreNotEqual(result.FirstHalfTrend.Line.Slope, result.RecentTrend.Line.Slope);
-        Assert.AreEqual(0d, result.FirstHalfTrend.Line.Slope, 1e-9);
-        Assert.AreEqual(2d, result.RecentTrend.Line.Slope, 1e-9);
+        Assert.AreNotEqual(result.FirstHalfTrend.Curve.Slope, result.RecentTrend.Curve.Slope);
+        Assert.AreEqual(0d, result.FirstHalfTrend.Curve.Slope, 1e-9);
+        Assert.AreEqual(2d, result.RecentTrend.Curve.Slope, 1e-9);
     }
 
     [TestMethod]

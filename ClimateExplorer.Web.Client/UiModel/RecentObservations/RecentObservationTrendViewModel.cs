@@ -22,12 +22,12 @@ public sealed record RecentObservationTrendViewModel
     public string? FirstHalfTrendTooltip { get; init; }
     public string? UnavailableReason { get; init; }
 
-    // The full LinearRegressionResult and the exact point list each was calculated from - carried
+    // The full PolynomialRegressionResult and the exact point list each was calculated from - carried
     // through so the About-trends modal can render the full statistical breakdown and the download
     // button can export data that reproduces the regression, without recalculating anything.
-    public LinearRegressionResult? FullPeriodTrend { get; init; }
-    public LinearRegressionResult? RecentTrend { get; init; }
-    public LinearRegressionResult? FirstHalfTrend { get; init; }
+    public PolynomialRegressionResult? FullPeriodTrend { get; init; }
+    public PolynomialRegressionResult? RecentTrend { get; init; }
+    public PolynomialRegressionResult? FirstHalfTrend { get; init; }
     public IReadOnlyList<DataPoint> FullPeriodPoints { get; init; } = [];
     public IReadOnlyList<DataPoint> RecentTrendPoints { get; init; } = [];
     public IReadOnlyList<DataPoint> FirstHalfTrendPoints { get; init; } = [];

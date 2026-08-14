@@ -1,0 +1,55 @@
+@namespace ClimateExplorer.Web.Client.Components.Chart.Trend
+@using Blazorise
+@using ClimateExplorer.Web.Client.Components.Common
+@using ClimateExplorer.Web.Client.Components.Common.Trends
+@using ClimateExplorer.Web.Client.Services.Trends
+@using ClimateExplorer.Web.Client.UiModel.Trends
+
+<SidePanel @ref="sidePanel" Title="About trends" Width="min(60%, 1024px)">
+    <div class="trend-stats">
+        <div class="climate-tabs trends-about-tabs">
+            <Tabs SelectedTab="@selectedTab" SelectedTabChanged="@OnTabChanged">
+                <Items>
+                    <Tab Name="@OverviewTabName">Overview</Tab>
+                    @if (ShowCurvedTrendsTab)
+                    {
+                        <Tab Name="@CurvedTrendsTabName">About curved trends</Tab>
+                    }
+                    @foreach (var window in Windows)
+                    {
+                        <Tab Name="@TabName(window.Window)">@TrendWindowLabel.Get(window.Window)</Tab>
+                    }
+                </Items>
+            </Tabs>
+        </div>
+
+        @if (selectedTab == OverviewTabName)
+        {
+            @if (Trend?.UnavailableReason is { } unavailableReason)
+            {
+                <p class="trends-about-unavailable">@unavailableReason</p>
+            }
+            else if (Trend is not null && !Trend.HasSignificantWindow)
+            {
+                <p class="trends-about-unavailable">
+                    None of the periods below produce a statistically significant trend for this series, so none of
+                    them can be drawn on the chart. Their full statistics are still shown here.
+                </p>
+            }
+
+            <TrendsOverviewExplainer />
+        }
+        else if (selectedTab == CurvedTrendsTabName)
+        {
+            <CurvedTrendsOverviewExplainer />
+        }
+        else if (SelectedWindow is { } selected)
+        {
+            <p class="trend-stats-summary @(selected.IsSignificant ? string.Empty : "not-significant")">
+                @DescribeWindow(selected)
+            </p>
+
+            <TrendStatTable Sections="@BuildSections(selected)" />
+        }
+    </div>
+</SidePanel>

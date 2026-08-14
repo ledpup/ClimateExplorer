@@ -185,6 +185,13 @@ public sealed class ChartSeriesLocationSubstitutionService : IChartSeriesLocatio
                 DisplayStyle = csd.DisplayStyle,
                 IsLocked = false,
                 ShowTrendline = csd.ShowTrendline,
+
+                // The trend selection carries over, but is refitted - including its significance
+                // test - against the new location's data by the chart data builder.
+                ShowTrend = csd.ShowTrend,
+                RegressionType = csd.RegressionType,
+                TrendPeriod = csd.TrendPeriod,
+                TrendPredictionYears = csd.TrendPredictionYears,
                 Smoothing = csd.Smoothing,
                 SmoothingWindow = csd.SmoothingWindow,
                 Value = csd.Value,

@@ -1,4 +1,4 @@
-namespace ClimateExplorer.Web.Client.UiModel.RecentObservations;
+namespace ClimateExplorer.Web.Client.UiModel.Trends;
 
 public sealed record TrendStatRow(
     string Label,

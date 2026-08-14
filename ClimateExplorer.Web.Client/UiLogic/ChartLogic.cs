@@ -177,6 +177,40 @@ public static class ChartLogic
         };
     }
 
+    /// <summary>
+    /// The dataset for a trend's forward projection: unconnected points in the same colour as the
+    /// series they came from, styled like <see cref="GetScatterChartDataset"/>. No line is drawn at
+    /// all - a year-by-year scatter reads as "projected, not measured" on its own, without needing a
+    /// dash pattern or a colour offset from the real data. Pinned to the parent's y-axis so the two
+    /// are read against the same scale.
+    /// </summary>
+    public static LineChartDataset<double?> GetTrendChartDataset(
+        string label,
+        List<double?> values,
+        ChartColor chartColor,
+        string yAxisId)
+    {
+        var colour = Enumerable.Repeat((string)chartColor, values.Count).ToList();
+
+        return
+            new LineChartDataset<double?>
+            {
+                Label = label,
+                Data = values,
+                BackgroundColor = colour,
+                BorderColor = colour,
+                Fill = false,
+                PointRadius = 3f,
+                PointHoverRadius = 5f,
+                ShowLine = false,
+                PointBorderColor = colour,
+                PointHoverBackgroundColor = colour,
+                BorderWidth = 0,
+
+                YAxisID = yAxisId,
+            };
+    }
+
     public static ChartTrendlineData CreateTrendline(int datasetIndex, ChartColor colour)
     {
         return
