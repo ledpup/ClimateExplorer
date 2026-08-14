@@ -73,7 +73,7 @@ public static class ChartSeriesTrendNotificationBuilder
     {
         var label = TrendWindowLabel.Get(window.Window);
         var years = $"{window.FirstYear.ToString(CultureInfo.InvariantCulture)}-{window.LastYear.ToString(CultureInfo.InvariantCulture)}";
-        var rate = TrendFormatting.FormatPerDecadeValue(window.Regression, unit);
+        var rate = TrendFormatting.FormatPerDecadeValue(window.Regression, window.Regression.Input.MaximumX, unit);
         var pValue = TrendFormatting.FormatPValue(window.Regression.Significance.PValue);
 
         return $"<b>{label}</b> ({years}): the fitted rate is {rate}, but p = {pValue} - the year-to-year scatter is too large, "

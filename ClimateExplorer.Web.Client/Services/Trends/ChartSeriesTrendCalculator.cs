@@ -6,17 +6,22 @@ using ClimateExplorer.Core.Stats.Model;
 using ClimateExplorer.Web.Client.UiModel.Trends;
 
 /// <summary>
-/// Fits the trend windows for one chart series and projects the selected one forward.
+/// Fits the trend windows for one chart series, at the user's chosen regression shape, and projects
+/// the selected one forward.
 /// </summary>
 /// <remarks>
-/// The full-period, last-30-years and early-period windows, the minimum data requirement and the
-/// significance test are all deliberately the same as the Recent Observations trend tab's, via the
-/// shared <see cref="TrendWindowCalculator"/>, so the chart and the tile never disagree about
-/// whether a location has a trend. The chart additionally offers a shorter last-10-years window,
-/// fitted the same way (the last N points, then an ordinary least squares fit) but not part of
-/// <see cref="TrendWindowCalculator"/>'s shared three, since the Recent Observations tile has no
-/// use for it. Every window is fitted in one pass because the dropdown can only offer the
-/// significant ones, and the About-trends panel shows the statistics for all of them regardless.
+/// The full-period, last-30-years, last-10-years and early-period windows, the minimum data
+/// requirement and the significance test are all deliberately the same shape as the Recent
+/// Observations trend tab's - same four window definitions, same significance rule generalised from
+/// a slope t-test to an overall-model F-test (identical to the t-test at degree 1) - so the chart and
+/// the tile never disagree about whether a location has a trend, when both are looking at a linear
+/// fit. Unlike the tile, every window here can be fit at degree 1, 2 or 3
+/// (<see cref="TrendRegressionType"/>): picking a curve can make a window newly significant or newly
+/// not, so every window is fit directly with <see cref="PolynomialRegressionCalculator"/> at the
+/// requested degree rather than through <c>TrendWindowCalculator</c>, which is fixed at degree 1 by
+/// its contract with the Recent Observations tab (see the design doc). Every window is fitted in one
+/// pass because the dropdown can only offer the significant ones, and the About-trends panel shows
+/// the statistics for all of them regardless.
 /// </remarks>
 public static class ChartSeriesTrendCalculator
 {
@@ -42,6 +47,7 @@ public static class ChartSeriesTrendCalculator
     public static ChartSeriesTrend Calculate(
         TrendStatSubject subject,
         IReadOnlyList<DataPoint> points,
+        TrendRegressionType regressionType,
         TrendWindow? requestedWindow,
         int predictionYears)
     {
@@ -50,15 +56,12 @@ public static class ChartSeriesTrendCalculator
 
         var ordered = points.OrderBy(x => x.X).ToList();
 
-        var trendSet = ordered.Count >= MinimumYearsForTrend
-            ? TrendWindowCalculator.Calculate(ordered, MinimumYearsForTrend, RecentWindowYears)
-            : null;
-
-        if (trendSet is null)
+        if (ordered.Count < MinimumYearsForTrend)
         {
             return new ChartSeriesTrend
             {
                 Subject = subject,
+                RegressionType = regressionType,
                 Points = ordered,
                 UnavailableReason =
                     $"Only {ordered.Count} complete {(ordered.Count == 1 ? "year" : "years")} of data are plotted, and a trend needs at least "
@@ -68,25 +71,23 @@ public static class ChartSeriesTrendCalculator
             };
         }
 
+        var degree = (int)regressionType;
         var recentCount = Math.Min(RecentWindowYears, ordered.Count);
         var recentDecadeCount = Math.Min(RecentDecadeWindowYears, ordered.Count);
         var firstHalfCount = ordered.Count / 2;
 
-        // The last-10-years window uses the same logic as the shared last-30-years window (the
-        // last N points, then an ordinary least squares fit) but isn't part of
-        // TrendWindowCalculator's fixed three, so it's fitted directly here rather than by widening
-        // that shared method's return shape for a window only the chart offers.
+        var recentPoints = ordered.TakeLast(recentCount).ToList();
         var recentDecadePoints = ordered.TakeLast(recentDecadeCount).ToList();
-        var recentDecadeRegression = LinearRegressionCalculator.Calculate(recentDecadePoints);
+        var firstHalfPoints = ordered.Take(firstHalfCount).ToList();
 
         // Declared in dropdown/tab display order: most-recently-relevant first, matching
-        // SelectionPriority above.
+        // SelectionPriority below.
         var windows = new List<ChartSeriesTrendWindowResult>
         {
-            new(TrendWindow.Recent, trendSet.RecentTrend, [.. ordered.TakeLast(recentCount)]),
-            new(TrendWindow.RecentDecade, recentDecadeRegression, recentDecadePoints),
-            new(TrendWindow.Full, trendSet.HistoricalTrend, ordered),
-            new(TrendWindow.FirstHalf, trendSet.FirstHalfTrend, [.. ordered.Take(firstHalfCount)]),
+            new(TrendWindow.Recent, PolynomialRegressionCalculator.Calculate(recentPoints, degree), recentPoints),
+            new(TrendWindow.RecentDecade, PolynomialRegressionCalculator.Calculate(recentDecadePoints, degree), recentDecadePoints),
+            new(TrendWindow.Full, PolynomialRegressionCalculator.Calculate(ordered, degree), ordered),
+            new(TrendWindow.FirstHalf, PolynomialRegressionCalculator.Calculate(firstHalfPoints, degree), firstHalfPoints),
         };
 
         var lastDataYear = (int)Math.Round(ordered[^1].X);
@@ -96,6 +97,7 @@ public static class ChartSeriesTrendCalculator
         return new ChartSeriesTrend
         {
             Subject = subject,
+            RegressionType = regressionType,
             Windows = windows,
             Points = ordered,
             LastDataYear = lastDataYear,
@@ -133,7 +135,7 @@ public static class ChartSeriesTrendCalculator
     {
         var predictions = Enumerable
             .Range(lastDataYear + 1, predictionYears)
-            .Select(year => LinearRegressionCalculator.Predict(window.Regression, year))
+            .Select(year => PolynomialRegressionCalculator.Predict(window.Regression, year))
             .ToList();
 
         return new ChartSeriesTrendProjection(window.Window, predictions);

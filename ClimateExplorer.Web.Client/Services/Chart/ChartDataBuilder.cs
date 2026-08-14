@@ -170,6 +170,7 @@ public sealed class ChartDataBuilder : IChartDataBuilder
             var trend = ChartSeriesTrendCalculator.Calculate(
                 subject,
                 BuildTrendPoints(cs.PreProcessedDataSet!, binIdsToPlot),
+                csd.RegressionType,
                 csd.TrendPeriod,
                 csd.TrendPredictionYears);
 

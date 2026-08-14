@@ -97,7 +97,7 @@ public class ChartSeriesTrendNotificationBuilderTests
 
     private static ChartSeriesTrend Calculate(IReadOnlyList<DataPoint> points)
     {
-        return ChartSeriesTrendCalculator.Calculate(Subject, points, requestedWindow: null, predictionYears: 20);
+        return ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, requestedWindow: null, predictionYears: 20);
     }
 
     private static List<DataPoint> CreatePerfectLine(int startYear, int count, double slope)

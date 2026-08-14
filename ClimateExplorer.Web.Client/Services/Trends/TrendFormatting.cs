@@ -27,23 +27,32 @@ internal static class TrendFormatting
         "mm",
     };
 
-    public static bool IsTrendPositive(LinearRegressionResult trend)
+    public static bool IsTrendPositive(PolynomialRegressionResult trend, double atX)
     {
-        return trend.Significance.IsSlopeSignificant && trend.Line.Slope > 0;
+        return trend.Significance.IsSlopeSignificant && trend.Curve.Derivative(atX) > 0;
     }
 
-    public static string FormatPerDecade(LinearRegressionResult trend, string unit)
+    public static string FormatPerDecade(PolynomialRegressionResult trend, double atX, string unit)
     {
         return trend.Significance.IsSlopeSignificant
-            ? FormatPerDecadeValue(trend, unit)
+            ? FormatPerDecadeValue(trend, atX, unit)
             : "No significant trend";
     }
 
-    // The per-decade rate regardless of significance, for use where the fitted value itself
-    // needs to be shown or discussed even though it isn't headlined as a trend.
-    public static string FormatPerDecadeValue(LinearRegressionResult trend, string unit)
+    /// <summary>
+    /// The per-decade rate regardless of significance, for use where the fitted value itself needs
+    /// to be shown or discussed even though it isn't headlined as a trend.
+    /// </summary>
+    /// <param name="atX">
+    /// Where to read the rate - the curve's instantaneous rate of change at this X
+    /// (<see cref="Model.PolynomialCurve.Derivative"/>). For a degree-1 fit this is the same number
+    /// everywhere (the one constant slope), so any X gives an identical result; for a quadratic/cubic
+    /// fit, callers pass the window's most recent year, so "the rate" reads as "the current rate",
+    /// not an average over a shape that visibly bent.
+    /// </param>
+    public static string FormatPerDecadeValue(PolynomialRegressionResult trend, double atX, string unit)
     {
-        var perDecade = trend.Line.Slope * 10;
+        var perDecade = trend.Curve.Derivative(atX) * 10;
         var sign = perDecade >= 0 ? "+" : string.Empty;
 
         return $"{sign}{FormatNumber(perDecade, unit)}{FormatUnitSuffix(unit)} /decade";

@@ -211,7 +211,7 @@
                         </DelayedTooltip>
                         @if (IsTrendModuleAvailable)
                         {
-                            <DelayedTooltip Text="Fit a linear trend and project it past the end of the data" Style="display: block">
+                            <DelayedTooltip Text="Fit a trend and project it past the end of the data" Style="display: block">
                                 <div class="form-row">
                                     <span class="form-label">Show trend</span>
                                     <span class="form-control-wrap">
@@ -222,6 +222,22 @@
                         }
                         @if (IsTrendModuleAvailable && ChartSeries.ShowTrend)
                         {
+                            <DelayedTooltip Text="The shape fitted to the data: a straight line, or a curve that can bend (quadratic) or bend and inflect (cubic). Changing this can change which periods have a statistically significant trend" Style="display: block">
+                                <div class="form-row">
+                                    <span class="form-label">Regression type</span>
+                                    <span class="form-control-wrap">
+                                        <Select TValue="TrendRegressionType"
+                                                Size="Size.Small"
+                                                Value="@ChartSeries.RegressionType"
+                                                ValueChanged="@OnRegressionTypeChanged"
+                                                aria-label="Regression type">
+                                            <SelectItem Value="@TrendRegressionType.Linear">Linear</SelectItem>
+                                            <SelectItem Value="@TrendRegressionType.Quadratic">Quadratic</SelectItem>
+                                            <SelectItem Value="@TrendRegressionType.Cubic">Cubic</SelectItem>
+                                        </Select>
+                                    </span>
+                                </div>
+                            </DelayedTooltip>
                             <DelayedTooltip Text="Which period the trend is fitted over. Only periods with a statistically significant trend can be shown" Style="display: block">
                                 <div class="form-row">
                                     <span class="form-label">Trend period</span>

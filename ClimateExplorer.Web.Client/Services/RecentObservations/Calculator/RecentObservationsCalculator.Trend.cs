@@ -87,17 +87,17 @@ public sealed partial class RecentObservationsCalculator
             Label = metric.VariationLabel,
             Unit = metric.Unit,
             CompleteYearCount = trendSet.CompletePointCount,
-            HeadlineText = TrendFormatting.FormatPerDecade(trendSet.HistoricalTrend, metric.Unit),
-            IsHeadlinePositive = TrendFormatting.IsTrendPositive(trendSet.HistoricalTrend),
+            HeadlineText = TrendFormatting.FormatPerDecade(trendSet.HistoricalTrend, trendSet.HistoricalTrend.Input.MaximumX, metric.Unit),
+            IsHeadlinePositive = TrendFormatting.IsTrendPositive(trendSet.HistoricalTrend, trendSet.HistoricalTrend.Input.MaximumX),
             HeadlineCaption = FormatYearRange(trendSet.HistoricalTrend),
             FullPeriodTooltip = BuildTrendTooltip(ordered, trendSet.HistoricalTrend, metric.Unit),
             RecentTrendYearRange = FormatYearRange(trendSet.RecentTrend),
-            RecentTrendValueText = TrendFormatting.FormatPerDecade(trendSet.RecentTrend, metric.Unit),
-            IsRecentTrendPositive = TrendFormatting.IsTrendPositive(trendSet.RecentTrend),
+            RecentTrendValueText = TrendFormatting.FormatPerDecade(trendSet.RecentTrend, trendSet.RecentTrend.Input.MaximumX, metric.Unit),
+            IsRecentTrendPositive = TrendFormatting.IsTrendPositive(trendSet.RecentTrend, trendSet.RecentTrend.Input.MaximumX),
             RecentTrendTooltip = BuildTrendTooltip(recentPoints, trendSet.RecentTrend, metric.Unit),
             FirstHalfTrendYearRange = FormatYearRange(trendSet.FirstHalfTrend),
-            FirstHalfTrendValueText = TrendFormatting.FormatPerDecade(trendSet.FirstHalfTrend, metric.Unit),
-            IsFirstHalfTrendPositive = TrendFormatting.IsTrendPositive(trendSet.FirstHalfTrend),
+            FirstHalfTrendValueText = TrendFormatting.FormatPerDecade(trendSet.FirstHalfTrend, trendSet.FirstHalfTrend.Input.MaximumX, metric.Unit),
+            IsFirstHalfTrendPositive = TrendFormatting.IsTrendPositive(trendSet.FirstHalfTrend, trendSet.FirstHalfTrend.Input.MaximumX),
             FirstHalfTrendTooltip = BuildTrendTooltip(firstHalfPoints, trendSet.FirstHalfTrend, metric.Unit),
             FullPeriodTrend = trendSet.HistoricalTrend,
             RecentTrend = trendSet.RecentTrend,
@@ -108,12 +108,12 @@ public sealed partial class RecentObservationsCalculator
         };
     }
 
-    private static string FormatYearRange(LinearRegressionResult trend)
+    private static string FormatYearRange(PolynomialRegressionResult trend)
     {
         return $"{trend.Input.MinimumX.ToString("0", CultureInfo.InvariantCulture)}-{trend.Input.MaximumX.ToString("0", CultureInfo.InvariantCulture)}";
     }
 
-    private static string BuildTrendTooltip(IEnumerable<DataPoint> segmentPoints, LinearRegressionResult trend, string unit)
+    private static string BuildTrendTooltip(IEnumerable<DataPoint> segmentPoints, PolynomialRegressionResult trend, string unit)
     {
         var years = segmentPoints.Select(x => (int)Math.Round(x.X)).OrderBy(x => x).ToList();
         var minYear = years[0];
@@ -133,7 +133,7 @@ public sealed partial class RecentObservationsCalculator
         string? notSignificantText = null;
         if (!trend.Significance.IsSlopeSignificant)
         {
-            notSignificantText = $"The fitted rate is {TrendFormatting.FormatPerDecadeValue(trend, unit)}, but the year-to-year scatter is too "
+            notSignificantText = $"The fitted rate is {TrendFormatting.FormatPerDecadeValue(trend, trend.Input.MaximumX, unit)}, but the year-to-year scatter is too "
                                 + "large relative to the number of years for this to be distinguished from no trend at all.";
         }
 

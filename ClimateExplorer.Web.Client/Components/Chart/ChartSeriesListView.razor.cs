@@ -81,6 +81,7 @@ public partial class ChartSeriesListView
                 GroupingThreshold = csd.GroupingThreshold,
                 MinimumDataResolution = csd.MinimumDataResolution,
                 ShowTrend = csd.ShowTrend,
+                RegressionType = csd.RegressionType,
                 TrendPeriod = csd.TrendPeriod,
                 TrendPredictionYears = csd.TrendPredictionYears,
             });

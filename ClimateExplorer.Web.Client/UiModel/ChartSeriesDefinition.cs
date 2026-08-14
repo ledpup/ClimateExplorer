@@ -44,6 +44,7 @@ public class ChartSeriesDefinition
     // back statistically significant (the data builder resolves it, since only it knows what was
     // significant for the data actually loaded).
     public bool ShowTrend { get; set; }
+    public TrendRegressionType RegressionType { get; set; } = TrendRegressionType.Linear;
     public TrendWindow? TrendPeriod { get; set; }
     public int TrendPredictionYears { get; set; } = TrendPredictionRange.Default;
 
@@ -356,6 +357,11 @@ public class ChartSeriesDefinition
                 return false;
             }
 
+            if (x.RegressionType != y.RegressionType)
+            {
+                return false;
+            }
+
             if (x.TrendPeriod != y.TrendPeriod)
             {
                 return false;
@@ -444,6 +450,7 @@ public class ChartSeriesDefinition
                 obj.DisplayStyle.GetHashCode() ^
                 obj.ShowTrendline.GetHashCode() ^
                 obj.ShowTrend.GetHashCode() ^
+                obj.RegressionType.GetHashCode() ^
                 obj.TrendPeriod.GetHashCode() ^
                 obj.TrendPredictionYears.GetHashCode() ^
                 obj.Smoothing.GetHashCode() ^
@@ -501,6 +508,7 @@ public class ChartSeriesDefinition
                 obj.IsLocked.GetHashCode() ^
                 obj.ShowTrendline.GetHashCode() ^
                 obj.ShowTrend.GetHashCode() ^
+                obj.RegressionType.GetHashCode() ^
                 obj.TrendPeriod.GetHashCode() ^
                 obj.TrendPredictionYears.GetHashCode() ^
                 obj.Smoothing.GetHashCode() ^

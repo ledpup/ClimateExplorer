@@ -15,6 +15,13 @@ public sealed record ChartSeriesTrend
 {
     public required TrendStatSubject Subject { get; init; }
 
+    /// <summary>
+    /// The regression shape every window in <see cref="Windows"/> was fitted at. Carried here (not
+    /// just on the request) so the UI - the "About curved trends" tab in particular - knows what it's
+    /// showing without reaching back into <c>ChartSeriesDefinition</c>.
+    /// </summary>
+    public required TrendRegressionType RegressionType { get; init; }
+
     /// <summary>Every window, in dropdown/tab display order. Empty when the series had too few years.</summary>
     public IReadOnlyList<ChartSeriesTrendWindowResult> Windows { get; init; } = [];
 

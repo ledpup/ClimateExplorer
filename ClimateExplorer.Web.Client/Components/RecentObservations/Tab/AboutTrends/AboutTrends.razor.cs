@@ -46,7 +46,7 @@ public partial class AboutTrends
             metric.FullPeriodPoints);
     }
 
-    private static LinearRegressionResult? GetTrend(RecentObservationTrendViewModel metric, TrendWindow window)
+    private static PolynomialRegressionResult? GetTrend(RecentObservationTrendViewModel metric, TrendWindow window)
     {
         return window switch
         {

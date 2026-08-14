@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Components;
 public partial class ChartTrendPanel
 {
     private const string OverviewTabName = "Overview";
+    private const string CurvedTrendsTabName = "About curved trends";
 
     private SidePanel? sidePanel;
     private string selectedTab = OverviewTabName;
@@ -23,12 +24,32 @@ public partial class ChartTrendPanel
 
     private IReadOnlyList<ChartSeriesTrendWindowResult> Windows => Trend?.Windows ?? [];
 
+    /// <summary>
+    /// The curved-trends explainer only applies - and only earns a tab - when the series is actually
+    /// fitted as a curve. A series left on Linear sees exactly the tab set it always has.
+    /// </summary>
+    private bool ShowCurvedTrendsTab => Trend?.RegressionType is TrendRegressionType.Quadratic or TrendRegressionType.Cubic;
+
     private ChartSeriesTrendWindowResult? SelectedWindow =>
         Windows.FirstOrDefault(x => TabName(x.Window) == selectedTab);
 
     public Task Show()
     {
         return sidePanel!.ShowAsync();
+    }
+
+    /// <summary>
+    /// Falls back to Overview if the curved-trends tab was selected and the series' regression type
+    /// then changed away from Quadratic/Cubic (its tab button disappears, but the panel can still be
+    /// open on it) - the same "stay on a tab that no longer exists" hazard the window tabs already
+    /// have if a previously-significant window drops out, just guarded here since it's new.
+    /// </summary>
+    protected override void OnParametersSet()
+    {
+        if (selectedTab == CurvedTrendsTabName && !ShowCurvedTrendsTab)
+        {
+            selectedTab = OverviewTabName;
+        }
     }
 
     private static string TabName(TrendWindow window) => window.ToString();
@@ -46,13 +67,13 @@ public partial class ChartTrendPanel
         if (!window.IsSignificant)
         {
             return $"{TrendWindowLabel.Get(window.Window)} ({years}): the fitted rate is "
-                + $"{TrendFormatting.FormatPerDecadeValue(window.Regression, unit)}, but it isn't statistically significant, "
+                + $"{TrendFormatting.FormatPerDecadeValue(window.Regression, window.Regression.Input.MaximumX, unit)}, but it isn't statistically significant, "
                 + "so this period isn't offered as a trend to display.";
         }
 
         var isDisplayed = Trend.Projection?.Window == window.Window;
 
-        return $"{TrendWindowLabel.Get(window.Window)} ({years}): {TrendFormatting.FormatPerDecadeValue(window.Regression, unit)}"
+        return $"{TrendWindowLabel.Get(window.Window)} ({years}): {TrendFormatting.FormatPerDecadeValue(window.Regression, window.Regression.Input.MaximumX, unit)}"
             + (isDisplayed ? ", currently displayed on the chart." : ", available to display on the chart.");
     }
 

@@ -19,7 +19,7 @@ public class ChartSeriesTrendCalculatorTests
     {
         var points = CreatePerfectLine(1960, ChartSeriesTrendCalculator.MinimumYearsForTrend - 1, slope: 0.02);
 
-        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendWindow.Full, predictionYears: 20);
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, TrendWindow.Full, predictionYears: 20);
 
         Assert.IsNotNull(result.UnavailableReason);
         Assert.IsEmpty(result.Windows);
@@ -32,7 +32,7 @@ public class ChartSeriesTrendCalculatorTests
     {
         var points = CreatePerfectLine(1960, ChartSeriesTrendCalculator.MinimumYearsForTrend, slope: 0.02);
 
-        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendWindow.Full, predictionYears: 20);
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, TrendWindow.Full, predictionYears: 20);
 
         Assert.IsNull(result.UnavailableReason);
         Assert.HasCount(4, result.Windows);
@@ -47,7 +47,7 @@ public class ChartSeriesTrendCalculatorTests
     {
         var points = CreatePerfectLine(1960, ChartSeriesTrendCalculator.MinimumYearsForTrend, slope: 0.02);
 
-        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendWindow.Full, predictionYears: 20);
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, TrendWindow.Full, predictionYears: 20);
 
         CollectionAssert.AreEqual(
             new[] { TrendWindow.Recent, TrendWindow.RecentDecade, TrendWindow.Full, TrendWindow.FirstHalf },
@@ -62,7 +62,7 @@ public class ChartSeriesTrendCalculatorTests
         // span and not the first 30 years.
         var points = CreatePerfectLine(1900, 101, slope: 0.03);
 
-        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendWindow.FirstHalf, predictionYears: 5);
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, TrendWindow.FirstHalf, predictionYears: 5);
         var reference = TrendWindowCalculator.Calculate(
             points,
             ChartSeriesTrendCalculator.MinimumYearsForTrend,
@@ -71,7 +71,7 @@ public class ChartSeriesTrendCalculatorTests
         var earlyPeriod = result.GetWindow(TrendWindow.FirstHalf)!;
 
         Assert.IsNotNull(reference);
-        Assert.AreEqual(reference.FirstHalfTrend.Line.Slope, earlyPeriod.Regression.Line.Slope, 1e-12);
+        Assert.AreEqual(reference.FirstHalfTrend.Curve.Slope, earlyPeriod.Regression.Curve.Slope, 1e-12);
         Assert.HasCount(101 / 2, earlyPeriod.Points);
         Assert.AreEqual(1900, earlyPeriod.FirstYear);
         Assert.AreEqual(1949, earlyPeriod.LastYear);
@@ -82,7 +82,7 @@ public class ChartSeriesTrendCalculatorTests
     {
         var points = CreatePerfectLine(1900, 101, slope: 0.03);
 
-        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendWindow.Recent, predictionYears: 5);
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, TrendWindow.Recent, predictionYears: 5);
         var recent = result.GetWindow(TrendWindow.Recent)!;
 
         Assert.HasCount(ChartSeriesTrendCalculator.RecentWindowYears, recent.Points);
@@ -95,7 +95,7 @@ public class ChartSeriesTrendCalculatorTests
     {
         var points = CreatePerfectLine(1900, 101, slope: 0.03);
 
-        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendWindow.RecentDecade, predictionYears: 5);
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, TrendWindow.RecentDecade, predictionYears: 5);
         var recentDecade = result.GetWindow(TrendWindow.RecentDecade)!;
 
         Assert.HasCount(ChartSeriesTrendCalculator.RecentDecadeWindowYears, recentDecade.Points);
@@ -106,7 +106,7 @@ public class ChartSeriesTrendCalculatorTests
         // over just that subset) - a perfectly linear series should agree on slope regardless of
         // which of the two "last N years" windows fitted it.
         var recent = result.GetWindow(TrendWindow.Recent)!;
-        Assert.AreEqual(recent.Regression.Line.Slope, recentDecade.Regression.Line.Slope, 1e-9);
+        Assert.AreEqual(recent.Regression.Curve.Slope, recentDecade.Regression.Curve.Slope, 1e-9);
     }
 
     [TestMethod]
@@ -114,7 +114,7 @@ public class ChartSeriesTrendCalculatorTests
     {
         var points = CreatePerfectLine(1900, 101, slope: 0.03);
 
-        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendWindow.Full, predictionYears: 10);
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, TrendWindow.Full, predictionYears: 10);
 
         Assert.IsNotNull(result.Projection);
         Assert.AreEqual(2000, result.LastDataYear);
@@ -128,12 +128,12 @@ public class ChartSeriesTrendCalculatorTests
     {
         var points = CreatePerfectLine(1900, 101, slope: 0.03);
 
-        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendWindow.Full, predictionYears: 5);
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, TrendWindow.Full, predictionYears: 5);
         var regression = result.GetWindow(TrendWindow.Full)!.Regression;
 
         foreach (var prediction in result.Projection!.Predictions)
         {
-            Assert.AreEqual(regression.Line.Predict(prediction.X), prediction.PredictedY, 1e-9);
+            Assert.AreEqual(regression.Curve.Predict(prediction.X), prediction.PredictedY, 1e-9);
         }
     }
 
@@ -144,7 +144,7 @@ public class ChartSeriesTrendCalculatorTests
         // overlay doesn't need the data model to change.
         var points = CreateNoisyLine(1900, 101, slope: 0.03, noise: 0.2);
 
-        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendWindow.Full, predictionYears: 5);
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, TrendWindow.Full, predictionYears: 5);
 
         foreach (var prediction in result.Projection!.Predictions)
         {
@@ -162,7 +162,7 @@ public class ChartSeriesTrendCalculatorTests
     {
         var points = CreateFlatNoise(1900, 101);
 
-        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendWindow.Full, predictionYears: 20);
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, TrendWindow.Full, predictionYears: 20);
 
         Assert.IsNull(result.UnavailableReason);
         Assert.HasCount(4, result.Windows);
@@ -176,7 +176,7 @@ public class ChartSeriesTrendCalculatorTests
     {
         var points = CreatePerfectLine(1900, 101, slope: 0.03);
 
-        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendWindow.Full, predictionYears: 5000);
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, TrendWindow.Full, predictionYears: 5000);
 
         Assert.HasCount(TrendPredictionRange.Maximum, result.Projection!.Predictions);
     }
@@ -186,7 +186,7 @@ public class ChartSeriesTrendCalculatorTests
     {
         var points = CreatePerfectLine(1900, 101, slope: 0.03);
 
-        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendWindow.Full, predictionYears: 0);
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, TrendWindow.Full, predictionYears: 0);
 
         Assert.HasCount(TrendPredictionRange.Minimum, result.Projection!.Predictions);
     }
@@ -196,7 +196,7 @@ public class ChartSeriesTrendCalculatorTests
     {
         var points = CreatePerfectLine(1900, 101, slope: 0.03).OrderBy(x => -x.X).ToList();
 
-        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendWindow.Full, predictionYears: 3);
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, TrendWindow.Full, predictionYears: 3);
 
         Assert.AreEqual(2000, result.LastDataYear);
         Assert.AreEqual(2001, result.Projection!.FirstYear);

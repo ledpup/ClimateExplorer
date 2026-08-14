@@ -118,6 +118,11 @@ public static class ChartSeriesListSerializer
                 TrendPeriod = (TrendWindow?)ParseOptionalNullableEnum<TrendWindow>(segments, 20),
                 TrendPredictionYears = TrendPredictionRange.Clamp(
                     ParseOptionalInt(segments, 21, TrendPredictionRange.Default)),
+
+                // Added after links containing 22 segments were already being shared, so it's read
+                // defensively too - an older URL simply defaults to Linear, today's only option.
+                RegressionType = (TrendRegressionType?)ParseOptionalNullableEnum<TrendRegressionType>(segments, 22)
+                    ?? TrendRegressionType.Linear,
             };
     }
 
@@ -295,6 +300,7 @@ public static class ChartSeriesListSerializer
                 csd.MinimumDataResolution,
                 csd.ShowTrend,
                 csd.TrendPeriod,
-                csd.TrendPredictionYears);
+                csd.TrendPredictionYears,
+                csd.RegressionType);
     }
 }

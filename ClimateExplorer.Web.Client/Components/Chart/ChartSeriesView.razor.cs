@@ -266,6 +266,13 @@ public partial class ChartSeriesView
         await OnSeriesChanged.InvokeAsync();
     }
 
+    private async Task OnRegressionTypeChanged(TrendRegressionType regressionType)
+    {
+        ChartSeries!.RegressionType = regressionType;
+
+        await OnSeriesChanged.InvokeAsync();
+    }
+
     private async Task OnTrendPeriodChanged(TrendWindow window)
     {
         ChartSeries!.TrendPeriod = window;

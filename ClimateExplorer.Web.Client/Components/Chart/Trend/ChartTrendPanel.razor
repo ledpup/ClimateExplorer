@@ -11,6 +11,10 @@
             <Tabs SelectedTab="@selectedTab" SelectedTabChanged="@OnTabChanged">
                 <Items>
                     <Tab Name="@OverviewTabName">Overview</Tab>
+                    @if (ShowCurvedTrendsTab)
+                    {
+                        <Tab Name="@CurvedTrendsTabName">About curved trends</Tab>
+                    }
                     @foreach (var window in Windows)
                     {
                         <Tab Name="@TabName(window.Window)">@TrendWindowLabel.Get(window.Window)</Tab>
@@ -34,6 +38,10 @@
             }
 
             <TrendsOverviewExplainer />
+        }
+        else if (selectedTab == CurvedTrendsTabName)
+        {
+            <CurvedTrendsOverviewExplainer />
         }
         else if (SelectedWindow is { } selected)
         {

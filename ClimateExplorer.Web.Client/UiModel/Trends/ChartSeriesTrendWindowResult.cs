@@ -9,7 +9,7 @@ using ClimateExplorer.Core.Stats.Model;
 /// </summary>
 public sealed record ChartSeriesTrendWindowResult(
     TrendWindow Window,
-    LinearRegressionResult Regression,
+    PolynomialRegressionResult Regression,
     IReadOnlyList<DataPoint> Points)
 {
     public bool IsSignificant => Regression.Significance.IsSlopeSignificant;
