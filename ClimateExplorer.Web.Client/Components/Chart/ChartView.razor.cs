@@ -249,6 +249,7 @@ public partial class ChartView : IAsyncDisposable
         var title = string.Empty;
         var subtitle = string.Empty;
         List<ChartTrendlineData>? trendlines = null;
+        List<ChartTooltipSeriesInfo> tooltipMetadata = [];
 
         if (ChartLoadingErrored)
         {
@@ -307,7 +308,7 @@ public partial class ChartView : IAsyncDisposable
 
             l.LogInformation("Calling AddDataSetsToGraph");
 
-            trendlines = await AddDataSetsToChart();
+            (trendlines, tooltipMetadata) = await AddDataSetsToChart();
 
             l.LogInformation("Trendlines count: " + trendlines.Count);
 
@@ -339,7 +340,6 @@ public partial class ChartView : IAsyncDisposable
 
         await chart.Update();
 
-        var tooltipMetadata = ChartTooltipMetadataBuilder.Build(ChartSeriesWithData!);
         await JsRuntime!.InvokeVoidAsync("configureChartTooltip", chartWrapper, tooltipMetadata);
         await JsRuntime!.InvokeVoidAsync("registerChartHoverCursor", chartWrapper);
 
@@ -451,13 +451,19 @@ public partial class ChartView : IAsyncDisposable
         return chartOptionsInfoPanel!.ShowAsync();
     }
 
-    private async Task<List<ChartTrendlineData>> AddDataSetsToChart()
+    private async Task<(List<ChartTrendlineData> Trendlines, List<ChartTooltipSeriesInfo> TooltipMetadata)> AddDataSetsToChart()
     {
         var dataSetIndex = 0;
 
         Colours = new ColourServer();
 
         var trendlines = new List<ChartTrendlineData>();
+
+        // Built in the same order datasets are actually added to the chart (real series first, then -
+        // once every real series is in - the derived trend overlays below), so its indexes stay aligned
+        // with chart.js's dataset indexes. That alignment is what lets the external tooltip look up a
+        // hovered trend point's underlying series and show it against that series' own averages.
+        var tooltipMetadata = new List<ChartTooltipSeriesInfo>();
 
         var requestedColours = ChartSeriesWithData!
             .Where(x => x.ChartSeries!.RequestedColour != UiLogic.Colours.AutoAssigned)
@@ -481,6 +487,8 @@ public partial class ChartView : IAsyncDisposable
                 htmlColourCode,
                 renderSmallPoints: renderSmallPoints);
 
+            tooltipMetadata.Add(ChartTooltipMetadataBuilder.BuildForSeries(chartSeries));
+
             if (chartSeries.ChartSeries.ShowTrendline)
             {
                 trendlines.Add(ChartLogic.CreateTrendline(dataSetIndex, ChartColor.FromHtmlColorCode(htmlColourCode)));
@@ -492,18 +500,20 @@ public partial class ChartView : IAsyncDisposable
         // Trend projections are appended only once every real series has been added, because the
         // ChartTrendlineData built above addresses its series by dataset index - interleaving trend
         // datasets would silently point those overlays at the wrong series.
-        await AddTrendDataSetsToChart();
+        tooltipMetadata.AddRange(await AddTrendDataSetsToChart());
 
-        return trendlines;
+        return (trendlines, tooltipMetadata);
     }
 
-    private async Task AddTrendDataSetsToChart()
+    private async Task<List<ChartTooltipSeriesInfo>> AddTrendDataSetsToChart()
     {
+        var tooltipMetadata = new List<ChartTooltipSeriesInfo>();
+
         var binIndexesByYear = BuildBinIndexesByYear();
 
         if (binIndexesByYear.Count == 0)
         {
-            return;
+            return tooltipMetadata;
         }
 
         foreach (var chartSeries in ChartSeriesWithData!)
@@ -532,14 +542,22 @@ public partial class ChartView : IAsyncDisposable
 
             var csd = chartSeries.ChartSeries!;
             var unitOfMeasure = chartSeries.ProcessedDataSet!.MeasurementDefinition!.UnitOfMeasure;
+            var trendLabel = $"{csd.GetFriendlyTitleShort()} | {TrendWindowLabel.Get(projection.Window)} trend";
 
             await chart!.AddDataSet(
                 ChartLogic.GetTrendChartDataset(
-                    $"{csd.GetFriendlyTitleShort()} | {TrendWindowLabel.Get(projection.Window)} trend",
+                    trendLabel,
                     values,
                     ChartColor.FromHtmlColorCode(csd.Colour!),
                     ChartLogic.GetYAxisId(csd.SeriesTransformation, csd.CustomTransformation, unitOfMeasure, csd.Aggregation)));
+
+            // The projection has no anomaly history of its own - it's compared against the real series
+            // it was fitted to, so hovering a predicted point shows how far above/below that series'
+            // last-30/full-period/early-period averages the prediction falls.
+            tooltipMetadata.Add(ChartTooltipMetadataBuilder.BuildForTrendSeries(chartSeries, $"{csd.GetTooltipLabel(unitOfMeasure)} | {TrendWindowLabel.Get(projection.Window)} trend"));
         }
+
+        return tooltipMetadata;
     }
 
     /// <summary>

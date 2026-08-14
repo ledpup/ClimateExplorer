@@ -20,17 +20,44 @@ public static class ChartTooltipMetadataBuilder
 {
     public static List<ChartTooltipSeriesInfo> Build(IReadOnlyList<SeriesWithData> seriesWithData)
     {
-        return [.. seriesWithData.Select(BuildForSeries)];
+        return [.. seriesWithData.Select(x => BuildForSeries(x))];
     }
 
-    private static ChartTooltipSeriesInfo BuildForSeries(SeriesWithData series)
+    /// <summary>
+    /// Builds tooltip metadata for a single real (non-trend) series. Exposed separately from
+    /// <see cref="Build"/> so callers that build the chart's dataset list incrementally - interleaving
+    /// real series with derived trend datasets, as ChartView does - can build each series' metadata at
+    /// the point it's added, keeping it aligned with chart.js's dataset order.
+    /// </summary>
+    /// <param name="series">The series to build tooltip metadata for.</param>
+    /// <returns>Tooltip metadata for <paramref name="series"/>, using its own tooltip label.</returns>
+    public static ChartTooltipSeriesInfo BuildForSeries(SeriesWithData series)
+    {
+        return BuildForSeries(series, null);
+    }
+
+    /// <summary>
+    /// Builds tooltip metadata for a trend/regression overlay dataset (a forward projection plotted
+    /// as its own chart.js dataset - see ChartView.AddTrendDataSetsToChart). The projected values are
+    /// still compared against the underlying series' own last-30/full-period/early-period averages, so
+    /// hovering a prediction shows how far it sits from the real-data reference bands, not from itself.
+    /// </summary>
+    /// <param name="series">The real series the trend/regression was fitted to.</param>
+    /// <param name="label">The tooltip row label for the trend dataset.</param>
+    /// <returns>Tooltip metadata whose anomaly reference periods come from <paramref name="series"/>.</returns>
+    public static ChartTooltipSeriesInfo BuildForTrendSeries(SeriesWithData series, string label)
+    {
+        return BuildForSeries(series, label);
+    }
+
+    private static ChartTooltipSeriesInfo BuildForSeries(SeriesWithData series, string? labelOverride = null)
     {
         var dataSet = series.PreProcessedDataSet ?? series.SourceDataSet;
         var unitOfMeasure = dataSet.MeasurementDefinition!.UnitOfMeasure;
 
         return new ChartTooltipSeriesInfo
         {
-            Label = series.ChartSeries!.GetTooltipLabel(unitOfMeasure),
+            Label = labelOverride ?? series.ChartSeries!.GetTooltipLabel(unitOfMeasure),
             Rounding = UnitOfMeasureRounding(unitOfMeasure),
             Anomaly = BuildAnomaly(series, dataSet),
         };
