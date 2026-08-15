@@ -10,9 +10,11 @@ using static ClimateExplorer.Core.Enums;
 
 /// <summary>
 /// Builds the per-series data the chart's external tooltip needs: a trimmed "Location | Data type | Unit"
-/// label (deliberately dropping adjustment/aggregation/smoothing detail that clutters the chart legend),
-/// plus - for by-year series with enough history to satisfy
-/// AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly - the last-30-years, full-period, and
+/// label (deliberately dropping adjustment/aggregation/smoothing detail that clutters the chart legend) -
+/// or, for transformations covered by ChartSeriesDefinition.GetTransformationOverrideLabel (e.g. Custom,
+/// DayOfYearIfFrost), that same override label, so the tooltip always matches what the chart legend shows -
+/// plus, for by-year series with enough history to satisfy
+/// AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly, the last-30-years, full-period, and
 /// early-period averages used to show how far the hovered value is from each. Series that don't qualify
 /// for the anomaly figures still get a label; the tooltip just falls back to showing their plain value.
 /// </summary>
@@ -65,7 +67,17 @@ public static class ChartTooltipMetadataBuilder
 
     private static ChartSeriesTooltipMetadata? BuildAnomaly(SeriesWithData series, DataSet dataSet)
     {
-        if (series.ChartSeries!.BinGranularity != BinGranularities.ByYear)
+        var chartSeries = series.ChartSeries;
+
+        // Custom transformations (e.g. "x >= 25") turn the series into a boolean/threshold indicator,
+        // for which a comparison against last-30/full-period/early-period averages isn't meaningful.
+        // Fall back to the standard tooltip (plain value only) for these series.
+        if (chartSeries.SeriesTransformation == SeriesTransformations.Custom)
+        {
+            return null;
+        }
+
+        if (chartSeries.BinGranularity != BinGranularities.ByYear)
         {
             return null;
         }

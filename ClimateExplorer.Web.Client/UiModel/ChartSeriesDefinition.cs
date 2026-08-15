@@ -184,13 +184,43 @@ public class ChartSeriesDefinition
     }
 
     /// <summary>
+    /// Some transformations turn a series' raw value into something that's only meaningful alongside a
+    /// description of the transformation itself - e.g. a DayOfYearIfFrost series' values are day-of-year
+    /// numbers standing in for "first/last day of frost", and a Custom series' values are a 0/1 flag for
+    /// a threshold like "x &gt;= 25". For these, the transformation description replaces the usual
+    /// location/data-type wording entirely, rather than being appended to it. Returns null for
+    /// transformations (including Identity) that don't need this treatment.
+    /// </summary>
+    /// <remarks>
+    /// Single source of truth for this override, shared by the chart legend (ChartView.GetChartLabel)
+    /// and the tooltip (<see cref="GetTooltipLabel"/>) so the two can't drift out of sync.
+    /// </remarks>
+    public string? GetTransformationOverrideLabel()
+    {
+        return SeriesTransformation switch
+        {
+            SeriesTransformations.DayOfYearIfFrost => Aggregation == SeriesAggregationOptions.Maximum ? "Last day of frost" : "First day of frost",
+            SeriesTransformations.Custom => GetFriendlyCustomTransformationLabel(CustomTransformation ?? "Custom transformation"),
+            _ => null,
+        };
+    }
+
+    /// <summary>
     /// A trimmed label for the chart tooltip: "Location | Data type | Unit". Unlike FriendlyTitle/
     /// GetFriendlyTitleShort (used for the chart legend), this deliberately omits adjustment,
     /// aggregation, smoothing, and other how-it-was-computed detail that isn't needed once you're
-    /// reading values off the tooltip.
+    /// reading values off the tooltip. Transformations covered by <see cref="GetTransformationOverrideLabel"/>
+    /// bypass this trimming and use their override label instead, matching the chart legend.
     /// </summary>
     public string GetTooltipLabel(UnitOfMeasure unitOfMeasure)
     {
+        var overrideLabel = GetTransformationOverrideLabel();
+
+        if (overrideLabel != null)
+        {
+            return overrideLabel;
+        }
+
         var descriptor =
             SourceSeriesSpecifications!.Length == 1
             ? BuildTooltipDescriptorForSeries(SourceSeriesSpecifications.Single())

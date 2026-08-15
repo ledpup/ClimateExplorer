@@ -116,6 +116,42 @@ public class ChartTooltipMetadataBuilderTests
     }
 
     [TestMethod]
+    public void Build_CustomTransformation_LabelMatchesChartLegendAndAnomalyIsSuppressed()
+    {
+        var series = CreateSeriesWithData(BinGranularities.ByYear, YearRange(1950, 2019));
+        series.ChartSeries.SeriesTransformation = SeriesTransformations.Custom;
+        series.ChartSeries.CustomTransformation = "x >= 25";
+
+        var result = ChartTooltipMetadataBuilder.Build([series]);
+
+        Assert.HasCount(1, result);
+
+        // Must stay in sync with ChartView.GetChartLabel, which uses the same override for the chart legend.
+        Assert.AreEqual(ChartSeriesDefinition.GetFriendlyCustomTransformationLabel("x >= 25"), result[0].Label);
+        Assert.IsNull(result[0].Anomaly);
+    }
+
+    [TestMethod]
+    public void Build_DayOfYearIfFrostTransformation_LabelMatchesChartLegend()
+    {
+        var maxSeries = CreateSeriesWithData(BinGranularities.ByYear, YearRange(1950, 2019));
+        maxSeries.ChartSeries.SeriesTransformation = SeriesTransformations.DayOfYearIfFrost;
+        maxSeries.ChartSeries.Aggregation = SeriesAggregationOptions.Maximum;
+
+        var minSeries = CreateSeriesWithData(BinGranularities.ByYear, YearRange(1950, 2019));
+        minSeries.ChartSeries.SeriesTransformation = SeriesTransformations.DayOfYearIfFrost;
+        minSeries.ChartSeries.Aggregation = SeriesAggregationOptions.Minimum;
+
+        var result = ChartTooltipMetadataBuilder.Build([maxSeries, minSeries]);
+
+        Assert.HasCount(2, result);
+
+        // Must stay in sync with ChartView.GetChartLabel, which uses the same override for the chart legend.
+        Assert.AreEqual("Last day of frost", result[0].Label);
+        Assert.AreEqual("First day of frost", result[1].Label);
+    }
+
+    [TestMethod]
     public void Build_MultipleSeries_PreservesOrderAndPerSeriesEligibility()
     {
         var longSeries = CreateSeriesWithData(BinGranularities.ByYear, YearRange(1950, 2019));

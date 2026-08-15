@@ -359,14 +359,9 @@ public partial class ChartView : IAsyncDisposable
         l.LogInformation("Leaving");
     }
 
-    private static string GetChartLabel(SeriesTransformations seriesTransformation, string? customTransformation, string defaultLabel, SeriesAggregationOptions seriesAggregationOptions)
+    private static string GetChartLabel(ChartSeriesDefinition chartSeries, string defaultLabel)
     {
-        return seriesTransformation switch
-        {
-            SeriesTransformations.DayOfYearIfFrost => seriesAggregationOptions == SeriesAggregationOptions.Maximum ? "Last day of frost" : "First day of frost",
-            SeriesTransformations.Custom => ChartSeriesDefinition.GetFriendlyCustomTransformationLabel(customTransformation ?? "Custom transformation"),
-            _ => defaultLabel,
-        };
+        return chartSeries.GetTransformationOverrideLabel() ?? defaultLabel;
     }
 
     private ChartState CreateCurrentChartState()
@@ -483,7 +478,7 @@ public partial class ChartView : IAsyncDisposable
                 chart!,
                 chartSeries,
                 dataSet,
-                GetChartLabel(chartSeries.ChartSeries.SeriesTransformation, chartSeries.ChartSeries.CustomTransformation, defaultLabel, chartSeries.ChartSeries.Aggregation),
+                GetChartLabel(chartSeries.ChartSeries, defaultLabel),
                 htmlColourCode,
                 renderSmallPoints: renderSmallPoints);
 
