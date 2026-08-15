@@ -214,8 +214,14 @@ public static class ChartSeriesListSerializer
             }
         }
 
+        // When dr is null (no minimum resolution was requested), more than one measurement
+        // definition can match the same data type/adjustment (e.g. CO2 now has both Monthly and
+        // Daily definitions). Prefer the coarsest match so existing URLs keep resolving to the
+        // resolution they always have (Monthly) rather than throwing on an ambiguous match.
         var md = dsd.MeasurementDefinitions!
-                .SingleOrDefault(x => x.DataAdjustment == da && x.DataType == dt && (dr == null || x.DataResolution == dr));
+                .Where(x => x.DataAdjustment == da && x.DataType == dt && (dr == null || x.DataResolution == dr))
+                .OrderBy(x => x.DataResolution)
+                .FirstOrDefault();
 
         if (md == null)
         {
