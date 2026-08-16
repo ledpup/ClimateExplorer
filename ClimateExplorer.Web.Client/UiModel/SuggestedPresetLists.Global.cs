@@ -3,6 +3,7 @@ namespace ClimateExplorer.Web.UiModel;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
+using ClimateExplorer.Web.Client.UiModel.Trends;
 using static ClimateExplorer.Core.Enums;
 
 public static partial class SuggestedPresetLists
@@ -85,8 +86,8 @@ public static partial class SuggestedPresetLists
                     new()
                     {
                         Title = "Atmospheric CO₂ vs emissions",
-                        Description = "Compare the CO₂ measured in the atmosphere with the reported global emissions of CO₂",
-                        StartYear = 1900,
+                        Description = "CO₂ measured in the atmosphere compared with reported global emissions of CO₂ + trend predicted until 2100",
+                        StartYear = 1950,
                         ChartSeriesList =
                         [
                             new ChartSeriesDefinition()
@@ -100,6 +101,10 @@ public static partial class SuggestedPresetLists
                                 Value = SeriesValueOptions.Value,
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 RequestedColour = UiLogic.Colours.Brown,
+                                ShowTrend = true,
+                                RegressionType = TrendRegressionType.Quadratic,
+                                TrendPeriod = TrendWindow.Full,
+                                TrendPredictionTargetYear = 2100,
                             },
                             new ChartSeriesDefinition()
                             {
@@ -112,6 +117,10 @@ public static partial class SuggestedPresetLists
                                 Value = SeriesValueOptions.Value,
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 RequestedColour = UiLogic.Colours.Black,
+                                ShowTrend = true,
+                                RegressionType = TrendRegressionType.Quadratic,
+                                TrendPeriod = TrendWindow.Full,
+                                TrendPredictionTargetYear = 2100,
                             },
                         ],
                     },

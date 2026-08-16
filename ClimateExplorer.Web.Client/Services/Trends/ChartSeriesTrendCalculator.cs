@@ -49,7 +49,8 @@ public static class ChartSeriesTrendCalculator
         IReadOnlyList<DataPoint> points,
         TrendRegressionType regressionType,
         TrendWindow? requestedWindow,
-        int predictionYears)
+        int predictionYears,
+        int? predictionTargetYear = null)
     {
         ArgumentNullException.ThrowIfNull(subject);
         ArgumentNullException.ThrowIfNull(points);
@@ -94,6 +95,13 @@ public static class ChartSeriesTrendCalculator
         var significantWindows = windows.Where(x => x.IsSignificant).Select(x => x.Window).ToList();
         var selectedWindow = ResolveWindow(significantWindows, requestedWindow);
 
+        // A fixed target year (e.g. a preset that always projects "to 2100") takes priority over
+        // the duration and is resolved against *this* build's last data year, so the projection's
+        // endpoint stays pinned even as the underlying record grows - unlike the duration, which
+        // would otherwise carry the projection forward by however much new data has arrived.
+        var effectivePredictionYears = TrendPredictionRange.Clamp(
+            predictionTargetYear.HasValue ? predictionTargetYear.Value - lastDataYear : predictionYears);
+
         return new ChartSeriesTrend
         {
             Subject = subject,
@@ -106,7 +114,7 @@ public static class ChartSeriesTrendCalculator
                 : Project(
                     windows.Single(x => x.Window == selectedWindow.Value),
                     lastDataYear,
-                    TrendPredictionRange.Clamp(predictionYears)),
+                    effectivePredictionYears),
         };
     }
 

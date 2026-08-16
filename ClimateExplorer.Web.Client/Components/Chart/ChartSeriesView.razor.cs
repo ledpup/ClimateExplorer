@@ -95,7 +95,16 @@ public partial class ChartSeriesView
     /// </summary>
     private int PredictUntilAnchorYear => Trend?.LastDataYear ?? DateTime.Now.Year;
 
-    private int PredictUntilYear => PredictUntilAnchorYear + (ChartSeries?.TrendPredictionYears ?? TrendPredictionRange.Default);
+    /// <summary>
+    /// A fixed target year (typically set by a preset) is shown clamped into the same 1-100-year
+    /// range as the duration field - the same clamp <see cref="Services.Trends.ChartSeriesTrendCalculator"/>
+    /// applies when it resolves the projection - so what's displayed always matches what's drawn.
+    /// See <see cref="ChartSeriesDefinition.TrendPredictionTargetYear"/>.
+    /// </summary>
+    private int PredictUntilYear =>
+        ChartSeries?.TrendPredictionTargetYear is { } targetYear
+            ? PredictUntilAnchorYear + TrendPredictionRange.Clamp(targetYear - PredictUntilAnchorYear)
+            : PredictUntilAnchorYear + (ChartSeries?.TrendPredictionYears ?? TrendPredictionRange.Default);
 
     private string PredictUntilTooltip =>
         $"The calendar year to project the trend forward to ({PredictUntilAnchorYear + TrendPredictionRange.Minimum}-{PredictUntilAnchorYear + TrendPredictionRange.Maximum})";
@@ -292,10 +301,16 @@ public partial class ChartSeriesView
         var targetYear = int.Parse(value, NumberStyles.Integer, CultureInfo.InvariantCulture);
         var years = targetYear - PredictUntilAnchorYear;
 
-        if (years == ChartSeries!.TrendPredictionYears)
+        if (years == ChartSeries!.TrendPredictionYears && ChartSeries.TrendPredictionTargetYear is null)
         {
             return;
         }
+
+        // A hand-edited value is anchored to "now" like every other interactive control, not
+        // pinned to a fixed calendar year the way a preset's TrendPredictionTargetYear is - so
+        // editing this box always reverts to the duration-based field, even if a fixed target was
+        // what produced the value currently showing.
+        ChartSeries.TrendPredictionTargetYear = null;
 
         // Only the projected points depend on this - the regression and its significance don't - so
         // the chart just rebuilds; the user is never re-told about a period they can't select.

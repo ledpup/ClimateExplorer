@@ -192,6 +192,45 @@ public class ChartSeriesTrendCalculatorTests
     }
 
     [TestMethod]
+    public void Calculate_PredictionTargetYearGiven_ProjectsToThatYearRegardlessOfPredictionYears()
+    {
+        var points = CreatePerfectLine(1900, 101, slope: 0.03);
+
+        // predictionYears would give 5 predictions on its own; predictionTargetYear must win.
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, TrendWindow.Full, predictionYears: 5, predictionTargetYear: 2100);
+
+        Assert.AreEqual(2000, result.LastDataYear);
+        Assert.HasCount(100, result.Projection!.Predictions);
+        Assert.AreEqual(2001, result.Projection.FirstYear);
+    }
+
+    [TestMethod]
+    public void Calculate_PredictionTargetYearStaysPinnedAsTheRecordGrows_UnlikeAPlainDuration()
+    {
+        // Simulates the same preset ("project to 2100") evaluated against two builds of the same
+        // series a year apart - the fixed target keeps landing on 2100 regardless of how much more
+        // data has arrived, which is exactly what a plain TrendPredictionYears duration cannot do.
+        var earlierBuild = CreatePerfectLine(1900, 101, slope: 0.03); // last year 2000
+        var laterBuild = CreatePerfectLine(1900, 102, slope: 0.03); // last year 2001
+
+        var earlierResult = ChartSeriesTrendCalculator.Calculate(Subject, earlierBuild, TrendRegressionType.Linear, TrendWindow.Full, predictionYears: 50, predictionTargetYear: 2100);
+        var laterResult = ChartSeriesTrendCalculator.Calculate(Subject, laterBuild, TrendRegressionType.Linear, TrendWindow.Full, predictionYears: 50, predictionTargetYear: 2100);
+
+        Assert.AreEqual(2100, earlierResult.LastDataYear + earlierResult.Projection!.Predictions.Count);
+        Assert.AreEqual(2100, laterResult.LastDataYear + laterResult.Projection!.Predictions.Count);
+    }
+
+    [TestMethod]
+    public void Calculate_PredictionTargetYearImpliesMoreThanTheMaximumDuration_ClampsToTheMaximum()
+    {
+        var points = CreatePerfectLine(1900, 101, slope: 0.03);
+
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, TrendWindow.Full, predictionYears: 20, predictionTargetYear: 9999);
+
+        Assert.HasCount(TrendPredictionRange.Maximum, result.Projection!.Predictions);
+    }
+
+    [TestMethod]
     public void Calculate_UnsortedPoints_ProjectsFromTheLatestYearRegardless()
     {
         var points = CreatePerfectLine(1900, 101, slope: 0.03).OrderBy(x => -x.X).ToList();

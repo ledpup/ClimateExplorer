@@ -123,6 +123,10 @@ public static class ChartSeriesListSerializer
                 // defensively too - an older URL simply defaults to Linear, today's only option.
                 RegressionType = (TrendRegressionType?)ParseOptionalNullableEnum<TrendRegressionType>(segments, 22)
                     ?? TrendRegressionType.Linear,
+
+                // Added after links containing 23 segments were already being shared; an older URL
+                // simply has no fixed target year, i.e. today's duration-only behaviour.
+                TrendPredictionTargetYear = ParseOptionalNullableInt(segments, 23),
             };
     }
 
@@ -143,6 +147,13 @@ public static class ChartSeriesListSerializer
         return GetOptionalSegment(segments, index) is { } value && int.TryParse(value, out var parsed)
             ? parsed
             : fallback;
+    }
+
+    private static int? ParseOptionalNullableInt(string[] segments, int index)
+    {
+        return GetOptionalSegment(segments, index) is { } value && int.TryParse(value, out var parsed)
+            ? parsed
+            : null;
     }
 
     private static object? ParseOptionalNullableEnum<T>(string[] segments, int index)
@@ -307,6 +318,7 @@ public static class ChartSeriesListSerializer
                 csd.ShowTrend,
                 csd.TrendPeriod,
                 csd.TrendPredictionYears,
-                csd.RegressionType);
+                csd.RegressionType,
+                csd.TrendPredictionTargetYear);
     }
 }

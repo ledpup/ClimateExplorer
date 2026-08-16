@@ -192,6 +192,7 @@ public sealed class ChartSeriesLocationSubstitutionService : IChartSeriesLocatio
                 RegressionType = csd.RegressionType,
                 TrendPeriod = csd.TrendPeriod,
                 TrendPredictionYears = csd.TrendPredictionYears,
+                TrendPredictionTargetYear = csd.TrendPredictionTargetYear,
                 Smoothing = csd.Smoothing,
                 SmoothingWindow = csd.SmoothingWindow,
                 Value = csd.Value,

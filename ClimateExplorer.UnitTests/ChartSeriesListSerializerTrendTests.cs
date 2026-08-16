@@ -42,6 +42,31 @@ public class ChartSeriesListSerializerTrendTests
         Assert.IsFalse(parsed.ShowTrend);
         Assert.IsNull(parsed.TrendPeriod);
         Assert.AreEqual(TrendPredictionRange.Default, parsed.TrendPredictionYears);
+        Assert.IsNull(parsed.TrendPredictionTargetYear);
+    }
+
+    [TestMethod]
+    public void ParseChartSeriesDefinitionList_RoundTrippedTrendPredictionTargetYear_IsPreserved()
+    {
+        var series = CreateChartSeries();
+        series.ShowTrend = true;
+        series.TrendPredictionTargetYear = 2100;
+
+        var parsed = RoundTrip(series);
+
+        Assert.AreEqual(2100, parsed.TrendPredictionTargetYear);
+    }
+
+    [TestMethod]
+    public void ParseChartSeriesDefinitionList_UrlWithoutTrendPredictionTargetYearSegment_DefaultsToNull()
+    {
+        // Links shared before this field existed carry only the original 23 segments (up to and
+        // including RegressionType); they must keep working as "no fixed target year".
+        var withoutTargetYear = TrimToSegmentCount(BuildUrlComponent(CreateChartSeries()), 23);
+
+        var parsed = Parse(withoutTargetYear);
+
+        Assert.IsNull(parsed.TrendPredictionTargetYear);
     }
 
     [TestMethod]
@@ -97,7 +122,12 @@ public class ChartSeriesListSerializerTrendTests
 
     private static string TrimToLegacySegmentCount(string component)
     {
-        return string.Join(',', component.Split(',').Take(19));
+        return TrimToSegmentCount(component, 19);
+    }
+
+    private static string TrimToSegmentCount(string component, int count)
+    {
+        return string.Join(',', component.Split(',').Take(count));
     }
 
     private static ChartSeriesDefinition Parse(string component)

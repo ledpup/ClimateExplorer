@@ -84,6 +84,7 @@ public partial class ChartSeriesListView
                 RegressionType = csd.RegressionType,
                 TrendPeriod = csd.TrendPeriod,
                 TrendPredictionYears = csd.TrendPredictionYears,
+                TrendPredictionTargetYear = csd.TrendPredictionTargetYear,
             });
 
         await OnSeriesChangedInternal();

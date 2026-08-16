@@ -624,3 +624,45 @@ Implemented per the revised "fully in scope" decision:
 Degrees above 3; a regression-type selector on `RecentObservationTrend`; a confidence interval on
 curved X-intercepts (point estimates only, as designed); any change to the 60-year minimum or the
 four window definitions.
+
+## Addendum 2 — presets, and a fixed "predict until" target year (2026-08-16)
+
+Confirmed presets can already drive the trend module end-to-end - `ShowTrend`, `RegressionType`,
+`TrendPeriod` and `TrendPredictionYears` are plain `ChartSeriesDefinition` fields, so a preset sets
+them exactly like every other series option. What a preset *couldn't* do cleanly was pin a
+projection to a fixed calendar year: `TrendPredictionYears` is a duration ("N years past the end of
+the record"), so a preset author would have to guess the record's current last year and bake in
+`targetYear - thatYear` at authoring time - correct today, silently drifting forward every time the
+underlying dataset grows.
+
+**New field:** `ChartSeriesDefinition.TrendPredictionTargetYear` (`int?`, default `null`). When set,
+`ChartSeriesTrendCalculator.Calculate` resolves the projection length against *that build's* actual
+last data year (`TrendPredictionRange.Clamp(targetYear - lastDataYear)`) instead of using
+`TrendPredictionYears` - so the projection's endpoint stays pinned at the same calendar year no
+matter how much new data has arrived by the time the chart is built. `TrendPredictionYears` is
+unchanged and still governs everything when no target year is set (every existing chart/URL).
+
+Threaded through everywhere `TrendPeriod`/`TrendPredictionYears` already were: both
+`ChartSeriesDefinition` equality comparers/hashcodes, `ChartSeriesListSerializer` (new tolerant
+24th segment - defaults to `null` for any URL shared before this field existed),
+`ChartSeriesLocationSubstitutionService`, `ChartSeriesListView.OnDuplicateSeries`.
+
+**UI:** `ChartSeriesView`'s "Predict until" box displays a fixed target year exactly like a
+duration-derived one (clamped the same way, so what's shown always matches what's drawn). Editing
+the box by hand always clears `TrendPredictionTargetYear` and falls back to the duration field - a
+hand-typed value is anchored to "now" like every other interactive control on the page, not pinned
+to a fixed year the way a preset's choice is. No new control was added; this is a silent priority
+rule on the existing field, which keeps the interactive experience exactly as documented in
+Addendum 4 of the trend-module doc.
+
+**Preset applied:** the Global presets' "Atmospheric CO₂ vs emissions" variant (both the CO₂ and
+CO₂ emissions series) now sets `ShowTrend = true`, `RegressionType = Quadratic`,
+`TrendPeriod = Full`, `TrendPredictionTargetYear = 2100`.
+
+### Verification
+
+`dotnet build` on the solution is clean; the full unit suite passes at 517 tests (5 new: three in
+`ChartSeriesTrendCalculatorTests` covering the target-year override, its stability as the record
+grows, and clamping when the target implies more than the 100-year maximum; two in
+`ChartSeriesListSerializerTrendTests` covering round-trip and legacy-URL defaulting). No dev server
+or browser testing was run, per AGENTS.md.

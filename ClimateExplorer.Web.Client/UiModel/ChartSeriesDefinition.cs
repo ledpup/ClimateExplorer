@@ -48,6 +48,18 @@ public class ChartSeriesDefinition
     public TrendWindow? TrendPeriod { get; set; }
     public int TrendPredictionYears { get; set; } = TrendPredictionRange.Default;
 
+    /// <summary>
+    /// When set, projects the trend forward to this fixed calendar year instead of
+    /// <see cref="TrendPredictionYears"/> years past the end of the record. Unlike
+    /// <see cref="TrendPredictionYears"/> - a duration that keeps the projection's endpoint
+    /// drifting forward as the underlying dataset grows - this stays pinned at the same year
+    /// (e.g. a preset that always projects "to 2100"), recomputed against whatever the record's
+    /// last year happens to be on each build. Editing "Predict until" in the UI clears this and
+    /// falls back to the duration-based field, since interactive edits are anchored to "now", not
+    /// to a fixed target.
+    /// </summary>
+    public int? TrendPredictionTargetYear { get; set; }
+
     // Editing mode fields
 
     /// <summary>
@@ -437,6 +449,11 @@ public class ChartSeriesDefinition
                 return false;
             }
 
+            if (x.TrendPredictionTargetYear != y.TrendPredictionTargetYear)
+            {
+                return false;
+            }
+
             if (x.Smoothing != y.Smoothing)
             {
                 return false;
@@ -518,6 +535,7 @@ public class ChartSeriesDefinition
                 obj.RegressionType.GetHashCode() ^
                 obj.TrendPeriod.GetHashCode() ^
                 obj.TrendPredictionYears.GetHashCode() ^
+                obj.TrendPredictionTargetYear.GetHashCode() ^
                 obj.Smoothing.GetHashCode() ^
                 obj.SmoothingWindow.GetHashCode() ^
                 obj.Value.GetHashCode() ^
@@ -576,6 +594,7 @@ public class ChartSeriesDefinition
                 obj.RegressionType.GetHashCode() ^
                 obj.TrendPeriod.GetHashCode() ^
                 obj.TrendPredictionYears.GetHashCode() ^
+                obj.TrendPredictionTargetYear.GetHashCode() ^
                 obj.Smoothing.GetHashCode() ^
                 obj.SmoothingWindow.GetHashCode() ^
                 obj.Value.GetHashCode() ^
