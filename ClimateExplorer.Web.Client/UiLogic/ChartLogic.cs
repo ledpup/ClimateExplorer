@@ -317,6 +317,14 @@ public static class ChartLogic
                     startBin = new YearAndDayBinIdentifier(userStartYear.Value, 1, 1);
                 }
             }
+            else
+            {
+                // The requested start year is at or before the earliest data we actually have
+                // (e.g. a preset's StartYear matches one series but predates another that got
+                // removed). Fall back to the earliest bin actually present rather than leaving
+                // startBin unset, which would otherwise crash chart rendering.
+                startBin = firstBinAcrossAllDataSets;
+            }
         }
         else
         {

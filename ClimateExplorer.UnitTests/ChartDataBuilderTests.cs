@@ -118,6 +118,27 @@ public class ChartDataBuilderTests
     }
 
     [TestMethod]
+    public async Task StartYearAtOrBeforeDataStartRendersFromActualDataStart()
+    {
+        // Regression test: a preset (or URL) can specify a StartYear that matches, or predates,
+        // the earliest year actually present in the data — e.g. when a chart series with an
+        // earlier start gets removed, leaving only a series whose data starts exactly on the
+        // preset's StartYear. This must render from the data's actual start rather than leaving
+        // the bin range unresolved.
+        var records = Enumerable.Range(2000, 6).Select(y => (year: y, value: (double?)y)).ToArray();
+        var dataService = CreateDataService(CreateYearDataSet(records));
+        var series = CreateSeries();
+
+        var result = await CreateBuilder(dataService).BuildAsync(
+            new ChartState { ChartAllData = false, StartYear = "2000", Series = [series] });
+
+        Assert.IsTrue(result.HasRenderableData);
+        CollectionAssert.AreEqual(
+            Enumerable.Range(2000, 6).Select(x => (short)x).ToArray(),
+            result.ChartBins!.Cast<YearBinIdentifier>().Select(x => x.Year).ToArray());
+    }
+
+    [TestMethod]
     public async Task ModularGranularityProducesTwelveMonthBins()
     {
         var records = Enumerable.Range(1, 12)
