@@ -3,6 +3,7 @@ namespace ClimateExplorer.Web.UiModel;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
+using ClimateExplorer.Web.Client.UiModel.Trends;
 using static ClimateExplorer.Core.Enums;
 
 public static partial class SuggestedPresetLists
@@ -62,8 +63,8 @@ public static partial class SuggestedPresetLists
         suggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
             {
-                Title = "Temperature + CO\u2082",
-                Description = "Smoothed yearly average temperature and carbon dioxide",
+                Title = "Temperature + trend",
+                Description = "Smoothed yearly average temperature with a quadratic 50-year trend prediction",
                 ChartSeriesList =
                 [
                     new ChartSeriesDefinition()
@@ -75,17 +76,10 @@ public static partial class SuggestedPresetLists
                         Smoothing = SeriesSmoothingOptions.MovingAverage,
                         SmoothingWindow = 10,
                         Value = SeriesValueOptions.Value,
-                    },
-                    new ChartSeriesDefinition()
-                    {
-                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Atmosphere), co2!),
-                        Aggregation = SeriesAggregationOptions.Mean,
-                        BinGranularity = BinGranularities.ByYear,
-                        Smoothing = SeriesSmoothingOptions.None,
-                        SmoothingWindow = 5,
-                        Value = SeriesValueOptions.Value,
-                        RequestedColour = UiLogic.Colours.Black,
+                        ShowTrend = true,
+                        RegressionType = TrendRegressionType.Quadratic,
+                        TrendPeriod = TrendWindow.Full,
+                        TrendPredictionYears = 50,
                     }
                 ],
             });

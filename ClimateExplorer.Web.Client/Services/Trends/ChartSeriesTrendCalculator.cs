@@ -37,12 +37,11 @@ public static class ChartSeriesTrendCalculator
 
     /// <summary>
     /// Which window to fall back to when the user hasn't chosen one, or when the one they chose is
-    /// no longer significant. Most-recently-relevant first, since a trend module switched on for
-    /// the first time is more often asked "what's happening lately?" than "what's the whole record
-    /// done?".
+    /// no longer significant. Full period first, since that's the trend most people mean by default
+    /// ("what's the whole record done?"), then most-recently-relevant.
     /// </summary>
     private static readonly TrendWindow[] SelectionPriority =
-        [TrendWindow.Recent, TrendWindow.RecentDecade, TrendWindow.Full, TrendWindow.FirstHalf];
+        [TrendWindow.Full, TrendWindow.Recent, TrendWindow.RecentDecade, TrendWindow.FirstHalf];
 
     public static ChartSeriesTrend Calculate(
         TrendStatSubject subject,
@@ -81,13 +80,13 @@ public static class ChartSeriesTrendCalculator
         var recentDecadePoints = ordered.TakeLast(recentDecadeCount).ToList();
         var firstHalfPoints = ordered.Take(firstHalfCount).ToList();
 
-        // Declared in dropdown/tab display order: most-recently-relevant first, matching
-        // SelectionPriority below.
+        // Declared in dropdown/tab display order: full period first, matching SelectionPriority
+        // below.
         var windows = new List<ChartSeriesTrendWindowResult>
         {
+            new(TrendWindow.Full, PolynomialRegressionCalculator.Calculate(ordered, degree), ordered),
             new(TrendWindow.Recent, PolynomialRegressionCalculator.Calculate(recentPoints, degree), recentPoints),
             new(TrendWindow.RecentDecade, PolynomialRegressionCalculator.Calculate(recentDecadePoints, degree), recentDecadePoints),
-            new(TrendWindow.Full, PolynomialRegressionCalculator.Calculate(ordered, degree), ordered),
             new(TrendWindow.FirstHalf, PolynomialRegressionCalculator.Calculate(firstHalfPoints, degree), firstHalfPoints),
         };
 

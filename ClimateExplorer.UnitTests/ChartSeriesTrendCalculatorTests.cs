@@ -50,7 +50,7 @@ public class ChartSeriesTrendCalculatorTests
         var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, TrendWindow.Full, predictionYears: 20);
 
         CollectionAssert.AreEqual(
-            new[] { TrendWindow.Recent, TrendWindow.RecentDecade, TrendWindow.Full, TrendWindow.FirstHalf },
+            new[] { TrendWindow.Full, TrendWindow.Recent, TrendWindow.RecentDecade, TrendWindow.FirstHalf },
             result.Windows.Select(x => x.Window).ToList());
     }
 
@@ -262,9 +262,19 @@ public class ChartSeriesTrendCalculatorTests
     }
 
     [TestMethod]
-    public void ResolveWindow_NothingRequested_PrefersTheRecentPeriod()
+    public void ResolveWindow_NothingRequested_PrefersTheFullPeriod()
     {
         var significant = new[] { TrendWindow.FirstHalf, TrendWindow.Recent, TrendWindow.Full, TrendWindow.RecentDecade };
+
+        var result = ChartSeriesTrendCalculator.ResolveWindow(significant, requestedWindow: null);
+
+        Assert.AreEqual(TrendWindow.Full, result);
+    }
+
+    [TestMethod]
+    public void ResolveWindow_FullPeriodNotSignificant_PrefersTheRecentPeriodNext()
+    {
+        var significant = new[] { TrendWindow.FirstHalf, TrendWindow.Recent, TrendWindow.RecentDecade };
 
         var result = ChartSeriesTrendCalculator.ResolveWindow(significant, requestedWindow: null);
 
@@ -272,9 +282,9 @@ public class ChartSeriesTrendCalculatorTests
     }
 
     [TestMethod]
-    public void ResolveWindow_RecentPeriodNotSignificant_PrefersTheRecentDecadeNext()
+    public void ResolveWindow_FullAndRecentPeriodsNotSignificant_PrefersTheRecentDecadeNext()
     {
-        var significant = new[] { TrendWindow.FirstHalf, TrendWindow.Full, TrendWindow.RecentDecade };
+        var significant = new[] { TrendWindow.FirstHalf, TrendWindow.RecentDecade };
 
         var result = ChartSeriesTrendCalculator.ResolveWindow(significant, requestedWindow: null);
 

@@ -273,7 +273,8 @@
                                     <span class="form-label">Predict until</span>
                                     <span class="form-control-wrap">
                                         <Validation @ref="predictionYearsValidation" Validator="ValidatePredictionYears">
-                                            <TextInput Value="@predictionYearsText"
+                                            <TextInput Size="Size.Small"
+                                                       Value="@predictionYearsText"
                                                        ValueChanged="@OnPredictionYearsChanged"
                                                        Disabled="@(SelectableTrendPeriods.Count == 0)"
                                                        Immediate="false"
