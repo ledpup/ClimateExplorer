@@ -13,10 +13,10 @@ using System.Globalization;
 public static class TrendSeriesColour
 {
     /// <summary>Lightness moved per tier, as a fraction of the 0-1 HSL lightness range.</summary>
-    private const double LightnessStepPerTier = 0.16;
+    private const double LightnessStepPerTier = 0.25;
 
     /// <summary>At or below this lightness, a colour is treated as "black-like" and shifted lighter instead of darker.</summary>
-    private const double NearBlackLightnessThreshold = 0.18;
+    private const double NearBlackLightnessThreshold = 0.25;
 
     private const double MinLightness = 0.06;
     private const double MaxLightness = 0.94;
