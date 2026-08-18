@@ -386,7 +386,7 @@ public partial class ChartView : IAsyncDisposable
         var period = TrendWindowLabel.Get(trend.Projection!.Window);
 
         return hasMultipleTrends
-            ? $"{csd.GetTooltipLabel(unitOfMeasure)} | {trend.RegressionType} {period} trend to {trend.Projection.LastYear}"
+            ? $"{csd.GetTooltipLabel(unitOfMeasure)} | {trend.RegressionType} {period} trend"
             : $"{csd.GetTooltipLabel(unitOfMeasure)} | {period} trend";
     }
 

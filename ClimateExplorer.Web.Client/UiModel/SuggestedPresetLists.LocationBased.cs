@@ -139,7 +139,7 @@ public static partial class SuggestedPresetLists
             new SuggestedChartPresetModelWithVariants()
             {
                 Title = "Temperature + trend",
-                Description = "Smoothed yearly average temperature with a quadratic 50-year trend prediction",
+                Description = "Smoothed yearly average temperature with 50-year predictions",
                 ChartSeriesList =
                 [
                     new ChartSeriesDefinition()
@@ -155,12 +155,18 @@ public static partial class SuggestedPresetLists
                         [
                             new ChartSeriesTrendRequest
                             {
+                                RegressionType = TrendRegressionType.Linear,
+                                TrendPeriod = TrendWindow.Full,
+                                TrendPredictionYears = 50,
+                            },
+                            new ChartSeriesTrendRequest
+                            {
                                 RegressionType = TrendRegressionType.Quadratic,
                                 TrendPeriod = TrendWindow.Full,
                                 TrendPredictionYears = 50,
                             },
                         ],
-                    }
+                    },
                 ],
                 Variants =
                 [
