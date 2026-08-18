@@ -1,4 +1,4 @@
-<Collapsible Title="Add a trend" InitiallyShowContents="false">
+<Collapsible Title="Add a trend" InitiallyShowContents="@GlobalTrendEligibleSeries.Any(x => x.Trends.Count > 0)">
     <Content>
         <AddTrendSection EligibleSeries="@GlobalTrendEligibleSeries"
                          SeriesWithData="@SeriesWithData"
