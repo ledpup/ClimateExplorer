@@ -51,7 +51,7 @@ public partial class AboutTrends
         return window switch
         {
             TrendWindow.Full => metric.FullPeriodTrend,
-            TrendWindow.Recent => metric.RecentTrend,
+            TrendWindow.Last30 => metric.RecentTrend,
             TrendWindow.FirstHalf => metric.FirstHalfTrend,
             _ => throw new NotImplementedException(),
         };
@@ -62,7 +62,7 @@ public partial class AboutTrends
         return window switch
         {
             TrendWindow.Full => (metric.FullPeriodPoints, "Full recordset"),
-            TrendWindow.Recent => (metric.RecentTrendPoints, "Last 30 years"),
+            TrendWindow.Last30 => (metric.RecentTrendPoints, "Last 30 years"),
             TrendWindow.FirstHalf => (metric.FirstHalfTrendPoints, "First half of recordset"),
             _ => throw new NotImplementedException(),
         };

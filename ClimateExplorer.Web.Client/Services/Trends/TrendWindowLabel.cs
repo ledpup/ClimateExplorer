@@ -13,7 +13,7 @@ public static class TrendWindowLabel
         return window switch
         {
             TrendWindow.Full => "Full period",
-            TrendWindow.Recent => $"Last {ChartSeriesTrendCalculator.RecentWindowYears} years",
+            TrendWindow.Last30 => $"Last {ChartSeriesTrendCalculator.RecentWindowYears} years",
             TrendWindow.RecentDecade => $"Last {ChartSeriesTrendCalculator.RecentDecadeWindowYears} years",
             TrendWindow.FirstHalf => "Early period",
             _ => throw new NotImplementedException($"TrendWindow {window}"),
@@ -29,7 +29,7 @@ public static class TrendWindowLabel
         return window switch
         {
             TrendWindow.Full => "the full plotted period",
-            TrendWindow.Recent => $"the last {ChartSeriesTrendCalculator.RecentWindowYears} years",
+            TrendWindow.Last30 => $"the last {ChartSeriesTrendCalculator.RecentWindowYears} years",
             TrendWindow.RecentDecade => $"the last {ChartSeriesTrendCalculator.RecentDecadeWindowYears} years",
             TrendWindow.FirstHalf => "the early period (the first half of the record)",
             _ => throw new NotImplementedException($"TrendWindow {window}"),

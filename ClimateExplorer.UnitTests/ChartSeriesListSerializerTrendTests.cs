@@ -23,12 +23,12 @@ public class ChartSeriesListSerializerTrendTests
     public void ParseChartSeriesDefinitionList_RoundTrippedSingleTrend_IsPreserved()
     {
         var series = CreateChartSeries();
-        series.Trends.Add(new ChartSeriesTrendRequest { TrendPeriod = TrendWindow.Recent, TrendPredictionYears = 42 });
+        series.Trends.Add(new ChartSeriesTrendRequest { TrendPeriod = TrendWindow.Last30, TrendPredictionYears = 42 });
 
         var parsed = RoundTrip(series);
 
         Assert.HasCount(1, parsed.Trends);
-        Assert.AreEqual(TrendWindow.Recent, parsed.Trends[0].TrendPeriod);
+        Assert.AreEqual(TrendWindow.Last30, parsed.Trends[0].TrendPeriod);
         Assert.AreEqual(42, parsed.Trends[0].TrendPredictionYears);
     }
 
@@ -44,7 +44,7 @@ public class ChartSeriesListSerializerTrendTests
     public void ParseChartSeriesDefinitionList_RoundTrippedThreeTrends_AllArePreservedInOrder()
     {
         var series = CreateChartSeries();
-        series.Trends.Add(new ChartSeriesTrendRequest { RegressionType = TrendRegressionType.Linear, TrendPeriod = TrendWindow.Recent });
+        series.Trends.Add(new ChartSeriesTrendRequest { RegressionType = TrendRegressionType.Linear, TrendPeriod = TrendWindow.Last30 });
         series.Trends.Add(new ChartSeriesTrendRequest { RegressionType = TrendRegressionType.Quadratic, TrendPeriod = TrendWindow.Full, TrendPredictionTargetYear = 2100 });
         series.Trends.Add(new ChartSeriesTrendRequest { RegressionType = TrendRegressionType.Cubic, TrendPeriod = TrendWindow.FirstHalf });
 
@@ -52,7 +52,7 @@ public class ChartSeriesListSerializerTrendTests
 
         Assert.HasCount(3, parsed.Trends);
         Assert.AreEqual(TrendRegressionType.Linear, parsed.Trends[0].RegressionType);
-        Assert.AreEqual(TrendWindow.Recent, parsed.Trends[0].TrendPeriod);
+        Assert.AreEqual(TrendWindow.Last30, parsed.Trends[0].TrendPeriod);
         Assert.AreEqual(TrendRegressionType.Quadratic, parsed.Trends[1].RegressionType);
         Assert.AreEqual(TrendWindow.Full, parsed.Trends[1].TrendPeriod);
         Assert.AreEqual(2100, parsed.Trends[1].TrendPredictionTargetYear);
@@ -116,7 +116,7 @@ public class ChartSeriesListSerializerTrendTests
     {
         var series = CreateChartSeries();
         series.Trends.Add(new ChartSeriesTrendRequest { TrendPeriod = TrendWindow.Full });
-        series.Trends.Add(new ChartSeriesTrendRequest { TrendPeriod = TrendWindow.Recent });
+        series.Trends.Add(new ChartSeriesTrendRequest { TrendPeriod = TrendWindow.Last30 });
         series.Trends.Add(new ChartSeriesTrendRequest { TrendPeriod = TrendWindow.RecentDecade });
         series.Trends.Add(new ChartSeriesTrendRequest { TrendPeriod = TrendWindow.FirstHalf });
 
@@ -128,7 +128,7 @@ public class ChartSeriesListSerializerTrendTests
 
         Assert.HasCount(ChartSeriesDefinition.MaxTrends, parsed.Trends);
         Assert.AreEqual(TrendWindow.Full, parsed.Trends[0].TrendPeriod);
-        Assert.AreEqual(TrendWindow.Recent, parsed.Trends[1].TrendPeriod);
+        Assert.AreEqual(TrendWindow.Last30, parsed.Trends[1].TrendPeriod);
         Assert.AreEqual(TrendWindow.RecentDecade, parsed.Trends[2].TrendPeriod);
     }
 

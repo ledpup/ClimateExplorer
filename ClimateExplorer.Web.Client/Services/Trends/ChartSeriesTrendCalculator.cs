@@ -41,7 +41,7 @@ public static class ChartSeriesTrendCalculator
     /// ("what's the whole record done?"), then most-recently-relevant.
     /// </summary>
     private static readonly TrendWindow[] SelectionPriority =
-        [TrendWindow.Full, TrendWindow.Recent, TrendWindow.RecentDecade, TrendWindow.FirstHalf];
+        [TrendWindow.Full, TrendWindow.Last30, TrendWindow.RecentDecade, TrendWindow.FirstHalf];
 
     public static ChartSeriesTrend Calculate(
         TrendStatSubject subject,
@@ -86,7 +86,7 @@ public static class ChartSeriesTrendCalculator
         var windows = new List<ChartSeriesTrendWindowResult>
         {
             new(TrendWindow.Full, PolynomialRegressionCalculator.Calculate(ordered, degree), ordered),
-            new(TrendWindow.Recent, PolynomialRegressionCalculator.Calculate(recentPoints, degree), recentPoints),
+            new(TrendWindow.Last30, PolynomialRegressionCalculator.Calculate(recentPoints, degree), recentPoints),
             new(TrendWindow.RecentDecade, PolynomialRegressionCalculator.Calculate(recentDecadePoints, degree), recentDecadePoints),
             new(TrendWindow.FirstHalf, PolynomialRegressionCalculator.Calculate(firstHalfPoints, degree), firstHalfPoints),
         };

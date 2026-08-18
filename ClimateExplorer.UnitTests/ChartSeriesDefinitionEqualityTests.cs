@@ -31,7 +31,7 @@ public class ChartSeriesDefinitionEqualityTests
     {
         var sss = CreateSourceSeriesSpecifications();
         var a = CreateSeries(sss, new ChartSeriesTrendRequest { TrendPeriod = TrendWindow.Full });
-        var b = CreateSeries(sss, new ChartSeriesTrendRequest { TrendPeriod = TrendWindow.Recent });
+        var b = CreateSeries(sss, new ChartSeriesTrendRequest { TrendPeriod = TrendWindow.Last30 });
 
         Assert.IsFalse(ChartSeriesDefinition.ChartSeriesDefinitionComparerWhichIgnoresYearAndIsLocked.BaseComparer(a, b));
     }

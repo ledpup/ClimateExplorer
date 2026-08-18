@@ -3,7 +3,7 @@ namespace ClimateExplorer.Web.Client.UiModel.Trends;
 public enum TrendWindow
 {
     Full,
-    Recent,
+    Last30,
     RecentDecade,
     FirstHalf,
 }
