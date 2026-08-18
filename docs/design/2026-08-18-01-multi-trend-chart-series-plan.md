@@ -461,3 +461,34 @@ and `Global.razor` wire both through to `DataSetBrowser`.
 `dotnet build` clean; unit suite at 545/545 (7 new: 5 `ChartSeriesDefinitionIsGlobalSeriesTests`, 2
 `RegionIsRegionIdTests`). No dev server or browser testing, per AGENTS.md - the picker/"Add
 trend"/inline-controls UI flow is unverified beyond compilation, same caveat as Addendum 1.
+
+### Bugfix (2026-08-18): "pending trend" local state was wrong
+
+The first pass tracked "the trend I just added" as a single `PendingSeries`/`PendingTrendIndex`
+pair of fields local to `AddTrendSection`, shown instead of the "Add trend" button only for that
+one freshly-added entry. The user found two bugs from this, both the same root cause: that pending
+state is ephemeral (reset on selection change, and gone entirely on remount) while the real
+`Trends` list on the series is not.
+
+- Reopening the side panel (or re-selecting a series) after adding a trend showed only the "Add
+  trend" button again, with no sign the series already had trends - either from an earlier visit to
+  this panel, or added via the series' own controls below the chart.
+- Adding a third trend to a series could make its controls vanish instead of appearing: once a
+  series hit the three-trend cap, the picker's own eligibility filter (`Trends.Count < MaxTrends`)
+  dropped it from `EligibleSeries`; if it had been the only eligible series, `EligibleSeries.Count`
+  went to zero and the whole picker branch - including the just-added trend's controls, which don't
+  depend on `EligibleSeries` - stopped rendering, replaced by the empty-state message.
+
+Fixed by dropping the pending-state tracking entirely: `AddTrendSection` now loops over
+`SelectedSeries.Trends` directly and renders one `ChartSeriesTrendControls` per entry (with its own
+remove button), exactly the pattern `ChartSeriesView` already uses for the same list - always in
+sync with what's really on the series, whichever way it got there. The picker's eligibility filter
+(`LocalTrendEligibleSeries`/`GlobalTrendEligibleSeries`) no longer excludes series at the cap
+either, so a maxed-out series stays pickable and its trends stay visible/removable; the cap is
+enforced only by hiding `AddTrendSection`'s own "Add trend" button once the *selected* series
+reaches it - unaffected by how many other series are on the chart.
+
+No test coverage added for this - it's pure Razor rendering logic (Blazor components aren't unit
+tested in this repo, per AGENTS.md's Blazor-conventions/verification split). `dotnet build` clean;
+545/545 unit tests still pass (the shape of the fix didn't touch anything test-covered). Still no
+dev server or browser testing - the fix is reasoned from the render logic, not observed live.

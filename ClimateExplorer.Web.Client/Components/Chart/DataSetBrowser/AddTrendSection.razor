@@ -24,15 +24,17 @@
             </div>
         </DelayedTooltip>
 
-        @if (PendingSeries is not null && PendingTrendIndex >= 0 && PendingTrendIndex < PendingSeries.Trends.Count)
+        @for (var i = 0; i < SelectedSeries!.Trends.Count; i++)
         {
-            <ChartSeriesTrendControls Request="@PendingSeries.Trends[PendingTrendIndex]"
-                                       Trend="@GetPendingTrendResult()"
-                                       SlotLabel="@GetPendingSlotLabel()"
+            var index = i;
+            <ChartSeriesTrendControls Request="@SelectedSeries.Trends[index]"
+                                       Trend="@GetTrend(index)"
+                                       SlotLabel="@GetTrendSlotLabel(index)"
                                        OnChanged="@OnTrendsChangedInternal"
-                                       OnRemove="@OnRemovePendingTrend" />
+                                       OnRemove="@(() => OnRemoveTrendClicked(index))" />
         }
-        else
+
+        @if (SelectedSeries.Trends.Count < ChartSeriesDefinition.MaxTrends)
         {
             <DelayedTooltip Text="Fit a trend and project it past the end of the data" Style="display: block">
                 <button type="button" class="trend-add-button" @onclick="@OnAddTrendClicked">

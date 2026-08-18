@@ -33,12 +33,15 @@ public partial class GlobalDataSetBrowser
     /// <summary>
     /// Chart series eligible for "add a trend to an existing series" from this tab: on the chart,
     /// tied to a region rather than a location (see <see cref="ChartSeriesDefinition.IsGlobalSeries"/>
-    /// - location-tied series belong on the Local tab instead), with data, plotted against a year
-    /// axis (trends need a linear year x-axis), and not already at the three-trend cap.
+    /// - location-tied series belong on the Local tab instead), with data, and plotted against a year
+    /// axis (trends need a linear year x-axis). Not filtered by the three-trend cap - a series already
+    /// at the cap stays pickable so its existing trends remain visible and editable (including
+    /// removable, to free up a slot); <see cref="AddTrendSection"/> hides its own "Add trend" button
+    /// per-series once that series reaches the cap.
     /// </summary>
     private List<ChartSeriesDefinition> GlobalTrendEligibleSeries =>
         ChartSeriesList?
-            .Where(x => x.DataAvailable && x.IsGlobalSeries && x.BinGranularity == BinGranularities.ByYear && x.Trends.Count < ChartSeriesDefinition.MaxTrends)
+            .Where(x => x.DataAvailable && x.IsGlobalSeries && x.BinGranularity == BinGranularities.ByYear)
             .ToList()
         ?? [];
 
