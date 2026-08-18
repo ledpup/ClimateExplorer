@@ -103,10 +103,10 @@ public partial class ChartSeriesView
         return Trends is null || index >= Trends.Count ? null : Trends[index];
     }
 
-    /// <summary>"Trend 2" etc. - only shown once a series has more than one, so the common single-trend case stays unlabelled.</summary>
-    private string? GetTrendSlotLabel(int index)
+    /// <summary>"Trend 1", "Trend 2" etc. - always shown, including for the first/only trend.</summary>
+    private string GetTrendSlotLabel(int index)
     {
-        return ChartSeries!.Trends.Count > 1 ? $"Trend {index + 1}" : null;
+        return $"Trend {index + 1}";
     }
 
     private async Task OnAddTrendClicked()
