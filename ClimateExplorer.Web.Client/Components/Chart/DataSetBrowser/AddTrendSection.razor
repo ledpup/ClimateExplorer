@@ -1,0 +1,44 @@
+@using ClimateExplorer.Web.Client.Components.Chart.Trend
+@using ClimateExplorer.Web.Client.UiModel.Trends
+@using ClimateExplorer.Web.UiModel
+@using Blazorise
+
+<div class="add-trend-section">
+    @if (EligibleSeries.Count == 0)
+    {
+        <div class="add-trend-empty">@EmptyMessage</div>
+    }
+    else
+    {
+        <DelayedTooltip Text="Fit and project a trend for a series that's already on the chart" Style="display: block">
+            <div class="form-row">
+                <span class="form-label">Series</span>
+                <span class="form-control-wrap">
+                    <Select TValue="Guid" Size="Size.Small" Value="@SelectedSeries!.Id" ValueChanged="@OnSeriesSelected" aria-label="Series to add a trend to">
+                        @foreach (var series in EligibleSeries)
+                        {
+                            <SelectItem Value="@series.Id">@series.GetFriendlyTitleShort()</SelectItem>
+                        }
+                    </Select>
+                </span>
+            </div>
+        </DelayedTooltip>
+
+        @if (PendingSeries is not null && PendingTrendIndex >= 0 && PendingTrendIndex < PendingSeries.Trends.Count)
+        {
+            <ChartSeriesTrendControls Request="@PendingSeries.Trends[PendingTrendIndex]"
+                                       Trend="@GetPendingTrendResult()"
+                                       SlotLabel="@GetPendingSlotLabel()"
+                                       OnChanged="@OnTrendsChangedInternal"
+                                       OnRemove="@OnRemovePendingTrend" />
+        }
+        else
+        {
+            <DelayedTooltip Text="Fit a trend and project it past the end of the data" Style="display: block">
+                <button type="button" class="trend-add-button" @onclick="@OnAddTrendClicked">
+                    <i class="fas fa-plus"></i> Add trend
+                </button>
+            </DelayedTooltip>
+        }
+    }
+</div>

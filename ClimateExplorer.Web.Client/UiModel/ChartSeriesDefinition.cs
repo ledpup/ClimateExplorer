@@ -4,6 +4,7 @@ using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using ClimateExplorer.Core;
 using ClimateExplorer.Core.DataPreparation;
+using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.Client.UiModel.Trends;
 using ClimateExplorer.Web.UiLogic;
 using static ClimateExplorer.Core.Enums;
@@ -59,6 +60,16 @@ public class ChartSeriesDefinition
     public bool IsExpanded { get; set; }
     public bool DataAvailable { get; internal set; } = true;
     public DataResolution? MinimumDataResolution { get; set; }
+
+    /// <summary>
+    /// True when every source series behind this definition comes from a region (e.g. atmosphere,
+    /// ocean, a hemisphere) rather than a specific location - a "global" data set such as CO2 or
+    /// sea ice extent, as opposed to a location's own observations. Used to route "add a trend to
+    /// an existing series" between the local and global data set browsers.
+    /// </summary>
+    public bool IsGlobalSeries =>
+        SourceSeriesSpecifications is { Length: > 0 } specs
+        && specs.All(x => Region.IsRegionId(x.LocationId));
 
     public string FriendlyTitle
     {

@@ -13,14 +13,14 @@
 
     @if (ActiveTab == "Global")
     {
-        <GlobalDataSetBrowser DataSetDefinitions="@DataSetDefinitions" OnAddDataSet="@OnAddDataSet" />
+        <GlobalDataSetBrowser DataSetDefinitions="@DataSetDefinitions" OnAddDataSet="@OnAddDataSet" ChartSeriesList="@ChartSeriesList" SeriesWithData="@SeriesWithData" OnTrendsChanged="@OnTrendsChanged" />
     }
     else
     {
-        <LocalDataSetBrowser DataSetDefinitions="@DataSetDefinitions" OnAddDataSet="@OnAddDataSet" CurrentLocation="@CurrentLocation" PreviousLocation="@PreviousLocation" />
+        <LocalDataSetBrowser DataSetDefinitions="@DataSetDefinitions" OnAddDataSet="@OnAddDataSet" CurrentLocation="@CurrentLocation" PreviousLocation="@PreviousLocation" ChartSeriesList="@ChartSeriesList" SeriesWithData="@SeriesWithData" OnTrendsChanged="@OnTrendsChanged" />
     }
 }
 else
 {
-    <GlobalDataSetBrowser DataSetDefinitions="@DataSetDefinitions" OnAddDataSet="@OnAddDataSet" />
+    <GlobalDataSetBrowser DataSetDefinitions="@DataSetDefinitions" OnAddDataSet="@OnAddDataSet" ChartSeriesList="@ChartSeriesList" SeriesWithData="@SeriesWithData" OnTrendsChanged="@OnTrendsChanged" />
 }

@@ -1,7 +1,7 @@
 # Multiple trends per chart series
 
 - **Date:** 2026-08-18
-- **Status:** Implemented 2026-08-18 (see addendum)
+- **Status:** Implemented 2026-08-18 (see addenda)
 - **Author:** Patrick Lea (with Claude)
 - **Scope:** `ClimateExplorer.Web.Client` — `UiModel/ChartSeriesDefinition`, `UiModel/SeriesWithData`,
   `UiModel/Trends/*`, `Services/Chart/ChartDataBuilder`, `Services/Chart/ChartSeriesLocationSubstitutionService`,
@@ -363,7 +363,7 @@ the modal's own layout and the series picker.
 6. No backward compatibility for the pre-existing single-trend URL segments/fields is required —
    confirmed by the user; the trend module has not shipped to any real user yet.
 
-## Addendum — implementation notes (2026-08-18)
+## Addendum 1 — implementation notes (2026-08-18)
 
 Shipped as planned, Phases 1-7. `dotnet build` on the solution is clean and the full unit suite
 passes at **538 tests** (18 new: 7 in `TrendSeriesColourTests`, 3 new `ResolveWindow` exclusion
@@ -427,3 +427,37 @@ addenda already carried for rendering changes.
 ### Not done (as scoped)
 
 The "Add data set" modal entry point remains a later-stage sketch only, per "Out of scope".
+
+## Addendum 2 — "add a trend to an existing series" from the data set browser (2026-08-18)
+
+Built the "Later stage" sketch above, with two corrections made during implementation after the
+user reviewed the first pass:
+
+- **Not a new nested `SidePanel`.** `DataSetBrowser` *is* the "Add data set" side panel already
+  (opened from `ChartablePage.AddDataSetSidePanel`) - the feature is a section added inline inside
+  it (behind a collapsed-by-default `Collapsible` titled "Add a trend"), not a second panel opened
+  from within the first.
+- **Local and Global each need their own picker, cross-filtered.** A chart can carry both
+  location-tied series (temperature at the current location) and region-tied "global" series (CO2,
+  sea ice extent) at once, since both tabs are reachable from the same location page. The Local
+  tab's picker only offers location-tied series; the Global tab's only offers region-tied ones -
+  each excludes the other's kind, rather than one shared picker listing everything.
+
+New `ChartSeriesDefinition.IsGlobalSeries` (`UiModel/ChartSeriesDefinition.cs`) and
+`Region.IsRegionId` (`ClimateExplorer.Core/Model/Region.cs`) do the classification: a series is
+global when every one of its `SourceSeriesSpecifications` points at a region ID rather than a real
+location's ID. New `Components/Chart/DataSetBrowser/AddTrendSection.razor`/`.razor.cs`/`.razor.css`
+is the shared picker + "Add trend" button + (once added) an embedded `ChartSeriesTrendControls` for
+the newly-added entry, reused once each by `LocalDataSetBrowser` (filtered to
+`!IsGlobalSeries`) and `GlobalDataSetBrowser` (filtered to `IsGlobalSeries`) - both further filtered
+to series with data, a year x-axis, and not already at the three-trend cap. `ChartablePage` gained
+`AllChartSeriesWithData` (the same `SeriesWithData ++ NonRenderedSeriesWithData` union `ChartView`
+builds internally, needed here too so the newly-added trend's significant windows show up once the
+rebuild it triggers completes) and `OnTrendsChanged` (rebuilds against `CurrentChartState`, since
+the mutation already happened in place on the shared `ChartSeriesDefinition` instance - same
+pattern `ChartSeriesView`'s own trend controls use, just from a different entry point). `Index.razor`
+and `Global.razor` wire both through to `DataSetBrowser`.
+
+`dotnet build` clean; unit suite at 545/545 (7 new: 5 `ChartSeriesDefinitionIsGlobalSeriesTests`, 2
+`RegionIsRegionIdTests`). No dev server or browser testing, per AGENTS.md - the picker/"Add
+trend"/inline-controls UI flow is unverified beyond compilation, same caveat as Addendum 1.

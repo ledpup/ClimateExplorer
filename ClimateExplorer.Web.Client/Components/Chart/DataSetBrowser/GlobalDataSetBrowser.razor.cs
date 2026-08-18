@@ -1,5 +1,6 @@
 namespace ClimateExplorer.Web.Client.Components.Chart.DataSetBrowser;
 
+using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.UiModel;
@@ -18,7 +19,28 @@ public partial class GlobalDataSetBrowser
     [Parameter]
     public EventCallback<DataSetLibraryEntry> OnAddDataSet { get; set; }
 
+    [Parameter]
+    public IReadOnlyList<ChartSeriesDefinition>? ChartSeriesList { get; set; }
+
+    [Parameter]
+    public IReadOnlyList<SeriesWithData>? SeriesWithData { get; set; }
+
+    [Parameter]
+    public EventCallback OnTrendsChanged { get; set; }
+
     private List<DataSetLibraryFolder>? RootFolders { get; set; }
+
+    /// <summary>
+    /// Chart series eligible for "add a trend to an existing series" from this tab: on the chart,
+    /// tied to a region rather than a location (see <see cref="ChartSeriesDefinition.IsGlobalSeries"/>
+    /// - location-tied series belong on the Local tab instead), with data, plotted against a year
+    /// axis (trends need a linear year x-axis), and not already at the three-trend cap.
+    /// </summary>
+    private List<ChartSeriesDefinition> GlobalTrendEligibleSeries =>
+        ChartSeriesList?
+            .Where(x => x.DataAvailable && x.IsGlobalSeries && x.BinGranularity == BinGranularities.ByYear && x.Trends.Count < ChartSeriesDefinition.MaxTrends)
+            .ToList()
+        ?? [];
 
     protected override void OnParametersSet()
     {

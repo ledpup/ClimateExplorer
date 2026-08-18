@@ -1,1 +1,10 @@
+<Collapsible Title="Add a trend" InitiallyShowContents="false">
+    <Content>
+        <AddTrendSection EligibleSeries="@GlobalTrendEligibleSeries"
+                         SeriesWithData="@SeriesWithData"
+                         OnTrendsChanged="@OnTrendsChanged"
+                         EmptyMessage="Add a global data set to the chart first, then come back here to add a trend to it." />
+    </Content>
+</Collapsible>
+
 <DataSetFolderList RootFolders="@RootFolders" OnAddDataSet="@OnAddDataSet" />

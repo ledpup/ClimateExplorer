@@ -24,6 +24,16 @@ public partial class DataSetBrowser
     [Parameter]
     public Location? PreviousLocation { get; set; }
 
+    [Parameter]
+    public IReadOnlyList<ChartSeriesDefinition>? ChartSeriesList { get; set; }
+
+    [Parameter]
+    public IReadOnlyList<SeriesWithData>? SeriesWithData { get; set; }
+
+    /// <summary>Raised after "add a trend to an existing series" changes a series' Trends - triggers a chart rebuild.</summary>
+    [Parameter]
+    public EventCallback OnTrendsChanged { get; set; }
+
     private string ActiveTab { get; set; } = "Local";
 
     private void OnTabChanged(string tabName)

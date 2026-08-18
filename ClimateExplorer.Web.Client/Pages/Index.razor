@@ -82,5 +82,11 @@
 </InfoPanel>
 
 <SidePanel @ref="AddDataSetSidePanel" Title="Add data set" Width="35%">
-    <DataSetBrowser DataSetDefinitions="@DataSetDefinitions" OnAddDataSet="@OnAddDataSet" CurrentLocation="@Location" PreviousLocation="@PreviousLocation"></DataSetBrowser>
+    <DataSetBrowser DataSetDefinitions="@DataSetDefinitions"
+                    OnAddDataSet="@OnAddDataSet"
+                    CurrentLocation="@Location"
+                    PreviousLocation="@PreviousLocation"
+                    ChartSeriesList="@CurrentChartState?.Series"
+                    SeriesWithData="@AllChartSeriesWithData"
+                    OnTrendsChanged="@OnTrendsChanged"></DataSetBrowser>
 </SidePanel>
