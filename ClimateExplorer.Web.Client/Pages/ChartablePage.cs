@@ -5,6 +5,7 @@ using ClimateExplorer.Core;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
+using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.Services;
 using ClimateExplorer.Web.Client.Services.Chart;
 using ClimateExplorer.Web.Client.Services.Notifications;
@@ -69,7 +70,7 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
 
     protected string? PageName { get; set; }
 
-    protected Modal? AddDataSetModal { get; set; }
+    protected SidePanel? AddDataSetSidePanel { get; set; }
 
     protected bool? IsMobileDevice { get; private set; }
 
@@ -108,7 +109,7 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
 
     protected Task ShowAddDataSetModal()
     {
-        return AddDataSetModal!.Show();
+        return AddDataSetSidePanel!.ShowAsync();
     }
 
     protected async Task OnChartStateChanged(ChartState state)
