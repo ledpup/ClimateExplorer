@@ -5,7 +5,7 @@
 @using ClimateExplorer.Web.Client.Services.Trends
 @using ClimateExplorer.Web.Client.UiModel.Trends
 
-<SidePanel @ref="sidePanel" Title="About trends" Width="min(60%, 1024px)">
+<SidePanel @ref="sidePanel" Title="@PanelTitle" Width="min(60%, 1024px)">
     <div class="trend-stats">
         <div class="climate-tabs trends-about-tabs">
             <Tabs SelectedTab="@selectedTab" SelectedTabChanged="@OnTabChanged">

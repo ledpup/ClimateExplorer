@@ -151,10 +151,15 @@ public static partial class SuggestedPresetLists
                         Smoothing = SeriesSmoothingOptions.MovingAverage,
                         SmoothingWindow = 10,
                         Value = SeriesValueOptions.Value,
-                        ShowTrend = true,
-                        RegressionType = TrendRegressionType.Quadratic,
-                        TrendPeriod = TrendWindow.Full,
-                        TrendPredictionYears = 50,
+                        Trends =
+                        [
+                            new ChartSeriesTrendRequest
+                            {
+                                RegressionType = TrendRegressionType.Quadratic,
+                                TrendPeriod = TrendWindow.Full,
+                                TrendPredictionYears = 50,
+                            },
+                        ],
                     }
                 ],
                 Variants =

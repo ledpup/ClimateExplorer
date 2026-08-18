@@ -10,6 +10,7 @@ using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.Services.Chart;
 using ClimateExplorer.Web.Client.Services.Trends;
 using ClimateExplorer.Web.Client.UiModel;
+using ClimateExplorer.Web.Client.UiModel.Trends;
 using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
 using CurrentDevice;
@@ -364,6 +365,31 @@ public partial class ChartView : IAsyncDisposable
         return chartSeries.GetTransformationOverrideLabel() ?? defaultLabel;
     }
 
+    /// <summary>
+    /// The chart legend label for one trend dataset. Unchanged from before multiple trends per
+    /// series existed when a series has exactly one - "{parent} | {period} trend" - but folds in the
+    /// regression type and predict-until year once a series has more than one, so two trends can
+    /// never produce the same label even when they share a window (e.g. a linear and a quadratic fit
+    /// over the same period, or the same fit projected to two different years).
+    /// </summary>
+    private static string BuildTrendLabel(ChartSeriesDefinition csd, ChartSeriesTrend trend, bool hasMultipleTrends)
+    {
+        var period = TrendWindowLabel.Get(trend.Projection!.Window);
+
+        return hasMultipleTrends
+            ? $"{csd.GetFriendlyTitleShort()} | {trend.RegressionType} {period} trend to {trend.Projection.LastYear}"
+            : $"{csd.GetFriendlyTitleShort()} | {period} trend";
+    }
+
+    private static string BuildTrendTooltipLabel(ChartSeriesDefinition csd, ChartSeriesTrend trend, bool hasMultipleTrends, UnitOfMeasure unitOfMeasure)
+    {
+        var period = TrendWindowLabel.Get(trend.Projection!.Window);
+
+        return hasMultipleTrends
+            ? $"{csd.GetTooltipLabel(unitOfMeasure)} | {trend.RegressionType} {period} trend to {trend.Projection.LastYear}"
+            : $"{csd.GetTooltipLabel(unitOfMeasure)} | {period} trend";
+    }
+
     private ChartState CreateCurrentChartState()
     {
         return new ChartState
@@ -513,43 +539,49 @@ public partial class ChartView : IAsyncDisposable
 
         foreach (var chartSeries in ChartSeriesWithData!)
         {
-            if (chartSeries.Trend?.Projection is not { } projection)
-            {
-                continue;
-            }
-
-            var values = new List<double?>(new double?[ChartBins!.Length]);
-            var plotted = false;
-
-            foreach (var prediction in projection.Predictions)
-            {
-                if (binIndexesByYear.TryGetValue((int)Math.Round(prediction.X), out var index))
-                {
-                    values[index] = prediction.PredictedY;
-                    plotted = true;
-                }
-            }
-
-            if (!plotted)
-            {
-                continue;
-            }
-
             var csd = chartSeries.ChartSeries!;
-            var unitOfMeasure = chartSeries.ProcessedDataSet!.MeasurementDefinition!.UnitOfMeasure;
-            var trendLabel = $"{csd.GetFriendlyTitleShort()} | {TrendWindowLabel.Get(projection.Window)} trend";
+            var hasMultipleTrends = chartSeries.Trends.Count > 1;
 
-            await chart!.AddDataSet(
-                ChartLogic.GetTrendChartDataset(
-                    trendLabel,
-                    values,
-                    ChartColor.FromHtmlColorCode(csd.Colour!),
-                    ChartLogic.GetYAxisId(csd.SeriesTransformation, csd.CustomTransformation, unitOfMeasure, csd.Aggregation)));
+            for (var tier = 0; tier < chartSeries.Trends.Count; tier++)
+            {
+                if (chartSeries.Trends[tier].Projection is not { } projection)
+                {
+                    continue;
+                }
 
-            // The projection has no anomaly history of its own - it's compared against the real series
-            // it was fitted to, so hovering a predicted point shows how far above/below that series'
-            // last-30/full-period/early-period averages the prediction falls.
-            tooltipMetadata.Add(ChartTooltipMetadataBuilder.BuildForTrendSeries(chartSeries, $"{csd.GetTooltipLabel(unitOfMeasure)} | {TrendWindowLabel.Get(projection.Window)} trend"));
+                var values = new List<double?>(new double?[ChartBins!.Length]);
+                var plotted = false;
+
+                foreach (var prediction in projection.Predictions)
+                {
+                    if (binIndexesByYear.TryGetValue((int)Math.Round(prediction.X), out var index))
+                    {
+                        values[index] = prediction.PredictedY;
+                        plotted = true;
+                    }
+                }
+
+                if (!plotted)
+                {
+                    continue;
+                }
+
+                var unitOfMeasure = chartSeries.ProcessedDataSet!.MeasurementDefinition!.UnitOfMeasure;
+                var trendColour = TrendSeriesColour.Derive(csd.Colour!, tier);
+                var trendLabel = BuildTrendLabel(csd, chartSeries.Trends[tier], hasMultipleTrends);
+
+                await chart!.AddDataSet(
+                    ChartLogic.GetTrendChartDataset(
+                        trendLabel,
+                        values,
+                        ChartColor.FromHtmlColorCode(trendColour),
+                        ChartLogic.GetYAxisId(csd.SeriesTransformation, csd.CustomTransformation, unitOfMeasure, csd.Aggregation)));
+
+                // The projection has no anomaly history of its own - it's compared against the real series
+                // it was fitted to, so hovering a predicted point shows how far above/below that series'
+                // last-30/full-period/early-period averages the prediction falls.
+                tooltipMetadata.Add(ChartTooltipMetadataBuilder.BuildForTrendSeries(chartSeries, BuildTrendTooltipLabel(csd, chartSeries.Trends[tier], hasMultipleTrends, unitOfMeasure)));
+            }
         }
 
         return tooltipMetadata;

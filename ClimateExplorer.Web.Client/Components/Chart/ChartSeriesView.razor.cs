@@ -1,11 +1,9 @@
 namespace ClimateExplorer.Web.Client.Components.Chart;
 
-using System.Globalization;
 using Blazorise;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.Client.Components;
-using ClimateExplorer.Web.Client.Components.Chart.Trend;
 using ClimateExplorer.Web.Client.UiModel.Trends;
 using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
@@ -16,10 +14,7 @@ using static ClimateExplorer.Core.Enums;
 public partial class ChartSeriesView
 {
     private Validation? validation;
-    private Validation? predictionYearsValidation;
     private AboutData? aboutData;
-    private ChartTrendPanel? trendPanel;
-    private string predictionYearsText = string.Empty;
 
     public enum ChartSeriesTitleStyle
     {
@@ -34,13 +29,12 @@ public partial class ChartSeriesView
     public IReadOnlyList<DataSetMetadata>? SourceMetadata { get; set; }
 
     /// <summary>
-    /// The trend windows fitted for this series on the last chart build, or null when the trend
-    /// module is off or the build hasn't produced them yet. The dropdown can only offer periods
-    /// that came back statistically significant, which is why the control needs the result rather
-    /// than just the request.
+    /// The trends fitted for this series on the last chart build - one entry per request in
+    /// <see cref="ChartSeriesDefinition.Trends"/>, in the same order - or empty when the trend
+    /// module is off or the build hasn't produced them yet.
     /// </summary>
     [Parameter]
-    public ChartSeriesTrend? Trend { get; set; }
+    public IReadOnlyList<ChartSeriesTrend>? Trends { get; set; }
 
     [Parameter]
     public EventCallback OnSeriesChanged { get; set; }
@@ -68,49 +62,9 @@ public partial class ChartSeriesView
     /// </summary>
     private bool IsTrendModuleAvailable => ChartSeries?.BinGranularity == BinGranularities.ByYear;
 
-    private IReadOnlyList<TrendWindow> SelectableTrendPeriods => Trend?.SignificantWindows ?? [];
-
-    private TrendWindow SelectedTrendPeriod =>
-        ChartSeries?.TrendPeriod is { } period && SelectableTrendPeriods.Contains(period)
-            ? period
-            : SelectableTrendPeriods[0];
-
-    /// <summary>
-    /// What the disabled dropdown says when there is nothing to select - either the trends haven't
-    /// been fitted yet, or none of the periods cleared the significance threshold.
-    /// </summary>
-    private string UnavailableTrendPeriodValue => Trend is null
-        ? "Calculating…"
-        : Trend.UnavailableReason is not null
-            ? "Not enough data"
-            : "No significant trend";
-
-    /// <summary>
-    /// The year the trend's projection is measured forward from. The projection is always a count
-    /// of years past the end of the real data (<see cref="ChartSeriesDefinition.TrendPredictionYears"/>),
-    /// but is shown and edited in the UI as a calendar year for readability - this is what that
-    /// year is counted from. Once the trend has been fitted, that's the series' own last data year;
-    /// beforehand (the field is disabled in that case, but still needs something to display) it
-    /// falls back to the current year as the closest available estimate.
-    /// </summary>
-    private int PredictUntilAnchorYear => Trend?.LastDataYear ?? DateTime.Now.Year;
-
-    /// <summary>
-    /// A fixed target year (typically set by a preset) is shown clamped into the same 1-100-year
-    /// range as the duration field - the same clamp <see cref="Services.Trends.ChartSeriesTrendCalculator"/>
-    /// applies when it resolves the projection - so what's displayed always matches what's drawn.
-    /// See <see cref="ChartSeriesDefinition.TrendPredictionTargetYear"/>.
-    /// </summary>
-    private int PredictUntilYear =>
-        ChartSeries?.TrendPredictionTargetYear is { } targetYear
-            ? PredictUntilAnchorYear + TrendPredictionRange.Clamp(targetYear - PredictUntilAnchorYear)
-            : PredictUntilAnchorYear + (ChartSeries?.TrendPredictionYears ?? TrendPredictionRange.Default);
-
-    private string PredictUntilTooltip =>
-        $"The calendar year to project the trend forward to ({PredictUntilAnchorYear + TrendPredictionRange.Minimum}-{PredictUntilAnchorYear + TrendPredictionRange.Maximum})";
-
-    private string PredictUntilValidationMessage =>
-        $"Enter a year from {PredictUntilAnchorYear + TrendPredictionRange.Minimum} to {PredictUntilAnchorYear + TrendPredictionRange.Maximum}";
+    private string AddTrendTooltip => ChartSeries!.Trends.Count == 0
+        ? "Fit a trend and project it past the end of the data"
+        : "Add another trend, in a different colour, to compare against this one";
 
     public string GenerateStyleForOuterDiv()
     {
@@ -140,22 +94,33 @@ public partial class ChartSeriesView
         }
     }
 
-    protected override void OnParametersSet()
+    /// <summary>
+    /// The fitted result matching <c>ChartSeries.Trends[index]</c>, or null when the build hasn't
+    /// produced it yet (e.g. immediately after "Add trend", before the next rebuild completes).
+    /// </summary>
+    private ChartSeriesTrend? GetTrend(int index)
     {
-        if (ChartSeries is null)
-        {
-            return;
-        }
+        return Trends is null || index >= Trends.Count ? null : Trends[index];
+    }
 
-        // Keep the text box in step with the definition, including when a value arriving from a URL
-        // has been clamped into range, or the anchor year has just become known (Trend went from
-        // null to a real result). The input commits on blur rather than per keystroke, so this
-        // doesn't fight with typing.
-        if (!int.TryParse(predictionYearsText, NumberStyles.Integer, CultureInfo.InvariantCulture, out var current)
-            || current != PredictUntilYear)
-        {
-            predictionYearsText = PredictUntilYear.ToString(CultureInfo.InvariantCulture);
-        }
+    /// <summary>"Trend 2" etc. - only shown once a series has more than one, so the common single-trend case stays unlabelled.</summary>
+    private string? GetTrendSlotLabel(int index)
+    {
+        return ChartSeries!.Trends.Count > 1 ? $"Trend {index + 1}" : null;
+    }
+
+    private async Task OnAddTrendClicked()
+    {
+        ChartSeries!.Trends.Add(new ChartSeriesTrendRequest());
+
+        await OnSeriesChanged.InvokeAsync();
+    }
+
+    private async Task OnRemoveTrendClicked(int index)
+    {
+        ChartSeries!.Trends.RemoveAt(index);
+
+        await OnSeriesChanged.InvokeAsync();
     }
 
     private bool ShouldDisableAggregationOptions(ChartSeriesDefinition csd)
@@ -259,79 +224,6 @@ public partial class ChartSeriesView
         ChartSeries!.ShowTrendline = val;
 
         await OnSeriesChanged.InvokeAsync();
-    }
-
-    private async Task OnShowTrendChanged(bool val)
-    {
-        ChartSeries!.ShowTrend = val;
-
-        if (!val)
-        {
-            // Clearing the period as well means switching the module back on later starts from the
-            // default "best available window" rather than a stale choice.
-            ChartSeries.TrendPeriod = null;
-        }
-
-        await OnSeriesChanged.InvokeAsync();
-    }
-
-    private async Task OnRegressionTypeChanged(TrendRegressionType regressionType)
-    {
-        ChartSeries!.RegressionType = regressionType;
-
-        await OnSeriesChanged.InvokeAsync();
-    }
-
-    private async Task OnTrendPeriodChanged(TrendWindow window)
-    {
-        ChartSeries!.TrendPeriod = window;
-
-        await OnSeriesChanged.InvokeAsync();
-    }
-
-    private async Task OnPredictionYearsChanged(string value)
-    {
-        predictionYearsText = value;
-
-        if (predictionYearsValidation is null || predictionYearsValidation.Validate() != ValidationStatus.Success)
-        {
-            return;
-        }
-
-        var targetYear = int.Parse(value, NumberStyles.Integer, CultureInfo.InvariantCulture);
-        var years = targetYear - PredictUntilAnchorYear;
-
-        if (years == ChartSeries!.TrendPredictionYears && ChartSeries.TrendPredictionTargetYear is null)
-        {
-            return;
-        }
-
-        // A hand-edited value is anchored to "now" like every other interactive control, not
-        // pinned to a fixed calendar year the way a preset's TrendPredictionTargetYear is - so
-        // editing this box always reverts to the duration-based field, even if a fixed target was
-        // what produced the value currently showing.
-        ChartSeries.TrendPredictionTargetYear = null;
-
-        // Only the projected points depend on this - the regression and its significance don't - so
-        // the chart just rebuilds; the user is never re-told about a period they can't select.
-        ChartSeries.TrendPredictionYears = years;
-
-        await OnSeriesChanged.InvokeAsync();
-    }
-
-    private void ValidatePredictionYears(ValidatorEventArgs e)
-    {
-        var text = Convert.ToString(e.Value);
-
-        e.Status = int.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out var targetYear)
-            && TrendPredictionRange.IsValid(targetYear - PredictUntilAnchorYear)
-                ? ValidationStatus.Success
-                : ValidationStatus.Error;
-    }
-
-    private async Task OnAboutTrendsClicked()
-    {
-        await trendPanel!.Show();
     }
 
     private string GetColourName(Colours colour)

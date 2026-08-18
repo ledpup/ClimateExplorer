@@ -20,18 +20,16 @@ public class ChartSeriesListSerializerTrendTests
     private static readonly Guid DataSetDefinitionId = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb");
 
     [TestMethod]
-    public void ParseChartSeriesDefinitionList_RoundTrippedTrendSettings_ArePreserved()
+    public void ParseChartSeriesDefinitionList_RoundTrippedSingleTrend_IsPreserved()
     {
         var series = CreateChartSeries();
-        series.ShowTrend = true;
-        series.TrendPeriod = TrendWindow.Recent;
-        series.TrendPredictionYears = 42;
+        series.Trends.Add(new ChartSeriesTrendRequest { TrendPeriod = TrendWindow.Recent, TrendPredictionYears = 42 });
 
         var parsed = RoundTrip(series);
 
-        Assert.IsTrue(parsed.ShowTrend);
-        Assert.AreEqual(TrendWindow.Recent, parsed.TrendPeriod);
-        Assert.AreEqual(42, parsed.TrendPredictionYears);
+        Assert.HasCount(1, parsed.Trends);
+        Assert.AreEqual(TrendWindow.Recent, parsed.Trends[0].TrendPeriod);
+        Assert.AreEqual(42, parsed.Trends[0].TrendPredictionYears);
     }
 
     [TestMethod]
@@ -39,48 +37,50 @@ public class ChartSeriesListSerializerTrendTests
     {
         var parsed = RoundTrip(CreateChartSeries());
 
-        Assert.IsFalse(parsed.ShowTrend);
-        Assert.IsNull(parsed.TrendPeriod);
-        Assert.AreEqual(TrendPredictionRange.Default, parsed.TrendPredictionYears);
-        Assert.IsNull(parsed.TrendPredictionTargetYear);
+        Assert.IsEmpty(parsed.Trends);
+    }
+
+    [TestMethod]
+    public void ParseChartSeriesDefinitionList_RoundTrippedThreeTrends_AllArePreservedInOrder()
+    {
+        var series = CreateChartSeries();
+        series.Trends.Add(new ChartSeriesTrendRequest { RegressionType = TrendRegressionType.Linear, TrendPeriod = TrendWindow.Recent });
+        series.Trends.Add(new ChartSeriesTrendRequest { RegressionType = TrendRegressionType.Quadratic, TrendPeriod = TrendWindow.Full, TrendPredictionTargetYear = 2100 });
+        series.Trends.Add(new ChartSeriesTrendRequest { RegressionType = TrendRegressionType.Cubic, TrendPeriod = TrendWindow.FirstHalf });
+
+        var parsed = RoundTrip(series);
+
+        Assert.HasCount(3, parsed.Trends);
+        Assert.AreEqual(TrendRegressionType.Linear, parsed.Trends[0].RegressionType);
+        Assert.AreEqual(TrendWindow.Recent, parsed.Trends[0].TrendPeriod);
+        Assert.AreEqual(TrendRegressionType.Quadratic, parsed.Trends[1].RegressionType);
+        Assert.AreEqual(TrendWindow.Full, parsed.Trends[1].TrendPeriod);
+        Assert.AreEqual(2100, parsed.Trends[1].TrendPredictionTargetYear);
+        Assert.AreEqual(TrendRegressionType.Cubic, parsed.Trends[2].RegressionType);
+        Assert.AreEqual(TrendWindow.FirstHalf, parsed.Trends[2].TrendPeriod);
     }
 
     [TestMethod]
     public void ParseChartSeriesDefinitionList_RoundTrippedTrendPredictionTargetYear_IsPreserved()
     {
         var series = CreateChartSeries();
-        series.ShowTrend = true;
-        series.TrendPredictionTargetYear = 2100;
+        series.Trends.Add(new ChartSeriesTrendRequest { TrendPredictionTargetYear = 2100 });
 
         var parsed = RoundTrip(series);
 
-        Assert.AreEqual(2100, parsed.TrendPredictionTargetYear);
+        Assert.AreEqual(2100, parsed.Trends[0].TrendPredictionTargetYear);
     }
 
     [TestMethod]
-    public void ParseChartSeriesDefinitionList_UrlWithoutTrendPredictionTargetYearSegment_DefaultsToNull()
+    public void ParseChartSeriesDefinitionList_UrlWithoutTrendsSegment_StillParses()
     {
-        // Links shared before this field existed carry only the original 23 segments (up to and
-        // including RegressionType); they must keep working as "no fixed target year".
-        var withoutTargetYear = TrimToSegmentCount(BuildUrlComponent(CreateChartSeries()), 23);
-
-        var parsed = Parse(withoutTargetYear);
-
-        Assert.IsNull(parsed.TrendPredictionTargetYear);
-    }
-
-    [TestMethod]
-    public void ParseChartSeriesDefinitionList_UrlWithoutTrendSegments_StillParses()
-    {
-        // Links shared before the trend module existed carry only the original 19 segments; they
-        // must keep working, as a series with the module switched off.
-        var legacy = TrimToLegacySegmentCount(BuildUrlComponent(CreateChartSeries()));
+        // Links shared before this segment existed carry only the original 19 segments; they must
+        // keep working, as a series with no trends.
+        var legacy = TrimToSegmentCount(BuildUrlComponent(CreateChartSeries()), 19);
 
         var parsed = Parse(legacy);
 
-        Assert.IsFalse(parsed.ShowTrend);
-        Assert.IsNull(parsed.TrendPeriod);
-        Assert.AreEqual(TrendPredictionRange.Default, parsed.TrendPredictionYears);
+        Assert.IsEmpty(parsed.Trends);
         Assert.AreEqual(LocationId, parsed.SourceSeriesSpecifications!.Single().LocationId);
     }
 
@@ -88,26 +88,48 @@ public class ChartSeriesListSerializerTrendTests
     public void ParseChartSeriesDefinitionList_PredictionYearsOutOfRange_IsClampedIntoRange()
     {
         var series = CreateChartSeries();
-        series.ShowTrend = true;
-        series.TrendPredictionYears = 9999;
+        series.Trends.Add(new ChartSeriesTrendRequest { TrendPredictionYears = 9999 });
 
         var parsed = Parse(BuildUrlComponent(series));
 
-        Assert.AreEqual(TrendPredictionRange.Maximum, parsed.TrendPredictionYears);
+        Assert.AreEqual(TrendPredictionRange.Maximum, parsed.Trends[0].TrendPredictionYears);
     }
 
     [TestMethod]
     public void ParseChartSeriesDefinitionList_UnrecognisedTrendPeriod_FallsBackToNoSelection()
     {
-        var component = BuildUrlComponent(CreateChartSeries());
+        var series = CreateChartSeries();
+        series.Trends.Add(new ChartSeriesTrendRequest());
+
+        var component = BuildUrlComponent(series);
         var segments = component.Split(',');
-        segments[19] = "True";
-        segments[20] = "SomethingElse";
+        segments[19] = "Linear*SomethingElse*50*";
 
         var parsed = Parse(string.Join(',', segments));
 
-        Assert.IsTrue(parsed.ShowTrend);
-        Assert.IsNull(parsed.TrendPeriod);
+        Assert.HasCount(1, parsed.Trends);
+        Assert.IsNull(parsed.Trends[0].TrendPeriod);
+    }
+
+    [TestMethod]
+    public void ParseChartSeriesDefinitionList_MoreThanThreeTrends_TruncatesToThree()
+    {
+        var series = CreateChartSeries();
+        series.Trends.Add(new ChartSeriesTrendRequest { TrendPeriod = TrendWindow.Full });
+        series.Trends.Add(new ChartSeriesTrendRequest { TrendPeriod = TrendWindow.Recent });
+        series.Trends.Add(new ChartSeriesTrendRequest { TrendPeriod = TrendWindow.RecentDecade });
+        series.Trends.Add(new ChartSeriesTrendRequest { TrendPeriod = TrendWindow.FirstHalf });
+
+        var component = BuildUrlComponent(series);
+        var segments = component.Split(',');
+        Assert.AreEqual(4, segments[19].Split('|').Length, "test setup: the hand-built URL must actually carry four entries");
+
+        var parsed = Parse(component);
+
+        Assert.HasCount(ChartSeriesDefinition.MaxTrends, parsed.Trends);
+        Assert.AreEqual(TrendWindow.Full, parsed.Trends[0].TrendPeriod);
+        Assert.AreEqual(TrendWindow.Recent, parsed.Trends[1].TrendPeriod);
+        Assert.AreEqual(TrendWindow.RecentDecade, parsed.Trends[2].TrendPeriod);
     }
 
     private static ChartSeriesDefinition RoundTrip(ChartSeriesDefinition series)
@@ -118,11 +140,6 @@ public class ChartSeriesListSerializerTrendTests
     private static string BuildUrlComponent(ChartSeriesDefinition series)
     {
         return ChartSeriesListSerializer.BuildChartSeriesListUrlComponent([series]);
-    }
-
-    private static string TrimToLegacySegmentCount(string component)
-    {
-        return TrimToSegmentCount(component, 19);
     }
 
     private static string TrimToSegmentCount(string component, int count)

@@ -95,6 +95,29 @@ public class ChartSeriesTrendNotificationBuilderTests
         StringAssert.Contains(notification.Message, ChartSeriesTrendCalculator.MinimumYearsForTrend.ToString());
     }
 
+    [TestMethod]
+    public void Build_TrendOrdinalGiven_PrefixesTheMessageWithItsPosition()
+    {
+        var trend = Calculate(CreateFlatNoise(1900, 101));
+
+        var notification = ChartSeriesTrendNotificationBuilder.Build("Hobart | Max temperature", trend, "Hobart", null, trendOrdinal: 2);
+
+        Assert.IsNotNull(notification);
+        StringAssert.StartsWith(notification!.Message, "Hobart | Max temperature, trend 2:");
+    }
+
+    [TestMethod]
+    public void Build_NoTrendOrdinalGiven_MessageIsByteIdenticalToTheSingleTrendWording()
+    {
+        var trend = Calculate(CreateFlatNoise(1900, 101));
+
+        var withoutOrdinal = ChartSeriesTrendNotificationBuilder.Build("Hobart | Max temperature", trend, "Hobart", null);
+        var withNullOrdinal = ChartSeriesTrendNotificationBuilder.Build("Hobart | Max temperature", trend, "Hobart", null, trendOrdinal: null);
+
+        Assert.AreEqual(withoutOrdinal!.Message, withNullOrdinal!.Message);
+        StringAssert.StartsWith(withoutOrdinal.Message, "Hobart | Max temperature:");
+    }
+
     private static ChartSeriesTrend Calculate(IReadOnlyList<DataPoint> points)
     {
         return ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, requestedWindow: null, predictionYears: 20);

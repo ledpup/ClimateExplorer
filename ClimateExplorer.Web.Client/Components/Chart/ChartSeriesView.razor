@@ -211,82 +211,23 @@
                         </DelayedTooltip>
                         @if (IsTrendModuleAvailable)
                         {
-                            <DelayedTooltip Text="Fit a trend and project it past the end of the data" Style="display: block">
-                                <div class="form-row">
-                                    <span class="form-label">Show trend</span>
-                                    <span class="form-control-wrap">
-                                        <Check TValue="bool" Value="@ChartSeries.ShowTrend" ValueChanged="@OnShowTrendChanged" aria-label="Show trend"></Check>
-                                    </span>
-                                </div>
-                            </DelayedTooltip>
-                        }
-                        @if (IsTrendModuleAvailable && ChartSeries.ShowTrend)
-                        {
-                            <DelayedTooltip Text="The shape fitted to the data: a straight line, or a curve that can bend (quadratic) or bend and inflect (cubic). Changing this can change which periods have a statistically significant trend" Style="display: block">
-                                <div class="form-row">
-                                    <span class="form-label">Regression type</span>
-                                    <span class="form-control-wrap">
-                                        <Select TValue="TrendRegressionType"
-                                                Size="Size.Small"
-                                                Value="@ChartSeries.RegressionType"
-                                                ValueChanged="@OnRegressionTypeChanged"
-                                                aria-label="Regression type">
-                                            <SelectItem Value="@TrendRegressionType.Linear">Linear</SelectItem>
-                                            <SelectItem Value="@TrendRegressionType.Quadratic">Quadratic</SelectItem>
-                                            <SelectItem Value="@TrendRegressionType.Cubic">Cubic</SelectItem>
-                                        </Select>
-                                    </span>
-                                </div>
-                            </DelayedTooltip>
-                            <DelayedTooltip Text="Which period the trend is fitted over. Only periods with a statistically significant trend can be shown" Style="display: block">
-                                <div class="form-row">
-                                    <span class="form-label">Trend period</span>
-                                    <span class="form-control-wrap">
-                                        @if (SelectableTrendPeriods.Count == 0)
-                                        {
-                                            <Select TValue="string"
-                                                    Size="Size.Small"
-                                                    Value="@UnavailableTrendPeriodValue"
-                                                    Disabled="true"
-                                                    aria-label="Trend period">
-                                                <SelectItem Value="@UnavailableTrendPeriodValue">@UnavailableTrendPeriodValue</SelectItem>
-                                            </Select>
-                                        }
-                                        else
-                                        {
-                                            <Select TValue="TrendWindow"
-                                                    Size="Size.Small"
-                                                    Value="@SelectedTrendPeriod"
-                                                    ValueChanged="@OnTrendPeriodChanged"
-                                                    aria-label="Trend period">
-                                                @foreach (var period in SelectableTrendPeriods)
-                                                {
-                                                    <SelectItem Value="@period">@TrendWindowLabel.Get(period)</SelectItem>
-                                                }
-                                            </Select>
-                                        }
-                                    </span>
-                                </div>
-                            </DelayedTooltip>
-                            <DelayedTooltip Text="@PredictUntilTooltip" Style="display: block">
-                                <div class="form-row">
-                                    <span class="form-label">Predict until</span>
-                                    <span class="form-control-wrap">
-                                        <Validation @ref="predictionYearsValidation" Validator="ValidatePredictionYears">
-                                            <TextInput Size="Size.Small"
-                                                       Value="@predictionYearsText"
-                                                       ValueChanged="@OnPredictionYearsChanged"
-                                                       Disabled="@(SelectableTrendPeriods.Count == 0)"
-                                                       Immediate="false"
-                                                       aria-label="Predict until">
-                                                <Feedback>
-                                                    <ValidationError>@PredictUntilValidationMessage</ValidationError>
-                                                </Feedback>
-                                            </TextInput>
-                                        </Validation>
-                                    </span>
-                                </div>
-                            </DelayedTooltip>
+                            @for (var i = 0; i < ChartSeries.Trends.Count; i++)
+                            {
+                                var index = i;
+                                <ChartSeriesTrendControls Request="@ChartSeries.Trends[index]"
+                                                           Trend="@GetTrend(index)"
+                                                           SlotLabel="@GetTrendSlotLabel(index)"
+                                                           OnChanged="@OnSeriesChanged"
+                                                           OnRemove="@(() => OnRemoveTrendClicked(index))" />
+                            }
+                            @if (ChartSeries.Trends.Count < ChartSeriesDefinition.MaxTrends)
+                            {
+                                <DelayedTooltip Text="@AddTrendTooltip" Style="display: block">
+                                    <button type="button" class="trend-add-button" @onclick="@OnAddTrendClicked">
+                                        <i class="fas fa-plus"></i> Add trend
+                                    </button>
+                                </DelayedTooltip>
+                            }
                         }
                         <DelayedTooltip Text="Prevent this series from being replaced when a new chart preset is selected" Style="display: block">
                             <div class="form-row">
@@ -304,15 +245,6 @@
                                 <div class="label">About</div>
                             </button>
                         </DelayedTooltip>
-                        @if (IsTrendModuleAvailable && ChartSeries.ShowTrend)
-                        {
-                            <DelayedTooltip Text="About this trend" Style="display: inline-block">
-                                <button type="button" class="series-control" aria-label="About this trend" @onclick="@OnAboutTrendsClicked">
-                                    <i class="fas fa-chart-line"></i>
-                                    <div class="label">Trend</div>
-                                </button>
-                            </DelayedTooltip>
-                        }
                         <DelayedTooltip Text="Duplicate this series" Style="display: inline-block">
                             <button type="button" class="series-control" aria-label="Duplicate this series" @onclick="@OnDuplicateSeriesClicked">
                                 <i class="fas fa-clone"></i>
@@ -334,4 +266,3 @@
 </div>
 
 <AboutData @ref="aboutData" ChartSeries="@ChartSeries" SourceMetadata="@SourceMetadata" />
-<ChartTrendPanel @ref="trendPanel" Trend="@Trend" />

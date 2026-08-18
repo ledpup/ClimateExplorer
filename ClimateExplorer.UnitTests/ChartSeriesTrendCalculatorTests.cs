@@ -299,6 +299,43 @@ public class ChartSeriesTrendCalculatorTests
         Assert.IsNull(result);
     }
 
+    [TestMethod]
+    public void ResolveWindow_NothingRequestedAndFullPeriodExcluded_SkipsToTheNextPriorityWindow()
+    {
+        // Simulates a second trend being added to a series whose first trend already shows Full -
+        // the auto-pick should prefer something new rather than a duplicate.
+        var significant = new[] { TrendWindow.Full, TrendWindow.Recent, TrendWindow.RecentDecade };
+
+        var result = ChartSeriesTrendCalculator.ResolveWindow(significant, requestedWindow: null, excludedFromDefault: new HashSet<TrendWindow> { TrendWindow.Full });
+
+        Assert.AreEqual(TrendWindow.Recent, result);
+    }
+
+    [TestMethod]
+    public void ResolveWindow_ExplicitRequestMatchesAnExcludedWindow_IsStillHonoured()
+    {
+        // The exclusion set only steers the *fallback* pick - an explicit user choice (e.g. from
+        // the dropdown, or already set from a URL) is never second-guessed, even if it collides
+        // with another trend on the same series.
+        var significant = new[] { TrendWindow.Full, TrendWindow.Recent };
+
+        var result = ChartSeriesTrendCalculator.ResolveWindow(significant, TrendWindow.Full, excludedFromDefault: new HashSet<TrendWindow> { TrendWindow.Full });
+
+        Assert.AreEqual(TrendWindow.Full, result);
+    }
+
+    [TestMethod]
+    public void ResolveWindow_EveryHigherPriorityWindowExcluded_FallsBackToARepeatRatherThanNull()
+    {
+        // When every significant window is already claimed by another trend on the series, a
+        // repeat is preferred over reporting "no significant trend" when one genuinely exists.
+        var significant = new[] { TrendWindow.Full };
+
+        var result = ChartSeriesTrendCalculator.ResolveWindow(significant, requestedWindow: null, excludedFromDefault: new HashSet<TrendWindow> { TrendWindow.Full });
+
+        Assert.AreEqual(TrendWindow.Full, result);
+    }
+
     private static List<DataPoint> CreatePerfectLine(int startYear, int count, double slope)
     {
         return [.. Enumerable.Range(0, count).Select(i => new DataPoint(startYear + i, 10 + (slope * i)))];

@@ -139,7 +139,7 @@ public sealed class ChartDataBuilder : IChartDataBuilder
         BinGranularities binGranularity,
         List<UserNotification> messages)
     {
-        var seriesWantingTrends = renderableChartSeries.Where(x => x.ChartSeries!.ShowTrend).ToList();
+        var seriesWantingTrends = renderableChartSeries.Where(x => x.ChartSeries!.Trends.Count > 0).ToList();
 
         if (seriesWantingTrends.Count == 0)
         {
@@ -166,32 +166,50 @@ public sealed class ChartDataBuilder : IChartDataBuilder
         {
             var csd = cs.ChartSeries!;
             var subject = new TrendStatSubject(csd.GetFriendlyTitleShort(), ResolveTrendUnit(csd));
+            var points = BuildTrendPoints(cs.PreProcessedDataSet!, binIdsToPlot);
 
-            var trend = ChartSeriesTrendCalculator.Calculate(
-                subject,
-                BuildTrendPoints(cs.PreProcessedDataSet!, binIdsToPlot),
-                csd.RegressionType,
-                csd.TrendPeriod,
-                csd.TrendPredictionYears,
-                csd.TrendPredictionTargetYear);
+            var results = new List<ChartSeriesTrend>();
+            var windowsAlreadyShown = new HashSet<TrendWindow>();
 
-            cs.Trend = trend;
-
-            // The window that ended up being drawn is written back to the definition, so the
-            // dropdown, the URL and the chart all agree - the user's request may have been for a
-            // window that isn't significant for this data.
-            csd.TrendPeriod = trend.Projection?.Window;
-
-            var notification = ChartSeriesTrendNotificationBuilder.Build(
-                subject.Label,
-                trend,
-                cs.SourceDataSet.GeographicalEntity?.Name,
-                locationId: null);
-
-            if (notification is not null)
+            for (var i = 0; i < csd.Trends.Count; i++)
             {
-                messages.Add(notification);
+                var request = csd.Trends[i];
+
+                var trend = ChartSeriesTrendCalculator.Calculate(
+                    subject,
+                    points,
+                    request.RegressionType,
+                    request.TrendPeriod,
+                    request.TrendPredictionYears,
+                    request.TrendPredictionTargetYear,
+                    windowsAlreadyShown);
+
+                results.Add(trend);
+
+                // The window that ended up being drawn is written back to the request, so the
+                // dropdown, the URL and the chart all agree - the user's request may have been for
+                // a window that isn't significant for this data.
+                request.TrendPeriod = trend.Projection?.Window;
+
+                if (trend.Projection is not null)
+                {
+                    windowsAlreadyShown.Add(trend.Projection.Window);
+                }
+
+                var notification = ChartSeriesTrendNotificationBuilder.Build(
+                    subject.Label,
+                    trend,
+                    cs.SourceDataSet.GeographicalEntity?.Name,
+                    locationId: null,
+                    trendOrdinal: csd.Trends.Count > 1 ? i + 1 : null);
+
+                if (notification is not null)
+                {
+                    messages.Add(notification);
+                }
             }
+
+            cs.Trends = results;
         }
 
         return ExtendBinsForProjections(chartBins, seriesWantingTrends);
@@ -200,7 +218,8 @@ public sealed class ChartDataBuilder : IChartDataBuilder
     private static BinIdentifier[] ExtendBinsForProjections(BinIdentifier[] chartBins, List<SeriesWithData> seriesWantingTrends)
     {
         var lastProjectedYear = seriesWantingTrends
-            .Select(x => x.Trend?.Projection?.LastYear ?? 0)
+            .SelectMany(x => x.Trends)
+            .Select(x => x.Projection?.LastYear ?? 0)
             .DefaultIfEmpty(0)
             .Max();
 

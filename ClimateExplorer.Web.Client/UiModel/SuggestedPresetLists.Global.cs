@@ -101,10 +101,15 @@ public static partial class SuggestedPresetLists
                                 Value = SeriesValueOptions.Value,
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 RequestedColour = UiLogic.Colours.Brown,
-                                ShowTrend = true,
-                                RegressionType = TrendRegressionType.Quadratic,
-                                TrendPeriod = TrendWindow.Full,
-                                TrendPredictionTargetYear = 2100,
+                                Trends =
+                                [
+                                    new ChartSeriesTrendRequest
+                                    {
+                                        RegressionType = TrendRegressionType.Quadratic,
+                                        TrendPeriod = TrendWindow.Full,
+                                        TrendPredictionTargetYear = 2100,
+                                    },
+                                ],
                             },
                             new ChartSeriesDefinition()
                             {
@@ -117,10 +122,15 @@ public static partial class SuggestedPresetLists
                                 Value = SeriesValueOptions.Value,
                                 DisplayStyle = SeriesDisplayStyle.Line,
                                 RequestedColour = UiLogic.Colours.Black,
-                                ShowTrend = true,
-                                RegressionType = TrendRegressionType.Quadratic,
-                                TrendPeriod = TrendWindow.Full,
-                                TrendPredictionTargetYear = 2100,
+                                Trends =
+                                [
+                                    new ChartSeriesTrendRequest
+                                    {
+                                        RegressionType = TrendRegressionType.Quadratic,
+                                        TrendPeriod = TrendWindow.Full,
+                                        TrendPredictionTargetYear = 2100,
+                                    },
+                                ],
                             },
                         ],
                     },

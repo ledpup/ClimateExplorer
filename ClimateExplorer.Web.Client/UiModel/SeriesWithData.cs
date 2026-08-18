@@ -12,9 +12,11 @@ public sealed record SeriesWithData
     public ChartSeriesDataStatus DataStatus { get; set; } = ChartSeriesDataStatus.Rendered;
 
     /// <summary>
-    /// The fitted trend windows and forward projection for this series, when the trend module is
+    /// The fitted trend windows and forward projections for this series - one entry per request in
+    /// <see cref="ChartSeriesDefinition.Trends"/>, in the same order, whenever the trend module is
     /// switched on. Derived state, rebuilt on every chart build - the user's trend intent lives on
-    /// <see cref="ChartSeries"/>.
+    /// <see cref="ChartSeries"/>. Index alignment with <c>ChartSeries.Trends</c> is load-bearing:
+    /// rendering assigns each trend's colour tier from its position in this list.
     /// </summary>
-    public ChartSeriesTrend? Trend { get; set; }
+    public IReadOnlyList<ChartSeriesTrend> Trends { get; set; } = [];
 }

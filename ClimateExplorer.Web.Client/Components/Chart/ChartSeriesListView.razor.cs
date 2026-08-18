@@ -39,11 +39,11 @@ public partial class ChartSeriesListView
             .SourceMetadata;
     }
 
-    private ChartSeriesTrend? GetTrend(ChartSeriesDefinition chartSeries)
+    private IReadOnlyList<ChartSeriesTrend> GetTrends(ChartSeriesDefinition chartSeries)
     {
         return SeriesWithData?
             .FirstOrDefault(x => x.ChartSeries.Id == chartSeries.Id)
-            ?.Trend;
+            ?.Trends ?? [];
     }
 
     private async Task OnRemoveSeries(ChartSeriesDefinition csd)
@@ -80,11 +80,7 @@ public partial class ChartSeriesListView
                 SeriesTransformation = csd.SeriesTransformation,
                 GroupingThreshold = csd.GroupingThreshold,
                 MinimumDataResolution = csd.MinimumDataResolution,
-                ShowTrend = csd.ShowTrend,
-                RegressionType = csd.RegressionType,
-                TrendPeriod = csd.TrendPeriod,
-                TrendPredictionYears = csd.TrendPredictionYears,
-                TrendPredictionTargetYear = csd.TrendPredictionTargetYear,
+                Trends = [.. csd.Trends.Select(x => x.Clone())],
             });
 
         await OnSeriesChangedInternal();

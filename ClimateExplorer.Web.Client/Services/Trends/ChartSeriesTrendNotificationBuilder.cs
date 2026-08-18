@@ -16,18 +16,28 @@ using ClimateExplorer.Web.Client.UiModel.Trends;
 /// </remarks>
 public static class ChartSeriesTrendNotificationBuilder
 {
+    /// <param name="trendOrdinal">
+    /// The trend's 1-based position on its series (e.g. 2 for the second of three), or null when
+    /// the series has only one trend. Included in the message prefix only when a series has more
+    /// than one trend - so three notifications about one series don't read as duplicates of each
+    /// other - and omitted otherwise, keeping the single-trend wording byte-identical to before
+    /// multiple trends per series existed.
+    /// </param>
     public static UserNotification? Build(
         string seriesTitle,
         ChartSeriesTrend trend,
         string? locationName,
-        Guid? locationId)
+        Guid? locationId,
+        int? trendOrdinal = null)
     {
         ArgumentNullException.ThrowIfNull(trend);
+
+        var subjectLabel = trendOrdinal is { } ordinal ? $"{Escape(seriesTitle)}, trend {ordinal}" : Escape(seriesTitle);
 
         if (trend.UnavailableReason is { } unavailableReason)
         {
             return Create(
-                $"{Escape(seriesTitle)}: no trend could be fitted. {unavailableReason}",
+                $"{subjectLabel}: no trend could be fitted. {unavailableReason}",
                 NotificationType.Warning,
                 locationName,
                 locationId);
@@ -49,7 +59,7 @@ public static class ChartSeriesTrendNotificationBuilder
         if (!trend.HasSignificantWindow)
         {
             return Create(
-                $"{Escape(seriesTitle)}: none of the trend periods produce a statistically significant trend, so no trend line was added. "
+                $"{subjectLabel}: none of the trend periods produce a statistically significant trend, so no trend line was added. "
                 + $"{detail} A period is only offered when its p-value is below {threshold}. "
                 + "Open <b>About trends</b> for the full statistics on every period.",
                 NotificationType.Warning,
@@ -62,7 +72,7 @@ public static class ChartSeriesTrendNotificationBuilder
             : $"{NumberWord(rejected.Count)} of the trend periods aren't statistically significant, so they aren't offered as options";
 
         return Create(
-            $"{Escape(seriesTitle)}: {subject}. {detail} A period is only offered when its p-value is below {threshold}. "
+            $"{subjectLabel}: {subject}. {detail} A period is only offered when its p-value is below {threshold}. "
             + "Open <b>About trends</b> for the full statistics on every period.",
             NotificationType.Info,
             locationName,

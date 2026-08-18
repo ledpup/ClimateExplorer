@@ -111,23 +111,36 @@ public static class ChartSeriesListSerializer
                 DataAvailable = bool.Parse(segments[17]),
                 MinimumDataResolution = (DataResolution?)ParseNullableEnum<DataResolution>(segments[18]),
 
-                // The trend fields were added after links containing 19 segments were already being
-                // shared, so they are read defensively rather than positionally - an older URL is
-                // simply a series with the trend module switched off.
-                ShowTrend = ParseOptionalBool(segments, 19),
-                TrendPeriod = (TrendWindow?)ParseOptionalNullableEnum<TrendWindow>(segments, 20),
-                TrendPredictionYears = TrendPredictionRange.Clamp(
-                    ParseOptionalInt(segments, 21, TrendPredictionRange.Default)),
-
-                // Added after links containing 22 segments were already being shared, so it's read
-                // defensively too - an older URL simply defaults to Linear, today's only option.
-                RegressionType = (TrendRegressionType?)ParseOptionalNullableEnum<TrendRegressionType>(segments, 22)
-                    ?? TrendRegressionType.Linear,
-
-                // Added after links containing 23 segments were already being shared; an older URL
-                // simply has no fixed target year, i.e. today's duration-only behaviour.
-                TrendPredictionTargetYear = ParseOptionalNullableInt(segments, 23),
+                // Segment 19 holds the whole encoded Trends list - up to three entries, nested the
+                // same way SourceSeriesSpecifications is (entries joined at level 2, each entry's
+                // fields joined at level 3). Read defensively (missing/blank segment = no trends)
+                // since a URL shared before this segment existed should simply have the trend
+                // module off, not fail to parse.
+                Trends = ParseTrends(GetOptionalSegment(segments, 19)),
             };
+    }
+
+    private static List<ChartSeriesTrendRequest> ParseTrends(string? s)
+    {
+        if (string.IsNullOrWhiteSpace(s))
+        {
+            return [];
+        }
+
+        return [.. s.Split(SeparatorsByLevel[2]).Select(ParseTrend).Take(ChartSeriesDefinition.MaxTrends)];
+    }
+
+    private static ChartSeriesTrendRequest ParseTrend(string s)
+    {
+        var fields = s.Split(SeparatorsByLevel[3]);
+
+        return new ChartSeriesTrendRequest
+        {
+            RegressionType = (TrendRegressionType?)ParseOptionalNullableEnum<TrendRegressionType>(fields, 0) ?? TrendRegressionType.Linear,
+            TrendPeriod = (TrendWindow?)ParseOptionalNullableEnum<TrendWindow>(fields, 1),
+            TrendPredictionYears = TrendPredictionRange.Clamp(ParseOptionalInt(fields, 2, TrendPredictionRange.Default)),
+            TrendPredictionTargetYear = ParseOptionalNullableInt(fields, 3),
+        };
     }
 
     private static string? GetOptionalSegment(string[] segments, int index)
@@ -135,11 +148,6 @@ public static class ChartSeriesListSerializer
         return index < segments.Length && !string.IsNullOrWhiteSpace(segments[index])
             ? segments[index]
             : null;
-    }
-
-    private static bool ParseOptionalBool(string[] segments, int index)
-    {
-        return GetOptionalSegment(segments, index) is { } value && bool.TryParse(value, out var parsed) && parsed;
     }
 
     private static int ParseOptionalInt(string[] segments, int index, int fallback)
@@ -315,10 +323,21 @@ public static class ChartSeriesListSerializer
                 csd.GroupingThreshold,
                 csd.DataAvailable,
                 csd.MinimumDataResolution,
-                csd.ShowTrend,
-                csd.TrendPeriod,
-                csd.TrendPredictionYears,
-                csd.RegressionType,
-                csd.TrendPredictionTargetYear);
+                BuildTrendsUrlComponent(csd.Trends));
+    }
+
+    private static string BuildTrendsUrlComponent(List<ChartSeriesTrendRequest> trends)
+    {
+        return string.Join(SeparatorsByLevel[2], trends.Select(BuildTrendUrlComponent));
+    }
+
+    private static string BuildTrendUrlComponent(ChartSeriesTrendRequest trend)
+    {
+        return string.Join(
+            SeparatorsByLevel[3],
+            trend.RegressionType,
+            trend.TrendPeriod,
+            trend.TrendPredictionYears,
+            trend.TrendPredictionTargetYear);
     }
 }

@@ -22,6 +22,16 @@ public partial class ChartTrendPanel
     [Parameter]
     public ChartSeriesTrend? Trend { get; set; }
 
+    /// <summary>
+    /// Which of a series' (up to three) trends this panel is showing - e.g. "Trend 2". Shown in the
+    /// panel title only when set, so a series with a single trend keeps today's plain "About trends"
+    /// title.
+    /// </summary>
+    [Parameter]
+    public string? SlotLabel { get; set; }
+
+    private string PanelTitle => SlotLabel is null ? "About trends" : $"About trends — {SlotLabel}";
+
     private IReadOnlyList<ChartSeriesTrendWindowResult> Windows => Trend?.Windows ?? [];
 
     /// <summary>

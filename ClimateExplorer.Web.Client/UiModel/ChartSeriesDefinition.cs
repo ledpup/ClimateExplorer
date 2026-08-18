@@ -10,6 +10,9 @@ using static ClimateExplorer.Core.Enums;
 
 public class ChartSeriesDefinition
 {
+    /// <summary>The most trends a single series may carry at once.</summary>
+    public const int MaxTrends = 3;
+
     /// <summary>
     /// Used only for uniqueness tracking by UI controls.
     /// </summary>
@@ -39,26 +42,11 @@ public class ChartSeriesDefinition
     public SeriesDisplayStyle DisplayStyle { get; set; }
     public bool ShowTrendline { get; set; }
 
-    // Trend module fields. ShowTrend is what asks for the trend windows to be fitted at all;
-    // TrendPeriod is which of them to project forward, and is only ever set to a window that came
-    // back statistically significant (the data builder resolves it, since only it knows what was
-    // significant for the data actually loaded).
-    public bool ShowTrend { get; set; }
-    public TrendRegressionType RegressionType { get; set; } = TrendRegressionType.Linear;
-    public TrendWindow? TrendPeriod { get; set; }
-    public int TrendPredictionYears { get; set; } = TrendPredictionRange.Default;
-
-    /// <summary>
-    /// When set, projects the trend forward to this fixed calendar year instead of
-    /// <see cref="TrendPredictionYears"/> years past the end of the record. Unlike
-    /// <see cref="TrendPredictionYears"/> - a duration that keeps the projection's endpoint
-    /// drifting forward as the underlying dataset grows - this stays pinned at the same year
-    /// (e.g. a preset that always projects "to 2100"), recomputed against whatever the record's
-    /// last year happens to be on each build. Editing "Predict until" in the UI clears this and
-    /// falls back to the duration-based field, since interactive edits are anchored to "now", not
-    /// to a fixed target.
-    /// </summary>
-    public int? TrendPredictionTargetYear { get; set; }
+    // Trend module field. The module is "on" whenever this is non-empty. Up to three entries
+    // (enforced by the UI and defensively by the URL parser); each is an independent trend
+    // request - its own regression type, period and prediction horizon. See
+    // ChartSeriesTrendRequest for what each entry carries.
+    public List<ChartSeriesTrendRequest> Trends { get; set; } = [];
 
     // Editing mode fields
 
@@ -429,29 +417,23 @@ public class ChartSeriesDefinition
                 return false;
             }
 
-            if (x.ShowTrend != y.ShowTrend)
+            if (x.Trends.Count != y.Trends.Count)
             {
                 return false;
             }
 
-            if (x.RegressionType != y.RegressionType)
+            for (int i = 0; i < x.Trends.Count; i++)
             {
-                return false;
-            }
+                var trendX = x.Trends[i];
+                var trendY = y.Trends[i];
 
-            if (x.TrendPeriod != y.TrendPeriod)
-            {
-                return false;
-            }
-
-            if (x.TrendPredictionYears != y.TrendPredictionYears)
-            {
-                return false;
-            }
-
-            if (x.TrendPredictionTargetYear != y.TrendPredictionTargetYear)
-            {
-                return false;
+                if (trendX.RegressionType != trendY.RegressionType
+                    || trendX.TrendPeriod != trendY.TrendPeriod
+                    || trendX.TrendPredictionYears != trendY.TrendPredictionYears
+                    || trendX.TrendPredictionTargetYear != trendY.TrendPredictionTargetYear)
+                {
+                    return false;
+                }
             }
 
             if (x.Smoothing != y.Smoothing)
@@ -531,11 +513,6 @@ public class ChartSeriesDefinition
                 obj.BinGranularity.GetHashCode() ^
                 obj.DisplayStyle.GetHashCode() ^
                 obj.ShowTrendline.GetHashCode() ^
-                obj.ShowTrend.GetHashCode() ^
-                obj.RegressionType.GetHashCode() ^
-                obj.TrendPeriod.GetHashCode() ^
-                obj.TrendPredictionYears.GetHashCode() ^
-                obj.TrendPredictionTargetYear.GetHashCode() ^
                 obj.Smoothing.GetHashCode() ^
                 obj.SmoothingWindow.GetHashCode() ^
                 obj.Value.GetHashCode() ^
@@ -551,6 +528,18 @@ public class ChartSeriesDefinition
                     sss.LocationId.GetHashCode() ^
                     sss.MeasurementDefinition!.DataType.GetHashCode() ^
                     sss.MeasurementDefinition.DataAdjustment.GetHashCode();
+            }
+
+            for (int i = 0; i < obj.Trends.Count; i++)
+            {
+                var trend = obj.Trends[i];
+
+                hashCode =
+                    hashCode ^
+                    trend.RegressionType.GetHashCode() ^
+                    trend.TrendPeriod.GetHashCode() ^
+                    trend.TrendPredictionYears.GetHashCode() ^
+                    trend.TrendPredictionTargetYear.GetHashCode();
             }
 
             return hashCode;
@@ -590,11 +579,6 @@ public class ChartSeriesDefinition
                 obj.DisplayStyle.GetHashCode() ^
                 obj.IsLocked.GetHashCode() ^
                 obj.ShowTrendline.GetHashCode() ^
-                obj.ShowTrend.GetHashCode() ^
-                obj.RegressionType.GetHashCode() ^
-                obj.TrendPeriod.GetHashCode() ^
-                obj.TrendPredictionYears.GetHashCode() ^
-                obj.TrendPredictionTargetYear.GetHashCode() ^
                 obj.Smoothing.GetHashCode() ^
                 obj.SmoothingWindow.GetHashCode() ^
                 obj.Value.GetHashCode() ^
@@ -611,6 +595,18 @@ public class ChartSeriesDefinition
                     sss.LocationId.GetHashCode() ^
                     sss.MeasurementDefinition!.DataType.GetHashCode() ^
                     sss.MeasurementDefinition.DataAdjustment.GetHashCode();
+            }
+
+            for (int i = 0; i < obj.Trends.Count; i++)
+            {
+                var trend = obj.Trends[i];
+
+                hashCode =
+                    hashCode ^
+                    trend.RegressionType.GetHashCode() ^
+                    trend.TrendPeriod.GetHashCode() ^
+                    trend.TrendPredictionYears.GetHashCode() ^
+                    trend.TrendPredictionTargetYear.GetHashCode();
             }
 
             return hashCode;

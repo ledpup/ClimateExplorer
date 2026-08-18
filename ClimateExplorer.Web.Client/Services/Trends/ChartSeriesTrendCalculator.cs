@@ -49,7 +49,8 @@ public static class ChartSeriesTrendCalculator
         TrendRegressionType regressionType,
         TrendWindow? requestedWindow,
         int predictionYears,
-        int? predictionTargetYear = null)
+        int? predictionTargetYear = null,
+        IReadOnlySet<TrendWindow>? excludedFromDefault = null)
     {
         ArgumentNullException.ThrowIfNull(subject);
         ArgumentNullException.ThrowIfNull(points);
@@ -92,7 +93,7 @@ public static class ChartSeriesTrendCalculator
 
         var lastDataYear = (int)Math.Round(ordered[^1].X);
         var significantWindows = windows.Where(x => x.IsSignificant).Select(x => x.Window).ToList();
-        var selectedWindow = ResolveWindow(significantWindows, requestedWindow);
+        var selectedWindow = ResolveWindow(significantWindows, requestedWindow, excludedFromDefault);
 
         // A fixed target year (e.g. a preset that always projects "to 2100") takes priority over
         // the duration and is resolved against *this* build's last data year, so the projection's
@@ -121,7 +122,16 @@ public static class ChartSeriesTrendCalculator
     /// The window to display: the user's choice when it is still significant, otherwise the first
     /// significant one in priority order, otherwise nothing.
     /// </summary>
-    public static TrendWindow? ResolveWindow(IReadOnlyList<TrendWindow> significantWindows, TrendWindow? requestedWindow)
+    /// <param name="excludedFromDefault">
+    /// Windows to skip when falling back to the priority order - used when a series already has
+    /// another trend showing one of these windows, so a freshly-added trend tends to surface
+    /// something new rather than a duplicate. Only applies to the fallback: an explicit
+    /// <paramref name="requestedWindow"/> is always honoured even if it's in this set.
+    /// </param>
+    public static TrendWindow? ResolveWindow(
+        IReadOnlyList<TrendWindow> significantWindows,
+        TrendWindow? requestedWindow,
+        IReadOnlySet<TrendWindow>? excludedFromDefault = null)
     {
         ArgumentNullException.ThrowIfNull(significantWindows);
 
@@ -130,6 +140,18 @@ public static class ChartSeriesTrendCalculator
             return requestedWindow;
         }
 
+        var preferred = SelectionPriority
+            .Cast<TrendWindow?>()
+            .FirstOrDefault(window => significantWindows.Contains(window!.Value) && excludedFromDefault?.Contains(window.Value) != true);
+
+        if (preferred.HasValue)
+        {
+            return preferred;
+        }
+
+        // Every significant window is already shown by another trend on this series - fall back to
+        // the ordinary priority order (allowing a repeat) rather than reporting "no significant
+        // trend" when a significant one does exist.
         return SelectionPriority
             .Cast<TrendWindow?>()
             .FirstOrDefault(window => significantWindows.Contains(window!.Value));
