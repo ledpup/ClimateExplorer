@@ -188,8 +188,18 @@ public sealed class ChartDataBuilder : IChartDataBuilder
 
                 // The window that ended up being drawn is written back to the request, so the
                 // dropdown, the URL and the chart all agree - the user's request may have been for
-                // a window that isn't significant for this data.
-                request.TrendPeriod = trend.Projection?.Window;
+                // a window that isn't significant for this data. But when the series had too few
+                // years to fit anything at all, no window was resolved either way - leave the
+                // request untouched rather than clobbering it with null, so a location with
+                // temporarily too little data doesn't erase which window the user was looking at.
+                // Otherwise a later switch back to a location with enough data resolves this trend
+                // as if it had no preference, which (with other trends on the same series already
+                // claiming windows) can land it on the wrong window - see the multi-trend chart
+                // series plan for the excluded-window fallback this interacts with.
+                if (trend.UnavailableReason is null)
+                {
+                    request.TrendPeriod = trend.Projection?.Window;
+                }
 
                 if (trend.Projection is not null)
                 {

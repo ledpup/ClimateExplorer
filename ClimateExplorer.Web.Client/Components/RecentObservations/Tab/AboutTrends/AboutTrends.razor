@@ -34,7 +34,7 @@
         {
             <div class="recent-observation-detail-toggle" role="group" aria-label="Time window">
                 <button type="button" class="recent-observation-detail-toggle-option @(selectedWindow == TrendWindow.Full ? "selected" : string.Empty)" @onclick="@(() => SelectWindow(TrendWindow.Full))">@TrendWindowLabel.Get(TrendWindow.Full)</button>
-                <button type="button" class="recent-observation-detail-toggle-option @(selectedWindow == TrendWindow.Recent ? "selected" : string.Empty)" @onclick="@(() => SelectWindow(TrendWindow.Recent))">@TrendWindowLabel.Get(TrendWindow.Recent)</button>
+                <button type="button" class="recent-observation-detail-toggle-option @(selectedWindow == TrendWindow.Last30 ? "selected" : string.Empty)" @onclick="@(() => SelectWindow(TrendWindow.Last30))">@TrendWindowLabel.Get(TrendWindow.Last30)</button>
                 <button type="button" class="recent-observation-detail-toggle-option @(selectedWindow == TrendWindow.FirstHalf ? "selected" : string.Empty)" @onclick="@(() => SelectWindow(TrendWindow.FirstHalf))">@TrendWindowLabel.Get(TrendWindow.FirstHalf)</button>
             </div>
 

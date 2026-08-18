@@ -10,6 +10,7 @@ using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Services.Chart;
 using ClimateExplorer.Web.Client.UiModel;
+using ClimateExplorer.Web.Client.UiModel.Trends;
 using ClimateExplorer.Web.UiModel;
 using ClimateExplorer.WebApiClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -304,6 +305,44 @@ public class ChartDataBuilderTests
         Assert.IsEmpty(secondResult.NonRenderedSeriesWithData);
         Assert.AreEqual(ChartSeriesDataStatus.Rendered, secondResult.SeriesWithData.Single().DataStatus);
         Assert.HasCount(1, state.Series);
+    }
+
+    [TestMethod]
+    public async Task BuildAsync_SwitchingToInsufficientDataAndBack_PreservesEachTrendsRequestedWindow()
+    {
+        // Regression test: a series with two full-period trends (linear and quadratic) that moves to
+        // a location with too few years for a trend, then back to one with plenty, must keep both
+        // trends on "Full" - not lose the second one to the exclude-already-shown-window fallback
+        // that's meant for freshly-added trends with no preference of their own.
+        var sufficientDataSet = CreateYearDataSet(
+            Enumerable.Range(1950, 70).Select(year => (year, (double?)(10 + ((year - 1950) * 0.1)))));
+        var insufficientDataSet = CreateYearDataSet(
+            Enumerable.Range(1990, 30).Select(year => (year, (double?)(10 + ((year - 1990) * 0.1)))));
+        var dataService = CreateSequentialDataService(sufficientDataSet, insufficientDataSet, sufficientDataSet);
+
+        var series = CreateSeries();
+        series.Trends =
+        [
+            new ChartSeriesTrendRequest { RegressionType = TrendRegressionType.Linear, TrendPeriod = TrendWindow.Full },
+            new ChartSeriesTrendRequest { RegressionType = TrendRegressionType.Quadratic, TrendPeriod = TrendWindow.Full },
+        ];
+        var state = new ChartState { ChartAllData = true, Series = [series] };
+        var builder = CreateBuilder(dataService);
+
+        var atSufficientLocation = await builder.BuildAsync(state);
+        var atInsufficientLocation = await builder.BuildAsync(state);
+        var backAtSufficientLocation = await builder.BuildAsync(state);
+
+        Assert.AreEqual(TrendWindow.Full, atSufficientLocation.SeriesWithData.Single().Trends[0].Projection?.Window);
+        Assert.AreEqual(TrendWindow.Full, atSufficientLocation.SeriesWithData.Single().Trends[1].Projection?.Window);
+
+        // Neither trend could be fitted at all here, so the requests must be left as they were.
+        Assert.IsNotNull(atInsufficientLocation.SeriesWithData.Single().Trends[0].UnavailableReason);
+        Assert.AreEqual(TrendWindow.Full, series.Trends[0].TrendPeriod);
+        Assert.AreEqual(TrendWindow.Full, series.Trends[1].TrendPeriod);
+
+        Assert.AreEqual(TrendWindow.Full, backAtSufficientLocation.SeriesWithData.Single().Trends[0].Projection?.Window);
+        Assert.AreEqual(TrendWindow.Full, backAtSufficientLocation.SeriesWithData.Single().Trends[1].Projection?.Window);
     }
 
     private static ChartDataBuilder CreateBuilder(Mock<IDataService> dataService)
