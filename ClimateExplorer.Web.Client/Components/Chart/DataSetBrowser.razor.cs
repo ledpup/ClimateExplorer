@@ -23,6 +23,10 @@ public partial class DataSetBrowser
 
     private List<DataSetLibraryFolder>? RootFolders { get; set; }
 
+    private bool ShowAdjustedDataSets { get; set; } = true;
+
+    private DataAdjustment SelectedDataAdjustment => ShowAdjustedDataSets ? DataAdjustment.Adjusted : DataAdjustment.Unadjusted;
+
     protected override void OnParametersSet()
     {
         RootFolders = [];
@@ -129,6 +133,8 @@ public partial class DataSetBrowser
                 }
             }
 
+            currentLocationFolder.DataSets = [.. currentLocationFolder.DataSets.Where(ds => MatchesAdjustmentFilter(ds, SelectedDataAdjustment))];
+
             RootFolders.Add(currentLocationFolder);
 
             if (PreviousLocation != null && PreviousLocation.Id != CurrentLocation.Id)
@@ -180,6 +186,8 @@ public partial class DataSetBrowser
                             });
                     }
                 }
+
+                comparisonFolder.DataSets = [.. comparisonFolder.DataSets.Where(ds => MatchesAdjustmentFilter(ds, SelectedDataAdjustment))];
 
                 if (comparisonFolder.DataSets.Count > 0)
                 {
@@ -480,8 +488,25 @@ public partial class DataSetBrowser
         return string.Join(" | ", segments);
     }
 
+    /// <summary>
+    /// A data set entry matches the adjustment filter if none of its source series have an adjustment
+    /// concept (e.g. CO₂, precipitation), or if every source series that does have one matches the
+    /// requested adjustment.
+    /// </summary>
+    private static bool MatchesAdjustmentFilter(DataSetLibraryEntry entry, DataAdjustment adjustment)
+    {
+        return entry.SourceSeriesSpecifications is null
+            || entry.SourceSeriesSpecifications.All(sss => sss.DataAdjustment is null || sss.DataAdjustment == adjustment);
+    }
+
     private async Task AddDataSet(DataSetLibraryEntry dle)
     {
         await OnAddDataSet.InvokeAsync(dle);
+    }
+
+    private void OnAdjustedChanged(bool value)
+    {
+        ShowAdjustedDataSets = value;
+        OnParametersSet();
     }
 }
