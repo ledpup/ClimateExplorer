@@ -1,0 +1,26 @@
+@using Blazorise
+
+@if (CurrentLocation is not null)
+{
+    <div class="climate-tabs dataset-browser-tabs mb-3">
+        <Tabs SelectedTab="@ActiveTab" SelectedTabChanged="@OnTabChanged">
+            <Items>
+                <Tab Name="Local">Local</Tab>
+                <Tab Name="Global">Global</Tab>
+            </Items>
+        </Tabs>
+    </div>
+
+    @if (ActiveTab == "Global")
+    {
+        <GlobalDataSetBrowser DataSetDefinitions="@DataSetDefinitions" OnAddDataSet="@OnAddDataSet" />
+    }
+    else
+    {
+        <LocalDataSetBrowser DataSetDefinitions="@DataSetDefinitions" OnAddDataSet="@OnAddDataSet" CurrentLocation="@CurrentLocation" PreviousLocation="@PreviousLocation" />
+    }
+}
+else
+{
+    <GlobalDataSetBrowser DataSetDefinitions="@DataSetDefinitions" OnAddDataSet="@OnAddDataSet" />
+}
