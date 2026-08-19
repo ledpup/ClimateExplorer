@@ -1,4 +1,5 @@
 ﻿using ClimateExplorer.WebApiClient.Services;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 
 using ILoggerFactory factory = LoggerFactory.Create(builder => builder.AddConsole());
@@ -14,8 +15,8 @@ var files = Directory.GetFiles(longtermCache);
 var filesToDelete = files.Where(x => !x.Contains("hash_")).ToList();
 filesToDelete.ForEach(File.Delete);
 
-var dscLogger = factory.CreateLogger<DataServiceCache>();
-var dataService = new DataService(new HttpClient() { BaseAddress = new Uri("http://localhost:54836/") }, new DataServiceCache(dscLogger));
+var memoryCache = new MemoryCache(new MemoryCacheOptions { SizeLimit = DataService.CacheSizeLimit });
+var dataService = new DataService(new HttpClient() { BaseAddress = new Uri("http://localhost:54836/") }, memoryCache);
 
 // Get the basic list of locations. We need this to calculate the climate records
 var locations = await dataService.GetLocations(permitCreateCache: false);

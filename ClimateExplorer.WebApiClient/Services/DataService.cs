@@ -7,21 +7,47 @@ using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Caching.Memory;
 using static ClimateExplorer.Core.Enums;
 
 public class DataService : IDataService
 {
+    /// <summary>
+    /// Max number of entries retained by the response cache. Enforced by the injected IMemoryCache's
+    /// SizeLimit, so this must match the SizeLimit configured where that IMemoryCache is created
+    /// (see AddMemoryCache calls in Program.cs / ClimateExplorer.CachingTool).
+    /// </summary>
+    public const int CacheSizeLimit = 20;
+
     private readonly HttpClient httpClient;
-    private readonly IDataServiceCache dataServiceCache;
-    private readonly JsonSerializerOptions jsonSerializerOptions;    
+    private readonly IMemoryCache memoryCache;
+    private readonly JsonSerializerOptions jsonSerializerOptions;
 
     public DataService(
         HttpClient httpClient,
-        IDataServiceCache dataServiceCache)
+        IMemoryCache memoryCache)
     {
         this.httpClient = httpClient;
-        this.dataServiceCache = dataServiceCache;
+        this.memoryCache = memoryCache;
         jsonSerializerOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web) { Converters = { new JsonStringEnumConverter() } };
+    }
+
+    private T? GetCached<T>(string key)
+        where T : class
+    {
+        return memoryCache.TryGetValue(key, out var value) ? value as T : null;
+    }
+
+    private void SetCached<T>(string key, T val, TimeSpan? expiration = null)
+        where T : class
+    {
+        var options = new MemoryCacheEntryOptions { Size = 1 };
+        if (expiration.HasValue)
+        {
+            options.AbsoluteExpirationRelativeToNow = expiration.Value;
+        }
+
+        memoryCache.Set(key, val, options);
     }
 
     public async Task<DataSet> PostDataSet(
@@ -82,12 +108,12 @@ public class DataService : IDataService
     public async Task<IEnumerable<DataSetDefinitionViewModel>> GetDataSetDefinitions()
     {
         var url = "/datasetdefinition";
-        var result = dataServiceCache.Get<DataSetDefinitionViewModel[]>(url);
+        var result = GetCached<DataSetDefinitionViewModel[]>(url);
         if (result == null)
         {
             result = await httpClient.GetFromJsonAsync<DataSetDefinitionViewModel[]>(url, jsonSerializerOptions);
 
-            dataServiceCache.Put(url, result!);
+            SetCached(url, result!);
         }
         
         return result!;
@@ -102,7 +128,7 @@ public class DataService : IDataService
             url = QueryHelpers.AddQueryString(url, "permitCreateCache", permitCreateCache.ToString().ToLowerInvariant());
         }
 
-        var result = dataServiceCache.Get<Location[]>(url);
+        var result = GetCached<Location[]>(url);
         if (result == null)
         {
             if (fromCacheOnly)
@@ -112,7 +138,7 @@ public class DataService : IDataService
 
             result = await httpClient.GetFromJsonAsync<Location[]>(url);
 
-            dataServiceCache.Put(url, result!);
+            SetCached(url, result!);
         }
 
         return result!;
@@ -133,12 +159,12 @@ public class DataService : IDataService
             url = QueryHelpers.AddQueryString(url, "skip", skip.Value.ToString());
         }
 
-        var result = dataServiceCache.Get<LocationDistance[]>(url);
+        var result = GetCached<LocationDistance[]>(url);
         if (result == null)
         {
             result = await httpClient.GetFromJsonAsync<LocationDistance[]>(url);
 
-            dataServiceCache.Put(url, result!);
+            SetCached(url, result!);
         }
 
         return result!;
@@ -154,12 +180,12 @@ public class DataService : IDataService
     public async Task<IEnumerable<Region>> GetRegions()
     {
         var url = $"/region";
-        var result = dataServiceCache.Get<Region[]>(url);
+        var result = GetCached<Region[]>(url);
         if (result == null)
         {
             result = await httpClient.GetFromJsonAsync<Region[]>(url);
 
-            dataServiceCache.Put(url, result!);
+            SetCached(url, result!);
         }
         return result!;
     }
@@ -189,7 +215,7 @@ public class DataService : IDataService
         var url = "/location-dataset-metadata";
         url = QueryHelpers.AddQueryString(url, "locationId", locationId.ToString());
 
-        var result = dataServiceCache.Get<DataSetMetadata[]>(url);
+        var result = GetCached<DataSetMetadata[]>(url);
         if (result == null)
         {
             var response = await httpClient.GetAsync(url);
@@ -200,7 +226,7 @@ public class DataService : IDataService
 
             result = await response.Content.ReadFromJsonAsync<DataSetMetadata[]>(jsonSerializerOptions);
 
-            dataServiceCache.Put(url, result!);
+            SetCached(url, result!);
         }
 
         return result!;
@@ -209,13 +235,13 @@ public class DataService : IDataService
     public async Task<IEnumerable<HeatingScoreRow>> GetHeatingScoreTable()
     {
         const string heatingScoreTableKey = "HeatingScoreTable";
-        var result = dataServiceCache.Get<IEnumerable<HeatingScoreRow>>(heatingScoreTableKey);
+        var result = GetCached<IEnumerable<HeatingScoreRow>>(heatingScoreTableKey);
         if (result == null)
         {
             var url = $"/heating-score-table";
             result = await httpClient.GetFromJsonAsync<HeatingScoreRow[]>(url);
 
-            dataServiceCache.Put(heatingScoreTableKey, result!);
+            SetCached(heatingScoreTableKey, result!);
         }
         
         return result!;
@@ -258,7 +284,7 @@ public class DataService : IDataService
             url = QueryHelpers.AddQueryString(url, "monthly", "true");
         }
 
-        var result = dataServiceCache.Get<ClimateRecordsResponse>(url);
+        var result = GetCached<ClimateRecordsResponse>(url);
 
         if (result == null)
         {
@@ -269,7 +295,7 @@ public class DataService : IDataService
 
             result = await httpClient.GetFromJsonAsync<ClimateRecordsResponse>(url, jsonSerializerOptions);
 
-            dataServiceCache.Put(url, result!);
+            SetCached(url, result!, TimeSpan.FromHours(6));
         }
 
         return result!;

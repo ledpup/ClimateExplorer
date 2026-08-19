@@ -13,7 +13,7 @@
 | `ClimateExplorer.Web.Client` | **Blazor WASM frontend** — all pages, components, UI logic, CSS |
 | `ClimateExplorer.Web` | Blazor Server; ASP.NET Core host for the WASM app; `wwwroot/css/app.css` global styles; blog static content |
 | `ClimateExplorer.WebApi` | Minimal API backend; serves dataset, location, region, and climate-record data; file-backed two-layer cache |
-| `ClimateExplorer.WebApiClient` | `IDataService` / `DataService` / `DataServiceCache` — typed HTTP client used by the WASM app |
+| `ClimateExplorer.WebApiClient` | `IDataService` / `DataService` (caches responses via injected `IMemoryCache`) — typed HTTP client used by the WASM app |
 | `ClimateExplorer.Core` | All shared domain models, enums, data-prep pipeline, math helpers (no UI dependencies) |
 | `ClimateExplorer.SourceData` | Raw data file infrastructure |
 | `ClimateExplorer.DataPipeline` | Orchestrates data ingestion tools — **avoid building**: its build step creates zip files |
@@ -265,8 +265,7 @@ All modals use `Class="custom-modal-header"` on `<ModalHeader>`:
 
 | Interface | Implementation | Lifetime | Purpose |
 |---|---|---|---|
-| `IDataService` | `DataService` | Scoped (`HttpClient`) | All API calls |
-| `IDataServiceCache` | `DataServiceCache` | Singleton | In-memory API response cache |
+| `IDataService` | `DataService` | Scoped (`HttpClient`) | All API calls; caches responses via injected `IMemoryCache` (registered singleton, size-limited to `DataService.CacheSizeLimit`) |
 | `IExporter` | `Exporter` | Transient | CSV download |
 | `IInfoPanelDismissalService` | `InfoPanelDismissalService` | Scoped | "Don't show again" tracking for `InfoPanel` |
 | `ISiteOverviewService` | `SiteOverviewService` | Scoped | Triggers site-overview panel |

@@ -26,7 +26,7 @@ builder.Services
     .AddFontAwesomeIcons()
     .AddMapService()
     .AddScoped(sp => new HttpClient())
-    .AddSingleton<IDataServiceCache, DataServiceCache>()
+    .AddMemoryCache(options => options.SizeLimit = DataService.CacheSizeLimit)
     .AddTransient<IExporter, Exporter>()
     .AddScoped<IInfoPanelDismissalService, InfoPanelDismissalService>()
     .AddScoped<IChartStateUrlService, ChartStateUrlService>()
