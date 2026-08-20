@@ -16,6 +16,16 @@ using ClimateExplorer.Web.Client.UiModel.Trends;
 // curved trends" tab for why.
 internal static class TrendStatSectionBuilder
 {
+    /// <summary>
+    /// How far a fitted line/curve's zero-crossing has to fall outside the observed window before
+    /// it stops being a real projection and becomes a mathematical artefact of extrapolation - e.g.
+    /// a temperature trend's X-intercept is typically millennia away, while a count that's already
+    /// heading toward zero (frost days, exceedance days, an anomaly crossing its baseline) can cross
+    /// within a human-scale horizon. Matches the "per century" scale this site already reasons about
+    /// elsewhere (see <see cref="RateLabel"/>'s worked examples).
+    /// </summary>
+    private const double XInterceptPlausibilityHorizonYears = 100;
+
     /// <param name="subject">What the trend describes - supplies the label and unit.</param>
     /// <param name="trend">The regression for the window being described.</param>
     /// <param name="windowPoints">The points <paramref name="trend"/> was fitted to.</param>
@@ -218,8 +228,6 @@ internal static class TrendStatSectionBuilder
         IReadOnlyList<double>? roots,
         bool includeStandardError)
     {
-        var unit = subject.Unit;
-
         if (xIntercept is not null)
         {
             return new TrendStatRow(
@@ -227,7 +235,7 @@ internal static class TrendStatSectionBuilder
                 xIntercept.Value.ToString("0", CultureInfo.InvariantCulture),
                 IsEmphasized: false,
                 AbstractExplanation: "The X-intercept is the X value (year) where the fitted line crosses Y = 0.",
-                ClimateExplanation: $"{TrendFormatting.FormatUnitAmount(0, unit)} crossing the fitted line for an absolute {subject.Label.ToLowerInvariant()} lands far outside any plausible year and carries no climate meaning; it's shown only because it's part of the standard regression report this table mirrors.",
+                ClimateExplanation: DescribeXInterceptClimateMeaning(subject, trend, [xIntercept.Value], isCurve: false),
                 WorkedExamples: null);
         }
 
@@ -238,8 +246,61 @@ internal static class TrendStatSectionBuilder
             rootsText,
             IsEmphasized: false,
             AbstractExplanation: $"Where the fitted curve crosses Y = 0 - a curve can cross zero more than once, so every real crossing is listed. {(includeStandardError ? "Unlike a straight line's X-intercept, these are point estimates only - see the climate note." : string.Empty)}".Trim(),
-            ClimateExplanation: $"{TrendFormatting.FormatUnitAmount(0, unit)} crossing the fitted curve for an absolute {subject.Label.ToLowerInvariant()} lands far outside any plausible year and carries no climate meaning. No confidence interval is shown: Fieller's theorem (used for a straight line, above) is specific to a ratio of two correlated coefficients and doesn't extend cleanly to three or four, so these are point estimates only.",
+            ClimateExplanation: DescribeXInterceptClimateMeaning(subject, trend, roots!, isCurve: true) + (includeStandardError ? string.Empty : " No confidence interval is shown: Fieller's theorem (used for a straight line, above) is specific to a ratio of two correlated coefficients and doesn't extend cleanly to three or four, so these are point estimates only."),
             WorkedExamples: null);
+    }
+
+    private static bool IsXInterceptPlausible(double year, PolynomialRegressionResult trend)
+    {
+        var min = trend.Input.MinimumX;
+        var max = trend.Input.MaximumX;
+
+        if (year >= min && year <= max)
+        {
+            return true;
+        }
+
+        var distanceFromWindow = year < min ? min - year : year - max;
+        return distanceFromWindow <= XInterceptPlausibilityHorizonYears;
+    }
+
+    /// <summary>
+    /// Explains what it means for the fitted line/curve to cross Y = 0, given where that crossing
+    /// falls relative to the data. Unlike the Y-intercept (always thousands of years before the
+    /// record, always meaningless), a zero X-intercept can go either way depending on the subject: a
+    /// temperature or CO2 trend crossing zero is a mathematical artefact, but a count trending toward
+    /// zero (frost days, exceedance days) or an anomaly crossing its baseline can genuinely reach zero
+    /// within or soon after the observed window - see <see cref="IsXInterceptPlausible"/>.
+    /// </summary>
+    private static string DescribeXInterceptClimateMeaning(
+        TrendStatSubject subject,
+        PolynomialRegressionResult trend,
+        IReadOnlyList<double> years,
+        bool isCurve)
+    {
+        var unit = subject.Unit;
+        var label = subject.Label.ToLowerInvariant();
+        var curveWord = isCurve ? "curve" : "line";
+
+        if (years.Count == 0)
+        {
+            return $"The fitted {curveWord} never reaches {TrendFormatting.FormatUnitAmount(0, unit)} at any real year, so there's no crossing to interpret here.";
+        }
+
+        var plausibleYears = years.Where(year => IsXInterceptPlausible(year, trend)).OrderBy(year => year).ToList();
+
+        if (plausibleYears.Count == 0)
+        {
+            return $"{TrendFormatting.FormatUnitAmount(0, unit)} crossing the fitted {curveWord} for {label} lands far outside any plausible year and carries no climate meaning; it's shown only because it's part of the standard regression report this table mirrors.";
+        }
+
+        var plausibleYearsText = string.Join(", ", plausibleYears.Select(year => year.ToString("0", CultureInfo.InvariantCulture)));
+        var implausibleCount = years.Count - plausibleYears.Count;
+        var qualifier = implausibleCount > 0
+            ? $" ({(implausibleCount == 1 ? "the other crossing" : "the other crossings")} listed above {(implausibleCount == 1 ? "lands" : "land")} too far outside the data to mean anything)"
+            : string.Empty;
+
+        return $"The fitted {curveWord} reaching {TrendFormatting.FormatUnitAmount(0, unit)} at {plausibleYearsText} is close enough to the data to be a real projection of where {label} is headed at this rate, not just a mathematical artefact like the Y-intercept above{qualifier}. Whether it actually gets there depends on the rate holding steady{(isCurve ? ", which for a curve is unlikely - see \"About curved trends\"" : string.Empty)}; see the Equation section below for how much the prediction range widens the further out you go.";
     }
 
     private static TrendStatRow BuildXInterceptConfidenceIntervalRow(
@@ -252,8 +313,12 @@ internal static class TrendStatSectionBuilder
 
         if (xIntercept is not null)
         {
+            var isPlausible = IsXInterceptPlausible(xIntercept.Value, trend);
+
             var xInterceptClimateExplanation = xIntercept.ConfidenceInterval is { } xInterceptCi
-                ? $"The data are consistent with the fitted line crossing {TrendFormatting.FormatUnitAmount(0, unit)} anywhere from {xInterceptCi.Lower.ToString("0", CultureInfo.InvariantCulture)} to {xInterceptCi.Upper.ToString("0", CultureInfo.InvariantCulture)} - as with the point estimate, this carries no climate meaning."
+                ? isPlausible
+                    ? $"The data are consistent with the fitted line crossing {TrendFormatting.FormatUnitAmount(0, unit)} anywhere from {xInterceptCi.Lower.ToString("0", CultureInfo.InvariantCulture)} to {xInterceptCi.Upper.ToString("0", CultureInfo.InvariantCulture)} - as with the point estimate above, this is a real range for when {subject.Label.ToLowerInvariant()} could reach {TrendFormatting.FormatUnitAmount(0, unit)} at this rate, not a mathematical artefact."
+                    : $"The data are consistent with the fitted line crossing {TrendFormatting.FormatUnitAmount(0, unit)} anywhere from {xInterceptCi.Lower.ToString("0", CultureInfo.InvariantCulture)} to {xInterceptCi.Upper.ToString("0", CultureInfo.InvariantCulture)} - as with the point estimate, this carries no climate meaning."
                 : "This interval is undefined here: the slope isn't estimated precisely enough, relative to its own size, for Fieller's theorem to produce a finite range.";
 
             var xInterceptValue = xIntercept.ConfidenceInterval is { } ci

@@ -155,7 +155,8 @@
                                     <span class="form-label">Custom expression</span>
                                     <span class="form-control-wrap">
                                         <Validation @ref="validation" Validator="ValidateCustomTransformation">
-                                            <TextInput Value="@ChartSeries.CustomTransformation"
+                                            <TextInput Size="Size.Small"
+                                                       Value="@ChartSeries.CustomTransformation"
                                                        ValueChanged="@OnCustomTransformationChanged"
                                                        Placeholder="e.g. x == 0 or x >= 1 AND x < 10"
                                                        Immediate="false">
@@ -213,10 +214,10 @@
                             {
                                 var index = i;
                                 <ChartSeriesTrendControls Request="@ChartSeries.Trends[index]"
-                                                           Trend="@GetTrend(index)"
-                                                           SlotLabel="@GetTrendSlotLabel(index)"
-                                                           OnChanged="@OnSeriesChanged"
-                                                           OnRemove="@(() => OnRemoveTrendClicked(index))" />
+                                                          Trend="@GetTrend(index)"
+                                                          SlotLabel="@GetTrendSlotLabel(index)"
+                                                          OnChanged="@OnSeriesChanged"
+                                                          OnRemove="@(() => OnRemoveTrendClicked(index))" />
                             }
                             @if (ChartSeries.Trends.Count < ChartSeriesDefinition.MaxTrends)
                             {
