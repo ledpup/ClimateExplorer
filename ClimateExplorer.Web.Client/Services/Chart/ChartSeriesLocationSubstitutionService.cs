@@ -185,6 +185,10 @@ public sealed class ChartSeriesLocationSubstitutionService : IChartSeriesLocatio
                 DisplayStyle = csd.DisplayStyle,
                 IsLocked = false,
                 ShowTrendline = csd.ShowTrendline,
+
+                // The trend selections carry over, but are refitted - including their significance
+                // tests - against the new location's data by the chart data builder.
+                Trends = [.. csd.Trends.Select(x => x.Clone())],
                 Smoothing = csd.Smoothing,
                 SmoothingWindow = csd.SmoothingWindow,
                 Value = csd.Value,

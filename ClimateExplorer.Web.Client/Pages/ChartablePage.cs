@@ -5,6 +5,7 @@ using ClimateExplorer.Core;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
+using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.Services;
 using ClimateExplorer.Web.Client.Services.Chart;
 using ClimateExplorer.Web.Client.Services.Notifications;
@@ -69,9 +70,20 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
 
     protected string? PageName { get; set; }
 
-    protected Modal? AddDataSetModal { get; set; }
+    protected SidePanel? AddDataSetSidePanel { get; set; }
 
     protected bool? IsMobileDevice { get; private set; }
+
+    /// <summary>
+    /// Every series' fitted trends from the last chart build, rendered or not - the union
+    /// <c>ChartView</c> itself builds internally for <c>ChartSeriesListView</c>, needed here
+    /// too so <c>DataSetBrowser</c>'s "add a trend to an existing series" can show a newly-added
+    /// trend's significant windows as soon as the rebuild it triggered completes.
+    /// </summary>
+    protected IReadOnlyList<SeriesWithData> AllChartSeriesWithData =>
+        CurrentChartData is null
+            ? []
+            : [.. CurrentChartData.SeriesWithData, .. CurrentChartData.NonRenderedSeriesWithData];
 
     protected virtual string? PageTitle { get; }
     protected virtual string? PageDescription { get; }
@@ -108,7 +120,19 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
 
     protected Task ShowAddDataSetModal()
     {
-        return AddDataSetModal!.Show();
+        return AddDataSetSidePanel!.ShowAsync();
+    }
+
+    /// <summary>
+    /// Rebuilds the chart after "add a trend to an existing series" (in <c>DataSetBrowser</c>) adds,
+    /// edits or removes a trend on one of the series already in <see cref="CurrentChartState"/> -
+    /// mirrors the effect of <c>ChartSeriesView</c>'s own trend controls, just from a different
+    /// entry point. The mutation already happened in place on the shared <c>ChartSeriesDefinition</c>
+    /// instance, so there's nothing to merge here - just rebuild against the current state.
+    /// </summary>
+    protected async Task OnTrendsChanged()
+    {
+        await ApplyChartStateAsync(CurrentChartState ?? new ChartState());
     }
 
     protected async Task OnChartStateChanged(ChartState state)

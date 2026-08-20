@@ -3,6 +3,7 @@
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
+using ClimateExplorer.Web.Client.UiModel.Trends;
 using ClimateExplorer.Web.UiModel;
 using static ClimateExplorer.Core.Enums;
 
@@ -109,7 +110,66 @@ public static class ChartSeriesListSerializer
                 GroupingThreshold = ParseNullableFloat(segments[16]),
                 DataAvailable = bool.Parse(segments[17]),
                 MinimumDataResolution = (DataResolution?)ParseNullableEnum<DataResolution>(segments[18]),
+
+                // Segment 19 holds the whole encoded Trends list - up to three entries, nested the
+                // same way SourceSeriesSpecifications is (entries joined at level 2, each entry's
+                // fields joined at level 3). Read defensively (missing/blank segment = no trends)
+                // since a URL shared before this segment existed should simply have the trend
+                // module off, not fail to parse.
+                Trends = ParseTrends(GetOptionalSegment(segments, 19)),
             };
+    }
+
+    private static List<ChartSeriesTrendRequest> ParseTrends(string? s)
+    {
+        if (string.IsNullOrWhiteSpace(s))
+        {
+            return [];
+        }
+
+        return [.. s.Split(SeparatorsByLevel[2]).Select(ParseTrend).Take(ChartSeriesDefinition.MaxTrends)];
+    }
+
+    private static ChartSeriesTrendRequest ParseTrend(string s)
+    {
+        var fields = s.Split(SeparatorsByLevel[3]);
+
+        return new ChartSeriesTrendRequest
+        {
+            RegressionType = (TrendRegressionType?)ParseOptionalNullableEnum<TrendRegressionType>(fields, 0) ?? TrendRegressionType.Linear,
+            TrendPeriod = (TrendWindow?)ParseOptionalNullableEnum<TrendWindow>(fields, 1),
+            TrendPredictionYears = TrendPredictionRange.Clamp(ParseOptionalInt(fields, 2, TrendPredictionRange.Default)),
+            TrendPredictionTargetYear = ParseOptionalNullableInt(fields, 3),
+        };
+    }
+
+    private static string? GetOptionalSegment(string[] segments, int index)
+    {
+        return index < segments.Length && !string.IsNullOrWhiteSpace(segments[index])
+            ? segments[index]
+            : null;
+    }
+
+    private static int ParseOptionalInt(string[] segments, int index, int fallback)
+    {
+        return GetOptionalSegment(segments, index) is { } value && int.TryParse(value, out var parsed)
+            ? parsed
+            : fallback;
+    }
+
+    private static int? ParseOptionalNullableInt(string[] segments, int index)
+    {
+        return GetOptionalSegment(segments, index) is { } value && int.TryParse(value, out var parsed)
+            ? parsed
+            : null;
+    }
+
+    private static object? ParseOptionalNullableEnum<T>(string[] segments, int index)
+        where T : struct, System.Enum
+    {
+        return GetOptionalSegment(segments, index) is { } value && Enum.TryParse<T>(value, out var parsed)
+            ? parsed
+            : null;
     }
 
     private static SourceSeriesSpecification[] ParseSourceSeriesSpecifications(string s, IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions, IDictionary<Guid, Location>? locations, IEnumerable<Region> regions, DataResolution? dataResolution)
@@ -173,8 +233,14 @@ public static class ChartSeriesListSerializer
             }
         }
 
+        // When dr is null (no minimum resolution was requested), more than one measurement
+        // definition can match the same data type/adjustment (e.g. CO2 now has both Monthly and
+        // Daily definitions). Prefer the coarsest match so existing URLs keep resolving to the
+        // resolution they always have (Monthly) rather than throwing on an ambiguous match.
         var md = dsd.MeasurementDefinitions!
-                .SingleOrDefault(x => x.DataAdjustment == da && x.DataType == dt && (dr == null || x.DataResolution == dr));
+                .Where(x => x.DataAdjustment == da && x.DataType == dt && (dr == null || x.DataResolution == dr))
+                .OrderBy(x => x.DataResolution)
+                .FirstOrDefault();
 
         if (md == null)
         {
@@ -256,6 +322,22 @@ public static class ChartSeriesListSerializer
                 Uri.EscapeDataString(csd.CustomTransformation ?? string.Empty),
                 csd.GroupingThreshold,
                 csd.DataAvailable,
-                csd.MinimumDataResolution);
+                csd.MinimumDataResolution,
+                BuildTrendsUrlComponent(csd.Trends));
+    }
+
+    private static string BuildTrendsUrlComponent(List<ChartSeriesTrendRequest> trends)
+    {
+        return string.Join(SeparatorsByLevel[2], trends.Select(BuildTrendUrlComponent));
+    }
+
+    private static string BuildTrendUrlComponent(ChartSeriesTrendRequest trend)
+    {
+        return string.Join(
+            SeparatorsByLevel[3],
+            trend.RegressionType,
+            trend.TrendPeriod,
+            trend.TrendPredictionYears,
+            trend.TrendPredictionTargetYear);
     }
 }

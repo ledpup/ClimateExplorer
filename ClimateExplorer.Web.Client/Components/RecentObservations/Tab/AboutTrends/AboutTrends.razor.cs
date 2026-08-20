@@ -2,7 +2,9 @@ namespace ClimateExplorer.Web.Client.Components.RecentObservations;
 
 using ClimateExplorer.Core.Stats.Model;
 using ClimateExplorer.Web.Client.Components.Common;
+using ClimateExplorer.Web.Client.Services.Trends;
 using ClimateExplorer.Web.Client.UiModel.RecentObservations;
+using ClimateExplorer.Web.Client.UiModel.Trends;
 using Microsoft.AspNetCore.Components;
 
 public partial class AboutTrends
@@ -30,15 +32,26 @@ public partial class AboutTrends
     private static IReadOnlyList<TrendStatSection> BuildSections(RecentObservationTrendViewModel metric, TrendWindow window)
     {
         var trend = GetTrend(metric, window);
-        return trend is null ? [] : TrendStatSectionBuilder.Build(metric, trend);
+        if (trend is null)
+        {
+            return [];
+        }
+
+        var (points, _) = GetWindow(metric, window);
+
+        return TrendStatSectionBuilder.Build(
+            new TrendStatSubject(metric.Label, metric.Unit),
+            trend,
+            points,
+            metric.FullPeriodPoints);
     }
 
-    private static LinearRegressionResult? GetTrend(RecentObservationTrendViewModel metric, TrendWindow window)
+    private static PolynomialRegressionResult? GetTrend(RecentObservationTrendViewModel metric, TrendWindow window)
     {
         return window switch
         {
             TrendWindow.Full => metric.FullPeriodTrend,
-            TrendWindow.Recent => metric.RecentTrend,
+            TrendWindow.Last30 => metric.RecentTrend,
             TrendWindow.FirstHalf => metric.FirstHalfTrend,
             _ => throw new NotImplementedException(),
         };
@@ -49,7 +62,7 @@ public partial class AboutTrends
         return window switch
         {
             TrendWindow.Full => (metric.FullPeriodPoints, "Full recordset"),
-            TrendWindow.Recent => (metric.RecentTrendPoints, "Last 30 years"),
+            TrendWindow.Last30 => (metric.RecentTrendPoints, "Last 30 years"),
             TrendWindow.FirstHalf => (metric.FirstHalfTrendPoints, "First half of recordset"),
             _ => throw new NotImplementedException(),
         };

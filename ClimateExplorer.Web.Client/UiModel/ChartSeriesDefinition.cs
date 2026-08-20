@@ -4,11 +4,16 @@ using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using ClimateExplorer.Core;
 using ClimateExplorer.Core.DataPreparation;
+using ClimateExplorer.Core.Model;
+using ClimateExplorer.Web.Client.UiModel.Trends;
 using ClimateExplorer.Web.UiLogic;
 using static ClimateExplorer.Core.Enums;
 
 public class ChartSeriesDefinition
 {
+    /// <summary>The most trends a single series may carry at once.</summary>
+    public const int MaxTrends = 3;
+
     /// <summary>
     /// Used only for uniqueness tracking by UI controls.
     /// </summary>
@@ -38,6 +43,12 @@ public class ChartSeriesDefinition
     public SeriesDisplayStyle DisplayStyle { get; set; }
     public bool ShowTrendline { get; set; }
 
+    // Trend module field. The module is "on" whenever this is non-empty. Up to three entries
+    // (enforced by the UI and defensively by the URL parser); each is an independent trend
+    // request - its own regression type, period and prediction horizon. See
+    // ChartSeriesTrendRequest for what each entry carries.
+    public List<ChartSeriesTrendRequest> Trends { get; set; } = [];
+
     // Editing mode fields
 
     /// <summary>
@@ -49,6 +60,16 @@ public class ChartSeriesDefinition
     public bool IsExpanded { get; set; }
     public bool DataAvailable { get; internal set; } = true;
     public DataResolution? MinimumDataResolution { get; set; }
+
+    /// <summary>
+    /// True when every source series behind this definition comes from a region (e.g. atmosphere,
+    /// ocean, a hemisphere) rather than a specific location - a "global" data set such as CO2 or
+    /// sea ice extent, as opposed to a location's own observations. Used to route "add a trend to
+    /// an existing series" between the local and global data set browsers.
+    /// </summary>
+    public bool IsGlobalSeries =>
+        SourceSeriesSpecifications is { Length: > 0 } specs
+        && specs.All(x => Region.IsRegionId(x.LocationId));
 
     public string FriendlyTitle
     {
@@ -173,6 +194,54 @@ public class ChartSeriesDefinition
         return $"CSD: {BinGranularity} | {Smoothing} | {Aggregation} | {Value} | {DisplayStyle}";
     }
 
+    /// <summary>
+    /// Some transformations turn a series' raw value into something that's only meaningful alongside a
+    /// description of the transformation itself - e.g. a DayOfYearIfFrost series' values are day-of-year
+    /// numbers standing in for "first/last day of frost", and a Custom series' values are a 0/1 flag for
+    /// a threshold like "x &gt;= 25". For these, the transformation description replaces the usual
+    /// location/data-type wording entirely, rather than being appended to it. Returns null for
+    /// transformations (including Identity) that don't need this treatment.
+    /// </summary>
+    /// <remarks>
+    /// Single source of truth for this override, shared by the chart legend (ChartView.GetChartLabel)
+    /// and the tooltip (<see cref="GetTooltipLabel"/>) so the two can't drift out of sync.
+    /// </remarks>
+    public string? GetTransformationOverrideLabel()
+    {
+        return SeriesTransformation switch
+        {
+            SeriesTransformations.DayOfYearIfFrost => Aggregation == SeriesAggregationOptions.Maximum ? "Last day of frost" : "First day of frost",
+            SeriesTransformations.Custom => GetFriendlyCustomTransformationLabel(CustomTransformation ?? "Custom transformation"),
+            _ => null,
+        };
+    }
+
+    /// <summary>
+    /// A trimmed label for the chart tooltip: "Location | Data type | Unit". Unlike FriendlyTitle/
+    /// GetFriendlyTitleShort (used for the chart legend), this deliberately omits adjustment,
+    /// aggregation, smoothing, and other how-it-was-computed detail that isn't needed once you're
+    /// reading values off the tooltip. Transformations covered by <see cref="GetTransformationOverrideLabel"/>
+    /// bypass this trimming and use their override label instead, matching the chart legend.
+    /// </summary>
+    public string GetTooltipLabel(UnitOfMeasure unitOfMeasure)
+    {
+        var overrideLabel = GetTransformationOverrideLabel();
+
+        if (overrideLabel != null)
+        {
+            return overrideLabel;
+        }
+
+        var descriptor =
+            SourceSeriesSpecifications!.Length == 1
+            ? BuildTooltipDescriptorForSeries(SourceSeriesSpecifications.Single())
+            : GetFriendlyTitleShort();
+
+        var unitLabel = Enums.UnitOfMeasureLabelShort(unitOfMeasure);
+
+        return string.IsNullOrWhiteSpace(descriptor) ? unitLabel : $"{descriptor} | {unitLabel}";
+    }
+
     public string GetFriendlyTitleShort()
     {
         switch (SeriesDerivationType)
@@ -264,6 +333,23 @@ public class ChartSeriesDefinition
         return string.Join(" | ", segments);
     }
 
+    private static string BuildTooltipDescriptorForSeries(SourceSeriesSpecification sss)
+    {
+        var segments = new List<string>();
+
+        if (sss.LocationName != null)
+        {
+            segments.Add(sss.LocationName);
+        }
+
+        if (sss.MeasurementDefinition != null)
+        {
+            segments.Add(MapDataTypeToFriendlyName(sss.MeasurementDefinition.DataType));
+        }
+
+        return string.Join(" | ", segments);
+    }
+
     private static string BuildAverageMultipleSeriesTitle(SourceSeriesSpecification[] sss)
     {
         var segments = new List<string>();
@@ -340,6 +426,25 @@ public class ChartSeriesDefinition
             if (x.ShowTrendline != y.ShowTrendline)
             {
                 return false;
+            }
+
+            if (x.Trends.Count != y.Trends.Count)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < x.Trends.Count; i++)
+            {
+                var trendX = x.Trends[i];
+                var trendY = y.Trends[i];
+
+                if (trendX.RegressionType != trendY.RegressionType
+                    || trendX.TrendPeriod != trendY.TrendPeriod
+                    || trendX.TrendPredictionYears != trendY.TrendPredictionYears
+                    || trendX.TrendPredictionTargetYear != trendY.TrendPredictionTargetYear)
+                {
+                    return false;
+                }
             }
 
             if (x.Smoothing != y.Smoothing)
@@ -436,6 +541,18 @@ public class ChartSeriesDefinition
                     sss.MeasurementDefinition.DataAdjustment.GetHashCode();
             }
 
+            for (int i = 0; i < obj.Trends.Count; i++)
+            {
+                var trend = obj.Trends[i];
+
+                hashCode =
+                    hashCode ^
+                    trend.RegressionType.GetHashCode() ^
+                    trend.TrendPeriod.GetHashCode() ^
+                    trend.TrendPredictionYears.GetHashCode() ^
+                    trend.TrendPredictionTargetYear.GetHashCode();
+            }
+
             return hashCode;
         }
     }
@@ -489,6 +606,18 @@ public class ChartSeriesDefinition
                     sss.LocationId.GetHashCode() ^
                     sss.MeasurementDefinition!.DataType.GetHashCode() ^
                     sss.MeasurementDefinition.DataAdjustment.GetHashCode();
+            }
+
+            for (int i = 0; i < obj.Trends.Count; i++)
+            {
+                var trend = obj.Trends[i];
+
+                hashCode =
+                    hashCode ^
+                    trend.RegressionType.GetHashCode() ^
+                    trend.TrendPeriod.GetHashCode() ^
+                    trend.TrendPredictionYears.GetHashCode() ^
+                    trend.TrendPredictionTargetYear.GetHashCode();
             }
 
             return hashCode;

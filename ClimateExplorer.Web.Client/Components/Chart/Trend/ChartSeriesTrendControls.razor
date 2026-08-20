@@ -1,0 +1,94 @@
+@namespace ClimateExplorer.Web.Client.Components.Chart.Trend
+@using Blazorise
+@using ClimateExplorer.Web.Client.Components.Common
+@using ClimateExplorer.Web.Client.Services.Trends
+@using ClimateExplorer.Web.Client.UiModel.Trends
+
+<div class="trend-block">
+    <div class="trend-block-header">
+        @if (SlotLabel is not null)
+        {
+            <span class="trend-block-label">@SlotLabel</span>
+        }
+        <DelayedTooltip Text="About this trend" Style="display: inline-block">
+            <button type="button" class="trend-icon-button" aria-label="@AboutButtonLabel" @onclick="@OnAboutTrendClicked">
+                <i class="fas fa-info"></i>
+            </button>
+        </DelayedTooltip>
+        @if (CanRemove)
+        {
+            <DelayedTooltip Text="Remove this trend" Style="display: inline-block">
+                <button type="button" class="trend-icon-button trend-remove" aria-label="@RemoveButtonLabel" @onclick="@OnRemoveClicked">
+                    <i class="fas fa-times"></i>
+                </button>
+            </DelayedTooltip>
+        }
+    </div>
+    <DelayedTooltip Text="The shape fitted to the data: a straight line, or a curve that can bend (quadratic) or bend and inflect (cubic). Changing this can change which periods have a statistically significant trend" Style="display: block">
+        <div class="form-row">
+            <span class="form-label">Regression type</span>
+            <span class="form-control-wrap">
+                <Select TValue="TrendRegressionType"
+                        Size="Size.Small"
+                        Value="@Request!.RegressionType"
+                        ValueChanged="@OnRegressionTypeChanged"
+                        aria-label="Regression type">
+                    <SelectItem Value="@TrendRegressionType.Linear">Linear</SelectItem>
+                    <SelectItem Value="@TrendRegressionType.Quadratic">Quadratic</SelectItem>
+                    <SelectItem Value="@TrendRegressionType.Cubic">Cubic</SelectItem>
+                </Select>
+            </span>
+        </div>
+    </DelayedTooltip>
+    <DelayedTooltip Text="Which period the trend is fitted over. Only periods with a statistically significant trend can be shown" Style="display: block">
+        <div class="form-row">
+            <span class="form-label">Trend period</span>
+            <span class="form-control-wrap">
+                @if (SelectableTrendPeriods.Count == 0)
+                {
+                    <Select TValue="string"
+                            Size="Size.Small"
+                            Value="@UnavailableTrendPeriodValue"
+                            Disabled="true"
+                            aria-label="Trend period">
+                        <SelectItem Value="@UnavailableTrendPeriodValue">@UnavailableTrendPeriodValue</SelectItem>
+                    </Select>
+                }
+                else
+                {
+                    <Select TValue="TrendWindow"
+                            Size="Size.Small"
+                            Value="@SelectedTrendPeriod"
+                            ValueChanged="@OnTrendPeriodChanged"
+                            aria-label="Trend period">
+                        @foreach (var period in SelectableTrendPeriods)
+                        {
+                            <SelectItem Value="@period">@TrendWindowLabel.Get(period)</SelectItem>
+                        }
+                    </Select>
+                }
+            </span>
+        </div>
+    </DelayedTooltip>
+    <DelayedTooltip Text="@PredictUntilTooltip" Style="display: block">
+        <div class="form-row">
+            <span class="form-label">Predict until</span>
+            <span class="form-control-wrap">
+                <Validation @ref="predictionYearsValidation" Validator="ValidatePredictionYears">
+                    <TextInput Size="Size.Small"
+                               Value="@predictionYearsText"
+                               ValueChanged="@OnPredictionYearsChanged"
+                               Disabled="@(SelectableTrendPeriods.Count == 0)"
+                               Immediate="false"
+                               aria-label="Predict until">
+                        <Feedback>
+                            <ValidationError>@PredictUntilValidationMessage</ValidationError>
+                        </Feedback>
+                    </TextInput>
+                </Validation>
+            </span>
+        </div>
+    </DelayedTooltip>
+</div>
+
+<ChartTrendPanel @ref="trendPanel" Trend="@Trend" SlotLabel="@SlotLabel" />

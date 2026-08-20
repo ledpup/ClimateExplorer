@@ -3,6 +3,7 @@ namespace ClimateExplorer.Web.UiModel;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
+using ClimateExplorer.Web.Client.UiModel.Trends;
 using static ClimateExplorer.Core.Enums;
 
 public static partial class SuggestedPresetLists
@@ -137,8 +138,8 @@ public static partial class SuggestedPresetLists
         suggestedPresets.Add(
             new SuggestedChartPresetModelWithVariants()
             {
-                Title = "Temperature + CO₂",
-                Description = "Smoothed yearly average temperature and carbon dioxide",
+                Title = "Temperature + trend",
+                Description = "Smoothed yearly average temperature with 50-year predictions",
                 ChartSeriesList =
                 [
                     new ChartSeriesDefinition()
@@ -150,22 +151,55 @@ public static partial class SuggestedPresetLists
                         Smoothing = SeriesSmoothingOptions.MovingAverage,
                         SmoothingWindow = 10,
                         Value = SeriesValueOptions.Value,
+                        Trends =
+                        [
+                            new ChartSeriesTrendRequest
+                            {
+                                RegressionType = TrendRegressionType.Linear,
+                                TrendPeriod = TrendWindow.Full,
+                                TrendPredictionYears = 50,
+                            },
+                            new ChartSeriesTrendRequest
+                            {
+                                RegressionType = TrendRegressionType.Quadratic,
+                                TrendPeriod = TrendWindow.Full,
+                                TrendPredictionYears = 50,
+                            },
+                        ],
                     },
-                    new ChartSeriesDefinition()
-                    {
-                        SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
-                        SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Atmosphere), co2!),
-                        Aggregation = SeriesAggregationOptions.Mean,
-                        BinGranularity = BinGranularities.ByYear,
-                        Smoothing = SeriesSmoothingOptions.None,
-                        SmoothingWindow = 5,
-                        Value = SeriesValueOptions.Value,
-                        RequestedColour = UiLogic.Colours.Black,
-                    }
-
                 ],
                 Variants =
                 [
+                    new SuggestedChartPresetModel()
+                    {
+                        Title = "Temperature + CO₂",
+                        Description = "Smoothed yearly average temperature and carbon dioxide",
+                        ChartSeriesList =
+                        [
+                            new ChartSeriesDefinition()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(location, temperature!),
+                                Aggregation = SeriesAggregationOptions.Mean,
+                                BinGranularity = BinGranularities.ByYear,
+                                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                SmoothingWindow = 10,
+                                Value = SeriesValueOptions.Value,
+                            },
+                            new ChartSeriesDefinition()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Atmosphere), co2!),
+                                Aggregation = SeriesAggregationOptions.Mean,
+                                BinGranularity = BinGranularities.ByYear,
+                                Smoothing = SeriesSmoothingOptions.None,
+                                SmoothingWindow = 5,
+                                Value = SeriesValueOptions.Value,
+                                RequestedColour = UiLogic.Colours.Black,
+                            }
+
+                        ],
+                    },
                     new SuggestedChartPresetModel()
                     {
                         Title = "Temperature + sunspots",

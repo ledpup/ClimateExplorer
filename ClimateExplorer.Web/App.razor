@@ -211,7 +211,86 @@
             return tooltipElement;
         }
 
-        function configureChartTooltip(wrapperElement) {
+        // Number of decimal places to use when a series has no rounding info from .NET (shouldn't
+        // normally happen - every series gets one from Enums.UnitOfMeasureRounding), inferred from how
+        // chart.js formatted the hovered value itself.
+        function decimalPlacesOf(formattedValue) {
+            const match = /\.(\d+)/.exec(String(formattedValue).replace(/[^0-9.\-]/g, ""));
+            return match ? match[1].length : 0;
+        }
+
+        // Renders a hovered value using its series' Enums.UnitOfMeasureRounding decimal places, falling
+        // back to chart.js's own formatting if we don't have rounding info for this point.
+        function formatValue(point, rounding) {
+            if (point.raw === null || point.raw === undefined) {
+                return point.formattedValue;
+            }
+
+            return Number(point.raw).toFixed(rounding ?? decimalPlacesOf(point.formattedValue));
+        }
+
+        function formatSignedDiff(diff, decimalPlaces) {
+            const rounded = Number(diff.toFixed(decimalPlaces));
+            const sign = rounded > 0 ? "+" : rounded < 0 ? "−" : "±";
+            return `${sign}${Math.abs(rounded).toFixed(decimalPlaces)}`;
+        }
+
+        function diffClass(diff) {
+            if (diff > 0) return "chart-external-tooltip-positive";
+            if (diff < 0) return "chart-external-tooltip-negative";
+            return "";
+        }
+
+        function buildTooltipHtml(tooltip, seriesInfo) {
+            const title = (tooltip.title ?? []).map(x => `<div class="chart-external-tooltip-title">${x}</div>`).join("");
+            const points = tooltip.dataPoints ?? [];
+
+            const rows = points.map((point, index) => ({
+                point,
+                info: seriesInfo?.[point.datasetIndex],
+                colour: tooltip.labelColors?.[index] ?? { backgroundColor: "#425f59", borderColor: "#425f59" },
+            }));
+
+            const hasAnomalyData = rows.some(x => x.info?.anomaly);
+
+            if (!hasAnomalyData) {
+                // No series in this tooltip has anomaly period data (e.g. non-yearly chart) - keep the
+                // simple label/value rows.
+                const simpleRows = rows.map(({ point, info, colour }) => {
+                    const label = info?.label ?? point.dataset.label;
+                    const value = formatValue(point, info?.rounding);
+                    return `<div class="chart-external-tooltip-row"><span class="chart-external-tooltip-key" style="background:${colour.backgroundColor}; border-color:${colour.borderColor};"></span><span class="chart-external-tooltip-label">${label}: <b>${value}</b></span></div>`;
+                }).join("");
+
+                return `${title}${simpleRows}`;
+            }
+
+            const tableRows = rows.map(({ point, info, colour }) => {
+                const label = info?.label ?? point.dataset.label;
+                const swatch = `<span class="chart-external-tooltip-key" style="background:${colour.backgroundColor}; border-color:${colour.borderColor};"></span>`;
+                const value = formatValue(point, info?.rounding);
+
+                if (!info?.anomaly || point.raw === null || point.raw === undefined) {
+                    return `<tr><td class="chart-external-tooltip-series">${swatch}${label}</td><td class="chart-external-tooltip-value">${value}</td><td colspan="3">–</td></tr>`;
+                }
+
+                const decimalPlaces = info.rounding ?? decimalPlacesOf(point.formattedValue);
+                const rawValue = Number(point.raw);
+                const cells = [info.anomaly.last30, info.anomaly.fullPeriod, info.anomaly.early].map(period => {
+                    const diff = rawValue - period.average;
+                    return `<td class="${diffClass(diff)}">${formatSignedDiff(diff, decimalPlaces)}</td>`;
+                }).join("");
+
+                return `<tr><td class="chart-external-tooltip-series">${swatch}${label}</td><td class="chart-external-tooltip-value">${value}</td>${cells}</tr>`;
+            }).join("");
+
+            const table =
+                `<table class="chart-external-tooltip-table"><thead><tr><th></th><th>Value</th><th>vs Last 30</th><th>vs Avg</th><th>vs Early</th></tr></thead><tbody>${tableRows}</tbody></table>`;
+
+            return `${title}${table}`;
+        }
+
+        function configureChartTooltip(wrapperElement, seriesInfo) {
             const canvas = wrapperElement.querySelector("canvas");
             if (!canvas || typeof Chart === "undefined") return;
 
@@ -232,13 +311,7 @@
                     return;
                 }
 
-                const title = (tooltip.title ?? []).map(x => `<div class="chart-external-tooltip-title">${x}</div>`).join("");
-                const rows = (tooltip.dataPoints ?? []).map((point, index) => {
-                    const colour = tooltip.labelColors?.[index] ?? { backgroundColor: "#425f59", borderColor: "#425f59" };
-                    return `<div class="chart-external-tooltip-row"><span class="chart-external-tooltip-key" style="background:${colour.backgroundColor}; border-color:${colour.borderColor};"></span><span class="chart-external-tooltip-label">${point.dataset.label}: <b>${point.formattedValue}</b></span></div>`;
-                }).join("");
-
-                tooltipElement.innerHTML = `${title}${rows}`;
+                tooltipElement.innerHTML = buildTooltipHtml(tooltip, seriesInfo);
                 tooltipElement.style.opacity = 1;
 
                 const horizontalPadding = 8;

@@ -1,0 +1,20 @@
+@using ClimateExplorer.Web.Client.Components.Common
+
+<Collapsible Title="Add a trend" InitiallyShowContents="@LocalTrendEligibleSeries.Any(x => x.Trends.Count > 0)">
+    <Content>
+        <AddTrendSection EligibleSeries="@LocalTrendEligibleSeries"
+                         SeriesWithData="@SeriesWithData"
+                         OnTrendsChanged="@OnTrendsChanged"
+                         EmptyMessage="Add a data set to the chart first, then come back here to add a trend to it." />
+    </Content>
+</Collapsible>
+
+<div class="dataset-filter-row">
+    <DelayedTooltip Text="<p>Show adjusted temperature data sets, homogenised to correct for non-climatic influences such as station relocations and instrument changes.</p><p>Uncheck to show raw, unadjusted data sets instead.</p>" Multiline="true">
+        <ClimateCheckbox Text="Adjusted"
+                         Checked="@ShowAdjustedDataSets"
+                         CheckedChanged="OnAdjustedChanged" />
+    </DelayedTooltip>
+</div>
+
+<DataSetFolderList RootFolders="@RootFolders" OnAddDataSet="@OnAddDataSet" />

@@ -11,7 +11,7 @@
     <None Update="Auckland/**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="LinearRegressionFixtures/**">
+    <None Update="PolynomialRegressionFixtures/**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

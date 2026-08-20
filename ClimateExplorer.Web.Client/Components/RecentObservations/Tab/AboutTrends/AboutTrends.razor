@@ -1,9 +1,13 @@
 @namespace ClimateExplorer.Web.Client.Components.RecentObservations
 @using Blazorise
 @using ClimateExplorer.Web.Client.Components.Common
+@using ClimateExplorer.Web.Client.Components.Common.Trends
+@using ClimateExplorer.Web.Client.Services.Trends
 @using ClimateExplorer.Web.Client.UiModel.RecentObservations
+@using ClimateExplorer.Web.Client.UiModel.Trends
 
 <SidePanel @ref="sidePanel" Title="About trends" Width="min(60%, 1024px)">
+    <div class="trend-stats">
     <div class="climate-tabs trends-about-tabs">
         <Tabs SelectedTab="@selectedMetricKey" SelectedTabChanged="@OnMetricTabChanged">
             <Items>
@@ -29,9 +33,9 @@
         else
         {
             <div class="recent-observation-detail-toggle" role="group" aria-label="Time window">
-                <button type="button" class="recent-observation-detail-toggle-option @(selectedWindow == TrendWindow.Full ? "selected" : string.Empty)" @onclick="@(() => SelectWindow(TrendWindow.Full))">Full period</button>
-                <button type="button" class="recent-observation-detail-toggle-option @(selectedWindow == TrendWindow.Recent ? "selected" : string.Empty)" @onclick="@(() => SelectWindow(TrendWindow.Recent))">Last 30 years</button>
-                <button type="button" class="recent-observation-detail-toggle-option @(selectedWindow == TrendWindow.FirstHalf ? "selected" : string.Empty)" @onclick="@(() => SelectWindow(TrendWindow.FirstHalf))">Early period</button>
+                <button type="button" class="recent-observation-detail-toggle-option @(selectedWindow == TrendWindow.Full ? "selected" : string.Empty)" @onclick="@(() => SelectWindow(TrendWindow.Full))">@TrendWindowLabel.Get(TrendWindow.Full)</button>
+                <button type="button" class="recent-observation-detail-toggle-option @(selectedWindow == TrendWindow.Last30 ? "selected" : string.Empty)" @onclick="@(() => SelectWindow(TrendWindow.Last30))">@TrendWindowLabel.Get(TrendWindow.Last30)</button>
+                <button type="button" class="recent-observation-detail-toggle-option @(selectedWindow == TrendWindow.FirstHalf ? "selected" : string.Empty)" @onclick="@(() => SelectWindow(TrendWindow.FirstHalf))">@TrendWindowLabel.Get(TrendWindow.FirstHalf)</button>
             </div>
 
             <TrendStatTable Sections="@BuildSections(metric, selectedWindow)" />
@@ -43,4 +47,5 @@
             </DelayedTooltip>
         }
     }
+    </div>
 </SidePanel>

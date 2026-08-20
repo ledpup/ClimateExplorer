@@ -28,9 +28,9 @@ public static class TrendWindowCalculator
         var firstHalfCount = ordered.Count / 2;
 
         return new TrendWindowSet(
-            LinearRegressionCalculator.Calculate(ordered, alpha),
-            LinearRegressionCalculator.Calculate(ordered.TakeLast(recentCount), alpha),
-            LinearRegressionCalculator.Calculate(ordered.Take(firstHalfCount), alpha),
+            PolynomialRegressionCalculator.Calculate(ordered, degree: 1, alpha: alpha),
+            PolynomialRegressionCalculator.Calculate(ordered.TakeLast(recentCount), degree: 1, alpha: alpha),
+            PolynomialRegressionCalculator.Calculate(ordered.Take(firstHalfCount), degree: 1, alpha: alpha),
             ordered.Count);
     }
 }

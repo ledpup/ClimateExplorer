@@ -1,9 +1,9 @@
 @page "/global"
 @implements IDisposable
 
-@using Blazorise
 @using ClimateExplorer.Web.Client.Components
 @using ClimateExplorer.Web.Client.Components.Chart
+@using ClimateExplorer.Web.Client.Components.Chart.DataSetBrowser
 @using ClimateExplorer.Web.Client.Components.Common
 @using static ClimateExplorer.Web.Client.Components.Common.Collapsible;
 @using static ClimateExplorer.Web.UiModel.SuggestedPresetLists;
@@ -38,14 +38,10 @@
                DownloadRequested="@OnDownloadDataClicked" />
 </div>
 
-<Modal @ref="AddDataSetModal">
-    <ModalContent>
-        <ModalHeader Class="custom-modal-header">
-            <ModalTitle>Add data set</ModalTitle>
-            <CloseButton />
-        </ModalHeader>
-        <ModalBody>
-            <DataSetBrowser DataSetDefinitions="@DataSetDefinitions" OnAddDataSet="@OnAddDataSet"></DataSetBrowser>
-        </ModalBody>
-    </ModalContent>
-</Modal>
+<SidePanel @ref="AddDataSetSidePanel" Title="Add data set" Width="50%">
+    <DataSetBrowser DataSetDefinitions="@DataSetDefinitions"
+                    OnAddDataSet="@OnAddDataSet"
+                    ChartSeriesList="@CurrentChartState?.Series"
+                    SeriesWithData="@AllChartSeriesWithData"
+                    OnTrendsChanged="@OnTrendsChanged"></DataSetBrowser>
+</SidePanel>

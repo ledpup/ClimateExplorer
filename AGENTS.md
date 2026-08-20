@@ -18,6 +18,8 @@
   - Tablet: min-width = 768px and max-width = 1024px
   - Fullscreen: min-width = 1025px
 - UI controls must have an accessible name
+- Smallest allowed `font-size` for any label/text is `0.75rem` (12px). Don't use keyword sizes like
+  `x-small`/`smaller`/`xx-small`, or px/rem/em values below that, even for secondary/caption text.
 
 Use the following existing common components, when appriopriate:
 - ClimateButton

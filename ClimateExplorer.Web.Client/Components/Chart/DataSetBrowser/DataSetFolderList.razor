@@ -1,0 +1,17 @@
+@using ClimateExplorer.Web.Client.Components.Common
+
+@if (RootFolders != null)
+{
+    foreach (var f in RootFolders.Where(f => f.DataSets.Count > 0))
+    {
+        <div class="dataset-folder">
+            <div class="dataset-folder-name">@f.Name</div>
+            @foreach (var ds in f.DataSets)
+            {
+                <div class="entry-list">
+                    <ClimateButton Variant="ButtonVariant.Link" Icon="oi oi-plus" AriaLabel="@($"Add {ds.Name}")" Class="add-dataset" OnClick="() => AddDataSet(ds)" /> <span class="dataset-name">@ds.Name</span>
+                </div>
+            }
+        </div>
+    }
+}

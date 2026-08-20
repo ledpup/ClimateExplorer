@@ -4,6 +4,7 @@ using Blazorise;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.Client.Components;
+using ClimateExplorer.Web.Client.UiModel.Trends;
 using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
 using Microsoft.AspNetCore.Components;
@@ -27,6 +28,14 @@ public partial class ChartSeriesView
     [Parameter]
     public IReadOnlyList<DataSetMetadata>? SourceMetadata { get; set; }
 
+    /// <summary>
+    /// The trends fitted for this series on the last chart build - one entry per request in
+    /// <see cref="ChartSeriesDefinition.Trends"/>, in the same order - or empty when the trend
+    /// module is off or the build hasn't produced them yet.
+    /// </summary>
+    [Parameter]
+    public IReadOnlyList<ChartSeriesTrend>? Trends { get; set; }
+
     [Parameter]
     public EventCallback OnSeriesChanged { get; set; }
 
@@ -46,6 +55,16 @@ public partial class ChartSeriesView
     private string ToggleExpandedLabel => ChartSeries?.IsExpanded == true
         ? "Collapse series options"
         : "Expand series options";
+
+    /// <summary>
+    /// A trend regresses a value against a calendar year and projects one value per year, so the
+    /// module only makes sense while the x-axis is years.
+    /// </summary>
+    private bool IsTrendModuleAvailable => ChartSeries?.BinGranularity == BinGranularities.ByYear;
+
+    private string AddTrendTooltip => ChartSeries!.Trends.Count == 0
+        ? "Fit a trend and project it past the end of the data"
+        : "Add another trend, in a different colour, to compare against this one";
 
     public string GenerateStyleForOuterDiv()
     {
@@ -73,6 +92,35 @@ public partial class ChartSeriesView
             default:
                 throw new NotImplementedException($"TitleStyle {TitleStyle}");
         }
+    }
+
+    /// <summary>
+    /// The fitted result matching <c>ChartSeries.Trends[index]</c>, or null when the build hasn't
+    /// produced it yet (e.g. immediately after "Add trend", before the next rebuild completes).
+    /// </summary>
+    private ChartSeriesTrend? GetTrend(int index)
+    {
+        return Trends is null || index >= Trends.Count ? null : Trends[index];
+    }
+
+    /// <summary>"Trend 1", "Trend 2" etc. - always shown, including for the first/only trend.</summary>
+    private string GetTrendSlotLabel(int index)
+    {
+        return $"Trend {index + 1}";
+    }
+
+    private async Task OnAddTrendClicked()
+    {
+        ChartSeries!.Trends.Add(new ChartSeriesTrendRequest());
+
+        await OnSeriesChanged.InvokeAsync();
+    }
+
+    private async Task OnRemoveTrendClicked(int index)
+    {
+        ChartSeries!.Trends.RemoveAt(index);
+
+        await OnSeriesChanged.InvokeAsync();
     }
 
     private bool ShouldDisableAggregationOptions(ChartSeriesDefinition csd)

@@ -249,6 +249,21 @@
     font-weight: bold;
 }
 
+.trend-add-button {
+    align-self: flex-start;
+    margin: 4px 0 2px 0;
+    padding: 4px 10px;
+    border: solid 1px #ccc;
+    border-radius: 8px;
+    background: transparent;
+    color: #333;
+    cursor: pointer;
+}
+
+    .trend-add-button:hover {
+        background-color: #cfc;
+    }
+
 .about-this-data-button {
     position: absolute;
     right: 8px;

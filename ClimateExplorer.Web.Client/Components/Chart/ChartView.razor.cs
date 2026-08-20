@@ -8,7 +8,9 @@ using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.Services.Chart;
+using ClimateExplorer.Web.Client.Services.Trends;
 using ClimateExplorer.Web.Client.UiModel;
+using ClimateExplorer.Web.Client.UiModel.Trends;
 using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
 using CurrentDevice;
@@ -248,6 +250,7 @@ public partial class ChartView : IAsyncDisposable
         var title = string.Empty;
         var subtitle = string.Empty;
         List<ChartTrendlineData>? trendlines = null;
+        List<ChartTooltipSeriesInfo> tooltipMetadata = [];
 
         if (ChartLoadingErrored)
         {
@@ -306,7 +309,7 @@ public partial class ChartView : IAsyncDisposable
 
             l.LogInformation("Calling AddDataSetsToGraph");
 
-            trendlines = await AddDataSetsToChart();
+            (trendlines, tooltipMetadata) = await AddDataSetsToChart();
 
             l.LogInformation("Trendlines count: " + trendlines.Count);
 
@@ -338,7 +341,7 @@ public partial class ChartView : IAsyncDisposable
 
         await chart.Update();
 
-        await JsRuntime!.InvokeVoidAsync("configureChartTooltip", chartWrapper);
+        await JsRuntime!.InvokeVoidAsync("configureChartTooltip", chartWrapper, tooltipMetadata);
         await JsRuntime!.InvokeVoidAsync("registerChartHoverCursor", chartWrapper);
 
         // The below line is required to get the chart.js component to honour the styling applied on the parent div
@@ -357,14 +360,34 @@ public partial class ChartView : IAsyncDisposable
         l.LogInformation("Leaving");
     }
 
-    private static string GetChartLabel(SeriesTransformations seriesTransformation, string? customTransformation, string defaultLabel, SeriesAggregationOptions seriesAggregationOptions)
+    private static string GetChartLabel(ChartSeriesDefinition chartSeries, string defaultLabel)
     {
-        return seriesTransformation switch
-        {
-            SeriesTransformations.DayOfYearIfFrost => seriesAggregationOptions == SeriesAggregationOptions.Maximum ? "Last day of frost" : "First day of frost",
-            SeriesTransformations.Custom => ChartSeriesDefinition.GetFriendlyCustomTransformationLabel(customTransformation ?? "Custom transformation"),
-            _ => defaultLabel,
-        };
+        return chartSeries.GetTransformationOverrideLabel() ?? defaultLabel;
+    }
+
+    /// <summary>
+    /// The chart legend label for one trend dataset. Unchanged from before multiple trends per
+    /// series existed when a series has exactly one - "{parent} | {period} trend" - but folds in the
+    /// regression type and predict-until year once a series has more than one, so two trends can
+    /// never produce the same label even when they share a window (e.g. a linear and a quadratic fit
+    /// over the same period, or the same fit projected to two different years).
+    /// </summary>
+    private static string BuildTrendLabel(ChartSeriesDefinition csd, ChartSeriesTrend trend, bool hasMultipleTrends)
+    {
+        var period = TrendWindowLabel.Get(trend.Projection!.Window);
+
+        return hasMultipleTrends
+            ? $"{csd.GetFriendlyTitleShort()} | {trend.RegressionType} {period} trend to {trend.Projection.LastYear}"
+            : $"{csd.GetFriendlyTitleShort()} | {period} trend";
+    }
+
+    private static string BuildTrendTooltipLabel(ChartSeriesDefinition csd, ChartSeriesTrend trend, bool hasMultipleTrends, UnitOfMeasure unitOfMeasure)
+    {
+        var period = TrendWindowLabel.Get(trend.Projection!.Window);
+
+        return hasMultipleTrends
+            ? $"{csd.GetTooltipLabel(unitOfMeasure)} | {trend.RegressionType} {period} trend"
+            : $"{csd.GetTooltipLabel(unitOfMeasure)} | {period} trend";
     }
 
     private ChartState CreateCurrentChartState()
@@ -449,13 +472,19 @@ public partial class ChartView : IAsyncDisposable
         return chartOptionsInfoPanel!.ShowAsync();
     }
 
-    private async Task<List<ChartTrendlineData>> AddDataSetsToChart()
+    private async Task<(List<ChartTrendlineData> Trendlines, List<ChartTooltipSeriesInfo> TooltipMetadata)> AddDataSetsToChart()
     {
         var dataSetIndex = 0;
 
         Colours = new ColourServer();
 
         var trendlines = new List<ChartTrendlineData>();
+
+        // Built in the same order datasets are actually added to the chart (real series first, then -
+        // once every real series is in - the derived trend overlays below), so its indexes stay aligned
+        // with chart.js's dataset indexes. That alignment is what lets the external tooltip look up a
+        // hovered trend point's underlying series and show it against that series' own averages.
+        var tooltipMetadata = new List<ChartTooltipSeriesInfo>();
 
         var requestedColours = ChartSeriesWithData!
             .Where(x => x.ChartSeries!.RequestedColour != UiLogic.Colours.AutoAssigned)
@@ -475,9 +504,11 @@ public partial class ChartView : IAsyncDisposable
                 chart!,
                 chartSeries,
                 dataSet,
-                GetChartLabel(chartSeries.ChartSeries.SeriesTransformation, chartSeries.ChartSeries.CustomTransformation, defaultLabel, chartSeries.ChartSeries.Aggregation),
+                GetChartLabel(chartSeries.ChartSeries, defaultLabel),
                 htmlColourCode,
                 renderSmallPoints: renderSmallPoints);
+
+            tooltipMetadata.Add(ChartTooltipMetadataBuilder.BuildForSeries(chartSeries));
 
             if (chartSeries.ChartSeries.ShowTrendline)
             {
@@ -487,7 +518,103 @@ public partial class ChartView : IAsyncDisposable
             dataSetIndex++;
         }
 
-        return trendlines;
+        // Trend projections are appended only once every real series has been added, because the
+        // ChartTrendlineData built above addresses its series by dataset index - interleaving trend
+        // datasets would silently point those overlays at the wrong series.
+        tooltipMetadata.AddRange(await AddTrendDataSetsToChart());
+
+        return (trendlines, tooltipMetadata);
+    }
+
+    private async Task<List<ChartTooltipSeriesInfo>> AddTrendDataSetsToChart()
+    {
+        var tooltipMetadata = new List<ChartTooltipSeriesInfo>();
+
+        var binIndexesByYear = BuildBinIndexesByYear();
+
+        if (binIndexesByYear.Count == 0)
+        {
+            return tooltipMetadata;
+        }
+
+        foreach (var chartSeries in ChartSeriesWithData!)
+        {
+            var csd = chartSeries.ChartSeries!;
+            var hasMultipleTrends = chartSeries.Trends.Count > 1;
+
+            for (var tier = 0; tier < chartSeries.Trends.Count; tier++)
+            {
+                if (chartSeries.Trends[tier].Projection is not { } projection)
+                {
+                    continue;
+                }
+
+                var values = new List<double?>(new double?[ChartBins!.Length]);
+                var plotted = false;
+
+                foreach (var prediction in projection.Predictions)
+                {
+                    if (binIndexesByYear.TryGetValue((int)Math.Round(prediction.X), out var index))
+                    {
+                        values[index] = prediction.PredictedY;
+                        plotted = true;
+                    }
+                }
+
+                if (!plotted)
+                {
+                    continue;
+                }
+
+                var unitOfMeasure = chartSeries.ProcessedDataSet!.MeasurementDefinition!.UnitOfMeasure;
+                var trendColour = TrendSeriesColour.Derive(csd.Colour!, tier);
+                var trendLabel = BuildTrendLabel(csd, chartSeries.Trends[tier], hasMultipleTrends);
+
+                await chart!.AddDataSet(
+                    ChartLogic.GetTrendChartDataset(
+                        trendLabel,
+                        values,
+                        ChartColor.FromHtmlColorCode(trendColour),
+                        ChartLogic.GetYAxisId(csd.SeriesTransformation, csd.CustomTransformation, unitOfMeasure, csd.Aggregation)));
+
+                // The projection has no anomaly history of its own - it's compared against the real series
+                // it was fitted to, so hovering a predicted point shows how far above/below that series'
+                // last-30/full-period/early-period averages the prediction falls.
+                tooltipMetadata.Add(ChartTooltipMetadataBuilder.BuildForTrendSeries(chartSeries, BuildTrendTooltipLabel(csd, chartSeries.Trends[tier], hasMultipleTrends, unitOfMeasure)));
+            }
+        }
+
+        return tooltipMetadata;
+    }
+
+    /// <summary>
+    /// The last year the chart holds real data for. This is <c>chartEndBin</c> rather than the last
+    /// bin, because the bin array is deliberately extended past the data to make room for trend
+    /// projections.
+    /// </summary>
+    private short LastYearWithData()
+    {
+        return chartEndBin is YearBinIdentifier yearBin ? yearBin.Year : short.MaxValue;
+    }
+
+    private Dictionary<int, int> BuildBinIndexesByYear()
+    {
+        var binIndexesByYear = new Dictionary<int, int>();
+
+        if (ChartBins is null)
+        {
+            return binIndexesByYear;
+        }
+
+        for (var i = 0; i < ChartBins.Length; i++)
+        {
+            if (ChartBins[i] is YearBinIdentifier yearBin)
+            {
+                binIndexesByYear[yearBin.Year] = i;
+            }
+        }
+
+        return binIndexesByYear;
     }
 
     private async Task OnSelectedBinGranularityChanged(BinGranularities value, bool rebuildDataSets = true)
@@ -530,6 +657,13 @@ public partial class ChartView : IAsyncDisposable
 
         var year = (short)(startYear + e.Index);
 
+        // Clicks can land on a projected year (the bins run past the end of the data whenever a
+        // trend is displayed) or on a trend dataset itself. Neither has source data to filter to.
+        if (e.DatasetIndex >= ChartSeriesWithData!.Count || year > LastYearWithData())
+        {
+            return;
+        }
+
         var sourceDataSet = ChartSeriesWithData![e.DatasetIndex].SourceDataSet!;
 
         await YearFilterRequested.InvokeAsync(new YearAndDataTypeFilter(year) { DataType = sourceDataSet.DataType, DataAdjustment = sourceDataSet.DataAdjustment, UnitOfMeasure = sourceDataSet.MeasurementDefinition!.UnitOfMeasure });
@@ -545,7 +679,13 @@ public partial class ChartView : IAsyncDisposable
 
     private async Task OnDownloadDataClicked()
     {
-        await DownloadRequested.InvokeAsync(new DataDownloadPackage { ChartSeriesWithData = ChartSeriesWithData!, Bins = ChartBins!, BinGranularity = SelectedBinGranularity });
+        // Bins past the end of the data exist only to make room for trend projections; exporting
+        // them would append rows of empty values to the CSV.
+        var binsWithData = ChartBins!
+            .Where(x => x is not YearBinIdentifier yearBin || yearBin.Year <= LastYearWithData())
+            .ToArray();
+
+        await DownloadRequested.InvokeAsync(new DataDownloadPackage { ChartSeriesWithData = ChartSeriesWithData!, Bins = binsWithData, BinGranularity = SelectedBinGranularity });
     }
 
     private async Task ShowAddDataSetModal()

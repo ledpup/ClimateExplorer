@@ -45,6 +45,17 @@ public static class ChartOptionsFactory
                 .Select(v => v!.Value)
                 .ToList();
 
+            // A projection can rise above (or fall below) everything in the record, and these
+            // min/max values are applied to the axis explicitly - without folding every trend's
+            // projection in, a trend line would be drawn outside the axis and clipped.
+            foreach (var trend in swd.Trends)
+            {
+                if (trend.Projection is { } projection)
+                {
+                    values.AddRange(projection.Predictions.Select(x => x.PredictedY));
+                }
+            }
+
             if (values.Count == 0)
             {
                 continue;

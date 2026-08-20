@@ -305,3 +305,171 @@ th {
 .tippy-box[data-theme~=blazorise] {
     box-shadow: var(--climate-shadow-panel);
 }
+
+/* Trend statistics breakdown. Global rather than component-scoped because the same markup
+   (TrendStatTable, TrendsOverviewExplainer) is rendered from both the Recent Observations
+   About-trends panel and the chart series trend panel; each wraps its content in .trend-stats. */
+.trend-stats .trends-overview p {
+    line-height: 1.45;
+    margin: 0 0 0.9rem;
+}
+
+.trend-stats .trends-about-unavailable {
+    color: #5d6d69;
+}
+
+.trend-stats .trends-stat-section-title {
+    color: #253b36;
+    font-size: 0.95rem;
+    margin: 1.1rem 0 0.4rem;
+}
+
+.trend-stats .trends-stat-table {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin: 0 0 0 1.1rem;
+}
+
+.trend-stats .trends-stat-row {
+    display: contents;
+}
+
+.trend-stats .trends-stat-row.expandable {
+    cursor: pointer;
+}
+
+.trend-stats .trends-stat-row dt,
+.trend-stats .trends-stat-row dd {
+    border-top: 1px solid rgb(66 95 89 / 12%);
+    padding-bottom: 0.35rem;
+    padding-top: 0.35rem;
+}
+
+.trend-stats .trends-stat-row:nth-child(even of .trends-stat-row) dt,
+.trend-stats .trends-stat-row:nth-child(even of .trends-stat-row) dd {
+    background-color: #f2f2f2;
+}
+
+.trend-stats .trends-stat-row.expandable:hover dt,
+.trend-stats .trends-stat-row.expandable:hover dd {
+    background-color: #e0edeb;
+}
+
+.trend-stats .trends-stat-row.expandable:focus-visible dt,
+.trend-stats .trends-stat-row.expandable:focus-visible dd {
+    background-color: #e0edeb;
+    outline: 2px solid #0071c1;
+    outline-offset: -2px;
+}
+
+.trend-stats .trends-stat-row dt {
+    color: #45605a;
+    font-size: 0.85rem;
+    padding-left: 0.4rem;
+    padding-right: 0.6rem;
+}
+
+.trend-stats .trends-stat-row.emphasized dt {
+    font-weight: 800;
+}
+
+.trend-stats .trends-stat-row dd {
+    align-items: flex-start;
+    display: flex;
+    gap: 0.3rem;
+    margin: 0;
+    min-width: 0;
+    padding-right: 0.4rem;
+}
+
+.trend-stats .trends-stat-value {
+    color: #263a35;
+    font-weight: 600;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.trend-stats .trends-stat-row.emphasized .trends-stat-value {
+    font-weight: 700;
+}
+
+.trend-stats .trends-stat-chevron.oi {
+    color: #595959;
+    display: inline-block;
+    flex-shrink: 0;
+    font-size: 1.2rem;
+    margin-left: auto;
+    transform: rotate(0deg);
+    transform-origin: center;
+    transition: transform 0.15s ease-in-out;
+}
+
+.trend-stats .trends-stat-chevron.oi.expanded {
+    transform: rotate(90deg);
+}
+
+.trend-stats .trends-stat-row.expandable:hover .trends-stat-chevron.oi,
+.trend-stats .trends-stat-row.expandable:focus-visible .trends-stat-chevron.oi {
+    color: #0071c1;
+}
+
+.trend-stats .trends-stat-explanation {
+    background: #f4f8f6;
+    border-radius: 6px;
+    color: #000;
+    font-size: 0.85rem;
+    grid-column: 1 / -1;
+    line-height: 1.45;
+    margin: 0.3rem 0 0.5rem;
+    padding: 0.6rem 0.75rem;
+}
+
+.trend-stats .trends-stat-explanation p {
+    margin: 0 0 0.5rem;
+}
+
+.trend-stats .trends-stat-explanation p:last-child {
+    margin-bottom: 0;
+}
+
+.trend-stats .trends-stat-worked-examples {
+    margin: 0 0 0.5rem;
+    padding-left: 1.1rem;
+}
+
+.trend-stats .trends-stat-worked-examples:last-child {
+    margin-bottom: 0;
+}
+
+.trend-stats .trends-stat-worked-examples li {
+    margin: 0 0 0.35rem;
+}
+
+.trend-stats .trends-stat-worked-examples li:last-child {
+    margin-bottom: 0;
+}
+
+.trend-stats .trends-download {
+    background: none;
+    border: 1px solid #cdddd8;
+    border-radius: 6px;
+    color: #45605a;
+    cursor: pointer;
+    margin-top: 0.9rem;
+    padding: 0.4rem 0.6rem;
+}
+
+.trend-stats .trends-download:hover,
+.trend-stats .trends-download:focus {
+    background: #f4f8f6;
+}
+
+.trend-stats .trend-stats-summary {
+    color: #45605a;
+    font-size: 0.9rem;
+    margin: 0.9rem 0 0;
+}
+
+.trend-stats .trend-stats-summary.not-significant {
+    color: #8a5a00;
+}

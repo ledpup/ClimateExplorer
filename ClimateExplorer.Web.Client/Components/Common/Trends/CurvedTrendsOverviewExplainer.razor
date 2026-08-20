@@ -1,0 +1,102 @@
+@namespace ClimateExplorer.Web.Client.Components.Common.Trends
+
+<div class="trends-overview">
+    <p>
+        This tab covers what changes once the fitted trend is a <strong>quadratic</strong> or
+        <strong>cubic</strong> curve rather than a straight line - see the <strong>Overview</strong>
+        tab first for the shared basics (ordinary least squares, why rates are shown per decade, why
+        some trends say "No significant trend"), which all still apply here.
+    </p>
+
+    <h3>What a curve adds over a line</h3>
+    <p>
+        A quadratic fit is the same least-squares idea - the curve that minimises the sum of the
+        squared vertical distances from each year's value to the curve - extended with one more term:
+    </p>
+    <p class="trends-curve-equation">Y = β₀ + β₁X + β₂X²</p>
+    <p>
+        The extra β₂X² term lets the fitted curve bend, rather than forcing a single constant rate
+        across the whole record. A cubic fit adds a further β₃X³ term, letting the curve bend and then
+        straighten out or bend the other way (an inflection point) - see "A note on cubic fits" below.
+    </p>
+
+    <h3>Why the rate shown is "the current rate", not one number for the whole record</h3>
+    <p>
+        A straight line has one slope, so "the rate" and "the slope" mean the same thing everywhere on
+        the line. A curve doesn't - its rate of change is different at every point along it. Rather
+        than pick one number that would be wrong everywhere except at one spot, this site reports the
+        curve's <strong>instantaneous rate of change at the most recent year</strong> - the slope of
+        the tangent line there. That's why the headline row here is labelled "Current rate (at
+        {year})" instead of "Slope", and why it can go up noticeably between two windows that only
+        differ by a few years, even though the underlying curve hasn't been refitted - the tangent is
+        simply read at a different point.
+    </p>
+
+    <h3>A small worked example</h3>
+    <p>
+        Say five years of data visibly accelerate: 2020 at 10.0, 2021 at 10.1, 2022 at 10.3, 2023 at
+        10.6, 2024 at 11.0. A straight line through these five points has a single, constant slope. A
+        quadratic fit instead captures that each year's increase is a little larger than the year
+        before's - the curve bends upward, and its tangent at 2024 is steeper than its tangent at
+        2020. That changing steepness is exactly what "the current rate" is reporting - the slope of
+        the tangent line at the window's final year, not an average over the pace change.
+    </p>
+
+    <h3>The Coefficients table, and X-intercepts for a curve</h3>
+    <p>
+        The stats table below gains a <strong>Coefficients</strong> section listing every fitted term
+        (β₀, β₁, β₂, and β₃ for a cubic) with its own standard error - the full picture the single
+        "current rate" number above necessarily compresses into one figure. A straight line's
+        X-intercept (where the fitted line crosses zero) is computed with a confidence interval, via
+        Fieller's theorem; a curve's X-intercepts are <strong>point estimates only</strong>, since
+        Fieller's method is specific to a single ratio of two correlated coefficients and doesn't
+        extend cleanly to three or four. A curve can also cross zero more than once - the table lists
+        every real crossing found.
+    </p>
+
+    <h3>Limitations specific to curved fits</h3>
+    <ul>
+        <li>
+            <h4>Extrapolation risk is worse than for a line</h4>
+            <p>
+                The Overview tab already covers extrapolation risk for a straight line: a projected
+                rate has no guarantee of continuing. For a curve, that risk compounds - the curve's
+                rate of change is itself still changing, so projecting it forward doesn't just assume
+                "the same rate continues", it assumes "the same <em>acceleration</em> continues",
+                which is a much stronger assumption over a long projection. Concretely: fitting a
+                quadratic to just the last ten years of Mauna Loa CO₂ and projecting to 2100 (75 years
+                past the end of that ten-year window) predicts a noticeably higher figure than a
+                straight line fitted to the same ten years and projected the same distance - both
+                numbers are the honest output of their respective fits, but the quadratic one leans much
+                more heavily on an assumption (today's acceleration holding for three quarters of a
+                century) that a short window cannot itself confirm. The shorter the window a curve is
+                fitted to, the more this matters - a curve fitted across a full multi-decade record is
+                on firmer ground than one fitted across ten years.
+            </p>
+        </li>
+        <li>
+            <h4>More parameters need more data</h4>
+            <p>
+                A quadratic fit estimates three parameters instead of two; a cubic estimates four. With
+                the same number of years of data, each additional parameter leaves less information to
+                pin down every other one - a curve fitted to a short or noisy record is more likely to
+                be chasing that record's particular ups and downs than describing a real change of
+                pace. This is exactly what the significance test below is for: a curve is only offered
+                as significant when it explains meaningfully more variance than a flat line, accounting
+                for the extra parameters it was given to do so with.
+            </p>
+        </li>
+    </ul>
+
+    <h3>A note on cubic fits</h3>
+    <p>
+        A cubic curve can have up to one inflection point - a year where the curve switches from
+        curving one way to curving the other (for example, a rate of change that was accelerating
+        starts decelerating, without necessarily reversing direction). That's a real shape some records
+        have. It's also the most flexible of the three shapes this site offers, and flexible curves fit
+        noise readily: with four parameters to estimate, a cubic needs a longer, cleaner record than a
+        line or a quadratic before its extra bend is describing something real rather than the
+        particular years it happened to be fitted to. Use it deliberately, and treat a barely-significant
+        cubic fit with more scepticism than a barely-significant line.
+    </p>
+</div>

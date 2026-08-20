@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.WebApiClient.Services;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [TestClass]
@@ -19,7 +20,7 @@ public sealed class DataServiceTests
     [TestMethod]
     public async Task GetLocationDataSetMetadata_NotCached_CallsEndpointAndCachesResult()
     {
-        var cache = new StubDataServiceCache();
+        var cache = new MemoryCache(new MemoryCacheOptions());
         var handler = new StubHttpMessageHandler(_ => CreateJsonResponse(
             [
                 new DataSetMetadata
@@ -50,13 +51,13 @@ public sealed class DataServiceTests
         Assert.AreEqual($"/location-dataset-metadata?locationId={LocationId}", handler.Requests[0].RequestUri!.PathAndQuery);
         Assert.AreEqual("TEST", result[0].SourceCode);
         Assert.AreEqual("STATION1", result[0].Stations[0].StationId);
-        Assert.IsTrue(cache.ContainsKey($"/location-dataset-metadata?locationId={LocationId}"));
+        Assert.IsTrue(cache.TryGetValue($"/location-dataset-metadata?locationId={LocationId}", out _));
     }
 
     [TestMethod]
     public async Task GetLocationDataSetMetadata_Cached_ReturnsCachedResultWithoutHttpRequest()
     {
-        var cache = new StubDataServiceCache();
+        var cache = new MemoryCache(new MemoryCacheOptions());
         var cachedMetadata = new[]
         {
             new DataSetMetadata
@@ -66,7 +67,7 @@ public sealed class DataServiceTests
                 SourceCode = "CACHED",
             },
         };
-        cache.Put($"/location-dataset-metadata?locationId={LocationId}", cachedMetadata);
+        cache.Set($"/location-dataset-metadata?locationId={LocationId}", cachedMetadata);
         var handler = new StubHttpMessageHandler(_ => new HttpResponseMessage(HttpStatusCode.InternalServerError));
         var dataService = CreateDataService(handler, cache);
 
@@ -80,7 +81,7 @@ public sealed class DataServiceTests
     [TestMethod]
     public async Task GetLocationDataSetMetadata_NonSuccessStatusCode_ThrowsExceptionWithBody()
     {
-        var cache = new StubDataServiceCache();
+        var cache = new MemoryCache(new MemoryCacheOptions());
         var handler = new StubHttpMessageHandler(_ => new HttpResponseMessage(HttpStatusCode.NotFound)
         {
             Content = new StringContent("missing location"),
@@ -93,7 +94,7 @@ public sealed class DataServiceTests
         StringAssert.Contains(exception.Message, "missing location");
     }
 
-    private static DataService CreateDataService(StubHttpMessageHandler handler, IDataServiceCache cache)
+    private static DataService CreateDataService(StubHttpMessageHandler handler, IMemoryCache cache)
     {
         return new DataService(
             new HttpClient(handler) { BaseAddress = new Uri("https://example.test") },
@@ -107,28 +108,6 @@ public sealed class DataServiceTests
             Content = new StringContent(
                 JsonSerializer.Serialize(metadata, new JsonSerializerOptions(JsonSerializerDefaults.Web))),
         };
-    }
-
-    private sealed class StubDataServiceCache : IDataServiceCache
-    {
-        private readonly Dictionary<string, object> entries = [];
-
-        public T? Get<T>(string key)
-            where T : class
-        {
-            return entries.TryGetValue(key, out var value) ? value as T : null;
-        }
-
-        public void Put<T>(string key, T val)
-            where T : class
-        {
-            entries[key] = val;
-        }
-
-        public bool ContainsKey(string key)
-        {
-            return entries.ContainsKey(key);
-        }
     }
 
     private sealed class StubHttpMessageHandler : HttpMessageHandler

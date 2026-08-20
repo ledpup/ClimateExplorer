@@ -64,6 +64,9 @@ public static class AnomalyCalculator
                                                         .OrderBy(x => x.Year)
                                                         .ToArray();
         var averageOfLast30Years = lastThirtyYears.Average(x => x.Value)!.Value;
+        var firstYearOverall = nonNullDataPoints.Min(x => x.Year);
+        var lastYearOverall = nonNullDataPoints.Max(x => x.Year);
+        var averageOfFullPeriod = nonNullDataPoints.Average(x => x.Value)!.Value;
 
         return
             new CalculatedAnomaly
@@ -76,6 +79,13 @@ public static class AnomalyCalculator
                 LastYearInFirstHalf = firstHalf.Last().Year,
                 FirstYearInLast30Years = lastThirtyYears.First().Year,
                 LastYearInLast30Years = lastThirtyYears.Last().Year,
+                AverageOfFullPeriod = averageOfFullPeriod,
+                CountOfFullPeriod = nonNullDataPoints.Length,
+                FirstYearOverall = firstYearOverall,
+                LastYearOverall = lastYearOverall,
+                MissingYearsInFirstHalf = (firstHalf.Last().Year - firstHalf.First().Year + 1) - countOfFirstHalf,
+                MissingYearsInLast30Years = (lastThirtyYears.Last().Year - lastThirtyYears.First().Year + 1) - lastThirtyYears.Length,
+                MissingYearsInFullPeriod = (lastYearOverall - firstYearOverall + 1) - nonNullDataPoints.Length,
             };
     }
 
@@ -97,4 +107,19 @@ public class CalculatedAnomaly
     public int LastYearInFirstHalf { get; set; }
     public int FirstYearInLast30Years { get; set; }
     public int LastYearInLast30Years { get; set; }
+
+    /// <summary>Average across every non-null year in the dataset (not just the first or last halves).</summary>
+    public double AverageOfFullPeriod { get; set; }
+    public int CountOfFullPeriod { get; set; }
+    public int FirstYearOverall { get; set; }
+    public int LastYearOverall { get; set; }
+
+    /// <summary>Years within [FirstYearInFirstHalf, LastYearInFirstHalf] with no data.</summary>
+    public int MissingYearsInFirstHalf { get; set; }
+
+    /// <summary>Years within [FirstYearInLast30Years, LastYearInLast30Years] with no data.</summary>
+    public int MissingYearsInLast30Years { get; set; }
+
+    /// <summary>Years within [FirstYearOverall, LastYearOverall] with no data.</summary>
+    public int MissingYearsInFullPeriod { get; set; }
 }

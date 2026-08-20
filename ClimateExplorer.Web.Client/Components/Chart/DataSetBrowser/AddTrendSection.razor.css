@@ -1,0 +1,50 @@
+/* .form-row/.form-label/.form-control-wrap and .trend-add-button are duplicated here from
+   ChartSeriesView.razor.css/ChartSeriesTrendControls.razor.css - Blazor CSS isolation doesn't
+   cascade a parent's scoped styles into a child component, the same reason ChartSeriesTrendControls
+   keeps its own copy. */
+
+.add-trend-section {
+    margin-bottom: 8px;
+}
+
+.add-trend-empty {
+    color: #595959;
+    font-size: 0.85rem;
+}
+
+.form-row {
+    display: flex;
+    align-items: baseline;
+    padding: 2px 0;
+    gap: 8px;
+}
+
+.form-label {
+    width: 130px;
+    flex-shrink: 0;
+}
+
+.form-control-wrap {
+    flex: 1;
+    min-width: 0;
+}
+
+    .form-control-wrap ::deep select,
+    .form-control-wrap ::deep .form-control {
+        width: 100%;
+    }
+
+.trend-add-button {
+    align-self: flex-start;
+    margin: 4px 0 2px 0;
+    padding: 4px 10px;
+    border: solid 1px #ccc;
+    border-radius: 8px;
+    background: transparent;
+    color: #333;
+    cursor: pointer;
+}
+
+    .trend-add-button:hover {
+        background-color: #cfc;
+    }

@@ -167,3 +167,46 @@
 ::deep .chart-external-tooltip-label {
     color: #000;
 }
+
+::deep .chart-external-tooltip-table {
+    border-collapse: collapse;
+    font-size: small;
+}
+
+::deep .chart-external-tooltip-table th {
+    font-weight: 600;
+    font-size: 0.75rem;
+    color: #666;
+    text-align: right;
+    padding: 0 0 4px 10px;
+}
+
+::deep .chart-external-tooltip-table th:first-child {
+    padding-left: 0;
+}
+
+::deep .chart-external-tooltip-table td {
+    text-align: right;
+    padding: 2px 0 2px 10px;
+    white-space: nowrap;
+}
+
+::deep .chart-external-tooltip-table td.chart-external-tooltip-series {
+    text-align: left;
+    padding-left: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+::deep .chart-external-tooltip-table td.chart-external-tooltip-value {
+    font-weight: 600;
+}
+
+::deep .chart-external-tooltip-positive {
+    color: #d13f3f;
+}
+
+::deep .chart-external-tooltip-negative {
+    color: #3f5fd1;
+}

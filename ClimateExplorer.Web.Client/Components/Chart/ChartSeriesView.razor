@@ -1,3 +1,4 @@
+@using ClimateExplorer.Web.Client.Components.Chart.Trend
 @using ClimateExplorer.Web.Client.Components.Common
 @using ClimateExplorer.Web.UiLogic
 @using ClimateExplorer.Web.UiModel
@@ -198,14 +199,34 @@
                                 </span>
                             </div>
                         </DelayedTooltip>
-                        <DelayedTooltip Text="Overlay a linear trendline on this series" Style="display: block">
+                        <DelayedTooltip Text="Overlay a straight line fitted across the plotted data" Style="display: block">
                             <div class="form-row">
-                                <span class="form-label">Show trendline</span>
+                                <span class="form-label">Show fitted line</span>
                                 <span class="form-control-wrap">
-                                    <Check TValue="bool" Value="@ChartSeries.ShowTrendline" ValueChanged="@OnShowTrendlineChanged"></Check>
+                                    <Check TValue="bool" Value="@ChartSeries.ShowTrendline" ValueChanged="@OnShowTrendlineChanged" aria-label="Show fitted line"></Check>
                                 </span>
                             </div>
                         </DelayedTooltip>
+                        @if (IsTrendModuleAvailable)
+                        {
+                            @for (var i = 0; i < ChartSeries.Trends.Count; i++)
+                            {
+                                var index = i;
+                                <ChartSeriesTrendControls Request="@ChartSeries.Trends[index]"
+                                                           Trend="@GetTrend(index)"
+                                                           SlotLabel="@GetTrendSlotLabel(index)"
+                                                           OnChanged="@OnSeriesChanged"
+                                                           OnRemove="@(() => OnRemoveTrendClicked(index))" />
+                            }
+                            @if (ChartSeries.Trends.Count < ChartSeriesDefinition.MaxTrends)
+                            {
+                                <DelayedTooltip Text="@AddTrendTooltip" Style="display: block">
+                                    <button type="button" class="trend-add-button" @onclick="@OnAddTrendClicked">
+                                        <i class="fas fa-plus"></i> Add trend
+                                    </button>
+                                </DelayedTooltip>
+                            }
+                        }
                         <DelayedTooltip Text="Prevent this series from being replaced when a new chart preset is selected" Style="display: block">
                             <div class="form-row">
                                 <span class="form-label">Lock?</span>

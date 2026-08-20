@@ -34,6 +34,16 @@ public class Region : GeographicalEntity
         return GetRegions().Single(x => x.Id == RegionId(name));
     }
 
+    /// <summary>
+    /// True when <paramref name="id"/> is one of the synthetic region IDs from <see cref="RegionId"/>
+    /// (e.g. Atmosphere, Ocean) rather than a real <c>Location</c>'s ID. Used to tell a "global"
+    /// data set (CO2, sea ice extent, etc.) apart from a location's own observations.
+    /// </summary>
+    public static bool IsRegionId(Guid id)
+    {
+        return GetRegions().Any(x => x.Id == id);
+    }
+
     public static Guid RegionId(string name)
     {
         return name switch
