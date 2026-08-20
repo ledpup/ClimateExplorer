@@ -345,6 +345,51 @@ public class ChartDataBuilderTests
         Assert.AreEqual(TrendWindow.Full, backAtSufficientLocation.SeriesWithData.Single().Trends[1].Projection?.Window);
     }
 
+    [TestMethod]
+    public async Task BuildAsync_TrendOnMovingAverageSmoothedSeries_ProjectsFromAfterTheTrueLastRawYear()
+    {
+        // A centred 10-year moving average can't fill a full window for the last 5 years of a
+        // record, so the smoothed series plotted on the chart stops 5 years short of the raw data.
+        // The trend's projection must resume after the true last raw year (2025), not after the
+        // last smoothed point (2020) - otherwise it draws "predicted" points for years that are
+        // already measured, just not smoothed.
+        var records = Enumerable.Range(1900, 126).Select(y => (year: y, value: (double?)(10 + ((y - 1900) * 0.03)))).ToArray();
+        var dataService = CreateDataService(CreateYearDataSet(records));
+
+        var series = CreateSeries(smoothing: SeriesSmoothingOptions.MovingAverage, smoothingWindow: 10);
+        series.Trends = [new ChartSeriesTrendRequest { RegressionType = TrendRegressionType.Linear, TrendPeriod = TrendWindow.Full, TrendPredictionYears = 5 }];
+        var state = new ChartState { ChartAllData = true, Series = [series] };
+
+        var result = await CreateBuilder(dataService).BuildAsync(state);
+
+        var seriesWithData = result.SeriesWithData.Single();
+        var lastSmoothedYear = seriesWithData.PreProcessedDataSet!.DataRecords.Last(x => x.Value.HasValue).Year;
+
+        Assert.AreEqual((short)2020, lastSmoothedYear); // sanity check: the smoothing did trim the tail
+        Assert.AreEqual(2025, seriesWithData.Trends.Single().LastDataYear);
+        Assert.AreEqual(2026, seriesWithData.Trends.Single().Projection!.FirstYear);
+    }
+
+    [TestMethod]
+    public async Task BuildAsync_TrendOnMovingAverageSmoothedSeriesWithExplicitEndYear_DoesNotProjectPastTheRequestedEndYear()
+    {
+        // The true-last-raw-year anchor still respects an explicit end-year filter, the same way
+        // the chart's own bin range does - it must not claim data exists past what the user asked
+        // to see, even though the full raw record actually runs further.
+        var records = Enumerable.Range(1900, 126).Select(y => (year: y, value: (double?)(10 + ((y - 1900) * 0.03)))).ToArray();
+        var dataService = CreateDataService(CreateYearDataSet(records));
+
+        var series = CreateSeries(smoothing: SeriesSmoothingOptions.MovingAverage, smoothingWindow: 10);
+        series.Trends = [new ChartSeriesTrendRequest { RegressionType = TrendRegressionType.Linear, TrendPeriod = TrendWindow.Full, TrendPredictionYears = 5 }];
+        var state = new ChartState { ChartAllData = false, EndYear = "2022", Series = [series] };
+
+        var result = await CreateBuilder(dataService).BuildAsync(state);
+
+        var trend = result.SeriesWithData.Single().Trends.Single();
+        Assert.AreEqual(2022, trend.LastDataYear);
+        Assert.AreEqual(2023, trend.Projection!.FirstYear);
+    }
+
     private static ChartDataBuilder CreateBuilder(Mock<IDataService> dataService)
     {
         return new ChartDataBuilder(dataService.Object, NullLogger<ChartDataBuilder>.Instance);

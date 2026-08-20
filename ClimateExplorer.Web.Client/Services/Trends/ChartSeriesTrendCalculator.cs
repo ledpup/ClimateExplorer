@@ -43,6 +43,15 @@ public static class ChartSeriesTrendCalculator
     private static readonly TrendWindow[] SelectionPriority =
         [TrendWindow.Full, TrendWindow.Last30, TrendWindow.RecentDecade, TrendWindow.FirstHalf];
 
+    /// <param name="lastMeasuredYear">
+    /// The true last calendar year with real (raw) data, when it differs from the last year in
+    /// <paramref name="points"/> - i.e. when <paramref name="points"/> is a smoothed series whose
+    /// trailing years were trimmed by a centred moving average. Anchors both the projection's
+    /// start year and <see cref="ChartSeriesTrend.LastDataYear"/>, so the trend module never draws
+    /// a "projected" point for a year that's already been measured, just not plotted. Defaults to
+    /// the last year in <paramref name="points"/> when omitted, which is correct whenever the
+    /// series isn't smoothed (or the caller doesn't know the difference).
+    /// </param>
     public static ChartSeriesTrend Calculate(
         TrendStatSubject subject,
         IReadOnlyList<DataPoint> points,
@@ -50,7 +59,8 @@ public static class ChartSeriesTrendCalculator
         TrendWindow? requestedWindow,
         int predictionYears,
         int? predictionTargetYear = null,
-        IReadOnlySet<TrendWindow>? excludedFromDefault = null)
+        IReadOnlySet<TrendWindow>? excludedFromDefault = null,
+        int? lastMeasuredYear = null)
     {
         ArgumentNullException.ThrowIfNull(subject);
         ArgumentNullException.ThrowIfNull(points);
@@ -68,7 +78,7 @@ public static class ChartSeriesTrendCalculator
                     $"Only {ordered.Count} complete {(ordered.Count == 1 ? "year" : "years")} of data are plotted, and a trend needs at least "
                     + $"{MinimumYearsForTrend}. That minimum is used across the site (for example the warming anomaly and the heating "
                     + "score) so long-term trends aren't skewed by short records.",
-                LastDataYear = ordered.Count == 0 ? 0 : (int)Math.Round(ordered[^1].X),
+                LastDataYear = lastMeasuredYear ?? (ordered.Count == 0 ? 0 : (int)Math.Round(ordered[^1].X)),
             };
         }
 
@@ -91,7 +101,11 @@ public static class ChartSeriesTrendCalculator
             new(TrendWindow.FirstHalf, PolynomialRegressionCalculator.Calculate(firstHalfPoints, degree), firstHalfPoints),
         };
 
-        var lastDataYear = (int)Math.Round(ordered[^1].X);
+        // Ordinarily the same as the last fitted point, but a caller fitting a smoothed series
+        // (a centred moving average trims the trailing years it can't fill a full window for)
+        // passes the true last calendar year that has raw data, so the projection never starts
+        // on a year that's already measured, just not plotted.
+        var lastDataYear = lastMeasuredYear ?? (int)Math.Round(ordered[^1].X);
         var significantWindows = windows.Where(x => x.IsSignificant).Select(x => x.Window).ToList();
         var selectedWindow = ResolveWindow(significantWindows, requestedWindow, excludedFromDefault);
 

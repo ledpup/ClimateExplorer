@@ -231,6 +231,49 @@ public class ChartSeriesTrendCalculatorTests
     }
 
     [TestMethod]
+    public void Calculate_LastMeasuredYearProvided_ProjectsFromAfterThatYearInsteadOfTheLastFittedPoint()
+    {
+        // Simulates a moving-average-smoothed series: the fitted points stop at 2000 (that's as far
+        // as the smoothing could reach), but the caller knows the raw record actually runs to 2005.
+        var points = CreatePerfectLine(1900, 101, slope: 0.03); // last fitted point is year 2000
+
+        var result = ChartSeriesTrendCalculator.Calculate(
+            Subject, points, TrendRegressionType.Linear, TrendWindow.Full, predictionYears: 10, lastMeasuredYear: 2005);
+
+        Assert.AreEqual(2005, result.LastDataYear);
+        Assert.AreEqual(2006, result.Projection!.FirstYear);
+        Assert.AreEqual(2015, result.Projection.LastYear);
+    }
+
+    [TestMethod]
+    public void Calculate_LastMeasuredYearProvided_PredictedValuesStillFollowTheLineFittedOnThePlottedPoints()
+    {
+        // The regression itself is unaffected by lastMeasuredYear - only where the projection
+        // resumes from changes, not what was fitted or the shape of the line it follows.
+        var points = CreatePerfectLine(1900, 101, slope: 0.03);
+
+        var result = ChartSeriesTrendCalculator.Calculate(
+            Subject, points, TrendRegressionType.Linear, TrendWindow.Full, predictionYears: 3, lastMeasuredYear: 2005);
+        var regression = result.GetWindow(TrendWindow.Full)!.Regression;
+
+        foreach (var prediction in result.Projection!.Predictions)
+        {
+            Assert.AreEqual(regression.Curve.Predict(prediction.X), prediction.PredictedY, 1e-9);
+        }
+    }
+
+    [TestMethod]
+    public void Calculate_LastMeasuredYearOmitted_FallsBackToTheLastFittedPointAsBefore()
+    {
+        var points = CreatePerfectLine(1900, 101, slope: 0.03);
+
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, TrendWindow.Full, predictionYears: 10);
+
+        Assert.AreEqual(2000, result.LastDataYear);
+        Assert.AreEqual(2001, result.Projection!.FirstYear);
+    }
+
+    [TestMethod]
     public void Calculate_UnsortedPoints_ProjectsFromTheLatestYearRegardless()
     {
         var points = CreatePerfectLine(1900, 101, slope: 0.03).OrderBy(x => -x.X).ToList();

@@ -137,6 +137,7 @@ public sealed class ChartDataBuilder : IChartDataBuilder
         List<SeriesWithData> renderableChartSeries,
         BinIdentifier[] chartBins,
         BinGranularities binGranularity,
+        ChartState state,
         List<UserNotification> messages)
     {
         var seriesWantingTrends = renderableChartSeries.Where(x => x.ChartSeries!.Trends.Count > 0).ToList();
@@ -167,6 +168,7 @@ public sealed class ChartDataBuilder : IChartDataBuilder
             var csd = cs.ChartSeries!;
             var subject = new TrendStatSubject(csd.GetFriendlyTitleShort(), ResolveTrendUnit(csd));
             var points = BuildTrendPoints(cs.PreProcessedDataSet!, binIdsToPlot);
+            var lastMeasuredYear = GetLastMeasuredYear(cs.SourceDataSet, state);
 
             var results = new List<ChartSeriesTrend>();
             var windowsAlreadyShown = new HashSet<TrendWindow>();
@@ -182,7 +184,8 @@ public sealed class ChartDataBuilder : IChartDataBuilder
                     request.TrendPeriod,
                     request.TrendPredictionYears,
                     request.TrendPredictionTargetYear,
-                    windowsAlreadyShown);
+                    windowsAlreadyShown,
+                    lastMeasuredYear);
 
                 results.Add(trend);
 
@@ -243,6 +246,33 @@ public sealed class ChartDataBuilder : IChartDataBuilder
             .Select(year => new YearBinIdentifier((short)year));
 
         return [.. chartBins, .. extraBins];
+    }
+
+    /// <summary>
+    /// The true last calendar year with raw data for a series - not necessarily the last year that
+    /// made it onto the chart, which for a moving-average-smoothed series lags behind by roughly
+    /// half the smoothing window (a centred average needs a full window on both sides, so the
+    /// trailing years of the record are trimmed from <see cref="SeriesWithData.PreProcessedDataSet"/>
+    /// even though real data exists for them). Used to anchor the trend projection so it never
+    /// starts on a year that's already measured, just not plotted.
+    /// </summary>
+    /// <remarks>
+    /// Still respects an explicit end-year filter the same way the chart's own bin range does - the
+    /// projection never claims to start after a year the user asked not to see - but doesn't clamp
+    /// to it when the filter doesn't actually restrict anything (<see cref="ChartState.ChartAllData"/>,
+    /// or a requested end year past the true end of the record - the same "only clamp downward" rule
+    /// <see cref="ChartLogic.GetBinRangeToPlotForGaplessRange"/> applies to the smoothed series).
+    /// </remarks>
+    private static int GetLastMeasuredYear(DataSet sourceDataSet, ChartState state)
+    {
+        var lastYear = (int)sourceDataSet.GetEndYearForDataSet();
+
+        if (!state.ChartAllData && short.TryParse(state.EndYear, out var userEndYear) && userEndYear < lastYear)
+        {
+            lastYear = userEndYear;
+        }
+
+        return lastYear;
     }
 
     private static List<DataPoint> BuildTrendPoints(DataSet dataSet, HashSet<string> binIdsToPlot)
@@ -494,7 +524,7 @@ public sealed class ChartDataBuilder : IChartDataBuilder
                 // bin range is known. It also has to happen before gap filling, because a trend
                 // projection extends the bin array past the end of the data and the gap-filling
                 // pass below is what gives every other series null records for those extra bins.
-                chartBins = ApplyTrends(renderableChartSeries, chartBins, binGranularity, messages);
+                chartBins = ApplyTrends(renderableChartSeries, chartBins, binGranularity, state, messages);
 
                 break;
 
