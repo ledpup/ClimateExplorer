@@ -5,21 +5,21 @@ date: 2026-08-21 15:00:00 +1000
 categories: site-info
 ---
 
-Every [location page](https://climateexplorer.net/locations) on ClimateExplorer has a Recent Observations panel. It gathers the most recent data it can find to show the most up-to-date view of what's happening to the climate right now. This post covers how it works and what it can tell you, using Canberra as the example.
+Every [location page](https://climateexplorer.net/locations) on ClimateExplorer has a Recent Observations panel. It gathers the most recent data to show an up-to-date view of what's happening right now. This post covers how it works and what it can tell you.
 
 ![Recent observations for Canberra]({{site.url}}/blog/assets/recent-observations-canberra-2026-08-21.PNG)
 
 ## Tiles for every timescale
 
-Recent Observations breaks the record into tiles, one per period: the latest **day**, the latest 7 days (a rolling **week**), the current and previous **month(S)**, the current and previous **season(S)**, and the year to date and the previous **year(S)**.
+Recent Observations is a tiled view of a location, one per period: the latest **day**, the latest 7 days (a rolling **week**), the current and previous **month(s)**, the current and previous **season(s)**, and the year to date and previous **year(s)**.
 
-The panel starts with a sensible default set of tiles, and you can go further back with the "Add" buttons above the grid — add an earlier day, month, season, or year, one at a time. Each added tile can be removed again with its close button, so you can build up exactly the comparison you want, for example the last several Augusts side by side.
+The panel starts with a default set of tiles, and you can go further back with the "Add" buttons above the grid — add an earlier day, month, season, or year, one at a time.
 
 ## The headline: ranking
 
 Every tile leads with a plain-English ranking sentence, and it's the fastest way to read whether something is unusual: *"Warmer than 85% of 17 August days"*, *"Top 10% warmest"*, *"Warmer than 99% of Winter-to-date periods"*. This is a straight percentile ranking of the current value against every comparable historical period, i.e. it always compares like with like — this 17 August against every other 17 August on record, this winter-to-date against every prior winter-to-date, and so on.
 
-When a value is at the extreme end of the record, the ranking sentence is replaced by a **New record** or **Equal record** badge, as Canberra's winter-to-date average maximum and year-to-date average maximum both are in the screenshot above. Tiles also show the record high and record low for that exact comparison window, with the year they occurred, so a "new record" claim comes with the number it beat right next to it.
+When a value is at the extreme end of the record, the ranking sentence is replaced by a **New record** or **Equal record** badge. Tiles also show the record high and record low for that exact comparison window, with the year they occurred, so a "new record" claim comes with the number it beat right next to it.
 
 Expanding a tile (the chevron in its bottom corner) gives you the full **Ranking** view: an ordinal rank ("3rd highest of 82"), the comparable-period count it was ranked against, and the record high/low with dates.
 
@@ -51,5 +51,3 @@ A few controls sit above the tile grid and under a "Configuration" section below
 - **View as of** lets you set a reference date, so you can see what Recent Observations would have shown on any past day, not just today.
 - **Comparison range** chooses whether historical comparisons use the station's entire dataset or only data up to that reference date.
 - **Completeness threshold** sets the minimum proportion of a period's days that must have data before it's compared to history at all, so a month missing half its readings doesn't get ranked as if it were complete.
-
-Between the addable tiles, four statistics views per tile, and two domains, there's a lot to explore from a single location page — but the point of the panel is that you don't have to: the headline ranking sentence on each tile is designed to tell you what you need to know at a glance, with the detail there for whenever you want to dig further.
