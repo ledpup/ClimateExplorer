@@ -5,13 +5,13 @@ date: 2026-08-21 15:00:00 +1000
 categories: site-info
 ---
 
-Every [location page](https://climateexplorer.net/locations) on ClimateExplorer has a Recent Observations panel. It gathers the most recent data to show an up-to-date view of what's happening right now. This post covers how it works and what it can tell you.
+Every [location page](https://climateexplorer.net/locations) on ClimateExplorer has a Recent Observations panel. It gathers the most recent data to show an up-to-date view of your location.
 
 ![Recent observations for Canberra]({{site.url}}/blog/assets/recent-observations-canberra-2026-08-21.PNG)
 
 ## Tiles for every timescale
 
-Recent Observations is a tiled view of a location, one per period: the latest **day**, the latest 7 days (a rolling **week**), the current and previous **month(s)**, the current and previous **season(s)**, and the year to date and previous **year(s)**.
+Recent Observations is a tiled view of a location, one per period: the latest **day**, the latest 7 days, the current **month**, the current **season**, and the **year** to date.
 
 The panel starts with a default set of tiles, and you can go further back with the "Add" buttons above the grid — add an earlier day, month, season, or year, one at a time.
 
@@ -27,7 +27,7 @@ Expanding a tile (the chevron in its bottom corner) gives you the full **Ranking
 
 Alongside the ranking, every tile shows the **historical average** for that period and the **anomaly** — how far the current value sits above or below it (e.g. "+3.0°C"). That's the fastest way to see not just whether a period ranks highly, but by how much.
 
-Expanding to the **Average** tab breaks this down per metric (mean, average maximum, average minimum), each with its own anomaly, historical average, and current value.
+Expanding to the **Average** tab breaks this down per metric (average mean, maximum, minimum), each with its own anomaly, historical average, and current value.
 
 The **Variation** tab goes a step further and asks how unusual an anomaly actually is, by expressing it as a standard score against the metric's typical year-to-year spread. A small anomaly in a period that's normally very stable can be more unusual than a larger anomaly in a period that swings around a lot from year to year — the standard score is what separates those two cases, and it's shown alongside the typical variation it was measured against.
 
