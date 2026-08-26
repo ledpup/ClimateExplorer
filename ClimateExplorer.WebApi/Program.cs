@@ -74,30 +74,6 @@ builder.Services.AddSingleton<IDataSetDownloader>(
     new GhcndDataSetDownloader(GhcndHttpClientFactory.CreateHttpClient()));
 builder.Services.AddSingleton<IDataSetDownloader>(
     new BomDataSetDownloader(new BomDailyDataClient(BomHttpClientFactory.CreateBomHttpClient())));
-builder.Services.AddSingleton<IDataSetDownloader>(
-    services => new NoaaGlobalTempDataSetDownloader(
-        services.GetRequiredService<DataSetHttpFileDownloader>(),
-        services.GetRequiredService<TimeProvider>()));
-builder.Services.AddSingleton<IDataSetDownloader>(
-    services => new GreenlandDataSetDownloader(
-        new GreenlandMeltDataClient(services.GetRequiredService<HttpClient>()),
-        services.GetRequiredService<DataSetSourceFileStore>(),
-        services.GetRequiredService<TimeProvider>()));
-builder.Services.AddSingleton<IDataSetDownloader>(
-    services => new TransformingDataSetDownloader(
-        "ocean-acidity",
-        services.GetRequiredService<DataSetHttpFileDownloader>(),
-        new OceanAciditySourceFileTransformer()));
-builder.Services.AddSingleton<IDataSetDownloader>(
-    services => new TransformingDataSetDownloader(
-        "sea-level",
-        services.GetRequiredService<DataSetHttpFileDownloader>(),
-        new SeaLevelSourceFileTransformer()));
-builder.Services.AddSingleton<IDataSetDownloader>(
-    services => new TransformingDataSetDownloader(
-        "ozone",
-        services.GetRequiredService<DataSetHttpFileDownloader>(),
-        new OzoneSourceFileTransformer()));
 builder.Services.AddSingleton<DataSetSourceUpdateCoordinator>();
 builder.Services.AddSingleton<IDataSetSourceUpdateCoordinator>(
     services => services.GetRequiredService<DataSetSourceUpdateCoordinator>());
