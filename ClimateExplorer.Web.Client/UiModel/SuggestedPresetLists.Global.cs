@@ -12,12 +12,6 @@ public static partial class SuggestedPresetLists
     {
         var suggestedPresets = new List<SuggestedChartPresetModelWithVariants>();
 
-        // This has been hacked in to be able to support a location group as a location ID. This needs to be refactored to support more than one location group
-        // when we expand to other regions
-        var tempMax = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId("Australia"), DataType.TempMax, DataAdjustment.Adjusted, throwIfNoMatch: false);
-        var tempMaxUnadjusted = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId("Australia"), DataType.TempMax, DataAdjustment.Unadjusted, throwIfNoMatch: false);
-        var precipitation = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId("Australia"), DataType.Precipitation, null, throwIfNoMatch: false);
-
         var co2 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Atmosphere), DataType.CO2, null, throwIfNoMatch: true);
         var oceanAcidity = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Ocean), DataType.OceanAcidity, null, throwIfNoMatch: true);
         var ch4 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Atmosphere), DataType.CH4, null, throwIfNoMatch: true);
