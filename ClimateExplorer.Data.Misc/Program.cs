@@ -41,6 +41,12 @@ var dataSetSourceUpdateCoordinator = new DataSetSourceUpdateCoordinator(
         new TransformingDataSetDownloader("ocean-acidity", dataSetHttpFileDownloader, new OceanAciditySourceFileTransformer()),
         new TransformingDataSetDownloader("sea-level", dataSetHttpFileDownloader, new SeaLevelSourceFileTransformer()),
         new TransformingDataSetDownloader("ozone", dataSetHttpFileDownloader, new OzoneSourceFileTransformer()),
+
+        // Downloaded ~annually, not on WebApi's automatic per-request refresh - the source zip is ~40MB
+        // and WGMS only publishes a new release roughly once a year. The zip's URL is dated/versioned
+        // (DataSetDefinitionsBuilder.cs's DataDownloadUrl for this dataset) and needs a manual bump when
+        // WGMS publishes a new release - not auto-discovered.
+        new TransformingDataSetDownloader("wgms-glacier-mass-balance", dataSetHttpFileDownloader, new WgmsGlacierMassBalanceSourceFileTransformer()),
     ],
     timeProvider,
     factory.CreateLogger<DataSetSourceUpdateCoordinator>());

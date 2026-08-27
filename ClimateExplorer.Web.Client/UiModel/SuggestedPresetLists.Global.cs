@@ -22,17 +22,18 @@ public static partial class SuggestedPresetLists
         var northSeaIceExtent = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Arctic), DataType.SeaIceExtent, null, throwIfNoMatch: true);
         var southSeaIceExtent = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Antarctic), DataType.SeaIceExtent, null, throwIfNoMatch: true);
         var greenland = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Greenland), DataType.IceMeltArea, null, throwIfNoMatch: true);
+        var glacierMassBalance = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Land), DataType.GlacierMassBalance, null, throwIfNoMatch: true);
 
         var nino34 = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Ocean), DataType.Nino34, null, throwIfNoMatch: true);
         var iod = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Ocean), DataType.IOD, null, throwIfNoMatch: true);
         var amo = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Ocean), DataType.Amo, null, throwIfNoMatch: true);
 
-        var sunspots = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId("Sun"), DataType.SunspotNumber, null, throwIfNoMatch: true);
-        var tsi = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId("Sun"), DataType.SolarRadiation, null, throwIfNoMatch: true);
+        var sunspots = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Sun), DataType.SunspotNumber, null, throwIfNoMatch: true);
+        var tsi = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Sun), DataType.SolarRadiation, null, throwIfNoMatch: true);
 
         var globalTemp = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Earth), DataType.TempMean, null, throwIfNoMatch: true);
-        var globalLandTemp = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId("Land"), DataType.TempMean, null, throwIfNoMatch: true);
-        var globalOceanTemp = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId("Ocean"), DataType.TempMean, null, throwIfNoMatch: true);
+        var globalLandTemp = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Land), DataType.TempMean, null, throwIfNoMatch: true);
+        var globalOceanTemp = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Ocean), DataType.TempMean, null, throwIfNoMatch: true);
 
         var northernTemp = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.NorthernHemi), DataType.TempMean, null, throwIfNoMatch: true);
         var southernTemp = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.SouthernHemi), DataType.TempMean, null, throwIfNoMatch: true);
@@ -599,12 +600,32 @@ public static partial class SuggestedPresetLists
                                 SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Greenland), greenland!),
                                 Aggregation = SeriesAggregationOptions.Sum,
                                 BinGranularity = BinGranularities.ByYear,
-                                Smoothing = SeriesSmoothingOptions.MovingAverage,
+                                Smoothing = SeriesSmoothingOptions.None,
                                 SmoothingWindow = 10,
                                 Value = SeriesValueOptions.Value,
-                                DisplayStyle = SeriesDisplayStyle.Line,
+                                DisplayStyle = SeriesDisplayStyle.Bar,
                                 GroupingThreshold = 0.1f,
                                 RequestedColour = UiLogic.Colours.Blue,
+                            },
+                        ],
+                    },
+                    new SuggestedChartPresetModel()
+                    {
+                        Title = "Global glacier mass balance",
+                        Description = "Bar chart of the global glacier mass balance anomaly, averaged across WGMS Benchmark glaciers",
+                        ChartSeriesList =
+                        [
+                            new ChartSeriesDefinition()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion("Land"), glacierMassBalance!),
+                                Aggregation = SeriesAggregationOptions.Mean,
+                                BinGranularity = BinGranularities.ByYear,
+                                Smoothing = SeriesSmoothingOptions.None,
+                                SmoothingWindow = 10,
+                                Value = SeriesValueOptions.Value,
+                                DisplayStyle = SeriesDisplayStyle.Bar,
+                                GroupingThreshold = 0.05f,
                             },
                         ],
                     },

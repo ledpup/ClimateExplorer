@@ -22,9 +22,9 @@ public sealed class DataSetDownloadMetadataTests
 
         // 92 closed BOM stations (205 total mapped BOM stations - 113 currently open, one per BOM location)
         // are deliberately excluded from automatic retrieval; see IsAutomaticallyRetrievable.
-        Assert.HasCount(2002, assets);
+        Assert.HasCount(2003, assets);
         CollectionAssert.AreEquivalent(
-            new[] { "bom-station", "direct-http", "ghcnd-station", "greenland-melt", "noaa-global-temperature", "ocean-acidity", "ozone", "sea-level" },
+            new[] { "bom-station", "direct-http", "ghcnd-station", "greenland-melt", "noaa-global-temperature", "ocean-acidity", "ozone", "sea-level", "wgms-glacier-mass-balance" },
             assets.Select(x => x.DownloaderKey).Distinct().ToArray());
         Assert.AreEqual(assets.Count, assets.Select(x => x.AssetKey).Distinct().Count());
         Assert.IsTrue(assets.All(x => !x.RelativePath.Contains('[') && (x.DownloadUrl == null || !x.DownloadUrl.Contains('['))));

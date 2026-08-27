@@ -96,6 +96,30 @@ public partial class DataSetDefinitionsBuilder
             },
             new()
             {
+                Id = Guid.Parse("E970C6DA-564E-4768-8FC4-3E46B4B8776F"),
+                Name = "Glacier mass balance",
+                ShortName = "Glacier mass balance",
+                Description = "A global glacier mass balance index, built from the World Glacier Monitoring Service's Fluctuations of Glaciers database. Includes every 'Benchmark' glacier - more than 10 years of ongoing glaciological mass-balance measurements, with at most one year's gap in the past decade. Each glacier's annual balance is expressed as a deviation from its own long-term mean (in metres water equivalent) before averaging, so glaciers with longer or more complete records don't dominate the global signal.",
+                Publisher = "World Glacier Monitoring Service (WGMS)",
+                PublisherUrl = "https://wgms.ch/",
+                MoreInformationUrl = "https://wgms.ch/products_ref_glaciers/",
+                DataDownloadUrl = "https://wgms.ch/downloads/DOI-WGMS-FoG-2026-02-10.zip",
+                DataDownloaderKey = "wgms-glacier-mass-balance",
+                MeasurementDefinitions =
+                [
+                    new()
+                    {
+                        DataType = DataType.GlacierMassBalance,
+                        UnitOfMeasure = UnitOfMeasure.MetresWaterEquivalent,
+                        DataResolution = DataResolution.Yearly,
+                        DataAdjustment = null,
+                        DataRowRegEx = @"^(?<year>\d{4}),(?<value>-?\d+\.\d+)$",
+                        DataFileSource = LooseSource(@"Glaciers\wgms-glacier-mass-balance-index.csv"),
+                    },
+                ],
+            },
+            new()
+            {
                 Id = Guid.Parse("0561CF7E-83F2-4617-AC61-4962A0E95093"),
                 Name = "Hadley Centre Central England Temperature",
                 ShortName = "HadCET",
