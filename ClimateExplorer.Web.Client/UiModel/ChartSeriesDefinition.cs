@@ -39,6 +39,19 @@ public class ChartSeriesDefinition
     public string? Colour { get; set; } // Always allocated by ColourServer
     public Colours RequestedColour { get; set; }
 
+    /// <summary>
+    /// Optional per-value-sign colour override: when both this and <see cref="NegativeValueColour"/>
+    /// are set, values are coloured by sign (this colour for values &gt; 0, the other for values &lt; 0)
+    /// instead of using <see cref="RequestedColour"/>/<see cref="Colour"/> throughout. Currently only
+    /// honoured for bar charts (see ChartLogic.GetBarChartColourSet), but the field isn't itself
+    /// display-style-specific - a preset sets it, and it's up to the chart-building code for each
+    /// display style whether it makes use of it. Not yet exposed in the UI; set only from preset code.
+    /// </summary>
+    public Colours? PositiveValueColour { get; set; }
+
+    /// <summary>See <see cref="PositiveValueColour"/>.</summary>
+    public Colours? NegativeValueColour { get; set; }
+
     // Rendering option fields
     public SeriesDisplayStyle DisplayStyle { get; set; }
     public bool ShowTrendline { get; set; }

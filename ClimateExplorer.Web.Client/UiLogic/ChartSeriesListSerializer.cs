@@ -117,6 +117,12 @@ public static class ChartSeriesListSerializer
                 // since a URL shared before this segment existed should simply have the trend
                 // module off, not fail to parse.
                 Trends = ParseTrends(GetOptionalSegment(segments, 19)),
+
+                // Segments 20/21 are new (added alongside PositiveValueColour/NegativeValueColour) -
+                // read defensively so a URL shared before they existed still parses, just without a
+                // per-sign colour override.
+                PositiveValueColour = (Colours?)ParseOptionalNullableEnum<Colours>(segments, 20),
+                NegativeValueColour = (Colours?)ParseOptionalNullableEnum<Colours>(segments, 21),
             };
     }
 
@@ -323,7 +329,9 @@ public static class ChartSeriesListSerializer
                 csd.GroupingThreshold,
                 csd.DataAvailable,
                 csd.MinimumDataResolution,
-                BuildTrendsUrlComponent(csd.Trends));
+                BuildTrendsUrlComponent(csd.Trends),
+                csd.PositiveValueColour,
+                csd.NegativeValueColour);
     }
 
     private static string BuildTrendsUrlComponent(List<ChartSeriesTrendRequest> trends)

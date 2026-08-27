@@ -626,6 +626,8 @@ public static partial class SuggestedPresetLists
                                 Value = SeriesValueOptions.Value,
                                 DisplayStyle = SeriesDisplayStyle.Bar,
                                 GroupingThreshold = 0.05f,
+                                PositiveValueColour = UiLogic.Colours.Blue,
+                                NegativeValueColour = UiLogic.Colours.Red,
                             },
                         ],
                     },

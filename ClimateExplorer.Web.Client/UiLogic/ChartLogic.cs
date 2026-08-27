@@ -132,12 +132,13 @@ public static class ChartLogic
         ChartColor chartColor,
         UnitOfMeasure unitOfMeasure,
         bool? absoluteValues,
-        bool redPositive,
+        Colours? positiveValueColour,
+        Colours? negativeValueColour,
         SeriesTransformations seriesTransformations,
         string? customTransformation,
         SeriesAggregationOptions seriesAggregationOptions)
     {
-        var colour = GetBarChartColourSet(values, chartColor, redPositive);
+        var colour = GetBarChartColourSet(values, chartColor, positiveValueColour, negativeValueColour);
 
         return
             new BarChartDataset<double?>
@@ -157,7 +158,8 @@ public static class ChartLogic
         SeriesDisplayStyle displayStyle,
         ChartColor? chartColour = null,
         bool? absoluteValues = false,
-        bool redPositive = true,
+        Colours? positiveValueColour = null,
+        Colours? negativeValueColour = null,
         SeriesTransformations seriesTransformations = SeriesTransformations.Identity,
         string? customTransformation = null,
         SeriesAggregationOptions seriesAggregationOptions = SeriesAggregationOptions.Mean,
@@ -171,7 +173,7 @@ public static class ChartLogic
         return displayStyle switch
         {
             SeriesDisplayStyle.Line => GetLineChartDataset(label, values, chartColour.Value, unitOfMeasure, seriesTransformations, customTransformation, renderSmallPoints, seriesAggregationOptions),
-            SeriesDisplayStyle.Bar => GetBarChartDataset(label, values, chartColour!.Value, unitOfMeasure, absoluteValues, redPositive, seriesTransformations, customTransformation, seriesAggregationOptions),
+            SeriesDisplayStyle.Bar => GetBarChartDataset(label, values, chartColour!.Value, unitOfMeasure, absoluteValues, positiveValueColour, negativeValueColour, seriesTransformations, customTransformation, seriesAggregationOptions),
             SeriesDisplayStyle.Scatter => GetScatterChartDataset(label, values, chartColour.Value, unitOfMeasure, seriesTransformations, customTransformation, seriesAggregationOptions),
             _ => throw new NotImplementedException($"SeriesDisplayStyle {displayStyle}"),
         };
@@ -245,7 +247,6 @@ public static class ChartLogic
         string label,
         string htmlColourCode,
         bool absoluteValues = false,
-        bool redPositive = true,
         bool renderSmallPoints = false)
     {
         var values =
@@ -257,7 +258,7 @@ public static class ChartLogic
 
         chartSeries.ChartSeries!.Colour = htmlColourCode;
 
-        var chartDataset = GetChartDataset(label, values, dataSet.MeasurementDefinition!.UnitOfMeasure, chartSeries.ChartSeries.DisplayStyle, colour, absoluteValues, redPositive, chartSeries.ChartSeries.SeriesTransformation, chartSeries.ChartSeries.CustomTransformation, chartSeries.ChartSeries.Aggregation, renderSmallPoints);
+        var chartDataset = GetChartDataset(label, values, dataSet.MeasurementDefinition!.UnitOfMeasure, chartSeries.ChartSeries.DisplayStyle, colour, absoluteValues, chartSeries.ChartSeries.PositiveValueColour, chartSeries.ChartSeries.NegativeValueColour, chartSeries.ChartSeries.SeriesTransformation, chartSeries.ChartSeries.CustomTransformation, chartSeries.ChartSeries.Aggregation, renderSmallPoints);
 
         await chart.AddDataSet(chartDataset);
     }
@@ -372,12 +373,14 @@ public static class ChartLogic
         };
     }
 
-    public static List<string> GetBarChartColourSet(List<double?> values, ChartColor chartColor, bool redPositive = true)
+    public static List<string> GetBarChartColourSet(List<double?> values, ChartColor chartColor, Colours? positiveValueColour = null, Colours? negativeValueColour = null)
     {
         var count = values.Count;
 
-        var red = ChartColor.FromRgba(255, 63, 63, 1f);
-        var blue = ChartColor.FromRgba(63, 63, 255, 1f);
+        // Default positive/negative colours, used whenever a series doesn't request its own via
+        // PositiveValueColour/NegativeValueColour - matches this chart's long-standing default.
+        var positiveColour = positiveValueColour.HasValue ? ChartColor.FromHtmlColorCode(ColourServer.GetHtmlColourCode(positiveValueColour.Value)) : ChartColor.FromRgba(255, 63, 63, 1f);
+        var negativeColour = negativeValueColour.HasValue ? ChartColor.FromHtmlColorCode(ColourServer.GetHtmlColourCode(negativeValueColour.Value)) : ChartColor.FromRgba(63, 63, 255, 1f);
 
         var hasPositive = values.Any(v => v.HasValue && v.Value > 0);
         var hasNegative = values.Any(v => v.HasValue && v.Value < 0);
@@ -391,8 +394,7 @@ public static class ChartLogic
                 ChartColor barColour;
                 if (useMixedColours)
                 {
-                    var value = values[i]!.Value * (redPositive ? 1f : -1f);
-                    barColour = value > 0 ? red : blue;
+                    barColour = values[i]!.Value > 0 ? positiveColour : negativeColour;
                 }
                 else
                 {
