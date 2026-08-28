@@ -46,7 +46,10 @@ var dataSetSourceUpdateCoordinator = new DataSetSourceUpdateCoordinator(
         // and WGMS only publishes a new release roughly once a year. The zip's URL is dated/versioned
         // (DataSetDefinitionsBuilder.cs's DataDownloadUrl for this dataset) and needs a manual bump when
         // WGMS publishes a new release - not auto-discovered.
-        new TransformingDataSetDownloader("wgms-glacier-mass-balance", dataSetHttpFileDownloader, new WgmsGlacierMassBalanceSourceFileTransformer()),
+        // Benchmark (>10yr) rather than Reference (>30yr): a larger, geographically wider sample, and
+        // (per docs/notes/2026-08-27-wgms-reference-glacier-mass-balance-discrepancy.md) two-stage regional
+        // averaging keeps it within ~35mm w.e. mean of the stricter Reference-glacier figure anyway.
+        new TransformingDataSetDownloader("wgms-glacier-mass-balance", dataSetHttpFileDownloader, new WgmsGlacierMassBalanceSourceFileTransformer(WgmsGlacierFilter.Benchmark, WgmsAveragingStage.TwoStage)),
     ],
     timeProvider,
     factory.CreateLogger<DataSetSourceUpdateCoordinator>());

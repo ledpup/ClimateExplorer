@@ -2,7 +2,7 @@
 
 - **Date:** 2026-08-27 (updated same day — see "Update" note below)
 - **Author:** Patrick Lea (with Claude)
-- **Related:** [docs/design/2026-08-26-01-wgms-glacier-mass-balance-dataset-plan.md](../docs/design/2026-08-26-01-wgms-glacier-mass-balance-dataset-plan.md) (the plan that shipped the current transformer); `ClimateExplorer.UnitTests/GlacierFixtures/mb_ref.csv` (the WGMS reference figures this investigation was triggered by); `ClimateExplorer.UnitTests/WgmsReferenceGlacierMassBalanceTests.cs` (new tests backing this write-up)
+- **Related:** [docs/design/2026-08-26-01-wgms-glacier-mass-balance-dataset-plan.md](../design/2026-08-26-01-wgms-glacier-mass-balance-dataset-plan.md) (the plan that shipped the original transformer, and whose addendum records the 2026-08-28 rewrite below); `ClimateExplorer.UnitTests/GlacierFixtures/mb_ref.csv` (the WGMS reference figures this investigation was triggered by); `ClimateExplorer.UnitTests/WgmsReferenceGlacierMassBalanceTests.cs` (tests backing this write-up)
 
 ## Update (same day)
 
@@ -304,18 +304,69 @@ release already wired into `DataSetDefinitionsBuilder.cs`'s `DataDownloadUrl`.
 directly; trimmed copies of the rows/columns actually needed now live in
 `ClimateExplorer.UnitTests/GlacierFixtures/` as described above.
 
-## What this doesn't decide
+## What this doesn't decide (as of 2026-08-27 — superseded, see below)
 
-This is an investigation, not a fix — **no production code was changed.** No
-change was made to `WgmsGlacierMassBalanceSourceFileTransformer`,
-`DataSetDefinitionsBuilder.cs`, the shipped
-`ClimateExplorer.WebApi/Datasets/Glaciers/wgms-glacier-mass-balance-index.csv`,
-or the "Global glacier mass balance" preset. This doc only explains and
-quantifies where the numbers differ and why; it doesn't recommend changing
-either the glacier list or the calculation method — both were, and remain,
-deliberate choices. If a second, WGMS-methodology-matching series is ever
-wanted alongside the current one, it would need its own raw-balance/
-two-stage-regional implementation (and a `glacier.csv`/`gtng_region`
-dependency the current transformer doesn't have) rather than reusing the
-existing anomaly-averaging code with a different glacier list — that
-combination was tested here and confirmed not to converge on WGMS's figures.
+At the time this investigation was written up, no production code had been
+changed — it only explained and quantified where the numbers differed and
+why, without recommending a fix. **That changed the next day; see the
+"Calculation method replaced" section below.**
+
+## Calculation method replaced (2026-08-28)
+
+Having the numbers explained wasn't the end state wanted: the
+anomaly-from-own-mean approach was judged more complicated than necessary
+and harder to read as "what is mass balance actually doing over time" than
+just averaging raw values — a judgement about which metric is more useful,
+not a correction of an error. `WgmsGlacierMassBalanceSourceFileTransformer`
+was rewritten accordingly:
+
+- **Raw annual balance only, no anomaly, ever.** The per-glacier
+  own-mean-deviation step is gone entirely.
+- **The averaging stage is now a parameter**, `WgmsAveragingStage`:
+  `OneStage` (flat mean of every qualifying glacier's raw balance) or
+  `TwoStage` (mean within each glacier's GTN-G region first, then mean of
+  region means — WGMS's own approach, reading `glacier.csv`'s `gtng_region`).
+- **The glacier-list rule is now a parameter too**, `WgmsGlacierFilter`:
+  `Benchmark` (>10 years) or `Reference` (>30 years) — the same two
+  categories discussed in Step 1/2 above, now both selectable on the same
+  transformer instead of only the 10-year rule being hard-coded.
+
+This doesn't retract the "different metrics, not a bug" framing above — WGMS's
+method still isn't presented as objectively "more correct." It was chosen
+because a simple, direct, physically-meaningful raw average was judged the
+better fit for this dataset, and because it happens to make an
+apples-to-apples comparison against `mb_ref.csv` possible where the anomaly
+version couldn't.
+
+**Verification, using the actual (new) transformer against real data**
+(`WgmsReferenceGlacierMassBalanceTests.cs`):
+
+| Configuration | vs. `mb_ref.csv` (mean abs diff) |
+|---|---|
+| `Reference` + `TwoStage` (WGMS's own list-and-method shape, mechanically applied) | **0.134 m w.e.** |
+| `Reference` + flat/one-stage (list fixed, averaging still flat) | 0.150 m w.e. (see the original Step 3 table above, name-restricted version) |
+| Old anomaly/flat-average method (name-restricted to the 61 official glaciers) | 0.526 m w.e. |
+
+`Reference`+`TwoStage` doesn't hit the ~0.013 m w.e. figure from the earlier
+name-matched prototype in this doc's original "Why the two metrics differ"
+section, because it uses the transformer's own mechanical 30-year filter
+(82 glaciers: 1 official glacier missed, 22 extra included — see Step 1/2)
+rather than WGMS's exact 61-glacier curated list by name. 0.134 m w.e. mean
+(max 0.508, in the thin 1985 sample) is still a large improvement over the
+old method's 0.526 m w.e., and confirms the remaining gap is now
+overwhelmingly about *which glaciers* rather than *how the average is
+computed*.
+
+**Shipped choice: `Benchmark` + `TwoStage`**, not `Reference` — the wider,
+138-glacier list, but with WGMS's own region-aware averaging. A direct
+comparison test
+(`TransformAsync_BenchmarkVsReferenceFilter_BothTwoStage_OnRealData_ProduceSimilarValues`)
+confirms `Benchmark`+`TwoStage` stays close to `Reference`+`TwoStage`: 0.035
+m w.e. mean absolute difference across the record — far smaller than either
+filter's gap to `mb_ref.csv`, and far smaller than the old method's gap.
+Using the broader Benchmark list costs very little once two-stage regional
+averaging is in place.
+
+Full details, code, and file list: see the "Addendum — calculation method
+replaced" section in
+[docs/design/2026-08-26-01-wgms-glacier-mass-balance-dataset-plan.md](../design/2026-08-26-01-wgms-glacier-mass-balance-dataset-plan.md).

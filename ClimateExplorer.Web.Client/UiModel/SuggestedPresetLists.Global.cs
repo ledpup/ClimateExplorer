@@ -612,7 +612,7 @@ public static partial class SuggestedPresetLists
                     new SuggestedChartPresetModel()
                     {
                         Title = "Global glacier mass balance",
-                        Description = "Bar chart of the global glacier mass balance anomaly, averaged across WGMS Benchmark glaciers",
+                        Description = "Bar chart of the global glacier mass balance, averaged across WGMS Benchmark glaciers",
                         ChartSeriesList =
                         [
                             new ChartSeriesDefinition()

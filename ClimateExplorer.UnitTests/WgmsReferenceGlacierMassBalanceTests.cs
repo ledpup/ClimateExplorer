@@ -10,16 +10,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using ClimateExplorer.Data.Downloading.Transformers;
 using CsvHelper;
-using CsvHelper.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 /// <summary>
-/// Quantifies why <see cref="WgmsGlacierMassBalanceSourceFileTransformer"/>'s output and WGMS's own
-/// published reference-glacier regional average (<c>GlacierFixtures/mb_ref.csv</c>, captured from
-/// <see href="https://wgms.ch/global-glacier-state/"/>) carry different numbers. They're two different
-/// metrics by design (a different glacier list, and a different calculation method) - this suite doesn't
-/// argue either is more correct, it pins down how much each difference contributes.
-/// See notes/2026-08-27-wgms-reference-glacier-mass-balance-discrepancy.md for the write-up this backs.
+/// Runs the actual, unmodified <see cref="WgmsGlacierMassBalanceSourceFileTransformer"/> against real
+/// WGMS "Fluctuations of Glaciers" 2026-02-10 data to confirm it closely reproduces WGMS's own published
+/// reference-glacier regional average (<c>GlacierFixtures/mb_ref.csv</c>, from
+/// <see href="https://wgms.ch/global-glacier-state/"/>) when configured the way WGMS computes it
+/// (Reference filter, two-stage regional averaging), and to quantify how much using the wider Benchmark
+/// filter instead - what the shipped "Global glacier mass balance" preset actually uses - changes the
+/// result. See docs/notes/2026-08-27-wgms-reference-glacier-mass-balance-discrepancy.md.
 ///
 /// All fixture data in <c>GlacierFixtures/</c> is real data trimmed from WGMS's "Fluctuations of
 /// Glaciers" 2026-02-10 release (<c>DOI-WGMS-FoG-2026-02-10.zip</c>, <see href="https://wgms.ch/downloads/"/>),
@@ -48,11 +48,6 @@ public sealed class WgmsReferenceGlacierMassBalanceTests
         "ZONGO", "ECHAURREN NORTE",
     };
 
-    // Representative years spanning the record (thin early years, the well-sampled late-20th-century
-    // decades, and the extreme 2022/2023 melt years) used to spot-check divergence/agreement without
-    // asserting every one of ~75 years by hand.
-    private static readonly int[] SampleYears = [1955, 1965, 1985, 1998, 2003, 2022, 2023, 2025];
-
     private string temporaryRoot = null!;
 
     [TestInitialize]
@@ -72,127 +67,113 @@ public sealed class WgmsReferenceGlacierMassBalanceTests
     }
 
     /// <summary>
-    /// Background, not a proposal to change the transformer's existing (deliberate) 10-year Benchmark
-    /// rule: does a mechanical "more than 30 years, at most 1 year's gap in the dataset's own most recent
-    /// decade" rule (the same shape, just with WGMS's quoted reference-glacier threshold) reproduce WGMS's
-    /// own curated reference-glacier list?
+    /// Background, not a proposal to change the transformer's own (deliberately looser) Benchmark filter:
+    /// does the transformer's mechanical "more than 30 years, at most 1 year's gap in the dataset's own
+    /// most recent decade" rule reproduce WGMS's own curated reference-glacier list? It almost does, which
+    /// is why the next test's "close but not exact" result is expected rather than a red flag.
     /// </summary>
     [TestMethod]
-    public void MoreThan30YearRule_AppliedToRealWgmsData_AlmostReproducesOfficialReferenceGlacierList()
+    public void ReferenceFilterYearsAndGapRule_AppliedToRealWgmsData_AlmostReproducesOfficialReferenceGlacierList()
     {
-        var byGlacierId = LoadRealAnnualBalances();
-        var maxYear = byGlacierId.Values.SelectMany(g => g.Years.Keys).Max();
+        var byGlacierYears = new Dictionary<string, (string Name, HashSet<int> Years)>();
+        foreach (var (glacierId, name, year, _) in ReadRealMassBalanceRows())
+        {
+            if (!byGlacierYears.TryGetValue(glacierId, out var glacier))
+            {
+                byGlacierYears[glacierId] = glacier = (name, []);
+            }
+
+            glacier.Years.Add(year);
+        }
+
+        var maxYear = byGlacierYears.Values.SelectMany(g => g.Years).Max();
         var decadeStart = maxYear - 9;
 
-        var qualifyingNames = byGlacierId.Values
-            .Where(g => QualifiesUnderYearsAndGapRule(g.Years.Keys.ToHashSet(), 30, decadeStart, maxYear, maxGap: 1))
+        var qualifyingNames = byGlacierYears.Values
+            .Where(g => QualifiesUnderYearsAndGapRule(g.Years, minYears: 30, decadeStart, maxYear, maxGap: 1))
             .Select(g => g.Name)
             .ToHashSet();
 
         // The rule finds every official reference glacier except LEVIY AKTRU, which has a 2013-2018
         // reporting gap that fails "at most one year's gap in the most recent decade" even though it has
-        // resumed reporting every year since 2019 and has 43 years of records overall - a real gap
-        // between "more than 30 years of data" and WGMS's own maintained/curated reference-glacier list.
+        // resumed reporting every year since 2019 and has 43 years of records overall.
         var missingOfficial = OfficialReferenceGlacierNames.Except(qualifyingNames).ToList();
         CollectionAssert.AreEquivalent(new[] { "LEVIY AKTRU" }, missingOfficial);
 
         // ...and it also finds 22 extra glaciers that satisfy the numeric rule but aren't on WGMS's
         // curated list (e.g. TAKU, RHONE, KONGSVEGEN) - WGMS's selection includes additional criteria
-        // ("primarily climate-driven... no major avalanche/calving/surge influence") that a purely
-        // numeric years-and-gap rule can't see.
+        // ("primarily climate-driven... no major avalanche/calving/surge influence") a years-and-gap rule
+        // can't see. WGMS's list is curated/maintained, not mechanically re-derived every release.
         var extraQualifying = qualifyingNames.Except(OfficialReferenceGlacierNames).ToList();
         Assert.HasCount(22, extraQualifying);
         Assert.HasCount(82, qualifyingNames);
     }
 
-    /// <summary>
-    /// Isolates how much of the numeric gap survives once the glacier-list difference is removed, by
-    /// feeding <see cref="WgmsGlacierMassBalanceSourceFileTransformer"/> - completely unmodified - only
-    /// the real rows for WGMS's own 61 official reference glaciers (every one of which trivially passes
-    /// its existing "more than 10 years" Benchmark filter, since all of them have 30+), and comparing its
-    /// output against WGMS's own published regional average for the same years. See the full-year table
-    /// in the notes doc for every year, not just the sample below.
-    /// </summary>
     [TestMethod]
-    public async Task TransformAsync_RealDataRestrictedToOfficialReferenceGlaciers_StillDivergesFromWgmsRegionalAverage()
+    public async Task TransformAsync_ReferenceFilterTwoStage_OnRealData_CloselyReproducesWgmsPublishedIndex()
     {
         var input = Path.Combine(temporaryRoot, "input.zip");
         var output = Path.Combine(temporaryRoot, "output.csv");
-        CreateWgmsZipFixture(input, LoadRealMassBalanceRows(OfficialReferenceGlacierNames));
+        CreateFullWgmsZipFixture(input);
 
-        await new WgmsGlacierMassBalanceSourceFileTransformer().TransformAsync(input, output, CancellationToken.None);
+        await new WgmsGlacierMassBalanceSourceFileTransformer(WgmsGlacierFilter.Reference, WgmsAveragingStage.TwoStage)
+            .TransformAsync(input, output, CancellationToken.None);
 
         var actual = ParseYearValueCsv(output);
         var wgmsRegionAverage = LoadMbRefRegionAverageInMetres();
+        var commonYears = actual.Keys.Intersect(wgmsRegionAverage.Keys).ToList();
 
-        // Even with EXACTLY WGMS's own reference-glacier list, the current per-glacier
-        // anomaly-from-own-mean/flat-average method diverges from WGMS's raw/regional-average figure by
-        // several hundred mm w.e. across the record (mean 0.53 m w.e. across all 74 comparable years -
-        // see the notes doc) - the glacier list only accounts for part of the numeric gap between the two
-        // series; most of it comes from the two methods measuring genuinely different things.
-        foreach (var year in SampleYears)
+        // Sanity check: broad overlap with mb_ref.csv's year range, not just a lucky handful of years.
+        Assert.IsGreaterThan(60, commonYears.Count);
+
+        // The transformer's own mechanical Reference filter doesn't exactly reproduce WGMS's 61-glacier
+        // curated list (previous test: 1 false negative, 22 false positives) - but using WGMS's own raw
+        // value / two-stage-regional method, the result is still close: comfortably under 0.2 m w.e. mean
+        // absolute difference across the record, and no single year is wildly off (worst observed, 1985,
+        // is ~0.51 m w.e. - most of that gap is attributable to the mismatched glacier list, not the
+        // calculation method, per the previous test).
+        var diffs = commonYears.Select(year => Math.Abs(actual[year] - wgmsRegionAverage[year])).ToList();
+        var meanAbsDiff = diffs.Average();
+        Assert.IsLessThan(0.2, meanAbsDiff, $"mean abs diff across {diffs.Count} years was {meanAbsDiff:0.000} m w.e.");
+
+        foreach (var year in commonYears)
         {
             var diff = Math.Abs(actual[year] - wgmsRegionAverage[year]);
-            Assert.IsGreaterThan(
-                0.1,
-                diff,
-                $"year {year}: expected current method's output ({actual[year]:0.000}) to diverge from " +
-                $"WGMS's regional average ({wgmsRegionAverage[year]:0.000}) by more than 0.1 m w.e. (actual " +
-                $"diff {diff:0.000}) - if this now fails, the current method may have converged with WGMS's.");
+            Assert.IsLessThan(0.6, diff, $"year {year}: transformer={actual[year]:0.000}, wgms={wgmsRegionAverage[year]:0.000}");
         }
     }
 
-    /// <summary>
-    /// Confirms the mechanism behind the remaining gap in the previous test: WGMS averages each glacier's
-    /// raw (non-anomaly) annual balance within its GTN-G region first, then averages those per-region
-    /// means (one value per region), rather than flat-averaging every glacier's anomaly together -
-    /// "Global values are calculated using only one single value (averaged) for each region with glaciers
-    /// to avoid a bias to well-observed regions" (https://wgms.ch/global-glacier-state/). This prototype
-    /// is deliberately NOT wired into <see cref="WgmsGlacierMassBalanceSourceFileTransformer"/> - it
-    /// exists only to explain the numeric gap, not to propose replacing the transformer's own metric.
-    /// </summary>
     [TestMethod]
-    public void RawTwoStageRegionalAverage_OfOfficialReferenceGlaciers_ReproducesWgmsPublishedIndex()
+    public async Task TransformAsync_BenchmarkVsReferenceFilter_BothTwoStage_OnRealData_ProduceSimilarValues()
     {
-        var byGlacierId = LoadRealAnnualBalances();
-        var regionOfGlacierId = LoadGlacierRegions();
-        var wgmsRegionAverage = LoadMbRefRegionAverageInMetres();
+        var input = Path.Combine(temporaryRoot, "input.zip");
+        CreateFullWgmsZipFixture(input);
 
-        var byYearThenRegion = new Dictionary<int, Dictionary<string, List<double>>>();
-        foreach (var (glacierId, glacier) in byGlacierId)
-        {
-            if (!OfficialReferenceGlacierNames.Contains(glacier.Name))
-            {
-                continue;
-            }
+        var benchmarkOutput = Path.Combine(temporaryRoot, "benchmark-output.csv");
+        await new WgmsGlacierMassBalanceSourceFileTransformer(WgmsGlacierFilter.Benchmark, WgmsAveragingStage.TwoStage)
+            .TransformAsync(input, benchmarkOutput, CancellationToken.None);
 
-            var region = regionOfGlacierId[glacierId];
-            foreach (var (year, value) in glacier.Years)
-            {
-                if (!byYearThenRegion.TryGetValue(year, out var regions))
-                {
-                    byYearThenRegion[year] = regions = [];
-                }
+        var referenceOutput = Path.Combine(temporaryRoot, "reference-output.csv");
+        await new WgmsGlacierMassBalanceSourceFileTransformer(WgmsGlacierFilter.Reference, WgmsAveragingStage.TwoStage)
+            .TransformAsync(input, referenceOutput, CancellationToken.None);
 
-                if (!regions.TryGetValue(region, out var values))
-                {
-                    regions[region] = values = [];
-                }
+        var benchmark = ParseYearValueCsv(benchmarkOutput);
+        var reference = ParseYearValueCsv(referenceOutput);
+        var commonYears = benchmark.Keys.Intersect(reference.Keys).ToList();
 
-                values.Add(value);
-            }
-        }
+        // Both filters draw from the same dataset-wide year range in practice, so they should cover
+        // (almost) exactly the same years.
+        Assert.IsGreaterThan(benchmark.Count - 3, commonYears.Count);
 
-        foreach (var year in SampleYears)
-        {
-            var regionMeans = byYearThenRegion[year].Values.Select(values => values.Average());
-            var globalMean = regionMeans.Average();
-
-            // A ±0.05 m w.e. tolerance comfortably covers this prototype's residual difference from
-            // WGMS's own published figure across the sampled years (observed max ~0.02 m w.e.) - the
-            // small remainder is consistent with rounding in WGMS's own pipeline, not a methodology gap.
-            Assert.AreEqual(wgmsRegionAverage[year], globalMean, 0.05, $"year {year}");
-        }
+        // The wider (138-glacier) Benchmark filter and the stricter (82-glacier, mechanically) Reference
+        // filter track each other closely once both use two-stage regional averaging - confirming that,
+        // for the "Global glacier mass balance" preset's choice of Benchmark+TwoStage, the glacier-list
+        // choice matters far less than the raw-value/two-stage-averaging choice did (that changed the
+        // result by ~0.53 m w.e. on average - see the notes doc's comparison against the old
+        // anomaly/flat-average method).
+        var diffs = commonYears.Select(year => Math.Abs(benchmark[year] - reference[year])).ToList();
+        var meanAbsDiff = diffs.Average();
+        Assert.IsLessThan(0.1, meanAbsDiff, $"mean abs diff across {diffs.Count} years was {meanAbsDiff:0.000} m w.e.");
     }
 
     private static bool QualifiesUnderYearsAndGapRule(HashSet<int> years, int minYears, int decadeStart, int decadeEnd, int maxGap)
@@ -245,33 +226,15 @@ public sealed class WgmsReferenceGlacierMassBalanceTests
         return result;
     }
 
-    private static Dictionary<string, string> LoadGlacierRegions()
+    /// <summary>Reads GlacierFixtures/mass_balance_all_glaciers.csv directly (not via a zip) for the background test above.</summary>
+    private static IEnumerable<(string GlacierId, string Name, int Year, double AnnualBalance)> ReadRealMassBalanceRows()
     {
-        var path = Path.Combine(AppContext.BaseDirectory, "GlacierFixtures", "glacier_regions.csv");
+        var path = Path.Combine(AppContext.BaseDirectory, "GlacierFixtures", "mass_balance_all_glaciers.csv");
         using var reader = new StreamReader(path);
         using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
         csv.Read();
         csv.ReadHeader();
 
-        var result = new Dictionary<string, string>();
-        while (csv.Read())
-        {
-            result[csv.GetField("glacier_id")!] = csv.GetField("gtng_region")!;
-        }
-
-        return result;
-    }
-
-    private static Dictionary<string, (string Name, Dictionary<int, double> Years)> LoadRealAnnualBalances()
-    {
-        var path = Path.Combine(AppContext.BaseDirectory, "GlacierFixtures", "mass_balance_all_glaciers.csv");
-        using var reader = new StreamReader(path);
-        var csvConfiguration = new CsvConfiguration(CultureInfo.InvariantCulture) { MissingFieldFound = null };
-        using var csv = new CsvReader(reader, csvConfiguration);
-        csv.Read();
-        csv.ReadHeader();
-
-        var result = new Dictionary<string, (string Name, Dictionary<int, double> Years)>();
         while (csv.Read())
         {
             var glacierId = csv.GetField("glacier_id");
@@ -281,57 +244,15 @@ public sealed class WgmsReferenceGlacierMassBalanceTests
                 continue;
             }
 
-            var year = csv.GetField<int>("year");
-            var value = double.Parse(annualBalance, CultureInfo.InvariantCulture);
-
-            if (!result.TryGetValue(glacierId, out var glacier))
-            {
-                result[glacierId] = glacier = (csv.GetField("glacier_name")!, []);
-            }
-
-            glacier.Years[year] = value;
+            yield return (glacierId, csv.GetField("glacier_name")!, csv.GetField<int>("year"), double.Parse(annualBalance, CultureInfo.InvariantCulture));
         }
-
-        return result;
     }
 
-    /// <summary>Real "glacier_id,year,annual_balance" rows for glaciers whose glacier_name is in <paramref name="glacierNames"/>.</summary>
-    private static List<string> LoadRealMassBalanceRows(HashSet<string> glacierNames)
-    {
-        var path = Path.Combine(AppContext.BaseDirectory, "GlacierFixtures", "mass_balance_all_glaciers.csv");
-        using var reader = new StreamReader(path);
-        var csvConfiguration = new CsvConfiguration(CultureInfo.InvariantCulture) { MissingFieldFound = null };
-        using var csv = new CsvReader(reader, csvConfiguration);
-        csv.Read();
-        csv.ReadHeader();
-
-        var rows = new List<string>();
-        while (csv.Read())
-        {
-            var name = csv.GetField("glacier_name");
-            if (name == null || !glacierNames.Contains(name))
-            {
-                continue;
-            }
-
-            var glacierId = csv.GetField("glacier_id");
-            var year = csv.GetField("year");
-            var annualBalance = csv.GetField("annual_balance");
-            rows.Add($"{glacierId},{year},{annualBalance}");
-        }
-
-        return rows;
-    }
-
-    private static void CreateWgmsZipFixture(string zipPath, IEnumerable<string> rows)
+    /// <summary>Packages the real GlacierFixtures CSVs into a zip shaped like a genuine WGMS release, for TransformAsync to read.</summary>
+    private static void CreateFullWgmsZipFixture(string zipPath)
     {
         using var archive = ZipFile.Open(zipPath, ZipArchiveMode.Create);
-        var entry = archive.CreateEntry("data/mass_balance.csv");
-        using var writer = new StreamWriter(entry.Open());
-        writer.WriteLine("glacier_id,year,annual_balance");
-        foreach (var row in rows)
-        {
-            writer.WriteLine(row);
-        }
+        archive.CreateEntryFromFile(Path.Combine(AppContext.BaseDirectory, "GlacierFixtures", "mass_balance_all_glaciers.csv"), "data/mass_balance.csv");
+        archive.CreateEntryFromFile(Path.Combine(AppContext.BaseDirectory, "GlacierFixtures", "glacier_regions.csv"), "data/glacier.csv");
     }
 }
