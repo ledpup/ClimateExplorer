@@ -56,12 +56,12 @@ public class ChartDataBuilderTests
     }
 
     [TestMethod]
-    public async Task BuildAppliesAnnualChangeSecondaryCalculation()
+    public async Task BuildAppliesAnnualChangeTemporalCalculation()
     {
         var dataSet = CreateYearDataSet([(2000, 1), (2001, 2), (2002, 4), (2003, 7)]);
         var dataService = CreateDataService(dataSet);
 
-        var series = CreateSeries(secondaryCalculation: SecondaryCalculationOptions.AnnualChange);
+        var series = CreateSeries(temporalCalculation: TemporalCalculationOptions.AnnualChange);
         var state = new ChartState { ChartAllData = true, Series = [series] };
 
         var result = await CreateBuilder(dataService).BuildAsync(state);
@@ -83,7 +83,7 @@ public class ChartDataBuilderTests
         var sourceMetadata = CreateSourceMetadata();
         var dataSet = CreateYearDataSet([(2000, 1), (2001, 2), (2002, 4), (2003, 7)], sourceMetadata: sourceMetadata);
         var dataService = CreateDataService(dataSet);
-        var series = CreateSeries(secondaryCalculation: SecondaryCalculationOptions.AnnualChange);
+        var series = CreateSeries(temporalCalculation: TemporalCalculationOptions.AnnualChange);
 
         var result = await CreateBuilder(dataService).BuildAsync(new ChartState { ChartAllData = true, Series = [series] });
 
@@ -94,12 +94,12 @@ public class ChartDataBuilderTests
     }
 
     [TestMethod]
-    public async Task BuildAppliesCumulativeSecondaryCalculation()
+    public async Task BuildAppliesCumulativeTemporalCalculation()
     {
         var dataSet = CreateYearDataSet([(2000, 1), (2001, 2), (2002, 4), (2003, 7)]);
         var dataService = CreateDataService(dataSet);
 
-        var series = CreateSeries(secondaryCalculation: SecondaryCalculationOptions.Cumulative);
+        var series = CreateSeries(temporalCalculation: TemporalCalculationOptions.Cumulative);
         var state = new ChartState { ChartAllData = true, Series = [series] };
 
         var result = await CreateBuilder(dataService).BuildAsync(state);
@@ -119,7 +119,7 @@ public class ChartDataBuilderTests
         var sourceMetadata = CreateSourceMetadata();
         var dataSet = CreateYearDataSet([(2000, 1), (2001, 2), (2002, 4), (2003, 7)], sourceMetadata: sourceMetadata);
         var dataService = CreateDataService(dataSet);
-        var series = CreateSeries(secondaryCalculation: SecondaryCalculationOptions.Cumulative);
+        var series = CreateSeries(temporalCalculation: TemporalCalculationOptions.Cumulative);
 
         var result = await CreateBuilder(dataService).BuildAsync(new ChartState { ChartAllData = true, Series = [series] });
 
@@ -130,12 +130,12 @@ public class ChartDataBuilderTests
     }
 
     [TestMethod]
-    public async Task BuildAppliesCumulativeSecondaryCalculation_GapInSourceLeavesGapButResumesRunningTotal()
+    public async Task BuildAppliesCumulativeTemporalCalculation_GapInSourceLeavesGapButResumesRunningTotal()
     {
         var dataSet = CreateYearDataSet([(2000, 1), (2001, null), (2002, 4)]);
         var dataService = CreateDataService(dataSet);
 
-        var series = CreateSeries(secondaryCalculation: SecondaryCalculationOptions.Cumulative);
+        var series = CreateSeries(temporalCalculation: TemporalCalculationOptions.Cumulative);
         var state = new ChartState { ChartAllData = true, Series = [series] };
 
         var result = await CreateBuilder(dataService).BuildAsync(state);
@@ -577,7 +577,7 @@ public class ChartDataBuilderTests
 
     private static ChartSeriesDefinition CreateSeries(
         BinGranularities binGranularity = BinGranularities.ByYear,
-        SecondaryCalculationOptions secondaryCalculation = SecondaryCalculationOptions.None,
+        TemporalCalculationOptions temporalCalculation = TemporalCalculationOptions.None,
         SeriesSmoothingOptions smoothing = SeriesSmoothingOptions.None,
         int smoothingWindow = 20,
         DataType dataType = DataType.TempMean,
@@ -602,7 +602,7 @@ public class ChartDataBuilderTests
             Aggregation = aggregation,
             BinGranularity = binGranularity,
             DisplayStyle = SeriesDisplayStyle.Line,
-            SecondaryCalculation = secondaryCalculation,
+            TemporalCalculation = temporalCalculation,
             Smoothing = smoothing,
             SmoothingWindow = smoothingWindow,
             Value = SeriesValueOptions.Value,

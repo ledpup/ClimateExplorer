@@ -77,7 +77,7 @@ public partial class Global : ChartablePage
                     SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Atmosphere), co2!),
                     Aggregation = SeriesAggregationOptions.Mean,
                     BinGranularity = BinGranularities.ByYear,
-                    SecondaryCalculation = SecondaryCalculationOptions.AnnualChange,
+                    TemporalCalculation = TemporalCalculationOptions.AnnualChange,
                     Smoothing = SeriesSmoothingOptions.MovingAverage,
                     SmoothingWindow = 10,
                     Value = SeriesValueOptions.Value,

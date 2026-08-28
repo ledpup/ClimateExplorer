@@ -215,7 +215,7 @@ public class ChartSeriesListSerializerTrendTests
             BinGranularity = BinGranularities.ByYear,
             DisplayStyle = SeriesDisplayStyle.Line,
             IsLocked = false,
-            SecondaryCalculation = SecondaryCalculationOptions.None,
+            TemporalCalculation = TemporalCalculationOptions.None,
             ShowTrendline = false,
             Smoothing = SeriesSmoothingOptions.None,
             SmoothingWindow = 20,

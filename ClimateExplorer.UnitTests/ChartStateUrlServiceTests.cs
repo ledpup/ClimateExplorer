@@ -164,7 +164,7 @@ public class ChartStateUrlServiceTests
             BinGranularity = BinGranularities.ByYear,
             DisplayStyle = SeriesDisplayStyle.Line,
             IsLocked = false,
-            SecondaryCalculation = SecondaryCalculationOptions.None,
+            TemporalCalculation = TemporalCalculationOptions.None,
             ShowTrendline = true,
             Smoothing = SeriesSmoothingOptions.MovingAverage,
             SmoothingWindow = 20,

@@ -65,17 +65,17 @@
                         {
                             <div class="form-row-info info-message">Note that smoothing is not currently being applied because the x-axis is not linear.</div>
                         }
-                        <DelayedTooltip Text="An optional calculation applied on top of the primary aggregation" Style="display: block">
+                        <DelayedTooltip Text="Recasts the series in terms of change over time, e.g. year-over-year change or a running total" Style="display: block">
                             <div class="form-row">
-                                <span class="form-label">Secondary calculation</span>
+                                <span class="form-label">Temporal calculation</span>
                                 <span class="form-control-wrap">
-                                    <Select TValue="SecondaryCalculationOptions"
+                                    <Select TValue="SeriesTemporalCalculationOptions"
                                             Size="Size.Small"
-                                            Value="@ChartSeries.SecondaryCalculation"
-                                            ValueChanged="@OnSecondaryCalculationChanged">
-                                        <SelectItem Value="SecondaryCalculationOptions.None">None</SelectItem>
-                                        <SelectItem Value="SecondaryCalculationOptions.AnnualChange">Annual change</SelectItem>
-                                        <SelectItem Value="SecondaryCalculationOptions.Cumulative">Cumulative</SelectItem>
+                                            Value="@ChartSeries.TemporalCalculation"
+                                            ValueChanged="@OnTemporalCalculationChanged">
+                                        <SelectItem Value="SeriesTemporalCalculationOptions.None">None</SelectItem>
+                                        <SelectItem Value="SeriesTemporalCalculationOptions.AnnualChange">Annual change</SelectItem>
+                                        <SelectItem Value="SeriesTemporalCalculationOptions.Cumulative">Cumulative</SelectItem>
                                     </Select>
                                 </span>
                             </div>

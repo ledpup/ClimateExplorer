@@ -172,9 +172,9 @@ public partial class ChartSeriesView
         await OnSeriesChanged.InvokeAsync();
     }
 
-    private async Task OnSecondaryCalculationChanged(SecondaryCalculationOptions o)
+    private async Task OnTemporalCalculationChanged(TemporalCalculationOptions o)
     {
-        ChartSeries!.SecondaryCalculation = o;
+        ChartSeries!.TemporalCalculation = o;
 
         await OnSeriesChanged.InvokeAsync();
     }

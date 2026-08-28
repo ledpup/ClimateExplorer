@@ -31,7 +31,7 @@ public class ChartSeriesDefinition
     public float? GroupingThreshold { get; set; }
 
     // Data presentation fields
-    public SecondaryCalculationOptions SecondaryCalculation { get; set; }
+    public TemporalCalculationOptions TemporalCalculation { get; set; }
     public SeriesSmoothingOptions Smoothing { get; set; }
     public int SmoothingWindow { get; set; }
     public SeriesAggregationOptions Aggregation { get; set; }
@@ -126,12 +126,12 @@ public class ChartSeriesDefinition
                 segments.Add("Aggregation: " + Aggregation);
             }
 
-            if (SecondaryCalculation == SecondaryCalculationOptions.AnnualChange)
+            if (TemporalCalculation == TemporalCalculationOptions.AnnualChange)
             {
                 segments.Add("annual change");
             }
 
-            if (SecondaryCalculation == SecondaryCalculationOptions.Cumulative)
+            if (TemporalCalculation == TemporalCalculationOptions.Cumulative)
             {
                 segments.Add("cumulative");
             }
@@ -309,9 +309,14 @@ public class ChartSeriesDefinition
             segments.Add(Aggregation.ToString());
         }
 
-        if (SecondaryCalculation == SecondaryCalculationOptions.AnnualChange)
+        if (TemporalCalculation == TemporalCalculationOptions.AnnualChange)
         {
             segments.Add("annual change");
+        }
+
+        if (TemporalCalculation == TemporalCalculationOptions.Cumulative)
+        {
+            segments.Add("cumulative");
         }
 
         if (Value != SeriesValueOptions.Value)
