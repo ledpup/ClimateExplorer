@@ -383,16 +383,18 @@ public sealed class ChartDataBuilder : IChartDataBuilder
 
         foreach (var cs in chartSeriesWithData)
         {
-            if (cs.ChartSeries!.SecondaryCalculation == SecondaryCalculationOptions.AnnualChange)
+            IEnumerable<double?>? secondaryCalculationValues = cs.ChartSeries!.SecondaryCalculation switch
             {
-                var yearlyDifferenceValues =
-                    cs.SourceDataSet.DataRecords
-                    .Select(x => x.Value)
-                    .CalculateYearlyDifference();
+                SecondaryCalculationOptions.AnnualChange => cs.SourceDataSet.DataRecords.Select(x => x.Value).CalculateYearlyDifference(),
+                SecondaryCalculationOptions.Cumulative => cs.SourceDataSet.DataRecords.Select(x => x.Value).CalculateCumulative(),
+                _ => null,
+            };
 
+            if (secondaryCalculationValues != null)
+            {
                 // Now, join back to the original DataRecord set
                 var newDataRecords =
-                    yearlyDifferenceValues
+                    secondaryCalculationValues
                     .Zip(
                         cs.SourceDataSet.DataRecords,
                         (val, dr) => new BinnedRecord(dr.BinId, val))

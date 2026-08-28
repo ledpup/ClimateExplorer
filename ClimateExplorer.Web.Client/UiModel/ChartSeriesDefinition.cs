@@ -131,6 +131,11 @@ public class ChartSeriesDefinition
                 segments.Add("annual change");
             }
 
+            if (SecondaryCalculation == SecondaryCalculationOptions.Cumulative)
+            {
+                segments.Add("cumulative");
+            }
+
             if (Value != SeriesValueOptions.Value)
             {
                 segments.Add("Value: " + Value);

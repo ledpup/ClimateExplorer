@@ -4,4 +4,5 @@ public enum SecondaryCalculationOptions
 {
     None,
     AnnualChange,
+    Cumulative,
 }

@@ -94,6 +94,57 @@ public class ChartDataBuilderTests
     }
 
     [TestMethod]
+    public async Task BuildAppliesCumulativeSecondaryCalculation()
+    {
+        var dataSet = CreateYearDataSet([(2000, 1), (2001, 2), (2002, 4), (2003, 7)]);
+        var dataService = CreateDataService(dataSet);
+
+        var series = CreateSeries(secondaryCalculation: SecondaryCalculationOptions.Cumulative);
+        var state = new ChartState { ChartAllData = true, Series = [series] };
+
+        var result = await CreateBuilder(dataService).BuildAsync(state);
+
+        Assert.IsTrue(result.HasRenderableData);
+
+        var processedValues = result.SeriesWithData.Single().ProcessedDataSet!.DataRecords.Select(x => x.Value).ToArray();
+        CollectionAssert.AreEqual(new double?[] { 1, 3, 7, 14 }, processedValues);
+
+        var binYears = result.ChartBins!.Cast<YearBinIdentifier>().Select(x => x.Year).ToArray();
+        CollectionAssert.AreEqual(new short[] { 2000, 2001, 2002, 2003 }, binYears);
+    }
+
+    [TestMethod]
+    public async Task BuildAsync_CumulativeSeries_PreservesSourceMetadata()
+    {
+        var sourceMetadata = CreateSourceMetadata();
+        var dataSet = CreateYearDataSet([(2000, 1), (2001, 2), (2002, 4), (2003, 7)], sourceMetadata: sourceMetadata);
+        var dataService = CreateDataService(dataSet);
+        var series = CreateSeries(secondaryCalculation: SecondaryCalculationOptions.Cumulative);
+
+        var result = await CreateBuilder(dataService).BuildAsync(new ChartState { ChartAllData = true, Series = [series] });
+
+        var seriesWithData = result.SeriesWithData.Single();
+        Assert.AreSame(sourceMetadata, seriesWithData.SourceDataSet.SourceMetadata);
+        Assert.AreSame(sourceMetadata, seriesWithData.PreProcessedDataSet!.SourceMetadata);
+        Assert.AreSame(sourceMetadata, seriesWithData.ProcessedDataSet!.SourceMetadata);
+    }
+
+    [TestMethod]
+    public async Task BuildAppliesCumulativeSecondaryCalculation_GapInSourceLeavesGapButResumesRunningTotal()
+    {
+        var dataSet = CreateYearDataSet([(2000, 1), (2001, null), (2002, 4)]);
+        var dataService = CreateDataService(dataSet);
+
+        var series = CreateSeries(secondaryCalculation: SecondaryCalculationOptions.Cumulative);
+        var state = new ChartState { ChartAllData = true, Series = [series] };
+
+        var result = await CreateBuilder(dataService).BuildAsync(state);
+
+        var processedValues = result.SeriesWithData.Single().ProcessedDataSet!.DataRecords.Select(x => x.Value).ToArray();
+        CollectionAssert.AreEqual(new double?[] { 1, null, 5 }, processedValues);
+    }
+
+    [TestMethod]
     public async Task ChartAllDataSelectsFullRangeWhileStartYearClampsIt()
     {
         var records = Enumerable.Range(2000, 11).Select(y => (year: y, value: (double?)y)).ToArray();
