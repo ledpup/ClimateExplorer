@@ -67,15 +67,15 @@
                         }
                         <DelayedTooltip Text="Recasts the series in terms of change over time, e.g. year-over-year change or a running total" Style="display: block">
                             <div class="form-row">
-                                <span class="form-label">Temporal calculation</span>
+                                <span class="form-label">Calculation</span>
                                 <span class="form-control-wrap">
-                                    <Select TValue="SeriesTemporalCalculationOptions"
+                                    <Select TValue="TemporalCalculationOptions"
                                             Size="Size.Small"
                                             Value="@ChartSeries.TemporalCalculation"
                                             ValueChanged="@OnTemporalCalculationChanged">
-                                        <SelectItem Value="SeriesTemporalCalculationOptions.None">None</SelectItem>
-                                        <SelectItem Value="SeriesTemporalCalculationOptions.AnnualChange">Annual change</SelectItem>
-                                        <SelectItem Value="SeriesTemporalCalculationOptions.Cumulative">Cumulative</SelectItem>
+                                        <SelectItem Value="TemporalCalculationOptions.None">None</SelectItem>
+                                        <SelectItem Value="TemporalCalculationOptions.AnnualChange">Annual change</SelectItem>
+                                        <SelectItem Value="TemporalCalculationOptions.Cumulative">Cumulative</SelectItem>
                                     </Select>
                                 </span>
                             </div>
