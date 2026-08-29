@@ -1,7 +1,7 @@
 # Add World Glacier Monitoring Service (WGMS) glacier mass balance dataset
 
 - **Date:** 2026-08-26
-- **Status:** Implemented 2026-08-27 (see addendum); calculation method replaced 2026-08-28 (see second addendum)
+- **Status:** Implemented 2026-08-27 (see addendum); calculation method replaced 2026-08-28 (see second addendum); recency requirement dropped 2026-08-29 (see third addendum)
 - **Author:** Patrick Lea (with Claude)
 - **Scope:** `ClimateExplorer.Core` (`Enums`, `Model/Region`, `DataSetDefinitionsBuilder`), `ClimateExplorer.Data.Downloading` (new transformer), `ClimateExplorer.WebApi` (DI wiring, `MetaData/DataFileMapping`, `Datasets/Glaciers`), `ClimateExplorer.SourceData`, `ClimateExplorer.Web.Client` (`SuggestedPresetLists.Global.cs`)
 - **Branch context:** `development`
@@ -566,3 +566,48 @@ values throughout.
 
 **Verification:** `dotnet build` clean; full `ClimateExplorer.UnitTests`
 suite passed (565 tests).
+
+## Addendum — recency requirement dropped (2026-08-29)
+
+`WgmsGlacierFilter`'s qualifying rule (both `Benchmark` and `Reference`) also
+required at most a 1-year gap in the dataset's own most recent 10 years -
+copied from WGMS's own category definitions. Dropped: a glacier that stops
+reporting because it has largely melted away, or because its monitoring
+programme lapsed, would fall out of the index under that rule - exactly the
+glaciers whose disappearance the index exists to show. Over the coming
+decades, applying that rule as more glaciers stop reporting would keep
+shrinking the qualifying set, trending toward empty.
+
+**New rule:** a glacier qualifies purely on `years.Count > minimumYearsOfRecords`
+(still >10 for `Benchmark`, >30 for `Reference`) - total years of records,
+regardless of when they fall. `RecentDecadeWindowYears` and
+`MaximumRecentGapYears` were removed along with the now-unused
+`IsQualifyingGlacier` helper; `TransformAsync` no longer computes `maxYear` at
+all. `MinimumContributingGlaciers` (suppressing sparse early years) is
+unaffected.
+
+**Files touched:**
+- `ClimateExplorer.Data.Downloading/Transformers/WgmsGlacierMassBalanceSourceFileTransformer.cs` -
+  removed the recency-gap check and its constants; `WgmsGlacierFilter`'s enum
+  doc comments updated to note the transformer deliberately omits WGMS's own
+  recency requirement.
+- `ClimateExplorer.UnitTests/DataSetSourceFileTransformerTests.cs` -
+  `TransformAsync_WgmsGlaciersFailingBenchmarkRule_AreExcludedFromIndex`'s G7
+  case changed from "11 years but fails the recent-decade gap rule" (no
+  longer a disqualifying case) to "exactly 10 years" (the `>` boundary);
+  stale recency-window comments elsewhere in the file removed.
+- `ClimateExplorer.UnitTests/WgmsReferenceGlacierMassBalanceTests.cs` - the
+  background test reproducing WGMS's own years-and-gap rule against real data
+  is unchanged (it's a standalone comparison, not a test of production
+  behaviour), but its doc comment no longer describes that rule as "the
+  transformer's own".
+
+**Not done as part of this change:** `ClimateExplorer.WebApi/Datasets/Glaciers/wgms-glacier-mass-balance-index.csv`
+and its `ClimateExplorer.SourceData/Glaciers/` mirror were *not* regenerated.
+Dropping the recency requirement can only add previously-excluded
+long-gap-but-long-record glaciers to the qualifying set, so the shipped data
+is now stale (built under the old, stricter rule) until someone re-runs the
+`wgms-glacier-mass-balance` downloader against a live WGMS release.
+
+**Verification:** `dotnet build` clean; full `ClimateExplorer.UnitTests`
+suite passed (572 tests).

@@ -6,13 +6,17 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
 
-/// <summary>WGMS's own glacier-list categories - see <see href="https://wgms.ch/products_ref_glaciers/"/>.</summary>
+/// <summary>
+/// WGMS's own glacier-list categories - see <see href="https://wgms.ch/products_ref_glaciers/"/>. WGMS's own
+/// definitions additionally require at most a 1-year gap in the dataset's own most recent 10 years; this
+/// transformer deliberately omits that recency requirement (see <see cref="WgmsGlacierMassBalanceSourceFileTransformer"/>).
+/// </summary>
 public enum WgmsGlacierFilter
 {
-    /// <summary>More than 10 years of ongoing records, at most a 1-year gap in the dataset's own most recent 10 years.</summary>
+    /// <summary>More than 10 years of ongoing records.</summary>
     Benchmark,
 
-    /// <summary>More than 30 years of ongoing records, at most a 1-year gap in the dataset's own most recent 10 years.</summary>
+    /// <summary>More than 30 years of ongoing records.</summary>
     Reference,
 }
 
@@ -46,9 +50,6 @@ public enum WgmsAveragingStage
 /// <param name="averagingStage">How qualifying glaciers' raw annual balances are combined per year.</param>
 public sealed class WgmsGlacierMassBalanceSourceFileTransformer(WgmsGlacierFilter filter, WgmsAveragingStage averagingStage) : IDataSetSourceFileTransformer
 {
-    private const int RecentDecadeWindowYears = 10;
-    private const int MaximumRecentGapYears = 1;
-
     // Not part of either WGMS rule itself - suppresses years (mostly pre-1946) where only a handful of
     // glaciers have records, which would otherwise let one or two glaciers' values swing the "global"
     // index on their own.
@@ -69,12 +70,9 @@ public sealed class WgmsGlacierMassBalanceSourceFileTransformer(WgmsGlacierFilte
             _ => throw new NotSupportedException($"Unhandled {nameof(WgmsGlacierFilter)}: {filter}"),
         };
 
-        var maxYear = records.Max(x => x.Year);
-        var decadeStart = maxYear - RecentDecadeWindowYears + 1;
-
         var qualifyingGlacierIds = records
             .GroupBy(x => x.GlacierId)
-            .Where(glacier => IsQualifyingGlacier(glacier.Select(x => x.Year).ToHashSet(), minimumYearsOfRecords, decadeStart, maxYear))
+            .Where(glacier => glacier.Select(x => x.Year).Distinct().Count() > minimumYearsOfRecords)
             .Select(glacier => glacier.Key)
             .ToHashSet();
 
@@ -133,25 +131,6 @@ public sealed class WgmsGlacierMassBalanceSourceFileTransformer(WgmsGlacierFilte
             .GroupBy(x => regionByGlacierId[x.GlacierId])
             .Select(region => region.Average(x => x.Value))
             .Average();
-    }
-
-    private static bool IsQualifyingGlacier(HashSet<int> years, int minimumYears, int decadeStart, int decadeEnd)
-    {
-        if (years.Count <= minimumYears)
-        {
-            return false;
-        }
-
-        var missingYears = 0;
-        for (var year = decadeStart; year <= decadeEnd; year++)
-        {
-            if (!years.Contains(year))
-            {
-                missingYears++;
-            }
-        }
-
-        return missingYears <= MaximumRecentGapYears;
     }
 
     private static async Task<List<AnnualBalanceRecord>> ReadAnnualBalanceRecordsAsync(string rawFilePath, CancellationToken cancellationToken)

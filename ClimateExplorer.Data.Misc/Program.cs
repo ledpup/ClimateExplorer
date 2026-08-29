@@ -33,14 +33,14 @@ var dataSetSourceUpdateCoordinator = new DataSetSourceUpdateCoordinator(
     new FileDataSetSourceStateStore(Path.Combine("Output", "DataSetSourceState")),
     new DataSetDownloadValidator(),
     [
-        new DirectHttpDataSetDownloader(dataSetHttpFileDownloader),
-        new GhcndDataSetDownloader(GhcndHttpClientFactory.CreateHttpClient()),
-        new BomDataSetDownloader(new BomDailyDataClient(httpClient)),
-        new NoaaGlobalTempDataSetDownloader(dataSetHttpFileDownloader, timeProvider),
-        new GreenlandDataSetDownloader(new GreenlandMeltDataClient(httpClient), dataSetSourceFileStore, timeProvider),
-        new TransformingDataSetDownloader("ocean-acidity", dataSetHttpFileDownloader, new OceanAciditySourceFileTransformer()),
-        new TransformingDataSetDownloader("sea-level", dataSetHttpFileDownloader, new SeaLevelSourceFileTransformer()),
-        new TransformingDataSetDownloader("ozone", dataSetHttpFileDownloader, new OzoneSourceFileTransformer()),
+        //new DirectHttpDataSetDownloader(dataSetHttpFileDownloader),
+        //new GhcndDataSetDownloader(GhcndHttpClientFactory.CreateHttpClient()),
+        //new BomDataSetDownloader(new BomDailyDataClient(httpClient)),
+        //new NoaaGlobalTempDataSetDownloader(dataSetHttpFileDownloader, timeProvider),
+        //new GreenlandDataSetDownloader(new GreenlandMeltDataClient(httpClient), dataSetSourceFileStore, timeProvider),
+        //new TransformingDataSetDownloader("ocean-acidity", dataSetHttpFileDownloader, new OceanAciditySourceFileTransformer()),
+        //new TransformingDataSetDownloader("sea-level", dataSetHttpFileDownloader, new SeaLevelSourceFileTransformer()),
+        //new TransformingDataSetDownloader("ozone", dataSetHttpFileDownloader, new OzoneSourceFileTransformer()),
 
         // Downloaded ~annually, not on WebApi's automatic per-request refresh - the source zip is ~40MB
         // and WGMS only publishes a new release roughly once a year. The zip's URL is dated/versioned

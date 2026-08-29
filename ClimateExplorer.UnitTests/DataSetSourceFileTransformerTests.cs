@@ -125,7 +125,7 @@ public sealed class DataSetSourceFileTransformerTests
     }
 
     // Five "Benchmark" glaciers (G1-G5), each reporting 2015-2025 (11 years - qualifies: more than 10
-    // years, no gap in the 2016-2025 recent-decade window). annual_balance(G_i, year) = i + (year - 2020),
+    // years). annual_balance(G_i, year) = i + (year - 2020),
     // so the one-stage (flat) average for a given year is just mean(1..5) + (year - 2020) = 3 + (year -
     // 2020) - the raw balance itself, not an anomaly, letting the expected output be computed by hand.
     private static readonly string[] OneStageExpectedIndexLines =
@@ -207,9 +207,10 @@ public sealed class DataSetSourceFileTransformerTests
             rows.Add($"G6,{year},999");
         }
 
-        // G7: 11 years of records (2010-2020, so "more than 10 years" passes), but only 5 of those fall in
-        // the 2016-2025 recent-decade window - a 5-year gap fails "at most one year's gap".
-        for (var year = 2010; year <= 2020; year++)
+        // G7: exactly 10 years of records (2005-2014) - fails "more than 10 years" on the boundary (10 is
+        // not more than 10), despite huge outlier values. No recency requirement applies (a glacier isn't
+        // dropped for lacking recent reports - see WgmsGlacierMassBalanceSourceFileTransformer's summary).
+        for (var year = 2005; year <= 2014; year++)
         {
             rows.Add($"G7,{year},-999");
         }
@@ -231,7 +232,7 @@ public sealed class DataSetSourceFileTransformerTests
         var rows = new List<string>();
 
         // G1-G5: 31 years each (1994-2024, constant value = glacier's offset) - qualifies both Benchmark
-        // (>10 years) and Reference (>30 years), and covers the 2015-2024 recent-decade window with no gap.
+        // (>10 years) and Reference (>30 years).
         for (var offset = 1; offset <= 5; offset++)
         {
             for (var year = 1994; year <= 2024; year++)
@@ -241,7 +242,7 @@ public sealed class DataSetSourceFileTransformerTests
         }
 
         // G6: only 15 years (2010-2024, constant value 100) - qualifies Benchmark (>10) but not Reference
-        // (15 is not more than 30), despite fully covering the recent-decade window with no gap.
+        // (15 is not more than 30).
         for (var year = 2010; year <= 2024; year++)
         {
             rows.Add($"G6,{year},100");

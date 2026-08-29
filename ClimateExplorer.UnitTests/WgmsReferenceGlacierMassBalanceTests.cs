@@ -67,10 +67,11 @@ public sealed class WgmsReferenceGlacierMassBalanceTests
     }
 
     /// <summary>
-    /// Background, not a proposal to change the transformer's own (deliberately looser) Benchmark filter:
-    /// does the transformer's mechanical "more than 30 years, at most 1 year's gap in the dataset's own
-    /// most recent decade" rule reproduce WGMS's own curated reference-glacier list? It almost does, which
-    /// is why the next test's "close but not exact" result is expected rather than a red flag.
+    /// Background, not a description of the transformer's actual filter (which is just "more than 30
+    /// years of records", with no recency requirement - see <see cref="WgmsGlacierMassBalanceSourceFileTransformer"/>):
+    /// does WGMS's own "more than 30 years, at most 1 year's gap in the dataset's own most recent decade"
+    /// rule, applied mechanically, reproduce WGMS's own curated reference-glacier list? It almost does,
+    /// which is why the next test's "close but not exact" result is expected rather than a red flag.
     /// </summary>
     [TestMethod]
     public void ReferenceFilterYearsAndGapRule_AppliedToRealWgmsData_AlmostReproducesOfficialReferenceGlacierList()
