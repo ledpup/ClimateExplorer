@@ -39,6 +39,14 @@ public partial class ChartSeriesListView
             .SourceMetadata;
     }
 
+    private bool? GetAggregationApplied(ChartSeriesDefinition chartSeries)
+    {
+        return SeriesWithData?
+            .FirstOrDefault(x => x.ChartSeries.Id == chartSeries.Id)
+            ?.SourceDataSet
+            .AggregationApplied;
+    }
+
     private IReadOnlyList<ChartSeriesTrend> GetTrends(ChartSeriesDefinition chartSeries)
     {
         return SeriesWithData?

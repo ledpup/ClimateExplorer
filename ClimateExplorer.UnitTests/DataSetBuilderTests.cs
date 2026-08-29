@@ -523,6 +523,135 @@ public class DataSetBuilderTests
         Assert.IsEmpty(cdp);
     }
 
+    [TestMethod]
+    public void BuildDataSetFromSeries_YearlyResolutionBinnedByYear_AggregationNotApplied()
+    {
+        var dsb = new DataSetBuilder();
+
+        // Yearly-resolution source data (one record per year) binned ByYear - every bin gets exactly
+        // one raw record, so no SeriesAggregationOptions function ever combines more than one value.
+        var series =
+            new SeriesProvider.Series
+            {
+                DataRecords =
+                    [
+                        new DataRecord(1990, null, null, 10),
+                        new DataRecord(1991, null, null, 12),
+                        new DataRecord(1992, null, null, 14),
+                    ],
+                UnitOfMeasure = Core.Enums.UnitOfMeasure.DegreesCelsius,
+                DataResolution = Core.Enums.DataResolution.Yearly,
+            };
+
+        var result = dsb.BuildDataSetFromSeries(
+            new PostDataSetsRequestBody
+            {
+                SeriesSpecifications = [],
+                BinningRule = BinGranularities.ByYear,
+                BinAggregationFunction = ContainerAggregationFunctions.Mean,
+                CupSize = 14,
+                RequiredCupDataProportion = 0f,
+                RequiredBucketDataProportion = 0f,
+                RequiredBinDataProportion = 0f,
+            },
+            series);
+
+        Assert.HasCount(3, result.DataPoints!);
+        Assert.IsFalse(result.AggregationApplied);
+    }
+
+    [TestMethod]
+    public void BuildDataSetFromSeries_DailyResolutionBinnedByYear_AggregationApplied()
+    {
+        var dsb = new DataSetBuilder();
+
+        // Daily-resolution source data binned ByYear combines 365 raw records into one bin, so the
+        // aggregation function genuinely affects the output.
+        var series =
+            new SeriesProvider.Series
+            {
+                DataRecords = BuildConstantTemporalDataPointArrayFor1990(),
+                UnitOfMeasure = Core.Enums.UnitOfMeasure.DegreesCelsius,
+                DataResolution = Core.Enums.DataResolution.Daily,
+            };
+
+        var result = dsb.BuildDataSetFromSeries(
+            new PostDataSetsRequestBody
+            {
+                SeriesSpecifications = [],
+                BinningRule = BinGranularities.ByYear,
+                BinAggregationFunction = ContainerAggregationFunctions.Mean,
+                CupSize = 14,
+                RequiredCupDataProportion = 0.7f,
+                RequiredBucketDataProportion = 1.0f,
+                RequiredBinDataProportion = 1.0f,
+            },
+            series);
+
+        Assert.IsTrue(result.AggregationApplied);
+    }
+
+    [TestMethod]
+    public void BuildDataSetFromSeries_MonthlyResolutionBinnedByYearAndMonth_AggregationNotApplied()
+    {
+        var dsb = new DataSetBuilder();
+
+        // Monthly-resolution source data binned ByYearAndMonth - every bin gets exactly one raw record.
+        var series =
+            new SeriesProvider.Series
+            {
+                DataRecords = [.. Enumerable.Range(1, 12).Select(month => new DataRecord(1990, (short)month, month))],
+                UnitOfMeasure = Core.Enums.UnitOfMeasure.DegreesCelsius,
+                DataResolution = Core.Enums.DataResolution.Monthly,
+            };
+
+        var result = dsb.BuildDataSetFromSeries(
+            new PostDataSetsRequestBody
+            {
+                SeriesSpecifications = [],
+                BinningRule = BinGranularities.ByYearAndMonth,
+                BinAggregationFunction = ContainerAggregationFunctions.Mean,
+                CupSize = 14,
+                RequiredCupDataProportion = 0f,
+                RequiredBucketDataProportion = 0f,
+                RequiredBinDataProportion = 0f,
+            },
+            series);
+
+        Assert.HasCount(12, result.DataPoints!);
+        Assert.IsFalse(result.AggregationApplied);
+    }
+
+    [TestMethod]
+    public void BuildDataSetFromSeries_ByYearAndDayBinning_AggregationNotApplied()
+    {
+        var dsb = new DataSetBuilder();
+
+        // ByYearAndDay short-circuits the whole binning pipeline and returns the raw daily values as-is.
+        var series =
+            new SeriesProvider.Series
+            {
+                DataRecords = BuildConstantTemporalDataPointArrayFor1990(),
+                UnitOfMeasure = Core.Enums.UnitOfMeasure.DegreesCelsius,
+                DataResolution = Core.Enums.DataResolution.Daily,
+            };
+
+        var result = dsb.BuildDataSetFromSeries(
+            new PostDataSetsRequestBody
+            {
+                SeriesSpecifications = [],
+                BinningRule = BinGranularities.ByYearAndDay,
+                BinAggregationFunction = ContainerAggregationFunctions.Mean,
+                CupSize = 14,
+                RequiredCupDataProportion = 0f,
+                RequiredBucketDataProportion = 0f,
+                RequiredBinDataProportion = 0f,
+            },
+            series);
+
+        Assert.HasCount(365, result.DataPoints!);
+        Assert.IsFalse(result.AggregationApplied);
+    }
 
     DataRecord[] BuildConstantTemporalDataPointArrayFor1990(double? value = 10)
     {

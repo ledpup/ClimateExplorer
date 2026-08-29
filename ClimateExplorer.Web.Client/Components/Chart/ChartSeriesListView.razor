@@ -6,6 +6,7 @@
             @key="@cs.Id"
             ChartSeries="@cs"
             SourceMetadata="@GetSourceMetadata(cs)"
+            AggregationApplied="@GetAggregationApplied(cs)"
             Trends="@GetTrends(cs)"
             OnSeriesChanged="@OnSeriesChangedInternal"
             OnDuplicateSeries="@OnDuplicateSeries"

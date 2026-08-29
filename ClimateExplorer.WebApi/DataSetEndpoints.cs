@@ -95,6 +95,7 @@ internal static class DataSetEndpoints
                     series.DataPoints
                     .Select(x => new BinnedRecord(x.BinId, x.Value.HasValue ? Math.Round(x.Value.Value, 4) : null)) // 4 decimal places should be enough for anyone
                     .ToList(),
+                AggregationApplied = series.AggregationApplied,
                 RawDataRecords =
                     body.IncludeRawDataRecords == true
                     ? series.RawDataRecords

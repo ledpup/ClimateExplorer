@@ -407,6 +407,7 @@ public sealed class ChartDataBuilder : IChartDataBuilder
                         MeasurementDefinition = cs.SourceDataSet.MeasurementDefinition,
                         DataRecords = newDataRecords,
                         SourceMetadata = cs.SourceDataSet.SourceMetadata,
+                        AggregationApplied = cs.SourceDataSet.AggregationApplied,
                     };
             }
         }
@@ -463,6 +464,7 @@ public sealed class ChartDataBuilder : IChartDataBuilder
                         MeasurementDefinition = cs.SourceDataSet.MeasurementDefinition,
                         DataRecords = newDataRecords,
                         SourceMetadata = cs.SourceDataSet.SourceMetadata,
+                        AggregationApplied = cs.SourceDataSet.AggregationApplied,
                     };
             }
             else
@@ -558,6 +560,7 @@ public sealed class ChartDataBuilder : IChartDataBuilder
                     GeographicalEntity = cs.PreProcessedDataSet.GeographicalEntity,
                     MeasurementDefinition = cs.PreProcessedDataSet.MeasurementDefinition,
                     SourceMetadata = cs.PreProcessedDataSet.SourceMetadata,
+                    AggregationApplied = cs.PreProcessedDataSet.AggregationApplied,
                     DataRecords =
                         [.. chartBins
                         .Select(

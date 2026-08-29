@@ -43,7 +43,7 @@
                                 <span class="form-control-wrap">@ChartSeries.Year</span>
                             </div>
                         }
-                        <DelayedTooltip Text="How data values within each time period are combined into a single point" Style="display: block">
+                        <DelayedTooltip Text="@AggregationTooltipText" Style="display: block">
                             <div class="form-row">
                                 <span class="form-label">Aggregation</span>
                                 <span class="form-control-wrap">
@@ -52,7 +52,7 @@
                                             Value="@ChartSeries.Aggregation"
                                             ValueChanged="@OnAggregationChanged"
                                             Disabled="@ShouldDisableAggregationOptions(ChartSeries)">
-                                        <SelectItem Value="SeriesAggregationOptions.Mean">Mean</SelectItem>
+                                        <SelectItem Value="SeriesAggregationOptions.Mean">@(ShouldDisableAggregationOptions(ChartSeries) ? "None" : "Mean")</SelectItem>
                                         <SelectItem Value="SeriesAggregationOptions.Minimum">Minimum</SelectItem>
                                         <SelectItem Value="SeriesAggregationOptions.Maximum">Maximum</SelectItem>
                                         <SelectItem Value="SeriesAggregationOptions.Median">Median</SelectItem>
