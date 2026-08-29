@@ -52,11 +52,18 @@
                                             Value="@ChartSeries.Aggregation"
                                             ValueChanged="@OnAggregationChanged"
                                             Disabled="@ShouldDisableAggregationOptions(ChartSeries)">
-                                        <SelectItem Value="SeriesAggregationOptions.Mean">@(ShouldDisableAggregationOptions(ChartSeries) ? "None" : "Mean")</SelectItem>
-                                        <SelectItem Value="SeriesAggregationOptions.Minimum">Minimum</SelectItem>
-                                        <SelectItem Value="SeriesAggregationOptions.Maximum">Maximum</SelectItem>
-                                        <SelectItem Value="SeriesAggregationOptions.Median">Median</SelectItem>
-                                        <SelectItem Value="SeriesAggregationOptions.Sum">Sum</SelectItem>
+                                        @if (ShouldDisableAggregationOptions(ChartSeries))
+                                        {
+                                            <SelectItem Value="@ChartSeries.Aggregation">None</SelectItem>
+                                        }
+                                        else
+                                        {
+                                            <SelectItem Value="SeriesAggregationOptions.Mean">Mean</SelectItem>
+                                            <SelectItem Value="SeriesAggregationOptions.Minimum">Minimum</SelectItem>
+                                            <SelectItem Value="SeriesAggregationOptions.Maximum">Maximum</SelectItem>
+                                            <SelectItem Value="SeriesAggregationOptions.Median">Median</SelectItem>
+                                            <SelectItem Value="SeriesAggregationOptions.Sum">Sum</SelectItem>
+                                        }
                                     </Select>
                                 </span>
                             </div>

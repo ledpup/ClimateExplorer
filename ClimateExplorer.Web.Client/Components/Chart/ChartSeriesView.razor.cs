@@ -78,6 +78,8 @@ public partial class ChartSeriesView
     private string AggregationTooltipText =>
         AggregationApplied == false
         ? "This data has one reading per period already, so there's nothing to combine - every aggregation option would produce the same chart"
+        : ChartSeries!.SeriesDerivationType == SeriesDerivationTypes.AverageOfAnomaliesInRegion
+        ? "Averaging happens across locations for this series, so there's nothing left to combine within a period"
         : "How data values within each time period are combined into a single point";
 
     public string GenerateStyleForOuterDiv()
