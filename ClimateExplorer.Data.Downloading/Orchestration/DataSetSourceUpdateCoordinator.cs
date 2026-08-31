@@ -46,6 +46,17 @@ public sealed class DataSetSourceUpdateCoordinator : IDataSetSourceUpdateCoordin
         this.downloaders = downloaders.ToDictionary(x => x.Key, StringComparer.Ordinal);
     }
 
+    /// <summary>
+    /// Whether a downloader is registered for the given key. Used by <see cref="DataSetBatchRefresher"/> to
+    /// skip assets whose downloader was deliberately left out of the registered set (e.g. when running the
+    /// Data.Misc batch tool against only a subset of datasets), as distinct from a download that fails after
+    /// being attempted.
+    /// </summary>
+    public bool IsDownloaderRegistered(string downloaderKey)
+    {
+        return downloaders.ContainsKey(downloaderKey);
+    }
+
     public async Task<DataSetSourcePreparationResult> PrepareAsync(
         PostDataSetsRequestBody request,
         ICachedData? cachedData,

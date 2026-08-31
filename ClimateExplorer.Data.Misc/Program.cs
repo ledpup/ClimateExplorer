@@ -22,7 +22,7 @@ var httpClient = CreateHttpClient();
 
 var dataSetSourceAssetResolver = new DataSetSourceAssetResolver(Path.Combine(Folders.MetaDataFolder, "DataFileMapping"));
 var timeProvider = TimeProvider.System;
-var dataSetHttpFileDownloader = new DataSetHttpFileDownloader(httpClient);
+var dataSetHttpFileDownloader = new DataSetHttpFileDownloader(httpClient, factory.CreateLogger<DataSetHttpFileDownloader>());
 var dataSetSourceFileStore = new DataSetSourceFileStore(Folders.SourceDataFolder);
 var dataSetSourceUpdateCoordinator = new DataSetSourceUpdateCoordinator(
     dataSetSourceAssetResolver,
@@ -33,14 +33,18 @@ var dataSetSourceUpdateCoordinator = new DataSetSourceUpdateCoordinator(
     new FileDataSetSourceStateStore(Path.Combine("Output", "DataSetSourceState")),
     new DataSetDownloadValidator(),
     [
-        //new DirectHttpDataSetDownloader(dataSetHttpFileDownloader),
-        //new GhcndDataSetDownloader(GhcndHttpClientFactory.CreateHttpClient()),
-        //new BomDataSetDownloader(new BomDailyDataClient(httpClient)),
-        //new NoaaGlobalTempDataSetDownloader(dataSetHttpFileDownloader, timeProvider),
-        //new GreenlandDataSetDownloader(new GreenlandMeltDataClient(httpClient), dataSetSourceFileStore, timeProvider),
-        //new TransformingDataSetDownloader("ocean-acidity", dataSetHttpFileDownloader, new OceanAciditySourceFileTransformer()),
-        //new TransformingDataSetDownloader("sea-level", dataSetHttpFileDownloader, new SeaLevelSourceFileTransformer()),
-        //new TransformingDataSetDownloader("ozone", dataSetHttpFileDownloader, new OzoneSourceFileTransformer()),
+
+        // Only downloaders actually registered here are run - DataSetBatchRefresher skips (rather than fails)
+        // any dataset whose downloader key isn't in this list, so comment lines out to limit a local run.
+
+        ////new DirectHttpDataSetDownloader(dataSetHttpFileDownloader),
+        ////new GhcndDataSetDownloader(GhcndHttpClientFactory.CreateHttpClient()),
+        ////new BomDataSetDownloader(new BomDailyDataClient(httpClient)),
+        ////new NoaaGlobalTempDataSetDownloader(dataSetHttpFileDownloader, timeProvider),
+        ////new GreenlandDataSetDownloader(new GreenlandMeltDataClient(httpClient), dataSetSourceFileStore, timeProvider),
+        ////new TransformingDataSetDownloader("ocean-acidity", dataSetHttpFileDownloader, new OceanAciditySourceFileTransformer()),
+        ////new TransformingDataSetDownloader("sea-level", dataSetHttpFileDownloader, new SeaLevelSourceFileTransformer()),
+        ////new TransformingDataSetDownloader("ozone", dataSetHttpFileDownloader, new OzoneSourceFileTransformer()),
 
         // Downloaded ~annually, not on WebApi's automatic per-request refresh - the source zip is ~40MB
         // and WGMS only publishes a new release roughly once a year. The zip's URL is dated/versioned
@@ -55,8 +59,14 @@ var dataSetSourceUpdateCoordinator = new DataSetSourceUpdateCoordinator(
     factory.CreateLogger<DataSetSourceUpdateCoordinator>());
 IDataSetBatchRefresher dataSetBatchRefresher = new DataSetBatchRefresher(
     dataSetSourceAssetResolver,
-    dataSetSourceUpdateCoordinator);
-await dataSetBatchRefresher.RefreshAllAsync();
+    dataSetSourceUpdateCoordinator,
+    factory.CreateLogger<DataSetBatchRefresher>());
+
+// Defaults to always force-refreshing (see docs/operations/automated-dataset-downloads.md). Set
+// FORCE_REFRESH=false for repeated local runs - e.g. iterating on a downloader/transformer - to reuse a
+// still-fresh previously downloaded source instead of re-pulling a large source file every run.
+var forceRefresh = Environment.GetEnvironmentVariable("FORCE_REFRESH") != "false";
+await dataSetBatchRefresher.RefreshAllAsync(forceRefresh);
 
 var jsonSerializerOptions = new JsonSerializerOptions
 {
@@ -133,7 +143,12 @@ static void GenerateMapMarkers()
 
 static HttpClient CreateHttpClient()
 {
-    var httpClient = new HttpClient();
+    // Timeout must be left uncapped (or at least >= DataSetHttpFileDownloader's AttemptTimeout): HttpClient.Timeout
+    // spans the whole request including the body read even with ResponseHeadersRead, and enforces itself by
+    // disposing the underlying connection - which surfaces as a confusing ObjectDisposedException/IOException
+    // mid-read rather than a clean cancellation, and fires long before the 5-minute per-attempt ceiling below
+    // would otherwise decide a slow-but-alive download is worth retrying.
+    var httpClient = new HttpClient { Timeout = Timeout.InfiniteTimeSpan };
     var userAgent = "Mozilla /5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36";
     var acceptLanguage = "en-US,en;q=0.9,es;q=0.8";
     httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);

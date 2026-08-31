@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Net.Http;
 using System.Text.Json.Serialization;
+using System.Threading;
 using ClimateExplorer.Data.Downloading.Downloaders;
 using ClimateExplorer.Data.Downloading.Orchestration;
 using ClimateExplorer.Data.Downloading.Storage;
@@ -97,9 +98,13 @@ app.Run();
 
 static HttpClient CreateDataSetSourceHttpClient()
 {
+    // Timeout must be left uncapped: HttpClient.Timeout spans the whole request including the body read even with
+    // ResponseHeadersRead, and enforces itself by disposing the underlying connection - which DataSetHttpFileDownloader
+    // then sees as a confusing ObjectDisposedException/IOException mid-read rather than a clean cancellation. Its own
+    // per-attempt CancellationTokenSource is the intended - and only - timeout authority here.
     var client = new HttpClient
     {
-        Timeout = TimeSpan.FromMinutes(2),
+        Timeout = Timeout.InfiniteTimeSpan,
     };
     client.DefaultRequestHeaders.UserAgent.ParseAdd("ClimateExplorer/1.0 dataset-refresh");
     return client;

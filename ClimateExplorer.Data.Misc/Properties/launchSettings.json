@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "ClimateExplorer.Data.Misc": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "FORCE_REFRESH": "false"
+      }
+    }
+  }
+}
