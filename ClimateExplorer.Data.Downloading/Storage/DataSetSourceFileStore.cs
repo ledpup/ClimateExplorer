@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 
 public sealed class DataSetSourceFileStore(string datasetsRoot)
 {
-    private readonly string datasetsRoot = Path.GetFullPath(datasetsRoot);
+    private readonly string datasetsRoot = Path.GetFullPath(datasetsRoot).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
     public async Task PublishAsync(string candidateFilePath, string destinationRelativePath, CancellationToken cancellationToken)
     {

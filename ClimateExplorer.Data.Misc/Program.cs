@@ -36,23 +36,14 @@ var dataSetSourceUpdateCoordinator = new DataSetSourceUpdateCoordinator(
 
         // Only downloaders actually registered here are run - DataSetBatchRefresher skips (rather than fails)
         // any dataset whose downloader key isn't in this list, so comment lines out to limit a local run.
-
-        ////new DirectHttpDataSetDownloader(dataSetHttpFileDownloader),
-        ////new GhcndDataSetDownloader(GhcndHttpClientFactory.CreateHttpClient()),
-        ////new BomDataSetDownloader(new BomDailyDataClient(httpClient)),
-        ////new NoaaGlobalTempDataSetDownloader(dataSetHttpFileDownloader, timeProvider),
-        ////new GreenlandDataSetDownloader(new GreenlandMeltDataClient(httpClient), dataSetSourceFileStore, timeProvider),
-        ////new TransformingDataSetDownloader("ocean-acidity", dataSetHttpFileDownloader, new OceanAciditySourceFileTransformer()),
-        ////new TransformingDataSetDownloader("sea-level", dataSetHttpFileDownloader, new SeaLevelSourceFileTransformer()),
-        ////new TransformingDataSetDownloader("ozone", dataSetHttpFileDownloader, new OzoneSourceFileTransformer()),
-
-        // Downloaded ~annually, not on WebApi's automatic per-request refresh - the source zip is ~40MB
-        // and WGMS only publishes a new release roughly once a year. The zip's URL is dated/versioned
-        // (DataSetDefinitionsBuilder.cs's DataDownloadUrl for this dataset) and needs a manual bump when
-        // WGMS publishes a new release - not auto-discovered.
-        // Benchmark (>10yr) rather than Reference (>30yr): a larger, geographically wider sample, and
-        // (per docs/notes/2026-08-27-wgms-reference-glacier-mass-balance-discrepancy.md) two-stage regional
-        // averaging keeps it within ~35mm w.e. mean of the stricter Reference-glacier figure anyway.
+        new DirectHttpDataSetDownloader(dataSetHttpFileDownloader),
+        new GhcndDataSetDownloader(GhcndHttpClientFactory.CreateHttpClient()),
+        new BomDataSetDownloader(new BomDailyDataClient(httpClient)),
+        new NoaaGlobalTempDataSetDownloader(dataSetHttpFileDownloader, timeProvider),
+        new GreenlandDataSetDownloader(new GreenlandMeltDataClient(httpClient), dataSetSourceFileStore, timeProvider),
+        new TransformingDataSetDownloader("ocean-acidity", dataSetHttpFileDownloader, new OceanAciditySourceFileTransformer()),
+        new TransformingDataSetDownloader("sea-level", dataSetHttpFileDownloader, new SeaLevelSourceFileTransformer()),
+        new TransformingDataSetDownloader("ozone", dataSetHttpFileDownloader, new OzoneSourceFileTransformer()),
         new TransformingDataSetDownloader("wgms-glacier-mass-balance", dataSetHttpFileDownloader, new WgmsGlacierMassBalanceSourceFileTransformer(WgmsGlacierFilter.Benchmark, WgmsAveragingStage.TwoStage)),
     ],
     timeProvider,
