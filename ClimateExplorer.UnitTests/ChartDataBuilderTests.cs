@@ -56,12 +56,12 @@ public class ChartDataBuilderTests
     }
 
     [TestMethod]
-    public async Task BuildAppliesAnnualChangeSecondaryCalculation()
+    public async Task BuildAppliesAnnualChangeTemporalCalculation()
     {
         var dataSet = CreateYearDataSet([(2000, 1), (2001, 2), (2002, 4), (2003, 7)]);
         var dataService = CreateDataService(dataSet);
 
-        var series = CreateSeries(secondaryCalculation: SecondaryCalculationOptions.AnnualChange);
+        var series = CreateSeries(temporalCalculation: TemporalCalculationOptions.AnnualChange);
         var state = new ChartState { ChartAllData = true, Series = [series] };
 
         var result = await CreateBuilder(dataService).BuildAsync(state);
@@ -83,7 +83,7 @@ public class ChartDataBuilderTests
         var sourceMetadata = CreateSourceMetadata();
         var dataSet = CreateYearDataSet([(2000, 1), (2001, 2), (2002, 4), (2003, 7)], sourceMetadata: sourceMetadata);
         var dataService = CreateDataService(dataSet);
-        var series = CreateSeries(secondaryCalculation: SecondaryCalculationOptions.AnnualChange);
+        var series = CreateSeries(temporalCalculation: TemporalCalculationOptions.AnnualChange);
 
         var result = await CreateBuilder(dataService).BuildAsync(new ChartState { ChartAllData = true, Series = [series] });
 
@@ -91,6 +91,57 @@ public class ChartDataBuilderTests
         Assert.AreSame(sourceMetadata, seriesWithData.SourceDataSet.SourceMetadata);
         Assert.AreSame(sourceMetadata, seriesWithData.PreProcessedDataSet!.SourceMetadata);
         Assert.AreSame(sourceMetadata, seriesWithData.ProcessedDataSet!.SourceMetadata);
+    }
+
+    [TestMethod]
+    public async Task BuildAppliesCumulativeTemporalCalculation()
+    {
+        var dataSet = CreateYearDataSet([(2000, 1), (2001, 2), (2002, 4), (2003, 7)]);
+        var dataService = CreateDataService(dataSet);
+
+        var series = CreateSeries(temporalCalculation: TemporalCalculationOptions.Cumulative);
+        var state = new ChartState { ChartAllData = true, Series = [series] };
+
+        var result = await CreateBuilder(dataService).BuildAsync(state);
+
+        Assert.IsTrue(result.HasRenderableData);
+
+        var processedValues = result.SeriesWithData.Single().ProcessedDataSet!.DataRecords.Select(x => x.Value).ToArray();
+        CollectionAssert.AreEqual(new double?[] { 1, 3, 7, 14 }, processedValues);
+
+        var binYears = result.ChartBins!.Cast<YearBinIdentifier>().Select(x => x.Year).ToArray();
+        CollectionAssert.AreEqual(new short[] { 2000, 2001, 2002, 2003 }, binYears);
+    }
+
+    [TestMethod]
+    public async Task BuildAsync_CumulativeSeries_PreservesSourceMetadata()
+    {
+        var sourceMetadata = CreateSourceMetadata();
+        var dataSet = CreateYearDataSet([(2000, 1), (2001, 2), (2002, 4), (2003, 7)], sourceMetadata: sourceMetadata);
+        var dataService = CreateDataService(dataSet);
+        var series = CreateSeries(temporalCalculation: TemporalCalculationOptions.Cumulative);
+
+        var result = await CreateBuilder(dataService).BuildAsync(new ChartState { ChartAllData = true, Series = [series] });
+
+        var seriesWithData = result.SeriesWithData.Single();
+        Assert.AreSame(sourceMetadata, seriesWithData.SourceDataSet.SourceMetadata);
+        Assert.AreSame(sourceMetadata, seriesWithData.PreProcessedDataSet!.SourceMetadata);
+        Assert.AreSame(sourceMetadata, seriesWithData.ProcessedDataSet!.SourceMetadata);
+    }
+
+    [TestMethod]
+    public async Task BuildAppliesCumulativeTemporalCalculation_GapInSourceLeavesGapButResumesRunningTotal()
+    {
+        var dataSet = CreateYearDataSet([(2000, 1), (2001, null), (2002, 4)]);
+        var dataService = CreateDataService(dataSet);
+
+        var series = CreateSeries(temporalCalculation: TemporalCalculationOptions.Cumulative);
+        var state = new ChartState { ChartAllData = true, Series = [series] };
+
+        var result = await CreateBuilder(dataService).BuildAsync(state);
+
+        var processedValues = result.SeriesWithData.Single().ProcessedDataSet!.DataRecords.Select(x => x.Value).ToArray();
+        CollectionAssert.AreEqual(new double?[] { 1, null, 5 }, processedValues);
     }
 
     [TestMethod]
@@ -526,7 +577,7 @@ public class ChartDataBuilderTests
 
     private static ChartSeriesDefinition CreateSeries(
         BinGranularities binGranularity = BinGranularities.ByYear,
-        SecondaryCalculationOptions secondaryCalculation = SecondaryCalculationOptions.None,
+        TemporalCalculationOptions temporalCalculation = TemporalCalculationOptions.None,
         SeriesSmoothingOptions smoothing = SeriesSmoothingOptions.None,
         int smoothingWindow = 20,
         DataType dataType = DataType.TempMean,
@@ -551,7 +602,7 @@ public class ChartDataBuilderTests
             Aggregation = aggregation,
             BinGranularity = binGranularity,
             DisplayStyle = SeriesDisplayStyle.Line,
-            SecondaryCalculation = secondaryCalculation,
+            TemporalCalculation = temporalCalculation,
             Smoothing = smoothing,
             SmoothingWindow = smoothingWindow,
             Value = SeriesValueOptions.Value,

@@ -30,6 +30,7 @@ public static class DataTypeExtensions
             DataType.SeaLevel => "Sea level",
             DataType.OceanAcidity => "Ocean acidity",
             DataType.CO2Deseasoned => "Deseasoned CO\u2082",
+            DataType.GlacierMassBalance => "Glacier mass balance",
             _ => throw new NotImplementedException(),
         };
     }

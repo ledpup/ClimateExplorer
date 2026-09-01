@@ -98,7 +98,7 @@ public static class ChartSeriesListSerializer
                 BinGranularity = ParseEnum<BinGranularities>(segments[4]),
                 DisplayStyle = ParseEnum<SeriesDisplayStyle>(segments[5]),
                 IsLocked = bool.Parse(segments[6]),
-                SecondaryCalculation = ParseEnum<SecondaryCalculationOptions>(segments[7]),
+                TemporalCalculation = ParseEnum<TemporalCalculationOptions>(segments[7]),
                 ShowTrendline = bool.Parse(segments[8]),
                 Smoothing = ParseEnum<SeriesSmoothingOptions>(segments[9]),
                 SmoothingWindow = int.Parse(segments[10]),
@@ -117,6 +117,12 @@ public static class ChartSeriesListSerializer
                 // since a URL shared before this segment existed should simply have the trend
                 // module off, not fail to parse.
                 Trends = ParseTrends(GetOptionalSegment(segments, 19)),
+
+                // Segments 20/21 are new (added alongside PositiveValueColour/NegativeValueColour) -
+                // read defensively so a URL shared before they existed still parses, just without a
+                // per-sign colour override.
+                PositiveValueColour = (Colours?)ParseOptionalNullableEnum<Colours>(segments, 20),
+                NegativeValueColour = (Colours?)ParseOptionalNullableEnum<Colours>(segments, 21),
             };
     }
 
@@ -311,7 +317,7 @@ public static class ChartSeriesListSerializer
                 csd.BinGranularity,
                 csd.DisplayStyle,
                 csd.IsLocked,
-                csd.SecondaryCalculation,
+                csd.TemporalCalculation,
                 csd.ShowTrendline,
                 csd.Smoothing,
                 csd.SmoothingWindow,
@@ -323,7 +329,9 @@ public static class ChartSeriesListSerializer
                 csd.GroupingThreshold,
                 csd.DataAvailable,
                 csd.MinimumDataResolution,
-                BuildTrendsUrlComponent(csd.Trends));
+                BuildTrendsUrlComponent(csd.Trends),
+                csd.PositiveValueColour,
+                csd.NegativeValueColour);
     }
 
     private static string BuildTrendsUrlComponent(List<ChartSeriesTrendRequest> trends)

@@ -383,16 +383,18 @@ public sealed class ChartDataBuilder : IChartDataBuilder
 
         foreach (var cs in chartSeriesWithData)
         {
-            if (cs.ChartSeries!.SecondaryCalculation == SecondaryCalculationOptions.AnnualChange)
+            IEnumerable<double?>? temporalCalculationValues = cs.ChartSeries!.TemporalCalculation switch
             {
-                var yearlyDifferenceValues =
-                    cs.SourceDataSet.DataRecords
-                    .Select(x => x.Value)
-                    .CalculateYearlyDifference();
+                TemporalCalculationOptions.AnnualChange => cs.SourceDataSet.DataRecords.Select(x => x.Value).CalculateYearlyDifference(),
+                TemporalCalculationOptions.Cumulative => cs.SourceDataSet.DataRecords.Select(x => x.Value).CalculateCumulative(),
+                _ => null,
+            };
 
+            if (temporalCalculationValues != null)
+            {
                 // Now, join back to the original DataRecord set
                 var newDataRecords =
-                    yearlyDifferenceValues
+                    temporalCalculationValues
                     .Zip(
                         cs.SourceDataSet.DataRecords,
                         (val, dr) => new BinnedRecord(dr.BinId, val))
@@ -405,6 +407,7 @@ public sealed class ChartDataBuilder : IChartDataBuilder
                         MeasurementDefinition = cs.SourceDataSet.MeasurementDefinition,
                         DataRecords = newDataRecords,
                         SourceMetadata = cs.SourceDataSet.SourceMetadata,
+                        AggregationApplied = cs.SourceDataSet.AggregationApplied,
                     };
             }
         }
@@ -461,6 +464,7 @@ public sealed class ChartDataBuilder : IChartDataBuilder
                         MeasurementDefinition = cs.SourceDataSet.MeasurementDefinition,
                         DataRecords = newDataRecords,
                         SourceMetadata = cs.SourceDataSet.SourceMetadata,
+                        AggregationApplied = cs.SourceDataSet.AggregationApplied,
                     };
             }
             else
@@ -556,6 +560,7 @@ public sealed class ChartDataBuilder : IChartDataBuilder
                     GeographicalEntity = cs.PreProcessedDataSet.GeographicalEntity,
                     MeasurementDefinition = cs.PreProcessedDataSet.MeasurementDefinition,
                     SourceMetadata = cs.PreProcessedDataSet.SourceMetadata,
+                    AggregationApplied = cs.PreProcessedDataSet.AggregationApplied,
                     DataRecords =
                         [.. chartBins
                         .Select(

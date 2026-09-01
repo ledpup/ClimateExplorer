@@ -31,13 +31,26 @@ public class ChartSeriesDefinition
     public float? GroupingThreshold { get; set; }
 
     // Data presentation fields
-    public SecondaryCalculationOptions SecondaryCalculation { get; set; }
+    public TemporalCalculationOptions TemporalCalculation { get; set; }
     public SeriesSmoothingOptions Smoothing { get; set; }
     public int SmoothingWindow { get; set; }
     public SeriesAggregationOptions Aggregation { get; set; }
     public SeriesValueOptions Value { get; set; }
     public string? Colour { get; set; } // Always allocated by ColourServer
     public Colours RequestedColour { get; set; }
+
+    /// <summary>
+    /// Optional per-value-sign colour override: when both this and <see cref="NegativeValueColour"/>
+    /// are set, values are coloured by sign (this colour for values &gt; 0, the other for values &lt; 0)
+    /// instead of using <see cref="RequestedColour"/>/<see cref="Colour"/> throughout. Currently only
+    /// honoured for bar charts (see ChartLogic.GetBarChartColourSet), but the field isn't itself
+    /// display-style-specific - a preset sets it, and it's up to the chart-building code for each
+    /// display style whether it makes use of it. Not yet exposed in the UI; set only from preset code.
+    /// </summary>
+    public Colours? PositiveValueColour { get; set; }
+
+    /// <summary>See <see cref="PositiveValueColour"/>.</summary>
+    public Colours? NegativeValueColour { get; set; }
 
     // Rendering option fields
     public SeriesDisplayStyle DisplayStyle { get; set; }
@@ -113,9 +126,14 @@ public class ChartSeriesDefinition
                 segments.Add("Aggregation: " + Aggregation);
             }
 
-            if (SecondaryCalculation == SecondaryCalculationOptions.AnnualChange)
+            if (TemporalCalculation == TemporalCalculationOptions.AnnualChange)
             {
                 segments.Add("annual change");
+            }
+
+            if (TemporalCalculation == TemporalCalculationOptions.Cumulative)
+            {
+                segments.Add("cumulative");
             }
 
             if (Value != SeriesValueOptions.Value)
@@ -291,9 +309,14 @@ public class ChartSeriesDefinition
             segments.Add(Aggregation.ToString());
         }
 
-        if (SecondaryCalculation == SecondaryCalculationOptions.AnnualChange)
+        if (TemporalCalculation == TemporalCalculationOptions.AnnualChange)
         {
             segments.Add("annual change");
+        }
+
+        if (TemporalCalculation == TemporalCalculationOptions.Cumulative)
+        {
+            segments.Add("cumulative");
         }
 
         if (Value != SeriesValueOptions.Value)

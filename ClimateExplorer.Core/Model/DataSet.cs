@@ -35,6 +35,14 @@ public class DataSet : ICachedData
 
     public IList<BinnedRecord> DataRecords { get; set; }
 
+    /// <summary>
+    /// Whether at least one bin in <see cref="DataRecords"/> combined more than one raw data record. False
+    /// means every <see cref="SeriesAggregationOptions"/> function would have produced the same values, e.g.
+    /// because the source data is already at the requested bin granularity (yearly data binned by year) -
+    /// so the UI can treat the aggregation choice as inert and disable it.
+    /// </summary>
+    public bool AggregationApplied { get; set; }
+
     public DataRecord[]? RawDataRecords { get; set; }
 
     public List<DataSetMetadata>? SourceMetadata { get; set; }

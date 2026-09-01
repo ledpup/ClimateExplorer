@@ -295,7 +295,7 @@ public class DataService : IDataService
 
             result = await httpClient.GetFromJsonAsync<ClimateRecordsResponse>(url, jsonSerializerOptions);
 
-            SetCached(url, result!, TimeSpan.FromHours(4));
+            SetCached(url, result!, TimeSpan.FromHours(1));
         }
 
         return result!;

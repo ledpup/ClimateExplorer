@@ -43,7 +43,7 @@
                                 <span class="form-control-wrap">@ChartSeries.Year</span>
                             </div>
                         }
-                        <DelayedTooltip Text="How data values within each time period are combined into a single point" Style="display: block">
+                        <DelayedTooltip Text="@AggregationTooltipText" Style="display: block">
                             <div class="form-row">
                                 <span class="form-label">Aggregation</span>
                                 <span class="form-control-wrap">
@@ -52,11 +52,18 @@
                                             Value="@ChartSeries.Aggregation"
                                             ValueChanged="@OnAggregationChanged"
                                             Disabled="@ShouldDisableAggregationOptions(ChartSeries)">
-                                        <SelectItem Value="SeriesAggregationOptions.Mean">Mean</SelectItem>
-                                        <SelectItem Value="SeriesAggregationOptions.Minimum">Minimum</SelectItem>
-                                        <SelectItem Value="SeriesAggregationOptions.Maximum">Maximum</SelectItem>
-                                        <SelectItem Value="SeriesAggregationOptions.Median">Median</SelectItem>
-                                        <SelectItem Value="SeriesAggregationOptions.Sum">Sum</SelectItem>
+                                        @if (ShouldDisableAggregationOptions(ChartSeries))
+                                        {
+                                            <SelectItem Value="@ChartSeries.Aggregation">None</SelectItem>
+                                        }
+                                        else
+                                        {
+                                            <SelectItem Value="SeriesAggregationOptions.Mean">Mean</SelectItem>
+                                            <SelectItem Value="SeriesAggregationOptions.Minimum">Minimum</SelectItem>
+                                            <SelectItem Value="SeriesAggregationOptions.Maximum">Maximum</SelectItem>
+                                            <SelectItem Value="SeriesAggregationOptions.Median">Median</SelectItem>
+                                            <SelectItem Value="SeriesAggregationOptions.Sum">Sum</SelectItem>
+                                        }
                                     </Select>
                                 </span>
                             </div>
@@ -65,16 +72,17 @@
                         {
                             <div class="form-row-info info-message">Note that smoothing is not currently being applied because the x-axis is not linear.</div>
                         }
-                        <DelayedTooltip Text="An optional calculation applied on top of the primary aggregation" Style="display: block">
+                        <DelayedTooltip Text="Recasts the series in terms of change over time, e.g. year-over-year change or a running total" Style="display: block">
                             <div class="form-row">
-                                <span class="form-label">Secondary calculation</span>
+                                <span class="form-label">Calculation</span>
                                 <span class="form-control-wrap">
-                                    <Select TValue="SecondaryCalculationOptions"
+                                    <Select TValue="TemporalCalculationOptions"
                                             Size="Size.Small"
-                                            Value="@ChartSeries.SecondaryCalculation"
-                                            ValueChanged="@OnSecondaryCalculationChanged">
-                                        <SelectItem Value="SecondaryCalculationOptions.None">None</SelectItem>
-                                        <SelectItem Value="SecondaryCalculationOptions.AnnualChange">Annual change</SelectItem>
+                                            Value="@ChartSeries.TemporalCalculation"
+                                            ValueChanged="@OnTemporalCalculationChanged">
+                                        <SelectItem Value="TemporalCalculationOptions.None">None</SelectItem>
+                                        <SelectItem Value="TemporalCalculationOptions.AnnualChange">Annual change</SelectItem>
+                                        <SelectItem Value="TemporalCalculationOptions.Cumulative">Cumulative</SelectItem>
                                     </Select>
                                 </span>
                             </div>

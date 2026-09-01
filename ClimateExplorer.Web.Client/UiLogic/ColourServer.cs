@@ -17,10 +17,7 @@ public enum Colours
 
 public class ColourServer
 {
-    private readonly List<Colours> reservedColours;
-    private readonly List<Colours> availableColours;
-
-    private readonly Dictionary<Colours, string> colours = new Dictionary<Colours, string>
+    private static readonly Dictionary<Colours, string> HtmlColourCodesByColour = new Dictionary<Colours, string>
     {
         { Colours.Red, "#FF2D2D" },
         { Colours.Blue, "#36A2EB" },
@@ -34,11 +31,31 @@ public class ColourServer
         { Colours.Grey, "#666666" },
     };
 
+    private readonly List<Colours> reservedColours;
+    private readonly List<Colours> availableColours;
+    private readonly Dictionary<Colours, string> colours = HtmlColourCodesByColour;
+
     public ColourServer()
     {
         availableColours = [];
         reservedColours = [];
         SetupAvailableColours();
+    }
+
+    /// <summary>
+    /// Looks up the fixed HTML colour code for a specific <see cref="Colours"/> value, independent of
+    /// the per-chart allocation tracked by an instance's <see cref="GetNextColour"/>. Used where a
+    /// colour is requested explicitly rather than auto-assigned - e.g. a preset's positive/negative
+    /// value colours for a bar chart.
+    /// </summary>
+    public static string GetHtmlColourCode(Colours colour)
+    {
+        if (!HtmlColourCodesByColour.TryGetValue(colour, out var htmlColourCode))
+        {
+            throw new ArgumentOutOfRangeException(nameof(colour), colour, "No HTML colour code is defined for this colour.");
+        }
+
+        return htmlColourCode;
     }
 
     public string GetNextColour(Colours requestedColour, List<Colours> requestedColours)

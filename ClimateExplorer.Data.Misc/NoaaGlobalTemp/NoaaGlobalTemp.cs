@@ -21,7 +21,7 @@ public static class NoaaGlobalTemp
                     ]
                 },
                 {
-                    Region.RegionId("Land"),
+                    Region.RegionId(Region.Land),
                     [
                         new()
                         {

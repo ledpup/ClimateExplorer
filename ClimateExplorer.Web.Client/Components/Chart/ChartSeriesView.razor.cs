@@ -29,6 +29,14 @@ public partial class ChartSeriesView
     public IReadOnlyList<DataSetMetadata>? SourceMetadata { get; set; }
 
     /// <summary>
+    /// Whether the last build actually combined more than one raw data record into any bin for this series -
+    /// null while that hasn't been determined yet (e.g. still loading). False means every aggregation
+    /// function would produce the same chart, so the "Aggregation" control is disabled.
+    /// </summary>
+    [Parameter]
+    public bool? AggregationApplied { get; set; }
+
+    /// <summary>
     /// The trends fitted for this series on the last chart build - one entry per request in
     /// <see cref="ChartSeriesDefinition.Trends"/>, in the same order - or empty when the trend
     /// module is off or the build hasn't produced them yet.
@@ -65,6 +73,14 @@ public partial class ChartSeriesView
     private string AddTrendTooltip => ChartSeries!.Trends.Count == 0
         ? "Fit a trend and project it past the end of the data"
         : "Add another trend, in a different colour, to compare against this one";
+
+    /// <summary>Explains why the "Aggregation" control is disabled, when it is.</summary>
+    private string AggregationTooltipText =>
+        AggregationApplied == false
+        ? "This data has one reading per period already, so there's nothing to combine - every aggregation option would produce the same chart"
+        : ChartSeries!.SeriesDerivationType == SeriesDerivationTypes.AverageOfAnomaliesInRegion
+        ? "Averaging happens across locations for this series, so there's nothing left to combine within a period"
+        : "How data values within each time period are combined into a single point";
 
     public string GenerateStyleForOuterDiv()
     {
@@ -125,7 +141,8 @@ public partial class ChartSeriesView
 
     private bool ShouldDisableAggregationOptions(ChartSeriesDefinition csd)
     {
-        return csd.SeriesDerivationType == SeriesDerivationTypes.AverageOfAnomaliesInRegion;
+        return csd.SeriesDerivationType == SeriesDerivationTypes.AverageOfAnomaliesInRegion
+            || AggregationApplied == false;
     }
 
     private bool ShouldDisableSmoothingWindow(ChartSeriesDefinition csd)
@@ -172,9 +189,9 @@ public partial class ChartSeriesView
         await OnSeriesChanged.InvokeAsync();
     }
 
-    private async Task OnSecondaryCalculationChanged(SecondaryCalculationOptions o)
+    private async Task OnTemporalCalculationChanged(TemporalCalculationOptions o)
     {
-        ChartSeries!.SecondaryCalculation = o;
+        ChartSeries!.TemporalCalculation = o;
 
         await OnSeriesChanged.InvokeAsync();
     }

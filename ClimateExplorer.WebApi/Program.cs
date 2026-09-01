@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Net.Http;
 using System.Text.Json.Serialization;
+using System.Threading;
 using ClimateExplorer.Data.Downloading.Downloaders;
 using ClimateExplorer.Data.Downloading.Orchestration;
 using ClimateExplorer.Data.Downloading.Storage;
@@ -74,30 +75,6 @@ builder.Services.AddSingleton<IDataSetDownloader>(
     new GhcndDataSetDownloader(GhcndHttpClientFactory.CreateHttpClient()));
 builder.Services.AddSingleton<IDataSetDownloader>(
     new BomDataSetDownloader(new BomDailyDataClient(BomHttpClientFactory.CreateBomHttpClient())));
-builder.Services.AddSingleton<IDataSetDownloader>(
-    services => new NoaaGlobalTempDataSetDownloader(
-        services.GetRequiredService<DataSetHttpFileDownloader>(),
-        services.GetRequiredService<TimeProvider>()));
-builder.Services.AddSingleton<IDataSetDownloader>(
-    services => new GreenlandDataSetDownloader(
-        new GreenlandMeltDataClient(services.GetRequiredService<HttpClient>()),
-        services.GetRequiredService<DataSetSourceFileStore>(),
-        services.GetRequiredService<TimeProvider>()));
-builder.Services.AddSingleton<IDataSetDownloader>(
-    services => new TransformingDataSetDownloader(
-        "ocean-acidity",
-        services.GetRequiredService<DataSetHttpFileDownloader>(),
-        new OceanAciditySourceFileTransformer()));
-builder.Services.AddSingleton<IDataSetDownloader>(
-    services => new TransformingDataSetDownloader(
-        "sea-level",
-        services.GetRequiredService<DataSetHttpFileDownloader>(),
-        new SeaLevelSourceFileTransformer()));
-builder.Services.AddSingleton<IDataSetDownloader>(
-    services => new TransformingDataSetDownloader(
-        "ozone",
-        services.GetRequiredService<DataSetHttpFileDownloader>(),
-        new OzoneSourceFileTransformer()));
 builder.Services.AddSingleton<DataSetSourceUpdateCoordinator>();
 builder.Services.AddSingleton<IDataSetSourceUpdateCoordinator>(
     services => services.GetRequiredService<DataSetSourceUpdateCoordinator>());
@@ -121,9 +98,13 @@ app.Run();
 
 static HttpClient CreateDataSetSourceHttpClient()
 {
+    // Timeout must be left uncapped: HttpClient.Timeout spans the whole request including the body read even with
+    // ResponseHeadersRead, and enforces itself by disposing the underlying connection - which DataSetHttpFileDownloader
+    // then sees as a confusing ObjectDisposedException/IOException mid-read rather than a clean cancellation. Its own
+    // per-attempt CancellationTokenSource is the intended - and only - timeout authority here.
     var client = new HttpClient
     {
-        Timeout = TimeSpan.FromMinutes(2),
+        Timeout = Timeout.InfiniteTimeSpan,
     };
     client.DefaultRequestHeaders.UserAgent.ParseAdd("ClimateExplorer/1.0 dataset-refresh");
     return client;

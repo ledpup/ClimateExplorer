@@ -37,6 +37,8 @@ public static class Enums
         SeaLevel,
 
         CO2Deseasoned,
+
+        GlacierMassBalance,
     }
 
     public enum DataResolution
@@ -72,6 +74,7 @@ public static class Enums
         DobsonUnits,
         Odgi,
         Ph,
+        MetresWaterEquivalent,
     }
 
     public enum SeriesAggregationOptions
@@ -140,6 +143,7 @@ public static class Enums
             UnitOfMeasure.DobsonUnits => "DU",
             UnitOfMeasure.Odgi => "ODGI",
             UnitOfMeasure.Ph => "pH",
+            UnitOfMeasure.MetresWaterEquivalent => "m w.e.",
             _ => throw new NotImplementedException(),
         };
     }
@@ -154,6 +158,7 @@ public static class Enums
             UnitOfMeasure.MegaTonnes => 0,
             UnitOfMeasure.MillionSqKm => 1,
             UnitOfMeasure.SqKm => 0,
+            UnitOfMeasure.MetresWaterEquivalent => 2,
             _ => 1,
         };
     }
@@ -178,6 +183,7 @@ public static class Enums
             UnitOfMeasure.DobsonUnits => "Dobson Units",
             UnitOfMeasure.Odgi => "Ozone Depleting Gas Index",
             UnitOfMeasure.Ph => "pH",
+            UnitOfMeasure.MetresWaterEquivalent => "Metres water equivalent (m w.e.)",
             _ => throw new NotImplementedException(),
         };
     }
