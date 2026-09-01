@@ -99,7 +99,7 @@ public partial class DataSetDefinitionsBuilder
                 Id = Guid.Parse("E970C6DA-564E-4768-8FC4-3E46B4B8776F"),
                 Name = "Glacier mass balance",
                 ShortName = "Glacier mass balance",
-                Description = "A global glacier mass balance index (in metres water equivalent), built from the World Glacier Monitoring Service's Fluctuations of Glaciers database. Includes every 'Benchmark' glacier - more than 10 years of ongoing glaciological mass-balance measurements, with at most one year's gap in the past decade. Each year's raw annual balance is averaged within each glacier's region first, then across regions, so no single densely-instrumented region (e.g. the Alps) dominates the global figure - the same two-stage approach WGMS uses for its own published reference-glacier figures.",
+                Description = "A global glacier mass balance index (in metres water equivalent), built from the World Glacier Monitoring Service's Fluctuations of Glaciers database. Includes every 'Benchmark' glacier - more than 10 years of ongoing glaciological mass-balance measurements. Each year's raw annual balance is averaged within each glacier's region first, then across regions, so no single densely-instrumented region (e.g. the Alps) dominates the global figure - the same two-stage approach WGMS uses for its own published reference-glacier figures.",
                 Publisher = "World Glacier Monitoring Service (WGMS)",
                 PublisherUrl = "https://wgms.ch/",
                 MoreInformationUrl = "https://wgms.ch/products_ref_glaciers/",
