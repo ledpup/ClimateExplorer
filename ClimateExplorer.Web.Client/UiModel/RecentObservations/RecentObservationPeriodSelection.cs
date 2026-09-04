@@ -16,6 +16,7 @@ public sealed class RecentObservationPeriodSelection
     private readonly SortedSet<int> visiblePreviousMonthOffsets = [];
     private readonly SortedSet<int> visiblePreviousSeasonOffsets = [];
     private readonly SortedSet<int> visiblePreviousYearOffsets = [];
+    private readonly HashSet<RecentObservationPeriodKind> removedSingletonPeriodKinds = [];
     private bool defaultsSeeded;
 
     public int PreviousDayCount => visiblePreviousDayOffsets.Count;
@@ -121,7 +122,8 @@ public sealed class RecentObservationPeriodSelection
         {
             return tile.PeriodKind is not RecentObservationPeriodKind.PreviousMonth
                 and not RecentObservationPeriodKind.PreviousSeason
-                and not RecentObservationPeriodKind.PreviousYear;
+                and not RecentObservationPeriodKind.PreviousYear
+                && !removedSingletonPeriodKinds.Contains(tile.PeriodKind);
         }
 
         return tile.PeriodKind switch
@@ -138,6 +140,7 @@ public sealed class RecentObservationPeriodSelection
     {
         if (!tile.PeriodOffset.HasValue)
         {
+            removedSingletonPeriodKinds.Add(tile.PeriodKind);
             return;
         }
 
@@ -165,6 +168,7 @@ public sealed class RecentObservationPeriodSelection
         visiblePreviousMonthOffsets.Clear();
         visiblePreviousSeasonOffsets.Clear();
         visiblePreviousYearOffsets.Clear();
+        removedSingletonPeriodKinds.Clear();
         defaultsSeeded = false;
     }
 
