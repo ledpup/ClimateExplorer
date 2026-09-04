@@ -18,6 +18,7 @@ public sealed partial class RecentObservationsCalculator
     private sealed record EquivalentPeriodGroup(int Year, int RequiredDays, IReadOnlyList<DailyObservation> Records);
 
     private sealed record PeriodObservation(
+        string ShortLabel,
         string Title,
         string ComparisonLabel,
         string ComparisonLabelPlural,

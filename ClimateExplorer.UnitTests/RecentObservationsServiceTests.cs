@@ -94,7 +94,7 @@ public class RecentObservationsServiceTests
             .Where(x => x.PeriodKind == RecentObservationPeriodKind.PreviousYear)
             .ToList();
 
-        CollectionAssert.AreEqual(new[] { "2025", "2024" }, previousYears.Select(x => x.PeriodTitle).ToArray());
+        CollectionAssert.AreEqual(new[] { "Last year - 2025", "2024" }, previousYears.Select(x => x.PeriodTitle).ToArray());
         CollectionAssert.AreEqual(Enumerable.Range(1, 2).ToArray(), previousYears.Select(x => x.PeriodOffset!.Value).ToArray());
         Assert.AreEqual(new DateOnly(2025, 1, 1), previousYears[0].PeriodStartDate);
         Assert.AreEqual(new DateOnly(2025, 12, 31), previousYears[0].PeriodEndDate);
@@ -1709,36 +1709,6 @@ public class RecentObservationsServiceTests
 
         Assert.IsFalse(selection.CanAddEarlierDay(dayOffsets));
         Assert.AreEqual("Add 8 June", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Daily, tiles, "day"));
-    }
-
-    [TestMethod]
-    public void PeriodSelectionMarksOnlyDynamicTilesRemovable()
-    {
-        var selection = new RecentObservationPeriodSelection();
-        var currentDay = CreateTile(RecentObservationPeriodKind.Daily, 1, "Today");
-        var previousDay = CreateTile(RecentObservationPeriodKind.Daily, 2, "Yesterday");
-        var latestSevenDays = CreateTile(RecentObservationPeriodKind.LatestSevenDays, null, "Latest 7 days");
-        var currentMonth = CreateTile(RecentObservationPeriodKind.CurrentMonth, null, "June 2026 to date");
-        var previousMonth = CreateTile(RecentObservationPeriodKind.PreviousMonth, 1, "Last month - May 2026");
-        var currentSeason = CreateTile(RecentObservationPeriodKind.CurrentSeason, null, "Winter to Date");
-        var previousSeason = CreateTile(RecentObservationPeriodKind.PreviousSeason, 1, "Autumn 2026");
-        var yearToDate = CreateTile(RecentObservationPeriodKind.YearToDate, null, "2026 to date");
-        var previousYear = CreateTile(RecentObservationPeriodKind.PreviousYear, 1, "2025");
-
-        selection.AddEarlierDay();
-        selection.AddEarlierMonth();
-        selection.AddEarlierSeason();
-        selection.AddEarlierYear();
-
-        Assert.IsFalse(selection.IsRemovable(currentDay));
-        Assert.IsTrue(selection.IsRemovable(previousDay));
-        Assert.IsFalse(selection.IsRemovable(latestSevenDays));
-        Assert.IsFalse(selection.IsRemovable(currentMonth));
-        Assert.IsTrue(selection.IsRemovable(previousMonth));
-        Assert.IsFalse(selection.IsRemovable(currentSeason));
-        Assert.IsTrue(selection.IsRemovable(previousSeason));
-        Assert.IsFalse(selection.IsRemovable(yearToDate));
-        Assert.IsTrue(selection.IsRemovable(previousYear));
     }
 
     [TestMethod]

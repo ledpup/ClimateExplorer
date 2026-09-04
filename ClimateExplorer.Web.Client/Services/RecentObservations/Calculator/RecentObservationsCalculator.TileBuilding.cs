@@ -57,6 +57,7 @@ public sealed partial class RecentObservationsCalculator
             PeriodStartDate = period.StartDate,
             PeriodEndDate = period.EndDate,
             PeriodTitle = period.Title,
+            PeriodShortLabel = period.ShortLabel,
             Headline = BuildTileHeadline(period, domain, historicalValues, ranking),
             PercentileSentence = BuildPercentileSentence(period, domain, historicalValues, ranking),
             PrimaryLabel = singular ? domain.Primary.SingularLabel : domain.Primary.PluralLabel,

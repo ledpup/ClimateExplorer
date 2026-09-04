@@ -134,26 +134,9 @@ public sealed class RecentObservationPeriodSelection
         };
     }
 
-    public bool IsRemovable(RecentObservationTileViewModel tile)
-    {
-        if (!tile.PeriodOffset.HasValue || !IsVisible(tile))
-        {
-            return false;
-        }
-
-        return tile.PeriodKind switch
-        {
-            RecentObservationPeriodKind.Daily => tile.PeriodOffset.Value > DefaultPreviousDayCount,
-            RecentObservationPeriodKind.PreviousMonth => true,
-            RecentObservationPeriodKind.PreviousSeason => true,
-            RecentObservationPeriodKind.PreviousYear => true,
-            _ => false,
-        };
-    }
-
     public void Remove(RecentObservationTileViewModel tile)
     {
-        if (!tile.PeriodOffset.HasValue || !IsRemovable(tile))
+        if (!tile.PeriodOffset.HasValue)
         {
             return;
         }
@@ -229,7 +212,7 @@ public sealed class RecentObservationPeriodSelection
     {
         return tile.PeriodKind == RecentObservationPeriodKind.PreviousMonth
             ? tile.PeriodStartDate.ToString("MMMM yyyy", CultureInfo.CurrentCulture)
-            : tile.PeriodTitle;
+            : tile.PeriodShortLabel;
     }
 
     private SortedSet<int> GetVisibleOffsets(RecentObservationPeriodKind periodKind)

@@ -463,11 +463,6 @@ public partial class RecentObservationsPanel
         return periodSelection.IsVisible(tile);
     }
 
-    private bool IsRemovableTile(RecentObservationTileViewModel tile)
-    {
-        return periodSelection.IsRemovable(tile);
-    }
-
     private string CreateRemoveTileLabel(RecentObservationTileViewModel tile)
     {
         return $"Remove {tile.PeriodTitle}";
