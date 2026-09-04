@@ -74,7 +74,7 @@ public sealed partial class RecentObservationsCalculator
                 PeriodKind.CurrentSeason,
                 domain,
                 seasonPeriod: currentSeasonToDate,
-                isSeasonToDate: true);
+                isSeasonToDate: !currentSeasonToDate.IsComplete);
         }
 
         var previousSeasons = supportsSeasonTiles && latitude.HasValue
@@ -265,7 +265,9 @@ public sealed partial class RecentObservationsCalculator
                 : $"{MonthName(endDate.Month)} {endDate.Year} to date",
             PeriodKind.PreviousMonth when previousMonthOffset == 1 => $"Last month - {MonthName(startDate.Month)} {startDate.Year}",
             PeriodKind.PreviousMonth => $"{MonthName(startDate.Month)} {startDate.Year}",
-            PeriodKind.YearToDate => $"{endDate.Year} to date",
+            PeriodKind.YearToDate => IsCalendarYearEnd(endDate)
+                ? endDate.Year.ToString(CultureInfo.InvariantCulture)
+                : $"{endDate.Year} to date",
             PeriodKind.PreviousYear => startDate.Year.ToString(CultureInfo.InvariantCulture),
             _ => string.Empty,
         };
@@ -318,7 +320,7 @@ public sealed partial class RecentObservationsCalculator
                 ? MonthName(endDate.Month)
                 : $"{MonthName(endDate.Month)} to date",
             PeriodKind.PreviousMonth => MonthName(endDate.Month),
-            PeriodKind.YearToDate => "year to date",
+            PeriodKind.YearToDate => IsCalendarYearEnd(endDate) ? "year" : "year to date",
             PeriodKind.PreviousYear => "year",
             _ => string.Empty,
         };
@@ -342,7 +344,7 @@ public sealed partial class RecentObservationsCalculator
                 ? $"{MonthName(endDate.Month)}s"
                 : $"{MonthName(endDate.Month)}-to-date periods",
             PeriodKind.PreviousMonth => $"{MonthName(endDate.Month)}s",
-            PeriodKind.YearToDate => "year-to-date periods",
+            PeriodKind.YearToDate => IsCalendarYearEnd(endDate) ? "years" : "year-to-date periods",
             PeriodKind.PreviousYear => "years",
             _ => "comparable periods",
         };
@@ -355,6 +357,11 @@ public sealed partial class RecentObservationsCalculator
             endDate.Month == 12 &&
             endDate.Day == 31 &&
             startDate.Year == endDate.Year;
+    }
+
+    private static bool IsCalendarYearEnd(DateOnly date)
+    {
+        return date.Month == 12 && date.Day == 31;
     }
 
     private static string CreateDailyPeriodTitle(DateOnly date, DateOnly referenceDate, DateOnly today)
@@ -388,7 +395,10 @@ public sealed partial class RecentObservationsCalculator
 
         if (period.Kind == PeriodKind.CurrentSeason && period.SeasonPeriod is not null)
         {
-            return $"{period.SeasonPeriod.Season} {MeteorologicalSeasonCalculator.FormatSeasonYear(period.SeasonPeriod)} to date";
+            var seasonYear = MeteorologicalSeasonCalculator.FormatSeasonYear(period.SeasonPeriod);
+            return period.SeasonPeriod.IsComplete
+                ? $"{period.SeasonPeriod.Season} {seasonYear}"
+                : $"{period.SeasonPeriod.Season} {seasonYear} to date";
         }
 
         return period.Title;

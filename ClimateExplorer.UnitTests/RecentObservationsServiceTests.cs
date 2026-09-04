@@ -267,6 +267,49 @@ public class RecentObservationsServiceTests
     }
 
     [TestMethod]
+    [DataRow(2026, 8, 31, -35.3d, "Winter 2026")]
+    [DataRow(2026, 11, 30, -35.3d, "Spring 2026")]
+    [DataRow(2026, 8, 31, 40.7d, "Summer 2026")]
+    [DataRow(2026, 11, 30, 40.7d, "Autumn 2026")]
+    public async Task GetPrecipitationRecordsShowsCompletedSeasonOnLastDayOfSeason(
+        int year,
+        int month,
+        int day,
+        double latitude,
+        string expectedTitle)
+    {
+        var today = new DateOnly(year, month, day);
+        var service = CreateService(recentStartDate: today.AddMonths(-4), recentEndDate: today, today: today);
+
+        var result = await service.GetPrecipitationRecords(
+            CreateLocation(latitude),
+            previousDayCount: 1,
+            previousMonthCount: 0,
+            previousSeasonCount: 3);
+        var currentSeason = result.Tiles.SingleOrDefault(x => x.PeriodKind == RecentObservationPeriodKind.CurrentSeason);
+
+        Assert.IsNotNull(currentSeason);
+        Assert.AreEqual(expectedTitle, currentSeason.PeriodTitle);
+    }
+
+    [TestMethod]
+    public async Task GetPrecipitationRecordsShowsCompletedYearOnLastDayOfYear()
+    {
+        var today = new DateOnly(2026, 12, 31);
+        var service = CreateService(recentStartDate: new DateOnly(2026, 1, 1), recentEndDate: today, today: today);
+
+        var result = await service.GetPrecipitationRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: 1,
+            previousMonthCount: 0,
+            previousSeasonCount: 0);
+        var yearToDate = result.Tiles.SingleOrDefault(x => x.PeriodKind == RecentObservationPeriodKind.YearToDate);
+
+        Assert.IsNotNull(yearToDate);
+        Assert.AreEqual("2026", yearToDate.PeriodTitle);
+    }
+
+    [TestMethod]
     public async Task GetPrecipitationRecordsShowsOneDailyTileByDefault()
     {
         var service = CreateService();
