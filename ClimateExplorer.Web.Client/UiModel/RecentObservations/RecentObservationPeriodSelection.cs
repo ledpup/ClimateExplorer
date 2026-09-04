@@ -16,6 +16,7 @@ public sealed class RecentObservationPeriodSelection
     private readonly SortedSet<int> visiblePreviousMonthOffsets = [];
     private readonly SortedSet<int> visiblePreviousSeasonOffsets = [];
     private readonly SortedSet<int> visiblePreviousYearOffsets = [];
+    private bool defaultsSeeded;
 
     public int PreviousDayCount => visiblePreviousDayOffsets.Count;
     public int PreviousMonthCount => visiblePreviousMonthOffsets.Count;
@@ -25,6 +26,28 @@ public sealed class RecentObservationPeriodSelection
     public bool IsAddEarlierMonthDisabled => !CanAddEarlierMonth();
     public bool IsAddEarlierSeasonDisabled => !CanAddEarlierSeason();
     public bool IsAddEarlierYearDisabled => !CanAddEarlierYear();
+
+    /// <summary>
+    /// Ensures a month/season/year tile is always visible by default: if a domain's tiles don't
+    /// include the "current" to-date period (because it isn't meaningful yet - e.g. day 1 of the
+    /// month, the first month of a season, or January), seeds the corresponding "previous" tile
+    /// (offset 1) as visible instead. Only seeds once per reset cycle, so it won't fight a user
+    /// who removes the seeded tile.
+    /// </summary>
+    public void EnsureDefaults(IEnumerable<RecentObservationTileViewModel> tiles)
+    {
+        if (defaultsSeeded)
+        {
+            return;
+        }
+
+        defaultsSeeded = true;
+
+        var tileList = tiles as ICollection<RecentObservationTileViewModel> ?? tiles.ToList();
+        SeedIfCurrentPeriodMissing(tileList, RecentObservationPeriodKind.CurrentMonth, visiblePreviousMonthOffsets);
+        SeedIfCurrentPeriodMissing(tileList, RecentObservationPeriodKind.CurrentSeason, visiblePreviousSeasonOffsets);
+        SeedIfCurrentPeriodMissing(tileList, RecentObservationPeriodKind.YearToDate, visiblePreviousYearOffsets);
+    }
 
     public void AddEarlierDay(IEnumerable<int>? availableOffsets = null)
     {
@@ -159,6 +182,18 @@ public sealed class RecentObservationPeriodSelection
         visiblePreviousMonthOffsets.Clear();
         visiblePreviousSeasonOffsets.Clear();
         visiblePreviousYearOffsets.Clear();
+        defaultsSeeded = false;
+    }
+
+    private static void SeedIfCurrentPeriodMissing(
+        ICollection<RecentObservationTileViewModel> tiles,
+        RecentObservationPeriodKind currentPeriodKind,
+        SortedSet<int> visibleOffsets)
+    {
+        if (!tiles.Any(tile => tile.PeriodKind == currentPeriodKind))
+        {
+            visibleOffsets.Add(1);
+        }
     }
 
     private RecentObservationTileViewModel? GetMaximumReachedTile(

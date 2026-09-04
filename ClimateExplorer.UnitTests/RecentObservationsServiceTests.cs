@@ -1911,6 +1911,73 @@ public class RecentObservationsServiceTests
     }
 
     [TestMethod]
+    public void EnsureDefaultsSeedsPreviousOffsetOneWhenCurrentPeriodTileIsMissing()
+    {
+        var selection = new RecentObservationPeriodSelection();
+        var tiles = new[]
+        {
+            CreateTile(RecentObservationPeriodKind.Daily, 1, "Today"),
+            CreateTile(RecentObservationPeriodKind.PreviousMonth, 1, "Last month - May 2026"),
+            CreateTile(RecentObservationPeriodKind.PreviousSeason, 1, "Autumn 2026"),
+            CreateTile(RecentObservationPeriodKind.PreviousYear, 1, "2025"),
+        };
+
+        selection.EnsureDefaults(tiles);
+
+        Assert.IsTrue(selection.IsVisible(CreateTile(RecentObservationPeriodKind.PreviousMonth, 1, "Last month - May 2026")));
+        Assert.IsTrue(selection.IsVisible(CreateTile(RecentObservationPeriodKind.PreviousSeason, 1, "Autumn 2026")));
+        Assert.IsTrue(selection.IsVisible(CreateTile(RecentObservationPeriodKind.PreviousYear, 1, "2025")));
+    }
+
+    [TestMethod]
+    public void EnsureDefaultsLeavesPreviousOffsetOneHiddenWhenCurrentPeriodTileIsPresent()
+    {
+        var selection = new RecentObservationPeriodSelection();
+        var tiles = new[]
+        {
+            CreateTile(RecentObservationPeriodKind.CurrentMonth, null, "June 2026 to date"),
+            CreateTile(RecentObservationPeriodKind.CurrentSeason, null, "Winter to Date"),
+            CreateTile(RecentObservationPeriodKind.YearToDate, null, "2026 to date"),
+            CreateTile(RecentObservationPeriodKind.PreviousMonth, 1, "Last month - May 2026"),
+            CreateTile(RecentObservationPeriodKind.PreviousSeason, 1, "Autumn 2026"),
+            CreateTile(RecentObservationPeriodKind.PreviousYear, 1, "2025"),
+        };
+
+        selection.EnsureDefaults(tiles);
+
+        Assert.IsFalse(selection.IsVisible(CreateTile(RecentObservationPeriodKind.PreviousMonth, 1, "Last month - May 2026")));
+        Assert.IsFalse(selection.IsVisible(CreateTile(RecentObservationPeriodKind.PreviousSeason, 1, "Autumn 2026")));
+        Assert.IsFalse(selection.IsVisible(CreateTile(RecentObservationPeriodKind.PreviousYear, 1, "2025")));
+    }
+
+    [TestMethod]
+    public void EnsureDefaultsOnlySeedsOnceSoARemovedTileIsNotReAdded()
+    {
+        var selection = new RecentObservationPeriodSelection();
+        var noCurrentMonthTiles = new[] { CreateTile(RecentObservationPeriodKind.PreviousMonth, 1, "Last month - May 2026") };
+
+        selection.EnsureDefaults(noCurrentMonthTiles);
+        selection.Remove(CreateTile(RecentObservationPeriodKind.PreviousMonth, 1, "Last month - May 2026"));
+        selection.EnsureDefaults(noCurrentMonthTiles);
+
+        Assert.IsFalse(selection.IsVisible(CreateTile(RecentObservationPeriodKind.PreviousMonth, 1, "Last month - May 2026")));
+    }
+
+    [TestMethod]
+    public void ResetAllowsEnsureDefaultsToReseed()
+    {
+        var selection = new RecentObservationPeriodSelection();
+        var noCurrentMonthTiles = new[] { CreateTile(RecentObservationPeriodKind.PreviousMonth, 1, "Last month - May 2026") };
+
+        selection.EnsureDefaults(noCurrentMonthTiles);
+        selection.Remove(CreateTile(RecentObservationPeriodKind.PreviousMonth, 1, "Last month - May 2026"));
+        selection.Reset();
+        selection.EnsureDefaults(noCurrentMonthTiles);
+
+        Assert.IsTrue(selection.IsVisible(CreateTile(RecentObservationPeriodKind.PreviousMonth, 1, "Last month - May 2026")));
+    }
+
+    [TestMethod]
     public async Task ExpandedTilesExposePeriodAndDailyExtremesMetricGroups()
     {
         var service = CreateService();

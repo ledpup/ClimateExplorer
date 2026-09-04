@@ -381,6 +381,7 @@ public partial class RecentObservationsPanel
         }
 
         state.Result = RecentObservationsService.Calculate(Context.Latitude, state.DataSet, CreateOptions());
+        periodSelection.EnsureDefaults(state.Result.Tiles);
         if (updateSelectedReferenceDate && state.Result.ReferenceDate.HasValue)
         {
             selectedReferenceDate = state.Result.ReferenceDate;
