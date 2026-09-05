@@ -25,7 +25,7 @@ public sealed partial class RecentObservationsCalculator
 
         foreach (var previousDay in GetPreviousDayPeriods(daily, x => x.Date, referenceDate, today, previousDayCount))
         {
-            periods.Add(CreateDailyPeriod(previousDay.Title, previousDay.Title, previousDay.Record, domain, previousDay.Offset));
+            periods.Add(CreateDailyPeriod(previousDay.Title, previousDay.Record, domain, previousDay.Offset));
         }
 
         var latestSevenDaysStart = referenceDate.AddDays(-(LatestSevenDaysLength - 1));
@@ -145,10 +145,9 @@ public sealed partial class RecentObservationsCalculator
             : new CurrentPeriod(new DateOnly(referenceDate.Year, 1, 1), referenceDate);
     }
 
-    private static PeriodObservation CreateDailyPeriod(string shortLabel, string title, DailyObservation record, MetricDomain domain, int periodOffset)
+    private static PeriodObservation CreateDailyPeriod(string title, DailyObservation record, MetricDomain domain, int periodOffset)
     {
         return new PeriodObservation(
-            shortLabel,
             title,
             FormatDayMonth(record.Date),
             $"{FormatDayMonth(record.Date)} days",
@@ -185,8 +184,7 @@ public sealed partial class RecentObservationsCalculator
         var completeness = new ObservationCompleteness(availableDays, expectedDays);
 
         periods.Add(new PeriodObservation(
-            CreatePeriodTitle(kind, startDate, endDate, previousMonthOffset, seasonPeriod, isSeasonToDate, periodOffset, true),
-            CreatePeriodTitle(kind, startDate, endDate, previousMonthOffset, seasonPeriod, isSeasonToDate, periodOffset, false),
+            CreatePeriodTitle(kind, startDate, endDate, previousMonthOffset, seasonPeriod, isSeasonToDate, periodOffset),
             CreateComparisonLabel(kind, endDate, seasonPeriod, isSeasonToDate),
             CreateComparisonLabelPlural(kind, endDate, seasonPeriod, isSeasonToDate),
             startDate,
@@ -253,8 +251,7 @@ public sealed partial class RecentObservationsCalculator
         int? previousMonthOffset = null,
         MeteorologicalSeasonPeriod? seasonPeriod = null,
         bool isSeasonToDate = false,
-        int? periodOffset = null,
-        bool isShortLabel = false)
+        int? periodOffset = null)
     {
         if (seasonPeriod is not null)
         {
@@ -272,7 +269,7 @@ public sealed partial class RecentObservationsCalculator
             PeriodKind.YearToDate => IsCalendarYearEnd(endDate)
                 ? endDate.Year.ToString(CultureInfo.InvariantCulture)
                 : $"{endDate.Year} to date",
-            PeriodKind.PreviousYear when periodOffset == 1 && !isShortLabel => $"Last year - {endDate.Year}",
+            PeriodKind.PreviousYear when periodOffset == 1 => $"Last year - {endDate.Year}",
             PeriodKind.PreviousYear => startDate.Year.ToString(CultureInfo.InvariantCulture),
             _ => string.Empty,
         };

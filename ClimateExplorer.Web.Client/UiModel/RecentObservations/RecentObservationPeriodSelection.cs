@@ -214,9 +214,12 @@ public sealed class RecentObservationPeriodSelection
 
     private string CreateAddButtonPeriodLabel(RecentObservationTileViewModel tile)
     {
-        return tile.PeriodKind == RecentObservationPeriodKind.PreviousMonth
-            ? tile.PeriodStartDate.ToString("MMMM yyyy", CultureInfo.CurrentCulture)
-            : tile.PeriodShortLabel;
+        return tile.PeriodKind switch
+        {
+            RecentObservationPeriodKind.PreviousMonth => tile.PeriodStartDate.ToString("MMMM yyyy", CultureInfo.CurrentCulture),
+            RecentObservationPeriodKind.PreviousYear => tile.PeriodStartDate.ToString("yyyy", CultureInfo.CurrentCulture),
+            _ => tile.PeriodTitle,
+        };
     }
 
     private SortedSet<int> GetVisibleOffsets(RecentObservationPeriodKind periodKind)
