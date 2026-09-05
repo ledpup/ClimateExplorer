@@ -590,6 +590,8 @@ public partial class Index : ChartablePage
 
     private Task ShowRecordHighAsync() => locationInfoComponent?.ShowRecordHighAsync() ?? Task.CompletedTask;
 
+    private Task ShowRecentObservationsAsync() => locationInfoComponent?.ShowRecentObservationsAsync() ?? Task.CompletedTask;
+
     private ChartState CreateDefaultLocationChartState()
     {
         if (Location is null)
