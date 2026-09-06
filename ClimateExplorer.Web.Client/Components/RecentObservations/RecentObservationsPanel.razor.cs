@@ -207,21 +207,28 @@ public partial class RecentObservationsPanel
     private void AddEarlierDay()
     {
         periodSelection.AddEarlierDay(GetAvailableOffsets(RecentObservationPeriodKind.Daily));
+
+        // periodSelection is shared across every tab, and growing its visible count also moves
+        // the lookahead buffer CreateOptions() requests, so every loaded tab needs recalculating.
+        RecalculateLoadedTabs();
     }
 
     private void AddEarlierMonth()
     {
         periodSelection.AddEarlierMonth(GetAvailableOffsets(RecentObservationPeriodKind.PreviousMonth));
+        RecalculateLoadedTabs();
     }
 
     private void AddEarlierSeason()
     {
         periodSelection.AddEarlierSeason(GetAvailableOffsets(RecentObservationPeriodKind.PreviousSeason));
+        RecalculateLoadedTabs();
     }
 
     private void AddEarlierYear()
     {
         periodSelection.AddEarlierYear(GetAvailableOffsets(RecentObservationPeriodKind.PreviousYear));
+        RecalculateLoadedTabs();
     }
 
     private void RemoveTile(RecentObservationTileViewModel tile)
@@ -376,7 +383,14 @@ public partial class RecentObservationsPanel
         }
 
         state.Result = RecentObservationsService.Calculate(Context.Latitude, state.DataSet, CreateOptions());
-        periodSelection.EnsureDefaults(state.Result.Tiles);
+        if (periodSelection.EnsureDefaults(state.Result.Tiles))
+        {
+            // Seeding a default tile (e.g. viewing on day 1 of a month/season/year, before the
+            // "to date" tile is meaningful) grows one of the visible counts, so recalculate to
+            // refresh the "Add earlier" lookahead buffer for the newly-visible tile.
+            state.Result = RecentObservationsService.Calculate(Context.Latitude, state.DataSet, CreateOptions());
+        }
+
         if (updateSelectedReferenceDate && state.Result.ReferenceDate.HasValue)
         {
             selectedReferenceDate = state.Result.ReferenceDate;
@@ -389,11 +403,21 @@ public partial class RecentObservationsPanel
 
     private RecentObservationsOptions CreateOptions()
     {
+        // Request only what's currently visible plus a one-tile lookahead buffer per period kind
+        // (rather than the unbounded RecentObservationsOptions defaults), so we're not computing
+        // metrics and historical rankings for every day/month/season/year a station has ever
+        // recorded. The buffer lets GetAvailableTiles/GetNextAddTile preview the next "Add
+        // earlier" tile's label without a full recalculation; AddEarlierDay/Month/Season/Year
+        // trigger a recalculation when the user actually adds one, refreshing the buffer.
         return new RecentObservationsOptions
         {
             ReferenceDate = selectedReferenceDate,
             ComparisonEndMode = selectedComparisonEndMode,
             CompletenessThreshold = completenessThreshold,
+            PreviousDayCount = periodSelection.PreviousDayCount + 1,
+            PreviousMonthCount = periodSelection.PreviousMonthCount + 1,
+            PreviousSeasonCount = periodSelection.PreviousSeasonCount + 1,
+            PreviousYearCount = periodSelection.PreviousYearCount + 1,
         };
     }
 

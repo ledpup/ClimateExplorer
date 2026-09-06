@@ -31,19 +31,26 @@ public sealed class RecentObservationPeriodSelection
     /// (offset 1) as visible instead. Only seeds once per reset cycle, so it won't fight a user
     /// who removes the seeded tile.
     /// </summary>
-    public void EnsureDefaults(IEnumerable<RecentObservationTileViewModel> tiles)
+    /// <returns>
+    /// <see langword="true"/> if a tile was seeded, growing one of the visible counts. Calculations
+    /// only request a small lookahead buffer beyond what's currently visible (see
+    /// <c>RecentObservationsPanel.CreateOptions</c>), so callers should recalculate when this
+    /// returns <see langword="true"/> to refresh that buffer for the newly-visible tile.
+    /// </returns>
+    public bool EnsureDefaults(IEnumerable<RecentObservationTileViewModel> tiles)
     {
         if (defaultsSeeded)
         {
-            return;
+            return false;
         }
 
         defaultsSeeded = true;
 
         var tileList = tiles as ICollection<RecentObservationTileViewModel> ?? tiles.ToList();
-        SeedIfCurrentPeriodMissing(tileList, RecentObservationPeriodKind.CurrentMonth, visiblePreviousMonthOffsets);
-        SeedIfCurrentPeriodMissing(tileList, RecentObservationPeriodKind.CurrentSeason, visiblePreviousSeasonOffsets);
-        SeedIfCurrentPeriodMissing(tileList, RecentObservationPeriodKind.YearToDate, visiblePreviousYearOffsets);
+        var seededMonth = SeedIfCurrentPeriodMissing(tileList, RecentObservationPeriodKind.CurrentMonth, visiblePreviousMonthOffsets);
+        var seededSeason = SeedIfCurrentPeriodMissing(tileList, RecentObservationPeriodKind.CurrentSeason, visiblePreviousSeasonOffsets);
+        var seededYear = SeedIfCurrentPeriodMissing(tileList, RecentObservationPeriodKind.YearToDate, visiblePreviousYearOffsets);
+        return seededMonth || seededSeason || seededYear;
     }
 
     public void AddEarlierDay(IEnumerable<int>? availableOffsets = null)
@@ -167,7 +174,7 @@ public sealed class RecentObservationPeriodSelection
         defaultsSeeded = false;
     }
 
-    private static void SeedIfCurrentPeriodMissing(
+    private static bool SeedIfCurrentPeriodMissing(
         ICollection<RecentObservationTileViewModel> tiles,
         RecentObservationPeriodKind currentPeriodKind,
         SortedSet<int> visibleOffsets)
@@ -175,7 +182,10 @@ public sealed class RecentObservationPeriodSelection
         if (!tiles.Any(tile => tile.PeriodKind == currentPeriodKind))
         {
             visibleOffsets.Add(1);
+            return true;
         }
+
+        return false;
     }
 
     private IEnumerable<RecentObservationTileViewModel> GetAddableTiles(
