@@ -26,7 +26,6 @@ public class RecentObservationsServiceTests
 
         var result = await service.GetPrecipitationRecords(
             CreateSouthernHemisphereLocation(),
-            previousDayCount: RecentObservationPeriodSelection.MaximumPreviousDayCount,
             previousMonthCount: 11,
             previousSeasonCount: 3);
 
@@ -60,7 +59,6 @@ public class RecentObservationsServiceTests
 
         var result = await service.GetPrecipitationRecords(
             CreateSouthernHemisphereLocation(),
-            previousDayCount: RecentObservationPeriodSelection.MaximumPreviousDayCount,
             previousMonthCount: 11,
             previousSeasonCount: 3);
 
@@ -86,7 +84,6 @@ public class RecentObservationsServiceTests
 
         var result = await service.GetPrecipitationRecords(
             CreateSouthernHemisphereLocation(),
-            previousDayCount: RecentObservationPeriodSelection.MaximumPreviousDayCount,
             previousMonthCount: 11,
             previousSeasonCount: 3,
             previousYearCount: 2);
@@ -107,7 +104,7 @@ public class RecentObservationsServiceTests
 
         var result = await service.GetPrecipitationRecords(
             CreateSouthernHemisphereLocation(),
-            previousDayCount: RecentObservationPeriodSelection.MaximumPreviousDayCount,
+            previousDayCount: 1,
             previousMonthCount: 11,
             previousSeasonCount: 3);
         var keys = result.Tiles.Select(x => $"{x.PeriodKind}:{x.PeriodStartDate:yyyy-MM-dd}:{x.PeriodEndDate:yyyy-MM-dd}:{x.PeriodTitle}").ToList();
@@ -116,12 +113,6 @@ public class RecentObservationsServiceTests
             new[]
             {
                 "Today",
-                "Yesterday",
-                "12 June",
-                "11 June",
-                "10 June",
-                "9 June",
-                "8 June",
                 "Latest 7 days",
                 "June 2026 to date",
                 "Last month - May 2026",
@@ -751,7 +742,6 @@ public class RecentObservationsServiceTests
 
         var result = await service.GetPrecipitationRecords(
             CreateSouthernHemisphereLocation(),
-            previousDayCount: RecentObservationPeriodSelection.MaximumPreviousDayCount,
             previousMonthCount: 11,
             previousSeasonCount: 3);
         var previousMonths = result.Tiles
@@ -1592,7 +1582,7 @@ public class RecentObservationsServiceTests
     public async Task PeriodSelectionCreatesAddButtonLabelsFromGeneratedTiles()
     {
         var service = CreateService();
-        var tiles = await GetGeneratedTiles(service, previousYearCount: RecentObservationPeriodSelection.MaximumPreviousYearCount);
+        var tiles = await GetGeneratedTiles(service, previousYearCount: int.MaxValue);
         var selection = new RecentObservationPeriodSelection();
 
         Assert.IsFalse(tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.CurrentSeason));
@@ -1606,7 +1596,7 @@ public class RecentObservationsServiceTests
     public async Task PeriodSelectionAddYearLabelMovesToNextPreviousYear()
     {
         var service = CreateService(recentStartDate: new DateOnly(2024, 1, 1));
-        var tiles = await GetGeneratedTiles(service, previousYearCount: RecentObservationPeriodSelection.MaximumPreviousYearCount);
+        var tiles = await GetGeneratedTiles(service, previousYearCount: int.MaxValue);
         var selection = new RecentObservationPeriodSelection();
         var yearOffsets = GetAvailableOffsets(tiles, RecentObservationPeriodKind.PreviousYear);
 
@@ -1695,23 +1685,6 @@ public class RecentObservationsServiceTests
     }
 
     [TestMethod]
-    public async Task PeriodSelectionAddButtonLabelRetainsLastValidLabelAtMaximum()
-    {
-        var service = CreateService();
-        var tiles = await GetGeneratedTiles(service);
-        var selection = new RecentObservationPeriodSelection();
-        var dayOffsets = GetAvailableOffsets(tiles, RecentObservationPeriodKind.Daily);
-
-        for (var i = 0; i < 20; i++)
-        {
-            selection.AddEarlierDay(dayOffsets);
-        }
-
-        Assert.IsFalse(selection.CanAddEarlierDay(dayOffsets));
-        Assert.AreEqual("Add 8 June", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Daily, tiles, "day"));
-    }
-
-    [TestMethod]
     public void PeriodSelectionRemovesSpecificDynamicTiles()
     {
         var selection = new RecentObservationPeriodSelection();
@@ -1792,30 +1765,31 @@ public class RecentObservationsServiceTests
     }
 
     [TestMethod]
-    public void PeriodSelectionRespectsMaxAddLimits()
+    public void PeriodSelectionAllowsUnlimitedAdditionsWhenAvailableTilesExist()
     {
         var selection = new RecentObservationPeriodSelection();
+        var availableOffsets = Enumerable.Range(1, 50).ToList();
 
         for (var i = 0; i < 20; i++)
         {
-            selection.AddEarlierDay();
-            selection.AddEarlierMonth();
-            selection.AddEarlierSeason();
-            selection.AddEarlierYear();
+            selection.AddEarlierDay(availableOffsets);
+            selection.AddEarlierMonth(availableOffsets);
+            selection.AddEarlierSeason(availableOffsets);
+            selection.AddEarlierYear(availableOffsets);
         }
 
-        Assert.AreEqual(RecentObservationPeriodSelection.MaximumPreviousDayCount, selection.PreviousDayCount);
-        Assert.AreEqual(RecentObservationPeriodSelection.MaximumPreviousMonthCount, selection.PreviousMonthCount);
-        Assert.AreEqual(RecentObservationPeriodSelection.MaximumPreviousSeasonCount, selection.PreviousSeasonCount);
-        Assert.AreEqual(RecentObservationPeriodSelection.MaximumPreviousYearCount, selection.PreviousYearCount);
-        Assert.IsTrue(selection.IsAddEarlierDayDisabled);
-        Assert.IsTrue(selection.IsAddEarlierMonthDisabled);
-        Assert.IsTrue(selection.IsAddEarlierSeasonDisabled);
-        Assert.IsTrue(selection.IsAddEarlierYearDisabled);
-        Assert.IsFalse(selection.CanAddEarlierDay(Enumerable.Range(1, 20)));
-        Assert.IsFalse(selection.CanAddEarlierMonth(Enumerable.Range(1, 20)));
-        Assert.IsFalse(selection.CanAddEarlierSeason(Enumerable.Range(1, 20)));
-        Assert.IsFalse(selection.CanAddEarlierYear(Enumerable.Range(1, 20)));
+        Assert.AreEqual(21, selection.PreviousDayCount);
+        Assert.AreEqual(20, selection.PreviousMonthCount);
+        Assert.AreEqual(20, selection.PreviousSeasonCount);
+        Assert.AreEqual(20, selection.PreviousYearCount);
+        Assert.IsFalse(selection.IsAddEarlierDayDisabled);
+        Assert.IsFalse(selection.IsAddEarlierMonthDisabled);
+        Assert.IsFalse(selection.IsAddEarlierSeasonDisabled);
+        Assert.IsFalse(selection.IsAddEarlierYearDisabled);
+        Assert.IsTrue(selection.CanAddEarlierDay(availableOffsets));
+        Assert.IsTrue(selection.CanAddEarlierMonth(availableOffsets));
+        Assert.IsTrue(selection.CanAddEarlierSeason(availableOffsets));
+        Assert.IsTrue(selection.CanAddEarlierYear(availableOffsets));
     }
 
     [TestMethod]
@@ -2881,9 +2855,8 @@ public class RecentObservationsServiceTests
     {
         var result = await service.GetPrecipitationRecords(
             CreateSouthernHemisphereLocation(),
-            previousDayCount: RecentObservationPeriodSelection.MaximumPreviousDayCount,
-            previousMonthCount: RecentObservationPeriodSelection.MaximumPreviousMonthCount,
-            previousSeasonCount: RecentObservationPeriodSelection.MaximumPreviousSeasonCount,
+            previousMonthCount: int.MaxValue,
+            previousSeasonCount: int.MaxValue,
             previousYearCount: previousYearCount);
 
         return result.Tiles;

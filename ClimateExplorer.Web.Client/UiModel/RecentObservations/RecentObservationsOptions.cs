@@ -8,8 +8,8 @@ public sealed record RecentObservationsOptions
     public ComparisonEndMode ComparisonEndMode { get; init; } = ComparisonEndMode.FullDataset;
     public float CompletenessThreshold { get; init; } = RecentObservationCompletenessThreshold.Default;
     public int MinimumRankSampleSize { get; init; } = DefaultMinimumRankSampleSize;
-    public int PreviousDayCount { get; init; } = RecentObservationPeriodSelection.MaximumPreviousDayCount;
-    public int PreviousMonthCount { get; init; } = RecentObservationPeriodSelection.MaximumPreviousMonthCount;
-    public int PreviousSeasonCount { get; init; } = RecentObservationPeriodSelection.MaximumPreviousSeasonCount;
-    public int PreviousYearCount { get; init; }
+    public int PreviousDayCount { get; init; } = int.MaxValue;
+    public int PreviousMonthCount { get; init; } = int.MaxValue;
+    public int PreviousSeasonCount { get; init; } = int.MaxValue;
+    public int PreviousYearCount { get; init; } = int.MaxValue;
 }

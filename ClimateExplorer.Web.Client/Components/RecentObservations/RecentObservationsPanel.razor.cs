@@ -394,10 +394,6 @@ public partial class RecentObservationsPanel
             ReferenceDate = selectedReferenceDate,
             ComparisonEndMode = selectedComparisonEndMode,
             CompletenessThreshold = completenessThreshold,
-            PreviousDayCount = RecentObservationPeriodSelection.MaximumPreviousDayCount,
-            PreviousMonthCount = RecentObservationPeriodSelection.MaximumPreviousMonthCount,
-            PreviousSeasonCount = RecentObservationPeriodSelection.MaximumPreviousSeasonCount,
-            PreviousYearCount = RecentObservationPeriodSelection.MaximumPreviousYearCount,
         };
     }
 

@@ -7,10 +7,6 @@ public sealed class RecentObservationPeriodSelection
     public const int DefaultPreviousDayCount = 1;
     public const int DefaultPreviousMonthCount = 0;
     public const int DefaultPreviousSeasonCount = 0;
-    public const int MaximumPreviousDayCount = 7;
-    public const int MaximumPreviousMonthCount = 11;
-    public const int MaximumPreviousSeasonCount = 3;
-    public const int MaximumPreviousYearCount = 10;
 
     private readonly SortedSet<int> visiblePreviousDayOffsets = new() { DefaultPreviousDayCount };
     private readonly SortedSet<int> visiblePreviousMonthOffsets = [];
@@ -52,42 +48,42 @@ public sealed class RecentObservationPeriodSelection
 
     public void AddEarlierDay(IEnumerable<int>? availableOffsets = null)
     {
-        AddNextVisibleOffset(visiblePreviousDayOffsets, availableOffsets, MaximumPreviousDayCount);
+        AddNextVisibleOffset(visiblePreviousDayOffsets, availableOffsets);
     }
 
     public void AddEarlierMonth(IEnumerable<int>? availableOffsets = null)
     {
-        AddNextVisibleOffset(visiblePreviousMonthOffsets, availableOffsets, MaximumPreviousMonthCount);
+        AddNextVisibleOffset(visiblePreviousMonthOffsets, availableOffsets);
     }
 
     public void AddEarlierSeason(IEnumerable<int>? availableOffsets = null)
     {
-        AddNextVisibleOffset(visiblePreviousSeasonOffsets, availableOffsets, MaximumPreviousSeasonCount);
+        AddNextVisibleOffset(visiblePreviousSeasonOffsets, availableOffsets);
     }
 
     public void AddEarlierYear(IEnumerable<int>? availableOffsets = null)
     {
-        AddNextVisibleOffset(visiblePreviousYearOffsets, availableOffsets, MaximumPreviousYearCount);
+        AddNextVisibleOffset(visiblePreviousYearOffsets, availableOffsets);
     }
 
     public bool CanAddEarlierDay(IEnumerable<int>? availableOffsets = null)
     {
-        return GetNextVisibleOffset(visiblePreviousDayOffsets, availableOffsets, MaximumPreviousDayCount).HasValue;
+        return GetNextVisibleOffset(visiblePreviousDayOffsets, availableOffsets).HasValue;
     }
 
     public bool CanAddEarlierMonth(IEnumerable<int>? availableOffsets = null)
     {
-        return GetNextVisibleOffset(visiblePreviousMonthOffsets, availableOffsets, MaximumPreviousMonthCount).HasValue;
+        return GetNextVisibleOffset(visiblePreviousMonthOffsets, availableOffsets).HasValue;
     }
 
     public bool CanAddEarlierSeason(IEnumerable<int>? availableOffsets = null)
     {
-        return GetNextVisibleOffset(visiblePreviousSeasonOffsets, availableOffsets, MaximumPreviousSeasonCount).HasValue;
+        return GetNextVisibleOffset(visiblePreviousSeasonOffsets, availableOffsets).HasValue;
     }
 
     public bool CanAddEarlierYear(IEnumerable<int>? availableOffsets = null)
     {
-        return GetNextVisibleOffset(visiblePreviousYearOffsets, availableOffsets, MaximumPreviousYearCount).HasValue;
+        return GetNextVisibleOffset(visiblePreviousYearOffsets, availableOffsets).HasValue;
     }
 
     public string CreateAddButtonLabel(
@@ -95,7 +91,7 @@ public sealed class RecentObservationPeriodSelection
         IEnumerable<RecentObservationTileViewModel> availableTiles,
         string fallbackPeriodName)
     {
-        var tile = GetNextAddTile(periodKind, availableTiles) ?? GetMaximumReachedTile(periodKind, availableTiles);
+        var tile = GetNextAddTile(periodKind, availableTiles);
         return tile is null
             ? $"Add {fallbackPeriodName}"
             : $"Add {CreateAddButtonPeriodLabel(tile)}";
@@ -108,8 +104,7 @@ public sealed class RecentObservationPeriodSelection
         var tiles = GetAddableTiles(periodKind, availableTiles).ToList();
         var nextOffset = GetNextVisibleOffset(
             GetVisibleOffsets(periodKind),
-            tiles.Select(tile => tile.PeriodOffset!.Value),
-            GetMaximumOffset(periodKind));
+            tiles.Select(tile => tile.PeriodOffset!.Value));
 
         return nextOffset.HasValue
             ? tiles.FirstOrDefault(tile => tile.PeriodOffset == nextOffset.Value)
@@ -183,32 +178,13 @@ public sealed class RecentObservationPeriodSelection
         }
     }
 
-    private RecentObservationTileViewModel? GetMaximumReachedTile(
-        RecentObservationPeriodKind periodKind,
-        IEnumerable<RecentObservationTileViewModel> availableTiles)
-    {
-        var visibleOffsets = GetVisibleOffsets(periodKind);
-        if (visibleOffsets.Count == 0 || visibleOffsets.Max < GetMaximumOffset(periodKind))
-        {
-            return null;
-        }
-
-        return GetAddableTiles(periodKind, availableTiles)
-            .Where(tile => visibleOffsets.Contains(tile.PeriodOffset!.Value))
-            .OrderByDescending(tile => tile.PeriodOffset!.Value)
-            .FirstOrDefault();
-    }
-
     private IEnumerable<RecentObservationTileViewModel> GetAddableTiles(
         RecentObservationPeriodKind periodKind,
         IEnumerable<RecentObservationTileViewModel> availableTiles)
     {
-        var maximumOffset = GetMaximumOffset(periodKind);
-
         return availableTiles
             .Where(tile => tile.PeriodKind == periodKind &&
-                           tile.PeriodOffset.HasValue &&
-                           tile.PeriodOffset.Value <= maximumOffset)
+                           tile.PeriodOffset.HasValue)
             .OrderBy(tile => tile.PeriodOffset!.Value);
     }
 
@@ -234,34 +210,22 @@ public sealed class RecentObservationPeriodSelection
         };
     }
 
-    private int GetMaximumOffset(RecentObservationPeriodKind periodKind)
+    private void AddNextVisibleOffset(SortedSet<int> visibleOffsets, IEnumerable<int>? availableOffsets)
     {
-        return periodKind switch
-        {
-            RecentObservationPeriodKind.Daily => MaximumPreviousDayCount,
-            RecentObservationPeriodKind.PreviousMonth => MaximumPreviousMonthCount,
-            RecentObservationPeriodKind.PreviousSeason => MaximumPreviousSeasonCount,
-            RecentObservationPeriodKind.PreviousYear => MaximumPreviousYearCount,
-            _ => 0,
-        };
-    }
-
-    private void AddNextVisibleOffset(SortedSet<int> visibleOffsets, IEnumerable<int>? availableOffsets, int maximumOffset)
-    {
-        var nextOffset = GetNextVisibleOffset(visibleOffsets, availableOffsets, maximumOffset);
+        var nextOffset = GetNextVisibleOffset(visibleOffsets, availableOffsets);
         if (nextOffset.HasValue)
         {
             visibleOffsets.Add(nextOffset.Value);
         }
     }
 
-    private int? GetNextVisibleOffset(SortedSet<int> visibleOffsets, IEnumerable<int>? availableOffsets, int maximumOffset)
+    private int? GetNextVisibleOffset(SortedSet<int> visibleOffsets, IEnumerable<int>? availableOffsets)
     {
         var currentMaxOffset = visibleOffsets.Count == 0 ? 0 : visibleOffsets.Max;
-        var offsets = availableOffsets ?? Enumerable.Range(1, maximumOffset);
+        var offsets = availableOffsets ?? [currentMaxOffset + 1];
 
         return offsets
-            .Where(offset => offset > currentMaxOffset && offset <= maximumOffset)
+            .Where(offset => offset > currentMaxOffset)
             .Order()
             .FirstOrDefault() is var nextOffset && nextOffset > 0
                 ? nextOffset
