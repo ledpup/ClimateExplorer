@@ -2,6 +2,7 @@
 namespace ClimateExplorer.Web.Client.Services;
 
 using ClimateExplorer.Core.Calculators;
+using ClimateExplorer.Web.Client.UiModel.RecentObservations;
 
 // The private records/enums shared across the RecentObservationsCalculator.*.cs files.
 public sealed partial class RecentObservationsCalculator
@@ -24,7 +25,7 @@ public sealed partial class RecentObservationsCalculator
         DateOnly StartDate,
         DateOnly EndDate,
         ObservationCompleteness Completeness,
-        PeriodKind Kind,
+        RecentObservationPeriodKind Kind,
         PeriodComparisonMode ComparisonMode,
         int? PeriodOffset,
         string? Note,
@@ -35,12 +36,6 @@ public sealed partial class RecentObservationsCalculator
     {
         public static ObservationCompleteness CompleteDay { get; } = new(1, 1);
     }
-
-    private sealed record PreviousMonthPeriod(DateOnly StartDate, DateOnly EndDate, int Offset);
-
-    private sealed record PreviousYearPeriod(DateOnly StartDate, DateOnly EndDate, int Offset);
-
-    private sealed record CurrentPeriod(DateOnly StartDate, DateOnly EndDate);
 
     private sealed record PreviousDayPeriod<TRecord>(TRecord Record, string Title, int Offset);
 
@@ -84,18 +79,6 @@ public sealed partial class RecentObservationsCalculator
     private sealed record HistoricalPeriodValue(double? Value, short? Year, DateOnly? OccurredOn);
 
     private sealed record MetricObservationValue(DateOnly? OccurredOn, double? Value);
-
-    private enum PeriodKind
-    {
-        Daily,
-        LatestSevenDays,
-        CurrentMonth,
-        PreviousMonth,
-        CurrentSeason,
-        PreviousSeason,
-        YearToDate,
-        PreviousYear,
-    }
 
     private enum PeriodComparisonMode
     {

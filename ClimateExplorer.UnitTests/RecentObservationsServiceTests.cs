@@ -30,7 +30,7 @@ public class RecentObservationsServiceTests
             previousSeasonCount: 3);
 
         var previousMonths = result.Tiles
-            .Where(x => x.PeriodKind == RecentObservationPeriodKind.PreviousMonth)
+            .Where(x => x.PeriodKind == RecentObservationPeriodKind.Month && x.PeriodOffset >= 1)
             .ToList();
 
         CollectionAssert.AreEqual(
@@ -63,7 +63,7 @@ public class RecentObservationsServiceTests
             previousSeasonCount: 3);
 
         var previousSeasons = result.Tiles
-            .Where(x => x.PeriodKind == RecentObservationPeriodKind.PreviousSeason)
+            .Where(x => x.PeriodKind == RecentObservationPeriodKind.Season && x.PeriodOffset >= 1)
             .ToList();
 
         CollectionAssert.AreEqual(
@@ -88,7 +88,7 @@ public class RecentObservationsServiceTests
             previousSeasonCount: 3,
             previousYearCount: 2);
         var previousYears = result.Tiles
-            .Where(x => x.PeriodKind == RecentObservationPeriodKind.PreviousYear)
+            .Where(x => x.PeriodKind == RecentObservationPeriodKind.Year && x.PeriodOffset >= 1)
             .ToList();
 
         CollectionAssert.AreEqual(new[] { "Last year - 2025", "2024" }, previousYears.Select(x => x.PeriodTitle).ToArray());
@@ -155,7 +155,7 @@ public class RecentObservationsServiceTests
             previousMonthCount: 0,
             previousSeasonCount: 3);
 
-        Assert.IsFalse(result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.CurrentSeason));
+        Assert.IsFalse(result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.Season && x.PeriodOffset == 0));
     }
 
     [TestMethod]
@@ -184,13 +184,13 @@ public class RecentObservationsServiceTests
             previousSeasonCount: 1,
             previousYearCount: 1);
 
-        Assert.AreEqual(expectCurrentMonth, result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.CurrentMonth));
-        Assert.AreEqual(expectYearToDate, result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.YearToDate));
-        Assert.AreEqual(expectCurrentSeason, result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.CurrentSeason));
+        Assert.AreEqual(expectCurrentMonth, result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.Month && x.PeriodOffset == 0));
+        Assert.AreEqual(expectYearToDate, result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.Year && x.PeriodOffset == 0));
+        Assert.AreEqual(expectCurrentSeason, result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.Season && x.PeriodOffset == 0));
         Assert.IsTrue(result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays));
-        Assert.IsTrue(result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.PreviousMonth));
-        Assert.IsTrue(result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.PreviousSeason));
-        Assert.IsTrue(result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.PreviousYear));
+        Assert.IsTrue(result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.Month && x.PeriodOffset >= 1));
+        Assert.IsTrue(result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.Season && x.PeriodOffset >= 1));
+        Assert.IsTrue(result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.Year && x.PeriodOffset >= 1));
 
         var expectedPeriodKinds = new List<RecentObservationPeriodKind>
         {
@@ -201,24 +201,24 @@ public class RecentObservationsServiceTests
 
         if (expectCurrentMonth)
         {
-            expectedPeriodKinds.Add(RecentObservationPeriodKind.CurrentMonth);
+            expectedPeriodKinds.Add(RecentObservationPeriodKind.Month);
         }
 
-        expectedPeriodKinds.Add(RecentObservationPeriodKind.PreviousMonth);
+        expectedPeriodKinds.Add(RecentObservationPeriodKind.Month);
 
         if (expectCurrentSeason)
         {
-            expectedPeriodKinds.Add(RecentObservationPeriodKind.CurrentSeason);
+            expectedPeriodKinds.Add(RecentObservationPeriodKind.Season);
         }
 
-        expectedPeriodKinds.Add(RecentObservationPeriodKind.PreviousSeason);
+        expectedPeriodKinds.Add(RecentObservationPeriodKind.Season);
 
         if (expectYearToDate)
         {
-            expectedPeriodKinds.Add(RecentObservationPeriodKind.YearToDate);
+            expectedPeriodKinds.Add(RecentObservationPeriodKind.Year);
         }
 
-        expectedPeriodKinds.Add(RecentObservationPeriodKind.PreviousYear);
+        expectedPeriodKinds.Add(RecentObservationPeriodKind.Year);
 
         CollectionAssert.AreEqual(expectedPeriodKinds, result.Tiles.Select(x => x.PeriodKind).ToList());
     }
@@ -251,7 +251,7 @@ public class RecentObservationsServiceTests
             previousDayCount: 1,
             previousMonthCount: 0,
             previousSeasonCount: 3);
-        var currentSeason = result.Tiles.SingleOrDefault(x => x.PeriodKind == RecentObservationPeriodKind.CurrentSeason);
+        var currentSeason = result.Tiles.SingleOrDefault(x => x.PeriodKind == RecentObservationPeriodKind.Season && x.PeriodOffset == 0);
 
         Assert.IsNotNull(currentSeason);
         Assert.AreEqual(expectedTitle, currentSeason.PeriodTitle);
@@ -277,7 +277,7 @@ public class RecentObservationsServiceTests
             previousDayCount: 1,
             previousMonthCount: 0,
             previousSeasonCount: 3);
-        var currentSeason = result.Tiles.SingleOrDefault(x => x.PeriodKind == RecentObservationPeriodKind.CurrentSeason);
+        var currentSeason = result.Tiles.SingleOrDefault(x => x.PeriodKind == RecentObservationPeriodKind.Season && x.PeriodOffset == 0);
 
         Assert.IsNotNull(currentSeason);
         Assert.AreEqual(expectedTitle, currentSeason.PeriodTitle);
@@ -294,7 +294,7 @@ public class RecentObservationsServiceTests
             previousDayCount: 1,
             previousMonthCount: 0,
             previousSeasonCount: 0);
-        var yearToDate = result.Tiles.SingleOrDefault(x => x.PeriodKind == RecentObservationPeriodKind.YearToDate);
+        var yearToDate = result.Tiles.SingleOrDefault(x => x.PeriodKind == RecentObservationPeriodKind.Year && x.PeriodOffset == 0);
 
         Assert.IsNotNull(yearToDate);
         Assert.AreEqual("2026", yearToDate.PeriodTitle);
@@ -452,8 +452,8 @@ public class RecentObservationsServiceTests
             previousMonthCount: 0,
             previousSeasonCount: 0);
         var latestSevenDays = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays);
-        var currentMonth = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.CurrentMonth);
-        var yearToDate = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.YearToDate);
+        var currentMonth = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.Month && x.PeriodOffset == 0);
+        var yearToDate = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.Year && x.PeriodOffset == 0);
 
         Assert.AreEqual(latestDate, result.ReferenceDate);
         Assert.AreEqual(new DateOnly(2026, 5, 25), latestSevenDays.PeriodStartDate);
@@ -482,8 +482,8 @@ public class RecentObservationsServiceTests
             previousMonthCount: 1,
             previousSeasonCount: 1);
         var dailyTile = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.Daily);
-        var currentMonth = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.CurrentMonth);
-        var previousMonth = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.PreviousMonth);
+        var currentMonth = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.Month && x.PeriodOffset == 0);
+        var previousMonth = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.Month && x.PeriodOffset == 1);
 
         Assert.AreEqual(latestDate, result.ReferenceDate);
         Assert.AreEqual("15 Aug 2024", dailyTile.PeriodTitle);
@@ -639,9 +639,9 @@ public class RecentObservationsServiceTests
         {
             result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.Daily),
             result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays),
-            result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.CurrentMonth),
-            result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.CurrentSeason),
-            result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.YearToDate),
+            result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.Month && x.PeriodOffset == 0),
+            result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.Season && x.PeriodOffset == 0),
+            result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.Year && x.PeriodOffset == 0),
         };
 
         foreach (var tile in tiles)
@@ -745,7 +745,7 @@ public class RecentObservationsServiceTests
             previousMonthCount: 11,
             previousSeasonCount: 3);
         var previousMonths = result.Tiles
-            .Where(x => x.PeriodKind == RecentObservationPeriodKind.PreviousMonth)
+            .Where(x => x.PeriodKind == RecentObservationPeriodKind.Month && x.PeriodOffset >= 1)
             .Select(x => x.PeriodTitle)
             .ToArray();
 
@@ -753,7 +753,7 @@ public class RecentObservationsServiceTests
         CollectionAssert.AreEqual(
             new[] { "Last month - May 2024", "April 2024", "March 2024", "February 2024", "January 2024" },
             previousMonths);
-        Assert.IsTrue(result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.YearToDate));
+        Assert.IsTrue(result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.Year && x.PeriodOffset == 0));
     }
 
     [TestMethod]
@@ -776,8 +776,8 @@ public class RecentObservationsServiceTests
             .Where(x => x.PeriodKind == RecentObservationPeriodKind.Daily)
             .ToList();
         var latestSevenDays = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays);
-        var currentMonth = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.CurrentMonth);
-        var yearToDate = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.YearToDate);
+        var currentMonth = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.Month && x.PeriodOffset == 0);
+        var yearToDate = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.Year && x.PeriodOffset == 0);
 
         Assert.AreEqual(requestedReferenceDate, result.RequestedReferenceDate);
         Assert.AreEqual(resolvedReferenceDate, result.ReferenceDate);
@@ -1558,18 +1558,14 @@ public class RecentObservationsServiceTests
             previousMonthCount: 0,
             previousSeasonCount: 0);
         var baseRangeTiles = result.Tiles
-            .Where(x => x.PeriodKind is RecentObservationPeriodKind.LatestSevenDays or
-                RecentObservationPeriodKind.CurrentMonth or
-                RecentObservationPeriodKind.CurrentSeason or
-                RecentObservationPeriodKind.YearToDate)
+            .Where(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays ||
+                (x.PeriodOffset == 0 && x.PeriodKind is RecentObservationPeriodKind.Month or RecentObservationPeriodKind.Season or RecentObservationPeriodKind.Year))
             .ToList();
         var thresholdedRangeTiles = result
             .ApplyCompletenessThreshold(1f)
             .Tiles
-            .Where(x => x.PeriodKind is RecentObservationPeriodKind.LatestSevenDays or
-                RecentObservationPeriodKind.CurrentMonth or
-                RecentObservationPeriodKind.CurrentSeason or
-                RecentObservationPeriodKind.YearToDate)
+            .Where(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays ||
+                (x.PeriodOffset == 0 && x.PeriodKind is RecentObservationPeriodKind.Month or RecentObservationPeriodKind.Season or RecentObservationPeriodKind.Year))
             .ToList();
 
         Assert.HasCount(3, baseRangeTiles);
@@ -1585,11 +1581,11 @@ public class RecentObservationsServiceTests
         var tiles = await GetGeneratedTiles(service, previousYearCount: int.MaxValue);
         var selection = new RecentObservationPeriodSelection();
 
-        Assert.IsFalse(tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.CurrentSeason));
+        Assert.IsFalse(tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.Season && x.PeriodOffset == 0));
         Assert.AreEqual("Add Yesterday", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Daily, tiles, "day"));
-        Assert.AreEqual("Add May 2026", selection.CreateAddButtonLabel(RecentObservationPeriodKind.PreviousMonth, tiles, "month"));
-        Assert.AreEqual("Add Autumn 2026", selection.CreateAddButtonLabel(RecentObservationPeriodKind.PreviousSeason, tiles, "season"));
-        Assert.AreEqual("Add 2025", selection.CreateAddButtonLabel(RecentObservationPeriodKind.PreviousYear, tiles, "year"));
+        Assert.AreEqual("Add May 2026", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Month, tiles, "month"));
+        Assert.AreEqual("Add Autumn 2026", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Season, tiles, "season"));
+        Assert.AreEqual("Add 2025", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Year, tiles, "year"));
     }
 
     [TestMethod]
@@ -1598,13 +1594,13 @@ public class RecentObservationsServiceTests
         var service = CreateService(recentStartDate: new DateOnly(2024, 1, 1));
         var tiles = await GetGeneratedTiles(service, previousYearCount: int.MaxValue);
         var selection = new RecentObservationPeriodSelection();
-        var yearOffsets = GetAvailableOffsets(tiles, RecentObservationPeriodKind.PreviousYear);
+        var yearOffsets = GetAvailableOffsets(tiles, RecentObservationPeriodKind.Year);
 
-        Assert.AreEqual("Add 2025", selection.CreateAddButtonLabel(RecentObservationPeriodKind.PreviousYear, tiles, "year"));
+        Assert.AreEqual("Add 2025", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Year, tiles, "year"));
 
         selection.AddEarlierYear(yearOffsets);
 
-        Assert.AreEqual("Add 2024", selection.CreateAddButtonLabel(RecentObservationPeriodKind.PreviousYear, tiles, "year"));
+        Assert.AreEqual("Add 2024", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Year, tiles, "year"));
     }
 
     [TestMethod]
@@ -1613,18 +1609,18 @@ public class RecentObservationsServiceTests
         var service = CreateService();
         var tiles = await GetGeneratedTiles(service);
         var selection = new RecentObservationPeriodSelection();
-        var seasonOffsets = GetAvailableOffsets(tiles, RecentObservationPeriodKind.PreviousSeason);
+        var seasonOffsets = GetAvailableOffsets(tiles, RecentObservationPeriodKind.Season);
 
-        Assert.IsFalse(tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.CurrentSeason));
-        Assert.AreEqual("Add Autumn 2026", selection.CreateAddButtonLabel(RecentObservationPeriodKind.PreviousSeason, tiles, "season"));
-
-        selection.AddEarlierSeason(seasonOffsets);
-
-        Assert.AreEqual("Add Summer 2025-26", selection.CreateAddButtonLabel(RecentObservationPeriodKind.PreviousSeason, tiles, "season"));
+        Assert.IsFalse(tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.Season && x.PeriodOffset == 0));
+        Assert.AreEqual("Add Autumn 2026", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Season, tiles, "season"));
 
         selection.AddEarlierSeason(seasonOffsets);
 
-        Assert.AreEqual("Add Spring 2025", selection.CreateAddButtonLabel(RecentObservationPeriodKind.PreviousSeason, tiles, "season"));
+        Assert.AreEqual("Add Summer 2025-26", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Season, tiles, "season"));
+
+        selection.AddEarlierSeason(seasonOffsets);
+
+        Assert.AreEqual("Add Spring 2025", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Season, tiles, "season"));
     }
 
     [TestMethod]
@@ -1633,14 +1629,14 @@ public class RecentObservationsServiceTests
         var service = CreateService();
         var tiles = await GetGeneratedTiles(service);
         var selection = new RecentObservationPeriodSelection();
-        var monthOffsets = GetAvailableOffsets(tiles, RecentObservationPeriodKind.PreviousMonth);
+        var monthOffsets = GetAvailableOffsets(tiles, RecentObservationPeriodKind.Month);
 
         for (var i = 0; i < 5; i++)
         {
             selection.AddEarlierMonth(monthOffsets);
         }
 
-        Assert.AreEqual("Add December 2025", selection.CreateAddButtonLabel(RecentObservationPeriodKind.PreviousMonth, tiles, "month"));
+        Assert.AreEqual("Add December 2025", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Month, tiles, "month"));
     }
 
     [TestMethod]
@@ -1649,17 +1645,17 @@ public class RecentObservationsServiceTests
         var service = CreateService();
         var tiles = await GetGeneratedTiles(service);
         var selection = new RecentObservationPeriodSelection();
-        var seasonOffsets = GetAvailableOffsets(tiles, RecentObservationPeriodKind.PreviousSeason);
+        var seasonOffsets = GetAvailableOffsets(tiles, RecentObservationPeriodKind.Season);
 
-        Assert.AreEqual("Add Autumn 2026", selection.CreateAddButtonLabel(RecentObservationPeriodKind.PreviousSeason, tiles, "season"));
-
-        selection.AddEarlierSeason(seasonOffsets);
-
-        Assert.AreEqual("Add Summer 2025-26", selection.CreateAddButtonLabel(RecentObservationPeriodKind.PreviousSeason, tiles, "season"));
+        Assert.AreEqual("Add Autumn 2026", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Season, tiles, "season"));
 
         selection.AddEarlierSeason(seasonOffsets);
 
-        Assert.AreEqual("Add Spring 2025", selection.CreateAddButtonLabel(RecentObservationPeriodKind.PreviousSeason, tiles, "season"));
+        Assert.AreEqual("Add Summer 2025-26", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Season, tiles, "season"));
+
+        selection.AddEarlierSeason(seasonOffsets);
+
+        Assert.AreEqual("Add Spring 2025", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Season, tiles, "season"));
     }
 
     [TestMethod]
@@ -1689,9 +1685,9 @@ public class RecentObservationsServiceTests
     {
         var selection = new RecentObservationPeriodSelection();
         var previousDay = CreateTile(RecentObservationPeriodKind.Daily, 2, "Yesterday");
-        var previousMonth = CreateTile(RecentObservationPeriodKind.PreviousMonth, 1, "Last month - May 2026");
-        var previousSeason = CreateTile(RecentObservationPeriodKind.PreviousSeason, 1, "Autumn 2026");
-        var previousYear = CreateTile(RecentObservationPeriodKind.PreviousYear, 1, "2025");
+        var previousMonth = CreateTile(RecentObservationPeriodKind.Month, 1, "Last month - May 2026");
+        var previousSeason = CreateTile(RecentObservationPeriodKind.Season, 1, "Autumn 2026");
+        var previousYear = CreateTile(RecentObservationPeriodKind.Year, 1, "2025");
 
         selection.AddEarlierDay();
         selection.AddEarlierDay();
@@ -1708,7 +1704,7 @@ public class RecentObservationsServiceTests
         Assert.IsFalse(selection.IsVisible(previousDay));
         Assert.IsTrue(selection.IsVisible(CreateTile(RecentObservationPeriodKind.Daily, 3, "12 June")));
         Assert.IsFalse(selection.IsVisible(previousMonth));
-        Assert.IsTrue(selection.IsVisible(CreateTile(RecentObservationPeriodKind.PreviousMonth, 2, "April 2026")));
+        Assert.IsTrue(selection.IsVisible(CreateTile(RecentObservationPeriodKind.Month, 2, "April 2026")));
         Assert.IsFalse(selection.IsVisible(previousSeason));
         Assert.IsFalse(selection.IsVisible(previousYear));
     }
@@ -1725,17 +1721,17 @@ public class RecentObservationsServiceTests
 
         selection.AddEarlierMonth();
         selection.AddEarlierMonth();
-        selection.Remove(CreateTile(RecentObservationPeriodKind.PreviousMonth, 1, "Last month - May 2026"));
+        selection.Remove(CreateTile(RecentObservationPeriodKind.Month, 1, "Last month - May 2026"));
         selection.AddEarlierMonth();
 
         selection.AddEarlierSeason();
         selection.AddEarlierSeason();
-        selection.Remove(CreateTile(RecentObservationPeriodKind.PreviousSeason, 1, "Autumn 2026"));
+        selection.Remove(CreateTile(RecentObservationPeriodKind.Season, 1, "Autumn 2026"));
         selection.AddEarlierSeason();
 
         selection.AddEarlierYear();
         selection.AddEarlierYear();
-        selection.Remove(CreateTile(RecentObservationPeriodKind.PreviousYear, 1, "2025"));
+        selection.Remove(CreateTile(RecentObservationPeriodKind.Year, 1, "2025"));
         selection.AddEarlierYear();
 
         CollectionAssert.AreEqual(
@@ -1745,20 +1741,20 @@ public class RecentObservationsServiceTests
                 .Select(x => x.PeriodTitle)
                 .ToArray());
         CollectionAssert.AreEqual(
-            new[] { "PreviousMonth 2", "PreviousMonth 3" },
-            CreateOrderedDynamicTiles(RecentObservationPeriodKind.PreviousMonth, 3)
+            new[] { "Month 2", "Month 3" },
+            CreateOrderedDynamicTiles(RecentObservationPeriodKind.Month, 3)
                 .Where(selection.IsVisible)
                 .Select(x => x.PeriodTitle)
                 .ToArray());
         CollectionAssert.AreEqual(
-            new[] { "PreviousSeason 2", "PreviousSeason 3" },
-            CreateOrderedDynamicTiles(RecentObservationPeriodKind.PreviousSeason, 3)
+            new[] { "Season 2", "Season 3" },
+            CreateOrderedDynamicTiles(RecentObservationPeriodKind.Season, 3)
                 .Where(selection.IsVisible)
                 .Select(x => x.PeriodTitle)
                 .ToArray());
         CollectionAssert.AreEqual(
-            new[] { "PreviousYear 2", "PreviousYear 3" },
-            CreateOrderedDynamicTiles(RecentObservationPeriodKind.PreviousYear, 3)
+            new[] { "Year 2", "Year 3" },
+            CreateOrderedDynamicTiles(RecentObservationPeriodKind.Year, 3)
                 .Where(selection.IsVisible)
                 .Select(x => x.PeriodTitle)
                 .ToArray());
@@ -1802,19 +1798,19 @@ public class RecentObservationsServiceTests
             CreateTile(RecentObservationPeriodKind.Daily, 2, "Yesterday"),
             CreateTile(RecentObservationPeriodKind.Daily, 3, "12 June"),
             CreateTile(RecentObservationPeriodKind.LatestSevenDays, null, "Latest 7 days"),
-            CreateTile(RecentObservationPeriodKind.CurrentMonth, null, "June 2026 to date"),
-            CreateTile(RecentObservationPeriodKind.PreviousMonth, 1, "Last month - May 2026"),
-            CreateTile(RecentObservationPeriodKind.PreviousMonth, 2, "April 2026"),
-            CreateTile(RecentObservationPeriodKind.CurrentSeason, null, "Winter to Date"),
-            CreateTile(RecentObservationPeriodKind.PreviousSeason, 1, "Autumn 2026"),
-            CreateTile(RecentObservationPeriodKind.YearToDate, null, "2026 to date"),
-            CreateTile(RecentObservationPeriodKind.PreviousYear, 1, "2025"),
+            CreateTile(RecentObservationPeriodKind.Month, 0, "June 2026 to date"),
+            CreateTile(RecentObservationPeriodKind.Month, 1, "Last month - May 2026"),
+            CreateTile(RecentObservationPeriodKind.Month, 2, "April 2026"),
+            CreateTile(RecentObservationPeriodKind.Season, 0, "Winter to Date"),
+            CreateTile(RecentObservationPeriodKind.Season, 1, "Autumn 2026"),
+            CreateTile(RecentObservationPeriodKind.Year, 0, "2026 to date"),
+            CreateTile(RecentObservationPeriodKind.Year, 1, "2025"),
         };
 
         selection.AddEarlierDay();
         selection.AddEarlierMonth();
         selection.AddEarlierMonth();
-        selection.Remove(CreateTile(RecentObservationPeriodKind.PreviousMonth, 1, "Last month - May 2026"));
+        selection.Remove(CreateTile(RecentObservationPeriodKind.Month, 1, "Last month - May 2026"));
         selection.AddEarlierSeason();
         selection.AddEarlierYear();
 
@@ -1849,9 +1845,9 @@ public class RecentObservationsServiceTests
         Assert.IsFalse(selection.IsAddEarlierYearDisabled);
         Assert.IsTrue(selection.IsVisible(CreateTile(RecentObservationPeriodKind.Daily, 1, "Today")));
         Assert.IsFalse(selection.IsVisible(CreateTile(RecentObservationPeriodKind.Daily, 2, "Yesterday")));
-        Assert.IsFalse(selection.IsVisible(CreateTile(RecentObservationPeriodKind.PreviousMonth, 1, "Last month - May 2026")));
-        Assert.IsFalse(selection.IsVisible(CreateTile(RecentObservationPeriodKind.PreviousSeason, 1, "Autumn 2026")));
-        Assert.IsFalse(selection.IsVisible(CreateTile(RecentObservationPeriodKind.PreviousYear, 1, "2025")));
+        Assert.IsFalse(selection.IsVisible(CreateTile(RecentObservationPeriodKind.Month, 1, "Last month - May 2026")));
+        Assert.IsFalse(selection.IsVisible(CreateTile(RecentObservationPeriodKind.Season, 1, "Autumn 2026")));
+        Assert.IsFalse(selection.IsVisible(CreateTile(RecentObservationPeriodKind.Year, 1, "2025")));
     }
 
     [TestMethod]
@@ -1861,16 +1857,16 @@ public class RecentObservationsServiceTests
         var tiles = new[]
         {
             CreateTile(RecentObservationPeriodKind.Daily, 1, "Today"),
-            CreateTile(RecentObservationPeriodKind.PreviousMonth, 1, "Last month - May 2026"),
-            CreateTile(RecentObservationPeriodKind.PreviousSeason, 1, "Autumn 2026"),
-            CreateTile(RecentObservationPeriodKind.PreviousYear, 1, "2025"),
+            CreateTile(RecentObservationPeriodKind.Month, 1, "Last month - May 2026"),
+            CreateTile(RecentObservationPeriodKind.Season, 1, "Autumn 2026"),
+            CreateTile(RecentObservationPeriodKind.Year, 1, "2025"),
         };
 
         selection.EnsureDefaults(tiles);
 
-        Assert.IsTrue(selection.IsVisible(CreateTile(RecentObservationPeriodKind.PreviousMonth, 1, "Last month - May 2026")));
-        Assert.IsTrue(selection.IsVisible(CreateTile(RecentObservationPeriodKind.PreviousSeason, 1, "Autumn 2026")));
-        Assert.IsTrue(selection.IsVisible(CreateTile(RecentObservationPeriodKind.PreviousYear, 1, "2025")));
+        Assert.IsTrue(selection.IsVisible(CreateTile(RecentObservationPeriodKind.Month, 1, "Last month - May 2026")));
+        Assert.IsTrue(selection.IsVisible(CreateTile(RecentObservationPeriodKind.Season, 1, "Autumn 2026")));
+        Assert.IsTrue(selection.IsVisible(CreateTile(RecentObservationPeriodKind.Year, 1, "2025")));
     }
 
     [TestMethod]
@@ -1879,46 +1875,46 @@ public class RecentObservationsServiceTests
         var selection = new RecentObservationPeriodSelection();
         var tiles = new[]
         {
-            CreateTile(RecentObservationPeriodKind.CurrentMonth, null, "June 2026 to date"),
-            CreateTile(RecentObservationPeriodKind.CurrentSeason, null, "Winter to Date"),
-            CreateTile(RecentObservationPeriodKind.YearToDate, null, "2026 to date"),
-            CreateTile(RecentObservationPeriodKind.PreviousMonth, 1, "Last month - May 2026"),
-            CreateTile(RecentObservationPeriodKind.PreviousSeason, 1, "Autumn 2026"),
-            CreateTile(RecentObservationPeriodKind.PreviousYear, 1, "2025"),
+            CreateTile(RecentObservationPeriodKind.Month, 0, "June 2026 to date"),
+            CreateTile(RecentObservationPeriodKind.Season, 0, "Winter to Date"),
+            CreateTile(RecentObservationPeriodKind.Year, 0, "2026 to date"),
+            CreateTile(RecentObservationPeriodKind.Month, 1, "Last month - May 2026"),
+            CreateTile(RecentObservationPeriodKind.Season, 1, "Autumn 2026"),
+            CreateTile(RecentObservationPeriodKind.Year, 1, "2025"),
         };
 
         selection.EnsureDefaults(tiles);
 
-        Assert.IsFalse(selection.IsVisible(CreateTile(RecentObservationPeriodKind.PreviousMonth, 1, "Last month - May 2026")));
-        Assert.IsFalse(selection.IsVisible(CreateTile(RecentObservationPeriodKind.PreviousSeason, 1, "Autumn 2026")));
-        Assert.IsFalse(selection.IsVisible(CreateTile(RecentObservationPeriodKind.PreviousYear, 1, "2025")));
+        Assert.IsFalse(selection.IsVisible(CreateTile(RecentObservationPeriodKind.Month, 1, "Last month - May 2026")));
+        Assert.IsFalse(selection.IsVisible(CreateTile(RecentObservationPeriodKind.Season, 1, "Autumn 2026")));
+        Assert.IsFalse(selection.IsVisible(CreateTile(RecentObservationPeriodKind.Year, 1, "2025")));
     }
 
     [TestMethod]
     public void EnsureDefaultsOnlySeedsOnceSoARemovedTileIsNotReAdded()
     {
         var selection = new RecentObservationPeriodSelection();
-        var noCurrentMonthTiles = new[] { CreateTile(RecentObservationPeriodKind.PreviousMonth, 1, "Last month - May 2026") };
+        var noCurrentMonthTiles = new[] { CreateTile(RecentObservationPeriodKind.Month, 1, "Last month - May 2026") };
 
         selection.EnsureDefaults(noCurrentMonthTiles);
-        selection.Remove(CreateTile(RecentObservationPeriodKind.PreviousMonth, 1, "Last month - May 2026"));
+        selection.Remove(CreateTile(RecentObservationPeriodKind.Month, 1, "Last month - May 2026"));
         selection.EnsureDefaults(noCurrentMonthTiles);
 
-        Assert.IsFalse(selection.IsVisible(CreateTile(RecentObservationPeriodKind.PreviousMonth, 1, "Last month - May 2026")));
+        Assert.IsFalse(selection.IsVisible(CreateTile(RecentObservationPeriodKind.Month, 1, "Last month - May 2026")));
     }
 
     [TestMethod]
     public void ResetAllowsEnsureDefaultsToReseed()
     {
         var selection = new RecentObservationPeriodSelection();
-        var noCurrentMonthTiles = new[] { CreateTile(RecentObservationPeriodKind.PreviousMonth, 1, "Last month - May 2026") };
+        var noCurrentMonthTiles = new[] { CreateTile(RecentObservationPeriodKind.Month, 1, "Last month - May 2026") };
 
         selection.EnsureDefaults(noCurrentMonthTiles);
-        selection.Remove(CreateTile(RecentObservationPeriodKind.PreviousMonth, 1, "Last month - May 2026"));
+        selection.Remove(CreateTile(RecentObservationPeriodKind.Month, 1, "Last month - May 2026"));
         selection.Reset();
         selection.EnsureDefaults(noCurrentMonthTiles);
 
-        Assert.IsTrue(selection.IsVisible(CreateTile(RecentObservationPeriodKind.PreviousMonth, 1, "Last month - May 2026")));
+        Assert.IsTrue(selection.IsVisible(CreateTile(RecentObservationPeriodKind.Month, 1, "Last month - May 2026")));
     }
 
     [TestMethod]
@@ -1998,12 +1994,12 @@ public class RecentObservationsServiceTests
             previousSeasonCount: 2);
 
         AssertMetricGroupLabel(result, RecentObservationPeriodKind.LatestSevenDays, null, "Ranking");
-        AssertMetricGroupLabel(result, RecentObservationPeriodKind.CurrentMonth, null, "Ranking");
-        AssertMetricGroupLabel(result, RecentObservationPeriodKind.PreviousMonth, 1, "Ranking");
-        AssertMetricGroupLabel(result, RecentObservationPeriodKind.PreviousMonth, 6, "Ranking");
-        AssertMetricGroupLabel(result, RecentObservationPeriodKind.PreviousSeason, 1, "Ranking");
-        AssertMetricGroupLabel(result, RecentObservationPeriodKind.PreviousSeason, 2, "Ranking");
-        AssertMetricGroupLabel(result, RecentObservationPeriodKind.YearToDate, null, "Ranking");
+        AssertMetricGroupLabel(result, RecentObservationPeriodKind.Month, 0, "Ranking");
+        AssertMetricGroupLabel(result, RecentObservationPeriodKind.Month, 1, "Ranking");
+        AssertMetricGroupLabel(result, RecentObservationPeriodKind.Month, 6, "Ranking");
+        AssertMetricGroupLabel(result, RecentObservationPeriodKind.Season, 1, "Ranking");
+        AssertMetricGroupLabel(result, RecentObservationPeriodKind.Season, 2, "Ranking");
+        AssertMetricGroupLabel(result, RecentObservationPeriodKind.Year, 0, "Ranking");
     }
 
     [TestMethod]
@@ -2237,7 +2233,7 @@ public class RecentObservationsServiceTests
             previousDayCount: 1,
             previousMonthCount: 0,
             previousSeasonCount: 0);
-        var currentSeason = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.CurrentSeason);
+        var currentSeason = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.Season && x.PeriodOffset == 0);
         var variation = (RecentObservationVariationTabViewModel)currentSeason.AvailableExpandedTabs.Single(x => x.Key == MetricGroupKey.Variation);
         var precipitation = variation.Metrics.Single();
 
@@ -2892,8 +2888,10 @@ public class RecentObservationsServiceTests
         IEnumerable<RecentObservationTileViewModel> tiles,
         RecentObservationPeriodKind periodKind)
     {
+        // >= 1 excludes the offset-0 "to date" tile, matching RecentObservationsPanel's own
+        // GetAvailableOffsets - "add earlier" only ever walks the complete past periods.
         return tiles
-            .Where(tile => tile.PeriodKind == periodKind && tile.PeriodOffset.HasValue)
+            .Where(tile => tile.PeriodKind == periodKind && tile.PeriodOffset is >= 1)
             .Select(tile => tile.PeriodOffset!.Value)
             .Order();
     }

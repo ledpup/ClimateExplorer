@@ -88,13 +88,13 @@ public class RecentObservationsCo2Tests
                 PreviousYearCount = 2,
             });
 
-        Assert.IsFalse(result.Tiles.Any(x => x.PeriodKind is RecentObservationPeriodKind.CurrentSeason or RecentObservationPeriodKind.PreviousSeason));
+        Assert.IsFalse(result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.Season));
         Assert.IsTrue(result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.Daily));
         Assert.IsTrue(result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays));
-        Assert.IsTrue(result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.CurrentMonth));
-        Assert.IsTrue(result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.PreviousMonth));
-        Assert.IsTrue(result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.YearToDate));
-        Assert.IsTrue(result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.PreviousYear));
+        Assert.IsTrue(result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.Month && x.PeriodOffset == 0));
+        Assert.IsTrue(result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.Month && x.PeriodOffset >= 1));
+        Assert.IsTrue(result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.Year && x.PeriodOffset == 0));
+        Assert.IsTrue(result.Tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.Year && x.PeriodOffset >= 1));
 
         var dailyTile = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.Daily);
         StringAssert.EndsWith(dailyTile.PrimaryValue, " ppm");

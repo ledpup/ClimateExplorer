@@ -52,7 +52,7 @@ public sealed partial class RecentObservationsCalculator
         var metricGroups = BuildMetricGroups(period, domain, distributions);
         return new RecentObservationTileViewModel
         {
-            PeriodKind = ToTilePeriodKind(period.Kind),
+            PeriodKind = period.Kind,
             PeriodOffset = period.PeriodOffset,
             PeriodStartDate = period.StartDate,
             PeriodEndDate = period.EndDate,
@@ -198,22 +198,6 @@ public sealed partial class RecentObservationsCalculator
     {
         var noun = period.ComparisonMode == PeriodComparisonMode.DailyDate ? "year" : "period";
         return $"{count} comparable {Pluralize(noun, count)}";
-    }
-
-    private static RecentObservationPeriodKind ToTilePeriodKind(PeriodKind periodKind)
-    {
-        return periodKind switch
-        {
-            PeriodKind.Daily => RecentObservationPeriodKind.Daily,
-            PeriodKind.LatestSevenDays => RecentObservationPeriodKind.LatestSevenDays,
-            PeriodKind.CurrentMonth => RecentObservationPeriodKind.CurrentMonth,
-            PeriodKind.PreviousMonth => RecentObservationPeriodKind.PreviousMonth,
-            PeriodKind.CurrentSeason => RecentObservationPeriodKind.CurrentSeason,
-            PeriodKind.PreviousSeason => RecentObservationPeriodKind.PreviousSeason,
-            PeriodKind.YearToDate => RecentObservationPeriodKind.YearToDate,
-            PeriodKind.PreviousYear => RecentObservationPeriodKind.PreviousYear,
-            _ => throw new NotImplementedException(),
-        };
     }
 
     private static RecentObservationTileTone GetTemperatureTone(RecentObservationComparisonResult? ranking)

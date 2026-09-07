@@ -37,3 +37,7 @@ keeps the doc an accurate record rather than a stale proposal.
 
 Link related docs with relative markdown links (`[text](file.md)`), not bare
 filenames — and update them if a doc is ever renamed.
+
+## Don't estimate effort
+
+Don't include effort estimates. Risk assessments may be useful.

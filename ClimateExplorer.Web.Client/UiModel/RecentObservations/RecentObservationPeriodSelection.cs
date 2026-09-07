@@ -9,16 +9,16 @@ public sealed class RecentObservationPeriodSelection
     public const int DefaultPreviousSeasonCount = 0;
 
     private readonly SortedSet<int> visiblePreviousDayOffsets = new() { DefaultPreviousDayCount };
-    private readonly SortedSet<int> visiblePreviousMonthOffsets = [];
-    private readonly SortedSet<int> visiblePreviousSeasonOffsets = [];
-    private readonly SortedSet<int> visiblePreviousYearOffsets = [];
-    private readonly HashSet<RecentObservationPeriodKind> removedSingletonPeriodKinds = [];
+    private readonly SortedSet<int> visibleMonthOffsets = [0];
+    private readonly SortedSet<int> visibleSeasonOffsets = [0];
+    private readonly SortedSet<int> visibleYearOffsets = [0];
+    private bool isLatestSevenDaysRemoved;
     private bool defaultsSeeded;
 
     public int PreviousDayCount => visiblePreviousDayOffsets.Count;
-    public int PreviousMonthCount => visiblePreviousMonthOffsets.Count;
-    public int PreviousSeasonCount => visiblePreviousSeasonOffsets.Count;
-    public int PreviousYearCount => visiblePreviousYearOffsets.Count;
+    public int PreviousMonthCount => visibleMonthOffsets.Count(offset => offset > 0);
+    public int PreviousSeasonCount => visibleSeasonOffsets.Count(offset => offset > 0);
+    public int PreviousYearCount => visibleYearOffsets.Count(offset => offset > 0);
     public bool IsAddEarlierDayDisabled => !CanAddEarlierDay();
     public bool IsAddEarlierMonthDisabled => !CanAddEarlierMonth();
     public bool IsAddEarlierSeasonDisabled => !CanAddEarlierSeason();
@@ -26,10 +26,10 @@ public sealed class RecentObservationPeriodSelection
 
     /// <summary>
     /// Ensures a month/season/year tile is always visible by default: if a domain's tiles don't
-    /// include the "current" to-date period (because it isn't meaningful yet - e.g. day 1 of the
-    /// month, the first month of a season, or January), seeds the corresponding "previous" tile
-    /// (offset 1) as visible instead. Only seeds once per reset cycle, so it won't fight a user
-    /// who removes the seeded tile.
+    /// include the "current" to-date period (offset 0 - because it isn't meaningful yet, e.g. day
+    /// 1 of the month, the first month of a season, or January), seeds the corresponding offset-1
+    /// tile as visible instead. Only seeds once per reset cycle, so it won't fight a user who
+    /// removes the seeded tile.
     /// </summary>
     /// <returns>
     /// <see langword="true"/> if a tile was seeded, growing one of the visible counts. Calculations
@@ -47,9 +47,9 @@ public sealed class RecentObservationPeriodSelection
         defaultsSeeded = true;
 
         var tileList = tiles as ICollection<RecentObservationTileViewModel> ?? tiles.ToList();
-        var seededMonth = SeedIfCurrentPeriodMissing(tileList, RecentObservationPeriodKind.CurrentMonth, visiblePreviousMonthOffsets);
-        var seededSeason = SeedIfCurrentPeriodMissing(tileList, RecentObservationPeriodKind.CurrentSeason, visiblePreviousSeasonOffsets);
-        var seededYear = SeedIfCurrentPeriodMissing(tileList, RecentObservationPeriodKind.YearToDate, visiblePreviousYearOffsets);
+        var seededMonth = SeedIfCurrentPeriodMissing(tileList, RecentObservationPeriodKind.Month, visibleMonthOffsets);
+        var seededSeason = SeedIfCurrentPeriodMissing(tileList, RecentObservationPeriodKind.Season, visibleSeasonOffsets);
+        var seededYear = SeedIfCurrentPeriodMissing(tileList, RecentObservationPeriodKind.Year, visibleYearOffsets);
         return seededMonth || seededSeason || seededYear;
     }
 
@@ -60,17 +60,17 @@ public sealed class RecentObservationPeriodSelection
 
     public void AddEarlierMonth(IEnumerable<int>? availableOffsets = null)
     {
-        AddNextVisibleOffset(visiblePreviousMonthOffsets, availableOffsets);
+        AddNextVisibleOffset(visibleMonthOffsets, availableOffsets);
     }
 
     public void AddEarlierSeason(IEnumerable<int>? availableOffsets = null)
     {
-        AddNextVisibleOffset(visiblePreviousSeasonOffsets, availableOffsets);
+        AddNextVisibleOffset(visibleSeasonOffsets, availableOffsets);
     }
 
     public void AddEarlierYear(IEnumerable<int>? availableOffsets = null)
     {
-        AddNextVisibleOffset(visiblePreviousYearOffsets, availableOffsets);
+        AddNextVisibleOffset(visibleYearOffsets, availableOffsets);
     }
 
     public bool CanAddEarlierDay(IEnumerable<int>? availableOffsets = null)
@@ -80,17 +80,17 @@ public sealed class RecentObservationPeriodSelection
 
     public bool CanAddEarlierMonth(IEnumerable<int>? availableOffsets = null)
     {
-        return GetNextVisibleOffset(visiblePreviousMonthOffsets, availableOffsets).HasValue;
+        return GetNextVisibleOffset(visibleMonthOffsets, availableOffsets).HasValue;
     }
 
     public bool CanAddEarlierSeason(IEnumerable<int>? availableOffsets = null)
     {
-        return GetNextVisibleOffset(visiblePreviousSeasonOffsets, availableOffsets).HasValue;
+        return GetNextVisibleOffset(visibleSeasonOffsets, availableOffsets).HasValue;
     }
 
     public bool CanAddEarlierYear(IEnumerable<int>? availableOffsets = null)
     {
-        return GetNextVisibleOffset(visiblePreviousYearOffsets, availableOffsets).HasValue;
+        return GetNextVisibleOffset(visibleYearOffsets, availableOffsets).HasValue;
     }
 
     public string CreateAddButtonLabel(
@@ -120,58 +120,37 @@ public sealed class RecentObservationPeriodSelection
 
     public bool IsVisible(RecentObservationTileViewModel tile)
     {
-        if (!tile.PeriodOffset.HasValue)
+        if (tile.PeriodKind == RecentObservationPeriodKind.LatestSevenDays)
         {
-            return tile.PeriodKind is not RecentObservationPeriodKind.PreviousMonth
-                and not RecentObservationPeriodKind.PreviousSeason
-                and not RecentObservationPeriodKind.PreviousYear
-                && !removedSingletonPeriodKinds.Contains(tile.PeriodKind);
+            return !isLatestSevenDaysRemoved;
         }
 
-        return tile.PeriodKind switch
-        {
-            RecentObservationPeriodKind.Daily => visiblePreviousDayOffsets.Contains(tile.PeriodOffset.Value),
-            RecentObservationPeriodKind.PreviousMonth => visiblePreviousMonthOffsets.Contains(tile.PeriodOffset.Value),
-            RecentObservationPeriodKind.PreviousSeason => visiblePreviousSeasonOffsets.Contains(tile.PeriodOffset.Value),
-            RecentObservationPeriodKind.PreviousYear => visiblePreviousYearOffsets.Contains(tile.PeriodOffset.Value),
-            _ => true,
-        };
+        return tile.PeriodOffset.HasValue && GetVisibleOffsets(tile.PeriodKind).Contains(tile.PeriodOffset.Value);
     }
 
     /// <summary>
-    /// Re-shows a singleton "to date" tile (CurrentMonth/CurrentSeason/YearToDate/LatestSevenDays)
-    /// if it had previously been hidden by <see cref="Remove"/> - the singleton counterpart to
-    /// <see cref="AddEarlierMonth"/> etc. for offset-based tiles. Has no effect on an offset-based
-    /// kind (Daily/PreviousMonth/PreviousSeason/PreviousYear), which isn't tracked in
-    /// <see cref="removedSingletonPeriodKinds"/> in the first place.
+    /// Makes a family's "to date" tile (offset 0) visible again if it had previously been hidden
+    /// by <see cref="Remove"/> - used by a bulk "add N earlier" action that needs the current
+    /// month/season to anchor the set it's about to fill in, regardless of whether it was already
+    /// showing (e.g. after the caller's own clear-and-refill, or an earlier manual remove-tile
+    /// click).
     /// </summary>
     public void EnsureVisible(RecentObservationPeriodKind kind)
     {
-        removedSingletonPeriodKinds.Remove(kind);
+        GetVisibleOffsets(kind).Add(0);
     }
 
     public void Remove(RecentObservationTileViewModel tile)
     {
-        if (!tile.PeriodOffset.HasValue)
+        if (tile.PeriodKind == RecentObservationPeriodKind.LatestSevenDays)
         {
-            removedSingletonPeriodKinds.Add(tile.PeriodKind);
+            isLatestSevenDaysRemoved = true;
             return;
         }
 
-        switch (tile.PeriodKind)
+        if (tile.PeriodOffset.HasValue)
         {
-            case RecentObservationPeriodKind.Daily:
-                visiblePreviousDayOffsets.Remove(tile.PeriodOffset.Value);
-                break;
-            case RecentObservationPeriodKind.PreviousMonth:
-                visiblePreviousMonthOffsets.Remove(tile.PeriodOffset.Value);
-                break;
-            case RecentObservationPeriodKind.PreviousSeason:
-                visiblePreviousSeasonOffsets.Remove(tile.PeriodOffset.Value);
-                break;
-            case RecentObservationPeriodKind.PreviousYear:
-                visiblePreviousYearOffsets.Remove(tile.PeriodOffset.Value);
-                break;
+            GetVisibleOffsets(tile.PeriodKind).Remove(tile.PeriodOffset.Value);
         }
     }
 
@@ -179,34 +158,38 @@ public sealed class RecentObservationPeriodSelection
     {
         visiblePreviousDayOffsets.Clear();
         visiblePreviousDayOffsets.Add(DefaultPreviousDayCount);
-        visiblePreviousMonthOffsets.Clear();
-        visiblePreviousSeasonOffsets.Clear();
-        visiblePreviousYearOffsets.Clear();
-        removedSingletonPeriodKinds.Clear();
+        visibleMonthOffsets.Clear();
+        visibleMonthOffsets.Add(0);
+        visibleSeasonOffsets.Clear();
+        visibleSeasonOffsets.Add(0);
+        visibleYearOffsets.Clear();
+        visibleYearOffsets.Add(0);
+        isLatestSevenDaysRemoved = false;
         defaultsSeeded = false;
     }
 
     private static bool SeedIfCurrentPeriodMissing(
         ICollection<RecentObservationTileViewModel> tiles,
-        RecentObservationPeriodKind currentPeriodKind,
+        RecentObservationPeriodKind kind,
         SortedSet<int> visibleOffsets)
     {
-        if (!tiles.Any(tile => tile.PeriodKind == currentPeriodKind))
+        if (tiles.Any(tile => tile.PeriodKind == kind && tile.PeriodOffset == 0))
         {
-            visibleOffsets.Add(1);
-            return true;
+            return false;
         }
 
-        return false;
+        visibleOffsets.Add(1);
+        return true;
     }
 
     private IEnumerable<RecentObservationTileViewModel> GetAddableTiles(
         RecentObservationPeriodKind periodKind,
         IEnumerable<RecentObservationTileViewModel> availableTiles)
     {
+        // >= 1 excludes the offset-0 "to date" tile: it's never something you "add earlier" to
+        // get more of, it's the fixed anchor the earlier-period series counts back from.
         return availableTiles
-            .Where(tile => tile.PeriodKind == periodKind &&
-                           tile.PeriodOffset.HasValue)
+            .Where(tile => tile.PeriodKind == periodKind && tile.PeriodOffset is >= 1)
             .OrderBy(tile => tile.PeriodOffset!.Value);
     }
 
@@ -214,8 +197,8 @@ public sealed class RecentObservationPeriodSelection
     {
         return tile.PeriodKind switch
         {
-            RecentObservationPeriodKind.PreviousMonth => tile.PeriodStartDate.ToString("MMMM yyyy", CultureInfo.CurrentCulture),
-            RecentObservationPeriodKind.PreviousYear => tile.PeriodStartDate.ToString("yyyy", CultureInfo.CurrentCulture),
+            RecentObservationPeriodKind.Month => tile.PeriodStartDate.ToString("MMMM yyyy", CultureInfo.CurrentCulture),
+            RecentObservationPeriodKind.Year => tile.PeriodStartDate.ToString("yyyy", CultureInfo.CurrentCulture),
             _ => tile.PeriodTitle,
         };
     }
@@ -225,10 +208,10 @@ public sealed class RecentObservationPeriodSelection
         return periodKind switch
         {
             RecentObservationPeriodKind.Daily => visiblePreviousDayOffsets,
-            RecentObservationPeriodKind.PreviousMonth => visiblePreviousMonthOffsets,
-            RecentObservationPeriodKind.PreviousSeason => visiblePreviousSeasonOffsets,
-            RecentObservationPeriodKind.PreviousYear => visiblePreviousYearOffsets,
-            _ => [],
+            RecentObservationPeriodKind.Month => visibleMonthOffsets,
+            RecentObservationPeriodKind.Season => visibleSeasonOffsets,
+            RecentObservationPeriodKind.Year => visibleYearOffsets,
+            _ => throw new ArgumentOutOfRangeException(nameof(periodKind), periodKind, "LatestSevenDays has no offset series."),
         };
     }
 

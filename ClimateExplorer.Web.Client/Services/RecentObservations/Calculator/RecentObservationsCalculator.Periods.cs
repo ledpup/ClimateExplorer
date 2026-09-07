@@ -3,10 +3,11 @@ namespace ClimateExplorer.Web.Client.Services;
 
 using System.Globalization;
 using ClimateExplorer.Core.Calculators;
+using ClimateExplorer.Web.Client.UiModel.RecentObservations;
 
 // Turns a domain's merged daily series into the fixed set of tile periods (previous days,
-// latest 7 days, current/previous month, current/previous season, year-to-date, previous
-// years) and the titles/labels shown for each one.
+// latest 7 days, month, season, year - each of the latter three covering both the "to date"
+// period, offset 0, and complete past ones, offset 1+) and the titles/labels shown for each one.
 public sealed partial class RecentObservationsCalculator
 {
     private static List<PeriodObservation> BuildPeriods(
@@ -34,115 +35,104 @@ public sealed partial class RecentObservationsCalculator
             GetRecordsInRange(daily, latestSevenDaysStart, referenceDate),
             latestSevenDaysStart,
             referenceDate,
-            PeriodKind.LatestSevenDays,
+            RecentObservationPeriodKind.LatestSevenDays,
             domain);
 
-        var currentMonthToDate = GetCurrentMonthToDatePeriod(referenceDate);
-        if (currentMonthToDate is not null)
+        var currentMonthStart = new DateOnly(referenceDate.Year, referenceDate.Month, 1);
+        if (referenceDate.Day != 1)
         {
             AddRangePeriod(
                 periods,
-                GetRecordsInRange(daily, currentMonthToDate.StartDate, currentMonthToDate.EndDate),
-                currentMonthToDate.StartDate,
-                currentMonthToDate.EndDate,
-                PeriodKind.CurrentMonth,
-                domain);
-        }
-
-        foreach (var previousMonth in GetPreviousMonthPeriods(referenceDate, previousMonthCount))
-        {
-            AddRangePeriod(
-                periods,
-                GetRecordsInRange(daily, previousMonth.StartDate, previousMonth.EndDate),
-                previousMonth.StartDate,
-                previousMonth.EndDate,
-                PeriodKind.PreviousMonth,
+                GetRecordsInRange(daily, currentMonthStart, referenceDate),
+                currentMonthStart,
+                referenceDate,
+                RecentObservationPeriodKind.Month,
                 domain,
-                previousMonthOffset: previousMonth.Offset);
+                periodOffset: 0);
         }
 
-        var currentSeasonToDate = supportsSeasonTiles && latitude.HasValue
-            ? GetCurrentSeasonToDatePeriod(referenceDate, latitude.Value)
-            : null;
-        if (currentSeasonToDate is not null)
+        foreach (var (startDate, endDate, offset) in GetPreviousPeriods(
+            currentMonthStart,
+            previousMonthCount,
+            (start, stepOffset) => start.AddMonths(-stepOffset),
+            start => new DateOnly(start.Year, start.Month, DateTime.DaysInMonth(start.Year, start.Month))))
+        {
+            AddRangePeriod(periods, GetRecordsInRange(daily, startDate, endDate), startDate, endDate, RecentObservationPeriodKind.Month, domain, periodOffset: offset);
+        }
+
+        if (supportsSeasonTiles && latitude.HasValue)
+        {
+            if (MeteorologicalSeasonCalculator.IsCurrentSeasonToDateMeaningful(referenceDate))
+            {
+                var currentSeason = MeteorologicalSeasonCalculator.GetCurrentSeasonToDate(referenceDate, latitude.Value);
+                AddRangePeriod(
+                    periods,
+                    GetRecordsInRange(daily, currentSeason.StartDate, currentSeason.EndDate),
+                    currentSeason.StartDate,
+                    currentSeason.EndDate,
+                    RecentObservationPeriodKind.Season,
+                    domain,
+                    periodOffset: 0,
+                    seasonPeriod: currentSeason,
+                    isSeasonToDate: !currentSeason.IsComplete);
+            }
+
+            var previousSeasons = MeteorologicalSeasonCalculator.GetPreviousSeasons(referenceDate, latitude.Value, previousSeasonCount);
+            for (var index = 0; index < previousSeasons.Count; index++)
+            {
+                var previousSeason = previousSeasons[index];
+                AddRangePeriod(
+                    periods,
+                    GetRecordsInRange(daily, previousSeason.StartDate, previousSeason.EndDate),
+                    previousSeason.StartDate,
+                    previousSeason.EndDate,
+                    RecentObservationPeriodKind.Season,
+                    domain,
+                    periodOffset: index + 1,
+                    seasonPeriod: previousSeason);
+            }
+        }
+
+        var yearStart = new DateOnly(referenceDate.Year, 1, 1);
+        if (referenceDate.Month != 1)
         {
             AddRangePeriod(
                 periods,
-                GetRecordsInRange(daily, currentSeasonToDate.StartDate, currentSeasonToDate.EndDate),
-                currentSeasonToDate.StartDate,
-                currentSeasonToDate.EndDate,
-                PeriodKind.CurrentSeason,
+                GetRecordsInRange(daily, yearStart, referenceDate),
+                yearStart,
+                referenceDate,
+                RecentObservationPeriodKind.Year,
                 domain,
-                seasonPeriod: currentSeasonToDate,
-                isSeasonToDate: !currentSeasonToDate.IsComplete);
+                periodOffset: 0);
         }
 
-        var previousSeasons = supportsSeasonTiles && latitude.HasValue
-            ? MeteorologicalSeasonCalculator.GetPreviousSeasons(referenceDate, latitude.Value, previousSeasonCount)
-            : Array.Empty<MeteorologicalSeasonPeriod>();
-        for (var index = 0; index < previousSeasons.Count; index++)
+        foreach (var (startDate, endDate, offset) in GetPreviousPeriods(
+            yearStart,
+            previousYearCount,
+            (start, stepOffset) => new DateOnly(start.Year - stepOffset, 1, 1),
+            start => new DateOnly(start.Year, 12, 31)))
         {
-            var previousSeason = previousSeasons[index];
-            AddRangePeriod(
-                periods,
-                GetRecordsInRange(daily, previousSeason.StartDate, previousSeason.EndDate),
-                previousSeason.StartDate,
-                previousSeason.EndDate,
-                PeriodKind.PreviousSeason,
-                domain,
-                seasonPeriod: previousSeason,
-                periodOffset: index + 1);
-        }
-
-        var yearToDate = GetYearToDatePeriod(referenceDate);
-        if (yearToDate is not null)
-        {
-            AddRangePeriod(
-                periods,
-                GetRecordsInRange(daily, yearToDate.StartDate, yearToDate.EndDate),
-                yearToDate.StartDate,
-                yearToDate.EndDate,
-                PeriodKind.YearToDate,
-                domain);
-        }
-
-        foreach (var previousYear in GetPreviousYearPeriods(referenceDate, previousYearCount))
-        {
-            AddRangePeriod(
-                periods,
-                GetRecordsInRange(daily, previousYear.StartDate, previousYear.EndDate),
-                previousYear.StartDate,
-                previousYear.EndDate,
-                PeriodKind.PreviousYear,
-                domain,
-                periodOffset: previousYear.Offset);
+            AddRangePeriod(periods, GetRecordsInRange(daily, startDate, endDate), startDate, endDate, RecentObservationPeriodKind.Year, domain, periodOffset: offset);
         }
 
         return periods;
     }
 
-    private static CurrentPeriod? GetCurrentMonthToDatePeriod(DateOnly referenceDate)
+    // Shared "walk back N whole units from an anchor" shape behind the month and year loops
+    // above - each supplies only its own step-back and end-of-period rules. Season's own
+    // previous-period walk stays in MeteorologicalSeasonCalculator (Core, public, independently
+    // tested) rather than being rebuilt on top of this - see the design doc for why.
+    private static IEnumerable<(DateOnly StartDate, DateOnly EndDate, int Offset)> GetPreviousPeriods(
+        DateOnly anchorStart,
+        int count,
+        Func<DateOnly, int, DateOnly> stepBack,
+        Func<DateOnly, DateOnly> getEndDate)
     {
-        return referenceDate.Day == 1
-            ? null
-            : new CurrentPeriod(new DateOnly(referenceDate.Year, referenceDate.Month, 1), referenceDate);
-    }
-
-    private static MeteorologicalSeasonPeriod? GetCurrentSeasonToDatePeriod(DateOnly referenceDate, double latitude)
-    {
-        if (!MeteorologicalSeasonCalculator.IsCurrentSeasonToDateMeaningful(referenceDate))
+        for (var offset = 1; offset <= count; offset++)
         {
-            return null;
+            var startDate = stepBack(anchorStart, offset);
+            yield return (startDate, getEndDate(startDate), offset);
         }
-
-        return MeteorologicalSeasonCalculator.GetCurrentSeason(referenceDate, latitude) with { EndDate = referenceDate };
-    }
-
-    private static CurrentPeriod? GetYearToDatePeriod(DateOnly referenceDate)
-    {
-        return referenceDate.Month == 1
-            ? null
-            : new CurrentPeriod(new DateOnly(referenceDate.Year, 1, 1), referenceDate);
     }
 
     private static PeriodObservation CreateDailyPeriod(string title, DailyObservation record, MetricDomain domain, int periodOffset)
@@ -154,7 +144,7 @@ public sealed partial class RecentObservationsCalculator
             record.Date,
             record.Date,
             ObservationCompleteness.CompleteDay,
-            PeriodKind.Daily,
+            RecentObservationPeriodKind.Daily,
             PeriodComparisonMode.DailyDate,
             periodOffset,
             null,
@@ -166,12 +156,11 @@ public sealed partial class RecentObservationsCalculator
         List<DailyObservation> records,
         DateOnly startDate,
         DateOnly endDate,
-        PeriodKind kind,
+        RecentObservationPeriodKind kind,
         MetricDomain domain,
-        int? previousMonthOffset = null,
+        int? periodOffset = null,
         MeteorologicalSeasonPeriod? seasonPeriod = null,
         bool isSeasonToDate = false,
-        int? periodOffset = null,
         string? note = null)
     {
         if (records.Count == 0)
@@ -184,15 +173,15 @@ public sealed partial class RecentObservationsCalculator
         var completeness = new ObservationCompleteness(availableDays, expectedDays);
 
         periods.Add(new PeriodObservation(
-            CreatePeriodTitle(kind, startDate, endDate, previousMonthOffset, seasonPeriod, isSeasonToDate, periodOffset),
-            CreateComparisonLabel(kind, endDate, seasonPeriod, isSeasonToDate),
-            CreateComparisonLabelPlural(kind, endDate, seasonPeriod, isSeasonToDate),
+            CreatePeriodTitle(kind, startDate, endDate, periodOffset, seasonPeriod, isSeasonToDate),
+            CreateComparisonLabel(kind, endDate, periodOffset, seasonPeriod, isSeasonToDate),
+            CreateComparisonLabelPlural(kind, endDate, periodOffset, seasonPeriod, isSeasonToDate),
             startDate,
             endDate,
             completeness,
             kind,
             PeriodComparisonMode.DailyRange,
-            periodOffset ?? previousMonthOffset,
+            periodOffset,
             note,
             ComputeMetrics(records, domain),
             seasonPeriod));
@@ -214,44 +203,18 @@ public sealed partial class RecentObservationsCalculator
                 index + 1));
     }
 
-    private static IEnumerable<PreviousMonthPeriod> GetPreviousMonthPeriods(DateOnly today, int previousMonthCount)
-    {
-        var currentMonthStart = new DateOnly(today.Year, today.Month, 1);
-
-        for (var offset = 1; offset <= previousMonthCount; offset++)
-        {
-            var startDate = currentMonthStart.AddMonths(-offset);
-            var endDate = new DateOnly(startDate.Year, startDate.Month, DateTime.DaysInMonth(startDate.Year, startDate.Month));
-
-            yield return new PreviousMonthPeriod(startDate, endDate, offset);
-        }
-    }
-
-    private static IEnumerable<PreviousYearPeriod> GetPreviousYearPeriods(DateOnly referenceDate, int previousYearCount)
-    {
-        for (var offset = 1; offset <= previousYearCount; offset++)
-        {
-            var year = referenceDate.Year - offset;
-            yield return new PreviousYearPeriod(
-                new DateOnly(year, 1, 1),
-                new DateOnly(year, 12, 31),
-                offset);
-        }
-    }
-
     private static int GetDayCount(DateOnly startDate, DateOnly endDate)
     {
         return endDate.DayNumber - startDate.DayNumber + 1;
     }
 
     private static string CreatePeriodTitle(
-        PeriodKind kind,
+        RecentObservationPeriodKind kind,
         DateOnly startDate,
         DateOnly endDate,
-        int? previousMonthOffset = null,
+        int? periodOffset = null,
         MeteorologicalSeasonPeriod? seasonPeriod = null,
-        bool isSeasonToDate = false,
-        int? periodOffset = null)
+        bool isSeasonToDate = false)
     {
         if (seasonPeriod is not null)
         {
@@ -260,24 +223,24 @@ public sealed partial class RecentObservationsCalculator
 
         return kind switch
         {
-            PeriodKind.LatestSevenDays => "Latest 7 days",
-            PeriodKind.CurrentMonth => endDate.Day == DateTime.DaysInMonth(endDate.Year, endDate.Month)
+            RecentObservationPeriodKind.LatestSevenDays => "Latest 7 days",
+            RecentObservationPeriodKind.Month when periodOffset == 0 => endDate.Day == DateTime.DaysInMonth(endDate.Year, endDate.Month)
                 ? $"{MonthName(endDate.Month)} {endDate.Year}"
                 : $"{MonthName(endDate.Month)} {endDate.Year} to date",
-            PeriodKind.PreviousMonth when previousMonthOffset == 1 => $"Last month - {MonthName(startDate.Month)} {startDate.Year}",
-            PeriodKind.PreviousMonth => $"{MonthName(startDate.Month)} {startDate.Year}",
-            PeriodKind.YearToDate => IsCalendarYearEnd(endDate)
+            RecentObservationPeriodKind.Month when periodOffset == 1 => $"Last month - {MonthName(startDate.Month)} {startDate.Year}",
+            RecentObservationPeriodKind.Month => $"{MonthName(startDate.Month)} {startDate.Year}",
+            RecentObservationPeriodKind.Year when periodOffset == 0 => IsCalendarYearEnd(endDate)
                 ? endDate.Year.ToString(CultureInfo.InvariantCulture)
                 : $"{endDate.Year} to date",
-            PeriodKind.PreviousYear when periodOffset == 1 => $"Last year - {endDate.Year}",
-            PeriodKind.PreviousYear => startDate.Year.ToString(CultureInfo.InvariantCulture),
+            RecentObservationPeriodKind.Year when periodOffset == 1 => $"Last year - {endDate.Year}",
+            RecentObservationPeriodKind.Year => startDate.Year.ToString(CultureInfo.InvariantCulture),
             _ => string.Empty,
         };
     }
 
     private static string CreateHistoricalContextLabel(PeriodObservation period)
     {
-        if (period.Kind is PeriodKind.CurrentSeason or PeriodKind.PreviousSeason)
+        if (period.Kind == RecentObservationPeriodKind.Season)
         {
             return period.ComparisonLabel;
         }
@@ -305,8 +268,9 @@ public sealed partial class RecentObservationsCalculator
     }
 
     private static string CreateComparisonLabel(
-        PeriodKind kind,
+        RecentObservationPeriodKind kind,
         DateOnly endDate,
+        int? periodOffset = null,
         MeteorologicalSeasonPeriod? seasonPeriod = null,
         bool isSeasonToDate = false)
     {
@@ -317,20 +281,21 @@ public sealed partial class RecentObservationsCalculator
 
         return kind switch
         {
-            PeriodKind.LatestSevenDays => $"7 days ending {FormatShortDayMonth(endDate)}",
-            PeriodKind.CurrentMonth => endDate.Day == DateTime.DaysInMonth(endDate.Year, endDate.Month)
+            RecentObservationPeriodKind.LatestSevenDays => $"7 days ending {FormatShortDayMonth(endDate)}",
+            RecentObservationPeriodKind.Month when periodOffset == 0 => endDate.Day == DateTime.DaysInMonth(endDate.Year, endDate.Month)
                 ? MonthName(endDate.Month)
                 : $"{MonthName(endDate.Month)} to date",
-            PeriodKind.PreviousMonth => MonthName(endDate.Month),
-            PeriodKind.YearToDate => IsCalendarYearEnd(endDate) ? "year" : "year to date",
-            PeriodKind.PreviousYear => "year",
+            RecentObservationPeriodKind.Month => MonthName(endDate.Month),
+            RecentObservationPeriodKind.Year when periodOffset == 0 => IsCalendarYearEnd(endDate) ? "year" : "year to date",
+            RecentObservationPeriodKind.Year => "year",
             _ => string.Empty,
         };
     }
 
     private static string CreateComparisonLabelPlural(
-        PeriodKind kind,
+        RecentObservationPeriodKind kind,
         DateOnly endDate,
+        int? periodOffset = null,
         MeteorologicalSeasonPeriod? seasonPeriod = null,
         bool isSeasonToDate = false)
     {
@@ -341,13 +306,13 @@ public sealed partial class RecentObservationsCalculator
 
         return kind switch
         {
-            PeriodKind.LatestSevenDays => $"7-day periods ending {FormatShortDayMonth(endDate)}",
-            PeriodKind.CurrentMonth => endDate.Day == DateTime.DaysInMonth(endDate.Year, endDate.Month)
+            RecentObservationPeriodKind.LatestSevenDays => $"7-day periods ending {FormatShortDayMonth(endDate)}",
+            RecentObservationPeriodKind.Month when periodOffset == 0 => endDate.Day == DateTime.DaysInMonth(endDate.Year, endDate.Month)
                 ? $"{MonthName(endDate.Month)}s"
                 : $"{MonthName(endDate.Month)}-to-date periods",
-            PeriodKind.PreviousMonth => $"{MonthName(endDate.Month)}s",
-            PeriodKind.YearToDate => IsCalendarYearEnd(endDate) ? "years" : "year-to-date periods",
-            PeriodKind.PreviousYear => "years",
+            RecentObservationPeriodKind.Month => $"{MonthName(endDate.Month)}s",
+            RecentObservationPeriodKind.Year when periodOffset == 0 => IsCalendarYearEnd(endDate) ? "years" : "year-to-date periods",
+            RecentObservationPeriodKind.Year => "years",
             _ => "comparable periods",
         };
     }
@@ -395,7 +360,7 @@ public sealed partial class RecentObservationsCalculator
             return FormatFullDate(period.StartDate);
         }
 
-        if (period.Kind == PeriodKind.CurrentSeason && period.SeasonPeriod is not null)
+        if (period.Kind == RecentObservationPeriodKind.Season && period.PeriodOffset == 0 && period.SeasonPeriod is not null)
         {
             var seasonYear = MeteorologicalSeasonCalculator.FormatSeasonYear(period.SeasonPeriod);
             return period.SeasonPeriod.IsComplete

@@ -292,3 +292,16 @@ add/disabled delegates.
 `dotnet build` clean; unit suite still 579/579 (this logic isn't unit-tested, per Assumption 5). No
 dev server or browser testing was run — reasoned from the tile-visibility model, not observed live,
 same caveat as every other change in this doc.
+
+## Addendum 3 — superseded by the period-model simplification (2026-09-07)
+
+[Recent Observations period model: collapsing Current/Previous and the duplicated date-walking
+code](2026-09-07-02-recent-observations-period-model-simplification-plan.md) rewrote the mechanics
+this doc describes above, though not the user-facing behaviour: `RecentObservationPeriodKind`
+merged `CurrentMonth`/`PreviousMonth` (etc.) into one `Month`/`Season`/`Year` kind with `PeriodOffset
+0` meaning "to date"; `MonthPeriodKinds`/`SeasonPeriodKinds` and the `IReadOnlyCollection<kind>`
+overload of `ClearCurrentTilesUnlessAllMatch` no longer exist (it now takes a single kind, since
+each family is one kind); `EnsureVisible` is a one-line `SortedSet.Add(0)` instead of a
+`HashSet.Remove` against a separate singleton-tracking set. The bulk-add buttons themselves - what
+they look like, when they clear, how they anchor on the current month/season - are unchanged;
+only the code underneath moved. See that doc's own addendum for what shipped.

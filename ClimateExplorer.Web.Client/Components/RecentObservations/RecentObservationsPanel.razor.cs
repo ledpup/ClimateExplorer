@@ -16,11 +16,6 @@ public partial class RecentObservationsPanel
     private const int BulkAddMonthCount = 12;
     private const int BulkAddSeasonCount = 4;
 
-    private static readonly RecentObservationPeriodKind[] MonthPeriodKinds =
-        [RecentObservationPeriodKind.CurrentMonth, RecentObservationPeriodKind.PreviousMonth];
-    private static readonly RecentObservationPeriodKind[] SeasonPeriodKinds =
-        [RecentObservationPeriodKind.CurrentSeason, RecentObservationPeriodKind.PreviousSeason];
-
     private readonly Dictionary<string, RecentObservationsTabState> tabStates = [];
     private readonly RecentObservationPeriodSelection periodSelection = new();
     private float completenessThreshold = RecentObservationCompletenessThreshold.Default;
@@ -70,9 +65,9 @@ public partial class RecentObservationsPanel
     private IEnumerable<RecentObservationTileViewModel> TilesAfterSeasonControls => CurrentTiles.Where(IsAfterSeasonControls);
     private string CurrentEmptyMessage => CurrentState.Result?.EmptyMessage ?? "No recent observations are available.";
     private string AddDayButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.Daily, "day");
-    private string AddMonthButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.PreviousMonth, "month");
-    private string AddSeasonButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.PreviousSeason, "season");
-    private string AddYearButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.PreviousYear, "year");
+    private string AddMonthButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.Month, "month");
+    private string AddSeasonButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.Season, "season");
+    private string AddYearButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.Year, "year");
     private string AddMonthBulkAriaLabel => $"Add {BulkAddMonthCount} earlier months";
     private string AddSeasonBulkAriaLabel => $"Add {BulkAddSeasonCount} earlier seasons";
     private string ExpandCollapseAllLabel => CurrentState.ExpansionStates.CreateToggleAllLabel(CurrentExpansionTargets);
@@ -86,9 +81,9 @@ public partial class RecentObservationsPanel
     private string ComparisonRangeInputId => $"recent-observations-comparison-range-{ActiveDomain?.Key ?? "none"}";
     private bool IsResetReferenceDateDisabled => CurrentState.Result?.ReferenceDate == CurrentState.Result?.MaximumReferenceDate;
     private bool IsAddEarlierDayDisabled => !periodSelection.CanAddEarlierDay(GetAvailableOffsets(RecentObservationPeriodKind.Daily));
-    private bool IsAddEarlierMonthDisabled => !periodSelection.CanAddEarlierMonth(GetAvailableOffsets(RecentObservationPeriodKind.PreviousMonth));
-    private bool IsAddEarlierSeasonDisabled => !periodSelection.CanAddEarlierSeason(GetAvailableOffsets(RecentObservationPeriodKind.PreviousSeason));
-    private bool IsAddEarlierYearDisabled => !periodSelection.CanAddEarlierYear(GetAvailableOffsets(RecentObservationPeriodKind.PreviousYear));
+    private bool IsAddEarlierMonthDisabled => !periodSelection.CanAddEarlierMonth(GetAvailableOffsets(RecentObservationPeriodKind.Month));
+    private bool IsAddEarlierSeasonDisabled => !periodSelection.CanAddEarlierSeason(GetAvailableOffsets(RecentObservationPeriodKind.Season));
+    private bool IsAddEarlierYearDisabled => !periodSelection.CanAddEarlierYear(GetAvailableOffsets(RecentObservationPeriodKind.Year));
     private DataAdjustment? SelectedDataAdjustment => selectedDataAdjustment;
     private List<DataAdjustment?> AvailableDataAdjustments { get; set; } = [];
 
@@ -225,41 +220,41 @@ public partial class RecentObservationsPanel
 
     private void AddEarlierMonth()
     {
-        periodSelection.AddEarlierMonth(GetAvailableOffsets(RecentObservationPeriodKind.PreviousMonth));
+        periodSelection.AddEarlierMonth(GetAvailableOffsets(RecentObservationPeriodKind.Month));
         RecalculateLoadedTabs();
     }
 
     private void AddEarlierSeason()
     {
-        periodSelection.AddEarlierSeason(GetAvailableOffsets(RecentObservationPeriodKind.PreviousSeason));
+        periodSelection.AddEarlierSeason(GetAvailableOffsets(RecentObservationPeriodKind.Season));
         RecalculateLoadedTabs();
     }
 
     private void AddEarlierYear()
     {
-        periodSelection.AddEarlierYear(GetAvailableOffsets(RecentObservationPeriodKind.PreviousYear));
+        periodSelection.AddEarlierYear(GetAvailableOffsets(RecentObservationPeriodKind.Year));
         RecalculateLoadedTabs();
     }
 
     private void AddEarlierMonthsBulk()
     {
-        ClearCurrentTilesUnlessAllMatch(MonthPeriodKinds);
-        AddBulkTiles(RecentObservationPeriodKind.CurrentMonth, BulkAddMonthCount, AddEarlierMonth, () => IsAddEarlierMonthDisabled);
+        ClearCurrentTilesUnlessAllMatch(RecentObservationPeriodKind.Month);
+        AddBulkTiles(RecentObservationPeriodKind.Month, BulkAddMonthCount, AddEarlierMonth, () => IsAddEarlierMonthDisabled);
     }
 
     private void AddEarlierSeasonsBulk()
     {
-        ClearCurrentTilesUnlessAllMatch(SeasonPeriodKinds);
-        AddBulkTiles(RecentObservationPeriodKind.CurrentSeason, BulkAddSeasonCount, AddEarlierSeason, () => IsAddEarlierSeasonDisabled);
+        ClearCurrentTilesUnlessAllMatch(RecentObservationPeriodKind.Season);
+        AddBulkTiles(RecentObservationPeriodKind.Season, BulkAddSeasonCount, AddEarlierSeason, () => IsAddEarlierSeasonDisabled);
     }
 
     // Clears every currently visible tile on the active tab, unless every one of them already
-    // belongs to the bulk button's own kind - a literal "remove all tiles if they're not already
-    // all month/season tiles". The current/to-date tile gets removed along with everything else
+    // belongs to the bulk button's own family - a literal "remove all tiles if they're not already
+    // all month/season tiles". The to-date tile (offset 0) gets removed along with everything else
     // here; AddBulkTiles is what puts it straight back as the anchor for the bulk-add that follows.
-    private void ClearCurrentTilesUnlessAllMatch(IReadOnlyCollection<RecentObservationPeriodKind> allowedKinds)
+    private void ClearCurrentTilesUnlessAllMatch(RecentObservationPeriodKind allowedKind)
     {
-        if (CurrentTiles.All(tile => allowedKinds.Contains(tile.PeriodKind)))
+        if (CurrentTiles.All(tile => tile.PeriodKind == allowedKind))
         {
             return;
         }
@@ -271,21 +266,20 @@ public partial class RecentObservationsPanel
     }
 
     // "Add 12 months"/"Add 4 seasons" always anchors on the current month/season, not on wherever
-    // AddEarlierMonth/AddEarlierSeason's offset cursor happens to be - so it re-shows the
-    // CurrentMonth/CurrentSeason "to date" singleton first (undoing a removal from either the
-    // clear step above or an earlier manual remove-tile click) and only asks for the remaining
-    // count from the earlier-period loop. When "to date" isn't meaningful for this reference date
-    // (e.g. the 1st of the month, or the first month of a season - currentPeriodKind has no tile
-    // in the current calculation at all), there's nothing to re-show, and RecalculateTab's
-    // EnsureDefaults has already seeded the PreviousMonth/PreviousSeason offset-1 tile as the
-    // stand-in anchor instead - so the full count is asked for from the loop, which picks that
-    // seeded offset up as its first addition.
-    private void AddBulkTiles(RecentObservationPeriodKind currentPeriodKind, int totalCount, Action addEarlierOne, Func<bool> isAddEarlierDisabled)
+    // AddEarlierMonth/AddEarlierSeason's offset cursor happens to be - so it re-shows the offset-0
+    // "to date" tile first (undoing a removal from either the clear step above or an earlier
+    // manual remove-tile click) and only asks for the remaining count from the earlier-period
+    // loop. When "to date" isn't meaningful for this reference date (e.g. the 1st of the month, or
+    // the first month of a season - this family has no offset-0 tile in the current calculation at
+    // all), there's nothing to re-show, and RecalculateTab's EnsureDefaults has already seeded the
+    // offset-1 tile as the stand-in anchor instead - so the full count is asked for from the loop,
+    // which picks that seeded offset up as its first addition.
+    private void AddBulkTiles(RecentObservationPeriodKind family, int totalCount, Action addEarlierOne, Func<bool> isAddEarlierDisabled)
     {
-        var hasCurrentPeriod = CurrentState.Result?.Tiles.Any(tile => tile.PeriodKind == currentPeriodKind) == true;
+        var hasCurrentPeriod = CurrentState.Result?.Tiles.Any(tile => tile.PeriodKind == family && tile.PeriodOffset == 0) == true;
         if (hasCurrentPeriod)
         {
-            periodSelection.EnsureVisible(currentPeriodKind);
+            periodSelection.EnsureVisible(family);
         }
 
         var remainingCount = hasCurrentPeriod ? totalCount - 1 : totalCount;
@@ -506,13 +500,12 @@ public partial class RecentObservationsPanel
         return tile.PeriodKind is
             RecentObservationPeriodKind.Daily or
             RecentObservationPeriodKind.LatestSevenDays or
-            RecentObservationPeriodKind.CurrentMonth or
-            RecentObservationPeriodKind.PreviousMonth;
+            RecentObservationPeriodKind.Month;
     }
 
     private bool IsSeasonTile(RecentObservationTileViewModel tile)
     {
-        return tile.PeriodKind is RecentObservationPeriodKind.CurrentSeason or RecentObservationPeriodKind.PreviousSeason;
+        return tile.PeriodKind == RecentObservationPeriodKind.Season;
     }
 
     private bool IsAfterSeasonControls(RecentObservationTileViewModel tile)
@@ -564,8 +557,10 @@ public partial class RecentObservationsPanel
             return [];
         }
 
+        // >= 1 excludes the offset-0 "to date" tile: "add earlier" only ever walks the complete
+        // past periods, never the current one.
         return CurrentState.Result.Tiles
-            .Where(tile => tile.PeriodKind == periodKind && tile.PeriodOffset.HasValue)
+            .Where(tile => tile.PeriodKind == periodKind && tile.PeriodOffset is >= 1)
             .OrderBy(tile => tile.PeriodOffset!.Value);
     }
 
