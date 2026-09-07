@@ -35,10 +35,20 @@
                     </DelayedTooltip>
                 }
                 <ClimateButton Text="@AddDayButtonLabel" Disabled="@IsAddEarlierDayDisabled" OnClick="AddEarlierDay" />
-                <ClimateButton Text="@AddMonthButtonLabel" Disabled="@IsAddEarlierMonthDisabled" OnClick="AddEarlierMonth" />
+                <div class="climate-button-group">
+                    <ClimateButton Text="@AddMonthButtonLabel" Disabled="@IsAddEarlierMonthDisabled" OnClick="AddEarlierMonth" Class="climate-button-group-primary" />
+                    <DelayedTooltip Text="@AddMonthBulkAriaLabel">
+                        <ClimateButton Text="12" AriaLabel="@AddMonthBulkAriaLabel" Disabled="@IsAddEarlierMonthDisabled" OnClick="AddEarlierMonthsBulk" Class="climate-button-group-suffix" />
+                    </DelayedTooltip>
+                </div>
                 @if (ActiveDomain?.SupportsSeasonTiles == true)
                 {
-                    <ClimateButton Text="@AddSeasonButtonLabel" Disabled="@IsAddEarlierSeasonDisabled" OnClick="AddEarlierSeason" />
+                    <div class="climate-button-group">
+                        <ClimateButton Text="@AddSeasonButtonLabel" Disabled="@IsAddEarlierSeasonDisabled" OnClick="AddEarlierSeason" Class="climate-button-group-primary" />
+                        <DelayedTooltip Text="@AddSeasonBulkAriaLabel">
+                            <ClimateButton Text="4" AriaLabel="@AddSeasonBulkAriaLabel" Disabled="@IsAddEarlierSeasonDisabled" OnClick="AddEarlierSeasonsBulk" Class="climate-button-group-suffix" />
+                        </DelayedTooltip>
+                    </div>
                 }
                 <ClimateButton Text="@AddYearButtonLabel" Disabled="@IsAddEarlierYearDisabled" OnClick="AddEarlierYear" />
 

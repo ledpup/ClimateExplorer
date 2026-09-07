@@ -13,6 +13,14 @@ using static ClimateExplorer.Core.Enums;
 
 public partial class RecentObservationsPanel
 {
+    private const int BulkAddMonthCount = 12;
+    private const int BulkAddSeasonCount = 4;
+
+    private static readonly RecentObservationPeriodKind[] MonthPeriodKinds =
+        [RecentObservationPeriodKind.CurrentMonth, RecentObservationPeriodKind.PreviousMonth];
+    private static readonly RecentObservationPeriodKind[] SeasonPeriodKinds =
+        [RecentObservationPeriodKind.CurrentSeason, RecentObservationPeriodKind.PreviousSeason];
+
     private readonly Dictionary<string, RecentObservationsTabState> tabStates = [];
     private readonly RecentObservationPeriodSelection periodSelection = new();
     private float completenessThreshold = RecentObservationCompletenessThreshold.Default;
@@ -65,6 +73,8 @@ public partial class RecentObservationsPanel
     private string AddMonthButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.PreviousMonth, "month");
     private string AddSeasonButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.PreviousSeason, "season");
     private string AddYearButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.PreviousYear, "year");
+    private string AddMonthBulkAriaLabel => $"Add {BulkAddMonthCount} earlier months";
+    private string AddSeasonBulkAriaLabel => $"Add {BulkAddSeasonCount} earlier seasons";
     private string ExpandCollapseAllLabel => CurrentState.ExpansionStates.CreateToggleAllLabel(CurrentExpansionTargets);
     private bool HasExpandableCurrentTiles => CurrentState.ExpansionStates.HasExpandableTile(CurrentExpansionTargets);
     private bool AreAllExpandableCurrentTilesExpanded => CurrentState.ExpansionStates.AreAllExpandableTilesExpanded(CurrentExpansionTargets);
@@ -229,6 +239,40 @@ public partial class RecentObservationsPanel
     {
         periodSelection.AddEarlierYear(GetAvailableOffsets(RecentObservationPeriodKind.PreviousYear));
         RecalculateLoadedTabs();
+    }
+
+    private void AddEarlierMonthsBulk()
+    {
+        ClearCurrentTilesUnlessAllMatch(MonthPeriodKinds);
+        for (var i = 0; i < BulkAddMonthCount && !IsAddEarlierMonthDisabled; i++)
+        {
+            AddEarlierMonth();
+        }
+    }
+
+    private void AddEarlierSeasonsBulk()
+    {
+        ClearCurrentTilesUnlessAllMatch(SeasonPeriodKinds);
+        for (var i = 0; i < BulkAddSeasonCount && !IsAddEarlierSeasonDisabled; i++)
+        {
+            AddEarlierSeason();
+        }
+    }
+
+    // Clears every currently visible tile on the active tab unless they already all belong to
+    // the bulk button's own kind (e.g. Month's "12" button only clears if something other than
+    // Current/PreviousMonth is showing), so the bulk add starts from a clean, single-kind board.
+    private void ClearCurrentTilesUnlessAllMatch(IReadOnlyCollection<RecentObservationPeriodKind> allowedKinds)
+    {
+        if (CurrentTiles.All(tile => allowedKinds.Contains(tile.PeriodKind)))
+        {
+            return;
+        }
+
+        foreach (var tile in CurrentTiles)
+        {
+            RemoveTile(tile);
+        }
     }
 
     private void RemoveTile(RecentObservationTileViewModel tile)

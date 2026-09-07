@@ -30,6 +30,25 @@
     margin: 0 0 0 0.35rem;
 }
 
+.climate-button-group {
+    display: inline-flex;
+}
+
+.climate-button-group-primary {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.climate-button-group-suffix {
+    border-left: 1px solid var(--climate-color-control-hover);
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    justify-content: center;
+    min-width: 1.6rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
 .recent-observations-toggle-all-chevron.oi {
     color: inherit;
     display: inline-block;
