@@ -35,20 +35,28 @@
                     </DelayedTooltip>
                 }
                 <ClimateButton Text="@AddDayButtonLabel" Disabled="@IsAddEarlierDayDisabled" OnClick="AddEarlierDay" />
-                <div class="climate-button-group">
-                    <ClimateButton Text="@AddMonthButtonLabel" Disabled="@IsAddEarlierMonthDisabled" OnClick="AddEarlierMonth" Class="climate-button-group-primary" />
-                    <DelayedTooltip Text="@AddMonthBulkAriaLabel">
-                        <ClimateButton Text="12" AriaLabel="@AddMonthBulkAriaLabel" Disabled="@IsAddEarlierMonthDisabled" OnClick="AddEarlierMonthsBulk" Class="climate-button-group-suffix" />
-                    </DelayedTooltip>
-                </div>
+                <PillButton>
+                    <PrimaryContent>
+                        <ClimateButton Text="@AddMonthButtonLabel" Disabled="@IsAddEarlierMonthDisabled" OnClick="AddEarlierMonth" Class="pill-button-primary" />
+                    </PrimaryContent>
+                    <PillContent>
+                        <DelayedTooltip Text="@AddMonthBulkAriaLabel">
+                            <ClimateButton Text="12" AriaLabel="@AddMonthBulkAriaLabel" Disabled="@IsAddEarlierMonthDisabled" OnClick="AddEarlierMonthsBulk" Class="pill-button-pill" />
+                        </DelayedTooltip>
+                    </PillContent>
+                </PillButton>
                 @if (ActiveDomain?.SupportsSeasonTiles == true)
                 {
-                    <div class="climate-button-group">
-                        <ClimateButton Text="@AddSeasonButtonLabel" Disabled="@IsAddEarlierSeasonDisabled" OnClick="AddEarlierSeason" Class="climate-button-group-primary" />
-                        <DelayedTooltip Text="@AddSeasonBulkAriaLabel">
-                            <ClimateButton Text="4" AriaLabel="@AddSeasonBulkAriaLabel" Disabled="@IsAddEarlierSeasonDisabled" OnClick="AddEarlierSeasonsBulk" Class="climate-button-group-suffix" />
-                        </DelayedTooltip>
-                    </div>
+                    <PillButton>
+                        <PrimaryContent>
+                            <ClimateButton Text="@AddSeasonButtonLabel" Disabled="@IsAddEarlierSeasonDisabled" OnClick="AddEarlierSeason" Class="pill-button-primary" />
+                        </PrimaryContent>
+                        <PillContent>
+                            <DelayedTooltip Text="@AddSeasonBulkAriaLabel">
+                                <ClimateButton Text="4" AriaLabel="@AddSeasonBulkAriaLabel" Disabled="@IsAddEarlierSeasonDisabled" OnClick="AddEarlierSeasonsBulk" Class="pill-button-pill" />
+                            </DelayedTooltip>
+                        </PillContent>
+                    </PillButton>
                 }
                 <ClimateButton Text="@AddYearButtonLabel" Disabled="@IsAddEarlierYearDisabled" OnClick="AddEarlierYear" />
 
