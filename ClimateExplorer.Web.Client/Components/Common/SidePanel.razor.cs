@@ -7,12 +7,16 @@ public partial class SidePanel : ComponentBase
     private bool isVisible;
     private bool isAnimatingIn;
     private bool isAnimatingOut;
+    private bool isExpanded;
 
     [Parameter]
     public string Title { get; set; } = string.Empty;
 
     [Parameter]
     public string Width { get; set; } = "80%";
+
+    [Parameter]
+    public bool AllowExpand { get; set; }
 
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
@@ -37,6 +41,12 @@ public partial class SidePanel : ComponentBase
 
         isVisible = false;
         isAnimatingOut = false;
+        isExpanded = false;
         StateHasChanged();
+    }
+
+    private void ToggleExpand()
+    {
+        isExpanded = !isExpanded;
     }
 }

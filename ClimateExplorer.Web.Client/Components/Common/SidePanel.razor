@@ -1,12 +1,25 @@
 @if (isVisible)
 {
     <div class="side-panel-overlay" @onclick="DismissAsync">
-        <div class="side-panel @(isAnimatingIn ? "slide-in" : string.Empty) @(isAnimatingOut ? "slide-out" : string.Empty)"
-             style="width: @Width"
+        <div class="side-panel @(isAnimatingIn ? "slide-in" : string.Empty) @(isAnimatingOut ? "slide-out" : string.Empty) @(isExpanded ? "expanded" : string.Empty)"
+             style="width: @(isExpanded ? "100%" : Width)"
              @onclick:stopPropagation="true">
             <div class="side-panel-header">
                 <h2>@Title</h2>
-                <button class="side-panel-close" @onclick="DismissAsync" aria-label="Close">✕</button>
+                <div class="side-panel-header-actions">
+                    @if (AllowExpand)
+                    {
+                        @if (isExpanded)
+                        {
+                            <button class="side-panel-expand" @onclick="ToggleExpand" aria-label="Restore panel to original size"><i class="fas fa-down-left-and-up-right-to-center" aria-hidden="true"></i></button>
+                        }
+                        else
+                        {
+                            <button class="side-panel-expand" @onclick="ToggleExpand" aria-label="Expand panel to full screen"><i class="fas fa-up-right-and-down-left-from-center" aria-hidden="true"></i></button>
+                        }
+                    }
+                    <button class="side-panel-close" @onclick="DismissAsync" aria-label="Close">✕</button>
+                </div>
             </div>
             <div class="side-panel-body">
                 @ChildContent
