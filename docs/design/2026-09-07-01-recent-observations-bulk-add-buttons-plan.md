@@ -230,3 +230,65 @@ warnings unrelated to this change), and the full unit suite passes at 579/579 �
 added, matching Assumption 5. No dev server or browser testing was run (AGENTS.md); the compound
 button's visual layout, and the two behaviours themselves (clear-if-mixed, bulk top-up), are
 unverified beyond compilation and code review.
+
+### Bugfix 1 (2026-09-07): sub-button styling used un-scoped CSS
+
+The `.climate-button-group-primary`/`-suffix` selectors in `RecentObservationsPanel.razor.css`
+never matched anything: `ClimateButton` renders its own `<button>` from inside its own `.razor`
+file, so Blazor's CSS isolation never stamps that element with `RecentObservationsPanel`'s scope
+attribute, and a plain scoped selector can't reach past a child component's boundary. The result
+was two fully-independent, fully-rounded buttons instead of one fused control. Fixed by adding
+`::deep` to both selectors (`.climate-button-group ::deep .climate-button-group-primary`, and
+likewise for `-suffix`), which drops the scope requirement on the right-hand selector so it matches
+regardless of which component rendered the element. Also added `color: var(--climate-color-link)`
+(hover: `--climate-color-link-hover`) to the suffix button, so the "12"/"4" numeral reads in a
+visually distinct colour from the parent button's label, per user feedback after the first look.
+
+### Bugfix 2 (2026-09-07): bulk add lost the current month/season as its starting point
+
+`ClearCurrentTilesUnlessAllMatch` originally removed *every* currently visible tile once the
+mixed-kind check failed, including the CurrentMonth/CurrentSeason "to date" singleton tile even
+though its own `PeriodKind` is already inside `allowedKinds`. Once removed, that singleton is
+recorded in `RecentObservationPeriodSelection`'s `removedSingletonPeriodKinds` set and stays hidden
+indefinitely — nothing in the subsequent bulk-add loop ever re-shows it, since `AddEarlierMonth`/
+`AddEarlierSeason` only grow the `PreviousMonth`/`PreviousSeason` offset sets, they don't touch
+singleton visibility. The bulk add therefore produced 12 (or 4) *earlier* tiles with no current
+one anchoring them — reported by the user, who also called out that this needs to keep working
+when the reference date is the 1st of the month (or the first month of a season), where there's no
+meaningful "to date" tile at all and `RecalculateTab`'s `EnsureDefaults` seeds a `PreviousMonth`/
+`PreviousSeason` offset-1 tile as the visible stand-in instead
+([RecentObservationPeriodSelection.cs:40-54](../../ClimateExplorer.Web.Client/UiModel/RecentObservations/RecentObservationPeriodSelection.cs#L40-L54)) —
+that seeded substitute is just as vulnerable to being wiped by an unconditional clear.
+
+**First attempt (superseded below):** narrowed the clear to skip tiles already matching
+`allowedKinds`, on the theory that the CurrentMonth/CurrentSeason singleton (or its EnsureDefaults
+offset-1 substitute) was always already visible going into the click, so leaving it alone would be
+enough. The user then reported the real trigger: removing every tile *manually* first (each
+already gone, matching or not) and only then clicking the bulk button. With nothing left to "leave
+alone", the loop's first `AddEarlierMonth()` picked offset 1 (a full past month, e.g. August) as
+the earliest addition — there is no path in `AddEarlierMonth`/`AddEarlierSeason` that ever adds the
+*current* singleton, only earlier offsets, so the anchor was simply never asked for. The first
+attempt's premise — "the anchor is already showing, so don't disturb it" — doesn't hold once the
+user removes it themselves before clicking.
+
+**Actual fix:** restored the clear step to remove everything unconditionally (matching the
+original spec literally: remove all tiles if they're not already all month/season tiles), and
+added a second, explicit step that puts the anchor back before the earlier-period loop runs. New
+`RecentObservationPeriodSelection.EnsureVisible(RecentObservationPeriodKind kind)` un-hides a
+singleton kind previously hidden by `Remove` (a no-op for offset-based kinds, which were never
+tracked in `removedSingletonPeriodKinds` to begin with). New private `AddBulkTiles` helper in the
+panel: checks whether the current-to-date period actually exists in this reference date's
+calculation (`CurrentState.Result.Tiles.Any(tile => tile.PeriodKind == currentPeriodKind)` — this
+reads the full computed tile list, not the filtered/visible `CurrentTiles`, so it still sees the
+period even right after the clear removed it from view); if it exists, calls `EnsureVisible` on it
+and asks the earlier-period loop for one fewer tile (11/3) so the total lands on 12/4; if it
+doesn't exist (reference date is the 1st of the month, or the first month of a season),
+`EnsureDefaults` has already seeded the `PreviousMonth`/`PreviousSeason` offset-1 tile as the
+stand-in anchor, so the loop is asked for the full 12/4 and picks that seeded offset up as its
+first addition. `AddEarlierMonthsBulk`/`AddEarlierSeasonsBulk` are now two-line wrappers calling
+`ClearCurrentTilesUnlessAllMatch` then `AddBulkTiles` with their own period kind, count, and
+add/disabled delegates.
+
+`dotnet build` clean; unit suite still 579/579 (this logic isn't unit-tested, per Assumption 5). No
+dev server or browser testing was run — reasoned from the tile-visibility model, not observed live,
+same caveat as every other change in this doc.

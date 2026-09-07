@@ -34,19 +34,29 @@
     display: inline-flex;
 }
 
-.climate-button-group-primary {
+/*
+    ClimateButton renders its own <button> from inside its own component, so a plain selector here
+    (scoped to this file's own markup) never matches it - ::deep is required to reach past the
+    child component boundary into ClimateButton's rendered output.
+*/
+.climate-button-group ::deep .climate-button-group-primary {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
 }
 
-.climate-button-group-suffix {
+.climate-button-group ::deep .climate-button-group-suffix {
     border-left: 1px solid var(--climate-color-control-hover);
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
+    color: var(--climate-color-link);
     justify-content: center;
     min-width: 1.6rem;
     padding-left: 0.5rem;
     padding-right: 0.5rem;
+}
+
+.climate-button-group ::deep .climate-button-group-suffix:hover:not(:disabled) {
+    color: var(--climate-color-link-hover);
 }
 
 .recent-observations-toggle-all-chevron.oi {

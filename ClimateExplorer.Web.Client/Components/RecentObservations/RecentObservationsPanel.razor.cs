@@ -244,24 +244,19 @@ public partial class RecentObservationsPanel
     private void AddEarlierMonthsBulk()
     {
         ClearCurrentTilesUnlessAllMatch(MonthPeriodKinds);
-        for (var i = 0; i < BulkAddMonthCount && !IsAddEarlierMonthDisabled; i++)
-        {
-            AddEarlierMonth();
-        }
+        AddBulkTiles(RecentObservationPeriodKind.CurrentMonth, BulkAddMonthCount, AddEarlierMonth, () => IsAddEarlierMonthDisabled);
     }
 
     private void AddEarlierSeasonsBulk()
     {
         ClearCurrentTilesUnlessAllMatch(SeasonPeriodKinds);
-        for (var i = 0; i < BulkAddSeasonCount && !IsAddEarlierSeasonDisabled; i++)
-        {
-            AddEarlierSeason();
-        }
+        AddBulkTiles(RecentObservationPeriodKind.CurrentSeason, BulkAddSeasonCount, AddEarlierSeason, () => IsAddEarlierSeasonDisabled);
     }
 
-    // Clears every currently visible tile on the active tab unless they already all belong to
-    // the bulk button's own kind (e.g. Month's "12" button only clears if something other than
-    // Current/PreviousMonth is showing), so the bulk add starts from a clean, single-kind board.
+    // Clears every currently visible tile on the active tab, unless every one of them already
+    // belongs to the bulk button's own kind - a literal "remove all tiles if they're not already
+    // all month/season tiles". The current/to-date tile gets removed along with everything else
+    // here; AddBulkTiles is what puts it straight back as the anchor for the bulk-add that follows.
     private void ClearCurrentTilesUnlessAllMatch(IReadOnlyCollection<RecentObservationPeriodKind> allowedKinds)
     {
         if (CurrentTiles.All(tile => allowedKinds.Contains(tile.PeriodKind)))
@@ -272,6 +267,31 @@ public partial class RecentObservationsPanel
         foreach (var tile in CurrentTiles)
         {
             RemoveTile(tile);
+        }
+    }
+
+    // "Add 12 months"/"Add 4 seasons" always anchors on the current month/season, not on wherever
+    // AddEarlierMonth/AddEarlierSeason's offset cursor happens to be - so it re-shows the
+    // CurrentMonth/CurrentSeason "to date" singleton first (undoing a removal from either the
+    // clear step above or an earlier manual remove-tile click) and only asks for the remaining
+    // count from the earlier-period loop. When "to date" isn't meaningful for this reference date
+    // (e.g. the 1st of the month, or the first month of a season - currentPeriodKind has no tile
+    // in the current calculation at all), there's nothing to re-show, and RecalculateTab's
+    // EnsureDefaults has already seeded the PreviousMonth/PreviousSeason offset-1 tile as the
+    // stand-in anchor instead - so the full count is asked for from the loop, which picks that
+    // seeded offset up as its first addition.
+    private void AddBulkTiles(RecentObservationPeriodKind currentPeriodKind, int totalCount, Action addEarlierOne, Func<bool> isAddEarlierDisabled)
+    {
+        var hasCurrentPeriod = CurrentState.Result?.Tiles.Any(tile => tile.PeriodKind == currentPeriodKind) == true;
+        if (hasCurrentPeriod)
+        {
+            periodSelection.EnsureVisible(currentPeriodKind);
+        }
+
+        var remainingCount = hasCurrentPeriod ? totalCount - 1 : totalCount;
+        for (var i = 0; i < remainingCount && !isAddEarlierDisabled(); i++)
+        {
+            addEarlierOne();
         }
     }
 

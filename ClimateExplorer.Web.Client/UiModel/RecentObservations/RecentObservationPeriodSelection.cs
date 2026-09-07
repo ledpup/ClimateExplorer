@@ -138,6 +138,18 @@ public sealed class RecentObservationPeriodSelection
         };
     }
 
+    /// <summary>
+    /// Re-shows a singleton "to date" tile (CurrentMonth/CurrentSeason/YearToDate/LatestSevenDays)
+    /// if it had previously been hidden by <see cref="Remove"/> - the singleton counterpart to
+    /// <see cref="AddEarlierMonth"/> etc. for offset-based tiles. Has no effect on an offset-based
+    /// kind (Daily/PreviousMonth/PreviousSeason/PreviousYear), which isn't tracked in
+    /// <see cref="removedSingletonPeriodKinds"/> in the first place.
+    /// </summary>
+    public void EnsureVisible(RecentObservationPeriodKind kind)
+    {
+        removedSingletonPeriodKinds.Remove(kind);
+    }
+
     public void Remove(RecentObservationTileViewModel tile)
     {
         if (!tile.PeriodOffset.HasValue)
