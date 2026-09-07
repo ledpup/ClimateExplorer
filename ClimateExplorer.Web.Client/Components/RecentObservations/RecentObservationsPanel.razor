@@ -9,13 +9,7 @@
     <RecentObservationTabs Domains="@(Context?.Domains ?? [])" SelectedTab="@ActiveTabKey" SelectedTabChanged="@OnTabChanged" />
 
     <div class="recent-observations-body" aria-live="polite">
-        @if (CurrentState.IsLoading)
-        {
-            <div class="recent-observations-state">
-                <span><i class="fas fa-spinner fa-spin"></i> Loading recent observations...</span>
-            </div>
-        }
-        else if (!string.IsNullOrWhiteSpace(CurrentState.ErrorMessage))
+        @if (!string.IsNullOrWhiteSpace(CurrentState.ErrorMessage))
         {
             <div class="recent-observations-state error">
                 <span><i class="fas fa-triangle-exclamation"></i> @CurrentState.ErrorMessage</span>
@@ -78,7 +72,13 @@
                 }
             </div>
 
-            @if (CurrentTiles.Count > 0)
+            @if (CurrentState.IsLoading)
+            {
+                <div class="recent-observations-state mb-4">
+                    <span><i class="fas fa-spinner fa-spin"></i> Loading recent observations...</span>
+                </div>
+            }
+            else if (CurrentTiles.Count > 0)
             {
                 <div class="recent-observation-grid mb-4">
                     @foreach (var tile in TilesBeforeMonthControls)
@@ -102,7 +102,17 @@
                         </div>
                     }
                 </div>
+            }
+            else
+            {
+                <div class="recent-observations-state">
+                    <i class="fas fa-circle-info"></i>
+                    <span>@CurrentEmptyMessage</span>
+                </div>
+            }
 
+            @if (CurrentTiles.Count > 0 || CurrentState.Result is not null)
+            {
                 <div style="max-width: 1024px;">
                     <Collapsible Title="Configuration" InitiallyShowContents="false">
                         <Content>
@@ -173,13 +183,6 @@
                             </div>
                         </Content>
                     </Collapsible>
-                </div>
-            }
-            else
-            {
-                <div class="recent-observations-state">
-                    <i class="fas fa-circle-info"></i>
-                    <span>@CurrentEmptyMessage</span>
                 </div>
             }
         }
