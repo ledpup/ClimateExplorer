@@ -26,8 +26,12 @@
     gap: 0.5rem;
 }
 
-.recent-observations-period-controls .recent-observations-toggle-all {
-    margin: 0 0 0 0.35rem;
+.recent-observations-toggle-group {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-left: auto;
 }
 
 .recent-observations-toggle-all-chevron.oi {

@@ -15,6 +15,7 @@ public partial class RecentObservationsPanel
 {
     private const int BulkAddMonthCount = 12;
     private const int BulkAddSeasonCount = 4;
+    private const int BulkAddYearCount = 10;
 
     private readonly Dictionary<string, RecentObservationsTabState> tabStates = [];
     private readonly RecentObservationPeriodSelection periodSelection = new();
@@ -70,6 +71,7 @@ public partial class RecentObservationsPanel
     private string AddYearButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.Year, "year");
     private string AddMonthBulkAriaLabel => $"Add {BulkAddMonthCount} earlier months";
     private string AddSeasonBulkAriaLabel => $"Add {BulkAddSeasonCount} earlier seasons";
+    private string AddYearBulkAriaLabel => $"Add {BulkAddYearCount} earlier years";
     private string ExpandCollapseAllLabel => CurrentState.ExpansionStates.CreateToggleAllLabel(CurrentExpansionTargets);
     private bool HasExpandableCurrentTiles => CurrentState.ExpansionStates.HasExpandableTile(CurrentExpansionTargets);
     private bool AreAllExpandableCurrentTilesExpanded => CurrentState.ExpansionStates.AreAllExpandableTilesExpanded(CurrentExpansionTargets);
@@ -84,6 +86,7 @@ public partial class RecentObservationsPanel
     private bool IsAddEarlierMonthDisabled => !periodSelection.CanAddEarlierMonth(GetAvailableOffsets(RecentObservationPeriodKind.Month));
     private bool IsAddEarlierSeasonDisabled => !periodSelection.CanAddEarlierSeason(GetAvailableOffsets(RecentObservationPeriodKind.Season));
     private bool IsAddEarlierYearDisabled => !periodSelection.CanAddEarlierYear(GetAvailableOffsets(RecentObservationPeriodKind.Year));
+    private bool IsRemoveAllDisabled => CurrentTiles.Count == 0;
     private DataAdjustment? SelectedDataAdjustment => selectedDataAdjustment;
     private List<DataAdjustment?> AvailableDataAdjustments { get; set; } = [];
 
@@ -254,6 +257,15 @@ public partial class RecentObservationsPanel
         });
     }
 
+    private Task AddEarlierYearsBulk()
+    {
+        return RunBulkAddWithLoadingIndicator(() =>
+        {
+            ClearCurrentTilesUnlessAllMatch(RecentObservationPeriodKind.Year);
+            AddBulkTiles(RecentObservationPeriodKind.Year, BulkAddYearCount, AddEarlierYear, () => IsAddEarlierYearDisabled);
+        });
+    }
+
     // The tile recalculations AddBulkTiles triggers run synchronously and can take a noticeable
     // while, so this shows the tab's loading message first and yields once (StateHasChanged alone
     // only queues the render; the yield lets the renderer actually flush it to the DOM before the
@@ -286,6 +298,11 @@ public partial class RecentObservationsPanel
             return;
         }
 
+        RemoveAllTiles();
+    }
+
+    private void RemoveAllTiles()
+    {
         foreach (var tile in CurrentTiles)
         {
             RemoveTile(tile);
