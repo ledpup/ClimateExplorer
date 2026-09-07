@@ -236,16 +236,43 @@ public partial class RecentObservationsPanel
         RecalculateLoadedTabs();
     }
 
-    private void AddEarlierMonthsBulk()
+    private Task AddEarlierMonthsBulk()
     {
-        ClearCurrentTilesUnlessAllMatch(RecentObservationPeriodKind.Month);
-        AddBulkTiles(RecentObservationPeriodKind.Month, BulkAddMonthCount, AddEarlierMonth, () => IsAddEarlierMonthDisabled);
+        return RunBulkAddWithLoadingIndicator(() =>
+        {
+            ClearCurrentTilesUnlessAllMatch(RecentObservationPeriodKind.Month);
+            AddBulkTiles(RecentObservationPeriodKind.Month, BulkAddMonthCount, AddEarlierMonth, () => IsAddEarlierMonthDisabled);
+        });
     }
 
-    private void AddEarlierSeasonsBulk()
+    private Task AddEarlierSeasonsBulk()
     {
-        ClearCurrentTilesUnlessAllMatch(RecentObservationPeriodKind.Season);
-        AddBulkTiles(RecentObservationPeriodKind.Season, BulkAddSeasonCount, AddEarlierSeason, () => IsAddEarlierSeasonDisabled);
+        return RunBulkAddWithLoadingIndicator(() =>
+        {
+            ClearCurrentTilesUnlessAllMatch(RecentObservationPeriodKind.Season);
+            AddBulkTiles(RecentObservationPeriodKind.Season, BulkAddSeasonCount, AddEarlierSeason, () => IsAddEarlierSeasonDisabled);
+        });
+    }
+
+    // The tile recalculations AddBulkTiles triggers run synchronously and can take a noticeable
+    // while, so this shows the tab's loading message first and yields once (StateHasChanged alone
+    // only queues the render; the yield lets the renderer actually flush it to the DOM before the
+    // synchronous work blocks the UI thread) before running the bulk add.
+    private async Task RunBulkAddWithLoadingIndicator(Action bulkAdd)
+    {
+        var state = CurrentState;
+        state.IsLoading = true;
+        StateHasChanged();
+        await Task.Yield();
+
+        try
+        {
+            bulkAdd();
+        }
+        finally
+        {
+            state.IsLoading = false;
+        }
     }
 
     // Clears every currently visible tile on the active tab, unless every one of them already
