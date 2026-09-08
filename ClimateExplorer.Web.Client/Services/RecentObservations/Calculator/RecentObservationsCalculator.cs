@@ -1,6 +1,7 @@
 #pragma warning disable SA1201, SA1204
 namespace ClimateExplorer.Web.Client.Services;
 
+using System.Runtime.CompilerServices;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.Client.Services.RecentObservations;
 using ClimateExplorer.Web.Client.UiModel.RecentObservations;
@@ -17,6 +18,10 @@ public sealed partial class RecentObservationsCalculator : IRecentObservationsCa
     private const int LatestSevenDaysLength = 7;
     private const double MinimumHistoricalCoverage = 0.9d;
     private const int RecentTrendWindowYears = 30;
+
+    private readonly ConditionalWeakTable<RecentObservationsDataSet, PreparedDailySeries> dailySeriesCache = new();
+
+    private readonly ConditionalWeakTable<HistoricalDailySeries, Dictionary<HistoricalDistributionCacheKey, IReadOnlyDictionary<string, HistoricalValues>>> historicalDistributionsCache = new();
 
     private readonly TimeProvider timeProvider;
 
@@ -55,21 +60,8 @@ public sealed partial class RecentObservationsCalculator : IRecentObservationsCa
         RecentObservationsDataSet dataSet,
         RecentObservationsOptions options)
     {
-        var daily = BuildDailyTemperature(dataSet.TemperatureMaxRecords, dataSet.TemperatureMinRecords);
-        var meanHistoryRecords = dataSet.HasHistoricalTemperatureMaxMin
-            ? new List<DailyObservation>()
-            : BuildDailyTemperatureMean(dataSet.TemperatureMeanRecords);
-        var meanHistory = new HistoricalDailySeries(meanHistoryRecords, GetStartYear(meanHistoryRecords));
-        var history = dataSet.HasHistoricalTemperatureMaxMin && daily.Count > 0
-            ? new HistoricalDailySeries(daily, GetStartYear(daily))
-            : meanHistory;
-
-        if (!dataSet.HasHistoricalTemperatureMaxMin && history.Records.Count > 0)
-        {
-            daily = MergeDailyObservations(history.Records, daily);
-        }
-
-        if (daily.Count == 0)
+        var series = GetOrBuildDailySeries(dataSet);
+        if (series.Daily.Count == 0)
         {
             return new RecentObservationsTabResult
             {
@@ -81,9 +73,9 @@ public sealed partial class RecentObservationsCalculator : IRecentObservationsCa
 
         return BuildTiles(
             latitude,
-            daily,
+            series.Daily,
             TemperatureDomain,
-            history,
+            series.History,
             options.ReferenceDate,
             options.ComparisonEndMode,
             options.MinimumRankSampleSize,
@@ -102,8 +94,8 @@ public sealed partial class RecentObservationsCalculator : IRecentObservationsCa
         RecentObservationsDataSet dataSet,
         RecentObservationsOptions options)
     {
-        var daily = BuildDailyPrecipitation(dataSet.PrecipitationRecords);
-        if (daily.Count == 0)
+        var series = GetOrBuildDailySeries(dataSet);
+        if (series.Daily.Count == 0)
         {
             return new RecentObservationsTabResult
             {
@@ -115,9 +107,9 @@ public sealed partial class RecentObservationsCalculator : IRecentObservationsCa
 
         return BuildTiles(
             latitude,
-            daily,
+            series.Daily,
             PrecipitationDomain,
-            new HistoricalDailySeries(daily, GetStartYear(daily)),
+            series.History,
             options.ReferenceDate,
             options.ComparisonEndMode,
             options.MinimumRankSampleSize,
@@ -135,8 +127,8 @@ public sealed partial class RecentObservationsCalculator : IRecentObservationsCa
         RecentObservationsDataSet dataSet,
         RecentObservationsOptions options)
     {
-        var daily = BuildDailyCo2(dataSet.Co2Records);
-        if (daily.Count == 0)
+        var series = GetOrBuildDailySeries(dataSet);
+        if (series.Daily.Count == 0)
         {
             return new RecentObservationsTabResult
             {
@@ -148,9 +140,9 @@ public sealed partial class RecentObservationsCalculator : IRecentObservationsCa
 
         return BuildTiles(
             null,
-            daily,
+            series.Daily,
             Co2Domain,
-            new HistoricalDailySeries(daily, GetStartYear(daily)),
+            series.History,
             options.ReferenceDate,
             options.ComparisonEndMode,
             options.MinimumRankSampleSize,
@@ -162,6 +154,50 @@ public sealed partial class RecentObservationsCalculator : IRecentObservationsCa
             dataSet.EmptyMessage,
             dataSet.SourceMetadata,
             supportsSeasonTiles: false);
+    }
+
+    // See the dailySeriesCache field for why this is memoized per dataset instance.
+    private PreparedDailySeries GetOrBuildDailySeries(RecentObservationsDataSet dataSet)
+    {
+        return dailySeriesCache.GetValue(dataSet, BuildDailySeries);
+    }
+
+    private static PreparedDailySeries BuildDailySeries(RecentObservationsDataSet dataSet)
+    {
+        return dataSet.DomainKey switch
+        {
+            ObservationDomainCatalog.TemperatureKey => BuildTemperatureDailySeries(dataSet),
+            ObservationDomainCatalog.PrecipitationKey => BuildSingleValueDailySeries(BuildDailyPrecipitation(dataSet.PrecipitationRecords)),
+            ObservationDomainCatalog.Co2Key => BuildSingleValueDailySeries(BuildDailyCo2(dataSet.Co2Records)),
+            _ => throw new NotSupportedException($"Unknown observation domain '{dataSet.DomainKey}'."),
+        };
+    }
+
+    private static PreparedDailySeries BuildTemperatureDailySeries(RecentObservationsDataSet dataSet)
+    {
+        var daily = BuildDailyTemperature(dataSet.TemperatureMaxRecords, dataSet.TemperatureMinRecords);
+        var meanHistoryRecords = dataSet.HasHistoricalTemperatureMaxMin
+            ? new List<DailyObservation>()
+            : BuildDailyTemperatureMean(dataSet.TemperatureMeanRecords);
+        var meanHistory = new HistoricalDailySeries(meanHistoryRecords, GetStartYear(meanHistoryRecords));
+        var history = dataSet.HasHistoricalTemperatureMaxMin && daily.Count > 0
+            ? new HistoricalDailySeries(daily, GetStartYear(daily))
+            : meanHistory;
+
+        if (!dataSet.HasHistoricalTemperatureMaxMin && history.Records.Count > 0)
+        {
+            daily = MergeDailyObservations(history.Records, daily);
+        }
+
+        return new PreparedDailySeries(daily, history);
+    }
+
+    // Precipitation and CO2 rank each period against every other year's occurrence of the same
+    // date range, drawn from the same single merged series - so, unlike temperature, "daily" and
+    // "history" are just two names for the one list here.
+    private static PreparedDailySeries BuildSingleValueDailySeries(List<DailyObservation> daily)
+    {
+        return new PreparedDailySeries(daily, new HistoricalDailySeries(daily, GetStartYear(daily)));
     }
 
     private RecentObservationsTabResult BuildTiles(
@@ -255,7 +291,7 @@ public sealed partial class RecentObservationsCalculator : IRecentObservationsCa
 
         foreach (var period in periods)
         {
-            var distributions = GetHistoricalDistributions(history, period, domain.AllMetrics, comparisonEndMode, minimumRankSampleSize);
+            var distributions = GetOrBuildHistoricalDistributions(history, period, domain.AllMetrics, comparisonEndMode, minimumRankSampleSize);
             tiles.Add(BuildTile(period, domain, distributions));
         }
 

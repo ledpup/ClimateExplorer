@@ -161,4 +161,22 @@ public sealed partial class RecentObservationsCalculator
     {
         return new DateOnly(year, month, Math.Min(day, DateTime.DaysInMonth(year, month)));
     }
+
+    private IReadOnlyDictionary<string, HistoricalValues> GetOrBuildHistoricalDistributions(
+        HistoricalDailySeries history,
+        PeriodObservation period,
+        IReadOnlyList<Metric> metrics,
+        ComparisonEndMode comparisonEndMode,
+        int minimumRankSampleSize)
+    {
+        var cacheForHistory = historicalDistributionsCache.GetOrCreateValue(history);
+        var key = new HistoricalDistributionCacheKey(period.Kind, period.StartDate, period.EndDate, comparisonEndMode, minimumRankSampleSize);
+        if (!cacheForHistory.TryGetValue(key, out var distributions))
+        {
+            distributions = GetHistoricalDistributions(history, period, metrics, comparisonEndMode, minimumRankSampleSize);
+            cacheForHistory[key] = distributions;
+        }
+
+        return distributions;
+    }
 }
