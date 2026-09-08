@@ -73,6 +73,22 @@ public sealed class RecentObservationPeriodSelection
         AddNextVisibleOffset(visibleYearOffsets, availableOffsets);
     }
 
+    public void AddEarlierPeriods(RecentObservationPeriodKind kind, int count, IEnumerable<int> availableOffsets)
+    {
+        if (count <= 0)
+        {
+            return;
+        }
+
+        var visibleOffsets = GetVisibleOffsets(kind);
+        var currentMaxOffset = visibleOffsets.Count == 0 ? 0 : visibleOffsets.Max;
+
+        foreach (var offset in availableOffsets.Where(offset => offset > currentMaxOffset).Order().Take(count))
+        {
+            visibleOffsets.Add(offset);
+        }
+    }
+
     public bool CanAddEarlierDay(IEnumerable<int>? availableOffsets = null)
     {
         return GetNextVisibleOffset(visiblePreviousDayOffsets, availableOffsets).HasValue;
