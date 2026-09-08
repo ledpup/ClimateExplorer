@@ -77,17 +77,17 @@ public sealed class BomDataSetDownloader(BomDailyDataClient client) : IDataSetDo
         var minimumDefinition = request.Measurements.Single(x => x.MeasurementDefinition.DataType == DataType.TempMin).MeasurementDefinition;
         var maximumRecords = ProcessTemperature(maximumDefinition, maximumContent, stationId)
             .Where(x => x.Value.HasValue)
-            .ToDictionary(x => x.Key!, x => x);
+            .ToDictionary(x => x.Date!.Value, x => x);
         var minimumRecords = ProcessTemperature(minimumDefinition, minimumContent, stationId)
             .Where(x => x.Value.HasValue)
-            .ToDictionary(x => x.Key!, x => x);
+            .ToDictionary(x => x.Date!.Value, x => x);
 
         var output = maximumRecords.Values
-            .Where(x => minimumRecords.ContainsKey(x.Key!))
+            .Where(x => minimumRecords.ContainsKey(x.Date!.Value))
             .OrderBy(x => x.Date)
             .Select(x =>
             {
-                var value = Math.Round((x.Value!.Value + minimumRecords[x.Key!].Value!.Value) / 2D, 2);
+                var value = Math.Round((x.Value!.Value + minimumRecords[x.Date!.Value].Value!.Value) / 2D, 2);
                 return $"{x.Date:yyyyMMdd},{value.ToString("0.##", CultureInfo.InvariantCulture)}";
             })
             .ToList();

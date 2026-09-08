@@ -1,10 +1,13 @@
-﻿namespace ClimateExplorer.Core.Model;
+namespace ClimateExplorer.Core.Model;
 
 using System.Text.Json.Serialization;
 
+[JsonConverter(typeof(DataRecordJsonConverter))]
 public sealed record DataRecord
 {
-    [JsonConstructor]
+    // Note: JSON (de)serialization for this type is fully handled by DataRecordJsonConverter (the
+    // compact [dateInt, value] array shape), which bypasses normal constructor-based deserialization -
+    // so no constructor here needs [JsonConstructor].
     public DataRecord(short year, short? month, short? day, double? value)
     {
         Year = year;
@@ -12,8 +15,6 @@ public sealed record DataRecord
         Day = day;
 
         Value = value;
-
-        CreateKey();
     }
 
     public DataRecord(short year, short? month, double? value)
@@ -22,8 +23,6 @@ public sealed record DataRecord
         Month = month;
 
         Value = value;
-
-        CreateKey();
     }
 
     public DataRecord(DateOnly date, double? value)
@@ -33,11 +32,8 @@ public sealed record DataRecord
         Day = (short)date.Day;
 
         Value = value;
-
-        CreateKey();
     }
 
-    public string? Key { get; set; }
     public short? Day { get; set; }
     public short? Month { get; set; }
     public short Year { get; set; }
@@ -65,19 +61,5 @@ public sealed record DataRecord
     public override string ToString()
     {
         return $"{Year}-{Month}-{Day}: {Value}";
-    }
-
-    private void CreateKey()
-    {
-        Key = Year.ToString();
-        if (Month != null)
-        {
-            Key += "_" + Month;
-        }
-
-        if (Day != null)
-        {
-            Key += "_" + Day;
-        }
     }
 }

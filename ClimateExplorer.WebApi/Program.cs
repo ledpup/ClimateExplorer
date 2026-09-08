@@ -1,13 +1,13 @@
 #pragma warning disable SA1200 // Using directives should be placed correctly
 using System;
 using System.IO;
+using System.IO.Compression;
 using System.Net.Http;
 using System.Text.Json.Serialization;
 using System.Threading;
 using ClimateExplorer.Data.Downloading.Downloaders;
 using ClimateExplorer.Data.Downloading.Orchestration;
 using ClimateExplorer.Data.Downloading.Storage;
-using ClimateExplorer.Data.Downloading.Transformers;
 using ClimateExplorer.Data.Downloading.Workspace;
 using ClimateExplorer.Data.Ghcnd;
 using ClimateExplorer.WebApi;
@@ -15,6 +15,7 @@ using ClimateExplorer.WebApi.AcornSat;
 using ClimateExplorer.WebApi.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http.Json;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 #pragma warning restore SA1200 // Using directives should be placed correctly
@@ -54,6 +55,23 @@ builder.Services.Configure<JsonOptions>(
         options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     });
 
+builder.Services.AddResponseCompression(
+    options =>
+    {
+        // EnableForHttps is off by default because compressing a response that reflects back attacker-influenced,
+        // secret data (e.g. a CSRF token, a session cookie value) alongside attacker-controlled input opens a
+        // compression-oracle (BREACH-style) side channel. Doesn't apply here: every response is public climate
+        // data, identical for all callers, with no per-user secret or credential in the mix (see the CORS policy
+        // comment above - "our users aren't authenticated").
+        options.EnableForHttps = true;
+        options.Providers.Add<BrotliCompressionProvider>();
+        options.Providers.Add<GzipCompressionProvider>();
+
+        // ResponseCompressionDefaults.MimeTypes already covers application/json.
+    });
+builder.Services.Configure<BrotliCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
+builder.Services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
+
 builder.Logging.AddConsole();
 
 var everydayCache = new FileBackedTwoLayerCache("cache");
@@ -90,6 +108,7 @@ builder.Services.AddSingleton(new AcornSatExtensionCache(everydayCache));
 builder.Services.AddSingleton<AcornSatClimateRecordService>();
 
 var app = builder.Build();
+app.UseResponseCompression();
 app.UseCors();
 
 app.MapClimateExplorerEndpoints();
