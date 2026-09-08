@@ -100,8 +100,8 @@ public sealed class RecentObservationPeriodSelection
     {
         var tile = GetNextAddTile(periodKind, availableTiles);
         return tile is null
-            ? $"Add {fallbackPeriodName}"
-            : $"Add {CreateAddButtonPeriodLabel(tile)}";
+            ? fallbackPeriodName
+            : CreateAddButtonPeriodLabel(tile);
     }
 
     public RecentObservationTileViewModel? GetNextAddTile(

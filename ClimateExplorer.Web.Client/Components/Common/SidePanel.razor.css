@@ -82,7 +82,7 @@
 
 @media only screen and (max-width: 1024px) {
     .side-panel {
-        width: 97.5% !important;
+        width: 100% !important;
         border-radius: 0;
     }
 
@@ -92,6 +92,10 @@
 
     .side-panel-body {
         padding: 14px 18px 18px;
+    }
+
+    .side-panel-expand {
+        display: none;
     }
 }
 

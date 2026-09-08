@@ -1,7 +1,7 @@
 @using Blazorise
 
 <div style="display: contents" @onpointerdown="OnPointerDownAsync">
-    <Tooltip ShowDelay="500" HideDelay="500" Text="@EffectiveText" Style="@Style" Multiline="@Multiline" Placement="@Placement" aria-label="@Text">@ChildContent</Tooltip>
+    <Tooltip ShowDelay="500" HideDelay="500" Text="@EffectiveText" Style="@EffectiveStyle" Multiline="@Multiline" Placement="@Placement" aria-label="@Text">@ChildContent</Tooltip>
 </div>
 
 @code {
@@ -19,6 +19,22 @@
     private int SuppressVersion { get; set; }
 
     private string? EffectiveText => SuppressTooltip ? null : Text;
+
+    /*
+        Blazorise's Tooltip renders its own wrapping element around ChildContent. Left at its
+        default block display, that wrapper forms an inline formatting context around its
+        (inline-level) child - e.g. a <button> - which reserves a few extra pixels below the
+        child for the font's descender ("strut"), the classic phantom-gap-under-inline-block bug.
+        That silently grows the wrapper taller than the child it wraps, throwing off consumers
+        (e.g. PillButton) that position siblings relative to the wrapped element's real edges.
+        Forcing the wrapper to be a flex container sidesteps this entirely - flex items are sized
+        to their own content with no baseline strut - so the wrapper always hugs ChildContent's
+        true size. A caller-supplied Style is appended after so it can still override this
+        (e.g. Style="display: block" for tooltips wrapping block-level content).
+    */
+    private string EffectiveStyle => string.IsNullOrWhiteSpace(Style)
+        ? "display: inline-flex;"
+        : $"display: inline-flex; {Style}";
 
     private async Task OnPointerDownAsync()
     {
