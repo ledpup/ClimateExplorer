@@ -16,7 +16,7 @@ public sealed partial class RecentObservationsCalculator
 
         // A daily tile is a single day's observation - max/min/mean, not aggregates
         // across days, so it uses its own Ranking group backed by daily metrics.
-        var groupDefinitions = period.Kind == PeriodKind.Daily ? domain.DailyGroups : domain.Groups;
+        var groupDefinitions = period.Kind == RecentObservationPeriodKind.Daily ? domain.DailyGroups : domain.Groups;
 
         foreach (var group in groupDefinitions)
         {
@@ -79,7 +79,7 @@ public sealed partial class RecentObservationsCalculator
             });
         }
 
-        var trendMetricKeys = period.Kind == PeriodKind.Daily ? domain.DailyVariationMetrics : domain.VariationMetrics;
+        var trendMetricKeys = period.Kind == RecentObservationPeriodKind.Daily ? domain.DailyVariationMetrics : domain.VariationMetrics;
         if (trendMetricKeys.Any(metric => period.MetricValues.ContainsKey(metric.Key)))
         {
             tabs.Add(new RecentObservationTrendTabViewModel

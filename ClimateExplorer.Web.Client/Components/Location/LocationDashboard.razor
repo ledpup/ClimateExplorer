@@ -72,11 +72,11 @@
     </Content>
 </Collapsible>
 
-<SidePanel @ref="climateRecordsSidePanel" Title="@("Climate records for " + Location?.Name)">    
+<SidePanel @ref="climateRecordsSidePanel" Title="@("Climate records for " + Location?.Name)" AllowExpand="true">
     <ClimateRecords Location="@Location" DataSetDefinitions="@DataSetDefinitions" />
 </SidePanel>
 
-<SidePanel @ref="recentObservationsSidePanel" Title="@("Recent observations for " + Location?.Name)" Width="85%">
+<SidePanel @ref="recentObservationsSidePanel" Title="@("Recent observations for " + Location?.Name)" Width="85%" AllowExpand="true">
     <RecentObservationsPanel Context="@RecentObservationsContext.ForLocation(Location)" Location="@Location" DataSetDefinitions="@DataSetDefinitions" />
 </SidePanel>
 

@@ -13,6 +13,10 @@ using static ClimateExplorer.Core.Enums;
 
 public partial class RecentObservationsPanel
 {
+    private const int BulkAddMonthCount = 12;
+    private const int BulkAddSeasonCount = 4;
+    private const int BulkAddYearCount = 10;
+
     private readonly Dictionary<string, RecentObservationsTabState> tabStates = [];
     private readonly RecentObservationPeriodSelection periodSelection = new();
     private float completenessThreshold = RecentObservationCompletenessThreshold.Default;
@@ -62,9 +66,12 @@ public partial class RecentObservationsPanel
     private IEnumerable<RecentObservationTileViewModel> TilesAfterSeasonControls => CurrentTiles.Where(IsAfterSeasonControls);
     private string CurrentEmptyMessage => CurrentState.Result?.EmptyMessage ?? "No recent observations are available.";
     private string AddDayButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.Daily, "day");
-    private string AddMonthButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.PreviousMonth, "month");
-    private string AddSeasonButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.PreviousSeason, "season");
-    private string AddYearButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.PreviousYear, "year");
+    private string AddMonthButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.Month, "month");
+    private string AddSeasonButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.Season, "season");
+    private string AddYearButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.Year, "year");
+    private string AddMonthBulkAriaLabel => $"Add {BulkAddMonthCount} earlier months";
+    private string AddSeasonBulkAriaLabel => $"Add {BulkAddSeasonCount} earlier seasons";
+    private string AddYearBulkAriaLabel => $"Add {BulkAddYearCount} earlier years";
     private string ExpandCollapseAllLabel => CurrentState.ExpansionStates.CreateToggleAllLabel(CurrentExpansionTargets);
     private bool HasExpandableCurrentTiles => CurrentState.ExpansionStates.HasExpandableTile(CurrentExpansionTargets);
     private bool AreAllExpandableCurrentTilesExpanded => CurrentState.ExpansionStates.AreAllExpandableTilesExpanded(CurrentExpansionTargets);
@@ -76,14 +83,10 @@ public partial class RecentObservationsPanel
     private string ComparisonRangeInputId => $"recent-observations-comparison-range-{ActiveDomain?.Key ?? "none"}";
     private bool IsResetReferenceDateDisabled => CurrentState.Result?.ReferenceDate == CurrentState.Result?.MaximumReferenceDate;
     private bool IsAddEarlierDayDisabled => !periodSelection.CanAddEarlierDay(GetAvailableOffsets(RecentObservationPeriodKind.Daily));
-    private bool IsAddEarlierMonthDisabled => !periodSelection.CanAddEarlierMonth(GetAvailableOffsets(RecentObservationPeriodKind.PreviousMonth));
-    private bool IsAddEarlierSeasonDisabled => !periodSelection.CanAddEarlierSeason(GetAvailableOffsets(RecentObservationPeriodKind.PreviousSeason));
-    private bool IsAddEarlierYearDisabled => !periodSelection.CanAddEarlierYear(GetAvailableOffsets(RecentObservationPeriodKind.PreviousYear));
-    private IReadOnlyList<RecentObservationSourceMetadata> CurrentSourceMetadata => CurrentState.Result?.SourceMetadata ?? [];
-    private RecentObservationSourceMetadata? ObservationSourceMetadata => CurrentSourceMetadata
-        .FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.SourceName) && !string.IsNullOrWhiteSpace(x.StationId));
-    private IReadOnlyList<RecentObservationSourceMetadata> CurrentRetrievalMetadata =>
-        RecentObservationRetrievalMetadataSelector.Select(CurrentSourceMetadata);
+    private bool IsAddEarlierMonthDisabled => !periodSelection.CanAddEarlierMonth(GetAvailableOffsets(RecentObservationPeriodKind.Month));
+    private bool IsAddEarlierSeasonDisabled => !periodSelection.CanAddEarlierSeason(GetAvailableOffsets(RecentObservationPeriodKind.Season));
+    private bool IsAddEarlierYearDisabled => !periodSelection.CanAddEarlierYear(GetAvailableOffsets(RecentObservationPeriodKind.Year));
+    private bool IsRemoveAllDisabled => CurrentTiles.Count == 0;
     private DataAdjustment? SelectedDataAdjustment => selectedDataAdjustment;
     private List<DataAdjustment?> AvailableDataAdjustments { get; set; } = [];
 
@@ -212,21 +215,131 @@ public partial class RecentObservationsPanel
     private void AddEarlierDay()
     {
         periodSelection.AddEarlierDay(GetAvailableOffsets(RecentObservationPeriodKind.Daily));
+
+        // periodSelection is shared across every tab, and growing its visible count also moves
+        // the lookahead buffer CreateOptions() requests, so every loaded tab needs recalculating.
+        RecalculateLoadedTabs();
     }
 
     private void AddEarlierMonth()
     {
-        periodSelection.AddEarlierMonth(GetAvailableOffsets(RecentObservationPeriodKind.PreviousMonth));
+        periodSelection.AddEarlierMonth(GetAvailableOffsets(RecentObservationPeriodKind.Month));
+        RecalculateLoadedTabs();
     }
 
     private void AddEarlierSeason()
     {
-        periodSelection.AddEarlierSeason(GetAvailableOffsets(RecentObservationPeriodKind.PreviousSeason));
+        periodSelection.AddEarlierSeason(GetAvailableOffsets(RecentObservationPeriodKind.Season));
+        RecalculateLoadedTabs();
     }
 
     private void AddEarlierYear()
     {
-        periodSelection.AddEarlierYear(GetAvailableOffsets(RecentObservationPeriodKind.PreviousYear));
+        periodSelection.AddEarlierYear(GetAvailableOffsets(RecentObservationPeriodKind.Year));
+        RecalculateLoadedTabs();
+    }
+
+    private Task AddEarlierMonthsBulk()
+    {
+        return RunBulkAddWithLoadingIndicator(() =>
+        {
+            ClearCurrentTilesUnlessAllMatch(RecentObservationPeriodKind.Month);
+            AddBulkTiles(RecentObservationPeriodKind.Month, BulkAddMonthCount, AddEarlierMonth, () => IsAddEarlierMonthDisabled);
+        });
+    }
+
+    private Task AddEarlierSeasonsBulk()
+    {
+        return RunBulkAddWithLoadingIndicator(() =>
+        {
+            ClearCurrentTilesUnlessAllMatch(RecentObservationPeriodKind.Season);
+            AddBulkTiles(RecentObservationPeriodKind.Season, BulkAddSeasonCount, AddEarlierSeason, () => IsAddEarlierSeasonDisabled);
+        });
+    }
+
+    private Task AddEarlierYearsBulk()
+    {
+        return RunBulkAddWithLoadingIndicator(() =>
+        {
+            ClearCurrentTilesUnlessAllMatch(RecentObservationPeriodKind.Year);
+            AddBulkTiles(RecentObservationPeriodKind.Year, BulkAddYearCount, AddEarlierYear, () => IsAddEarlierYearDisabled);
+        });
+    }
+
+    // The tile recalculations AddBulkTiles triggers run synchronously and can take a noticeable
+    // while, so this shows the tab's loading message first and yields once (StateHasChanged alone
+    // only queues the render; the yield lets the renderer actually flush it to the DOM before the
+    // synchronous work blocks the UI thread) before running the bulk add.
+    private async Task RunBulkAddWithLoadingIndicator(Action bulkAdd)
+    {
+        var state = CurrentState;
+        state.IsLoading = true;
+        StateHasChanged();
+        await Task.Yield();
+
+        try
+        {
+            bulkAdd();
+        }
+        finally
+        {
+            state.IsLoading = false;
+        }
+    }
+
+    // Clears every currently visible tile on the active tab, unless every one of them already
+    // belongs to the bulk button's own family - a literal "remove all tiles if they're not already
+    // all month/season tiles". The to-date tile (offset 0) gets removed along with everything else
+    // here; AddBulkTiles is what puts it straight back as the anchor for the bulk-add that follows.
+    private void ClearCurrentTilesUnlessAllMatch(RecentObservationPeriodKind allowedKind)
+    {
+        if (CurrentTiles.All(tile => tile.PeriodKind == allowedKind))
+        {
+            return;
+        }
+
+        RemoveAllTiles();
+    }
+
+    private void RemoveAllTiles()
+    {
+        foreach (var tile in CurrentTiles)
+        {
+            RemoveTile(tile);
+        }
+    }
+
+    // periodSelection is shared across every tab (see AddEarlierDay), so resetting it and
+    // recalculating every loaded tab restores the default tile set everywhere, not just on the
+    // active tab.
+    private void ResetTilesToDefault()
+    {
+        periodSelection.Reset();
+        RecalculateLoadedTabs();
+    }
+
+    // "Add 12 months"/"Add 4 seasons" always anchors on the current month/season, not on wherever
+    // AddEarlierMonth/AddEarlierSeason's offset cursor happens to be - so it re-shows the offset-0
+    // "to date" tile first (undoing a removal from either the clear step above or an earlier
+    // manual remove-tile click) and only asks for the remaining count from the earlier-period
+    // loop. When "to date" isn't meaningful for this reference date (e.g. the 1st of the month, or
+    // the first month of a season - this family has no offset-0 tile in the current calculation at
+    // all), there's nothing to re-show, and RecalculateTab's EnsureDefaults has already seeded the
+    // offset-1 tile as the stand-in anchor instead - so the full count is asked for from the loop,
+    // which picks that seeded offset up as its first addition.
+    private void AddBulkTiles(RecentObservationPeriodKind family, int totalCount, Action addEarlierOne, Func<bool> isAddEarlierDisabled)
+    {
+        var hasCurrentPeriod = CurrentState.Result?.Tiles.Any(tile => tile.PeriodKind == family && tile.PeriodOffset == 0) == true;
+        if (hasCurrentPeriod)
+        {
+            periodSelection.EnsureVisible(family);
+        }
+
+        var remainingCount = hasCurrentPeriod ? totalCount - 1 : totalCount;
+        for (var i = 0; i < remainingCount && !isAddEarlierDisabled(); i++)
+        {
+            addEarlierOne();
+        }
     }
 
     private void RemoveTile(RecentObservationTileViewModel tile)
@@ -381,6 +494,14 @@ public partial class RecentObservationsPanel
         }
 
         state.Result = RecentObservationsService.Calculate(Context.Latitude, state.DataSet, CreateOptions());
+        if (periodSelection.EnsureDefaults(state.Result.Tiles))
+        {
+            // Seeding a default tile (e.g. viewing on day 1 of a month/season/year, before the
+            // "to date" tile is meaningful) grows one of the visible counts, so recalculate to
+            // refresh the "Add earlier" lookahead buffer for the newly-visible tile.
+            state.Result = RecentObservationsService.Calculate(Context.Latitude, state.DataSet, CreateOptions());
+        }
+
         if (updateSelectedReferenceDate && state.Result.ReferenceDate.HasValue)
         {
             selectedReferenceDate = state.Result.ReferenceDate;
@@ -393,38 +514,27 @@ public partial class RecentObservationsPanel
 
     private RecentObservationsOptions CreateOptions()
     {
+        // Request only what's currently visible plus a one-tile lookahead buffer per period kind
+        // (rather than the unbounded RecentObservationsOptions defaults), so we're not computing
+        // metrics and historical rankings for every day/month/season/year a station has ever
+        // recorded. The buffer lets GetAvailableTiles/GetNextAddTile preview the next "Add
+        // earlier" tile's label without a full recalculation; AddEarlierDay/Month/Season/Year
+        // trigger a recalculation when the user actually adds one, refreshing the buffer.
         return new RecentObservationsOptions
         {
             ReferenceDate = selectedReferenceDate,
             ComparisonEndMode = selectedComparisonEndMode,
             CompletenessThreshold = completenessThreshold,
-            PreviousDayCount = RecentObservationPeriodSelection.MaximumPreviousDayCount,
-            PreviousMonthCount = RecentObservationPeriodSelection.MaximumPreviousMonthCount,
-            PreviousSeasonCount = RecentObservationPeriodSelection.MaximumPreviousSeasonCount,
-            PreviousYearCount = RecentObservationPeriodSelection.MaximumPreviousYearCount,
+            PreviousDayCount = periodSelection.PreviousDayCount + 1,
+            PreviousMonthCount = periodSelection.PreviousMonthCount + 1,
+            PreviousSeasonCount = periodSelection.PreviousSeasonCount + 1,
+            PreviousYearCount = periodSelection.PreviousYearCount + 1,
         };
     }
 
     private string FormatDateInput(DateOnly? date)
     {
         return date?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) ?? string.Empty;
-    }
-
-    private string FormatDateLong(DateOnly? date)
-    {
-        return date?.ToString("yyyy MMMM dd", CultureInfo.InvariantCulture) ?? string.Empty;
-    }
-
-    private string FormatUtcTimestamp(DateTimeOffset? timestamp)
-    {
-        return timestamp?.ToUniversalTime().ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture) ?? string.Empty;
-    }
-
-    private string FormatSourceUrlLabel(RecentObservationSourceMetadata metadata)
-    {
-        return string.IsNullOrWhiteSpace(metadata.SourceUrlLabel)
-            ? metadata.SourceUrl ?? string.Empty
-            : metadata.SourceUrlLabel;
     }
 
     private RecentObservationsTabState GetState(string domainKey)
@@ -443,13 +553,12 @@ public partial class RecentObservationsPanel
         return tile.PeriodKind is
             RecentObservationPeriodKind.Daily or
             RecentObservationPeriodKind.LatestSevenDays or
-            RecentObservationPeriodKind.CurrentMonth or
-            RecentObservationPeriodKind.PreviousMonth;
+            RecentObservationPeriodKind.Month;
     }
 
     private bool IsSeasonTile(RecentObservationTileViewModel tile)
     {
-        return tile.PeriodKind is RecentObservationPeriodKind.CurrentSeason or RecentObservationPeriodKind.PreviousSeason;
+        return tile.PeriodKind == RecentObservationPeriodKind.Season;
     }
 
     private bool IsAfterSeasonControls(RecentObservationTileViewModel tile)
@@ -460,11 +569,6 @@ public partial class RecentObservationsPanel
     private bool IsVisibleTile(RecentObservationTileViewModel tile)
     {
         return periodSelection.IsVisible(tile);
-    }
-
-    private bool IsRemovableTile(RecentObservationTileViewModel tile)
-    {
-        return periodSelection.IsRemovable(tile);
     }
 
     private string CreateRemoveTileLabel(RecentObservationTileViewModel tile)
@@ -506,8 +610,10 @@ public partial class RecentObservationsPanel
             return [];
         }
 
+        // >= 1 excludes the offset-0 "to date" tile: "add earlier" only ever walks the complete
+        // past periods, never the current one.
         return CurrentState.Result.Tiles
-            .Where(tile => tile.PeriodKind == periodKind && tile.PeriodOffset.HasValue)
+            .Where(tile => tile.PeriodKind == periodKind && tile.PeriodOffset is >= 1)
             .OrderBy(tile => tile.PeriodOffset!.Value);
     }
 

@@ -9,13 +9,7 @@
     <RecentObservationTabs Domains="@(Context?.Domains ?? [])" SelectedTab="@ActiveTabKey" SelectedTabChanged="@OnTabChanged" />
 
     <div class="recent-observations-body" aria-live="polite">
-        @if (CurrentState.IsLoading)
-        {
-            <div class="recent-observations-state">
-                <span><i class="fas fa-spinner fa-spin"></i> Loading recent observations...</span>
-            </div>
-        }
-        else if (!string.IsNullOrWhiteSpace(CurrentState.ErrorMessage))
+        @if (!string.IsNullOrWhiteSpace(CurrentState.ErrorMessage))
         {
             <div class="recent-observations-state error">
                 <span><i class="fas fa-triangle-exclamation"></i> @CurrentState.ErrorMessage</span>
@@ -24,28 +18,61 @@
         }
         else
         {
-            if (CurrentTiles.Count > 0)
-            {
-                <div class="chart-controls recent-observations-period-controls mb-4">
-                    @if (ActiveDomain?.SupportsAdjustment == true)
-                    {
-                        <DelayedTooltip Text="<p>By using data from nearby stations, adjusted temperatures are corrected for non-climatic influences such as station relocations and instrument changes.</p><p>Uncheck to see raw, unmodified measurements.</p><p>If disabled, there is only adjusted or raw data available, not both.</p>" Multiline="true">
-                            <ClimateCheckbox Text="Adjusted"
-                                              Checked="@(SelectedDataAdjustment == DataAdjustment.Adjusted)"
-                                              CheckedChanged="OnAdjustedChanged"
-                                              Disabled="@(AvailableDataAdjustments.Count == 1)" />
+            <div class="chart-controls recent-observations-period-controls mb-4">
+                @if (ActiveDomain?.SupportsAdjustment == true)
+                {
+                    <DelayedTooltip Text="<p>By using data from nearby stations, adjusted temperatures are corrected for non-climatic influences such as station relocations and instrument changes.</p><p>Uncheck to see raw, unmodified measurements.</p><p>If disabled, there is only adjusted or raw data available, not both.</p>" Multiline="true">
+                        <ClimateCheckbox Text="Adjusted"
+                                          Checked="@(SelectedDataAdjustment == DataAdjustment.Adjusted)"
+                                          CheckedChanged="OnAdjustedChanged"
+                                          Disabled="@(AvailableDataAdjustments.Count == 1)" />
+                    </DelayedTooltip>
+                }
+                <ClimateButton Text="@AddDayButtonLabel" Disabled="@IsAddEarlierDayDisabled" OnClick="AddEarlierDay" />
+                <PillButton>
+                    <PrimaryContent>
+                        <ClimateButton Text="@AddMonthButtonLabel" Disabled="@IsAddEarlierMonthDisabled" OnClick="AddEarlierMonth" Class="pill-button-primary" />
+                    </PrimaryContent>
+                    <PillContent>
+                        <DelayedTooltip Text="@AddMonthBulkAriaLabel">
+                            <ClimateButton Text="12" AriaLabel="@AddMonthBulkAriaLabel" Disabled="@IsAddEarlierMonthDisabled" OnClick="AddEarlierMonthsBulk" Class="pill-button-pill" />
                         </DelayedTooltip>
-                    }
-                    <ClimateButton Text="@AddDayButtonLabel" Disabled="@IsAddEarlierDayDisabled" OnClick="AddEarlierDay" />
-                    <ClimateButton Text="@AddMonthButtonLabel" Disabled="@IsAddEarlierMonthDisabled" OnClick="AddEarlierMonth" />
-                    @if (ActiveDomain?.SupportsSeasonTiles == true)
-                    {
-                        <ClimateButton Text="@AddSeasonButtonLabel" Disabled="@IsAddEarlierSeasonDisabled" OnClick="AddEarlierSeason" />
-                    }
-                    <ClimateButton Text="@AddYearButtonLabel" Disabled="@IsAddEarlierYearDisabled" OnClick="AddEarlierYear" />
+                    </PillContent>
+                </PillButton>
+                @if (ActiveDomain?.SupportsSeasonTiles == true)
+                {
+                    <PillButton>
+                        <PrimaryContent>
+                            <ClimateButton Text="@AddSeasonButtonLabel" Disabled="@IsAddEarlierSeasonDisabled" OnClick="AddEarlierSeason" Class="pill-button-primary" />
+                        </PrimaryContent>
+                        <PillContent>
+                            <DelayedTooltip Text="@AddSeasonBulkAriaLabel">
+                                <ClimateButton Text="4" AriaLabel="@AddSeasonBulkAriaLabel" Disabled="@IsAddEarlierSeasonDisabled" OnClick="AddEarlierSeasonsBulk" Class="pill-button-pill" />
+                            </DelayedTooltip>
+                        </PillContent>
+                    </PillButton>
+                }
+                <PillButton>
+                    <PrimaryContent>
+                        <ClimateButton Text="@AddYearButtonLabel" Disabled="@IsAddEarlierYearDisabled" OnClick="AddEarlierYear" Class="pill-button-primary" />
+                    </PrimaryContent>
+                    <PillContent>
+                        <DelayedTooltip Text="@AddYearBulkAriaLabel">
+                            <ClimateButton Text="10" AriaLabel="@AddYearBulkAriaLabel" Disabled="@IsAddEarlierYearDisabled" OnClick="AddEarlierYearsBulk" Class="pill-button-pill" />
+                        </DelayedTooltip>
+                    </PillContent>
+                </PillButton>
+                <ClimateButton Text="Remove all" Disabled="@IsRemoveAllDisabled" OnClick="RemoveAllTiles" />
+                <DelayedTooltip Text="Reset to default tiles">
+                    <ClimateButton Icon="fas fa-rotate-left"
+                                    AriaLabel="Reset to default tiles"
+                                    title="Reset to default tiles"
+                                    OnClick="ResetTilesToDefault" />
+                </DelayedTooltip>
 
-                    @if (HasExpandableCurrentTiles)
-                    {
+                @if (HasExpandableCurrentTiles)
+                {
+                    <div class="recent-observations-toggle-group">
                         <ClimateButton Class="chart-control recent-observations-toggle-all"
                                        AriaLabel="@ExpandCollapseAllLabel"
                                        title="@ExpandCollapseAllLabel"
@@ -59,32 +86,51 @@
                                               Checked="@synchroniseTabs"
                                               CheckedChanged="@(value => synchroniseTabs = value)" />
                         </DelayedTooltip>
-                    }
-                </div>
+                    </div>
+                }
+            </div>
 
+            @if (CurrentState.IsLoading)
+            {
+                <div class="recent-observations-state mb-4">
+                    <span><i class="fas fa-spinner fa-spin"></i> Loading recent observations...</span>
+                </div>
+            }
+            else if (CurrentTiles.Count > 0)
+            {
                 <div class="recent-observation-grid mb-4">
                     @foreach (var tile in TilesBeforeMonthControls)
                     {
                         <div class="recent-observation-tile-slot" @key="GetTileKey(tile)">
-                            <RecentObservationTile Tile="@tile" Expansion="@GetTileExpansionState(tile)" IsRemovable="@IsRemovableTile(tile)" RemoveButtonLabel="@CreateRemoveTileLabel(tile)" OnRemove="@(() => RemoveTile(tile))" OnExpansionChanged="@OnTileExpansionChanged" OnGroupSelected="@OnTileGroupSelected" OnTrendDownloadRequested="@OnTrendDownloadRequested" />
+                            <RecentObservationTile Tile="@tile" Expansion="@GetTileExpansionState(tile)" IsRemovable="true" RemoveButtonLabel="@CreateRemoveTileLabel(tile)" OnRemove="@(() => RemoveTile(tile))" OnExpansionChanged="@OnTileExpansionChanged" OnGroupSelected="@OnTileGroupSelected" OnTrendDownloadRequested="@OnTrendDownloadRequested" />
                         </div>
                     }
 
                     @foreach (var tile in SeasonTiles)
                     {
                         <div class="recent-observation-tile-slot" @key="GetTileKey(tile)">
-                            <RecentObservationTile Tile="@tile" Expansion="@GetTileExpansionState(tile)" IsRemovable="@IsRemovableTile(tile)" RemoveButtonLabel="@CreateRemoveTileLabel(tile)" OnRemove="@(() => RemoveTile(tile))" OnExpansionChanged="@OnTileExpansionChanged" OnGroupSelected="@OnTileGroupSelected" OnTrendDownloadRequested="@OnTrendDownloadRequested" />
+                            <RecentObservationTile Tile="@tile" Expansion="@GetTileExpansionState(tile)" IsRemovable="true" RemoveButtonLabel="@CreateRemoveTileLabel(tile)" OnRemove="@(() => RemoveTile(tile))" OnExpansionChanged="@OnTileExpansionChanged" OnGroupSelected="@OnTileGroupSelected" OnTrendDownloadRequested="@OnTrendDownloadRequested" />
                         </div>
                     }
 
                     @foreach (var tile in TilesAfterSeasonControls)
                     {
                         <div class="recent-observation-tile-slot" @key="GetTileKey(tile)">
-                            <RecentObservationTile Tile="@tile" Expansion="@GetTileExpansionState(tile)" IsRemovable="@IsRemovableTile(tile)" RemoveButtonLabel="@CreateRemoveTileLabel(tile)" OnRemove="@(() => RemoveTile(tile))" OnExpansionChanged="@OnTileExpansionChanged" OnGroupSelected="@OnTileGroupSelected" OnTrendDownloadRequested="@OnTrendDownloadRequested" />
+                            <RecentObservationTile Tile="@tile" Expansion="@GetTileExpansionState(tile)" IsRemovable="true" RemoveButtonLabel="@CreateRemoveTileLabel(tile)" OnRemove="@(() => RemoveTile(tile))" OnExpansionChanged="@OnTileExpansionChanged" OnGroupSelected="@OnTileGroupSelected" OnTrendDownloadRequested="@OnTrendDownloadRequested" />
                         </div>
                     }
                 </div>
+            }
+            else
+            {
+                <div class="recent-observations-state mb-4">
+                    <i class="fas fa-circle-info"></i>
+                    <span>@CurrentEmptyMessage</span>
+                </div>
+            }
 
+            @if (CurrentTiles.Count > 0 || CurrentState.Result is not null)
+            {
                 <div style="max-width: 1024px;">
                     <Collapsible Title="Configuration" InitiallyShowContents="false">
                         <Content>
@@ -155,13 +201,6 @@
                             </div>
                         </Content>
                     </Collapsible>
-                </div>
-            }
-            else
-            {
-                <div class="recent-observations-state">
-                    <i class="fas fa-circle-info"></i>
-                    <span>@CurrentEmptyMessage</span>
                 </div>
             }
         }

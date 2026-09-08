@@ -158,7 +158,7 @@ public static class Enums
             UnitOfMeasure.MegaTonnes => 0,
             UnitOfMeasure.MillionSqKm => 1,
             UnitOfMeasure.SqKm => 0,
-            UnitOfMeasure.MetresWaterEquivalent => 2,
+            UnitOfMeasure.MetresWaterEquivalent => 1,
             _ => 1,
         };
     }

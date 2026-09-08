@@ -13,7 +13,7 @@
     background-color: #fff;
     color: #000;
     box-shadow: -4px 0 24px rgba(0, 0, 0, 0.25);
-    transition: transform 0.4s ease;
+    transition: transform 0.4s ease, width 0.3s ease;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -42,7 +42,15 @@
         margin: 0;
     }
 
-.side-panel-close {
+.side-panel-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.side-panel-close,
+.side-panel-expand {
     background: none;
     border: none;
     color: #fff;
@@ -55,9 +63,14 @@
     flex-shrink: 0;
 }
 
-    .side-panel-close:hover {
+    .side-panel-close:hover,
+    .side-panel-expand:hover {
         background-color: rgba(255, 255, 255, 0.15);
     }
+
+.side-panel-expand {
+    font-size: 1rem;
+}
 
 .side-panel-body {
     padding: 20px 32px 24px;

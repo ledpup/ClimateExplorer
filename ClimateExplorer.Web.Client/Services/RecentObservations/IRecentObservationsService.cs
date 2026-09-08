@@ -24,18 +24,18 @@ public interface IRecentObservationsService
 
     Task<RecentObservationsTabResult> GetTemperatureRecords(
         Location location,
-        int previousDayCount,
-        int previousMonthCount,
-        int previousSeasonCount,
+        int previousDayCount = int.MaxValue,
+        int previousMonthCount = 0,
+        int previousSeasonCount = 0,
         int previousYearCount = 0,
         DateOnly? referenceDate = null,
         ComparisonEndMode comparisonEndMode = ComparisonEndMode.FullDataset);
 
     Task<RecentObservationsTabResult> GetPrecipitationRecords(
         Location location,
-        int previousDayCount,
-        int previousMonthCount,
-        int previousSeasonCount,
+        int previousDayCount = int.MaxValue,
+        int previousMonthCount = 0,
+        int previousSeasonCount = 0,
         int previousYearCount = 0,
         DateOnly? referenceDate = null,
         ComparisonEndMode comparisonEndMode = ComparisonEndMode.FullDataset);

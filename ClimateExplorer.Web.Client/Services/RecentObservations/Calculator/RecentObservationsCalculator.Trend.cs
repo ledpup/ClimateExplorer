@@ -18,7 +18,7 @@ public sealed partial class RecentObservationsCalculator
         MetricDomain domain,
         IReadOnlyDictionary<string, HistoricalValues> distributions)
     {
-        var metrics = period.Kind == PeriodKind.Daily ? domain.DailyVariationMetrics : domain.VariationMetrics;
+        var metrics = period.Kind == RecentObservationPeriodKind.Daily ? domain.DailyVariationMetrics : domain.VariationMetrics;
         var result = new List<RecentObservationTrendViewModel>();
 
         foreach (var metric in metrics)

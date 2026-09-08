@@ -12,4 +12,7 @@ public partial class HomeOverviewInfo
 
     [Parameter]
     public EventCallback OnShowRecordHigh { get; set; }
+
+    [Parameter]
+    public EventCallback OnShowRecentObservations { get; set; }
 }

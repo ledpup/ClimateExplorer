@@ -101,7 +101,7 @@ public static partial class SuggestedPresetLists
                                     new ChartSeriesTrendRequest
                                     {
                                         RegressionType = TrendRegressionType.Quadratic,
-                                        TrendPeriod = TrendWindow.Full,
+                                        TrendPeriod = TrendWindow.Last30,
                                         TrendPredictionTargetYear = 2100,
                                     },
                                 ],
@@ -123,6 +123,12 @@ public static partial class SuggestedPresetLists
                                     {
                                         RegressionType = TrendRegressionType.Quadratic,
                                         TrendPeriod = TrendWindow.Full,
+                                        TrendPredictionTargetYear = 2100,
+                                    },
+                                    new ChartSeriesTrendRequest
+                                    {
+                                        RegressionType = TrendRegressionType.Quadratic,
+                                        TrendPeriod = TrendWindow.Last30,
                                         TrendPredictionTargetYear = 2100,
                                     },
                                 ],
@@ -626,6 +632,7 @@ public static partial class SuggestedPresetLists
                                 Value = SeriesValueOptions.Value,
                                 DisplayStyle = SeriesDisplayStyle.Bar,
                                 GroupingThreshold = 0.05f,
+                                RequestedColour = UiLogic.Colours.Green,
                                 PositiveValueColour = UiLogic.Colours.Blue,
                                 NegativeValueColour = UiLogic.Colours.Red,
                             },
