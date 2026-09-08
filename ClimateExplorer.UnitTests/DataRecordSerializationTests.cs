@@ -26,7 +26,6 @@ public class DataRecordSerializationTests
         Assert.AreEqual((short)2, record.Month);
         Assert.AreEqual((short)29, record.Day);
         Assert.AreEqual(12.34d, record.Value);
-        Assert.AreEqual("2024_2_29", record.Key);
         Assert.AreEqual(new DateOnly(2024, 2, 29), record.Date);
     }
 }

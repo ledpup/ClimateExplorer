@@ -169,13 +169,13 @@ public static class DataReaderFunctions
                 if (dataResolution == DataResolution.Daily)
                 {
                     var record = new DataRecord(date, null);
-                    dataRecords.Add(record.Key!, record);
+                    dataRecords.Add(BuildRecordKey(record), record);
                     date = date.AddDays(1);
                 }
                 else if (dataResolution == DataResolution.Monthly)
                 {
                     var record = new DataRecord((short)date.Year, (short)date.Month, null, null);
-                    dataRecords.Add(record.Key!, record);
+                    dataRecords.Add(BuildRecordKey(record), record);
                     date = date.AddMonths(1);
                 }
             }
@@ -187,13 +187,13 @@ public static class DataReaderFunctions
             if (dataResolution == DataResolution.Daily)
             {
                 var record = new DataRecord(year, month, day, value);
-                dataRecords.Add(record.Key!, record);
+                dataRecords.Add(BuildRecordKey(record), record);
                 date = date.AddDays(1);
             }
             else if (dataResolution == DataResolution.Monthly)
             {
                 var record = new DataRecord(year, month, null, value);
-                dataRecords.Add(record.Key!, record);
+                dataRecords.Add(BuildRecordKey(record), record);
                 date = date.AddMonths(1);
             }
         }
@@ -236,6 +236,27 @@ public static class DataReaderFunctions
         var lines = await GetLinesInDataFileSource(dataFileSource, station, datasetsFolder);
 
         return ProcessDataFile(lines, regEx, nullValue, dataResolution, station, startDate, endDate);
+    }
+
+    /// <summary>
+    /// Builds the underscore-joined year/month/day key used to de-duplicate and index records while parsing
+    /// a raw data file. This is purely an internal parsing concern - it doesn't need to live on <see cref="DataRecord"/>
+    /// itself (and shouldn't, since that would mean it gets serialized to every API response unnecessarily).
+    /// </summary>
+    private static string BuildRecordKey(DataRecord record)
+    {
+        var key = record.Year.ToString();
+        if (record.Month != null)
+        {
+            key += "_" + record.Month;
+        }
+
+        if (record.Day != null)
+        {
+            key += "_" + record.Day;
+        }
+
+        return key;
     }
 
     private static short GetMonthValue(Match match)
@@ -299,7 +320,7 @@ public static class DataReaderFunctions
             while (recordDate > date)
             {
                 var record = new DataRecord(date, null);
-                dataRecords.Add(record.Key!, record);
+                dataRecords.Add(BuildRecordKey(record), record);
                 date = date.AddYears(1);
             }
 
@@ -308,7 +329,7 @@ public static class DataReaderFunctions
                 double? value = string.IsNullOrWhiteSpace(valueString) || valueString == nullValue ? null : double.Parse(valueString);
 
                 var record = new DataRecord(year, 12, 31, value);
-                dataRecords.Add(record.Key!, record);
+                dataRecords.Add(BuildRecordKey(record), record);
             }
 
             previousDate = recordDate;

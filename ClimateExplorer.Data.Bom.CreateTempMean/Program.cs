@@ -32,12 +32,12 @@ await Parallel.ForEachAsync(tempMaxStations, async (station, token) =>
     Console.WriteLine($"Processing station {station.Id}");
 
     var maxRecords = (await DataReaderFunctions.GetDataRecords(mdTempMax, [station], tempMaxFolder)).Where(x => x.Value != null);
-    var minRecords = (await DataReaderFunctions.GetDataRecords(mdTempMin, [station], tempMinFolder)).Where(x => x.Value != null).ToLookup(x => x.Key, x => x);
+    var minRecords = (await DataReaderFunctions.GetDataRecords(mdTempMin, [station], tempMinFolder)).Where(x => x.Value != null).ToLookup(x => x.Date, x => x);
     var meanRecords = new List<DataRecord>();
 
     foreach (var maxRecord in maxRecords)
     {
-        var minRecord = minRecords[maxRecord.Key].SingleOrDefault();
+        var minRecord = minRecords[maxRecord.Date].SingleOrDefault();
 
         if (minRecord != null)
         {
