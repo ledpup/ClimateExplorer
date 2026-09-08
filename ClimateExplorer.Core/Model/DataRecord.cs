@@ -2,9 +2,12 @@ namespace ClimateExplorer.Core.Model;
 
 using System.Text.Json.Serialization;
 
+[JsonConverter(typeof(DataRecordJsonConverter))]
 public sealed record DataRecord
 {
-    [JsonConstructor]
+    // Note: JSON (de)serialization for this type is fully handled by DataRecordJsonConverter (the
+    // compact [dateInt, value] array shape), which bypasses normal constructor-based deserialization -
+    // so no constructor here needs [JsonConstructor].
     public DataRecord(short year, short? month, short? day, double? value)
     {
         Year = year;
