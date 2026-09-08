@@ -25,7 +25,13 @@
     bottom: 3px;
     box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--climate-color-control-text) 18%, transparent);
     justify-content: center;
-    min-width: 1.3rem;
+
+    /*
+        Sized to fit two digits (the pill shows counts like "10"/"12") so single-digit values
+        ("4") come out the same width instead of shrinking to their own content. Also clears the
+        WCAG 2.5.8 (AA) 24px minimum target size for an independently-clickable control.
+    */
+    min-width: max(1.5rem, calc(2ch + 0.8rem));
     padding: 0 0.4rem;
     position: absolute;
     right: 0.3rem;
