@@ -244,7 +244,8 @@ public partial class RecentObservationsPanel
         return RunBulkAddWithLoadingIndicator(() =>
         {
             ClearCurrentTilesUnlessAllMatch(RecentObservationPeriodKind.Month);
-            AddBulkTiles(RecentObservationPeriodKind.Month, BulkAddMonthCount, AddEarlierMonth, () => IsAddEarlierMonthDisabled);
+            AddBulkTiles(RecentObservationPeriodKind.Month, BulkAddMonthCount);
+            RecalculateLoadedTabs();
         });
     }
 
@@ -253,7 +254,8 @@ public partial class RecentObservationsPanel
         return RunBulkAddWithLoadingIndicator(() =>
         {
             ClearCurrentTilesUnlessAllMatch(RecentObservationPeriodKind.Season);
-            AddBulkTiles(RecentObservationPeriodKind.Season, BulkAddSeasonCount, AddEarlierSeason, () => IsAddEarlierSeasonDisabled);
+            AddBulkTiles(RecentObservationPeriodKind.Season, BulkAddSeasonCount);
+            RecalculateLoadedTabs();
         });
     }
 
@@ -262,7 +264,8 @@ public partial class RecentObservationsPanel
         return RunBulkAddWithLoadingIndicator(() =>
         {
             ClearCurrentTilesUnlessAllMatch(RecentObservationPeriodKind.Year);
-            AddBulkTiles(RecentObservationPeriodKind.Year, BulkAddYearCount, AddEarlierYear, () => IsAddEarlierYearDisabled);
+            AddBulkTiles(RecentObservationPeriodKind.Year, BulkAddYearCount);
+            RecalculateLoadedTabs();
         });
     }
 
@@ -318,28 +321,36 @@ public partial class RecentObservationsPanel
         RecalculateLoadedTabs();
     }
 
-    // "Add 12 months"/"Add 4 seasons" always anchors on the current month/season, not on wherever
-    // AddEarlierMonth/AddEarlierSeason's offset cursor happens to be - so it re-shows the offset-0
-    // "to date" tile first (undoing a removal from either the clear step above or an earlier
-    // manual remove-tile click) and only asks for the remaining count from the earlier-period
-    // loop. When "to date" isn't meaningful for this reference date (e.g. the 1st of the month, or
-    // the first month of a season - this family has no offset-0 tile in the current calculation at
-    // all), there's nothing to re-show, and RecalculateTab's EnsureDefaults has already seeded the
-    // offset-1 tile as the stand-in anchor instead - so the full count is asked for from the loop,
-    // which picks that seeded offset up as its first addition.
-    private void AddBulkTiles(RecentObservationPeriodKind family, int totalCount, Action addEarlierOne, Func<bool> isAddEarlierDisabled)
+    private void AddBulkTiles(RecentObservationPeriodKind family, int totalCount)
     {
-        var hasCurrentPeriod = CurrentState.Result?.Tiles.Any(tile => tile.PeriodKind == family && tile.PeriodOffset == 0) == true;
+        var state = CurrentState;
+        var hasCurrentPeriod = state.Result?.Tiles.Any(tile => tile.PeriodKind == family && tile.PeriodOffset == 0) == true;
         if (hasCurrentPeriod)
         {
             periodSelection.EnsureVisible(family);
         }
 
         var remainingCount = hasCurrentPeriod ? totalCount - 1 : totalCount;
-        for (var i = 0; i < remainingCount && !isAddEarlierDisabled(); i++)
+        if (remainingCount <= 0 || Context is null || state.DataSet is null)
         {
-            addEarlierOne();
+            return;
         }
+
+        var lookaheadOptions = family switch
+        {
+            RecentObservationPeriodKind.Month => CreateOptions(previousMonthLookahead: remainingCount + 1),
+            RecentObservationPeriodKind.Season => CreateOptions(previousSeasonLookahead: remainingCount + 1),
+            RecentObservationPeriodKind.Year => CreateOptions(previousYearLookahead: remainingCount + 1),
+            _ => throw new ArgumentOutOfRangeException(nameof(family), family, "Bulk add only supports Month, Season and Year."),
+        };
+
+        var previewResult = RecentObservationsService.Calculate(Context.Latitude, state.DataSet, lookaheadOptions);
+        var availableOffsets = previewResult.Tiles
+            .Where(tile => tile.PeriodKind == family && tile.PeriodOffset is >= 1)
+            .Select(tile => tile.PeriodOffset!.Value)
+            .Order();
+
+        periodSelection.AddEarlierPeriods(family, remainingCount, availableOffsets);
     }
 
     private void RemoveTile(RecentObservationTileViewModel tile)
@@ -512,23 +523,21 @@ public partial class RecentObservationsPanel
         state.IsLoaded = true;
     }
 
-    private RecentObservationsOptions CreateOptions()
+    private RecentObservationsOptions CreateOptions(
+        int previousDayLookahead = 1,
+        int previousMonthLookahead = 1,
+        int previousSeasonLookahead = 1,
+        int previousYearLookahead = 1)
     {
-        // Request only what's currently visible plus a one-tile lookahead buffer per period kind
-        // (rather than the unbounded RecentObservationsOptions defaults), so we're not computing
-        // metrics and historical rankings for every day/month/season/year a station has ever
-        // recorded. The buffer lets GetAvailableTiles/GetNextAddTile preview the next "Add
-        // earlier" tile's label without a full recalculation; AddEarlierDay/Month/Season/Year
-        // trigger a recalculation when the user actually adds one, refreshing the buffer.
         return new RecentObservationsOptions
         {
             ReferenceDate = selectedReferenceDate,
             ComparisonEndMode = selectedComparisonEndMode,
             CompletenessThreshold = completenessThreshold,
-            PreviousDayCount = periodSelection.PreviousDayCount + 1,
-            PreviousMonthCount = periodSelection.PreviousMonthCount + 1,
-            PreviousSeasonCount = periodSelection.PreviousSeasonCount + 1,
-            PreviousYearCount = periodSelection.PreviousYearCount + 1,
+            PreviousDayCount = periodSelection.PreviousDayCount + previousDayLookahead,
+            PreviousMonthCount = periodSelection.PreviousMonthCount + previousMonthLookahead,
+            PreviousSeasonCount = periodSelection.PreviousSeasonCount + previousSeasonLookahead,
+            PreviousYearCount = periodSelection.PreviousYearCount + previousYearLookahead,
         };
     }
 

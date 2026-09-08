@@ -16,6 +16,15 @@ public sealed partial class RecentObservationsCalculator
 
     private sealed record HistoricalDailySeries(List<DailyObservation> Records, int? StartYear);
 
+    private sealed record PreparedDailySeries(List<DailyObservation> Daily, HistoricalDailySeries History);
+
+    private readonly record struct HistoricalDistributionCacheKey(
+        RecentObservationPeriodKind Kind,
+        DateOnly StartDate,
+        DateOnly EndDate,
+        ComparisonEndMode ComparisonEndMode,
+        int MinimumRankSampleSize);
+
     private sealed record EquivalentPeriodGroup(int Year, int RequiredDays, IReadOnlyList<DailyObservation> Records);
 
     private sealed record PeriodObservation(
