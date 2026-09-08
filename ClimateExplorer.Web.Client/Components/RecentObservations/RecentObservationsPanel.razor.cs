@@ -309,6 +309,15 @@ public partial class RecentObservationsPanel
         }
     }
 
+    // periodSelection is shared across every tab (see AddEarlierDay), so resetting it and
+    // recalculating every loaded tab restores the default tile set everywhere, not just on the
+    // active tab.
+    private void ResetTilesToDefault()
+    {
+        periodSelection.Reset();
+        RecalculateLoadedTabs();
+    }
+
     // "Add 12 months"/"Add 4 seasons" always anchors on the current month/season, not on wherever
     // AddEarlierMonth/AddEarlierSeason's offset cursor happens to be - so it re-shows the offset-0
     // "to date" tile first (undoing a removal from either the clear step above or an earlier

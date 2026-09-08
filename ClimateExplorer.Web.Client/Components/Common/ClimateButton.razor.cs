@@ -48,6 +48,11 @@ public partial class ClimateButton
                 _ => Compact ? "climate-button climate-button--compact" : "climate-button",
             };
 
+            if (IsIconOnly)
+            {
+                classes += " climate-button--icon-only";
+            }
+
             return string.IsNullOrWhiteSpace(Class)
                 ? classes
                 : $"{classes} {Class}";
@@ -55,4 +60,9 @@ public partial class ClimateButton
     }
 
     private string? EffectiveAriaLabel => AriaLabel ?? Text;
+
+    // No label to size against (just an icon glyph) - Font Awesome forces line-height: 1 on its
+    // icons, which otherwise leaves this button shorter than its text-labelled siblings. See
+    // ClimateButton.razor.css.
+    private bool IsIconOnly => !string.IsNullOrWhiteSpace(Icon) && string.IsNullOrWhiteSpace(Text) && ChildContent is null;
 }

@@ -63,6 +63,12 @@
                     </PillContent>
                 </PillButton>
                 <ClimateButton Text="Remove all" Disabled="@IsRemoveAllDisabled" OnClick="RemoveAllTiles" />
+                <DelayedTooltip Text="Reset to default tiles">
+                    <ClimateButton Icon="fas fa-rotate-left"
+                                    AriaLabel="Reset to default tiles"
+                                    title="Reset to default tiles"
+                                    OnClick="ResetTilesToDefault" />
+                </DelayedTooltip>
 
                 @if (HasExpandableCurrentTiles)
                 {
