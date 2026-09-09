@@ -103,6 +103,16 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
     /// </summary>
     protected virtual Location? GetCurrentLocationForChartUrlContext() => null;
 
+    /// <summary>
+    /// Re-derives any route-resolved state (Index's <c>Location</c>) directly from the current URL,
+    /// rather than relying solely on the router re-supplying route parameters. Overridden by Index;
+    /// Global has no location route so the base no-op is fine. Runs before
+    /// <see cref="SyncChartStateFromUrlAsync"/> (called from <see cref="HandleNavigationLocationChanged"/>)
+    /// so a location resolved here is already in place by the time chart state (whose csd= can
+    /// reference locations by id) is synced.
+    /// </summary>
+    protected virtual Task ResyncRouteFromUrlAsync() => Task.CompletedTask;
+
     protected override async Task OnInitializedAsync()
     {
         NavManager!.LocationChanged += HandleNavigationLocationChanged!;
@@ -368,19 +378,25 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
         Logger!.LogInformation("Instance " + componentInstanceId + " HandleLocationChanged: " + NavManager!.Uri);
 
         // Browser back/forward (and typed/bookmarked URL edits) change NavManager.Uri without
-        // running any of our own state-changing code - ReflectChartStateInUrl only ever pushes
-        // state -> URL. This is the other half, URL -> state. Fire-and-forget via InvokeAsync
+        // reliably re-running the router's own SetParametersAsync -> OnParametersSetAsync pass for
+        // this component - and even where it does, that only ever covered the route SEGMENT
+        // (Index's location), never the query string the chart state lives in. So this is the one
+        // place both halves of "the address bar changed" get reconciled: ReflectChartStateInUrl
+        // only ever pushes state -> URL; this handler is URL -> state, for both the chart
+        // (SyncChartStateFromUrlAsync, every page) and, where a page has one, its route-resolved
+        // state (ResyncRouteFromUrlAsync - Index's Location). Fire-and-forget via InvokeAsync
         // because LocationChanged is a plain event, not guaranteed to run on the renderer's sync
         // context, and this handler's signature can't be async.
         _ = InvokeAsync(async () =>
         {
             try
             {
+                await ResyncRouteFromUrlAsync();
                 await SyncChartStateFromUrlAsync();
             }
             catch (Exception ex)
             {
-                Logger!.LogError(ex, "Failed to sync chart state from the URL after a navigation (e.g. browser back/forward).");
+                Logger!.LogError(ex, "Failed to sync page state from the URL after a navigation (e.g. browser back/forward).");
             }
         });
     }
