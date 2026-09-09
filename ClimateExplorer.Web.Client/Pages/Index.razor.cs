@@ -100,6 +100,85 @@ public partial class Index : ChartablePage
         base.Dispose();
     }
 
+    protected override Location? GetCurrentLocationForChartUrlContext() => Location;
+
+    /// <summary>
+    /// Browser back/forward changes <c>NavigationManager.Uri</c> without re-running the router's
+    /// route-parameter binding for this component in the one case that matters most: once a chart
+    /// state has been applied even once, <see cref="ReflectChartStateInUrl"/> (via
+    /// <c>ChartStateUrlService.BuildRelativeUrl</c>) always rewrites the address bar to the bare
+    /// "location?chartAllData=...&amp;csd=..." form - it never includes the location path segment.
+    /// So every location's "settled" history entry shares the identical bare path, differing only
+    /// in the query string, and the router genuinely sees no route change at all between them - the
+    /// location lives solely inside csd=. This mirrors <see cref="GetLocation"/>'s existing
+    /// "?csd=..." deep-link handling to pull the location back out of csd= in that case; when the
+    /// URL DOES still carry a location path segment (a fresh named/GUID URL, before its first
+    /// chart-state resync replaces it), that's resolved the normal way via
+    /// <see cref="ResolveLocationAsync"/>.
+    /// </summary>
+    protected override async Task ResyncRouteFromUrlAsync()
+    {
+        var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
+        var path = uri.AbsolutePath.Trim('/');
+        var slashIndex = path.IndexOf('/');
+        var firstSegment = slashIndex < 0 ? path : path[..slashIndex];
+
+        if (!string.Equals(firstSegment, PageName, StringComparison.OrdinalIgnoreCase))
+        {
+            // Not our route any more (e.g. navigated away entirely) - nothing to resync.
+            return;
+        }
+
+        var routeLocationString = slashIndex < 0 ? null : path[(slashIndex + 1)..];
+
+        if (!string.IsNullOrEmpty(routeLocationString))
+        {
+            if (routeLocationString != LocationString)
+            {
+                LocationString = routeLocationString;
+                await ResolveLocationAsync();
+                StateHasChanged();
+            }
+
+            return;
+        }
+
+        if (DataSetDefinitions is null || Regions is null)
+        {
+            return;
+        }
+
+        if (!QueryHelpers.ParseQuery(uri.Query).TryGetValue("csd", out var csdSpecifier))
+        {
+            return;
+        }
+
+        await EnsureLocationDictionaryLoadedAsync();
+
+        Guid locationId;
+        try
+        {
+            locationId = GetLocationFromCsd(csdSpecifier);
+        }
+        catch (Exception ex)
+        {
+            Logger!.LogError(ex, "Failed to resolve location from csd= while resyncing route from URL.");
+            return;
+        }
+
+        if (locationId == Location?.Id)
+        {
+            return;
+        }
+
+        var location = LocationDictionary is not null && LocationDictionary.TryGetValue(locationId, out var known)
+            ? known
+            : await DataService!.GetLocationById(locationId);
+
+        await ApplyResolvedLocationAsync(location);
+        StateHasChanged();
+    }
+
     protected override async Task OnParametersSetAsync()
     {
         // Resolving the route's location lives here (not OnInitializedAsync) so it runs both on
@@ -560,6 +639,20 @@ public partial class Index : ChartablePage
             Regions is null ||
             ChartStateLocationChangeAppliedForLocationId == Location.Id)
         {
+            return false;
+        }
+
+        // When the URL we've navigated to already carries its own explicit chart state - a
+        // browser back/forward to a location we'd previously customised, or a bookmarked/typed
+        // "/location/{id}?csd=..." link - that URL is authoritative and ChartablePage's
+        // SyncChartStateFromUrlAsync (driven off NavigationManager.LocationChanged) applies it.
+        // Substitution below is only for the bare "/location/{id}" URL the map/change-location UI
+        // navigates to, which carries no chart state of its own to adapt from.
+        var currentUri = NavManager!.ToAbsoluteUri(NavManager.Uri);
+        var currentQuery = QueryHelpers.ParseQuery(currentUri.Query);
+        if (currentQuery.ContainsKey("csd") || currentQuery.ContainsKey("chartAllData"))
+        {
+            ChartStateLocationChangeAppliedForLocationId = Location.Id;
             return false;
         }
 
