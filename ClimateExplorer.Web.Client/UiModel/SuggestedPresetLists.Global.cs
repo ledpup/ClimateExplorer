@@ -40,10 +40,8 @@ public static partial class SuggestedPresetLists
 
         var arcticTemp = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Arctic), DataType.TempMean, null, throwIfNoMatch: true);
         var antarcticTemp = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Antarctic), DataType.TempMean, null, throwIfNoMatch: true);
-        var r60S60NTemp = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.R60s60n), DataType.TempMean, null, throwIfNoMatch: true);
 
         var ozoneHoleArea = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.SouthernHemi), DataType.OzoneHoleArea, null, throwIfNoMatch: true);
-        var ozoneHoleColumn = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.SouthernHemi), DataType.OzoneHoleColumn, null, throwIfNoMatch: true);
         var odgi = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.SouthernHemi), DataType.Ozone, null, throwIfNoMatch: true);
 
         var northernOceanTemp = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.NorthernHemiOcean), DataType.TempMean, null, throwIfNoMatch: true);
