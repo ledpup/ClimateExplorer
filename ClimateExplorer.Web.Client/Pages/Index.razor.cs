@@ -100,6 +100,8 @@ public partial class Index : ChartablePage
         base.Dispose();
     }
 
+    protected override Location? GetCurrentLocationForChartUrlContext() => Location;
+
     protected override async Task OnParametersSetAsync()
     {
         // Resolving the route's location lives here (not OnInitializedAsync) so it runs both on
@@ -560,6 +562,20 @@ public partial class Index : ChartablePage
             Regions is null ||
             ChartStateLocationChangeAppliedForLocationId == Location.Id)
         {
+            return false;
+        }
+
+        // When the URL we've navigated to already carries its own explicit chart state - a
+        // browser back/forward to a location we'd previously customised, or a bookmarked/typed
+        // "/location/{id}?csd=..." link - that URL is authoritative and ChartablePage's
+        // SyncChartStateFromUrlAsync (driven off NavigationManager.LocationChanged) applies it.
+        // Substitution below is only for the bare "/location/{id}" URL the map/change-location UI
+        // navigates to, which carries no chart state of its own to adapt from.
+        var currentUri = NavManager!.ToAbsoluteUri(NavManager.Uri);
+        var currentQuery = QueryHelpers.ParseQuery(currentUri.Query);
+        if (currentQuery.ContainsKey("csd") || currentQuery.ContainsKey("chartAllData"))
+        {
+            ChartStateLocationChangeAppliedForLocationId = Location.Id;
             return false;
         }
 

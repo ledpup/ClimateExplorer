@@ -95,6 +95,14 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
         NavManager!.LocationChanged -= HandleNavigationLocationChanged!;
     }
 
+    /// <summary>
+    /// The location to resolve csd= location references against when re-syncing chart state from
+    /// the URL outside of the initial load (see <see cref="SyncChartStateFromUrlAsync"/>). Index
+    /// overrides this with its current <c>Location</c>; Global has no location route so the base
+    /// null (relying on <see cref="LocationDictionary"/> alone) is fine.
+    /// </summary>
+    protected virtual Location? GetCurrentLocationForChartUrlContext() => null;
+
     protected override async Task OnInitializedAsync()
     {
         NavManager!.LocationChanged += HandleNavigationLocationChanged!;
@@ -358,6 +366,76 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
     private void HandleNavigationLocationChanged(object sender, LocationChangedEventArgs e)
     {
         Logger!.LogInformation("Instance " + componentInstanceId + " HandleLocationChanged: " + NavManager!.Uri);
+
+        // Browser back/forward (and typed/bookmarked URL edits) change NavManager.Uri without
+        // running any of our own state-changing code - ReflectChartStateInUrl only ever pushes
+        // state -> URL. This is the other half, URL -> state. Fire-and-forget via InvokeAsync
+        // because LocationChanged is a plain event, not guaranteed to run on the renderer's sync
+        // context, and this handler's signature can't be async.
+        _ = InvokeAsync(async () =>
+        {
+            try
+            {
+                await SyncChartStateFromUrlAsync();
+            }
+            catch (Exception ex)
+            {
+                Logger!.LogError(ex, "Failed to sync chart state from the URL after a navigation (e.g. browser back/forward).");
+            }
+        });
+    }
+
+    /// <summary>
+    /// Re-parses the current URL's chart state and applies it if it differs from what's currently
+    /// displayed. This is what makes browser back/forward (and deep links to a second location
+    /// visited later in the same session) actually change the chart - without it, only the address
+    /// bar changed. On <c>Global</c> (no location route segment - the entire chart state is in the
+    /// query string) this is the only mechanism that ever re-syncs after the first load.
+    /// </summary>
+    private async Task SyncChartStateFromUrlAsync()
+    {
+        // Mirrors EnsureInitialChartStateAsync's readiness guard, and defers to it entirely until
+        // the first chart state has been resolved - this method's job is keeping subsequent
+        // navigations in sync, not racing the initial load.
+        if (!initialChartStateResolved || DataSetDefinitions is null || Regions is null)
+        {
+            return;
+        }
+
+        var context = CreateChartUrlStateContext(GetCurrentLocationForChartUrlContext());
+        var uri = NavManager!.ToAbsoluteUri(NavManager.Uri);
+        var result = ChartStateUrlService!.Parse(uri, context);
+
+        if (result.Kind == ChartUrlStateKind.Invalid)
+        {
+            Logger!.LogError("Failed to parse chart state from URL after a navigation: {ErrorMessage}", result.ErrorMessage);
+            return;
+        }
+
+        var newState = result.Kind switch
+        {
+            ChartUrlStateKind.Valid => result.State,
+            ChartUrlStateKind.ExplicitEmpty => result.State,
+            _ => null, // Missing: no csd/chartAllData in the URL at all - nothing to resync from.
+        };
+
+        if (newState is null)
+        {
+            return;
+        }
+
+        // Already showing this exact state - this LocationChanged was raised by our own
+        // ReflectChartStateInUrl call (or the URL otherwise already matches), not an external
+        // navigation. Skip so we don't rebuild the chart for no reason. ChartState has no useful
+        // value equality (its Series list doesn't), so compare via the same serialization
+        // ReflectChartStateInUrl itself uses to decide when the URL needs updating.
+        if (CurrentChartState is not null &&
+            ChartStateUrlService.BuildRelativeUrl(PageName!, newState) == ChartStateUrlService.BuildRelativeUrl(PageName!, CurrentChartState))
+        {
+            return;
+        }
+
+        await ApplyChartStateAsync(newState, updateUrl: false);
     }
 
     private BinGranularities GetSelectedBinGranularity(ChartState state)
