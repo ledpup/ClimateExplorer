@@ -15,28 +15,67 @@ Charts go further. Any chart series can carry up to three trend lines, each inde
 
 Two chart presets use this. **Temperature + trend**, on every location page, fits both a linear and a quadratic trend to the full temperature record and projects 50 years out. **Atmospheric CO₂ vs emissions**, on the [global page](https://climateexplorer.net/), is the one we'll spend the second half of this post on.
 
-## Linear regression: the straight line through the data
+## Linear regression: a straight line through the data
 
 A trend line here is an ordinary least-squares linear regression - the straight line through a set of yearly values that minimises the sum of the squared vertical distances from each year's value to the line. Picture each year as a point: *x* is the year, *y* is that year's value. The slope, β, comes from:
 
 <p style="text-align:center">β = Σ(x − x̄)(y − ȳ) / Σ(x − x̄)²</p>
 
-where x̄ and ȳ are the average year and average value across the record. For every year, take how far that year is from the average year, and how far its value is from the average value, and multiply the two together; add that up across every year for the sum on top. The sum on the bottom does the same thing with just the years, squared. Divide one by the other and the result is the slope - how much the fitted line rises for every extra year.
+**x̄** and **ȳ** are the average year and average value across the record
 
-A small worked example: say a station has five years of data - 2001 at 14.00°C, 2002 at 14.04°C, 2003 at 14.12°C, 2004 at 14.09°C, 2005 at 14.20°C. The average year is 2003 and the average temperature is 14.09°C. Real records rarely rise by exactly the same amount every year - here 2003 sits a little above where a perfectly steady rise would put it, and 2004 sits a little below - but the regression still finds the one straight line that best fits all five points at once.
+For every year, take how far that year is from the average year, and how far its value is from the average value, and multiply the two together; add that up across every year for the sum on top. The sum on the bottom does the same thing with just the years, squared. Divide one by the other and the result is the slope - how much the fitted line rises for every extra year.
 
-| Year (x) | Temp °C (y) | x − x̄ | y − ȳ | (x−x̄)(y−ȳ) | (x−x̄)² |
-| -------: | ----------: | -----: | -----: | -----------: | ------: |
-| 2001 | 14.00 | −2 | −0.09 | 0.18 | 4 |
-| 2002 | 14.04 | −1 | −0.05 | 0.05 | 1 |
-| 2003 | 14.12 | 0 | 0.03 | 0.00 | 0 |
-| 2004 | 14.09 | 1 | 0.00 | 0.00 | 1 |
-| 2005 | 14.20 | 2 | 0.11 | 0.22 | 4 |
-| **Sum** | | | | **0.45** | **10** |
+A small worked example: take the annual mean CO₂ concentration measured at Mauna Loa for 1960 to 1969, in parts per million, rounded to the nearest whole number:
 
-The slope is the sum on top divided by the sum on the bottom: 0.45 ÷ 10 = 0.045°C per year. Multiply by ten to get a per-decade rate small numbers like this would otherwise obscure, and that's the **+0.45°C per decade** a Recent Observations tile would display. This is the exact example now shown in the "About trends" panel in the app, if you'd like to see it alongside the real thing.
+| Year | ppm |
+| ---: | --: |
+| 1960 | 317 |
+| 1961 | 318 |
+| 1962 | 318 |
+| 1963 | 319 |
+| 1964 | 320 |
+| 1965 | 320 |
+| 1966 | 321 |
+| 1967 | 322 |
+| 1968 | 323 |
+| 1969 | 325 |
 
-Ordinary least squares forces one constant rate of change onto the whole record, which is exactly why Recent Observations shows three separate windows rather than a single number, and why charts let you stack multiple trend lines: comparing them is how you notice a record that isn't behaving in a straight line at all.
+The average year is 1964.5 and the average concentration is 320.3ppm. The regression finds the one straight line that best fits all ten points at once.
+
+| Year (x) | ppm (y) | x − x̄ | y − ȳ | (x−x̄)(y−ȳ) | (x−x̄)² |
+| -------: | ------: | -----: | -----: | -----------: | ------: |
+| 1960 | 317 | −4.5 | −3.3 | 14.9 | 20.25 |
+| 1961 | 318 | −3.5 | −2.3 | 8.1 | 12.25 |
+| 1962 | 318 | −2.5 | −2.3 | 5.8 | 6.25 |
+| 1963 | 319 | −1.5 | −1.3 | 2.0 | 2.25 |
+| 1964 | 320 | −0.5 | −0.3 | 0.2 | 0.25 |
+| 1965 | 320 | 0.5 | −0.3 | −0.2 | 0.25 |
+| 1966 | 321 | 1.5 | 0.7 | 1.0 | 2.25 |
+| 1967 | 322 | 2.5 | 1.7 | 4.2 | 6.25 |
+| 1968 | 323 | 3.5 | 2.7 | 9.4 | 12.25 |
+| 1969 | 325 | 4.5 | 4.7 | 21.1 | 20.25 |
+| **Sum** | | | | **66.5** | **82.5** |
+
+The slope is the sum on top divided by the sum on the bottom: 66.5 ÷ 82.5 ≈ **0.8 ppm per year**.
+
+Now the most recent complete decade on record, 2016 to 2025:
+
+| Year | ppm |
+| ---: | --: |
+| 2016 | 404 |
+| 2017 | 407 |
+| 2018 | 409 |
+| 2019 | 412 |
+| 2020 | 414 |
+| 2021 | 416 |
+| 2022 | 419 |
+| 2023 | 421 |
+| 2024 | 425 |
+| 2025 | 427 |
+
+Same method, mean year 2020.5 and mean concentration 415.4ppm, gives Σ(x−x̄)(y−ȳ) = 208.0 and Σ(x−x̄)² = 82.5 - the spread of years is identical. The slope is 208.0 ÷ 82.5 ≈ **2.5 ppm per year**.
+
+The straight-line rate more than triples: 0.8 ppm per year vs 2.5 ppm per year. Reported as flat numbers, that reads like two disconnected facts about CO₂ - it rose at one pace once, it rises at a different, faster pace now - with nothing in the maths itself to say whether that's one long acceleration or two unrelated regimes. That's the real limit of ordinary least squares: it forces one constant rate of change onto whatever window you feed it, whether or not the metric behind it is actually climbing at a steady pace throughout. Recent Observations shows three overlapping windows for exactly this reason, and charts let you stack multiple trend lines: comparing them is how you notice a record that isn't behaving in a straight line at all.
 
 ## Quadratic regression: letting the line bend
 
@@ -48,44 +87,29 @@ The extra β₂X² term lets the curve bend instead of forcing a single rate acr
 
 ### How fast is CO₂ really accelerating?
 
-Atmospheric CO₂, measured continuously at the Mauna Loa Observatory since 1958, is a good candidate for this because the signal is so clean - it goes up practically every single year. Here's the annual mean CO₂ concentration for 1970 to 2000, in parts per million, rounded to the nearest whole number:
+Atmospheric CO₂, measured continuously at the Mauna Loa Observatory since 1958, is a good candidate for this because the signal is so clean - it goes up practically every single year. Take the same two ten-year windows used in the linear example above - 1960 to 1969 and 2016 to 2025 - and fit a quadratic to each instead of a straight line.
 
-| Year | ppm | Year | ppm | Year | ppm | Year | ppm |
-| ---: | --: | ---: | --: | ---: | --: | ---: | --: |
-| 1970 | 326 | 1978 | 335 | 1986 | 348 | 1994 | 359 |
-| 1971 | 326 | 1979 | 337 | 1987 | 349 | 1995 | 361 |
-| 1972 | 327 | 1980 | 339 | 1988 | 352 | 1996 | 363 |
-| 1973 | 330 | 1981 | 340 | 1989 | 353 | 1997 | 364 |
-| 1974 | 330 | 1982 | 341 | 1990 | 354 | 1998 | 367 |
-| 1975 | 331 | 1983 | 343 | 1991 | 356 | 1999 | 369 |
-| 1976 | 332 | 1984 | 345 | 1992 | 357 | 2000 | 370 |
-| 1977 | 334 | 1985 | 346 | 1993 | 357 | | |
+Centring on the mean year again (x′ = year − 1964.5 for the first window, x′ = year − 2020.5 for the second) reuses the same trick as before: with the years evenly spaced and symmetric about the middle, Σx′ and Σx′³ both vanish. And because both windows are the same ten years wide, the two purely year-dependent sums come out identical either way: Σx′² = 82.5, Σx′⁴ = 1,208.625.
 
-With 31 years of data, multiplying out every row by hand isn't practical the way it was for five - but the years are evenly spaced and symmetric around their midpoint, 1985, so centring X on the mean year (x′ = year − 1985) makes most of the arithmetic cancel on its own: any odd power of a symmetric range sums to zero, so Σx′ = 0 and Σx′³ = 0. What's left, computed once from the whole table, is:
+For 1960-1969, the remaining sums - computed from the same ten points as the linear example - are Σy = 3,203, Σx′y = 66.5, Σx′²y = 26,452.75. As before, the linear coefficient falls out on its own: β₁ = 66.5 ÷ 82.5 ≈ **0.81** ppm per year, matching the straight-line slope already found above. That leaves β₀ and β₂ from two equations:
 
-- Σx′² = 2,480, Σx′⁴ = 356,624
-- Σy = 10,741, Σx′y = 3,723, Σx′²y = 860,257
+<p style="text-align:center">10β₀ + 82.5β₂ = 3,203<br/>82.5β₀ + 1,208.625β₂ = 26,452.75</p>
 
-Because Σx′ and Σx′³ vanish, the linear coefficient falls straight out on its own: β₁ = Σx′y ÷ Σx′² = 3,723 ÷ 2,480 ≈ **1.5012** ppm per year. That leaves just two unknowns, the constant β₀ and the curvature β₂, from two equations:
+Solving gives β₂ ≈ **0.0530** and β₀ ≈ **319.9**, so the fitted curve (with x′ = year − 1964.5) is:
 
-<p style="text-align:center">31β₀ + 2,480β₂ = 10,741<br/>2,480β₀ + 356,624β₂ = 860,257</p>
+<p style="text-align:center">CO₂ ≈ 319.9 + 0.81·x′ + 0.0530·x′²</p>
 
-Solving that pair gives β₂ ≈ **0.006175** and β₀ ≈ **345.99**. So the fitted curve (with x′ = year − 1985) is:
+It fits noticeably better than the straight line did (R² = 0.982 against 0.955). The rate of change, β₁ + 2β₂·x′, at the two ends of the window: at x′ = −4.5 (1960), **0.3 ppm per year**; at x′ = +4.5 (1969), **1.3 ppm per year**. Within this single decade, CO₂'s own rate of rise more than quadruples.
 
-<p style="text-align:center">CO₂ ≈ 345.99 + 1.5012·x′ + 0.006175·x′²</p>
+Now the same method on 2016-2025 (Σy = 4,154, Σx′y = 208.0, Σx′²y = 34,284.5): β₁ ≈ **2.52** ppm per year - again matching the linear slope - and solving 10β₀ + 82.5β₂ = 4,154 and 82.5β₀ + 1,208.625β₂ = 34,284.5 gives β₂ ≈ **0.0265**, β₀ ≈ **415.2** (R² = 0.997, barely above the straight line's 0.996):
 
-It fits the 31 points closely (R² = 0.997). The interesting part is the rate of change, β₁ + 2β₂·x′, evaluated at each end of the window. At x′ = −15 (year 1970): 1.5012 − 0.1852 = 1.316 ppm/year → **13.2 ppm per decade**. At x′ = +15 (year 2000): 1.5012 + 0.1852 = 1.687 ppm/year → **16.9 ppm per decade**. The same curve says CO₂ was already accelerating over this window, from about 13 to about 17 ppm per decade.
+<p style="text-align:center">CO₂ ≈ 415.2 + 2.52·x′ + 0.0265·x′² (x′ = year − 2020.5)</p>
 
-Now the last ten years:
+The rate of change at x′ = −4.5 (2016) is **2.3 ppm per year**; at x′ = +4.5 (2025) it's **2.8 ppm per year**.
 
-| Year | ppm | Year | ppm | Year | ppm | Year | ppm | Year | ppm |
-| ---: | --: | ---: | --: | ---: | --: | ---: | --: | ---: | --: |
-| 2016 | 404 | 2018 | 409 | 2020 | 414 | 2022 | 419 | 2024 | 425 |
-| 2017 | 407 | 2019 | 412 | 2021 | 416 | 2023 | 421 | 2025 | 427 |
+Put the two curvature terms side by side, rather than the tangent values, and something worth noticing shows up: β₂ ≈ 0.0530 for the 1960s against β₂ ≈ 0.0265 for 2016-2025 - almost exactly half. That's a real difference, but nowhere near as extreme as the near-tripling in the straight-line slopes above (0.8 ppm per year against 2.5 ppm per year). Measured in the term that actually describes a parabola's shape - its curvature, not its height - these two decades, fifty-six years apart, look far more alike than the linear numbers alone would suggest: both are a gentle upward bow, both accelerating within the very decade being measured, just carried on top of a much higher base rate now than then.
 
-Same method, mean year 2020.5, gives Σx′² = 82.5, Σx′⁴ = 1,208.625, Σy = 4,154, Σx′y = 208, Σx′²y = 34,284.5. The linear term is again immediate: β₁ = 208 ÷ 82.5 ≈ **2.5212** ppm/year. The remaining pair, 10β₀ + 82.5β₂ = 4,154 and 82.5β₀ + 1,208.625β₂ = 34,284.5, solves to β₂ ≈ **0.026515** and β₀ ≈ **415.18** (R² = 0.997 again). The rate of change at the start of this window (2016, x′ = −4.5) is 2.283 ppm/year → **22.8 ppm per decade**; at the end (2025, x′ = +4.5) it's 2.760 ppm/year → **27.6 ppm per decade**.
-
-Put the two fits side by side and the acceleration is stark: the curve fitted to 1970-2000 says the "current rate" as of 2000 was about **17 ppm per decade**. The curve fitted to the last ten years says the current rate as of 2025 is about **28 ppm per decade** - well over half as fast again, in the space of a single generation. (This is a simplified illustration to show the method by hand; the live chart's own "Last 30 years" trend, described next, is fitted to a longer and more recent window than either of these two toy examples.)
+That consistency is the physical case for a quadratic here, not just a statistical one. Atmospheric CO₂ accumulates from cumulative fossil fuel and cement emissions, and those emissions have themselves grown over time, roughly tracking a growing global economy - so the amount added to the atmosphere in a given year isn't just large, it's larger than the amount added the year before, by a growing margin. That's second-derivative behaviour: a rate of change that is itself changing over time. A straight line has no way to represent that at all; a quadratic term is the simplest curve that can. (This is a simplified illustration to show the method by hand; the live chart's own "Last 30 years" trend, described next, is fitted to a longer window than either of these two toy examples.)
 
 ## The CO₂ preset, and a real discrepancy
 
@@ -108,4 +132,4 @@ None of that means either curve is "right" and the other "wrong" - it means a st
 
 The regression tool in ClimateExplorer supports one degree beyond quadratic - a cubic fit, Y = β₀ + β₁X + β₂X² + β₃X³, which can bend one way and then the other. It's a real shape some records have, and it's available if you want it. It's also the most flexible of the three shapes on offer, and flexible curves fit noise readily - with four parameters to estimate instead of three, a cubic needs a longer, cleaner record before its extra bend is describing something real rather than the particular years it happened to be fitted to. We don't use it in either built-in preset, and we'd suggest reaching for it deliberately rather than by default: treat a barely-significant cubic fit with more scepticism than a barely-significant line or curve.
 
-If you want to poke at any of this yourself, every trend on a chart or in Recent Observations carries a tooltip with the underlying statistics - p-value, R², sample size - and the "About trends" panel has the full worked-through maths, including the example above.
+If you want to poke at any of this yourself, every trend on a chart or in Recent Observations carries a tooltip with the underlying statistics - p-value, R², sample size - and the "About trends" panel has the same worked-through maths, using its own shorter illustrative example.
