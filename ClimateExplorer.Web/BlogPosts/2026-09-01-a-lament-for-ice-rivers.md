@@ -43,3 +43,5 @@ About 99% of the planet's glaciers sit in the Antarctic and Greenland ice sheets
 On 26 August 2026, a slab of ice and rock roughly 0.2 km² broke away from Langtang Lirung, high above Nepal's Rasuwa district, and fell over a kilometre into the valley below. The impact triggered a cascading landslide, river-blockage, and flood down the Trishuli River, wiping out the Gyirong border checkpoint and settlements along more than 70 kilometres of the valley on both the Nepali and Chinese sides. As of this writing, [more than 1000 people are confirmed dead in Nepal alone](https://en.wikipedia.org/wiki/2026_Nepal_floods), with thousands more missing.
 
 Until these glaciers melt away, events like this will occur again. When they're gone, earthquakes will happen for centuries as the land rises after the weight is lifted. The lives of the people who live near glaciers will change fundamentally as their climate changes.
+
+![Glacier: 1928, 2002, 2024]({{site.url}}/blog/assets/glacier_1928-2024.jpeg)
