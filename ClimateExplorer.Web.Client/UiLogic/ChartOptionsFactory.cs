@@ -178,9 +178,10 @@ public static class ChartOptionsFactory
                 },
                 Tooltip = new
                 {
+                    // There are custom tooltips in App.razor
+                    Enabled = false,
                     Mode = request.IsMobileDevice ? "nearest" : "index",
                     Intersect = false,
-                    BoxPadding = 4,
                 },
                 Legend = new
                 {
