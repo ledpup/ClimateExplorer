@@ -3,6 +3,7 @@ namespace ClimateExplorer.UnitTests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
@@ -130,6 +131,14 @@ public class ChartSeriesListSerializerTrendTests
         Assert.AreEqual(TrendWindow.Full, parsed.Trends[0].TrendPeriod);
         Assert.AreEqual(TrendWindow.Last30, parsed.Trends[1].TrendPeriod);
         Assert.AreEqual(TrendWindow.RecentDecade, parsed.Trends[2].TrendPeriod);
+    }
+
+    [TestMethod]
+    public void ParseChartSeriesDefinitionList_ResolvesHemisphereFromTheLocationsLatitude()
+    {
+        var parsed = RoundTrip(CreateChartSeries());
+
+        Assert.AreEqual(MeteorologicalHemisphere.Northern, parsed.Hemisphere);
     }
 
     private static ChartSeriesDefinition RoundTrip(ChartSeriesDefinition series)

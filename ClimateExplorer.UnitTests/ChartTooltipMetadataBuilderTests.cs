@@ -3,6 +3,7 @@ namespace ClimateExplorer.UnitTests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
@@ -149,6 +150,30 @@ public class ChartTooltipMetadataBuilderTests
         // Must stay in sync with ChartView.GetChartLabel, which uses the same override for the chart legend.
         Assert.AreEqual("Last day of frost", result[0].Label);
         Assert.AreEqual("First day of frost", result[1].Label);
+    }
+
+    [TestMethod]
+    public void Build_DayOfYearIfFrostTransformation_NorthernHemisphereSwapsFirstAndLast()
+    {
+        // The Northern Hemisphere's frost season straddles the calendar year boundary, so within one
+        // year-bin the smallest (Minimum) day-of-year value is actually that winter's last (spring)
+        // frost, and the largest (Maximum) is the next winter's first (autumn) frost - the reverse of
+        // the Southern Hemisphere. See ChartSeriesDefinition.Hemisphere.
+        var maxSeries = CreateSeriesWithData(BinGranularities.ByYear, YearRange(1950, 2019));
+        maxSeries.ChartSeries.SeriesTransformation = SeriesTransformations.DayOfYearIfFrost;
+        maxSeries.ChartSeries.Aggregation = SeriesAggregationOptions.Maximum;
+        maxSeries.ChartSeries.SourceSeriesSpecifications![0].Hemisphere = MeteorologicalHemisphere.Northern;
+
+        var minSeries = CreateSeriesWithData(BinGranularities.ByYear, YearRange(1950, 2019));
+        minSeries.ChartSeries.SeriesTransformation = SeriesTransformations.DayOfYearIfFrost;
+        minSeries.ChartSeries.Aggregation = SeriesAggregationOptions.Minimum;
+        minSeries.ChartSeries.SourceSeriesSpecifications![0].Hemisphere = MeteorologicalHemisphere.Northern;
+
+        var result = ChartTooltipMetadataBuilder.Build([maxSeries, minSeries]);
+
+        Assert.HasCount(2, result);
+        Assert.AreEqual("First day of frost", result[0].Label);
+        Assert.AreEqual("Last day of frost", result[1].Label);
     }
 
     [TestMethod]
