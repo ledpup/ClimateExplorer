@@ -201,14 +201,32 @@
             }
         }
 
-        function getOrCreateChartTooltip(wrapperElement) {
-            let tooltipElement = wrapperElement.querySelector(".chart-external-tooltip");
+        function getOrCreateFloatingTooltip(wrapperElement, className) {
+            let tooltipElement = wrapperElement.querySelector("." + className);
             if (tooltipElement) return tooltipElement;
 
             tooltipElement = document.createElement("div");
-            tooltipElement.className = "chart-external-tooltip";
+            tooltipElement.className = className;
             wrapperElement.appendChild(tooltipElement);
             return tooltipElement;
+        }
+
+        function hideFloatingTooltip(tooltipElement) {
+            tooltipElement.style.opacity = 0;
+        }
+
+        function showFloatingTooltip(tooltipElement, html, x, y, containerWidth) {
+            tooltipElement.innerHTML = html;
+            tooltipElement.style.opacity = 1;
+
+            const horizontalPadding = 8;
+            const tooltipHalfWidth = tooltipElement.offsetWidth / 2;
+            const minLeft = tooltipHalfWidth + horizontalPadding;
+            const maxLeft = containerWidth - tooltipHalfWidth - horizontalPadding;
+            const clampedLeft = Math.max(minLeft, Math.min(x, maxLeft));
+
+            tooltipElement.style.left = `${clampedLeft}px`;
+            tooltipElement.style.top = `${Math.max(y, 0)}px`;
         }
 
         // Number of decimal places to use when a series has no rounding info from .NET (shouldn't
@@ -297,8 +315,8 @@
             const chartInstance = Chart.getChart(canvas);
             if (!chartInstance) return;
 
-            const tooltipElement = getOrCreateChartTooltip(wrapperElement);
-            tooltipElement.style.opacity = 0;
+            const tooltipElement = getOrCreateFloatingTooltip(wrapperElement, "chart-external-tooltip");
+            hideFloatingTooltip(tooltipElement);
 
             chartInstance.options.plugins ??= {};
             chartInstance.options.plugins.tooltip ??= {};
@@ -307,21 +325,11 @@
                 const tooltip = context.tooltip;
 
                 if (!tooltip || tooltip.opacity === 0) {
-                    tooltipElement.style.opacity = 0;
+                    hideFloatingTooltip(tooltipElement);
                     return;
                 }
 
-                tooltipElement.innerHTML = buildTooltipHtml(tooltip, seriesInfo);
-                tooltipElement.style.opacity = 1;
-
-                const horizontalPadding = 8;
-                const tooltipHalfWidth = tooltipElement.offsetWidth / 2;
-                const minLeft = tooltipHalfWidth + horizontalPadding;
-                const maxLeft = wrapperElement.clientWidth - tooltipHalfWidth - horizontalPadding;
-                const clampedLeft = Math.max(minLeft, Math.min(tooltip.caretX, maxLeft));
-
-                tooltipElement.style.left = `${clampedLeft}px`;
-                tooltipElement.style.top = `${tooltip.caretY}px`;
+                showFloatingTooltip(tooltipElement, buildTooltipHtml(tooltip, seriesInfo), tooltip.caretX, tooltip.caretY, wrapperElement.clientWidth);
             };
         }
 
@@ -345,12 +353,52 @@
                 canvas.style.cursor = 'default';
                 const tooltipElement = wrapperElement.querySelector('.chart-external-tooltip');
                 if (tooltipElement) {
-                    tooltipElement.style.opacity = 0;
+                    hideFloatingTooltip(tooltipElement);
                 }
             };
 
             canvas.addEventListener('mousemove', canvas._chartHoverHandler);
             canvas.addEventListener('mouseleave', canvas._chartLeaveHandler);
+        }
+
+        function buildTop100TooltipHtml(info) {
+            const title = `<div class="top100-tooltip-title">${info.year}&nbsp;&nbsp;&nbsp;${info.count} record${info.count === 1 ? "" : "s"}</div>`;
+            const rows = (info.lines ?? [])
+                .map(line => `<tr><td class="top100-tooltip-date">${line.date}</td><td class="top100-tooltip-value">${line.value}</td></tr>`)
+                .join("");
+            const table = `<table class="top100-tooltip-table">${rows}</table>`;
+            return `${title}${table}`;
+        }
+
+        function configureTop100Tooltip(svgElement, tooltipData) {
+            const wrapperElement = svgElement.parentElement;
+            if (!wrapperElement) return;
+
+            const tooltipElement = getOrCreateFloatingTooltip(wrapperElement, "top100-tooltip");
+
+            if (svgElement._top100MoveHandler) {
+                svgElement.removeEventListener("mousemove", svgElement._top100MoveHandler);
+                svgElement.removeEventListener("mouseleave", svgElement._top100LeaveHandler);
+            }
+
+            svgElement._top100MoveHandler = function (event) {
+                const target = event.target.closest && event.target.closest("[data-year]");
+                const info = target ? tooltipData[target.getAttribute("data-year")] : null;
+
+                if (!info) {
+                    hideFloatingTooltip(tooltipElement);
+                    return;
+                }
+
+                showFloatingTooltip(tooltipElement, buildTop100TooltipHtml(info), event.clientX, event.clientY, window.innerWidth);
+            };
+
+            svgElement._top100LeaveHandler = function () {
+                hideFloatingTooltip(tooltipElement);
+            };
+
+            svgElement.addEventListener("mousemove", svgElement._top100MoveHandler);
+            svgElement.addEventListener("mouseleave", svgElement._top100LeaveHandler);
         }
 
         function setMapExpansion(isExpanded) {
