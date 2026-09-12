@@ -353,6 +353,72 @@
             canvas.addEventListener('mouseleave', canvas._chartLeaveHandler);
         }
 
+        function getOrCreateTop100Tooltip(wrapperElement) {
+            let tooltipElement = wrapperElement.querySelector(".top100-tooltip");
+            if (tooltipElement) return tooltipElement;
+
+            tooltipElement = document.createElement("div");
+            tooltipElement.className = "top100-tooltip";
+            wrapperElement.appendChild(tooltipElement);
+            return tooltipElement;
+        }
+
+        function buildTop100TooltipHtml(info) {
+            const title = `<div class="top100-tooltip-title">${info.year}&nbsp;&nbsp;&nbsp;${info.count} record${info.count === 1 ? "" : "s"}</div>`;
+            const rows = (info.lines ?? [])
+                .map(line => `<tr><td class="top100-tooltip-date">${line.date}</td><td class="top100-tooltip-value">${line.value}</td></tr>`)
+                .join("");
+            const table = `<table class="top100-tooltip-table">${rows}</table>`;
+            return `${title}${table}`;
+        }
+
+        // Wires up hover for the Top 100 barcode chart's per-year invisible hit-target rects
+        // (data-year attribute, see Top100Model.Generate) to a floating tooltip. tooltipData is a
+        // dictionary keyed by year (as a string) of { year, count, lines } built in Top100.razor.cs.
+        function configureTop100Tooltip(svgElement, tooltipData) {
+            const wrapperElement = svgElement.parentElement;
+            if (!wrapperElement) return;
+
+            const tooltipElement = getOrCreateTop100Tooltip(wrapperElement);
+
+            if (svgElement._top100MoveHandler) {
+                svgElement.removeEventListener("mousemove", svgElement._top100MoveHandler);
+                svgElement.removeEventListener("mouseleave", svgElement._top100LeaveHandler);
+            }
+
+            svgElement._top100MoveHandler = function (event) {
+                const target = event.target.closest && event.target.closest("[data-year]");
+                const info = target ? tooltipData[target.getAttribute("data-year")] : null;
+
+                if (!info) {
+                    tooltipElement.style.opacity = 0;
+                    return;
+                }
+
+                tooltipElement.innerHTML = buildTop100TooltipHtml(info);
+                tooltipElement.style.opacity = 1;
+
+                // The tooltip is `position: fixed` (see CSS) specifically so it isn't clipped by
+                // the chart container's own overflow (needed for the mobile horizontal-scroll
+                // affordance) - so these are viewport coordinates, not container-relative ones.
+                const horizontalPadding = 8;
+                const tooltipHalfWidth = tooltipElement.offsetWidth / 2;
+                const minLeft = tooltipHalfWidth + horizontalPadding;
+                const maxLeft = window.innerWidth - tooltipHalfWidth - horizontalPadding;
+                const clampedLeft = Math.max(minLeft, Math.min(event.clientX, maxLeft));
+
+                tooltipElement.style.left = `${clampedLeft}px`;
+                tooltipElement.style.top = `${Math.max(event.clientY, 0)}px`;
+            };
+
+            svgElement._top100LeaveHandler = function () {
+                tooltipElement.style.opacity = 0;
+            };
+
+            svgElement.addEventListener("mousemove", svgElement._top100MoveHandler);
+            svgElement.addEventListener("mouseleave", svgElement._top100LeaveHandler);
+        }
+
         function setMapExpansion(isExpanded) {
             var mapElement = document.getElementById("mapContainer");
 
