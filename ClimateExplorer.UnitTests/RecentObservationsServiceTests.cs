@@ -1582,10 +1582,10 @@ public class RecentObservationsServiceTests
         var selection = new RecentObservationPeriodSelection();
 
         Assert.IsFalse(tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.Season && x.PeriodOffset == 0));
-        Assert.AreEqual("Add Yesterday", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Daily, tiles, "day"));
-        Assert.AreEqual("Add May 2026", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Month, tiles, "month"));
-        Assert.AreEqual("Add Autumn 2026", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Season, tiles, "season"));
-        Assert.AreEqual("Add 2025", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Year, tiles, "year"));
+        Assert.AreEqual("Yesterday", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Daily, tiles, "day"));
+        Assert.AreEqual("May 2026", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Month, tiles, "month"));
+        Assert.AreEqual("Autumn 2026", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Season, tiles, "season"));
+        Assert.AreEqual("2025", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Year, tiles, "year"));
     }
 
     [TestMethod]
@@ -1596,11 +1596,11 @@ public class RecentObservationsServiceTests
         var selection = new RecentObservationPeriodSelection();
         var yearOffsets = GetAvailableOffsets(tiles, RecentObservationPeriodKind.Year);
 
-        Assert.AreEqual("Add 2025", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Year, tiles, "year"));
+        Assert.AreEqual("2025", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Year, tiles, "year"));
 
         selection.AddEarlierYear(yearOffsets);
 
-        Assert.AreEqual("Add 2024", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Year, tiles, "year"));
+        Assert.AreEqual("2024", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Year, tiles, "year"));
     }
 
     [TestMethod]
@@ -1612,15 +1612,15 @@ public class RecentObservationsServiceTests
         var seasonOffsets = GetAvailableOffsets(tiles, RecentObservationPeriodKind.Season);
 
         Assert.IsFalse(tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.Season && x.PeriodOffset == 0));
-        Assert.AreEqual("Add Autumn 2026", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Season, tiles, "season"));
+        Assert.AreEqual("Autumn 2026", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Season, tiles, "season"));
 
         selection.AddEarlierSeason(seasonOffsets);
 
-        Assert.AreEqual("Add Summer 2025-26", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Season, tiles, "season"));
+        Assert.AreEqual("Summer 2025-26", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Season, tiles, "season"));
 
         selection.AddEarlierSeason(seasonOffsets);
 
-        Assert.AreEqual("Add Spring 2025", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Season, tiles, "season"));
+        Assert.AreEqual("Spring 2025", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Season, tiles, "season"));
     }
 
     [TestMethod]
@@ -1636,7 +1636,7 @@ public class RecentObservationsServiceTests
             selection.AddEarlierMonth(monthOffsets);
         }
 
-        Assert.AreEqual("Add December 2025", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Month, tiles, "month"));
+        Assert.AreEqual("December 2025", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Month, tiles, "month"));
     }
 
     [TestMethod]
@@ -1647,15 +1647,15 @@ public class RecentObservationsServiceTests
         var selection = new RecentObservationPeriodSelection();
         var seasonOffsets = GetAvailableOffsets(tiles, RecentObservationPeriodKind.Season);
 
-        Assert.AreEqual("Add Autumn 2026", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Season, tiles, "season"));
+        Assert.AreEqual("Autumn 2026", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Season, tiles, "season"));
 
         selection.AddEarlierSeason(seasonOffsets);
 
-        Assert.AreEqual("Add Summer 2025-26", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Season, tiles, "season"));
+        Assert.AreEqual("Summer 2025-26", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Season, tiles, "season"));
 
         selection.AddEarlierSeason(seasonOffsets);
 
-        Assert.AreEqual("Add Spring 2025", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Season, tiles, "season"));
+        Assert.AreEqual("Spring 2025", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Season, tiles, "season"));
     }
 
     [TestMethod]
@@ -1669,15 +1669,15 @@ public class RecentObservationsServiceTests
         selection.AddEarlierDay(dayOffsets);
         selection.AddEarlierDay(dayOffsets);
 
-        Assert.AreEqual("Add 11 June", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Daily, tiles, "day"));
+        Assert.AreEqual("11 June", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Daily, tiles, "day"));
 
         selection.Remove(GetTile(tiles, RecentObservationPeriodKind.Daily, 3));
 
-        Assert.AreEqual("Add 12 June", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Daily, tiles, "day"));
+        Assert.AreEqual("12 June", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Daily, tiles, "day"));
 
         selection.AddEarlierDay(dayOffsets);
 
-        Assert.AreEqual("Add 11 June", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Daily, tiles, "day"));
+        Assert.AreEqual("11 June", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Daily, tiles, "day"));
     }
 
     [TestMethod]
