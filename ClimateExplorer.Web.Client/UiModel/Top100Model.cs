@@ -65,6 +65,18 @@
                 svg.AppendLine($@"  <rect x=""{x - (barWidth / 2):F2}"" y=""{yTop:F2}"" width=""{barWidth:F2}"" height=""{barHeight}"" fill=""#000""/>");
             }
 
+            // Invisible per-year hover targets for the tooltip. These tessellate exactly across the
+            // full plot width (one year's-worth of pixels each) so even a single-record year, whose
+            // visible bar may be only a pixel or two wide, is easy to hover.
+            foreach (var yc in yearCounts.OrderBy(t => t.Year))
+            {
+                var x = ToX(yc.Year);
+                var hitLeft = Math.Max(paddingLeft, x - (pixelsPerYear / 2));
+                var hitRight = Math.Min(ChartWidth - paddingRight, x + (pixelsPerYear / 2));
+
+                svg.AppendLine($@"  <rect x=""{hitLeft:F2}"" y=""0"" width=""{hitRight - hitLeft:F2}"" height=""{xAxisY}"" fill=""transparent"" data-year=""{yc.Year}""/>");
+            }
+
             return svg.ToString();
         }
 

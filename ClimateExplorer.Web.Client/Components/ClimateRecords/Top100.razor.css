@@ -3,10 +3,58 @@
 }
 
 .top100-svg-container {
+    position: relative;
     overflow-x: auto;
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
     background-color: #ffffff;
+}
+
+::deep .top100-svg rect[data-year] {
+    cursor: pointer;
+}
+
+::deep .top100-tooltip {
+    /* Fixed (viewport-relative), not absolute, so the tooltip can render outside the bounds of
+       the chart's own scroll container instead of being clipped by its overflow. */
+    position: fixed;
+    left: 0;
+    top: 0;
+    transform: translate(-50%, calc(-100% - 12px));
+    background: #fff;
+    color: #000;
+    border-radius: 8px;
+    box-shadow: rgb(0 0 0 / 15%) 1px 1px 12px;
+    padding: 8px 12px;
+    pointer-events: none;
+    opacity: 0;
+    z-index: 10;
+    white-space: nowrap;
+    font-size: small;
+}
+
+::deep .top100-tooltip-title {
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+::deep .top100-tooltip-table {
+    border-collapse: collapse;
+    color: #333;
+}
+
+::deep .top100-tooltip-table td {
+    padding: 1px 0;
+}
+
+::deep .top100-tooltip-table td.top100-tooltip-date {
+    text-align: left;
+    padding-right: 14px;
+}
+
+::deep .top100-tooltip-table td.top100-tooltip-value {
+    text-align: right;
+    font-weight: 600;
 }
 
 .top100-svg {

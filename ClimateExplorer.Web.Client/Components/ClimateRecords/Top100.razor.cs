@@ -36,10 +36,13 @@ public partial class Top100
 
     private int TopCount { get; set; } = 100;
     private List<Top100Model.RecordCount> YearCounts { get; set; } = [];
+    private List<DataRecord> Records { get; set; } = [];
+    private UnitOfMeasure? Unit { get; set; }
     private int StartYear { get; set; }
     private int EndYear { get; set; }
     private bool IsLoading { get; set; }
     private Guid? InternalLocationId { get; set; }
+    private List<Top100Model.RecordCount>? TooltipConfiguredFor { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -49,6 +52,15 @@ public partial class Top100
         }
 
         await LoadData();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (YearCounts.Count > 0 && !ReferenceEquals(YearCounts, TooltipConfiguredFor))
+        {
+            TooltipConfiguredFor = YearCounts;
+            await JsRuntime.InvokeVoidAsync("configureTop100Tooltip", svgRef, BuildTooltipData());
+        }
     }
 
     private async Task LoadData()
@@ -69,10 +81,14 @@ public partial class Top100
             if (top100!.Records.Count < 100)
             {
                 YearCounts = [];
+                Records = [];
+                Unit = null;
             }
             else
             {
                 YearCounts = Top100Model.BuildYearCounts(top100.Records);
+                Records = top100.Records;
+                Unit = top100.UnitOfMeasure;
                 StartYear = top100.StartYear!.Value;
                 EndYear = top100.EndYear!.Value;
             }
@@ -118,4 +134,30 @@ public partial class Top100
         var fileName = BuildTitle().Replace(" ", "-").Replace("/", "-").ToLowerInvariant() + ".svg";
         await JsRuntime.InvokeVoidAsync("svgToSvgDownload", svgRef, fileName);
     }
+
+    private Dictionary<string, TooltipYearInfo> BuildTooltipData()
+    {
+        return Records
+            .GroupBy(r => r.Year)
+            .ToDictionary(
+                g => g.Key.ToString(CultureInfo.InvariantCulture),
+                g => new TooltipYearInfo(g.Key, g.Count(), [.. g.Select(FormatRecordLine)]));
+    }
+
+    private TooltipLine FormatRecordLine(DataRecord record)
+    {
+        var dateLabel = record.Day.HasValue && record.Month.HasValue
+            ? $"{record.Day} {CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(record.Month.Value)}"
+            : "?";
+
+        var valueLabel = record.Value.HasValue && Unit.HasValue
+            ? record.Value.Value.ToString("F" + UnitOfMeasureRounding(Unit.Value), CultureInfo.InvariantCulture) + UnitOfMeasureLabelShort(Unit.Value)
+            : "?";
+
+        return new TooltipLine(dateLabel, valueLabel);
+    }
+
+    private sealed record TooltipYearInfo(int Year, int Count, List<TooltipLine> Lines);
+
+    private sealed record TooltipLine(string Date, string Value);
 }
