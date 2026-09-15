@@ -3,10 +3,11 @@ namespace ClimateExplorer.Data.Downloading.Downloaders;
 using System.IO.Compression;
 using System.Text.RegularExpressions;
 
-public sealed partial class BomDailyDataClient(HttpClient httpClient)
+public sealed partial class BomDailyDataClient(HttpClient httpClient, TimeSpan requestPacing = default)
 {
     private const int MaximumDownloadBytes = 100 * 1024 * 1024;
     private readonly HttpClient httpClient = httpClient;
+    private readonly TimeSpan requestPacing = requestPacing;
 
     public async Task<string> DownloadCsvAsync(
         string stationId,
@@ -21,6 +22,11 @@ public sealed partial class BomDailyDataClient(HttpClient httpClient)
         if (!match.Success)
         {
             throw new InvalidDataException($"BOM did not return a download token for station '{stationId}' and observation code '{(int)observationCode}'.");
+        }
+
+        if (requestPacing > TimeSpan.Zero)
+        {
+            await Task.Delay(requestPacing, cancellationToken);
         }
 
         var zipFileUrl = $"http://www.bom.gov.au/jsp/ncc/cdio/weatherData/av?p_display_type=dailyZippedDataFile&p_stn_num={stationId}&p_nccObsCode={(int)observationCode}&p_c={match.Groups["p_c"].Value}";

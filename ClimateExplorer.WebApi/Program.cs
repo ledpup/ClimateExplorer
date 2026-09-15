@@ -92,7 +92,11 @@ builder.Services.AddSingleton<IDataSetDownloader, DirectHttpDataSetDownloader>()
 builder.Services.AddSingleton<IDataSetDownloader>(
     new GhcndDataSetDownloader(GhcndHttpClientFactory.CreateHttpClient()));
 builder.Services.AddSingleton<IDataSetDownloader>(
-    new BomDataSetDownloader(new BomDailyDataClient(BomHttpClientFactory.CreateBomHttpClient())));
+    new BomDataSetDownloader(
+        new BomDailyDataClient(
+            BomHttpClientFactory.CreateBomHttpClient(),
+            requestPacing: TimeSpan.FromSeconds(1)),
+        requestPacing: TimeSpan.FromSeconds(1)));
 builder.Services.AddSingleton<DataSetSourceUpdateCoordinator>();
 builder.Services.AddSingleton<IDataSetSourceUpdateCoordinator>(
     services => services.GetRequiredService<DataSetSourceUpdateCoordinator>());
