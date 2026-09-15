@@ -3,6 +3,7 @@
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using ClimateExplorer.Core;
+using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.Client.UiModel.Trends;
@@ -73,6 +74,20 @@ public class ChartSeriesDefinition
     public bool IsExpanded { get; set; }
     public bool DataAvailable { get; internal set; } = true;
     public DataResolution? MinimumDataResolution { get; set; }
+
+    /// <summary>
+    /// The first source location's meteorological hemisphere, derived from <see cref="SourceSeriesSpecification.Hemisphere"/>
+    /// (itself resolved from the location's latitude wherever a <see cref="Location"/> is looked up,
+    /// same as <see cref="SourceSeriesSpecification.LocationName"/> - never stored redundantly here or
+    /// in the URL). Null for series with no single real location (e.g. a region-based "global" series).
+    /// Currently only consulted by <see cref="GetTransformationOverrideLabel"/> to orient
+    /// DayOfYearIfFrost's "first"/"last day of frost" labels - the Northern Hemisphere's frost season
+    /// straddles the calendar year boundary, so within one year-bin the smallest day-of-year value is
+    /// actually that winter's last (spring) frost, and the largest is the next winter's first (autumn)
+    /// frost - the reverse of the Southern Hemisphere, where frost season sits mid-year and doesn't
+    /// straddle the boundary.
+    /// </summary>
+    public MeteorologicalHemisphere? Hemisphere => SourceSeriesSpecifications?.FirstOrDefault()?.Hemisphere;
 
     /// <summary>
     /// True when every source series behind this definition comes from a region (e.g. atmosphere,
@@ -228,7 +243,7 @@ public class ChartSeriesDefinition
     {
         return SeriesTransformation switch
         {
-            SeriesTransformations.DayOfYearIfFrost => Aggregation == SeriesAggregationOptions.Maximum ? "Last day of frost" : "First day of frost",
+            SeriesTransformations.DayOfYearIfFrost => GetDayOfYearIfFrostLabel(Aggregation, Hemisphere),
             SeriesTransformations.Custom => GetFriendlyCustomTransformationLabel(CustomTransformation ?? "Custom transformation"),
             _ => null,
         };

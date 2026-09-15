@@ -1,6 +1,7 @@
 namespace ClimateExplorer.Web.Client.Services.Chart;
 
 using ClimateExplorer.Core;
+using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
@@ -54,6 +55,7 @@ public sealed class ChartSeriesLocationSubstitutionService : IChartSeriesLocatio
 
         sss.LocationId = location.Id;
         sss.LocationName = location.Name;
+        sss.Hemisphere = MeteorologicalSeasonCalculator.GetHemisphere(location.Coordinates.Latitude);
 
         var dataMatches = new List<DataSubstitute>
         {
@@ -178,6 +180,7 @@ public sealed class ChartSeriesLocationSubstitutionService : IChartSeriesLocatio
                         LocationId = location.Id,
                         LocationName = location.Name,
                         MeasurementDefinition = newMd,
+                        Hemisphere = MeteorologicalSeasonCalculator.GetHemisphere(location.Coordinates.Latitude),
                     },
                 ],
                 Aggregation = csd.Aggregation,

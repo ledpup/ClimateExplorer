@@ -1,5 +1,6 @@
 ﻿namespace ClimateExplorer.Web.UiLogic;
 
+using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
@@ -278,6 +279,7 @@ public static class ChartSeriesListSerializer
                 MeasurementDefinition = md,
                 LocationId = geographicalEntity!.Id,
                 LocationName = geographicalEntity.Name,
+                Hemisphere = (geographicalEntity as Location)?.Coordinates.Latitude is { } latitude ? MeteorologicalSeasonCalculator.GetHemisphere(latitude) : null,
             };
     }
 

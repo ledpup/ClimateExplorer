@@ -53,8 +53,10 @@
 
     <h3>A small worked example</h3>
     <p>
-        Say a station has three years of data: 2001 at 14.00°C,
-        2002 at 14.05°C, 2003 at 14.10°C. The average year is 2002 and the average temperature is 14.05°C.
+        Say a station has five years of data. The average year is 2003 and the average temperature is
+        14.09°C. Real records rarely rise by exactly the same amount every year - here 2003 sits a
+        little above where a perfectly steady rise would put it, and 2004 sits a little below - but
+        the regression still finds the one straight line that best fits all five points at once.
     </p>
 
     <table class="trends-slope-example">
@@ -69,16 +71,18 @@
             </tr>
         </thead>
         <tbody>
-            <tr><td>2001</td><td>14.00</td><td>−1</td><td>−0.05</td><td>0.05</td><td>1</td></tr>
-            <tr><td>2002</td><td>14.05</td><td>0</td><td>0.00</td><td>0.00</td><td>0</td></tr>
-            <tr><td>2003</td><td>14.10</td><td>1</td><td>0.05</td><td>0.05</td><td>1</td></tr>
-            <tr class="trends-slope-example-sum"><td colspan="4">Sum</td><td>0.10</td><td>2</td></tr>
+            <tr><td>2001</td><td>14.00</td><td>−2</td><td>−0.09</td><td>0.18</td><td>4</td></tr>
+            <tr><td>2002</td><td>14.04</td><td>−1</td><td>−0.05</td><td>0.05</td><td>1</td></tr>
+            <tr><td>2003</td><td>14.12</td><td>0</td><td>0.03</td><td>0.00</td><td>0</td></tr>
+            <tr><td>2004</td><td>14.09</td><td>1</td><td>0.00</td><td>0.00</td><td>1</td></tr>
+            <tr><td>2005</td><td>14.20</td><td>2</td><td>0.11</td><td>0.22</td><td>4</td></tr>
+            <tr class="trends-slope-example-sum"><td colspan="4">Sum</td><td>0.45</td><td>10</td></tr>
         </tbody>
     </table>
 
     <p>
-        The slope is the sum on top divided by the sum on the bottom: 0.10 ÷ 2 = 0.05°C per year - the
-        +0.5°C per decade the tile would display, once that per-year figure is multiplied by ten as
+        The slope is the sum on top divided by the sum on the bottom: 0.45 ÷ 10 = 0.045°C per year - the
+        +0.45°C per decade the tile would display, once that per-year figure is multiplied by ten as
         described next.
     </p>
 

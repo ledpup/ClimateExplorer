@@ -2,6 +2,7 @@ namespace ClimateExplorer.Web.Client.Pages;
 
 using Blazorise;
 using ClimateExplorer.Core;
+using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
@@ -464,12 +465,17 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
         var dsd = dataSetDefinitions.Single(x => x.Id == sss.SourceDataSetId);
         var md = dsd.MeasurementDefinitions!.Single(x => x.DataType == sss.DataType && x.DataAdjustment == sss.DataAdjustment);
 
+        var hemisphere = LocationDictionary is not null && LocationDictionary.TryGetValue(sss.LocationId, out var location)
+            ? MeteorologicalSeasonCalculator.GetHemisphere(location.Coordinates.Latitude)
+            : (MeteorologicalHemisphere?)null;
+
         return new SourceSeriesSpecification
         {
             LocationId = sss.LocationId,
             LocationName = sss.LocationName!,
             DataSetDefinition = dsd,
             MeasurementDefinition = md,
+            Hemisphere = hemisphere,
         };
     }
 }

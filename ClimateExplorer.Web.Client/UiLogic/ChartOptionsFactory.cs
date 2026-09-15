@@ -120,7 +120,7 @@ public static class ChartOptionsFactory
                 var axisRange = globalMinMax.Max - globalMinMax.Min;
                 var axisPadding = !axisHasBarSeries.Contains(axisId) ? axisRange * 0.02 : 0.0;
                 var scaleToZero = request.AxesScaleToZero.TryGetValue(axisId, out var s2z) && s2z;
-                var label = UnitOfMeasureLabel(s.SeriesTransformation, s.CustomTransformation, uom, s.Aggregation, s.Value);
+                var label = UnitOfMeasureLabel(s.SeriesTransformation, s.CustomTransformation, uom, s.Aggregation, s.Value, s.Hemisphere);
                 currentAxes.Add(new AxisInfo(axisId, label));
                 ((IDictionary<string, object>)scales).Add(
                     axisId,

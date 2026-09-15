@@ -137,14 +137,17 @@ public partial class Top100
 
     private Dictionary<string, TooltipYearInfo> BuildTooltipData()
     {
+        // Records is already ordered by rank (highest/lowest value first, per Ascending), so the
+        // 1-based index into it is the record's position in the top 100.
         return Records
-            .GroupBy(r => r.Year)
+            .Select((record, index) => (record, position: index + 1))
+            .GroupBy(x => x.record.Year)
             .ToDictionary(
                 g => g.Key.ToString(CultureInfo.InvariantCulture),
-                g => new TooltipYearInfo(g.Key, g.Count(), [.. g.Select(FormatRecordLine)]));
+                g => new TooltipYearInfo(g.Key, g.Count(), [.. g.Select(x => FormatRecordLine(x.record, x.position))]));
     }
 
-    private TooltipLine FormatRecordLine(DataRecord record)
+    private TooltipLine FormatRecordLine(DataRecord record, int position)
     {
         var dateLabel = record.Day.HasValue && record.Month.HasValue
             ? $"{record.Day} {CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(record.Month.Value)}"
@@ -154,10 +157,10 @@ public partial class Top100
             ? record.Value.Value.ToString("F" + UnitOfMeasureRounding(Unit.Value), CultureInfo.InvariantCulture) + UnitOfMeasureLabelShort(Unit.Value)
             : "?";
 
-        return new TooltipLine(dateLabel, valueLabel);
+        return new TooltipLine(position, dateLabel, valueLabel);
     }
 
     private sealed record TooltipYearInfo(int Year, int Count, List<TooltipLine> Lines);
 
-    private sealed record TooltipLine(string Date, string Value);
+    private sealed record TooltipLine(int Position, string Date, string Value);
 }

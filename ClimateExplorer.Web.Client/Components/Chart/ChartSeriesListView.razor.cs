@@ -79,6 +79,7 @@ public partial class ChartSeriesListView
                             LocationId = x.LocationId,
                             LocationName = x.LocationName,
                             MeasurementDefinition = x.MeasurementDefinition,
+                            Hemisphere = x.Hemisphere,
                         })
                     .ToArray(),
                 Smoothing = csd.Smoothing,
