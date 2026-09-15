@@ -1,6 +1,6 @@
 ---
 layout: single
-title: "Projection of the future"
+title: "Future projections"
 date: 2026-09-09 09:00:00 +1000
 categories: site-info
 ---
