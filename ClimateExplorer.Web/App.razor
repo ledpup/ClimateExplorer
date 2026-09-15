@@ -269,11 +269,12 @@
                 colour: tooltip.labelColors?.[index] ?? { backgroundColor: "#425f59", borderColor: "#425f59" },
             }));
 
-            const hasAnomalyData = rows.some(x => x.info?.anomaly);
+            const isMobile = window.matchMedia("(max-width: 767px)").matches;
+            const hasAnomalyData = !isMobile && rows.some(x => x.info?.anomaly);
 
             if (!hasAnomalyData) {
-                // No series in this tooltip has anomaly period data (e.g. non-yearly chart) - keep the
-                // simple label/value rows.
+                // No series in this tooltip has anomaly period data (e.g. non-yearly chart), or the
+                // viewport is too narrow for the comparison table - keep the simple label/value rows.
                 const simpleRows = rows.map(({ point, info, colour }) => {
                     const label = info?.label ?? point.dataset.label;
                     const value = formatValue(point, info?.rounding);
@@ -364,7 +365,7 @@
         function buildTop100TooltipHtml(info) {
             const title = `<div class="top100-tooltip-title">${info.year}&nbsp;&nbsp;&nbsp;${info.count} record${info.count === 1 ? "" : "s"}</div>`;
             const rows = (info.lines ?? [])
-                .map(line => `<tr><td class="top100-tooltip-date">${line.date}</td><td class="top100-tooltip-value">${line.value}</td></tr>`)
+                .map(line => `<tr><td class="top100-tooltip-position">${line.position}</td><td class="top100-tooltip-date">${line.date}</td><td class="top100-tooltip-value">${line.value}</td></tr>`)
                 .join("");
             const table = `<table class="top100-tooltip-table">${rows}</table>`;
             return `${title}${table}`;

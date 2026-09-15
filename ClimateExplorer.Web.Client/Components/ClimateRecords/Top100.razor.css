@@ -47,6 +47,12 @@
     padding: 1px 0;
 }
 
+::deep .top100-tooltip-table td.top100-tooltip-position {
+    text-align: left;
+    color: #777;
+    padding-right: 10px;
+}
+
 ::deep .top100-tooltip-table td.top100-tooltip-date {
     text-align: left;
     padding-right: 14px;
