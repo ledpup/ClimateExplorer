@@ -140,7 +140,7 @@ static HttpClient CreateHttpClient()
     // mid-read rather than a clean cancellation, and fires long before the 5-minute per-attempt ceiling below
     // would otherwise decide a slow-but-alive download is worth retrying.
     var httpClient = new HttpClient { Timeout = Timeout.InfiniteTimeSpan };
-    var userAgent = "Mozilla /5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36";
+    var userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36";
     var acceptLanguage = "en-US,en;q=0.9,es;q=0.8";
     httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
     httpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd(acceptLanguage);
