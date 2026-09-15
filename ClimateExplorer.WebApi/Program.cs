@@ -95,7 +95,8 @@ builder.Services.AddSingleton<IDataSetDownloader>(
     new BomDataSetDownloader(
         new BomDailyDataClient(
             BomHttpClientFactory.CreateBomHttpClient(),
-            requestPacing: TimeSpan.FromSeconds(1)),
+            requestPacing: TimeSpan.FromSeconds(1),
+            tokenStore: new FileBomAvailableYearsTokenStore(Path.Combine(Path.GetTempPath(), "ClimateExplorer", "BomAvailableYearsTokens"))),
         requestPacing: TimeSpan.FromSeconds(1)));
 builder.Services.AddSingleton<DataSetSourceUpdateCoordinator>();
 builder.Services.AddSingleton<IDataSetSourceUpdateCoordinator>(

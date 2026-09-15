@@ -2,14 +2,59 @@ namespace ClimateExplorer.Data.Downloading.Downloaders;
 
 using System.IO.Compression;
 using System.Text.RegularExpressions;
+using ClimateExplorer.Data.Downloading.Storage;
 
-public sealed partial class BomDailyDataClient(HttpClient httpClient, TimeSpan requestPacing = default)
+public sealed partial class BomDailyDataClient(HttpClient httpClient, TimeSpan requestPacing = default, IBomAvailableYearsTokenStore? tokenStore = null)
 {
     private const int MaximumDownloadBytes = 100 * 1024 * 1024;
     private readonly HttpClient httpClient = httpClient;
     private readonly TimeSpan requestPacing = requestPacing;
+    private readonly IBomAvailableYearsTokenStore? tokenStore = tokenStore;
 
     public async Task<string> DownloadCsvAsync(
+        string stationId,
+        BomDailyObservationCode observationCode,
+        CancellationToken cancellationToken)
+    {
+        var cachedToken = tokenStore == null
+            ? null
+            : await tokenStore.GetAsync(stationId, observationCode, cancellationToken);
+
+        string token;
+        if (cachedToken != null)
+        {
+            token = cachedToken;
+        }
+        else
+        {
+            token = await FetchAvailableYearsTokenAsync(stationId, observationCode, cancellationToken);
+            if (tokenStore != null)
+            {
+                await tokenStore.PutAsync(stationId, observationCode, token, cancellationToken);
+            }
+
+            if (requestPacing > TimeSpan.Zero)
+            {
+                await Task.Delay(requestPacing, cancellationToken);
+            }
+        }
+
+        try
+        {
+            return await DownloadZipAsync(stationId, observationCode, token, cancellationToken);
+        }
+        catch (HttpRequestException) when (cachedToken != null && tokenStore != null)
+        {
+            // The cached token may be stale (BOM occasionally reprocesses which underlying file it maps to
+            // for a station/series). Clear it so the *next* refresh attempt fetches a fresh one instead of
+            // repeatedly failing with a dead token - deliberately not retried inline here, so a failure
+            // doesn't turn into an extra request against BOM on top of the one that just failed.
+            await tokenStore.DeleteAsync(stationId, observationCode, cancellationToken);
+            throw;
+        }
+    }
+
+    private async Task<string> FetchAvailableYearsTokenAsync(
         string stationId,
         BomDailyObservationCode observationCode,
         CancellationToken cancellationToken)
@@ -24,12 +69,16 @@ public sealed partial class BomDailyDataClient(HttpClient httpClient, TimeSpan r
             throw new InvalidDataException($"BOM did not return a download token for station '{stationId}' and observation code '{(int)observationCode}'.");
         }
 
-        if (requestPacing > TimeSpan.Zero)
-        {
-            await Task.Delay(requestPacing, cancellationToken);
-        }
+        return match.Groups["p_c"].Value;
+    }
 
-        var zipFileUrl = $"http://www.bom.gov.au/jsp/ncc/cdio/weatherData/av?p_display_type=dailyZippedDataFile&p_stn_num={stationId}&p_nccObsCode={(int)observationCode}&p_c={match.Groups["p_c"].Value}";
+    private async Task<string> DownloadZipAsync(
+        string stationId,
+        BomDailyObservationCode observationCode,
+        string token,
+        CancellationToken cancellationToken)
+    {
+        var zipFileUrl = $"http://www.bom.gov.au/jsp/ncc/cdio/weatherData/av?p_display_type=dailyZippedDataFile&p_stn_num={stationId}&p_nccObsCode={(int)observationCode}&p_c={token}";
         using var zipResponse = await httpClient.GetAsync(zipFileUrl, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
         zipResponse.EnsureSuccessStatusCode();
         if (zipResponse.Content.Headers.ContentLength > MaximumDownloadBytes)
