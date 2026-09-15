@@ -26,6 +26,7 @@ internal static class ClimateRecordsEndpoints
         int? month = null,
         bool monthly = false,
         int? day = null,
+        bool sortByDate = false,
         CancellationToken cancellationToken = default,
         [FromServices] AcornSatClimateRecordService? acornSatClimateRecordService = null)
     {
@@ -116,6 +117,16 @@ internal static class ClimateRecordsEndpoints
             _ => 0,
         };
 
+        // Chronological key (year, month, day) used only when the caller wants the most/least recent
+        // record rather than a value-ranked "record" (e.g. hottest/coldest). Monthly bins sort as day 0
+        // of their month, which is enough to order them against each other.
+        static (int Year, int Month, int Day) DateKeyOf(BinnedRecord r) => r.BinIdentifier switch
+        {
+            YearAndDayBinIdentifier d => (d.Year, d.Month, d.Day),
+            YearAndMonthBinIdentifier m => (m.Year, m.Month, 0),
+            _ => (0, 0, 0),
+        };
+
         var allRecords = dataSet.DataRecords.Where(x => x.Value.HasValue).ToList();
         int? startYear = allRecords.Count > 0 ? allRecords.Min(YearOf) : null;
         int? endYear = allRecords.Count > 0 ? allRecords.Max(YearOf) : null;
@@ -140,9 +151,13 @@ internal static class ClimateRecordsEndpoints
             });
         }
 
-        var ordered = ascending
-            ? records.OrderBy(x => x.Value)
-            : records.OrderByDescending(x => x.Value);
+        var ordered = (sortByDate, ascending) switch
+        {
+            (true, true) => records.OrderBy(DateKeyOf),
+            (true, false) => records.OrderByDescending(DateKeyOf),
+            (false, true) => records.OrderBy(x => x.Value),
+            (false, false) => records.OrderByDescending(x => x.Value),
+        };
 
         var totalCount = ordered.Count();
 

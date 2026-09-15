@@ -247,7 +247,7 @@ public class DataService : IDataService
         return result!;
     }
 
-    public async Task<ClimateRecordsResponse?> GetClimateRecords(Guid locationId, DataType dataType = DataType.TempMax, DataAdjustment? dataAdjustment = null, bool ascending = false, int? take = null, int? skip = null, int? month = null, bool monthly = false, int? day = null, bool fromCacheOnly = false)
+    public async Task<ClimateRecordsResponse?> GetClimateRecords(Guid locationId, DataType dataType = DataType.TempMax, DataAdjustment? dataAdjustment = null, bool ascending = false, int? take = null, int? skip = null, int? month = null, bool monthly = false, int? day = null, bool sortByDate = false, bool fromCacheOnly = false)
     {
         var url = "/climate-record";
         url = QueryHelpers.AddQueryString(url, "locationId", locationId.ToString());
@@ -282,6 +282,11 @@ public class DataService : IDataService
         if (monthly)
         {
             url = QueryHelpers.AddQueryString(url, "monthly", "true");
+        }
+
+        if (sortByDate)
+        {
+            url = QueryHelpers.AddQueryString(url, "sortByDate", "true");
         }
 
         var result = GetCached<ClimateRecordsResponse>(url);
