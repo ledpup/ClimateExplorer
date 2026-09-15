@@ -82,6 +82,7 @@ public partial class Co2NavTile : IDisposable
             ascending: false,
             take: 1,
             monthly: true,
+            sortByDate: true,
             fromCacheOnly: fromCacheOnly);
     }
 }

@@ -89,6 +89,36 @@ public sealed class ClimateRecordsEndpointsTests
     }
 
     [TestMethod]
+    public async Task GetClimateRecords_SortByDateTrue_ReturnsChronologicallyLatestRecordNotHighestValue()
+    {
+        // Regression test: Co2NavTile asks for take:1/ascending:false to get "the latest reading". Without
+        // sortByDate, the endpoint orders by Value (correct for Top100-style "record" queries, e.g. hottest
+        // day ever), so a series that isn't strictly monotonic - like CO2's deseasonalised trend, which can
+        // dip slightly month to month - can return an earlier record with a higher value instead of the most
+        // recent one. sortByDate:true must order chronologically instead.
+        var atmosphereLocationId = Region.RegionId(Region.Atmosphere);
+        var services = CreateServices();
+
+        var all = await ClimateRecordsEndpoints.GetClimateRecords(services, atmosphereLocationId, DataType.CO2Deseasoned, monthly: true);
+        Assert.IsNotEmpty(all.Records);
+        var expectedLatest = all.Records.OrderByDescending(x => x.Year).ThenByDescending(x => x.Month).First();
+
+        var latest = await ClimateRecordsEndpoints.GetClimateRecords(
+            services,
+            atmosphereLocationId,
+            DataType.CO2Deseasoned,
+            ascending: false,
+            take: 1,
+            monthly: true,
+            sortByDate: true);
+
+        Assert.HasCount(1, latest.Records);
+        var onlyRecord = latest.Records.Single();
+        Assert.AreEqual(expectedLatest.Year, onlyRecord.Year);
+        Assert.AreEqual(expectedLatest.Month, onlyRecord.Month);
+    }
+
+    [TestMethod]
     public async Task GetClimateRecords_CallerCancelsRequest_PropagatesOperationCanceledException()
     {
         var ghcndLocationId = await GetSingleStationGhcndLocationId("AE000041196");
