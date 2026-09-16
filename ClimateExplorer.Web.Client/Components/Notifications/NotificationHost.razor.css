@@ -5,41 +5,63 @@
     z-index: 1200;
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1rem;
-    border: 1px solid #c4d4d1;
-    border-radius: 8px;
-    background: #fff;
-    color: #2a3d39;
-    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22);
+    gap: 0.75rem;
+    padding: 1.25rem 2rem;
+    border: 1px solid #1c2b27;
+    border-radius: 10px;
+    background: #2a3d39;
+    color: #fff;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
     font-weight: 700;
+    font-size: 1.1rem;
     cursor: pointer;
-    animation: notification-toast-in 0.18s ease-out both;
+    animation: notification-toast-in 1s both;
 }
 
 .notification-toast:hover,
 .notification-toast:focus-visible {
-    background: #f2f7f6;
+    background: #34504a;
     outline: none;
 }
 
 .notification-toast:focus-visible {
-    box-shadow: 0 0 0 3px rgba(66, 95, 89, 0.28), 0 8px 28px rgba(0, 0, 0, 0.22);
+    box-shadow: 0 0 0 3px rgba(66, 95, 89, 0.45), 0 8px 28px rgba(0, 0, 0, 0.35);
 }
 
 .notification-toast i {
-    color: #425f59;
+    color: #ffd166;
 }
 
 @keyframes notification-toast-in {
+    from,
+    60%,
+    75%,
+    90%,
+    to {
+        animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    }
+
     from {
         opacity: 0;
-        transform: translateY(0.5rem);
+        transform: translate3d(400px, 0, 0);
+    }
+
+    60% {
+        opacity: 1;
+        transform: translate3d(-24px, 0, 0);
+    }
+
+    75% {
+        transform: translate3d(10px, 0, 0);
+    }
+
+    90% {
+        transform: translate3d(-6px, 0, 0);
     }
 
     to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translate3d(0, 0, 0);
     }
 }
 
