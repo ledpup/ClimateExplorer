@@ -33,33 +33,6 @@ public class BomDataDownloader
 
     public static async Task<string?> DownloadAndExtractDailyBomData(
         HttpClient httpClient,
-        Guid locationId,
-        DataType dataType,
-        DataFileMapping dataFileMapping,
-        string outputDirectory,
-        bool overwriteExistingZip = false)
-    {
-        var stationId = GetMostRecentOperatingStationId(locationId, dataFileMapping);
-        if (stationId == null)
-        {
-            return null;
-        }
-
-        return await DownloadAndExtractDailyBomData(httpClient, stationId, dataType, outputDirectory, overwriteExistingZip);
-    }
-
-    public static async Task<string?> DownloadAndExtractDailyBomData(
-        HttpClient httpClient,
-        string station,
-        DataType dataType,
-        string outputDirectory,
-        bool overwriteExistingZip = false)
-    {
-        return await DownloadAndExtractDailyBomData(httpClient, station, dataType.ToObsCode(), outputDirectory, overwriteExistingZip);
-    }
-
-    public static async Task<string?> DownloadAndExtractDailyBomData(
-        HttpClient httpClient,
         string station,
         ObsCode obsCode,
         string outputDirectory,
@@ -134,21 +107,6 @@ public class BomDataDownloader
             Console.WriteLine($"Unable to extract zip file {zipfileName}. File may be corrupt. Message: {ex.Message}");
             return null;
         }
-    }
-
-    public static string? GetMostRecentOperatingStationId(Guid locationId, DataFileMapping dataFileMapping, DateOnly? asAt = null)
-    {
-        if (!dataFileMapping.LocationIdToDataFileMappings.TryGetValue(locationId, out var dataFileFilterAndAdjustments))
-        {
-            return null;
-        }
-
-        var comparisonDate = asAt ?? DateOnly.FromDateTime(DateTime.Today);
-        return dataFileFilterAndAdjustments
-            .Where(x => (!x.StartDate.HasValue || x.StartDate.Value <= comparisonDate) && (!x.EndDate.HasValue || x.EndDate.Value >= comparisonDate))
-            .OrderByDescending(x => x.StartDate ?? DateOnly.MinValue)
-            .FirstOrDefault()
-            ?.Id;
     }
 
     static void DeleteDirectory(DirectoryInfo directoryInfo)

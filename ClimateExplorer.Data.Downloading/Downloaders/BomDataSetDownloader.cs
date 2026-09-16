@@ -9,10 +9,9 @@ using ClimateExplorer.Data.Downloading.Models;
 using ClimateExplorer.Data.Downloading.Workspace;
 using static ClimateExplorer.Core.Enums;
 
-public sealed class BomDataSetDownloader(BomDailyDataClient client, TimeSpan requestPacing = default) : IDataSetDownloader
+public sealed class BomDataSetDownloader(BomDailyDataClient client) : IDataSetDownloader
 {
     private readonly BomDailyDataClient client = client;
-    private readonly TimeSpan requestPacing = requestPacing;
 
     public string Key => "bom-station";
 
@@ -28,21 +27,14 @@ public sealed class BomDataSetDownloader(BomDailyDataClient client, TimeSpan req
         }
 
         var stationId = stationIds[0];
-
-        // Downloaded sequentially, not with Task.WhenAll, so a station refresh (4 series, 2 BOM requests
-        // each) doesn't fire 8 near-simultaneous requests at BOM - a burst pattern that looks like the kind
-        // of thing anti-bot/rate-limiting protection is built to catch, even from an otherwise low-volume caller.
         var dataTypes = new[] { DataType.TempMax, DataType.TempMin, DataType.Precipitation, DataType.SolarRadiation };
-        var contents = new Dictionary<DataType, string>();
-        foreach (var dataType in dataTypes)
-        {
-            if (contents.Count > 0 && requestPacing > TimeSpan.Zero)
-            {
-                await Task.Delay(requestPacing, cancellationToken);
-            }
+        var downloadTasks = dataTypes.ToDictionary(
+            dataType => dataType,
+            dataType => client.DownloadCsvAsync(stationId, GetObservationCode(dataType), cancellationToken));
 
-            contents[dataType] = await client.DownloadCsvAsync(stationId, GetObservationCode(dataType), cancellationToken);
-        }
+        await Task.WhenAll(downloadTasks.Values);
+
+        var contents = dataTypes.ToDictionary(dataType => dataType, dataType => downloadTasks[dataType].Result);
         contents.Add(DataType.TempMean, CreateMeanTemperature(request, stationId, contents[DataType.TempMax], contents[DataType.TempMin]));
         var candidatePath = DataSetDownloadPath.Resolve(temporaryDirectory, request.RelativePath);
         Directory.CreateDirectory(Path.GetDirectoryName(candidatePath)!);
