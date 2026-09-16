@@ -30,7 +30,9 @@ public sealed partial class BomDailyDataClient(HttpClient httpClient, TimeSpan r
         }
 
         var zipFileUrl = $"http://www.bom.gov.au/jsp/ncc/cdio/weatherData/av?p_display_type=dailyZippedDataFile&p_stn_num={stationId}&p_nccObsCode={(int)observationCode}&p_c={match.Groups["p_c"].Value}";
-        using var zipResponse = await httpClient.GetAsync(zipFileUrl, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+        using var zipRequest = new HttpRequestMessage(HttpMethod.Get, zipFileUrl);
+        zipRequest.Headers.AcceptEncoding.ParseAdd("gzip, deflate, br, zstd");
+        using var zipResponse = await httpClient.SendAsync(zipRequest, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
         zipResponse.EnsureSuccessStatusCode();
         if (zipResponse.Content.Headers.ContentLength > MaximumDownloadBytes)
         {
