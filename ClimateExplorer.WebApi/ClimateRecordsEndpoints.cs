@@ -106,9 +106,9 @@ internal static class ClimateRecordsEndpoints
             md.DataAdjustment == DataAdjustment.Adjusted &&
             dataType is DataType.TempMean or DataType.TempMax or DataType.TempMin;
 
-        var dataSet = isAcornSatAdjustedTemperatureRequest && acornSatClimateRecordService != null
+        var (dataSet, refreshFailed) = isAcornSatAdjustedTemperatureRequest && acornSatClimateRecordService != null
             ? await acornSatClimateRecordService.BuildComposedDataSetAsync(requestBody, cancellationToken)
-            : await DataSetEndpoints.PostDataSets(requestBody, services, permitSourceUpdate: true, cancellationToken);
+            : await DataSetEndpoints.PostDataSetsCore(requestBody, services, permitSourceUpdate: true, cancellationToken);
 
         static int YearOf(BinnedRecord r) => r.BinIdentifier switch
         {
@@ -199,6 +199,7 @@ internal static class ClimateRecordsEndpoints
             TotalCount = totalCount,
             RetrievedDate = dataSet.RetrievedDate,
             SourceMetadata = dataSet.SourceMetadata,
+            RefreshFailed = refreshFailed,
         };
         return response;
     }

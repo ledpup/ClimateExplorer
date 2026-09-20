@@ -65,7 +65,17 @@ public sealed class RecentObservationsDataProvider : IRecentObservationsDataProv
 
         try
         {
-            return await task;
+            var result = await task;
+
+            // A RefreshFailed result was served from an older stored/cached response rather than a freshly
+            // retrieved one, so it shouldn't be treated as durable for the lifetime of this provider instance -
+            // evict it so a later reload (e.g. the user retrying) actually attempts the network fetch again.
+            if (result.RefreshFailed && cache.TryGetValue(key, out var cachedTask) && ReferenceEquals(cachedTask, task))
+            {
+                cache.Remove(key);
+            }
+
+            return result;
         }
         catch
         {
@@ -94,16 +104,21 @@ public sealed class RecentObservationsDataProvider : IRecentObservationsDataProv
         }
 
         var hasHistoricalMaxMin = historicalMaxResponse.Records.Count > 0 && historicalMinResponse.Records.Count > 0;
-        var meanRecords = hasHistoricalMaxMin
-            ? new List<DataRecord>()
-            : (await GetRecords(locationId, DataType.TempMean, preferredAdjustment, supportsAdjustment: true)).Records;
+        var meanResponse = hasHistoricalMaxMin
+            ? null
+            : await GetRecords(locationId, DataType.TempMean, preferredAdjustment, supportsAdjustment: true);
+
+        var involvedResponses = meanResponse is null
+            ? new[] { historicalMaxResponse, historicalMinResponse }
+            : new[] { historicalMaxResponse, historicalMinResponse, meanResponse };
 
         return RecentObservationsDataSet.Temperature(
             historicalMaxResponse.Records,
             historicalMinResponse.Records,
-            meanRecords,
+            meanResponse?.Records ?? [],
             hasHistoricalMaxMin,
-            CreateSourceMetadata(historicalMaxResponse, historicalMinResponse));
+            CreateSourceMetadata(historicalMaxResponse, historicalMinResponse),
+            AnyRefreshFailed(involvedResponses));
     }
 
     private async Task<RecentObservationsDataSet> FetchPrecipitationData(Guid locationId)
@@ -117,7 +132,8 @@ public sealed class RecentObservationsDataProvider : IRecentObservationsDataProv
 
         return RecentObservationsDataSet.Precipitation(
             historicalResponse.Records,
-            CreateSourceMetadata(historicalResponse));
+            CreateSourceMetadata(historicalResponse),
+            AnyRefreshFailed(historicalResponse));
     }
 
     private async Task<RecentObservationsDataSet> FetchCo2Data(Guid contextId, DataAdjustment? preferredAdjustment)
@@ -131,7 +147,8 @@ public sealed class RecentObservationsDataProvider : IRecentObservationsDataProv
 
         return RecentObservationsDataSet.Co2(
             response.Records,
-            CreateSourceMetadata(response));
+            CreateSourceMetadata(response),
+            AnyRefreshFailed(response));
     }
 
     private async Task<ClimateRecordsResponse> GetRecords(
@@ -173,6 +190,11 @@ public sealed class RecentObservationsDataProvider : IRecentObservationsDataProv
     private static IReadOnlyList<RecentObservationSourceMetadata> CreateSourceMetadata(params ClimateRecordsResponse[] responses)
     {
         return [.. responses.SelectMany(MapSourceMetadata)];
+    }
+
+    private static bool AnyRefreshFailed(params ClimateRecordsResponse[] responses)
+    {
+        return responses.Any(x => x.RefreshFailed);
     }
 
     private static IEnumerable<RecentObservationSourceMetadata> MapSourceMetadata(ClimateRecordsResponse response)

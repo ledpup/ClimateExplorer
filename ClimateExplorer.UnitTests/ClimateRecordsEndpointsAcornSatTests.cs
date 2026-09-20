@@ -47,6 +47,9 @@ public sealed class ClimateRecordsEndpointsAcornSatTests
         Assert.IsNotNull(response.SourceMetadata);
         Assert.IsTrue(response.SourceMetadata!.Any(x => x.SourceCode == "ACORN-SAT"));
         AssertCdoMetadataConsistentWithRetrievedDate(response);
+
+        // CreateAcornSatService()'s coordinator reports Rebuild (success), so the CDO refresh didn't fail.
+        Assert.IsFalse(response.RefreshFailed);
     }
 
     [TestMethod]
@@ -63,6 +66,7 @@ public sealed class ClimateRecordsEndpointsAcornSatTests
 
         Assert.AreEqual(DataResolution.Monthly, response.DataResolution);
         Assert.IsTrue(response.Records.Count > 0);
+        Assert.IsFalse(response.RefreshFailed);
     }
 
     [TestMethod]
@@ -100,6 +104,7 @@ public sealed class ClimateRecordsEndpointsAcornSatTests
         // the stub CDO-oriented coordinator in CreateServices(), which reports RefreshFailed; base ACORN-SAT
         // is still read from the packaged archive so the response should not be empty.
         Assert.IsTrue(response.DataResolution.HasValue);
+        Assert.IsTrue(response.RefreshFailed);
     }
 
     private static void AssertCdoMetadataConsistentWithRetrievedDate(ClimateRecordsResponse response)

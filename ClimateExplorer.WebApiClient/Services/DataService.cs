@@ -300,7 +300,13 @@ public class DataService : IDataService
 
             result = await httpClient.GetFromJsonAsync<ClimateRecordsResponse>(url, jsonSerializerOptions);
 
-            SetCached(url, result!, TimeSpan.FromHours(1));
+            // Don't pin a RefreshFailed response (served from an older store because the API couldn't fetch
+            // fresh data) in this 1-hour cache - that would keep replaying the failure and block a retry from
+            // ever reaching the API again until the cache expires.
+            if (result?.RefreshFailed != true)
+            {
+                SetCached(url, result!, TimeSpan.FromHours(1));
+            }
         }
 
         return result!;
