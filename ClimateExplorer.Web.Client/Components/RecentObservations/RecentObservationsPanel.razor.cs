@@ -199,6 +199,7 @@ public partial class RecentObservationsPanel
         try
         {
             state.DataSet = await RecentObservationsService.LoadData(Context.Id, domain, domain.SupportsAdjustment ? SelectedDataAdjustment : null);
+            state.RefreshFailed = state.DataSet.RefreshFailed;
             RecalculateTab(domain, updateSelectedReferenceDate: domain.Key == ActiveDomain?.Key);
         }
         catch (Exception ex)
@@ -631,6 +632,7 @@ public partial class RecentObservationsPanel
         public bool IsLoading { get; set; }
         public bool IsLoaded { get; set; }
         public string? ErrorMessage { get; set; }
+        public bool RefreshFailed { get; set; }
         public RecentObservationsDataSet? DataSet { get; set; }
         public RecentObservationsTabResult? Result { get; set; }
         public RecentObservationTileExpansionStateCollection ExpansionStates { get; private set; } = new();
@@ -640,6 +642,7 @@ public partial class RecentObservationsPanel
             IsLoading = false;
             IsLoaded = false;
             ErrorMessage = null;
+            RefreshFailed = false;
             DataSet = null;
             Result = null;
             ExpansionStates = new RecentObservationTileExpansionStateCollection();

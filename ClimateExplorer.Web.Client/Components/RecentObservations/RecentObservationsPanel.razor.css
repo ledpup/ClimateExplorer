@@ -159,6 +159,12 @@
     color: #743a2b;
 }
 
+.recent-observations-state.warning {
+    background: #fff3cd;
+    border-color: #f0dca0;
+    color: #7a5500;
+}
+
 .recent-observations-state i {
     flex-shrink: 0;
 }
