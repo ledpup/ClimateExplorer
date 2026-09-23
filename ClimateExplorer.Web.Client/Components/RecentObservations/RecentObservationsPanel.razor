@@ -75,8 +75,9 @@
                 </DelayedTooltip>
                 <DelayedTooltip Text="Reset to default tiles">
                     <ClimateButton Icon="fas fa-rotate-left"
-                                    AriaLabel="Reset to default tiles"
-                                    OnClick="ResetTilesToDefault" />
+                                   AriaLabel="Reset to default tiles"
+                                   Disabled="@CurrentState.IsLoading"
+                                   OnClick="ResetTilesToDefault" />
                 </DelayedTooltip>
 
                 @if (HasExpandableCurrentTiles)
