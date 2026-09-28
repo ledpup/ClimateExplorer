@@ -299,7 +299,16 @@ public partial class ClimateRecords
             }
             else if (ActiveView == RecordView.Yearly)
             {
-                await LoadYearlyRecords();
+                try
+                {
+                    await LoadYearlyRecords();
+                }
+                catch (Exception ex)
+                {
+                    // Leave the previously loaded records on screen (stale is better than empty/crashed)
+                    // rather than surfacing an error - mirrors RecentObservationsPanel's resilience.
+                    Logger?.LogError(ex, "Unable to load yearly climate records for location {LocationId}, dataType {DataType}", Location.Id, SelectedDataType);
+                }
             }
             else
             {
@@ -315,7 +324,21 @@ public partial class ClimateRecords
                 {
                     var month = SelectedMonth != 0 ? (int?)SelectedMonth : null;
                     var day = ActiveView == RecordView.Daily && SelectedMonth != 0 && SelectedDay != 0 ? (int?)SelectedDay : null;
-                    ClimateRecordsResult = await DataService!.GetClimateRecords(Location.Id, SelectedDataType.Value, SelectedDataAdjustment, Ascending, take: Count, skip: CurrentPage, month, ActiveView == RecordView.Monthly, day);
+
+                    ClimateRecordsResponse? response;
+                    try
+                    {
+                        response = await DataService!.GetClimateRecords(Location.Id, SelectedDataType.Value, SelectedDataAdjustment, Ascending, take: Count, skip: CurrentPage, month, ActiveView == RecordView.Monthly, day);
+                    }
+                    catch (Exception ex)
+                    {
+                        // Leave the previously loaded records on screen (stale is better than empty/crashed)
+                        // rather than surfacing an error - mirrors RecentObservationsPanel's resilience.
+                        Logger?.LogError(ex, "Unable to load climate records for location {LocationId}, dataType {DataType}", Location.Id, SelectedDataType);
+                        return;
+                    }
+
+                    ClimateRecordsResult = response;
                     ClimateRecordRows = [.. ClimateRecordsResult!.Records.Select(ClimateRecordViewModel.FromDataRecord)];
                     ComputedRowStyles = ComputeRowStyles(ClimateRecordsResult);
                     var startRank = ((CurrentPage - 1) * Count) + 1;
