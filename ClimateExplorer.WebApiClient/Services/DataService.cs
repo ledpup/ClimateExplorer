@@ -249,6 +249,11 @@ public class DataService : IDataService
 
     public async Task<ClimateRecordsResponse?> GetClimateRecords(Guid locationId, DataType dataType = DataType.TempMax, DataAdjustment? dataAdjustment = null, bool ascending = false, int? take = null, int? skip = null, int? month = null, bool monthly = false, int? day = null, bool sortByDate = false, bool fromCacheOnly = false)
     {
+        if (fromCacheOnly)
+        {
+            return null;
+        }
+
         var url = "/climate-record";
         url = QueryHelpers.AddQueryString(url, "locationId", locationId.ToString());
         url = QueryHelpers.AddQueryString(url, "dataType", dataType.ToString());
@@ -289,26 +294,6 @@ public class DataService : IDataService
             url = QueryHelpers.AddQueryString(url, "sortByDate", "true");
         }
 
-        var result = GetCached<ClimateRecordsResponse>(url);
-
-        if (result == null)
-        {
-            if (fromCacheOnly)
-            {
-                return null;
-            }
-
-            result = await httpClient.GetFromJsonAsync<ClimateRecordsResponse>(url, jsonSerializerOptions);
-
-            // Don't pin a RefreshFailed response (served from an older store because the API couldn't fetch
-            // fresh data) in this 1-hour cache - that would keep replaying the failure and block a retry from
-            // ever reaching the API again until the cache expires.
-            if (result?.RefreshFailed != true)
-            {
-                SetCached(url, result!, TimeSpan.FromHours(1));
-            }
-        }
-
-        return result!;
+        return await httpClient.GetFromJsonAsync<ClimateRecordsResponse>(url, jsonSerializerOptions);
     }
 }

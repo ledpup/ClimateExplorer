@@ -29,9 +29,9 @@ public sealed class RecentObservationsService : IRecentObservationsService
         return dataProvider.LoadPrecipitationData(location);
     }
 
-    public Task<RecentObservationsDataSet> LoadData(Guid contextId, ObservationDomain domain, DataAdjustment? preferredAdjustment = null)
+    public Task<RecentObservationsDataSet> LoadData(Guid contextId, ObservationDomain domain, DataAdjustment? preferredAdjustment = null, bool forceRefresh = false)
     {
-        return dataProvider.LoadData(contextId, domain, preferredAdjustment);
+        return dataProvider.LoadData(contextId, domain, preferredAdjustment, forceRefresh);
     }
 
     public RecentObservationsTabResult Calculate(

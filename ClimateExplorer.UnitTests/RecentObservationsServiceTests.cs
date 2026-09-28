@@ -112,7 +112,7 @@ public class RecentObservationsServiceTests
         CollectionAssert.AreEqual(
             new[]
             {
-                "Today",
+                "Today - 14 June",
                 "Latest 7 days",
                 "June 2026 to date",
                 "Last month - May 2026",
@@ -315,7 +315,7 @@ public class RecentObservationsServiceTests
             .ToList();
 
         Assert.HasCount(1, dailyTiles);
-        Assert.AreEqual("Today", dailyTiles[0].PeriodTitle);
+        Assert.AreEqual("Today - 14 June", dailyTiles[0].PeriodTitle);
         Assert.AreEqual(new DateOnly(2026, 6, 14), dailyTiles[0].PeriodStartDate);
         Assert.AreEqual(1, dailyTiles[0].PeriodOffset);
     }
@@ -335,7 +335,7 @@ public class RecentObservationsServiceTests
             .ToList();
 
         CollectionAssert.AreEqual(
-            new[] { "Today", "Yesterday", "12 June", "11 June" },
+            new[] { "Today - 14 June", "Yesterday - 13 June", "12 June", "11 June" },
             dailyTiles.Select(x => x.PeriodTitle).ToArray());
         CollectionAssert.AreEqual(
             new[] { new DateOnly(2026, 6, 14), new DateOnly(2026, 6, 13), new DateOnly(2026, 6, 12), new DateOnly(2026, 6, 11) },
@@ -432,7 +432,7 @@ public class RecentObservationsServiceTests
         Assert.AreEqual(latestDate, result.ReferenceDate);
         Assert.AreEqual(new DateOnly(2026, 6, 1), result.MinimumReferenceDate);
         Assert.AreEqual(latestDate, result.MaximumReferenceDate);
-        Assert.AreEqual("Yesterday", dailyTile.PeriodTitle);
+        Assert.AreEqual("Yesterday - 13 June", dailyTile.PeriodTitle);
         Assert.AreEqual(latestDate, latestSevenDays.PeriodEndDate);
     }
 
@@ -1582,7 +1582,7 @@ public class RecentObservationsServiceTests
         var selection = new RecentObservationPeriodSelection();
 
         Assert.IsFalse(tiles.Any(x => x.PeriodKind == RecentObservationPeriodKind.Season && x.PeriodOffset == 0));
-        Assert.AreEqual("Yesterday", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Daily, tiles, "day"));
+        Assert.AreEqual("13 June", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Daily, tiles, "day"));
         Assert.AreEqual("May 2026", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Month, tiles, "month"));
         Assert.AreEqual("Autumn 2026", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Season, tiles, "season"));
         Assert.AreEqual("2025", selection.CreateAddButtonLabel(RecentObservationPeriodKind.Year, tiles, "year"));
@@ -1915,6 +1915,38 @@ public class RecentObservationsServiceTests
         selection.EnsureDefaults(noCurrentMonthTiles);
 
         Assert.IsTrue(selection.IsVisible(CreateTile(RecentObservationPeriodKind.Month, 1, "Last month - May 2026")));
+    }
+
+    [TestMethod]
+    public void IsDefaultIsTrueForNewSelectionAndFalseAfterAddOrRemove()
+    {
+        var addSelection = new RecentObservationPeriodSelection();
+        Assert.IsTrue(addSelection.IsDefault);
+        addSelection.AddEarlierDay();
+        Assert.IsFalse(addSelection.IsDefault);
+
+        var removeSelection = new RecentObservationPeriodSelection();
+        removeSelection.Remove(CreateTile(RecentObservationPeriodKind.LatestSevenDays, null, "Latest 7 days"));
+        Assert.IsFalse(removeSelection.IsDefault);
+    }
+
+    [TestMethod]
+    public void IsDefaultIsUnaffectedByEnsureDefaultsSeedingButTrueAgainAfterReset()
+    {
+        var selection = new RecentObservationPeriodSelection();
+        var noCurrentMonthTiles = new[] { CreateTile(RecentObservationPeriodKind.Month, 1, "Last month - May 2026") };
+
+        selection.EnsureDefaults(noCurrentMonthTiles);
+
+        Assert.IsTrue(selection.IsDefault);
+
+        selection.AddEarlierYear();
+
+        Assert.IsFalse(selection.IsDefault);
+
+        selection.Reset();
+
+        Assert.IsTrue(selection.IsDefault);
     }
 
     [TestMethod]

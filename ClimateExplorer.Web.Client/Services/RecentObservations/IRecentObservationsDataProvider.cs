@@ -10,5 +10,5 @@ public interface IRecentObservationsDataProvider
 
     Task<RecentObservationsDataSet> LoadPrecipitationData(Location location);
 
-    Task<RecentObservationsDataSet> LoadData(Guid contextId, ObservationDomain domain, DataAdjustment? preferredAdjustment = null);
+    Task<RecentObservationsDataSet> LoadData(Guid contextId, ObservationDomain domain, DataAdjustment? preferredAdjustment = null, bool forceRefresh = false);
 }

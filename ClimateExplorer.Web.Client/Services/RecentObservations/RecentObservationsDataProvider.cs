@@ -26,6 +26,7 @@ public sealed class RecentObservationsDataProvider : IRecentObservationsDataProv
     {
         return GetOrCreate(
             new RecentObservationsDataCacheKey(location.Id, ObservationDomainCatalog.TemperatureKey, preferredAdjustment),
+            forceRefresh: false,
             () => FetchTemperatureData(location.Id, preferredAdjustment));
     }
 
@@ -33,13 +34,15 @@ public sealed class RecentObservationsDataProvider : IRecentObservationsDataProv
     {
         return GetOrCreate(
             new RecentObservationsDataCacheKey(location.Id, ObservationDomainCatalog.PrecipitationKey, null),
+            forceRefresh: false,
             () => FetchPrecipitationData(location.Id));
     }
 
-    public Task<RecentObservationsDataSet> LoadData(Guid contextId, ObservationDomain domain, DataAdjustment? preferredAdjustment = null)
+    public Task<RecentObservationsDataSet> LoadData(Guid contextId, ObservationDomain domain, DataAdjustment? preferredAdjustment = null, bool forceRefresh = false)
     {
         return GetOrCreate(
             new RecentObservationsDataCacheKey(contextId, domain.Key, preferredAdjustment),
+            forceRefresh,
             () => domain.Key switch
             {
                 ObservationDomainCatalog.TemperatureKey => FetchTemperatureData(contextId, preferredAdjustment),
@@ -51,9 +54,10 @@ public sealed class RecentObservationsDataProvider : IRecentObservationsDataProv
 
     private async Task<RecentObservationsDataSet> GetOrCreate(
         RecentObservationsDataCacheKey key,
+        bool forceRefresh,
         Func<Task<RecentObservationsDataSet>> fetch)
     {
-        if (cache.TryGetValue(key, out var cached))
+        if (!forceRefresh && cache.TryGetValue(key, out var cached))
         {
             logger?.LogDebug("Using cached recent observations {Domain} data for location {LocationId}", key.DomainKey, key.LocationId);
             return await cached;
