@@ -18,6 +18,13 @@
         }
         else
         {
+            @if (CurrentState.RefreshFailed)
+            {
+                <div class="recent-observations-state warning mb-4">
+                    <span><i class="fas fa-triangle-exclamation"></i> Showing the most recently available data — couldn't fetch the latest observations.</span>
+                    <ClimateButton Text="Retry" Icon="fas fa-rotate-right" Class="recent-observations-retry" OnClick="RetryCurrentTab" />
+                </div>
+            }
             <div class="chart-controls recent-observations-period-controls mb-4">
                 @if (ActiveDomain?.SupportsAdjustment == true)
                 {

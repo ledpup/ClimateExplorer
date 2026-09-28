@@ -71,7 +71,7 @@ internal sealed class AcornSatClimateRecordService(
 
             if (cachedEntry is { IsConclusive: true })
             {
-                return AcornSatExtensionOutcome.FromCacheEntry(cachedEntry);
+                return AcornSatExtensionOutcome.FromCacheEntry(cachedEntry) with { RefreshFailed = true };
             }
 
             // No usable cached overlay: fall through and attempt the comparison against whatever CDO archive
@@ -123,7 +123,7 @@ internal sealed class AcornSatClimateRecordService(
             extension.ComparisonYear,
             extension.OverlayRecords.Count);
 
-        return new AcornSatExtensionOutcome(extension, retrievedDate, acornSatSeries);
+        return new AcornSatExtensionOutcome(extension, retrievedDate, acornSatSeries, RefreshFailed: preparation.Outcome == DataSetSourcePreparationOutcome.RefreshFailed);
     }
 
     /// <summary>
@@ -132,7 +132,7 @@ internal sealed class AcornSatClimateRecordService(
     /// <c>/climate-record</c> sees the same binning, filtering, and pagination pipeline as every other
     /// request. Appends CDO source metadata only when the overlay actually contributed a value.
     /// </summary>
-    public async Task<DataSet> BuildComposedDataSetAsync(PostDataSetsRequestBody body, CancellationToken cancellationToken)
+    public async Task<DataSetRetrievalOutcome> BuildComposedDataSetAsync(PostDataSetsRequestBody body, CancellationToken cancellationToken)
     {
         var spec = body.SeriesSpecifications!.Single();
         var outcome = await ResolveAsync(spec.LocationId, spec.DataType, cancellationToken);
@@ -162,7 +162,7 @@ internal sealed class AcornSatClimateRecordService(
             dataSet.SourceMetadata = (dataSet.SourceMetadata ?? []).Append(cdoMetadata).ToList();
         }
 
-        return dataSet;
+        return new DataSetRetrievalOutcome(dataSet, outcome.RefreshFailed);
     }
 
     private static PostDataSetsRequestBody BuildCdoRequest(Guid cdoDataSetDefinitionId, Guid locationId, DataType dataType)

@@ -12,7 +12,7 @@ using ClimateExplorer.Data.Downloading.Extenders;
 /// <see cref="AcornSatClimateRecordService.ResolveAsync"/> already had to read the ACORN-SAT series to make
 /// its decision, <see cref="AcornSatSeries"/> carries it so <c>BuildComposedDataSetAsync</c> doesn't read it again.
 /// </summary>
-internal sealed record AcornSatExtensionOutcome(AcornSatRecordExtensionResult Extension, DateTimeOffset? RetrievedDate, SeriesProvider.Series? AcornSatSeries = null)
+internal sealed record AcornSatExtensionOutcome(AcornSatRecordExtensionResult Extension, DateTimeOffset? RetrievedDate, SeriesProvider.Series? AcornSatSeries = null, bool RefreshFailed = false)
 {
     public static AcornSatExtensionOutcome NotEligible(AcornSatExtensionDecision decision, AcornSatStationResolution stations)
     {

@@ -60,6 +60,33 @@ public sealed class ClimateRecordsEndpointsTests
         Assert.IsFalse(response.DataResolution.HasValue);
         Assert.IsNull(response.SourceMetadata);
         Assert.IsEmpty(response.Records);
+
+        // No dsd match means the source coordinator is never consulted, so this is not a refresh failure.
+        Assert.IsFalse(response.RefreshFailed);
+    }
+
+    [TestMethod]
+    public async Task GetClimateRecords_SourceRefreshFails_ReturnsRefreshFailedTrue()
+    {
+        // CreateServices() stubs a coordinator that always reports RefreshFailed.
+        var ghcndLocationId = await GetSingleStationGhcndLocationId("AE000041196");
+
+        var response = await ClimateRecordsEndpoints.GetClimateRecords(CreateServices(), ghcndLocationId, DataType.TempMax, DataAdjustment.Unadjusted);
+
+        Assert.IsTrue(response.RefreshFailed);
+    }
+
+    [TestMethod]
+    public async Task GetClimateRecords_SourceRefreshSucceeds_ReturnsRefreshFailedFalse()
+    {
+        var ghcndLocationId = await GetSingleStationGhcndLocationId("AE000041196");
+        var coordinator = new StubSourceUpdateCoordinator(
+            new DataSetSourcePreparationResult(DataSetSourcePreparationOutcome.Rebuild, DateTimeOffset.UtcNow));
+        var services = new ClimateExplorerApiServices(new MemoryCache(), new MemoryCache(), new HttpClient(), new HttpClient(), coordinator);
+
+        var response = await ClimateRecordsEndpoints.GetClimateRecords(services, ghcndLocationId, DataType.TempMax, DataAdjustment.Unadjusted);
+
+        Assert.IsFalse(response.RefreshFailed);
     }
 
     [TestMethod]

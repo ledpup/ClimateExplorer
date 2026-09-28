@@ -22,22 +22,33 @@ internal static class DataSetEndpoints
         bool permitSourceUpdate = false,
         CancellationToken cancellationToken = default)
     {
+        var outcome = await PostDataSetsCore(body, services, permitSourceUpdate, cancellationToken);
+        return outcome.DataSet;
+    }
+
+    internal static async Task<DataSetRetrievalOutcome> PostDataSetsCore(
+        PostDataSetsRequestBody body,
+        ClimateExplorerApiServices services,
+        bool permitSourceUpdate = false,
+        CancellationToken cancellationToken = default)
+    {
         string cacheKey = "DataSet_v2_" + JsonSerializer.Serialize(body);
 
         var result = await services.Cache.Get<DataSet>(cacheKey);
         var sourcePreparation = await services.DataSetSourceUpdateCoordinator.PrepareAsync(body, result, permitSourceUpdate, cancellationToken);
+        var refreshFailed = sourcePreparation.Outcome == DataSetSourcePreparationOutcome.RefreshFailed;
 
         if (result != null && sourcePreparation.Outcome is DataSetSourcePreparationOutcome.UseCached or DataSetSourcePreparationOutcome.RefreshFailed)
         {
-            if (sourcePreparation.Outcome == DataSetSourcePreparationOutcome.RefreshFailed)
+            if (refreshFailed)
             {
                 services.Logger.LogWarning("PostDataSets falling back to the previously cached response after a refresh failure");
             }
 
-            return result;
+            return new DataSetRetrievalOutcome(result, refreshFailed);
         }
 
-        if (sourcePreparation.Outcome == DataSetSourcePreparationOutcome.RefreshFailed)
+        if (refreshFailed)
         {
             services.Logger.LogWarning("PostDataSets has no cached response and refresh failed; building from the existing published source file");
         }
@@ -45,7 +56,7 @@ internal static class DataSetEndpoints
         var dsb = new DataSetBuilder();
 
         var series = await dsb.BuildDataSet(body);
-        var retrievedDate = sourcePreparation.Outcome == DataSetSourcePreparationOutcome.RefreshFailed
+        var retrievedDate = refreshFailed
             ? null
             : sourcePreparation.RetrievedDate;
         var returnDataSet = await BuildResponseDataSet(body, series, retrievedDate);
@@ -55,11 +66,11 @@ internal static class DataSetEndpoints
         if (body.BinningRule == BinGranularities.ByYearAndDay ||
             (body.BinningRule == BinGranularities.ByDayOnly && body.FilterToYear.HasValue))
         {
-            return returnDataSet;
+            return new DataSetRetrievalOutcome(returnDataSet, refreshFailed);
         }
 
         await services.Cache.Put(cacheKey, returnDataSet);
-        return returnDataSet;
+        return new DataSetRetrievalOutcome(returnDataSet, refreshFailed);
     }
 
     /// <summary>

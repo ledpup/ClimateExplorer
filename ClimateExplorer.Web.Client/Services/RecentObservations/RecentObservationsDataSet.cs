@@ -17,7 +17,8 @@ public sealed class RecentObservationsDataSet
         IReadOnlyList<DataRecord>? precipitationRecords = null,
         IReadOnlyList<DataRecord>? co2Records = null,
         IReadOnlyList<RecentObservationSourceMetadata>? sourceMetadata = null,
-        bool hasHistoricalTemperatureMaxMin = false)
+        bool hasHistoricalTemperatureMaxMin = false,
+        bool refreshFailed = false)
     {
         DomainKey = domainKey;
         IsSupported = isSupported;
@@ -31,6 +32,7 @@ public sealed class RecentObservationsDataSet
         Co2Records = co2Records ?? [];
         SourceMetadata = sourceMetadata ?? [];
         HasHistoricalTemperatureMaxMin = hasHistoricalTemperatureMaxMin;
+        RefreshFailed = refreshFailed;
     }
 
     public string DomainKey { get; }
@@ -47,12 +49,19 @@ public sealed class RecentObservationsDataSet
     internal IReadOnlyList<RecentObservationSourceMetadata> SourceMetadata { get; }
     internal bool HasHistoricalTemperatureMaxMin { get; }
 
+    /// <summary>
+    /// True when the API could not fetch fresh data from its upstream source for at least one of the
+    /// records that make up this data set, and served an older stored/cached response instead.
+    /// </summary>
+    internal bool RefreshFailed { get; }
+
     internal static RecentObservationsDataSet Temperature(
         IReadOnlyList<DataRecord> maxRecords,
         IReadOnlyList<DataRecord> minRecords,
         IReadOnlyList<DataRecord> meanRecords,
         bool hasHistoricalMaxMin,
-        IReadOnlyList<RecentObservationSourceMetadata>? sourceMetadata = null)
+        IReadOnlyList<RecentObservationSourceMetadata>? sourceMetadata = null,
+        bool refreshFailed = false)
     {
         return new RecentObservationsDataSet(
             ObservationDomainCatalog.TemperatureKey,
@@ -64,7 +73,8 @@ public sealed class RecentObservationsDataSet
             temperatureMinRecords: minRecords,
             temperatureMeanRecords: meanRecords,
             sourceMetadata: sourceMetadata,
-            hasHistoricalTemperatureMaxMin: hasHistoricalMaxMin);
+            hasHistoricalTemperatureMaxMin: hasHistoricalMaxMin,
+            refreshFailed: refreshFailed);
     }
 
     internal static RecentObservationsDataSet UnsupportedTemperature()
@@ -79,7 +89,8 @@ public sealed class RecentObservationsDataSet
 
     internal static RecentObservationsDataSet Precipitation(
         IReadOnlyList<DataRecord> records,
-        IReadOnlyList<RecentObservationSourceMetadata>? sourceMetadata = null)
+        IReadOnlyList<RecentObservationSourceMetadata>? sourceMetadata = null,
+        bool refreshFailed = false)
     {
         return new RecentObservationsDataSet(
             ObservationDomainCatalog.PrecipitationKey,
@@ -88,7 +99,8 @@ public sealed class RecentObservationsDataSet
             emptyMessage: "No recent precipitation observations are available yet.",
             noPeriodsMessage: "No recent precipitation observation periods can be calculated yet.",
             precipitationRecords: records,
-            sourceMetadata: sourceMetadata);
+            sourceMetadata: sourceMetadata,
+            refreshFailed: refreshFailed);
     }
 
     internal static RecentObservationsDataSet UnsupportedPrecipitation()
@@ -103,7 +115,8 @@ public sealed class RecentObservationsDataSet
 
     internal static RecentObservationsDataSet Co2(
         IReadOnlyList<DataRecord> records,
-        IReadOnlyList<RecentObservationSourceMetadata>? sourceMetadata = null)
+        IReadOnlyList<RecentObservationSourceMetadata>? sourceMetadata = null,
+        bool refreshFailed = false)
     {
         return new RecentObservationsDataSet(
             ObservationDomainCatalog.Co2Key,
@@ -112,7 +125,8 @@ public sealed class RecentObservationsDataSet
             emptyMessage: "No recent CO₂ observations are available yet.",
             noPeriodsMessage: "No recent CO₂ observation periods can be calculated yet.",
             co2Records: records,
-            sourceMetadata: sourceMetadata);
+            sourceMetadata: sourceMetadata,
+            refreshFailed: refreshFailed);
     }
 
     internal static RecentObservationsDataSet UnsupportedCo2()

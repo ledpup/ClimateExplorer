@@ -87,6 +87,53 @@ public sealed class DataSetEndpointSourceUpdateTests
         Assert.AreEqual(retrievedDate, result.RetrievedDate);
     }
 
+    [TestMethod]
+    public async Task PostDataSetsCore_RefreshFailsWithCachedResponse_ReturnsRefreshFailedTrue()
+    {
+        var body = CreateMinimalRequest();
+        var cachedData = new DataSet { RetrievedDate = DateTimeOffset.UtcNow };
+        var cache = new MemoryCache();
+        await cache.Put(GetCacheKey(body), cachedData);
+        var coordinator = new StubSourceUpdateCoordinator(
+            new DataSetSourcePreparationResult(DataSetSourcePreparationOutcome.RefreshFailed));
+        var services = CreateServices(cache, coordinator);
+
+        var outcome = await DataSetEndpoints.PostDataSetsCore(body, services);
+
+        Assert.AreSame(cachedData, outcome.DataSet);
+        Assert.IsTrue(outcome.RefreshFailed);
+    }
+
+    [TestMethod]
+    public async Task PostDataSetsCore_RefreshFailsWithoutCachedResponse_ReturnsRefreshFailedTrue()
+    {
+        var body = await CreateNinoRequest();
+        var cache = new MemoryCache();
+        var coordinator = new StubSourceUpdateCoordinator(
+            new DataSetSourcePreparationResult(DataSetSourcePreparationOutcome.RefreshFailed));
+        var services = CreateServices(cache, coordinator);
+
+        var outcome = await DataSetEndpoints.PostDataSetsCore(body, services);
+
+        Assert.IsGreaterThan(0, outcome.DataSet.DataRecords.Count);
+        Assert.IsTrue(outcome.RefreshFailed);
+    }
+
+    [TestMethod]
+    public async Task PostDataSetsCore_RefreshSucceeds_ReturnsRefreshFailedFalse()
+    {
+        var body = await CreateNinoRequest();
+        var retrievedDate = new DateTimeOffset(2026, 7, 13, 12, 0, 0, TimeSpan.Zero);
+        var cache = new MemoryCache();
+        var coordinator = new StubSourceUpdateCoordinator(
+            new DataSetSourcePreparationResult(DataSetSourcePreparationOutcome.Rebuild, retrievedDate));
+        var services = CreateServices(cache, coordinator);
+
+        var outcome = await DataSetEndpoints.PostDataSetsCore(body, services);
+
+        Assert.IsFalse(outcome.RefreshFailed);
+    }
+
     private static PostDataSetsRequestBody CreateMinimalRequest()
     {
         return new PostDataSetsRequestBody
