@@ -226,7 +226,7 @@ public sealed class RecentObservationPeriodSelection
     {
         return tile.PeriodKind switch
         {
-            RecentObservationPeriodKind.Daily => tile.PeriodStartDate.ToString("d MMM yyyy", CultureInfo.CurrentCulture),
+            RecentObservationPeriodKind.Daily => tile.PeriodStartDate.ToString("d MMM", CultureInfo.CurrentCulture),
             RecentObservationPeriodKind.Month => tile.PeriodStartDate.ToString("MMMM yyyy", CultureInfo.CurrentCulture),
             RecentObservationPeriodKind.Year => tile.PeriodStartDate.ToString("yyyy", CultureInfo.CurrentCulture),
             _ => tile.PeriodTitle,
