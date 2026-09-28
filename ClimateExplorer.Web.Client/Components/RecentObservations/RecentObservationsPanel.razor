@@ -73,11 +73,17 @@
                 <DelayedTooltip Text="Remove all tiles">
                     <ClimateButton Text="Remove all" Disabled="@IsRemoveAllDisabled" OnClick="RemoveAllTiles" />
                 </DelayedTooltip>
+                <DelayedTooltip Text="Refresh with the latest data">
+                    <ClimateButton Icon="fas fa-rotate-right"
+                                    Text="Refresh"
+                                    Disabled="@CurrentState.IsLoading"
+                                    OnClick="RefreshCurrentTab" />
+                </DelayedTooltip>
                 <DelayedTooltip Text="Reset to default tiles">
                     <ClimateButton Icon="fas fa-rotate-left"
-                                   AriaLabel="Reset to default tiles"
-                                   Disabled="@CurrentState.IsLoading"
-                                   OnClick="ResetTilesToDefault" />
+                                    AriaLabel="Reset to default tiles"
+                                    Disabled="@(CurrentState.IsLoading || IsDisplayingDefaultTiles)"
+                                    OnClick="ResetTilesToDefault" />
                 </DelayedTooltip>
 
                 @if (HasExpandableCurrentTiles)

@@ -1918,6 +1918,38 @@ public class RecentObservationsServiceTests
     }
 
     [TestMethod]
+    public void IsDefaultIsTrueForNewSelectionAndFalseAfterAddOrRemove()
+    {
+        var addSelection = new RecentObservationPeriodSelection();
+        Assert.IsTrue(addSelection.IsDefault);
+        addSelection.AddEarlierDay();
+        Assert.IsFalse(addSelection.IsDefault);
+
+        var removeSelection = new RecentObservationPeriodSelection();
+        removeSelection.Remove(CreateTile(RecentObservationPeriodKind.LatestSevenDays, null, "Latest 7 days"));
+        Assert.IsFalse(removeSelection.IsDefault);
+    }
+
+    [TestMethod]
+    public void IsDefaultIsUnaffectedByEnsureDefaultsSeedingButTrueAgainAfterReset()
+    {
+        var selection = new RecentObservationPeriodSelection();
+        var noCurrentMonthTiles = new[] { CreateTile(RecentObservationPeriodKind.Month, 1, "Last month - May 2026") };
+
+        selection.EnsureDefaults(noCurrentMonthTiles);
+
+        Assert.IsTrue(selection.IsDefault);
+
+        selection.AddEarlierYear();
+
+        Assert.IsFalse(selection.IsDefault);
+
+        selection.Reset();
+
+        Assert.IsTrue(selection.IsDefault);
+    }
+
+    [TestMethod]
     public async Task ExpandedTilesExposePeriodAndDailyExtremesMetricGroups()
     {
         var service = CreateService();

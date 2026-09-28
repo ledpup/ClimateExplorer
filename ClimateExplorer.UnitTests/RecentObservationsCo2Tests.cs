@@ -57,6 +57,42 @@ public class RecentObservationsCo2Tests
     }
 
     [TestMethod]
+    public async Task LoadData_ForceRefreshTrue_BypassesCacheAndRefetches()
+    {
+        var dataService = new Mock<IDataService>();
+        dataService
+            .Setup(x => x.GetClimateRecords(
+                ContextId,
+                DataType.CO2,
+                null,
+                It.IsAny<bool>(),
+                It.IsAny<int?>(),
+                It.IsAny<int?>(),
+                It.IsAny<int?>(),
+                false,
+                It.IsAny<int?>()))
+            .ReturnsAsync(CreateResponse(CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14))));
+        var service = CreateService(dataService);
+
+        await service.LoadData(ContextId, ObservationDomainCatalog.Co2, preferredAdjustment: null);
+        await service.LoadData(ContextId, ObservationDomainCatalog.Co2, preferredAdjustment: null);
+        await service.LoadData(ContextId, ObservationDomainCatalog.Co2, preferredAdjustment: null, forceRefresh: true);
+
+        dataService.Verify(
+            x => x.GetClimateRecords(
+                ContextId,
+                DataType.CO2,
+                null,
+                It.IsAny<bool>(),
+                It.IsAny<int?>(),
+                It.IsAny<int?>(),
+                It.IsAny<int?>(),
+                false,
+                It.IsAny<int?>()),
+            Times.Exactly(2));
+    }
+
+    [TestMethod]
     public async Task Calculate_Co2Domain_ProducesNoSeasonTilesAndFormatsPpm()
     {
         var dataService = new Mock<IDataService>();

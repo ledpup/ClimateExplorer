@@ -87,6 +87,7 @@ public partial class RecentObservationsPanel
     private bool IsAddEarlierSeasonDisabled => !periodSelection.CanAddEarlierSeason(GetAvailableOffsets(RecentObservationPeriodKind.Season));
     private bool IsAddEarlierYearDisabled => !periodSelection.CanAddEarlierYear(GetAvailableOffsets(RecentObservationPeriodKind.Year));
     private bool IsRemoveAllDisabled => CurrentTiles.Count == 0;
+    private bool IsDisplayingDefaultTiles => periodSelection.IsDefault;
     private DataAdjustment? SelectedDataAdjustment => selectedDataAdjustment;
     private List<DataAdjustment?> AvailableDataAdjustments { get; set; } = [];
 
@@ -319,6 +320,42 @@ public partial class RecentObservationsPanel
     {
         periodSelection.Reset();
         RecalculateLoadedTabs();
+    }
+
+    // Only offered once the default tiles are already showing (see IsDisplayingDefaultTiles), so
+    // this just needs to re-fetch the active tab's data past the client-side cache; the tile
+    // selection itself is already at its default and doesn't need resetting.
+    private async Task RefreshCurrentTab()
+    {
+        var domain = ActiveDomain;
+        if (Context is null || domain is null)
+        {
+            return;
+        }
+
+        var state = GetState(domain.Key);
+        if (state.IsLoading)
+        {
+            return;
+        }
+
+        state.IsLoading = true;
+        state.ErrorMessage = null;
+
+        try
+        {
+            state.DataSet = await RecentObservationsService.LoadData(Context.Id, domain, domain.SupportsAdjustment ? SelectedDataAdjustment : null, forceRefresh: true);
+            RecalculateTab(domain, updateSelectedReferenceDate: domain.Key == ActiveDomain?.Key);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Unable to refresh recent {Domain} observations for {ContextId}", domain.Key, Context.Id);
+            state.ErrorMessage = $"Unable to refresh recent {domain.TabLabel.ToLowerInvariant()} observations.";
+        }
+        finally
+        {
+            state.IsLoading = false;
+        }
     }
 
     private void AddBulkTiles(RecentObservationPeriodKind family, int totalCount)

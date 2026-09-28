@@ -14,6 +14,7 @@ public sealed class RecentObservationPeriodSelection
     private readonly SortedSet<int> visibleYearOffsets = [0];
     private bool isLatestSevenDaysRemoved;
     private bool defaultsSeeded;
+    private bool isModified;
 
     public int PreviousDayCount => visiblePreviousDayOffsets.Count;
     public int PreviousMonthCount => visibleMonthOffsets.Count(offset => offset > 0);
@@ -23,6 +24,13 @@ public sealed class RecentObservationPeriodSelection
     public bool IsAddEarlierMonthDisabled => !CanAddEarlierMonth();
     public bool IsAddEarlierSeasonDisabled => !CanAddEarlierSeason();
     public bool IsAddEarlierYearDisabled => !CanAddEarlierYear();
+
+    /// <summary>
+    /// True while nothing has been added or removed by the user since the last <see cref="Reset"/>.
+    /// Automatic seeding by <see cref="EnsureDefaults"/> doesn't count as a modification - it's
+    /// still the default view for domains where the "to date" period isn't meaningful.
+    /// </summary>
+    public bool IsDefault => !isModified;
 
     /// <summary>
     /// Ensures a month/season/year tile is always visible by default: if a domain's tiles don't
@@ -86,6 +94,7 @@ public sealed class RecentObservationPeriodSelection
         foreach (var offset in availableOffsets.Where(offset => offset > currentMaxOffset).Order().Take(count))
         {
             visibleOffsets.Add(offset);
+            isModified = true;
         }
     }
 
@@ -154,10 +163,13 @@ public sealed class RecentObservationPeriodSelection
     public void EnsureVisible(RecentObservationPeriodKind kind)
     {
         GetVisibleOffsets(kind).Add(0);
+        isModified = true;
     }
 
     public void Remove(RecentObservationTileViewModel tile)
     {
+        isModified = true;
+
         if (tile.PeriodKind == RecentObservationPeriodKind.LatestSevenDays)
         {
             isLatestSevenDaysRemoved = true;
@@ -182,6 +194,7 @@ public sealed class RecentObservationPeriodSelection
         visibleYearOffsets.Add(0);
         isLatestSevenDaysRemoved = false;
         defaultsSeeded = false;
+        isModified = false;
     }
 
     private static bool SeedIfCurrentPeriodMissing(
@@ -237,6 +250,7 @@ public sealed class RecentObservationPeriodSelection
         if (nextOffset.HasValue)
         {
             visibleOffsets.Add(nextOffset.Value);
+            isModified = true;
         }
     }
 
