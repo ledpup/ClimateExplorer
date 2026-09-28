@@ -335,7 +335,7 @@ public sealed partial class RecentObservationsCalculator
     {
         if (date == referenceDate && referenceDate == today)
         {
-            return "Today";
+            return "Today - " + FormatShortDayMonth(date);
         }
 
         if (date == referenceDate && referenceDate == today.AddDays(-1))
