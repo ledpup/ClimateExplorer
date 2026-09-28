@@ -340,12 +340,12 @@ public sealed partial class RecentObservationsCalculator
 
         if (date == referenceDate && referenceDate == today.AddDays(-1))
         {
-            return "Yesterday";
+            return "Yesterday - " + FormatShortDayMonth(date);
         }
 
         if (date == referenceDate.AddDays(-1) && referenceDate == today)
         {
-            return "Yesterday";
+            return "Yesterday - " + FormatShortDayMonth(date);
         }
 
         return date.Year == today.Year
