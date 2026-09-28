@@ -88,6 +88,25 @@ public partial class RecentObservationsPanel
     private bool IsAddEarlierYearDisabled => !periodSelection.CanAddEarlierYear(GetAvailableOffsets(RecentObservationPeriodKind.Year));
     private bool IsRemoveAllDisabled => CurrentTiles.Count == 0;
     private bool IsDisplayingDefaultTiles => periodSelection.IsDefault;
+
+    // Offered only once the newest data on hand is more than a day old - a "to date" reading
+    // for today or yesterday is the expected steady state (today's isn't published yet, or
+    // yesterday's is the latest so far), so refreshing wouldn't turn up anything new.
+    private bool IsCurrentDataStale
+    {
+        get
+        {
+            var maximumReferenceDate = CurrentState.Result?.MaximumReferenceDate;
+            if (maximumReferenceDate is null)
+            {
+                return true;
+            }
+
+            var yesterday = DateOnly.FromDateTime(DateTime.Now).AddDays(-1);
+            return maximumReferenceDate < yesterday;
+        }
+    }
+
     private DataAdjustment? SelectedDataAdjustment => selectedDataAdjustment;
     private List<DataAdjustment?> AvailableDataAdjustments { get; set; } = [];
 
