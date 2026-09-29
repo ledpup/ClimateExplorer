@@ -2,7 +2,7 @@
                                                                 ? "block-layout" 
                                                                 : (ContentLayoutType == CollapserContentLayoutTypes.FlexboxColumns 
                                                                     ? "flexbox-column-layout" 
-                                                                    : "flexbox-row-layout")) + (NoBottomMargin ? " no-bottom-margin" : ""))">
+                                                                    : "flexbox-row-layout")) + (NoBottomMargin ? " no-bottom-margin" : "") + (CollapserSize == CollapserSizes.Small && !ShowContent ?" collapsible-small" : ""))">
     @if (AllowCollapse)
     {
         <div class="collapsible-header">

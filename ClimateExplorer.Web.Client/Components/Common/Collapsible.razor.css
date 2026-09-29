@@ -89,6 +89,14 @@
         margin-bottom: 4px;
     }
 
+    .collapsible-panel.collapsible-small {
+        padding: 4px 8px;
+    }
+
+        .collapsible-panel.collapsible-small .collapsible-title-full {
+            min-height: 0;
+        }
+
 .collapsible-with-background {
     background-color: #f8f8f8;
     border-left: solid 4px #425f59;
