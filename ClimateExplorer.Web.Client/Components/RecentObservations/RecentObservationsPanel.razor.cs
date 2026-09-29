@@ -65,6 +65,7 @@ public partial class RecentObservationsPanel
     private IEnumerable<RecentObservationTileViewModel> SeasonTiles => CurrentTiles.Where(IsSeasonTile);
     private IEnumerable<RecentObservationTileViewModel> TilesAfterSeasonControls => CurrentTiles.Where(IsAfterSeasonControls);
     private string CurrentEmptyMessage => CurrentState.Result?.EmptyMessage ?? "No recent observations are available.";
+    private bool ShowConfiguration => string.IsNullOrWhiteSpace(CurrentState.ErrorMessage) && (CurrentTiles.Count > 0 || CurrentState.Result is not null);
     private string AddDayButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.Daily, "day");
     private string AddMonthButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.Month, "month");
     private string AddSeasonButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.Season, "season");
@@ -190,8 +191,23 @@ public partial class RecentObservationsPanel
             return;
         }
 
-        GetState(domain.Key).Reset();
+        var state = GetState(domain.Key);
+        UnpinReferenceDateIfLatest(state.Result);
+        state.Reset();
         await EnsureTabLoaded(domain);
+    }
+
+    // RecalculateTab writes each result's reference date back into selectedReferenceDate, so after
+    // the first load every later calculation is pinned to that day - even once reloaded data has a
+    // newer one. While it's still sitting on the newest day the old data had, the user is viewing
+    // "latest" rather than a date they picked, so clear it and let the reloaded data resolve to its
+    // own newest day.
+    private void UnpinReferenceDateIfLatest(RecentObservationsTabResult? previousResult)
+    {
+        if (previousResult?.MaximumReferenceDate is { } maximumReferenceDate && selectedReferenceDate == maximumReferenceDate)
+        {
+            selectedReferenceDate = null;
+        }
     }
 
     private async Task EnsureTabLoaded(ObservationDomain domain)
@@ -365,6 +381,8 @@ public partial class RecentObservationsPanel
         try
         {
             state.DataSet = await RecentObservationsService.LoadData(Context.Id, domain, domain.SupportsAdjustment ? SelectedDataAdjustment : null, forceRefresh: true);
+            state.RefreshFailed = state.DataSet.RefreshFailed;
+            UnpinReferenceDateIfLatest(state.Result);
             RecalculateTab(domain, updateSelectedReferenceDate: domain.Key == ActiveDomain?.Key);
         }
         catch (Exception ex)

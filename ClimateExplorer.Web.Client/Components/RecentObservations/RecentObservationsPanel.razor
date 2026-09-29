@@ -6,9 +6,9 @@
 @using static ClimateExplorer.Core.Enums
 
 <div class="recent-observations-panel">
-    <RecentObservationTabs Domains="@(Context?.Domains ?? [])" SelectedTab="@ActiveTabKey" SelectedTabChanged="@OnTabChanged" />
+    <div class="recent-observations-scroll-area" aria-live="polite">
+        <RecentObservationTabs Domains="@(Context?.Domains ?? [])" SelectedTab="@ActiveTabKey" SelectedTabChanged="@OnTabChanged" />
 
-    <div class="recent-observations-body" aria-live="polite">
         @if (!string.IsNullOrWhiteSpace(CurrentState.ErrorMessage))
         {
             <div class="recent-observations-state error">
@@ -26,15 +26,6 @@
                 </div>
             }
             <div class="chart-controls recent-observations-period-controls mb-4">
-                @if (ActiveDomain?.SupportsAdjustment == true)
-                {
-                    <DelayedTooltip Text="<p>By using data from nearby stations, adjusted temperatures are corrected for non-climatic influences such as station relocations and instrument changes.</p><p>Uncheck to see raw, unmodified measurements.</p><p>If disabled, there is only adjusted or raw data available, not both.</p>" Multiline="true">
-                        <ClimateCheckbox Text="Adjusted"
-                                          Checked="@(SelectedDataAdjustment == DataAdjustment.Adjusted)"
-                                          CheckedChanged="OnAdjustedChanged"
-                                          Disabled="@(AvailableDataAdjustments.Count == 1)" />
-                    </DelayedTooltip>
-                }
                 <DelayedTooltip Text="@($"Add {AddDayButtonLabel}")">
                     <ClimateButton Icon="fas fa-plus" Text="@AddDayButtonLabel" Disabled="@IsAddEarlierDayDisabled" OnClick="AddEarlierDay" />
                 </DelayedTooltip>
@@ -80,6 +71,12 @@
                 <DelayedTooltip Text="Remove all tiles">
                     <ClimateButton Text="Remove all" Disabled="@IsRemoveAllDisabled" OnClick="RemoveAllTiles" />
                 </DelayedTooltip>
+                <DelayedTooltip Text="Reset to default tiles">
+                    <ClimateButton Icon="fas fa-rotate-left"
+                                   AriaLabel="Reset to default tiles"
+                                   Disabled="@(CurrentState.IsLoading || IsDisplayingDefaultTiles)"
+                                   OnClick="ResetTilesToDefault" />
+                </DelayedTooltip>
                 @if (IsCurrentDataStale)
                 {
                     <DelayedTooltip Text="Refresh with the latest data">
@@ -89,12 +86,6 @@
                                         OnClick="RefreshCurrentTab" />
                     </DelayedTooltip>
                 }
-                <DelayedTooltip Text="Reset to default tiles">
-                    <ClimateButton Icon="fas fa-rotate-left"
-                                    AriaLabel="Reset to default tiles"
-                                    Disabled="@(CurrentState.IsLoading || IsDisplayingDefaultTiles)"
-                                    OnClick="ResetTilesToDefault" />
-                </DelayedTooltip>
 
                 @if (HasExpandableCurrentTiles)
                 {
@@ -106,12 +97,6 @@
                             <span class="oi oi-chevron-right recent-observations-toggle-all-chevron @(AreAllExpandableCurrentTilesExpanded ? "expanded" : string.Empty)" aria-hidden="true"></span>
                             @ExpandCollapseAllLabel
                         </ClimateButton>
-
-                        <DelayedTooltip Text="When on, selecting a statistics tab (e.g. Trend) on one tile applies it to all expanded tiles." Style="display: block">
-                            <ClimateCheckbox Text="Synchronise tabs"
-                                              Checked="@synchroniseTabs"
-                                              CheckedChanged="@(value => synchroniseTabs = value)" />
-                        </DelayedTooltip>
                     </div>
                 }
             </div>
@@ -154,81 +139,98 @@
                     <span>@CurrentEmptyMessage</span>
                 </div>
             }
-
-            @if (CurrentTiles.Count > 0 || CurrentState.Result is not null)
-            {
-                <div style="max-width: 1024px;">
-                    <Collapsible Title="Configuration" InitiallyShowContents="false">
-                        <Content>
-                            <div class="recent-observations-config-grid mb-3">
-                                @if (CurrentState.Result?.ReferenceDate is not null)
-                                {
-                                    <div class="recent-observations-config-field">
-                                        <DelayedTooltip Text="Set a custom reference date to view the most recent observations as of that date." Style="display: block">
-                                            <div class="recent-observations-config-control recent-observations-reference-date-control">
-                                                <label for="@ReferenceDateInputId">View as of</label>
-                                                <input id="@ReferenceDateInputId"
-                                                    type="text"
-                                                    class="form-control form-control-sm @ReferenceDateInputValidationClass"
-                                                    placeholder="YYYY-MM-DD"
-                                                    value="@referenceDateInputValue"
-                                                    aria-describedby="@ReferenceDateHelpId"
-                                                    aria-invalid="@(!string.IsNullOrWhiteSpace(referenceDateValidationMessage))"
-                                                    @oninput="OnReferenceDateInput"
-                                                    @onchange="OnReferenceDateChanged" />
-                                                <ClimateButton Icon="fas fa-rotate-left"
-                                                                Class="recent-observations-reference-date-reset"
-                                                                AriaLabel="Reset to latest reference date"
-                                                                title="Reset to latest reference date"
-                                                                Disabled="@IsResetReferenceDateDisabled"
-                                                                OnClick="ResetReferenceDate" />
-                                            </div>
-                                        </DelayedTooltip>
-                                        @if (!string.IsNullOrWhiteSpace(referenceDateValidationMessage))
-                                        {
-                                            <div class="invalid-feedback d-block">@referenceDateValidationMessage</div>
-                                        }
-                                        @if (!string.IsNullOrWhiteSpace(CurrentState.Result.ReferenceDateNote))
-                                        {
-                                            <span class="recent-observations-reference-date-note">@CurrentState.Result.ReferenceDateNote</span>
-                                        }
-                                    </div>
-                                    <div class="recent-observations-config-field">
-                                        <DelayedTooltip Text="Choose whether comparisons use data available up until the selected reference date or the station's full record." Style="display: block">
-                                            <div class="recent-observations-config-control">
-                                                <label for="@ComparisonRangeInputId">Comparison range</label>
-                                                <Select TValue="ComparisonEndMode"
-                                                        ElementId="@ComparisonRangeInputId"
-                                                        Value="@selectedComparisonEndMode"
-                                                        ValueChanged="@OnComparisonEndModeChanged"
-                                                        Size="Size.Small">
-                                                    <SelectItem Value="@ComparisonEndMode.FullDataset">Entire dataset</SelectItem>
-                                                    <SelectItem Value="@ComparisonEndMode.ReferenceDate">Up to view date</SelectItem>
-                                                </Select>
-                                            </div>
-                                        </DelayedTooltip>
-                                    </div>
-                                }
-                                <div class="recent-observations-config-field">
-                                    <DelayedTooltip Text="Historical comparisons are shown when sufficient data is available.<br />Completeness threshold sets the minimum percentage of observations required." Style="display: block">
-                                        <div class="recent-observations-config-control recent-observations-threshold">
-                                            <label for="recent-observations-completeness-threshold">Completeness threshold %</label>
-                                            <input id="recent-observations-completeness-threshold"
-                                                type="number"
-                                                class="form-control form-control-sm"
-                                                min="@RecentObservationCompletenessThreshold.MinimumPercentage"
-                                                max="@RecentObservationCompletenessThreshold.MaximumPercentage"
-                                                step="1"
-                                                value="@CompletenessThresholdPercent"
-                                                @oninput="OnCompletenessThresholdChanged" />
-                                        </div>
-                                    </DelayedTooltip>
-                                </div>
-                            </div>
-                        </Content>
-                    </Collapsible>
-                </div>
-            }
         }
     </div>
+
+    @if (ShowConfiguration)
+    {
+        <div class="recent-observations-config-footer">
+            <Collapsible Title="Configuration" InitiallyShowContents="false" NoBottomMargin="true">
+                <Content>
+                    <div class="recent-observations-config-grid mb-3">
+                        @if (CurrentState.Result?.ReferenceDate is not null)
+                        {
+                            <div class="recent-observations-config-field">
+                                <DelayedTooltip Text="Set a custom reference date to view the most recent observations as of that date." Style="display: block">
+                                    <div class="recent-observations-config-control recent-observations-reference-date-control">
+                                        <label for="@ReferenceDateInputId">View as of</label>
+                                        <input id="@ReferenceDateInputId"
+                                            type="text"
+                                            class="form-control form-control-sm @ReferenceDateInputValidationClass"
+                                            placeholder="YYYY-MM-DD"
+                                            value="@referenceDateInputValue"
+                                            aria-describedby="@ReferenceDateHelpId"
+                                            aria-invalid="@(!string.IsNullOrWhiteSpace(referenceDateValidationMessage))"
+                                            @oninput="OnReferenceDateInput"
+                                            @onchange="OnReferenceDateChanged" />
+                                        <ClimateButton Icon="fas fa-rotate-left"
+                                                        Class="recent-observations-reference-date-reset"
+                                                        AriaLabel="Reset to latest reference date"
+                                                        title="Reset to latest reference date"
+                                                        Disabled="@IsResetReferenceDateDisabled"
+                                                        OnClick="ResetReferenceDate" />
+                                    </div>
+                                </DelayedTooltip>
+                                @if (!string.IsNullOrWhiteSpace(referenceDateValidationMessage))
+                                {
+                                    <div class="invalid-feedback d-block">@referenceDateValidationMessage</div>
+                                }
+                                @if (!string.IsNullOrWhiteSpace(CurrentState.Result.ReferenceDateNote))
+                                {
+                                    <span class="recent-observations-reference-date-note">@CurrentState.Result.ReferenceDateNote</span>
+                                }
+                            </div>
+                            <div class="recent-observations-config-field">
+                                <DelayedTooltip Text="Choose whether comparisons use data available up until the selected reference date or the station's full record." Style="display: block">
+                                    <div class="recent-observations-config-control">
+                                        <label for="@ComparisonRangeInputId">Comparison range</label>
+                                        <Select TValue="ComparisonEndMode"
+                                                ElementId="@ComparisonRangeInputId"
+                                                Value="@selectedComparisonEndMode"
+                                                ValueChanged="@OnComparisonEndModeChanged"
+                                                Size="Size.Small">
+                                            <SelectItem Value="@ComparisonEndMode.FullDataset">Entire dataset</SelectItem>
+                                            <SelectItem Value="@ComparisonEndMode.ReferenceDate">Up to view date</SelectItem>
+                                        </Select>
+                                    </div>
+                                </DelayedTooltip>
+                            </div>
+                        }
+                        <div class="recent-observations-config-field">
+                            <DelayedTooltip Text="Historical comparisons are shown when sufficient data is available.<br />Completeness threshold sets the minimum percentage of observations required." Style="display: block">
+                                <div class="recent-observations-config-control recent-observations-threshold">
+                                    <label for="recent-observations-completeness-threshold">Completeness threshold %</label>
+                                    <input id="recent-observations-completeness-threshold"
+                                        type="number"
+                                        class="form-control form-control-sm"
+                                        min="@RecentObservationCompletenessThreshold.MinimumPercentage"
+                                        max="@RecentObservationCompletenessThreshold.MaximumPercentage"
+                                        step="1"
+                                        value="@CompletenessThresholdPercent"
+                                        @oninput="OnCompletenessThresholdChanged" />
+                                </div>
+                            </DelayedTooltip>
+                        </div>
+                    </div>
+                    @if (ActiveDomain?.SupportsAdjustment == true)
+                    {
+                        <DelayedTooltip Text="<p>By using data from nearby stations, adjusted temperatures are corrected for non-climatic influences such as station relocations and instrument changes.</p><p>Uncheck to see raw, unmodified measurements.</p><p>If disabled, there is only adjusted or raw data available, not both.</p>" Multiline="true">
+                            <ClimateCheckbox Text="Use adjusted data"
+                                                Checked="@(SelectedDataAdjustment == DataAdjustment.Adjusted)"
+                                                CheckedChanged="OnAdjustedChanged"
+                                                Disabled="@(AvailableDataAdjustments.Count == 1)" />
+                        </DelayedTooltip>
+                    }
+                    <div>
+                        <h4 class="mt-3">User interface</h4>
+                        <DelayedTooltip Text="When on, selecting a statistics tab (e.g. Trend) on one tile applies it to all expanded tiles.">
+                            <ClimateCheckbox Text="Synchronise tabs"
+                                                Checked="@synchroniseTabs"
+                                                CheckedChanged="@(value => synchroniseTabs = value)" />
+                        </DelayedTooltip>
+                    </div>
+                </Content>
+            </Collapsible>
+        </div>
+    }
 </div>
