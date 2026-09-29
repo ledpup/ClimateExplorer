@@ -13,6 +13,7 @@ public partial class Collapsible
         Normal,
         Large,
         ExtraLarge,
+        Small,
     }
 
     public enum CollapserContentLayoutTypes

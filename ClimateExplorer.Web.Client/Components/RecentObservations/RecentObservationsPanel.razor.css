@@ -10,24 +10,42 @@
     margin-top: 1.5rem;
 }
 
+/* Inside SidePanel, fill the body edge to edge (cancelling its padding) so the scrollbar sits at the far edge. */
 @media (min-width: 768px) {
     .recent-observations-panel {
         display: flex;
         flex-direction: column;
-        height: 100%;
+        margin: -14px -18px -18px;
+        height: calc(100% + 32px);
     }
 
     .recent-observations-scroll-area {
         flex: 1 1 auto;
         min-height: 0;
         overflow-y: auto;
+        padding: 14px 18px 18px;
     }
 
     .recent-observations-config-footer {
         border-top: 1px solid #d7e2df;
         flex-shrink: 0;
         margin-top: 0;
-        padding-top: 1rem;
+        padding: 1rem 18px 12px;
+    }
+}
+
+@media (min-width: 1025px) {
+    .recent-observations-panel {
+        margin: -20px -32px -24px;
+        height: calc(100% + 44px);
+    }
+
+    .recent-observations-scroll-area {
+        padding: 20px 32px 24px;
+    }
+
+    .recent-observations-config-footer {
+        padding: 1rem 32px 12px;
     }
 }
 
