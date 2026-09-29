@@ -2,8 +2,33 @@
     min-height: 20rem;
 }
 
-.recent-observations-body {
+.recent-observations-scroll-area {
     min-height: 16rem;
+}
+
+.recent-observations-config-footer {
+    margin-top: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .recent-observations-panel {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .recent-observations-scroll-area {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+    }
+
+    .recent-observations-config-footer {
+        border-top: 1px solid #d7e2df;
+        flex-shrink: 0;
+        margin-top: 0;
+        padding-top: 1rem;
+    }
 }
 
 .recent-observation-grid {

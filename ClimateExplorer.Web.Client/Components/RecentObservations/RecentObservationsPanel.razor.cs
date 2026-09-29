@@ -65,6 +65,7 @@ public partial class RecentObservationsPanel
     private IEnumerable<RecentObservationTileViewModel> SeasonTiles => CurrentTiles.Where(IsSeasonTile);
     private IEnumerable<RecentObservationTileViewModel> TilesAfterSeasonControls => CurrentTiles.Where(IsAfterSeasonControls);
     private string CurrentEmptyMessage => CurrentState.Result?.EmptyMessage ?? "No recent observations are available.";
+    private bool ShowConfiguration => string.IsNullOrWhiteSpace(CurrentState.ErrorMessage) && (CurrentTiles.Count > 0 || CurrentState.Result is not null);
     private string AddDayButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.Daily, "day");
     private string AddMonthButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.Month, "month");
     private string AddSeasonButtonLabel => CreateAddButtonLabel(RecentObservationPeriodKind.Season, "season");
