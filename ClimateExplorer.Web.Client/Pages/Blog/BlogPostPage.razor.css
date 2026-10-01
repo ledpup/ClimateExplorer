@@ -80,6 +80,21 @@ h1 {
     line-height: 1.7;
 }
 
+.post-body ::deep table {
+    border-collapse: collapse;
+    margin: 1rem 0 1.5rem 0;
+}
+
+.post-body ::deep th,
+.post-body ::deep td {
+    padding: 0.4rem 1.5rem 0.4rem 0;
+    text-align: left;
+}
+
+.post-body ::deep th {
+    font-weight: 700;
+}
+
 .post-navigation {
     display: flex;
     justify-content: space-between;
