@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ClimateExplorer.Core;
+using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Data.Downloading.Orchestration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -99,6 +100,40 @@ public sealed class DataSetDownloadMetadataTests
         Assert.HasCount(1, asset.Measurements);
         Assert.AreEqual("CO2", asset.Measurements.Single().MeasurementDefinition.DataType.ToString());
         Assert.AreEqual(Core.Enums.DataResolution.Daily, asset.Measurements.Single().MeasurementDefinition.DataResolution);
+    }
+
+    [TestMethod]
+    [DataRow(Core.Enums.DataResolution.Daily, @"CO2\co2_daily_mlo.txt")]
+    [DataRow(Core.Enums.DataResolution.Monthly, @"CO2\co2_mm_mlo.txt")]
+    [DataRow(null, @"CO2\co2_mm_mlo.txt")]
+    public async Task ResolveAsync_Co2RequestAtEachResolution_ResolvesThatResolutionsAsset(
+        Core.Enums.DataResolution? resolution,
+        string expectedRelativePath)
+    {
+        var request = new PostDataSetsRequestBody
+        {
+            SeriesSpecifications =
+            [
+                new SeriesSpecification
+                {
+                    DataSetDefinitionId = Guid.Parse("42c9195e-edc0-4894-97dc-923f9d5e72f0"),
+                    LocationId = Guid.Parse("8B00649C-E232-49B3-9065-3866FD1B9952"),
+                    DataType = Core.Enums.DataType.CO2,
+                    DataAdjustment = null,
+                    DataResolution = resolution,
+                },
+            ],
+            BinningRule = BinGranularities.ByYearAndMonth,
+            BinAggregationFunction = ContainerAggregationFunctions.Mean,
+            CupSize = 1,
+            RequiredBinDataProportion = 1,
+            RequiredBucketDataProportion = 1,
+            RequiredCupDataProportion = 1,
+        };
+
+        var assets = await CreateResolver().ResolveAsync(request, CancellationToken.None);
+
+        Assert.AreEqual(expectedRelativePath, assets.Single().RelativePath);
     }
 
     [TestMethod]

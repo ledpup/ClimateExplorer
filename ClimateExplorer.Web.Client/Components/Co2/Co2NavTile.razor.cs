@@ -26,7 +26,7 @@ public partial class Co2NavTile : IDisposable
 
     private string? TooltipText =>
         Value.HasValue && MeasurementMonth.HasValue
-            ? $"<p>Atmospheric CO₂ (deseasonalised)</p><p>{Value.Value.ToString("F2")} parts per million</p><p>Recorded {CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(MeasurementMonth.Value)} {MeasurementYear}</p><p>From Mauna Loa Observatory</p>"
+            ? $"<p>Atmospheric CO₂ (deseasonalised)</p><p><b>{Value.Value.ToString("F2")}</b> parts per million</p><p>Recorded {CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(MeasurementMonth.Value)} {MeasurementYear}, Mauna Loa Observatory</p>"
             : null;
 
     public void Dispose()

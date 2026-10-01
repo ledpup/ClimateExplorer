@@ -3,6 +3,7 @@ namespace ClimateExplorer.Data.Downloading.Orchestration;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Data.Downloading.Models;
+using static ClimateExplorer.Core.Enums;
 
 public sealed class DataSetSourceAssetResolver(string? dataFileMappingFolder = null)
 {
@@ -19,9 +20,18 @@ public sealed class DataSetSourceAssetResolver(string? dataFileMappingFolder = n
         foreach (var specification in request.SeriesSpecifications ?? [])
         {
             var dataSet = definitions.Single(x => x.Id == specification.DataSetDefinitionId);
-            var measurement = dataSet.MeasurementDefinitions!.Single(x =>
-                x.DataType == specification.DataType &&
-                x.DataAdjustment == specification.DataAdjustment);
+            var candidates = dataSet.MeasurementDefinitions!
+                .Where(x =>
+                    x.DataType == specification.DataType &&
+                    x.DataAdjustment == specification.DataAdjustment)
+                .ToList();
+
+            // Some datasets define the same DataType/DataAdjustment at more than one resolution (e.g. CO2
+            // daily + monthly, each with its own source file). Disambiguate exactly as SeriesProvider does:
+            // by the requested resolution, defaulting to Monthly.
+            var measurement = candidates.Count > 1
+                ? candidates.Single(x => x.DataResolution == (specification.DataResolution ?? DataResolution.Monthly))
+                : candidates.Single();
             var downloaderKey = measurement.DataDownloaderKey ?? dataSet.DataDownloaderKey;
             if (downloaderKey == null)
             {

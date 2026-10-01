@@ -44,4 +44,6 @@ On 26 August 2026, a slab of ice and rock roughly 0.2 km² broke away from Langt
 
 Until these glaciers melt away, events like this will occur again. When they're gone, earthquakes will happen for centuries as the land rises after the weight is lifted. The lives of the people who live near glaciers will change fundamentally as their climate changes.
 
-![Glacier: 1928, 2002, 2024]({{site.url}}/blog/assets/glacier_1928-2024.jpeg)
+![Blomstrandbreen glacier, Svalbard: 1928, 2002, 2024]({{site.url}}/blog/assets/glacier_1928-2024.jpeg)
+
+*Blomstrandbreen, Svalbard, seen from Ny-Ålesund in 1928 (Norwegian Polar Institute archive), 2002 and 2024 (both by Christian Åslund, the latter from the same position, while aboard the Greenpeace vessel Witness). Photograph: Christian Åslund / Norwegian Polar Institute / Greenpeace, via [The Guardian](https://www.theguardian.com/environment/2024/nov/05/people-do-not-want-to-believe-it-is-true-the-photographer-capturing-the-vanishing-of-glaciers).*
