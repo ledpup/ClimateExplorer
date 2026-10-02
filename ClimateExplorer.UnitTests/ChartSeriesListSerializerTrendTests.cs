@@ -141,6 +141,33 @@ public class ChartSeriesListSerializerTrendTests
         Assert.AreEqual(MeteorologicalHemisphere.Northern, parsed.Hemisphere);
     }
 
+    [TestMethod]
+    public void ParseChartSeriesDefinitionList_LegacyMovingAverageToken_MapsToCentredMovingAverage()
+    {
+        // Links shared before the rename (including ones in blog posts) carry "MovingAverage" in segment 9.
+        var series = CreateChartSeries();
+        series.Smoothing = SeriesSmoothingOptions.CentredMovingAverage;
+        var segments = BuildUrlComponent(series).Split(',');
+        segments[9] = "MovingAverage";
+
+        var parsed = Parse(string.Join(',', segments));
+
+        Assert.AreEqual(SeriesSmoothingOptions.CentredMovingAverage, parsed.Smoothing);
+    }
+
+    [TestMethod]
+    [DataRow(SeriesSmoothingOptions.CentredMovingAverage)]
+    [DataRow(SeriesSmoothingOptions.BoundaryAdjustedMovingAverage)]
+    public void ParseChartSeriesDefinitionList_RoundTrippedSmoothing_IsPreserved(SeriesSmoothingOptions smoothing)
+    {
+        var series = CreateChartSeries();
+        series.Smoothing = smoothing;
+
+        var parsed = RoundTrip(series);
+
+        Assert.AreEqual(smoothing, parsed.Smoothing);
+    }
+
     private static ChartSeriesDefinition RoundTrip(ChartSeriesDefinition series)
     {
         return Parse(BuildUrlComponent(series));

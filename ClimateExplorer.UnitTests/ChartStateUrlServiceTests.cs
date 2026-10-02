@@ -166,7 +166,7 @@ public class ChartStateUrlServiceTests
             IsLocked = false,
             TemporalCalculation = TemporalCalculationOptions.None,
             ShowTrendline = true,
-            Smoothing = SeriesSmoothingOptions.MovingAverage,
+            Smoothing = SeriesSmoothingOptions.CentredMovingAverage,
             SmoothingWindow = 20,
             Value = SeriesValueOptions.Value,
             Year = null,

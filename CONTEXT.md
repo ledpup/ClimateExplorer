@@ -284,7 +284,7 @@ All modals use `Class="custom-modal-header"` on `<ModalHeader>`:
 | **`@key` on foreach** | `ChartSeriesDefinition.Id` (Guid) used as `@key` for stable component identity across re-renders |
 | **`CreateNewListWithoutDuplicates()`** | Extension method called after mutations to `ChartSeriesList` |
 | **`DataSubstitute` chains** | Defines fallback matching for data lookup: `StandardTemperatureDataMatches()` tries TempMax adjusted → TempMean → TempMax unadjusted |
-| **`SeriesWithData` pipeline** | Three dataset stages: `SourceDataSet` (raw from API) → `PreProcessedDataSet` (after moving average) → `ProcessedDataSet` (gap-filled, display-range filtered) |
+| **`SeriesWithData` pipeline** | Three dataset stages: `SourceDataSet` (raw from API) → `PreProcessedDataSet` (after smoothing) → `ProcessedDataSet` (gap-filled, display-range filtered) |
 | **C# 14 collection expressions** | Used throughout: `List<T> x = []`, `T[] arr = [a, b, c]` |
 | **Tuple returns over `out` params** | Preferred for methods returning multiple values |
 | **`::deep` always required** | For styling Blazorise child elements from a parent component's `.razor.css` |

@@ -96,7 +96,8 @@
                                             Value="@ChartSeries.Smoothing"
                                             ValueChanged="@OnSmoothingChanged">
                                         <SelectItem Value="SeriesSmoothingOptions.None">None</SelectItem>
-                                        <SelectItem Value="SeriesSmoothingOptions.MovingAverage">Moving average</SelectItem>
+                                        <SelectItem Value="SeriesSmoothingOptions.BoundaryAdjustedMovingAverage">Moving average</SelectItem>
+                                        <SelectItem Value="SeriesSmoothingOptions.CentredMovingAverage">Centred moving average (trims ends)</SelectItem>
                                     </Select>
                                 </span>
                             </div>

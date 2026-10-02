@@ -24,6 +24,11 @@ using static ClimateExplorer.Core.Enums;
 /// </summary>
 public sealed class ChartDataBuilder : IChartDataBuilder
 {
+    /// <summary>
+    /// Proportion of a smoothing window's slots that must hold a value for the point to be smoothed.
+    /// </summary>
+    private const float SmoothingRequiredDataThreshold = 0.75f;
+
     private readonly IDataService dataService;
     private readonly ILogger<ChartDataBuilder> logger;
 
@@ -412,11 +417,11 @@ public sealed class ChartDataBuilder : IChartDataBuilder
             }
         }
 
-        // If we're doing smoothing via the moving average, precalculate these data and add them to PreProcessedDataSets.
-        // We do this because the SimpleMovingAverage calculate function will remove some years from the start of the data set.
-        // It removes these years because it doesn't have a good enough average to present it to the user.
+        // If we're smoothing, precalculate these data and add them to PreProcessedDataSets.
+        // We do this because smoothing can leave some years without a value (e.g. the centred moving average
+        // can't fill a full window at the start and end of the data set).
         // Therefore, we need to calculate the smoothing before we calculate the start year - the basis for labelling the chart
-        // If we're not calculating a moving average, PreProcessedDataSets = SourceDataSets
+        // If we're not smoothing, PreProcessedDataSets = SourceDataSets
         foreach (var cs in chartSeriesWithData)
         {
             if (!HasFiniteValue(cs.SourceDataSet))
@@ -427,19 +432,22 @@ public sealed class ChartDataBuilder : IChartDataBuilder
                 continue;
             }
 
-            // We only support moving averages on linear bin granularities (e.g. Year, YearAndMonth) - not modular ones like MonthOnly
-            if (selectedBinGranularity.IsLinear() && cs.ChartSeries!.Smoothing == SeriesSmoothingOptions.MovingAverage)
+            // We only support smoothing on linear bin granularities (e.g. Year, YearAndMonth) - not modular ones like MonthOnly
+            var smoother = selectedBinGranularity.IsLinear() ? cs.ChartSeries!.Smoothing.CreateSmoother() : null;
+
+            if (smoother != null)
             {
-                var values =
-                    cs.SourceDataSet.DataRecords
-                    .Select(x => x.Value)
-                    .CalculateCentredMovingAverage(cs.ChartSeries.SmoothingWindow, 0.75f);
+                IEnumerable<double?> values =
+                    smoother.Smooth(
+                        cs.SourceDataSet.DataRecords.Select(x => x.Value).ToArray(),
+                        cs.ChartSeries!.SmoothingWindow,
+                        SmoothingRequiredDataThreshold);
 
                 if (values.Count(y => y != null) < 10)
                 {
                     messages.Add(new UserNotification
                     {
-                        Message = $"{cs.SourceDataSet.GeographicalEntity?.Name}: not enough <b>{cs.SourceDataSet.DataType.ToFriendlyName().ToLower()}</b> data for a moving average. Showing unsmoothed data instead.",
+                        Message = $"{cs.SourceDataSet.GeographicalEntity?.Name}: not enough <b>{cs.SourceDataSet.DataType.ToFriendlyName().ToLower()}</b> data for smoothing. Showing unsmoothed data instead.",
                         Type = NotificationType.Warning,
                         LocationName = cs.SourceDataSet.GeographicalEntity?.Name,
                     });

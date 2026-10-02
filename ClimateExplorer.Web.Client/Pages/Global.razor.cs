@@ -78,7 +78,7 @@ public partial class Global : ChartablePage
                     Aggregation = SeriesAggregationOptions.Mean,
                     BinGranularity = BinGranularities.ByYear,
                     TemporalCalculation = TemporalCalculationOptions.AnnualChange,
-                    Smoothing = SeriesSmoothingOptions.MovingAverage,
+                    Smoothing = SeriesSmoothingOptions.BoundaryAdjustedMovingAverage,
                     SmoothingWindow = 10,
                     Value = SeriesValueOptions.Value,
                     Year = null,
