@@ -161,8 +161,11 @@ public class ChartSeriesDefinition
             {
                 switch (Smoothing)
                 {
-                    case SeriesSmoothingOptions.MovingAverage:
+                    case SeriesSmoothingOptions.ShrinkingCentredMovingAverage:
                         segments.Add($"{SmoothingWindow} {(BinGranularity == BinGranularities.ByYear ? "year" : "month")} moving average");
+                        break;
+                    case SeriesSmoothingOptions.CentredMovingAverage:
+                        segments.Add($"{SmoothingWindow} {(BinGranularity == BinGranularities.ByYear ? "year" : "month")} centred moving average");
                         break;
                     case SeriesSmoothingOptions.Trendline:
                         segments.Add("Trendline");
@@ -344,18 +347,11 @@ public class ChartSeriesDefinition
         {
             switch (Smoothing)
             {
-                case SeriesSmoothingOptions.MovingAverage:
-                    string? unit = null;
-
-                    unit = BinGranularity switch
-                    {
-                        BinGranularities.ByYear => "year",
-                        BinGranularities.ByYearAndDay => "day",
-                        BinGranularities.ByYearAndWeek => "week",
-                        BinGranularities.ByYearAndMonth => "month",
-                        _ => throw new NotImplementedException($"BinGranularity {BinGranularity}"),
-                    };
-                    segments.Add($"{SmoothingWindow} {unit} moving average");
+                case SeriesSmoothingOptions.ShrinkingCentredMovingAverage:
+                    segments.Add($"{SmoothingWindow} {GetSmoothingWindowUnit(BinGranularity)} moving average");
+                    break;
+                case SeriesSmoothingOptions.CentredMovingAverage:
+                    segments.Add($"{SmoothingWindow} {GetSmoothingWindowUnit(BinGranularity)} centred moving average");
                     break;
                 case SeriesSmoothingOptions.Trendline:
                     segments.Add("Trendline");
@@ -369,6 +365,18 @@ public class ChartSeriesDefinition
         }
 
         return string.Join(" | ", segments);
+    }
+
+    private static string GetSmoothingWindowUnit(BinGranularities binGranularity)
+    {
+        return binGranularity switch
+        {
+            BinGranularities.ByYear => "year",
+            BinGranularities.ByYearAndDay => "day",
+            BinGranularities.ByYearAndWeek => "week",
+            BinGranularities.ByYearAndMonth => "month",
+            _ => throw new NotImplementedException($"BinGranularity {binGranularity}"),
+        };
     }
 
     private static string BuildTooltipDescriptorForSeries(SourceSeriesSpecification sss)

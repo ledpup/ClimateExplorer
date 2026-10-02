@@ -68,6 +68,14 @@ public static class ChartSeriesListSerializer
         return (T)Enum.Parse(typeof(T), s);
     }
 
+    private static SeriesSmoothingOptions ParseSmoothing(string s)
+    {
+        // "MovingAverage" was renamed to CentredMovingAverage. Shared links and blog posts still use the old name.
+        return s == "MovingAverage"
+            ? SeriesSmoothingOptions.CentredMovingAverage
+            : ParseEnum<SeriesSmoothingOptions>(s);
+    }
+
     private static float? ParseNullableFloat(string s)
     {
         if (string.IsNullOrWhiteSpace(s))
@@ -101,7 +109,7 @@ public static class ChartSeriesListSerializer
                 IsLocked = bool.Parse(segments[6]),
                 TemporalCalculation = ParseEnum<TemporalCalculationOptions>(segments[7]),
                 ShowTrendline = bool.Parse(segments[8]),
-                Smoothing = ParseEnum<SeriesSmoothingOptions>(segments[9]),
+                Smoothing = ParseSmoothing(segments[9]),
                 SmoothingWindow = int.Parse(segments[10]),
                 Value = ParseEnum<SeriesValueOptions>(segments[11]),
                 Year = ParseNullableShort(segments[12]),
