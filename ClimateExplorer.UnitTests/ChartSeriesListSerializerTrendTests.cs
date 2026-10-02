@@ -157,7 +157,7 @@ public class ChartSeriesListSerializerTrendTests
 
     [TestMethod]
     [DataRow(SeriesSmoothingOptions.CentredMovingAverage)]
-    [DataRow(SeriesSmoothingOptions.BoundaryAdjustedMovingAverage)]
+    [DataRow(SeriesSmoothingOptions.LocalLinearRegression)]
     public void ParseChartSeriesDefinitionList_RoundTrippedSmoothing_IsPreserved(SeriesSmoothingOptions smoothing)
     {
         var series = CreateChartSeries();

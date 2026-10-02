@@ -14,9 +14,9 @@ public class SeriesSmoothingOptionsExtensionsTests
     }
 
     [TestMethod]
-    public void CreateSmoother_BoundaryAdjustedMovingAverage_ReturnsBoundaryAdjustedCalculator()
+    public void CreateSmoother_LocalLinearRegression_ReturnsLocalLinearRegressionCalculator()
     {
-        Assert.IsInstanceOfType<BoundaryAdjustedMovingAverageCalculator>(SeriesSmoothingOptions.BoundaryAdjustedMovingAverage.CreateSmoother());
+        Assert.IsInstanceOfType<LocalLinearRegressionCalculator>(SeriesSmoothingOptions.LocalLinearRegression.CreateSmoother());
     }
 
     [TestMethod]

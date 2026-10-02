@@ -7,5 +7,5 @@ public enum SeriesSmoothingOptions
     None,
     CentredMovingAverage,
     Trendline,
-    BoundaryAdjustedMovingAverage,
+    LocalLinearRegression,
 }

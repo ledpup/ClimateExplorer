@@ -14,7 +14,7 @@ public class SeriesSmootherContractTests
     public static IEnumerable<object[]> Smoothers =>
     [
         [new CentredMovingAverageCalculator()],
-        [new BoundaryAdjustedMovingAverageCalculator()],
+        [new LocalLinearRegressionCalculator()],
     ];
 
     [TestMethod]
@@ -25,7 +25,7 @@ public class SeriesSmootherContractTests
 
         var result = smoother.Smooth(values, 3, 0.75f);
 
-        Assert.AreEqual(values.Length, result.Length);
+        Assert.HasCount(values.Length, result);
     }
 
     [TestMethod]

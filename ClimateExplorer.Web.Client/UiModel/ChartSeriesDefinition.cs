@@ -161,8 +161,8 @@ public class ChartSeriesDefinition
             {
                 switch (Smoothing)
                 {
-                    case SeriesSmoothingOptions.BoundaryAdjustedMovingAverage:
-                        segments.Add($"{SmoothingWindow} {(BinGranularity == BinGranularities.ByYear ? "year" : "month")} moving average");
+                    case SeriesSmoothingOptions.LocalLinearRegression:
+                        segments.Add($"{SmoothingWindow} {(BinGranularity == BinGranularities.ByYear ? "year" : "month")} local linear regression");
                         break;
                     case SeriesSmoothingOptions.CentredMovingAverage:
                         segments.Add($"{SmoothingWindow} {(BinGranularity == BinGranularities.ByYear ? "year" : "month")} centred moving average");
@@ -347,8 +347,8 @@ public class ChartSeriesDefinition
         {
             switch (Smoothing)
             {
-                case SeriesSmoothingOptions.BoundaryAdjustedMovingAverage:
-                    segments.Add($"{SmoothingWindow} {GetSmoothingWindowUnit(BinGranularity)} moving average");
+                case SeriesSmoothingOptions.LocalLinearRegression:
+                    segments.Add($"{SmoothingWindow} {GetSmoothingWindowUnit(BinGranularity)} local linear regression");
                     break;
                 case SeriesSmoothingOptions.CentredMovingAverage:
                     segments.Add($"{SmoothingWindow} {GetSmoothingWindowUnit(BinGranularity)} centred moving average");

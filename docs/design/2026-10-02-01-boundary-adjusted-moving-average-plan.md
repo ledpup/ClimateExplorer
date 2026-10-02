@@ -1,7 +1,10 @@
 # Boundary-adjusted moving average
 
 - **Date:** 2026-10-02
-- **Status:** Implemented 2026-10-02 (see addendum)
+- **Status:** Partially implemented 2026-10-02 (see addenda). The smoothing interface, shared
+  window logic, enum rename and legacy URL mapping shipped. The boundary-adjusted moving average
+  calculator itself was **rejected** and removed; superseded by
+  [Local linear regression smoothing](2026-10-02-02-local-linear-regression-smoothing-plan.md)
 - **Author:** Patrick Lea (with Claude)
 - **Scope:** `ClimateExplorer.Core/Stats` (new `Smoothing` folder: interface, shared window
   logic, boundary-adjusted moving average; `CentredMovingAverageCalculator` moves here and implements
@@ -451,3 +454,30 @@ checked in a browser (AGENTS.md).
   The factory tests are `SeriesSmoothingOptionsExtensionsTests`.
 - **Fallback warning.** The message now says "not enough … data for smoothing", and the
   existing test asserts on "smoothing".
+
+## Addendum 2 — boundary-adjusted moving average rejected (2026-10-02)
+
+The calculator worked as designed, but the result was not what was wanted. The point was for a
+smoothed chart not to look as though data is missing at its ends. What it produced instead was
+the same number over and over: with a 20-year window, the last 10 years all share one window and
+get one value. Showing nothing at the ends is better than showing that. This is property 3 under
+[Window placement](#window-placement); it was understood in principle but only judged
+unacceptable once it was running.
+
+`BoundaryAdjustedMovingAverageCalculator`, its tests and the `BoundaryAdjustedMovingAverage` enum
+value were removed. Local linear regression takes its place as the default smoothing: see
+[Local linear regression smoothing](2026-10-02-02-local-linear-regression-smoothing-plan.md).
+
+**What remains from this plan**
+
+- `ISeriesSmoother`, and `CentredMovingAverageCalculator` implementing it (with the even-window
+  off-by-one fix).
+- `BoundaryAdjustedWindow`, `BoundaryAdjustedWindowCalculator` and `SmoothingWindow`: the
+  window placement, threshold and gap rules, now used by the local linear regression calculator.
+- `SeriesSmoothingOptions.CentredMovingAverage`, the legacy `MovingAverage` URL mapping,
+  `CreateSmoother()` / `UsesWindow()`, and `ChartDataBuilder` smoothing through the interface.
+- `BoundaryAdjustedWindowTests`, `CentredMovingAverageCalculatorTests` and
+  `SeriesSmootherContractTests`.
+
+The sections above describing the boundary-adjusted moving average calculator, its dropdown
+label, its titles and its tests are kept as a record and no longer match the code.

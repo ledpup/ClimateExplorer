@@ -236,19 +236,19 @@ public class ChartDataBuilderTests
     }
 
     [TestMethod]
-    public async Task BuildAsync_BoundaryAdjustedMovingAverage_SmoothsEveryYearFromFirstToLast()
+    public async Task BuildAsync_LocalLinearRegression_SmoothsEveryYearFromFirstToLast()
     {
         var records = Enumerable.Range(2000, 30).Select(year => (year, value: (double?)year)).ToArray();
         var dataService = CreateDataService(CreateYearDataSet(records));
-        var series = CreateSeries(smoothing: SeriesSmoothingOptions.BoundaryAdjustedMovingAverage, smoothingWindow: 10);
+        var series = CreateSeries(smoothing: SeriesSmoothingOptions.LocalLinearRegression, smoothingWindow: 10);
 
         var result = await CreateBuilder(dataService).BuildAsync(new ChartState { ChartAllData = true, Series = [series] });
 
-        // Unlike the centred average, which would leave 2000-2004 and 2025-2029 empty,
-        // every year gets a value. The last five years share the last ten-year window: mean(2020..2029).
+        // Unlike the centred average, which would leave 2000-2004 and 2026-2029 empty, every year
+        // gets a value. The data is a straight line, so the last point is still the last raw value.
         var smoothed = result.SeriesWithData.Single().PreProcessedDataSet!.DataRecords;
         Assert.IsTrue(smoothed.All(x => x.Value.HasValue));
-        Assert.AreEqual(2024.5, smoothed.Last().Value);
+        Assert.AreEqual(2029, smoothed.Last().Value!.Value, 1e-6);
     }
 
     [TestMethod]

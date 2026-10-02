@@ -13,7 +13,7 @@ public static class SeriesSmoothingOptionsExtensions
         return option switch
         {
             SeriesSmoothingOptions.CentredMovingAverage => new CentredMovingAverageCalculator(),
-            SeriesSmoothingOptions.BoundaryAdjustedMovingAverage => new BoundaryAdjustedMovingAverageCalculator(),
+            SeriesSmoothingOptions.LocalLinearRegression => new LocalLinearRegressionCalculator(),
             _ => null,
         };
     }
