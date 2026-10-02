@@ -399,10 +399,10 @@ public class ChartDataBuilderTests
     [TestMethod]
     public async Task BuildAsync_TrendOnMovingAverageSmoothedSeries_ProjectsFromAfterTheTrueLastRawYear()
     {
-        // A centred 10-year moving average (5 years before, 4 after) can't fill a full window for
-        // the last 4 years of a record, so the smoothed series plotted on the chart stops 4 years
+        // A centred 10-year moving average (2x10: 5 years either side) can't fill a full window for
+        // the last 5 years of a record, so the smoothed series plotted on the chart stops 5 years
         // short of the raw data. The trend's projection must resume after the true last raw year
-        // (2025), not after the last smoothed point (2021) - otherwise it draws "predicted" points
+        // (2025), not after the last smoothed point (2020) - otherwise it draws "predicted" points
         // for years that are already measured, just not smoothed.
         var records = Enumerable.Range(1900, 126).Select(y => (year: y, value: (double?)(10 + ((y - 1900) * 0.03)))).ToArray();
         var dataService = CreateDataService(CreateYearDataSet(records));
@@ -416,7 +416,7 @@ public class ChartDataBuilderTests
         var seriesWithData = result.SeriesWithData.Single();
         var lastSmoothedYear = seriesWithData.PreProcessedDataSet!.DataRecords.Last(x => x.Value.HasValue).Year;
 
-        Assert.AreEqual((short)2021, lastSmoothedYear); // sanity check: the smoothing did trim the tail
+        Assert.AreEqual((short)2020, lastSmoothedYear); // sanity check: the smoothing did trim the tail
         Assert.AreEqual(2025, seriesWithData.Trends.Single().LastDataYear);
         Assert.AreEqual(2026, seriesWithData.Trends.Single().Projection!.FirstYear);
     }
