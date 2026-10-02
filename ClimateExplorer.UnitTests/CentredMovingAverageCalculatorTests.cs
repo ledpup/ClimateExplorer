@@ -41,6 +41,16 @@ public class CentredMovingAverageCalculatorTests
 
 
     [TestMethod]
+    public void CalculateCentredMovingAverage_EvenWindow4_HasExtraSlotBeforePoint()
+    {
+        var result = new double?[] { 1, 2, 3, 4, 5, 6 }.CalculateCentredMovingAverage(4, 0.745f);
+
+        // index:   0     1     2          3          4          5
+        // window:  none  none  [1 2 3 4]  [2 3 4 5]  [3 4 5 6]  none
+        CollectionAssert.AreEqual(new double?[] { null, null, 2.5, 3.5, 4.5, null }, result.ToArray());
+    }
+
+    [TestMethod]
     public void Window3GivesExpectedValuesAroundCentralNull()
     {
         var result = new double?[] { 1, 2, 3, null, 5, 6, 7 }.CalculateCentredMovingAverage(3, 0.745f);

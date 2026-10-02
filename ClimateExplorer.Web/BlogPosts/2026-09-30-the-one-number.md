@@ -21,13 +21,13 @@ He went on to say that for much of humanity's history, that number bounced betwe
 
 ![David Attenborough's address at COP26](https://www.youtube.com/watch?v=o7EpiXViSIQ)
 
-The CO₂ concentration is the one number that sums up our predicament.
+(A full transcript of the speech is available from the [ABC](https://www.abc.net.au/news/2021-11-02/david-attenborough-speech-at-cop26-glasgow/100586992).)
 
-A full transcript of the speech is available from the [ABC](https://www.abc.net.au/news/2021-11-02/david-attenborough-speech-at-cop26-glasgow/100586992).
+The CO₂ concentration is the one number that sums up our predicament.
 
 ## 417, 429, 430
 
-The number we show is *deseasonalised*. Around the time of Attenborough's address, the deseasonalised figure was about **417 ppm**. When the number was added to the site in July 2026, it read **429**. This month it ticked over to **430** (the latest value, 429.51 for August 2026, rounds up to 430).
+The number we show is *deseasonalised*. Around the time of Attenborough's address, the deseasonalised figure was about **417 ppm**. When the number was added to the site in July 2026, it read **429**. In August 2026 it ticked over to **430** (the latest value, 429.51, rounds up to 430).
 
 That's an increase of about **2.6 ppm per year** since Attenborough stood up in Glasgow and asked the world to act. If we did not burn fossil fuels, the number would stay steady from year to year.
 

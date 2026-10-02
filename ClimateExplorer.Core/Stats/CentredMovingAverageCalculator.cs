@@ -9,7 +9,7 @@ public static class CentredMovingAverageCalculator
         List<double?> result = [];
 
         int startIndex = 0 - (windowSize / 2);
-        int endIndex = windowSize / 2;
+        int endIndex = startIndex + windowSize - 1;
 
         for (int i = 0; i < valuesArray.Length; i++, startIndex++, endIndex++)
         {
