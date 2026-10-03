@@ -352,7 +352,15 @@
             const table =
                 `<table class="chart-external-tooltip-table"><thead><tr><th></th><th>Value</th>${hasSmoothingWindow ? "<th>Size</th>" : ""}<th>Early</th><th>Avg</th><th>Last 30</th></tr></thead><tbody>${tableRows}</tbody></table>`;
 
-            return `${title}${table}`;
+            const legend =
+                `<div class="chart-external-tooltip-legend">` +
+                (hasSmoothingWindow ? `<div><b>Size</b>: points in the moving average window</div>` : "") +
+                `<div><b>Early</b>: compared with the first half of the data</div>` +
+                `<div><b>Avg</b>: compared with the whole dataset</div>` +
+                `<div><b>Last 30</b>: compared with the last 30 years</div>` +
+                `</div>`;
+
+            return `${title}${table}${legend}`;
         }
 
         function configureChartTooltip(wrapperElement, seriesInfo) {
