@@ -50,14 +50,16 @@ public class ShrinkingCentredMovingAverageCalculatorTests
     }
 
     [TestMethod]
-    [DataRow(2017, 2007, 2026)]
-    [DataRow(2018, 2009, 2026)]
-    [DataRow(2021, 2015, 2026)]
-    [DataRow(2022, 2017, 2026)]
-    [DataRow(2023, 2018, 2026)]
-    [DataRow(2026, 2021, 2026)]
-    public void Smooth_EvenWindow20NearTrailingEnd_KeepsExtraSlotBeforePoint(int year, int windowFirstYear, int windowLastYear)
+    [DataRow(2017, 2008, 2026)]
+    [DataRow(2018, 2010, 2026)]
+    [DataRow(2021, 2016, 2026)]
+    [DataRow(2022, 2018, 2026)]
+    [DataRow(2023, 2019, 2026)]
+    [DataRow(2026, 2022, 2026)]
+    public void Smooth_EvenWindow20NearTrailingEnd_AveragesShrunkOddWindow(int year, int windowFirstYear, int windowLastYear)
     {
+        // 2016 is the last year with the full 2x20 window (2006-2026, end points at half weight).
+        // From 2017 the shrunk windows are odd, with every point at full weight.
         var values = CreateValues(1960, 2026);
 
         var result = calculator.Smooth(values, 20, Threshold).Values;
@@ -86,6 +88,20 @@ public class ShrinkingCentredMovingAverageCalculatorTests
         var result = calculator.Smooth([1, 2, 3, 4, 5], 3, Threshold).Values;
 
         CollectionAssert.AreEqual(new double?[] { 1.5, 2, 3, 4, 4.5 }, result);
+    }
+
+    [TestMethod]
+    public void Smooth_EvenWindowNarrowerThanFloor_HalfWeightsTheEndPointsLeftInWindow()
+    {
+        var smoothed = calculator.Smooth([1, 2, 3, 4, 5], 4, Threshold);
+
+        // index 0: ((1 + 2 + (0.5 * 3)) / 2.5 = 1.8    index 2: the full 2x4 window    index 4: mirrors index 0
+        Assert.AreEqual(1.8, smoothed.Values[0]!.Value, Delta);
+        Assert.AreEqual(3, smoothed.Values[2]!.Value, Delta);
+        Assert.AreEqual(4.2, smoothed.Values[4]!.Value, Delta);
+
+        // Window weights of 2.5, 3.5, 4, 3.5, 2.5, rounded down.
+        CollectionAssert.AreEqual(new[] { 2, 3, 4, 3, 2 }, smoothed.WindowSizes);
     }
 
     [TestMethod]

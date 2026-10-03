@@ -1,10 +1,11 @@
 namespace ClimateExplorer.Core.Stats.Smoothing;
 
 /// <summary>
-/// Moving average whose window is centred on each point (for an even window size, with the extra
-/// slot before the point). Near either end of the data the window shrinks on both sides so it stays
-/// centred, until its half-width reaches <see cref="MinimumHalfWindow"/>. Past that, only the side
-/// facing the end of the data is cut off. The data runs from the first to the last non-null value.
+/// Moving average whose window is centred on each point (for an even window size, by giving the two
+/// end slots half weight). Near either end of the data the window shrinks on both sides, to an odd
+/// size so it stays centred, until its half-width reaches <see cref="MinimumHalfWindow"/>. Past that,
+/// only the side facing the end of the data is cut off. The data runs from the first to the last
+/// non-null value.
 /// </summary>
 public sealed class ShrinkingCentredMovingAverageCalculator : ISeriesSmoother
 {
@@ -27,25 +28,16 @@ public sealed class ShrinkingCentredMovingAverageCalculator : ISeriesSmoother
             last--;
         }
 
-        int before = windowSize / 2;
-        int after = windowSize - 1 - before;
-        int extra = before - after;
-        int floor = Math.Min(MinimumHalfWindow, after);
+        int halfWindow = windowSize / 2;
+        int floor = Math.Min(MinimumHalfWindow, halfWindow);
 
         for (int i = first; i <= last; i++)
         {
             int room = Math.Min(i - first, last - i);
-            int reach = Math.Min(after, Math.Max(room, floor));
+            int reach = Math.Min(halfWindow, Math.Max(room, floor));
+            int shrunkWindowSize = Math.Min(windowSize, (2 * reach) + 1);
 
-            int windowStart = Math.Max(first, i - reach - extra);
-            int windowEnd = Math.Min(last, i + reach);
-            int slotsInWindow = windowEnd - windowStart + 1;
-
-            if (SmoothingWindow.MeetsThreshold(values, windowStart, slotsInWindow, requiredDataThreshold))
-            {
-                result[i] = SmoothingWindow.Mean(values, windowStart, slotsInWindow);
-                windowSizes[i] = result[i].HasValue ? slotsInWindow : 0;
-            }
+            (result[i], windowSizes[i]) = SmoothingWindow.CentredMean(values, i, shrunkWindowSize, first, last, requiredDataThreshold);
         }
 
         return new SmoothedSeries(result, windowSizes);

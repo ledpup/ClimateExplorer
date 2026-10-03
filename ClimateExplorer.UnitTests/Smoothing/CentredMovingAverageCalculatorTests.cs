@@ -41,13 +41,40 @@ public class CentredMovingAverageCalculatorTests
     }
 
     [TestMethod]
-    public void Smooth_EvenWindow4_HasExtraSlotBeforePoint()
+    public void Smooth_EvenWindow4_HalfWeightsTheTwoEndPoints()
     {
-        var result = Smooth([1, 2, 3, 4, 5, 6], windowSize: 4);
+        var result = Smooth([1, 2, 3, 4, 5, 6], windowSize: 4, requiredDataThreshold: 0.745f);
 
-        // index:   0     1     2          3          4          5
-        // window:  none  none  [1 2 3 4]  [2 3 4 5]  [3 4 5 6]  none
-        CollectionAssert.AreEqual(new double?[] { null, null, 2.5, 3.5, 4.5, null }, result);
+        // 2x4 moving average: 5 points with weights 0.5, 1, 1, 1, 0.5
+        // index:   0     1     2            3            4     5
+        // window:  none  none  [1 2 3 4 5]  [2 3 4 5 6]  none  none
+        CollectionAssert.AreEqual(new double?[] { null, null, 3, 4, null, null }, result);
+    }
+
+    [TestMethod]
+    public void Smooth_EvenWindow4WithNullEndPoint_AveragesOverPresentWeight()
+    {
+        var result = Smooth([8, 1, 1, 1, null], windowSize: 4, requiredDataThreshold: 0.745f);
+
+        // Present weight is 3.5 of 4 (0.875): ((0.5 * 8) + 1 + 1 + 1) / 3.5 = 2
+        CollectionAssert.AreEqual(new double?[] { null, null, 2, null, null }, result);
+    }
+
+    [TestMethod]
+    public void Smooth_EvenWindow4BelowThreshold_ReturnsNull()
+    {
+        var result = Smooth([null, null, 1, 1, 8], windowSize: 4, requiredDataThreshold: 0.745f);
+
+        // Present weight is 2.5 of 4 (0.625), below the threshold
+        CollectionAssert.AreEqual(new double?[] { null, null, null, null, null }, result);
+    }
+
+    [TestMethod]
+    public void Smooth_EvenWindow4_ReportsRequestedWindowSizeForEveryValue()
+    {
+        var result = new CentredMovingAverageCalculator().Smooth([1, 2, 3, 4, 5, 6], 4, 0.75f);
+
+        CollectionAssert.AreEqual(new[] { 0, 0, 4, 4, 0, 0 }, result.WindowSizes);
     }
 
     [TestMethod]

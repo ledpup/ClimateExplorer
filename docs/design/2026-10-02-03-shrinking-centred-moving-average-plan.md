@@ -43,22 +43,24 @@ a selectable option in `ChartSeriesView`.
 For a point at index `i`, with data running from `first` to `last` (see "Data ends" below):
 
 ```
-before = windowSize / 2                  // slots before the point in a full window
-after  = windowSize - 1 - before         // slots after the point in a full window
-extra  = before - after                  // 1 for an even window, 0 for an odd one
-floor  = min(MinimumHalfWindow, after)   // MinimumHalfWindow is a hardcoded const, initially 4
+halfWindow = windowSize / 2                     // slots either side of the point in a full window
+floor      = min(MinimumHalfWindow, halfWindow) // MinimumHalfWindow is a hardcoded const, initially 4
 
-room     = min(i - first, last - i)      // distance to the nearer end
-reach    = min(after, max(room, floor))  // half-width after shrinking, never below the floor
-winStart = max(first, i - reach - extra)
-winEnd   = min(last,  i + reach)
+room       = min(i - first, last - i)           // distance to the nearer end
+reach      = min(halfWindow, max(room, floor))  // half-width after shrinking, never below the floor
+shrunkSize = min(windowSize, 2 * reach + 1)     // the full window, or an odd shrunk one
+winStart   = max(first, i - reach)
+winEnd     = min(last,  i + reach)
 ```
 
+A full even window is a 2xN moving average, as in `CentredMovingAverageCalculator`: N + 1 slots
+with the two end slots at half weight. Both calculators get this from `SmoothingWindow.CentredMean`.
+
 `MinimumHalfWindow` is a `private const int` in the new calculator, so it can be changed in one
-place while experimenting. The `min(..., after)` stops the floor making a small window (3, 5)
+place while experimenting. The `min(..., halfWindow)` stops the floor making a small window (3, 5)
 wider than the user asked for.
 
-Worked example, odd window (`windowSize = 21`, so `before = after = 10`, floor 4, data to 2026).
+Worked example, odd window (`windowSize = 21`, so `halfWindow = 10`, floor 4, data to 2026).
 This matches the table in the original description:
 
 | Year | Window used | Points |
@@ -71,25 +73,25 @@ This matches the table in the original description:
 | 2025 | 2021-2026 | 6 |
 | 2026 | 2022-2026 | 5 |
 
-Even window (`windowSize = 20`, the common preset: `before = 10`, `after = 9`, `extra = 1`):
+Even window (`windowSize = 20`, the common preset: `halfWindow = 10`):
 
-| Year | Window used | Points |
+| Year | Window used | Size |
 | --- | --- | --- |
-| 2017 | 2007-2026 | 20 (full) |
-| 2018 | 2009-2026 | 18 |
-| 2021 | 2015-2026 | 12 |
-| 2022 | 2017-2026 | 10 |
-| 2023 | 2018-2026 | 9 |
-| 2026 | 2021-2026 | 6 |
+| 2016 | 2006-2026, end points at half weight | 20 (full) |
+| 2017 | 2008-2026 | 19 |
+| 2018 | 2010-2026 | 17 |
+| 2021 | 2016-2026 | 11 |
+| 2022 | 2018-2026 | 9 (last symmetric one) |
+| 2023 | 2019-2026 | 8 |
+| 2026 | 2022-2026 | 5 |
 
 ### Decisions in the rule
 
-1. **Even windows keep the extra slot before the point while shrinking.** The existing calculator
-   puts the extra slot of an even window before the point (fixed in `eb8b3906a`). Keeping that
-   slot means the size steps evenly (20, 18, 16, ...) as the window starts to shrink. Dropping it
-   would give a strictly symmetric shrunk window but a jump of 3 at the first shrunk point
-   (20, 17, 15, ...). The cost is that the last value of an even window averages `floor + 2`
-   points, not `floor + 1`.
+1. **Even windows shrink to odd windows.** A full even window is centred by giving its two end
+   slots half weight (development commit `7332d387c`). Once it shrinks, the window is a plain odd
+   one with every slot at full weight, so the size steps 20, 19, 17, 15, ... and the shrunk
+   windows are the same as for the next odd size up. Keeping the half-weighted ends while
+   shrinking would step evenly (20, 18, 16, ...) but gives no real benefit for the extra rule.
 2. **Both ends shrink, not only the recent end.** The rule is mirrored at the start of the data,
    so a series that starts in 1910 is plotted from 1910 rather than 1920. This moves the chart's
    start year earlier for every default chart. If that is unwanted, the alternative is to apply

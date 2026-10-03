@@ -244,11 +244,11 @@ public class ChartDataBuilderTests
 
         var result = await CreateBuilder(dataService).BuildAsync(new ChartState { ChartAllData = true, Series = [series] });
 
-        // Unlike the centred average, which would leave 2000-2004 and 2026-2029 empty, every year
-        // gets a value. The last point averages its shrunk window, 2024-2029.
+        // Unlike the centred average, which would leave 2000-2004 and 2025-2029 empty, every year
+        // gets a value. The last point averages its shrunk window, 2025-2029.
         var smoothed = result.SeriesWithData.Single().PreProcessedDataSet!.DataRecords;
         Assert.IsTrue(smoothed.All(x => x.Value.HasValue));
-        Assert.AreEqual(2026.5, smoothed.Last().Value!.Value, 1e-6);
+        Assert.AreEqual(2027, smoothed.Last().Value!.Value, 1e-6);
     }
 
     [TestMethod]
@@ -260,13 +260,13 @@ public class ChartDataBuilderTests
 
         var result = await CreateBuilder(dataService).BuildAsync(new ChartState { ChartAllData = true, Series = [series] });
 
-        // Window 10: full from 2005 to 2025. 2000-2004 and 2026-2029 are shrunk.
+        // Window 10: full from 2005 to 2024. 2000-2004 and 2025-2029 are shrunk.
         var shrunk = result.SeriesWithData.Single().ShrunkSmoothingWindows;
-        Assert.HasCount(9, shrunk);
-        Assert.AreEqual(6, shrunk["y2029"]);
+        Assert.HasCount(10, shrunk);
+        Assert.AreEqual(5, shrunk["y2029"]);
         Assert.AreEqual(9, shrunk["y2004"]);
         Assert.IsFalse(shrunk.ContainsKey("y2005"));
-        Assert.IsFalse(shrunk.ContainsKey("y2025"));
+        Assert.IsFalse(shrunk.ContainsKey("y2024"));
     }
 
     [TestMethod]
@@ -445,10 +445,10 @@ public class ChartDataBuilderTests
     [TestMethod]
     public async Task BuildAsync_TrendOnCentredMovingAverageSmoothedSeries_ProjectsFromAfterTheTrueLastRawYear()
     {
-        // A centred 10-year moving average (5 years before, 4 after) can't fill a full window for
-        // the last 4 years of a record, so the smoothed series plotted on the chart stops 4 years
+        // A centred 10-year moving average (2x10: 5 years either side) can't fill a full window for
+        // the last 5 years of a record, so the smoothed series plotted on the chart stops 5 years
         // short of the raw data. The trend's projection must resume after the true last raw year
-        // (2025), not after the last smoothed point (2021) - otherwise it draws "predicted" points
+        // (2025), not after the last smoothed point (2020) - otherwise it draws "predicted" points
         // for years that are already measured, just not smoothed.
         var records = Enumerable.Range(1900, 126).Select(y => (year: y, value: (double?)(10 + ((y - 1900) * 0.03)))).ToArray();
         var dataService = CreateDataService(CreateYearDataSet(records));
@@ -462,7 +462,7 @@ public class ChartDataBuilderTests
         var seriesWithData = result.SeriesWithData.Single();
         var lastSmoothedYear = seriesWithData.PreProcessedDataSet!.DataRecords.Last(x => x.Value.HasValue).Year;
 
-        Assert.AreEqual((short)2021, lastSmoothedYear); // sanity check: the smoothing did trim the tail
+        Assert.AreEqual((short)2020, lastSmoothedYear); // sanity check: the smoothing did trim the tail
         Assert.AreEqual(2025, seriesWithData.Trends.Single().LastDataYear);
         Assert.AreEqual(2026, seriesWithData.Trends.Single().Projection!.FirstYear);
     }
