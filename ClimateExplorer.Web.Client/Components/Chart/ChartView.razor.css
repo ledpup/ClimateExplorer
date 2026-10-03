@@ -172,6 +172,11 @@
     font-size: small;
 }
 
+/* The table's header row already separates the title from the values, so pull it up under the title. */
+::deep .chart-external-tooltip-title + .chart-external-tooltip-table {
+    margin-top: -12px;
+}
+
 ::deep .chart-external-tooltip-table th {
     font-weight: 600;
     font-size: 0.75rem;
@@ -200,6 +205,14 @@
 
 ::deep .chart-external-tooltip-table td.chart-external-tooltip-value {
     font-weight: 600;
+}
+
+::deep .chart-external-tooltip-legend {
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid #ddd;
+    font-size: 0.75rem;
+    color: #666;
 }
 
 ::deep .chart-external-tooltip-window {
