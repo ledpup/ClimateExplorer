@@ -112,7 +112,7 @@ public class RecentObservationsServiceTests
         CollectionAssert.AreEqual(
             new[]
             {
-                "Today - 14 Jun",
+                "Today - 14 June",
                 "Latest 7 days",
                 "June 2026 to date",
                 "Last month - May 2026",
@@ -315,7 +315,7 @@ public class RecentObservationsServiceTests
             .ToList();
 
         Assert.HasCount(1, dailyTiles);
-        Assert.AreEqual("Today - 14 Jun", dailyTiles[0].PeriodTitle);
+        Assert.AreEqual("Today - 14 June", dailyTiles[0].PeriodTitle);
         Assert.AreEqual(new DateOnly(2026, 6, 14), dailyTiles[0].PeriodStartDate);
         Assert.AreEqual(1, dailyTiles[0].PeriodOffset);
     }
@@ -335,7 +335,7 @@ public class RecentObservationsServiceTests
             .ToList();
 
         CollectionAssert.AreEqual(
-            new[] { "Today - 14 Jun", "Yesterday - 13 Jun", "12 June", "11 June" },
+            new[] { "Today - 14 June", "Yesterday - 13 June", "12 June", "11 June" },
             dailyTiles.Select(x => x.PeriodTitle).ToArray());
         CollectionAssert.AreEqual(
             new[] { new DateOnly(2026, 6, 14), new DateOnly(2026, 6, 13), new DateOnly(2026, 6, 12), new DateOnly(2026, 6, 11) },
@@ -432,7 +432,7 @@ public class RecentObservationsServiceTests
         Assert.AreEqual(latestDate, result.ReferenceDate);
         Assert.AreEqual(new DateOnly(2026, 6, 1), result.MinimumReferenceDate);
         Assert.AreEqual(latestDate, result.MaximumReferenceDate);
-        Assert.AreEqual("Yesterday - 13 Jun", dailyTile.PeriodTitle);
+        Assert.AreEqual("Yesterday - 13 June", dailyTile.PeriodTitle);
         Assert.AreEqual(latestDate, latestSevenDays.PeriodEndDate);
     }
 

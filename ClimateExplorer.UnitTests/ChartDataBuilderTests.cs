@@ -282,6 +282,29 @@ public class ChartDataBuilderTests
     }
 
     [TestMethod]
+    public async Task BuildAsync_CentredMovingAverage_RecordsSmoothingWindow()
+    {
+        var records = Enumerable.Range(2000, 30).Select(year => (year, value: (double?)year)).ToArray();
+        var dataService = CreateDataService(CreateYearDataSet(records));
+        var series = CreateSeries(smoothing: SeriesSmoothingOptions.CentredMovingAverage, smoothingWindow: 10);
+
+        var result = await CreateBuilder(dataService).BuildAsync(new ChartState { ChartAllData = true, Series = [series] });
+
+        Assert.AreEqual(10, result.SeriesWithData.Single().SmoothingWindow);
+    }
+
+    [TestMethod]
+    public async Task BuildAsync_UnsmoothedSeries_RecordsNoSmoothingWindow()
+    {
+        var records = Enumerable.Range(2000, 30).Select(year => (year, value: (double?)year)).ToArray();
+        var dataService = CreateDataService(CreateYearDataSet(records));
+
+        var result = await CreateBuilder(dataService).BuildAsync(new ChartState { ChartAllData = true, Series = [CreateSeries()] });
+
+        Assert.IsNull(result.SeriesWithData.Single().SmoothingWindow);
+    }
+
+    [TestMethod]
     public async Task BuildAsync_CentredMovingAverageSeries_PreservesSourceMetadata()
     {
         var sourceMetadata = CreateSourceMetadata();

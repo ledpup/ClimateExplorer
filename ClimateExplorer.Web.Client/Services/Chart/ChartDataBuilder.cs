@@ -464,6 +464,7 @@ public sealed class ChartDataBuilder : IChartDataBuilder
 
                 IEnumerable<double?> values = smoothed.Values;
                 cs.ShrunkSmoothingWindows = GetShrunkSmoothingWindows(cs.SourceDataSet.DataRecords, smoothed, cs.ChartSeries!.SmoothingWindow);
+                cs.SmoothingWindow = cs.ChartSeries!.SmoothingWindow;
 
                 if (values.Count(y => y != null) < 10)
                 {
@@ -475,6 +476,7 @@ public sealed class ChartDataBuilder : IChartDataBuilder
                     });
                     cs.DataStatus = ChartSeriesDataStatus.FallbackToUnsmoothedData;
                     cs.ShrunkSmoothingWindows = new Dictionary<string, int>();
+                    cs.SmoothingWindow = null;
                     values = cs.SourceDataSet.DataRecords
                                             .Where(x => x.Value.HasValue)
                                             .Select(x => x.Value);

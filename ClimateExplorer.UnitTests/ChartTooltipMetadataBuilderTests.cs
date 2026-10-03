@@ -156,6 +156,38 @@ public class ChartTooltipMetadataBuilderTests
     }
 
     [TestMethod]
+    public void BuildForSeries_SmoothedSeries_SmoothingWindowIsSeriesWindow()
+    {
+        var series = CreateSeriesWithData(BinGranularities.ByYear, YearRange(1950, 2019));
+        series.SmoothingWindow = 10;
+
+        var result = ChartTooltipMetadataBuilder.BuildForSeries(series);
+
+        Assert.AreEqual(10, result.SmoothingWindow);
+    }
+
+    [TestMethod]
+    public void BuildForSeries_UnsmoothedSeries_SmoothingWindowIsNull()
+    {
+        var series = CreateSeriesWithData(BinGranularities.ByYear, YearRange(1950, 2019));
+
+        var result = ChartTooltipMetadataBuilder.BuildForSeries(series);
+
+        Assert.IsNull(result.SmoothingWindow);
+    }
+
+    [TestMethod]
+    public void BuildForTrendSeries_SmoothedSeries_SmoothingWindowIsNull()
+    {
+        var series = CreateSeriesWithData(BinGranularities.ByYear, YearRange(1950, 2019));
+        series.SmoothingWindow = 10;
+
+        var result = ChartTooltipMetadataBuilder.BuildForTrendSeries(series, "Trend");
+
+        Assert.IsNull(result.SmoothingWindow);
+    }
+
+    [TestMethod]
     public void Build_CustomTransformation_LabelMatchesChartLegendAndAnomalyIsSuppressed()
     {
         var series = CreateSeriesWithData(BinGranularities.ByYear, YearRange(1950, 2019));
