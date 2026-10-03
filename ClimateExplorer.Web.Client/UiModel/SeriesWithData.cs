@@ -19,4 +19,12 @@ public sealed record SeriesWithData
     /// rendering assigns each trend's colour tier from its position in this list.
     /// </summary>
     public IReadOnlyList<ChartSeriesTrend> Trends { get; set; } = [];
+
+    /// <summary>
+    /// The bins whose smoothed value was averaged over fewer slots than
+    /// <see cref="ChartSeriesDefinition.SmoothingWindow"/>, keyed by bin id, with the number of slots
+    /// actually used. These are the ends of a shrinking moving average. The chart draws them dashed and
+    /// the tooltip shows the window size. Empty when the series isn't smoothed or every window was full.
+    /// </summary>
+    public IReadOnlyDictionary<string, int> ShrunkSmoothingWindows { get; set; } = new Dictionary<string, int>();
 }

@@ -23,9 +23,34 @@ public class SeriesSmootherContractTests
     {
         double?[] values = [1, null, 3, 4, null, null, 7, 8, 9];
 
-        var result = smoother.Smooth(values, 3, 0.75f);
+        var result = smoother.Smooth(values, 3, 0.75f).Values;
 
         Assert.HasCount(values.Length, result);
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(Smoothers))]
+    public void Smooth_AnyInput_WindowSizesLengthEqualsInputLength(ISeriesSmoother smoother)
+    {
+        double?[] values = [1, null, 3, 4, null, null, 7, 8, 9];
+
+        var result = smoother.Smooth(values, 3, 0.75f);
+
+        Assert.HasCount(values.Length, result.WindowSizes);
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(Smoothers))]
+    public void Smooth_AnyInput_WindowSizeIsZeroExactlyWhereValueIsNull(ISeriesSmoother smoother)
+    {
+        double?[] values = [1, null, 3, 4, null, null, 7, 8, 9];
+
+        var result = smoother.Smooth(values, 3, 0.75f);
+
+        for (int i = 0; i < values.Length; i++)
+        {
+            Assert.AreEqual(result.Values[i] is null, result.WindowSizes[i] == 0, $"index {i}");
+        }
     }
 
     [TestMethod]
@@ -34,7 +59,7 @@ public class SeriesSmootherContractTests
     {
         double?[] values = [1, null, 3, 4, null];
 
-        var result = smoother.Smooth(values, 1, 0.75f);
+        var result = smoother.Smooth(values, 1, 0.75f).Values;
 
         CollectionAssert.AreEqual(values, result);
     }
@@ -43,7 +68,7 @@ public class SeriesSmootherContractTests
     [DynamicData(nameof(Smoothers))]
     public void Smooth_AllNull_GivesAllNull(ISeriesSmoother smoother)
     {
-        var result = smoother.Smooth([null, null, null, null, null], 3, 0.75f);
+        var result = smoother.Smooth([null, null, null, null, null], 3, 0.75f).Values;
 
         Assert.IsTrue(result.All(x => x == null));
     }
@@ -54,7 +79,7 @@ public class SeriesSmootherContractTests
     {
         double?[] values = [5, 5, 5, 5, 5, 5, 5];
 
-        var result = smoother.Smooth(values, 3, 0.75f);
+        var result = smoother.Smooth(values, 3, 0.75f).Values;
 
         Assert.IsTrue(result.Any(x => x != null));
         Assert.IsTrue(result.All(x => x == null || x == 5));

@@ -20,8 +20,8 @@ public class ShrinkingCentredMovingAverageCalculatorTests
     {
         var values = CreateValues(1960, 2026);
 
-        var result = calculator.Smooth(values, windowSize, Threshold);
-        var centred = new CentredMovingAverageCalculator().Smooth(values, windowSize, Threshold);
+        var result = calculator.Smooth(values, windowSize, Threshold).Values;
+        var centred = new CentredMovingAverageCalculator().Smooth(values, windowSize, Threshold).Values;
 
         for (int i = 0; i < values.Length; i++)
         {
@@ -44,7 +44,7 @@ public class ShrinkingCentredMovingAverageCalculatorTests
     {
         var values = CreateValues(1960, 2026);
 
-        var result = calculator.Smooth(values, 21, Threshold);
+        var result = calculator.Smooth(values, 21, Threshold).Values;
 
         Assert.AreEqual(Mean(values, 1960, windowFirstYear, windowLastYear), result[year - 1960]!.Value, Delta);
     }
@@ -60,7 +60,7 @@ public class ShrinkingCentredMovingAverageCalculatorTests
     {
         var values = CreateValues(1960, 2026);
 
-        var result = calculator.Smooth(values, 20, Threshold);
+        var result = calculator.Smooth(values, 20, Threshold).Values;
 
         Assert.AreEqual(Mean(values, 1960, windowFirstYear, windowLastYear), result[year - 1960]!.Value, Delta);
     }
@@ -75,7 +75,7 @@ public class ShrinkingCentredMovingAverageCalculatorTests
     {
         var values = CreateValues(1960, 2026);
 
-        var result = calculator.Smooth(values, 21, Threshold);
+        var result = calculator.Smooth(values, 21, Threshold).Values;
 
         Assert.AreEqual(Mean(values, 1960, windowFirstYear, windowLastYear), result[year - 1960]!.Value, Delta);
     }
@@ -83,7 +83,7 @@ public class ShrinkingCentredMovingAverageCalculatorTests
     [TestMethod]
     public void Smooth_WindowNarrowerThanFloor_DoesNotWidenWindow()
     {
-        var result = calculator.Smooth([1, 2, 3, 4, 5], 3, Threshold);
+        var result = calculator.Smooth([1, 2, 3, 4, 5], 3, Threshold).Values;
 
         CollectionAssert.AreEqual(new double?[] { 1.5, 2, 3, 4, 4.5 }, result);
     }
@@ -91,7 +91,7 @@ public class ShrinkingCentredMovingAverageCalculatorTests
     [TestMethod]
     public void Smooth_SeriesShorterThanWindow_GivesEveryPointAValue()
     {
-        var result = calculator.Smooth([1, 2, 3, 4, 5], 21, Threshold);
+        var result = calculator.Smooth([1, 2, 3, 4, 5], 21, Threshold).Values;
 
         Assert.IsTrue(result.All(x => x.HasValue));
     }
@@ -101,7 +101,7 @@ public class ShrinkingCentredMovingAverageCalculatorTests
     {
         double?[] values = [null, null, .. CreateValues(1960, 2026), null, null, null];
 
-        var result = calculator.Smooth(values, 21, Threshold);
+        var result = calculator.Smooth(values, 21, Threshold).Values;
 
         Assert.IsNull(result[0]);
         Assert.IsNull(result[1]);
@@ -121,7 +121,7 @@ public class ShrinkingCentredMovingAverageCalculatorTests
         values[2024 - 1960] = null;
         values[2025 - 1960] = null;
 
-        var result = calculator.Smooth(values, 21, Threshold);
+        var result = calculator.Smooth(values, 21, Threshold).Values;
 
         // 2026 uses 2022-2026: 3 of 5 slots. 2021 uses 2016-2026: 9 of 11 slots.
         Assert.IsNull(result[2026 - 1960]);
@@ -131,7 +131,7 @@ public class ShrinkingCentredMovingAverageCalculatorTests
     [TestMethod]
     public void Smooth_EmptyInput_GivesEmptyOutput()
     {
-        Assert.IsEmpty(calculator.Smooth([], 21, Threshold));
+        Assert.IsEmpty(calculator.Smooth([], 21, Threshold).Values);
     }
 
     [TestMethod]
@@ -139,10 +139,40 @@ public class ShrinkingCentredMovingAverageCalculatorTests
     {
         var values = CreateValues(1960, 2026);
 
-        var result = calculator.Smooth(values, 20, Threshold);
+        var result = calculator.Smooth(values, 20, Threshold).Values;
 
         var lastTen = result.Skip(result.Length - 10).ToArray();
         Assert.HasCount(10, lastTen.Distinct().ToArray());
+    }
+
+    [TestMethod]
+    public void Smooth_OddWindow21_ReportsWindowSizeUsedForEachPoint()
+    {
+        var values = CreateValues(1960, 2026);
+
+        var windowSizes = calculator.Smooth(values, 21, Threshold).WindowSizes;
+
+        // See the odd window table in Smooth_OddWindow21NearTrailingEnd_AveragesShrunkWindow.
+        Assert.AreEqual(5, windowSizes[0]);
+        Assert.AreEqual(21, windowSizes[2016 - 1960]);
+        Assert.AreEqual(11, windowSizes[2021 - 1960]);
+        Assert.AreEqual(9, windowSizes[2022 - 1960]);
+        Assert.AreEqual(5, windowSizes[2026 - 1960]);
+    }
+
+    [TestMethod]
+    public void Smooth_NullOutputs_ReportWindowSizeZero()
+    {
+        double?[] values = [null, .. CreateValues(1960, 2026)];
+        values[^2] = null;
+        values[^3] = null;
+
+        var smoothed = calculator.Smooth(values, 21, Threshold);
+
+        // Index 0 is outside the data. The last point fails the threshold (3 of 5 slots).
+        Assert.AreEqual(0, smoothed.WindowSizes[0]);
+        Assert.IsNull(smoothed.Values[^1]);
+        Assert.AreEqual(0, smoothed.WindowSizes[^1]);
     }
 
     // A curved series, so that different windows give different means.

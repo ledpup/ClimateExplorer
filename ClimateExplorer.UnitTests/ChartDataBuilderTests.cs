@@ -252,6 +252,36 @@ public class ChartDataBuilderTests
     }
 
     [TestMethod]
+    public async Task BuildAsync_ShrinkingCentredMovingAverage_RecordsShrunkWindowsByBin()
+    {
+        var records = Enumerable.Range(2000, 30).Select(year => (year, value: (double?)year)).ToArray();
+        var dataService = CreateDataService(CreateYearDataSet(records));
+        var series = CreateSeries(smoothing: SeriesSmoothingOptions.ShrinkingCentredMovingAverage, smoothingWindow: 10);
+
+        var result = await CreateBuilder(dataService).BuildAsync(new ChartState { ChartAllData = true, Series = [series] });
+
+        // Window 10: full from 2005 to 2025. 2000-2004 and 2026-2029 are shrunk.
+        var shrunk = result.SeriesWithData.Single().ShrunkSmoothingWindows;
+        Assert.HasCount(9, shrunk);
+        Assert.AreEqual(6, shrunk["y2029"]);
+        Assert.AreEqual(9, shrunk["y2004"]);
+        Assert.IsFalse(shrunk.ContainsKey("y2005"));
+        Assert.IsFalse(shrunk.ContainsKey("y2025"));
+    }
+
+    [TestMethod]
+    public async Task BuildAsync_CentredMovingAverage_RecordsNoShrunkWindows()
+    {
+        var records = Enumerable.Range(2000, 30).Select(year => (year, value: (double?)year)).ToArray();
+        var dataService = CreateDataService(CreateYearDataSet(records));
+        var series = CreateSeries(smoothing: SeriesSmoothingOptions.CentredMovingAverage, smoothingWindow: 10);
+
+        var result = await CreateBuilder(dataService).BuildAsync(new ChartState { ChartAllData = true, Series = [series] });
+
+        Assert.IsEmpty(result.SeriesWithData.Single().ShrunkSmoothingWindows);
+    }
+
+    [TestMethod]
     public async Task BuildAsync_CentredMovingAverageSeries_PreservesSourceMetadata()
     {
         var sourceMetadata = CreateSourceMetadata();

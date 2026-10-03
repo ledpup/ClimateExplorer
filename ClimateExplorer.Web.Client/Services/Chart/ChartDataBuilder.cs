@@ -6,6 +6,7 @@ using ClimateExplorer.Core.Infrastructure;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.Stats;
 using ClimateExplorer.Core.Stats.Model;
+using ClimateExplorer.Core.Stats.Smoothing;
 using ClimateExplorer.Web.Client.Services.Trends;
 using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.Client.UiModel.Trends;
@@ -317,6 +318,24 @@ public sealed class ChartDataBuilder : IChartDataBuilder
         return UnitOfMeasureLabelShort(csd.SourceSeriesSpecifications!.First().MeasurementDefinition!.UnitOfMeasure);
     }
 
+    private static Dictionary<string, int> GetShrunkSmoothingWindows(IEnumerable<BinnedRecord> records, SmoothedSeries smoothed, int requestedWindowSize)
+    {
+        var shrunk = new Dictionary<string, int>();
+        var i = 0;
+
+        foreach (var record in records)
+        {
+            var windowSize = smoothed.WindowSizes[i++];
+
+            if (record.BinId is not null && windowSize > 0 && windowSize < requestedWindowSize)
+            {
+                shrunk[record.BinId] = windowSize;
+            }
+        }
+
+        return shrunk;
+    }
+
     private async Task<List<SeriesWithData>> RetrieveDataSets(
         IReadOnlyList<ChartSeriesDefinition> chartSeriesList,
         BinGranularities binGranularity,
@@ -437,11 +456,14 @@ public sealed class ChartDataBuilder : IChartDataBuilder
 
             if (smoother != null)
             {
-                IEnumerable<double?> values =
+                var smoothed =
                     smoother.Smooth(
                         cs.SourceDataSet.DataRecords.Select(x => x.Value).ToArray(),
                         cs.ChartSeries!.SmoothingWindow,
                         SmoothingRequiredDataThreshold);
+
+                IEnumerable<double?> values = smoothed.Values;
+                cs.ShrunkSmoothingWindows = GetShrunkSmoothingWindows(cs.SourceDataSet.DataRecords, smoothed, cs.ChartSeries!.SmoothingWindow);
 
                 if (values.Count(y => y != null) < 10)
                 {
@@ -452,6 +474,7 @@ public sealed class ChartDataBuilder : IChartDataBuilder
                         LocationName = cs.SourceDataSet.GeographicalEntity?.Name,
                     });
                     cs.DataStatus = ChartSeriesDataStatus.FallbackToUnsmoothedData;
+                    cs.ShrunkSmoothingWindows = new Dictionary<string, int>();
                     values = cs.SourceDataSet.DataRecords
                                             .Where(x => x.Value.HasValue)
                                             .Select(x => x.Value);

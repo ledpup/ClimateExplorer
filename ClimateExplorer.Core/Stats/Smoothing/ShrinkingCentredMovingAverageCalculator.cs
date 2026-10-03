@@ -10,9 +10,10 @@ public sealed class ShrinkingCentredMovingAverageCalculator : ISeriesSmoother
 {
     private const int MinimumHalfWindow = 4;
 
-    public double?[] Smooth(IReadOnlyList<double?> values, int windowSize, float requiredDataThreshold)
+    public SmoothedSeries Smooth(IReadOnlyList<double?> values, int windowSize, float requiredDataThreshold)
     {
         var result = new double?[values.Count];
+        var windowSizes = new int[values.Count];
 
         int first = 0;
         while (first < values.Count && !values[first].HasValue)
@@ -43,9 +44,10 @@ public sealed class ShrinkingCentredMovingAverageCalculator : ISeriesSmoother
             if (SmoothingWindow.MeetsThreshold(values, windowStart, slotsInWindow, requiredDataThreshold))
             {
                 result[i] = SmoothingWindow.Mean(values, windowStart, slotsInWindow);
+                windowSizes[i] = result[i].HasValue ? slotsInWindow : 0;
             }
         }
 
-        return result;
+        return new SmoothedSeries(result, windowSizes);
     }
 }

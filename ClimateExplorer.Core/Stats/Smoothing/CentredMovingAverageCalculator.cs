@@ -6,9 +6,10 @@ namespace ClimateExplorer.Core.Stats.Smoothing;
 /// </summary>
 public sealed class CentredMovingAverageCalculator : ISeriesSmoother
 {
-    public double?[] Smooth(IReadOnlyList<double?> values, int windowSize, float requiredDataThreshold)
+    public SmoothedSeries Smooth(IReadOnlyList<double?> values, int windowSize, float requiredDataThreshold)
     {
         var result = new double?[values.Count];
+        var windowSizes = new int[values.Count];
 
         for (int i = 0; i < values.Count; i++)
         {
@@ -20,9 +21,10 @@ public sealed class CentredMovingAverageCalculator : ISeriesSmoother
                 && SmoothingWindow.MeetsThreshold(values, windowStart, windowSize, requiredDataThreshold))
             {
                 result[i] = SmoothingWindow.Mean(values, windowStart, windowSize);
+                windowSizes[i] = result[i].HasValue ? windowSize : 0;
             }
         }
 
-        return result;
+        return new SmoothedSeries(result, windowSizes);
     }
 }

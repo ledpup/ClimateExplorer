@@ -68,8 +68,16 @@ public class CentredMovingAverageCalculatorTests
         CollectionAssert.AreEqual(new double?[] { null, 2, 2.5, null, null, 6.5, null }, result);
     }
 
+    [TestMethod]
+    public void Smooth_Window3_ReportsFullWindowForEveryValue()
+    {
+        var result = new CentredMovingAverageCalculator().Smooth([1, 2, 3, 4, 5], 3, 0.75f);
+
+        CollectionAssert.AreEqual(new[] { 0, 3, 3, 3, 0 }, result.WindowSizes);
+    }
+
     private static double?[] Smooth(double?[] values, int windowSize, float requiredDataThreshold = 0.75f)
     {
-        return new CentredMovingAverageCalculator().Smooth(values, windowSize, requiredDataThreshold);
+        return new CentredMovingAverageCalculator().Smooth(values, windowSize, requiredDataThreshold).Values;
     }
 }

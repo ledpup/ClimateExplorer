@@ -35,7 +35,13 @@ public static class ChartTooltipMetadataBuilder
     /// <returns>Tooltip metadata for <paramref name="series"/>, using its own tooltip label.</returns>
     public static ChartTooltipSeriesInfo BuildForSeries(SeriesWithData series)
     {
-        return BuildForSeries(series, null);
+        var shrunkWindows = BuildShrunkWindows(series);
+
+        return BuildForSeries(series, null) with
+        {
+            ShrunkWindows = shrunkWindows,
+            WindowUnit = shrunkWindows is null ? null : WindowUnit(series.ChartSeries.BinGranularity),
+        };
     }
 
     /// <summary>
@@ -62,6 +68,45 @@ public static class ChartTooltipMetadataBuilder
             Label = labelOverride ?? series.ChartSeries!.GetTooltipLabel(unitOfMeasure),
             Rounding = UnitOfMeasureRounding(unitOfMeasure),
             Anomaly = BuildAnomaly(series, dataSet),
+        };
+    }
+
+    /// <summary>
+    /// Maps each shrunk smoothing window onto the index of its point in the chart. The processed data
+    /// set holds exactly one record per chart bin, in chart order, so a record's position is its index.
+    /// </summary>
+    private static Dictionary<int, int>? BuildShrunkWindows(SeriesWithData series)
+    {
+        if (series.ShrunkSmoothingWindows.Count == 0 || series.ProcessedDataSet is null)
+        {
+            return null;
+        }
+
+        var shrunkWindows = new Dictionary<int, int>();
+        var index = 0;
+
+        foreach (var record in series.ProcessedDataSet.DataRecords)
+        {
+            if (record.BinId is not null && series.ShrunkSmoothingWindows.TryGetValue(record.BinId, out var windowSize))
+            {
+                shrunkWindows[index] = windowSize;
+            }
+
+            index++;
+        }
+
+        return shrunkWindows.Count == 0 ? null : shrunkWindows;
+    }
+
+    private static string WindowUnit(BinGranularities binGranularity)
+    {
+        return binGranularity switch
+        {
+            BinGranularities.ByYear => "yr",
+            BinGranularities.ByYearAndMonth => "mo",
+            BinGranularities.ByYearAndWeek => "wk",
+            BinGranularities.ByYearAndDay => "day",
+            _ => "pt",
         };
     }
 

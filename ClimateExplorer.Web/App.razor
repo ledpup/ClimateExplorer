@@ -259,6 +259,17 @@
             return "";
         }
 
+        // A short note after the value when the point's smoothing window was shrunk near an end of
+        // the data (e.g. "6-yr avg"). Empty for a full window.
+        function shrunkWindowHtml(point, info) {
+            const windowSize = info?.shrunkWindows?.[point.dataIndex];
+            if (!windowSize || point.raw === null || point.raw === undefined) {
+                return "";
+            }
+
+            return ` <span class="chart-external-tooltip-window">${windowSize}-${info.windowUnit}</span>`;
+        }
+
         function buildTooltipHtml(tooltip, seriesInfo) {
             const title = (tooltip.title ?? []).map(x => `<div class="chart-external-tooltip-title">${x}</div>`).join("");
             const points = tooltip.dataPoints ?? [];
@@ -278,7 +289,7 @@
                 const simpleRows = rows.map(({ point, info, colour }) => {
                     const label = info?.label ?? point.dataset.label;
                     const value = formatValue(point, info?.rounding);
-                    return `<div class="chart-external-tooltip-row"><span class="chart-external-tooltip-key" style="background:${colour.backgroundColor}; border-color:${colour.borderColor};"></span><span class="chart-external-tooltip-label">${label}: <b>${value}</b></span></div>`;
+                    return `<div class="chart-external-tooltip-row"><span class="chart-external-tooltip-key" style="background:${colour.backgroundColor}; border-color:${colour.borderColor};"></span><span class="chart-external-tooltip-label">${label}: <b>${value}</b>${shrunkWindowHtml(point, info)}</span></div>`;
                 }).join("");
 
                 return `${title}${simpleRows}`;
@@ -287,7 +298,7 @@
             const tableRows = rows.map(({ point, info, colour }) => {
                 const label = info?.label ?? point.dataset.label;
                 const swatch = `<span class="chart-external-tooltip-key" style="background:${colour.backgroundColor}; border-color:${colour.borderColor};"></span>`;
-                const value = formatValue(point, info?.rounding);
+                const value = formatValue(point, info?.rounding) + shrunkWindowHtml(point, info);
 
                 if (!info?.anomaly || point.raw === null || point.raw === undefined) {
                     return `<tr><td class="chart-external-tooltip-series">${swatch}${label}</td><td class="chart-external-tooltip-value">${value}</td><td colspan="3">–</td></tr>`;
@@ -332,6 +343,34 @@
 
                 showFloatingTooltip(tooltipElement, buildTooltipHtml(tooltip, seriesInfo), tooltip.caretX, tooltip.caretY, wrapperElement.clientWidth);
             };
+        }
+
+        // Draws the line dashed wherever a series' smoothing window was shrunk (the ends of a shrinking
+        // moving average), using chart.js per-segment styling so it stays one dataset. Has to run after
+        // every Blazorise chart update, because that replaces the datasets.
+        function configureShrunkWindowSegments(wrapperElement, seriesInfo) {
+            const canvas = wrapperElement.querySelector("canvas");
+            if (!canvas || typeof Chart === "undefined") return;
+
+            const chartInstance = Chart.getChart(canvas);
+            if (!chartInstance) return;
+
+            let changed = false;
+
+            chartInstance.data.datasets.forEach((dataset, index) => {
+                const shrunkWindows = seriesInfo?.[index]?.shrunkWindows;
+                if (!shrunkWindows) return;
+
+                const isShrunk = dataIndex => shrunkWindows[dataIndex] !== undefined;
+                dataset.segment = {
+                    borderDash: ctx => isShrunk(ctx.p0DataIndex) || isShrunk(ctx.p1DataIndex) ? [6, 4] : undefined,
+                };
+                changed = true;
+            });
+
+            if (changed) {
+                chartInstance.update("none");
+            }
         }
 
         function registerChartHoverCursor(wrapperElement) {

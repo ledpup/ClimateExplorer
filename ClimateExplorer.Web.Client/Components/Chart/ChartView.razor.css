@@ -203,6 +203,12 @@
     font-weight: 600;
 }
 
+::deep .chart-external-tooltip-window {
+    font-weight: normal;
+    font-size: 0.75rem;
+    color: #666;
+}
+
 ::deep .chart-external-tooltip-positive {
     color: #d13f3f;
 }

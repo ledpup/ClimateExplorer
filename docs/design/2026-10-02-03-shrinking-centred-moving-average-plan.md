@@ -1,7 +1,7 @@
 # Shrinking centred moving average (with a floor) as the default smoother
 
 - **Date:** 2026-10-02
-- **Status:** Implemented 2026-10-02 (see addendum)
+- **Status:** Implemented 2026-10-02 (see addendum). Dashed ends and tooltip window size added 2026-10-03 (see second addendum)
 - **Author:** Patrick Lea / Claude
 - **Scope:** `ClimateExplorer.Core/Stats/Smoothing` (new folder), `ChartDataBuilder`,
   `SeriesSmoothingOptions`, `ChartSeriesListSerializer`, `ChartSeriesDefinition`, `ChartSeriesView`,
@@ -117,6 +117,9 @@ public interface ISeriesSmoother
     double?[] Smooth(IReadOnlyList<double?> values, int windowSize, float requiredDataThreshold);
 }
 ```
+
+(Changed on 2026-10-03 to return a `SmoothedSeries` with the window size of each point. See the
+second addendum.)
 
 The output is always the same length as the input, with `null` where there is no smoothed value.
 
@@ -270,3 +273,56 @@ unit tests are clean. The UI has not been looked at.
 
 Follow-ups: review the charts in the browser and tune the floor. The unsmoothed-fallback
 misalignment listed under "Out of scope" is still open.
+
+## Addendum 2 — dashed ends and window size in the tooltip (2026-10-03)
+
+The shrunk ends are averages of fewer values than the rest of the line, so they are now drawn
+dashed, and the tooltip shows how many bins the hovered value averages. Build and unit tests are
+clean. The UI has not been looked at.
+
+### Smoother returns the window
+
+`ISeriesSmoother.Smooth` returns a `SmoothedSeries(double?[] Values, int[] WindowSizes)`.
+`WindowSizes[i]` is the number of slots point `i` was averaged over, or 0 where the value is null.
+`CentredMovingAverageCalculator` always reports the full window. The shrinking calculator reports
+`slotsInWindow`, so the window size comes from the same code that computed the value.
+
+### Data flow
+
+1. `ChartDataBuilder` keeps the bins whose window is smaller than the requested window in
+   `SeriesWithData.ShrunkSmoothingWindows` (bin id to window size). It is cleared when the series
+   falls back to unsmoothed data.
+2. `ChartTooltipMetadataBuilder.BuildForSeries` maps those bins onto chart point indexes, using
+   the processed data set (one record per chart bin, in chart order). It adds them to
+   `ChartTooltipSeriesInfo.ShrunkWindows` (index to size, sparse, so long daily series don't send a
+   long array), with a short `WindowUnit` ("yr", "mo", "wk", "day"). Trend datasets get none.
+3. `ChartView` passes the tooltip metadata to a new JS function, `configureShrunkWindowSegments`
+   in `App.razor`, right after `configureChartTooltip`.
+
+### Dashed line, one dataset
+
+Blazorise's C# dataset can't hold a JS function, so the dash is set on the live Chart.js (4.5)
+instance after each Blazorise update. Chart.js per-segment styling does it on the existing
+dataset: `dataset.segment.borderDash` returns `[6, 4]` when either end of a segment is a shrunk
+point, then `chart.update("none")`. No extra series is added, and the legend, tooltip index and
+trend overlay indexes are unchanged. The legend still shows a solid line. Bar and scatter series
+ignore `segment`.
+
+### Tooltip
+
+A shrunk point gets a short muted note after its value, such as `14.2 6-yr avg`, in both the
+simple and anomaly-table layouts (class `chart-external-tooltip-window`, `0.75rem`). Points with a
+full window show nothing extra, so the tooltip only grows at the ends of the line.
+
+### Tests added
+
+- `SeriesSmootherContractTests`: `WindowSizes` length equals input length; size is 0 exactly
+  where the value is null.
+- `CentredMovingAverageCalculatorTests`: full window reported for every value.
+- `ShrinkingCentredMovingAverageCalculatorTests`: sizes match the odd-window table; null outputs
+  report 0.
+- `ChartDataBuilderTests`: shrunk bins recorded for the shrinking option, none for the centred one.
+- `ChartTooltipMetadataBuilderTests`: bins mapped to chart indexes (unplotted bins dropped), null
+  when there are none, and none for trend datasets.
+
+Follow-ups: check the dash pattern and the tooltip note in the browser, on mobile as well.
