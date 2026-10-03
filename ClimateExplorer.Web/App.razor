@@ -290,12 +290,16 @@
             return info?.shrunkWindows?.[point.dataIndex];
         }
 
+        // Fill colour of a line chart point whose smoothing window was shrunk.
+        const shrunkWindowPointFill = "#ffffff";
+
         function buildTooltipHtml(tooltip, seriesInfo) {
             const title = (tooltip.title ?? []).map(x => `<div class="chart-external-tooltip-title">${x}</div>`).join("");
             const points = tooltip.dataPoints ?? [];
 
-            // Line chart points are drawn unfilled, so their colour key takes its fill from the outline.
-            const keyColour = colour => colour.backgroundColor === "transparent"
+            // Line chart points are drawn unfilled (or white, where the smoothing window was shrunk), so
+            // their colour key takes its fill from the outline.
+            const keyColour = colour => colour.backgroundColor === "transparent" || colour.backgroundColor === shrunkWindowPointFill
                 ? { ...colour, backgroundColor: colour.borderColor }
                 : colour;
 
@@ -394,8 +398,9 @@
 
                 const isShrunk = dataIndex => shrunkWindows[dataIndex] !== undefined;
                 dataset.segment = {
-                    borderDash: ctx => isShrunk(ctx.p0DataIndex) || isShrunk(ctx.p1DataIndex) ? [6, 4] : undefined,
+                    borderDash: ctx => isShrunk(ctx.p0DataIndex) || isShrunk(ctx.p1DataIndex) ? [6, 6] : undefined,
                 };
+                dataset.pointBackgroundColor = ctx => isShrunk(ctx.dataIndex) ? shrunkWindowPointFill : "transparent";
                 changed = true;
             });
 
