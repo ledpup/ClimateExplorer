@@ -229,22 +229,34 @@
             tooltipElement.style.top = `${Math.max(y, 0)}px`;
         }
 
-        // Shows the tooltip to the right of the point at (x, y), or to the left when there is no room
-        // on the right, so that it never covers the hovered points. The element's left/top is its
-        // top-left corner.
-        function showFloatingTooltipBeside(tooltipElement, html, x, y, containerWidth, containerHeight) {
+        // Positions the chart tooltip relative to the point at (x, y). The element's left/top is its
+        // top-left corner, and it is always kept inside the container.
+        // - Fullscreen: to the right of the point, or to the left when there is no room on the right,
+        //   so that it never covers the hovered points.
+        // - Mobile/tablet: there is no room beside the point, so it is centred above the point instead.
+        function showChartTooltip(tooltipElement, html, x, y, containerWidth, containerHeight) {
             tooltipElement.innerHTML = html;
             tooltipElement.style.opacity = 1;
 
-            const isMobile = window.matchMedia("(max-width: 767px)").matches;
-            const gap = isMobile ? 24 : 50;
+            const isSmallScreen = window.matchMedia("(max-width: 1024px)").matches;
             const padding = 8;
             const width = tooltipElement.offsetWidth;
             const height = tooltipElement.offsetHeight;
+            const maxLeft = Math.max(containerWidth - width - padding, padding);
+            const maxTop = Math.max(containerHeight - height, 0);
 
-            const fitsOnRight = x + gap + width <= containerWidth - padding;
-            const left = fitsOnRight ? x + gap : Math.max(x - gap - width, padding);
-            const top = Math.max(0, Math.min(y - (height / 2), containerHeight - height));
+            let left;
+            let top;
+            if (isSmallScreen) {
+                const gap = 12;
+                left = Math.min(Math.max(x - (width / 2), padding), maxLeft);
+                top = Math.min(Math.max(y - height - gap, 0), maxTop);
+            } else {
+                const gap = 50;
+                const fitsOnRight = x + gap + width <= containerWidth - padding;
+                left = fitsOnRight ? x + gap : Math.max(x - gap - width, padding);
+                top = Math.min(Math.max(y - (height / 2), 0), maxTop);
+            }
 
             tooltipElement.style.left = `${left}px`;
             tooltipElement.style.top = `${top}px`;
@@ -384,7 +396,7 @@
                     return;
                 }
 
-                showFloatingTooltipBeside(tooltipElement, buildTooltipHtml(tooltip, seriesInfo), tooltip.caretX, tooltip.caretY, wrapperElement.clientWidth, wrapperElement.clientHeight);
+                showChartTooltip(tooltipElement, buildTooltipHtml(tooltip, seriesInfo), tooltip.caretX, tooltip.caretY, wrapperElement.clientWidth, wrapperElement.clientHeight);
             };
         }
 
