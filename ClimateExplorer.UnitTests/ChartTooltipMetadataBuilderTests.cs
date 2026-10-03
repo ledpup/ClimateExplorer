@@ -117,6 +117,45 @@ public class ChartTooltipMetadataBuilderTests
     }
 
     [TestMethod]
+    public void BuildForSeries_ShrunkSmoothingWindows_MapsBinsToChartIndexes()
+    {
+        var series = CreateSeriesWithData(BinGranularities.ByYear, YearRange(1950, 2019));
+        series.ProcessedDataSet = BuildDataSet(YearRange(2000, 2019));
+        series.ShrunkSmoothingWindows = new Dictionary<string, int> { ["y1950"] = 5, ["y2018"] = 7, ["y2019"] = 6 };
+
+        var result = ChartTooltipMetadataBuilder.BuildForSeries(series);
+
+        // 1950 is not plotted. 2018 and 2019 are chart points 18 and 19.
+        Assert.IsNotNull(result.ShrunkWindows);
+        Assert.HasCount(2, result.ShrunkWindows);
+        Assert.AreEqual(7, result.ShrunkWindows[18]);
+        Assert.AreEqual(6, result.ShrunkWindows[19]);
+    }
+
+    [TestMethod]
+    public void BuildForSeries_NoShrunkSmoothingWindows_ShrunkWindowsIsNull()
+    {
+        var series = CreateSeriesWithData(BinGranularities.ByYear, YearRange(1950, 2019));
+        series.ProcessedDataSet = BuildDataSet(YearRange(1950, 2019));
+
+        var result = ChartTooltipMetadataBuilder.BuildForSeries(series);
+
+        Assert.IsNull(result.ShrunkWindows);
+    }
+
+    [TestMethod]
+    public void BuildForTrendSeries_ShrunkSmoothingWindows_ShrunkWindowsIsNull()
+    {
+        var series = CreateSeriesWithData(BinGranularities.ByYear, YearRange(1950, 2019));
+        series.ProcessedDataSet = BuildDataSet(YearRange(1950, 2019));
+        series.ShrunkSmoothingWindows = new Dictionary<string, int> { ["y2019"] = 6 };
+
+        var result = ChartTooltipMetadataBuilder.BuildForTrendSeries(series, "Trend");
+
+        Assert.IsNull(result.ShrunkWindows);
+    }
+
+    [TestMethod]
     public void Build_CustomTransformation_LabelMatchesChartLegendAndAnomalyIsSuppressed()
     {
         var series = CreateSeriesWithData(BinGranularities.ByYear, YearRange(1950, 2019));
