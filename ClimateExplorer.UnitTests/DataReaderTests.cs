@@ -1,4 +1,4 @@
-﻿using ClimateExplorer.Core.InputOutput;
+using ClimateExplorer.Core.InputOutput;
 using ClimateExplorer.Core.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -27,7 +27,7 @@ public class DataReaderTests
 
         var regEx = new Regex(@"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),-?\d*,(?<tmin>-?[\d+\.\d+]*),-?\d*,.*,D$");
 
-        var records = DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Daily, string.Empty);
+        var records = ByKey(DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Daily, string.Empty));
         var keysList = records.Keys.ToList();
 
         Assert.HasCount(4, records);
@@ -56,7 +56,7 @@ public class DataReaderTests
 
         var regEx = new Regex(@"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),-?\d*,(?<tmin>-?[\d+\.\d+]*),-?\d*,.*,D$");
 
-        var records = DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Daily, string.Empty);
+        var records = ByKey(DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Daily, string.Empty));
 
         Assert.HasCount(4, records);
 
@@ -81,7 +81,7 @@ public class DataReaderTests
 
         var regEx = new Regex(@"^(?<station>\d+),(?<year>\d{4})(?<month>\d{2})(?<day>\d{2}):\d+,(?<value>-?[\d+\.\d+]*),-?\d*,(?<tmin>-?[\d+\.\d+]*),-?\d*,.*,D$");
 
-        var records = DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Daily, string.Empty);
+        var records = ByKey(DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Daily, string.Empty));
 
         Assert.HasCount(4, records);
 
@@ -109,7 +109,7 @@ public class DataReaderTests
         var start = DateOnly.Parse("1950/12/31");
         var end = DateOnly.Parse("1951/1/1");
 
-        var records = DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Daily, string.Empty, start, end);
+        var records = ByKey(DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Daily, string.Empty, start, end));
 
         Assert.HasCount(2, records);
 
@@ -132,7 +132,7 @@ public class DataReaderTests
 
         var regEx = new Regex(@"^(?<year>\d{4})(?<month>\d{2})\d{2}\s\d+\s+(?<value>-?\d+\.\d+)$");
 
-        var records = DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Monthly, string.Empty);
+        var records = ByKey(DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Monthly, string.Empty));
         var keysList = records.Keys.ToList();
 
         Assert.HasCount(4, records);
@@ -161,7 +161,7 @@ public class DataReaderTests
 
         var regEx = new Regex(@"^(?<year>\d{4})(?<month>\d{2})\d{2}\s\d+\s+(?<value>-?\d+\.\d+)$");
 
-        var records = DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Monthly, string.Empty);
+        var records = ByKey(DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Monthly, string.Empty));
         var keysList = records.Keys.ToList();
 
         Assert.HasCount(4, records);
@@ -189,7 +189,7 @@ public class DataReaderTests
 
         var regEx = new Regex(@"^(?<year>\d{4})(?<month>\d{2})\d{2}\s\d+\s+(?<value>-?\d+\.\d+)$");
 
-        var records = DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Monthly, string.Empty);
+        var records = ByKey(DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Monthly, string.Empty));
         var keysList = records.Keys.ToList();
 
         Assert.HasCount(3, records);
@@ -216,7 +216,7 @@ public class DataReaderTests
 
         var regEx = new Regex(@"^(?<year>\d{4})(?<month>\d{2})\d{2}\s\d+\s+(?<value>-?\d+\.\d+)$");
 
-        var records = DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Monthly, string.Empty);
+        var records = ByKey(DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Monthly, string.Empty));
         var keysList = records.Keys.ToList();
 
         Assert.HasCount(3, records);
@@ -254,7 +254,7 @@ public class DataReaderTests
 
         var regEx = new Regex(@"^\""(?<station>\w+)\"",.*,(?<year>\d{4}),(?<value>\d+\.\d+),.*$");
 
-        var records = DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Yearly, "Global");
+        var records = ByKey(DataReaderFunctions.ProcessDataFile(lines, regEx, "-", Core.Enums.DataResolution.Yearly, "Global"));
         var keysList = records.Keys.ToList();
 
         Assert.HasCount(12, records);
@@ -311,5 +311,14 @@ public class DataReaderTests
         };
 
         await DataReaderFunctions.GetDataRecords(md, dataFileFilterAndAdjustments, "Auckland");
+    }
+
+    /// <summary>
+    /// Indexes records by an underscore-joined year/month/day key, preserving their order. ToDictionary
+    /// also asserts that ProcessDataFile never returns two records for the same date.
+    /// </summary>
+    private static Dictionary<string, DataRecord> ByKey(List<DataRecord> records)
+    {
+        return records.ToDictionary(x => string.Join("_", new short?[] { x.Year, x.Month, x.Day }.Where(y => y.HasValue)));
     }
 }

@@ -87,7 +87,7 @@
                                 </span>
                             </div>
                         </DelayedTooltip>
-                        <DelayedTooltip Text="Reduces noise by averaging values across a rolling window of periods" Style="display: block">
+                        <DelayedTooltip Text="Reduces noise by smoothing values across a rolling window of periods" Style="display: block">
                             <div class="form-row">
                                 <span class="form-label">Smoothing</span>
                                 <span class="form-control-wrap">
@@ -96,12 +96,13 @@
                                             Value="@ChartSeries.Smoothing"
                                             ValueChanged="@OnSmoothingChanged">
                                         <SelectItem Value="SeriesSmoothingOptions.None">None</SelectItem>
-                                        <SelectItem Value="SeriesSmoothingOptions.MovingAverage">Moving average</SelectItem>
+                                        <SelectItem Value="SeriesSmoothingOptions.ShrinkingCentredMovingAverage">Shrinking moving average</SelectItem>
+                                        <SelectItem Value="SeriesSmoothingOptions.CentredMovingAverage">Centred moving average</SelectItem>
                                     </Select>
                                 </span>
                             </div>
                         </DelayedTooltip>
-                        <DelayedTooltip Text="Number of periods to include in the rolling average" Style="display: block">
+                        <DelayedTooltip Text="Number of periods to include in the rolling window" Style="display: block">
                             <div class="form-row">
                                 <span class="form-label">Smoothing window</span>
                                 <span class="form-control-wrap">

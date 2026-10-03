@@ -78,12 +78,14 @@ public static class ChartLogic
                 BackgroundColor = colour,
                 BorderColor = colour,
                 Fill = false,
-                PointRadius = renderSmallPoints ? 0.1f : 0.2f,
+                PointRadius = renderSmallPoints ? 0.1f : 3f,
                 ShowLine = true,
+                PointBackgroundColor = "transparent",
+                PointBorderWidth = 1,
                 PointBorderColor = colour,
                 PointHoverBackgroundColor = colour,
                 BorderDash = [],
-                BorderWidth = 5,
+                BorderWidth = 4,
 
                 YAxisID = GetYAxisId(seriesTransformations, customTransformation, unitOfMeasure, seriesAggregationOptions),
             };

@@ -44,41 +44,42 @@ public static class DataReaderFunctions
 
         var regEx = DataRowRegExCache.GetOrAdd(measurementDefinition.DataRowRegEx!, static pattern => new Regex(pattern, RegexOptions.Compiled));
 
-        var records = new Dictionary<string, DataRecord>();
+        var records = new List<DataRecord>();
+
+        // Each file's records are already unique (ProcessDataFile skips out-of-order/duplicate rows), so
+        // overlap only needs checking when more than one file contributes.
+        var seenDates = dataFileFilterAndAdjustments.Count > 1 ? new HashSet<(short Year, short? Month, short? Day)>() : null;
         var dataFileSource = measurementDefinition.DataFileSource
             ?? throw new InvalidOperationException("Every measurement definition must have an explicit data file source.");
         foreach (var dataFileDefinition in dataFileFilterAndAdjustments)
         {
             var fileRecords = await ReadDataFile(dataFileSource, regEx, measurementDefinition.NullValue!, measurementDefinition.DataResolution, dataFileDefinition.Id, datasetsFolder, dataFileDefinition.StartDate, dataFileDefinition.EndDate);
-            var values = fileRecords.Values.ToList();
 
-            // Adjust based on the measurement definition (how the data is stored on file vs the unit of measure in the measurement definition).
-            if (measurementDefinition.ValueAdjustment != null)
+            foreach (var dataRecord in fileRecords)
             {
-                values.ForEach(x => x.Value = x.Value / measurementDefinition.ValueAdjustment.Value);
-            }
-
-            // Add to full record set
-            if (fileRecords != null)
-            {
-                foreach (var dataRecord in fileRecords)
+                // Adjust based on the measurement definition (how the data is stored on file vs the unit of measure in the measurement definition).
+                if (measurementDefinition.ValueAdjustment != null)
                 {
-                    if (!records.ContainsKey(dataRecord.Key))
-                    {
-                        records.Add(dataRecord.Key, dataRecord.Value);
-                    }
-                    else
-                    {
-                        throw new Exception($"Key {dataRecord.Key} already exists in the collection");
-                    }
+                    dataRecord.Value = dataRecord.Value / measurementDefinition.ValueAdjustment.Value;
                 }
+
+                if (seenDates != null && !seenDates.Add((dataRecord.Year, dataRecord.Month, dataRecord.Day)))
+                {
+                    throw new Exception($"Record {dataRecord.Year}-{dataRecord.Month}-{dataRecord.Day} already exists in the collection");
+                }
+
+                records.Add(dataRecord);
             }
         }
 
-        return records.Values.ToList();
+        return records;
     }
 
-    public static Dictionary<string, DataRecord> ProcessDataFile(
+    /// <summary>
+    /// Parses the lines of a data file into records in ascending date order, inserting null-valued
+    /// records for any gaps. Out-of-order or duplicate rows are skipped, so each date appears at most once.
+    /// </summary>
+    public static List<DataRecord> ProcessDataFile(
         string[]? linesOfFile,
         Regex regEx,
         string nullValue,
@@ -103,19 +104,25 @@ public static class DataReaderFunctions
             return [];
         }
 
-        var dataRecords = new Dictionary<string, DataRecord>();
+        var dataRecords = new List<DataRecord>(lines.Length);
 
         var initialDataIndex = GetStartIndex(regEx, lines, station);
 
         var firstValidLine = regEx.Match(lines[initialDataIndex]);
 
-        var startYear = short.Parse(firstValidLine.Groups["year"].Value);
-        var startMonth = GetMonthValue(firstValidLine);
+        // Look up group numbers once rather than resolving group names on every line
+        var yearGroup = regEx.GroupNumberFromName("year");
+        var monthGroup = regEx.GroupNumberFromName("month");
+        var dayGroup = regEx.GroupNumberFromName("day");
+        var valueGroup = regEx.GroupNumberFromName("value");
+
+        var startYear = short.Parse(firstValidLine.Groups[yearGroup].ValueSpan);
+        var startMonth = GetMonthValue(firstValidLine.Groups[monthGroup]);
 
         short startDay = 1;
         if (dataResolution == DataResolution.Daily)
         {
-            startDay = short.Parse(firstValidLine.Groups["day"].Value);
+            startDay = short.Parse(firstValidLine.Groups[dayGroup].ValueSpan);
         }
 
         var date = new DateOnly(startYear, startMonth, startDay);
@@ -131,12 +138,13 @@ public static class DataReaderFunctions
                 continue;
             }
 
-            var year = short.Parse(match.Groups["year"].Value);
-            var month = GetMonthValue(match);
+            var groups = match.Groups;
+            var year = short.Parse(groups[yearGroup].ValueSpan);
+            var month = GetMonthValue(groups[monthGroup]);
             short day = 1;
             if (dataResolution == DataResolution.Daily)
             {
-                day = short.Parse(match.Groups["day"].Value);
+                day = short.Parse(groups[dayGroup].ValueSpan);
             }
 
             var filterDate = new DateOnly(year, month, day);
@@ -168,32 +176,27 @@ public static class DataReaderFunctions
             {
                 if (dataResolution == DataResolution.Daily)
                 {
-                    var record = new DataRecord(date, null);
-                    dataRecords.Add(BuildRecordKey(record), record);
+                    dataRecords.Add(new DataRecord(date, null));
                     date = date.AddDays(1);
                 }
                 else if (dataResolution == DataResolution.Monthly)
                 {
-                    var record = new DataRecord((short)date.Year, (short)date.Month, null, null);
-                    dataRecords.Add(BuildRecordKey(record), record);
+                    dataRecords.Add(new DataRecord((short)date.Year, (short)date.Month, null, null));
                     date = date.AddMonths(1);
                 }
             }
 
-            var valueString = match.Groups["value"].Value;
-            double? value = string.IsNullOrWhiteSpace(valueString) || valueString == nullValue ? null : double.Parse(valueString);
+            var value = ParseValue(groups[valueGroup].ValueSpan, nullValue);
 
             previousDate = recordDate;
             if (dataResolution == DataResolution.Daily)
             {
-                var record = new DataRecord(year, month, day, value);
-                dataRecords.Add(BuildRecordKey(record), record);
+                dataRecords.Add(new DataRecord(year, month, day, value));
                 date = date.AddDays(1);
             }
             else if (dataResolution == DataResolution.Monthly)
             {
-                var record = new DataRecord(year, month, null, value);
-                dataRecords.Add(BuildRecordKey(record), record);
+                dataRecords.Add(new DataRecord(year, month, null, value));
                 date = date.AddMonths(1);
             }
         }
@@ -223,7 +226,7 @@ public static class DataReaderFunctions
         return ReadLinesFromZipFileEntry(sourceFilePath, archiveEntryPath);
     }
 
-    private static async Task<Dictionary<string, DataRecord>> ReadDataFile(
+    private static async Task<List<DataRecord>> ReadDataFile(
         DataFileSourceDefinition dataFileSource,
         Regex regEx,
         string nullValue,
@@ -238,46 +241,27 @@ public static class DataReaderFunctions
         return ProcessDataFile(lines, regEx, nullValue, dataResolution, station, startDate, endDate);
     }
 
-    /// <summary>
-    /// Builds the underscore-joined year/month/day key used to de-duplicate and index records while parsing
-    /// a raw data file. This is purely an internal parsing concern - it doesn't need to live on <see cref="DataRecord"/>
-    /// itself (and shouldn't, since that would mean it gets serialized to every API response unnecessarily).
-    /// </summary>
-    private static string BuildRecordKey(DataRecord record)
+    private static double? ParseValue(ReadOnlySpan<char> valueSpan, string nullValue)
     {
-        var key = record.Year.ToString();
-        if (record.Month != null)
-        {
-            key += "_" + record.Month;
-        }
-
-        if (record.Day != null)
-        {
-            key += "_" + record.Day;
-        }
-
-        return key;
+        return valueSpan.IsWhiteSpace() || valueSpan.SequenceEqual(nullValue) ? null : double.Parse(valueSpan);
     }
 
-    private static short GetMonthValue(Match match)
+    private static short GetMonthValue(Group monthGroup)
     {
-        var isMonthParsed = short.TryParse(match.Groups["month"].Value, out short monthValue);
-        if (!isMonthParsed)
+        if (short.TryParse(monthGroup.ValueSpan, out short monthValue))
         {
-            if (MonthNamesToNumeric.ContainsKey(match.Groups["month"].Value))
-            {
-                monthValue = MonthNamesToNumeric[match.Groups["month"].Value];
-            }
-            else
-            {
-                throw new FormatException($"Month field (value is '{match.Groups["month"].Value}') is an unrecognised format");
-            }
+            return monthValue;
         }
 
-        return monthValue;
+        if (MonthNamesToNumeric.TryGetValue(monthGroup.Value, out monthValue))
+        {
+            return monthValue;
+        }
+
+        throw new FormatException($"Month field (value is '{monthGroup.Value}') is an unrecognised format");
     }
 
-    private static Dictionary<string, DataRecord> ProcessYearlyData(string[]? linesOfFile, Regex regEx, string nullValue, DataResolution dataResolution, string station)
+    private static List<DataRecord> ProcessYearlyData(string[]? linesOfFile, Regex regEx, string nullValue, DataResolution dataResolution, string station)
     {
         var lines = linesOfFile;
 
@@ -287,7 +271,7 @@ public static class DataReaderFunctions
             return [];
         }
 
-        var dataRecords = new Dictionary<string, DataRecord>();
+        var dataRecords = new List<DataRecord>();
 
         var initialDataIndex = GetStartIndex(regEx, lines, station);
 
@@ -319,18 +303,11 @@ public static class DataReaderFunctions
 
             while (recordDate > date)
             {
-                var record = new DataRecord(date, null);
-                dataRecords.Add(BuildRecordKey(record), record);
+                dataRecords.Add(new DataRecord(date, null));
                 date = date.AddYears(1);
             }
 
-            {
-                var valueString = match.Groups["value"].Value;
-                double? value = string.IsNullOrWhiteSpace(valueString) || valueString == nullValue ? null : double.Parse(valueString);
-
-                var record = new DataRecord(year, 12, 31, value);
-                dataRecords.Add(BuildRecordKey(record), record);
-            }
+            dataRecords.Add(new DataRecord(year, 12, 31, ParseValue(match.Groups["value"].ValueSpan, nullValue)));
 
             previousDate = recordDate;
             date = date.AddYears(1);

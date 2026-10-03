@@ -214,21 +214,21 @@ public class ChartDataBuilderTests
     }
 
     [TestMethod]
-    public async Task MovingAverageFallsBackToUnsmoothedDataAndWarnsWhenTooFewPointsRemain()
+    public async Task BuildAsync_CentredMovingAverageWithTooFewPointsRemaining_FallsBackToUnsmoothedDataAndWarns()
     {
         var dataSet = CreateYearDataSet([(2000, 1), (2001, 2), (2002, 3), (2003, 4), (2004, 5)]);
         var dataService = CreateDataService(dataSet);
 
         // A 20-year smoothing window over only five years removes too many points, so the builder
         // reverts to the unsmoothed data and surfaces a warning.
-        var series = CreateSeries(smoothing: SeriesSmoothingOptions.MovingAverage, smoothingWindow: 20);
+        var series = CreateSeries(smoothing: SeriesSmoothingOptions.CentredMovingAverage, smoothingWindow: 20);
         var state = new ChartState { ChartAllData = true, Series = [series] };
 
         var result = await CreateBuilder(dataService).BuildAsync(state);
 
         Assert.IsTrue(result.HasRenderableData);
         Assert.HasCount(1, result.Messages);
-        StringAssert.Contains(result.Messages.Single().Message, "moving");
+        StringAssert.Contains(result.Messages.Single().Message, "smoothing");
         Assert.AreEqual(ChartSeriesDataStatus.FallbackToUnsmoothedData, result.SeriesWithData.Single().DataStatus);
 
         var processedValues = result.SeriesWithData.Single().ProcessedDataSet!.DataRecords.Select(x => x.Value).ToArray();
@@ -236,14 +236,60 @@ public class ChartDataBuilderTests
     }
 
     [TestMethod]
-    public async Task BuildAsync_MovingAverageSeries_PreservesSourceMetadata()
+    public async Task BuildAsync_ShrinkingCentredMovingAverage_SmoothsEveryYearFromFirstToLast()
+    {
+        var records = Enumerable.Range(2000, 30).Select(year => (year, value: (double?)year)).ToArray();
+        var dataService = CreateDataService(CreateYearDataSet(records));
+        var series = CreateSeries(smoothing: SeriesSmoothingOptions.ShrinkingCentredMovingAverage, smoothingWindow: 10);
+
+        var result = await CreateBuilder(dataService).BuildAsync(new ChartState { ChartAllData = true, Series = [series] });
+
+        // Unlike the centred average, which would leave 2000-2004 and 2025-2029 empty, every year
+        // gets a value. The last point averages its shrunk window, 2025-2029.
+        var smoothed = result.SeriesWithData.Single().PreProcessedDataSet!.DataRecords;
+        Assert.IsTrue(smoothed.All(x => x.Value.HasValue));
+        Assert.AreEqual(2027, smoothed.Last().Value!.Value, 1e-6);
+    }
+
+    [TestMethod]
+    public async Task BuildAsync_ShrinkingCentredMovingAverage_RecordsShrunkWindowsByBin()
+    {
+        var records = Enumerable.Range(2000, 30).Select(year => (year, value: (double?)year)).ToArray();
+        var dataService = CreateDataService(CreateYearDataSet(records));
+        var series = CreateSeries(smoothing: SeriesSmoothingOptions.ShrinkingCentredMovingAverage, smoothingWindow: 10);
+
+        var result = await CreateBuilder(dataService).BuildAsync(new ChartState { ChartAllData = true, Series = [series] });
+
+        // Window 10: full from 2005 to 2024. 2000-2004 and 2025-2029 are shrunk.
+        var shrunk = result.SeriesWithData.Single().ShrunkSmoothingWindows;
+        Assert.HasCount(10, shrunk);
+        Assert.AreEqual(5, shrunk["y2029"]);
+        Assert.AreEqual(9, shrunk["y2004"]);
+        Assert.IsFalse(shrunk.ContainsKey("y2005"));
+        Assert.IsFalse(shrunk.ContainsKey("y2024"));
+    }
+
+    [TestMethod]
+    public async Task BuildAsync_CentredMovingAverage_RecordsNoShrunkWindows()
+    {
+        var records = Enumerable.Range(2000, 30).Select(year => (year, value: (double?)year)).ToArray();
+        var dataService = CreateDataService(CreateYearDataSet(records));
+        var series = CreateSeries(smoothing: SeriesSmoothingOptions.CentredMovingAverage, smoothingWindow: 10);
+
+        var result = await CreateBuilder(dataService).BuildAsync(new ChartState { ChartAllData = true, Series = [series] });
+
+        Assert.IsEmpty(result.SeriesWithData.Single().ShrunkSmoothingWindows);
+    }
+
+    [TestMethod]
+    public async Task BuildAsync_CentredMovingAverageSeries_PreservesSourceMetadata()
     {
         var sourceMetadata = CreateSourceMetadata();
         var dataSet = CreateYearDataSet(
             Enumerable.Range(2000, 30).Select(year => (year, value: (double?)year)),
             sourceMetadata: sourceMetadata);
         var dataService = CreateDataService(dataSet);
-        var series = CreateSeries(smoothing: SeriesSmoothingOptions.MovingAverage, smoothingWindow: 3);
+        var series = CreateSeries(smoothing: SeriesSmoothingOptions.CentredMovingAverage, smoothingWindow: 3);
 
         var result = await CreateBuilder(dataService).BuildAsync(new ChartState { ChartAllData = true, Series = [series] });
 
@@ -397,17 +443,17 @@ public class ChartDataBuilderTests
     }
 
     [TestMethod]
-    public async Task BuildAsync_TrendOnMovingAverageSmoothedSeries_ProjectsFromAfterTheTrueLastRawYear()
+    public async Task BuildAsync_TrendOnCentredMovingAverageSmoothedSeries_ProjectsFromAfterTheTrueLastRawYear()
     {
-        // A centred 10-year moving average (5 years before, 4 after) can't fill a full window for
-        // the last 4 years of a record, so the smoothed series plotted on the chart stops 4 years
+        // A centred 10-year moving average (2x10: 5 years either side) can't fill a full window for
+        // the last 5 years of a record, so the smoothed series plotted on the chart stops 5 years
         // short of the raw data. The trend's projection must resume after the true last raw year
-        // (2025), not after the last smoothed point (2021) - otherwise it draws "predicted" points
+        // (2025), not after the last smoothed point (2020) - otherwise it draws "predicted" points
         // for years that are already measured, just not smoothed.
         var records = Enumerable.Range(1900, 126).Select(y => (year: y, value: (double?)(10 + ((y - 1900) * 0.03)))).ToArray();
         var dataService = CreateDataService(CreateYearDataSet(records));
 
-        var series = CreateSeries(smoothing: SeriesSmoothingOptions.MovingAverage, smoothingWindow: 10);
+        var series = CreateSeries(smoothing: SeriesSmoothingOptions.CentredMovingAverage, smoothingWindow: 10);
         series.Trends = [new ChartSeriesTrendRequest { RegressionType = TrendRegressionType.Linear, TrendPeriod = TrendWindow.Full, TrendPredictionYears = 5 }];
         var state = new ChartState { ChartAllData = true, Series = [series] };
 
@@ -416,13 +462,13 @@ public class ChartDataBuilderTests
         var seriesWithData = result.SeriesWithData.Single();
         var lastSmoothedYear = seriesWithData.PreProcessedDataSet!.DataRecords.Last(x => x.Value.HasValue).Year;
 
-        Assert.AreEqual((short)2021, lastSmoothedYear); // sanity check: the smoothing did trim the tail
+        Assert.AreEqual((short)2020, lastSmoothedYear); // sanity check: the smoothing did trim the tail
         Assert.AreEqual(2025, seriesWithData.Trends.Single().LastDataYear);
         Assert.AreEqual(2026, seriesWithData.Trends.Single().Projection!.FirstYear);
     }
 
     [TestMethod]
-    public async Task BuildAsync_TrendOnMovingAverageSmoothedSeriesWithExplicitEndYear_DoesNotProjectPastTheRequestedEndYear()
+    public async Task BuildAsync_TrendOnCentredMovingAverageSmoothedSeriesWithExplicitEndYear_DoesNotProjectPastTheRequestedEndYear()
     {
         // The true-last-raw-year anchor still respects an explicit end-year filter, the same way
         // the chart's own bin range does - it must not claim data exists past what the user asked
@@ -430,7 +476,7 @@ public class ChartDataBuilderTests
         var records = Enumerable.Range(1900, 126).Select(y => (year: y, value: (double?)(10 + ((y - 1900) * 0.03)))).ToArray();
         var dataService = CreateDataService(CreateYearDataSet(records));
 
-        var series = CreateSeries(smoothing: SeriesSmoothingOptions.MovingAverage, smoothingWindow: 10);
+        var series = CreateSeries(smoothing: SeriesSmoothingOptions.CentredMovingAverage, smoothingWindow: 10);
         series.Trends = [new ChartSeriesTrendRequest { RegressionType = TrendRegressionType.Linear, TrendPeriod = TrendWindow.Full, TrendPredictionYears = 5 }];
         var state = new ChartState { ChartAllData = false, EndYear = "2022", Series = [series] };
 

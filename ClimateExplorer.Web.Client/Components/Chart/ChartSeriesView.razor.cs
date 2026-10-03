@@ -147,7 +147,7 @@ public partial class ChartSeriesView
 
     private bool ShouldDisableSmoothingWindow(ChartSeriesDefinition csd)
     {
-        return csd.Smoothing != SeriesSmoothingOptions.MovingAverage;
+        return !csd.Smoothing.UsesWindow();
     }
 
     private bool ShouldDisableDisplay(ChartSeriesDefinition csd)

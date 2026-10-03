@@ -88,7 +88,7 @@ public class ChartSeriesLocationSubstitutionServiceTests
         Assert.AreEqual(NewLocationId, duplicate.SourceSeriesSpecifications!.Single().LocationId);
         Assert.AreEqual(NewLocation().Name, duplicate.SourceSeriesSpecifications!.Single().LocationName);
         Assert.AreEqual(oldDefinition.Id, duplicate.SourceSeriesSpecifications!.Single().DataSetDefinition!.Id);
-        Assert.AreEqual(SeriesSmoothingOptions.MovingAverage, duplicate.Smoothing);
+        Assert.AreEqual(SeriesSmoothingOptions.CentredMovingAverage, duplicate.Smoothing);
         Assert.AreEqual(DataResolution.Monthly, duplicate.MinimumDataResolution);
     }
 
@@ -217,7 +217,7 @@ public class ChartSeriesLocationSubstitutionServiceTests
             DisplayStyle = SeriesDisplayStyle.Line,
             IsLocked = isLocked,
             ShowTrendline = true,
-            Smoothing = SeriesSmoothingOptions.MovingAverage,
+            Smoothing = SeriesSmoothingOptions.CentredMovingAverage,
             SmoothingWindow = 20,
             Value = SeriesValueOptions.Value,
             Year = null,

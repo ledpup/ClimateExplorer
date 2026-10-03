@@ -109,6 +109,6 @@ public sealed class BomDataSetDownloader(BomDailyDataClient client) : IDataSetDo
             new Regex(definition.DataRowRegEx!),
             definition.NullValue!,
             definition.DataResolution,
-            stationId).Values;
+            stationId);
     }
 }

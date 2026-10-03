@@ -229,6 +229,27 @@
             tooltipElement.style.top = `${Math.max(y, 0)}px`;
         }
 
+        // Shows the tooltip to the right of the point at (x, y), or to the left when there is no room
+        // on the right, so that it never covers the hovered points. The element's left/top is its
+        // top-left corner.
+        function showFloatingTooltipBeside(tooltipElement, html, x, y, containerWidth, containerHeight) {
+            tooltipElement.innerHTML = html;
+            tooltipElement.style.opacity = 1;
+
+            const isMobile = window.matchMedia("(max-width: 767px)").matches;
+            const gap = isMobile ? 24 : 50;
+            const padding = 8;
+            const width = tooltipElement.offsetWidth;
+            const height = tooltipElement.offsetHeight;
+
+            const fitsOnRight = x + gap + width <= containerWidth - padding;
+            const left = fitsOnRight ? x + gap : Math.max(x - gap - width, padding);
+            const top = Math.max(0, Math.min(y - (height / 2), containerHeight - height));
+
+            tooltipElement.style.left = `${left}px`;
+            tooltipElement.style.top = `${top}px`;
+        }
+
         // Number of decimal places to use when a series has no rounding info from .NET (shouldn't
         // normally happen - every series gets one from Enums.UnitOfMeasureRounding), inferred from how
         // chart.js formatted the hovered value itself.
@@ -259,17 +280,41 @@
             return "";
         }
 
+        // The number of bins a point's smoothed value averages, when its smoothing window was shrunk
+        // near an end of the data. Undefined for a full window.
+        function shrunkWindowSize(point, info) {
+            if (point.raw === null || point.raw === undefined) {
+                return undefined;
+            }
+
+            return info?.shrunkWindows?.[point.dataIndex];
+        }
+
+        // Fill colour of a line chart point whose smoothing window was shrunk.
+        const shrunkWindowPointFill = "#ffffff";
+
         function buildTooltipHtml(tooltip, seriesInfo) {
             const title = (tooltip.title ?? []).map(x => `<div class="chart-external-tooltip-title">${x}</div>`).join("");
             const points = tooltip.dataPoints ?? [];
 
+            // Line chart points are drawn unfilled (or white, where the smoothing window was shrunk), so
+            // their colour key takes its fill from the outline.
+            const keyColour = colour => colour.backgroundColor === "transparent" || colour.backgroundColor === shrunkWindowPointFill
+                ? { ...colour, backgroundColor: colour.borderColor }
+                : colour;
+
             const rows = points.map((point, index) => ({
                 point,
                 info: seriesInfo?.[point.datasetIndex],
-                colour: tooltip.labelColors?.[index] ?? { backgroundColor: "#425f59", borderColor: "#425f59" },
+                colour: keyColour(tooltip.labelColors?.[index] ?? { backgroundColor: "#425f59", borderColor: "#425f59" }),
             }));
 
             const isMobile = window.matchMedia("(max-width: 767px)").matches;
+            const simpleSizeHtml = (point, info) => {
+                const size = shrunkWindowSize(point, info);
+                return size ? ` <span class="chart-external-tooltip-window">${size}pts</span>` : "";
+            };
+            const hasShrunkWindow = rows.some(x => shrunkWindowSize(x.point, x.info));
             const hasAnomalyData = !isMobile && rows.some(x => x.info?.anomaly);
 
             if (!hasAnomalyData) {
@@ -278,7 +323,7 @@
                 const simpleRows = rows.map(({ point, info, colour }) => {
                     const label = info?.label ?? point.dataset.label;
                     const value = formatValue(point, info?.rounding);
-                    return `<div class="chart-external-tooltip-row"><span class="chart-external-tooltip-key" style="background:${colour.backgroundColor}; border-color:${colour.borderColor};"></span><span class="chart-external-tooltip-label">${label}: <b>${value}</b></span></div>`;
+                    return `<div class="chart-external-tooltip-row"><span class="chart-external-tooltip-key" style="background:${colour.backgroundColor}; border-color:${colour.borderColor};"></span><span class="chart-external-tooltip-label">${label}: <b>${value}</b>${simpleSizeHtml(point, info)}</span></div>`;
                 }).join("");
 
                 return `${title}${simpleRows}`;
@@ -288,23 +333,24 @@
                 const label = info?.label ?? point.dataset.label;
                 const swatch = `<span class="chart-external-tooltip-key" style="background:${colour.backgroundColor}; border-color:${colour.borderColor};"></span>`;
                 const value = formatValue(point, info?.rounding);
+                const sizeCell = hasShrunkWindow ? `<td>${shrunkWindowSize(point, info) ?? ""}</td>` : "";
 
                 if (!info?.anomaly || point.raw === null || point.raw === undefined) {
-                    return `<tr><td class="chart-external-tooltip-series">${swatch}${label}</td><td class="chart-external-tooltip-value">${value}</td><td colspan="3">–</td></tr>`;
+                    return `<tr><td class="chart-external-tooltip-series">${swatch}${label}</td><td class="chart-external-tooltip-value">${value}</td>${sizeCell}<td colspan="3">–</td></tr>`;
                 }
 
                 const decimalPlaces = info.rounding ?? decimalPlacesOf(point.formattedValue);
                 const rawValue = Number(point.raw);
-                const cells = [info.anomaly.last30, info.anomaly.fullPeriod, info.anomaly.early].map(period => {
+                const cells = [info.anomaly.early, info.anomaly.fullPeriod, info.anomaly.last30].map(period => {
                     const diff = rawValue - period.average;
                     return `<td class="${diffClass(diff)}">${formatSignedDiff(diff, decimalPlaces)}</td>`;
                 }).join("");
 
-                return `<tr><td class="chart-external-tooltip-series">${swatch}${label}</td><td class="chart-external-tooltip-value">${value}</td>${cells}</tr>`;
+                return `<tr><td class="chart-external-tooltip-series">${swatch}${label}</td><td class="chart-external-tooltip-value">${value}</td>${sizeCell}${cells}</tr>`;
             }).join("");
 
             const table =
-                `<table class="chart-external-tooltip-table"><thead><tr><th></th><th>Value</th><th>vs Last 30</th><th>vs Avg</th><th>vs Early</th></tr></thead><tbody>${tableRows}</tbody></table>`;
+                `<table class="chart-external-tooltip-table"><thead><tr><th></th><th>Value</th>${hasShrunkWindow ? "<th>Size</th>" : ""}<th>Early</th><th>Avg</th><th>Last 30</th></tr></thead><tbody>${tableRows}</tbody></table>`;
 
             return `${title}${table}`;
         }
@@ -330,8 +376,37 @@
                     return;
                 }
 
-                showFloatingTooltip(tooltipElement, buildTooltipHtml(tooltip, seriesInfo), tooltip.caretX, tooltip.caretY, wrapperElement.clientWidth);
+                showFloatingTooltipBeside(tooltipElement, buildTooltipHtml(tooltip, seriesInfo), tooltip.caretX, tooltip.caretY, wrapperElement.clientWidth, wrapperElement.clientHeight);
             };
+        }
+
+        // Draws the line dashed wherever a series' smoothing window was shrunk (the ends of a shrinking
+        // moving average), using chart.js per-segment styling so it stays one dataset. Has to run after
+        // every Blazorise chart update, because that replaces the datasets.
+        function configureShrunkWindowSegments(wrapperElement, seriesInfo) {
+            const canvas = wrapperElement.querySelector("canvas");
+            if (!canvas || typeof Chart === "undefined") return;
+
+            const chartInstance = Chart.getChart(canvas);
+            if (!chartInstance) return;
+
+            let changed = false;
+
+            chartInstance.data.datasets.forEach((dataset, index) => {
+                const shrunkWindows = seriesInfo?.[index]?.shrunkWindows;
+                if (!shrunkWindows) return;
+
+                const isShrunk = dataIndex => shrunkWindows[dataIndex] !== undefined;
+                dataset.segment = {
+                    borderDash: ctx => isShrunk(ctx.p0DataIndex) || isShrunk(ctx.p1DataIndex) ? [6, 6] : undefined,
+                };
+                dataset.pointBackgroundColor = ctx => isShrunk(ctx.dataIndex) ? shrunkWindowPointFill : "transparent";
+                changed = true;
+            });
+
+            if (changed) {
+                chartInstance.update("none");
+            }
         }
 
         function registerChartHoverCursor(wrapperElement) {

@@ -358,9 +358,11 @@ public partial class RecentObservationsPanel
         RecalculateLoadedTabs();
     }
 
-    // Only offered once the default tiles are already showing (see IsDisplayingDefaultTiles), so
-    // this just needs to re-fetch the active tab's data past the client-side cache; the tile
-    // selection itself is already at its default and doesn't need resetting.
+    // Re-fetches the active tab's data past the client-side cache and resets the tiles to their
+    // defaults. The reset matters even when the defaults are already showing: EnsureDefaults seeds
+    // offset-1 tiles once per reset cycle based on the reference date at the time, so a refresh that
+    // moves the reference date into a new month/season (e.g. 30 Sep -> 1 Oct) would otherwise keep a
+    // stale seeded season and miss the newly-needed seeded month.
     private async Task RefreshCurrentTab()
     {
         var domain = ActiveDomain;
@@ -383,7 +385,15 @@ public partial class RecentObservationsPanel
             state.DataSet = await RecentObservationsService.LoadData(Context.Id, domain, domain.SupportsAdjustment ? SelectedDataAdjustment : null, forceRefresh: true);
             state.RefreshFailed = state.DataSet.RefreshFailed;
             UnpinReferenceDateIfLatest(state.Result);
-            RecalculateTab(domain, updateSelectedReferenceDate: domain.Key == ActiveDomain?.Key);
+            periodSelection.Reset();
+
+            // Recalculate the refreshed tab first so its new reference date drives the default
+            // seeding, then bring the other loaded tabs in line with the reset selection.
+            RecalculateTab(domain, updateSelectedReferenceDate: true);
+            foreach (var otherDomain in Context.Domains.Where(x => x.Key != domain.Key))
+            {
+                RecalculateTab(otherDomain, updateSelectedReferenceDate: false);
+            }
         }
         catch (Exception ex)
         {
