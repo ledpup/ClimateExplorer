@@ -5,6 +5,10 @@
     <Nullable>enable</Nullable>
 
     <IsPackable>false</IsPackable>
+
+    <!-- The packaged-source validation tests parse millions of rows across parallel threads; workstation GC
+         serialises them on collections (~2.5x slower than server GC). -->
+    <ServerGarbageCollection>true</ServerGarbageCollection>
   </PropertyGroup>
 
   <ItemGroup>
