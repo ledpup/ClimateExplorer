@@ -282,7 +282,7 @@
             const isMobile = window.matchMedia("(max-width: 767px)").matches;
             const simpleSizeHtml = (point, info) => {
                 const size = shrunkWindowSize(point, info);
-                return size ? ` <span class="chart-external-tooltip-window">size ${size}</span>` : "";
+                return size ? ` <span class="chart-external-tooltip-window">${size}pts</span>` : "";
             };
             const hasShrunkWindow = rows.some(x => shrunkWindowSize(x.point, x.info));
             const hasAnomalyData = !isMobile && rows.some(x => x.info?.anomaly);
@@ -311,7 +311,7 @@
 
                 const decimalPlaces = info.rounding ?? decimalPlacesOf(point.formattedValue);
                 const rawValue = Number(point.raw);
-                const cells = [info.anomaly.last30, info.anomaly.fullPeriod, info.anomaly.early].map(period => {
+                const cells = [info.anomaly.early, info.anomaly.fullPeriod, info.anomaly.last30].map(period => {
                     const diff = rawValue - period.average;
                     return `<td class="${diffClass(diff)}">${formatSignedDiff(diff, decimalPlaces)}</td>`;
                 }).join("");
@@ -320,7 +320,7 @@
             }).join("");
 
             const table =
-                `<table class="chart-external-tooltip-table"><thead><tr><th></th><th>Value</th>${hasShrunkWindow ? "<th>Size</th>" : ""}<th>vs Last 30</th><th>vs Avg</th><th>vs Early</th></tr></thead><tbody>${tableRows}</tbody></table>`;
+                `<table class="chart-external-tooltip-table"><thead><tr><th></th><th>Value</th>${hasShrunkWindow ? "<th>Size</th>" : ""}<th>Early</th><th>Avg</th><th>Last 30</th></tr></thead><tbody>${tableRows}</tbody></table>`;
 
             return `${title}${table}`;
         }
