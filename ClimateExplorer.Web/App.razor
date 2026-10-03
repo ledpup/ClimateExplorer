@@ -280,14 +280,14 @@
             return "";
         }
 
-        // The number of bins a point's smoothed value averages, when its smoothing window was shrunk
-        // near an end of the data. Undefined for a full window.
-        function shrunkWindowSize(point, info) {
+        // The number of bins a point's smoothed value averages: the shrunk window near an end of the
+        // data, otherwise the series' full smoothing window. Undefined for an unsmoothed series.
+        function smoothingWindowSize(point, info) {
             if (point.raw === null || point.raw === undefined) {
                 return undefined;
             }
 
-            return info?.shrunkWindows?.[point.dataIndex];
+            return info?.shrunkWindows?.[point.dataIndex] ?? info?.smoothingWindow ?? undefined;
         }
 
         // Fill colour of a line chart point whose smoothing window was shrunk.
@@ -311,10 +311,10 @@
 
             const isMobile = window.matchMedia("(max-width: 767px)").matches;
             const simpleSizeHtml = (point, info) => {
-                const size = shrunkWindowSize(point, info);
+                const size = smoothingWindowSize(point, info);
                 return size ? ` <span class="chart-external-tooltip-window">${size}pts</span>` : "";
             };
-            const hasShrunkWindow = rows.some(x => shrunkWindowSize(x.point, x.info));
+            const hasSmoothingWindow = rows.some(x => smoothingWindowSize(x.point, x.info));
             const hasAnomalyData = !isMobile && rows.some(x => x.info?.anomaly);
 
             if (!hasAnomalyData) {
@@ -333,7 +333,7 @@
                 const label = info?.label ?? point.dataset.label;
                 const swatch = `<span class="chart-external-tooltip-key" style="background:${colour.backgroundColor}; border-color:${colour.borderColor};"></span>`;
                 const value = formatValue(point, info?.rounding);
-                const sizeCell = hasShrunkWindow ? `<td>${shrunkWindowSize(point, info) ?? ""}</td>` : "";
+                const sizeCell = hasSmoothingWindow ? `<td>${smoothingWindowSize(point, info) ?? ""}</td>` : "";
 
                 if (!info?.anomaly || point.raw === null || point.raw === undefined) {
                     return `<tr><td class="chart-external-tooltip-series">${swatch}${label}</td><td class="chart-external-tooltip-value">${value}</td>${sizeCell}<td colspan="3">–</td></tr>`;
@@ -350,7 +350,7 @@
             }).join("");
 
             const table =
-                `<table class="chart-external-tooltip-table"><thead><tr><th></th><th>Value</th>${hasShrunkWindow ? "<th>Size</th>" : ""}<th>Early</th><th>Avg</th><th>Last 30</th></tr></thead><tbody>${tableRows}</tbody></table>`;
+                `<table class="chart-external-tooltip-table"><thead><tr><th></th><th>Value</th>${hasSmoothingWindow ? "<th>Size</th>" : ""}<th>Early</th><th>Avg</th><th>Last 30</th></tr></thead><tbody>${tableRows}</tbody></table>`;
 
             return `${title}${table}`;
         }

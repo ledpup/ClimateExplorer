@@ -313,11 +313,13 @@ ignore `segment`.
 ### Tooltip
 
 The tooltip is already large, so the window size is just a number with no unit. In the anomaly
-table, a **Size** column appears after **Value** only when at least one hovered row has a shrunk
-window. Rows with a full window leave the cell empty. In the simple layout (mobile and non-yearly
-charts), which has no columns, a muted `size 6` follows the value (class
-`chart-external-tooltip-window`, `0.75rem`). A first version put `6-yr avg` in the Value cell,
-which took up too much room.
+table, a **Size** column appears after **Value** whenever at least one hovered row is smoothed.
+It shows the shrunk window where there is one and the full smoothing window otherwise
+(`ChartTooltipSeriesInfo.SmoothingWindow`), for every moving average. Unsmoothed rows leave the
+cell empty. In the simple layout (mobile and non-yearly charts), which has no columns, a muted
+`6pts` follows the value (class `chart-external-tooltip-window`, `0.75rem`). A first version put
+`6-yr avg` in the Value cell, which took up too much room, and a second showed the size only for
+shrunk windows.
 
 ### Tests added
 

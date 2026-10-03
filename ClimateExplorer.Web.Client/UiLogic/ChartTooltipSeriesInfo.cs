@@ -18,4 +18,11 @@ public record ChartTooltipSeriesInfo
     /// segments dashed and the tooltip shows the window size. Null when there are none.
     /// </summary>
     public IReadOnlyDictionary<int, int>? ShrunkWindows { get; init; }
+
+    /// <summary>
+    /// The number of bins a smoothed value was averaged over, for every point not in
+    /// <see cref="ShrunkWindows"/>. The tooltip shows it as the window size. Null when the series
+    /// isn't smoothed.
+    /// </summary>
+    public int? SmoothingWindow { get; init; }
 }

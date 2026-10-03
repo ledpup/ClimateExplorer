@@ -27,4 +27,11 @@ public sealed record SeriesWithData
     /// the tooltip shows the window size. Empty when the series isn't smoothed or every window was full.
     /// </summary>
     public IReadOnlyDictionary<string, int> ShrunkSmoothingWindows { get; set; } = new Dictionary<string, int>();
+
+    /// <summary>
+    /// The smoothing window the series' values were averaged over, wherever
+    /// <see cref="ShrunkSmoothingWindows"/> doesn't record a smaller one. The tooltip shows it as the
+    /// window size. Null when the series isn't smoothed, including when it fell back to unsmoothed data.
+    /// </summary>
+    public int? SmoothingWindow { get; set; }
 }

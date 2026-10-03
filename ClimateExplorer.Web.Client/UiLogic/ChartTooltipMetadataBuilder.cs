@@ -35,7 +35,11 @@ public static class ChartTooltipMetadataBuilder
     /// <returns>Tooltip metadata for <paramref name="series"/>, using its own tooltip label.</returns>
     public static ChartTooltipSeriesInfo BuildForSeries(SeriesWithData series)
     {
-        return BuildForSeries(series, null) with { ShrunkWindows = BuildShrunkWindows(series) };
+        return BuildForSeries(series, null) with
+        {
+            ShrunkWindows = BuildShrunkWindows(series),
+            SmoothingWindow = series.SmoothingWindow,
+        };
     }
 
     /// <summary>
