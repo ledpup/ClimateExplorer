@@ -35,13 +35,7 @@ public static class ChartTooltipMetadataBuilder
     /// <returns>Tooltip metadata for <paramref name="series"/>, using its own tooltip label.</returns>
     public static ChartTooltipSeriesInfo BuildForSeries(SeriesWithData series)
     {
-        var shrunkWindows = BuildShrunkWindows(series);
-
-        return BuildForSeries(series, null) with
-        {
-            ShrunkWindows = shrunkWindows,
-            WindowUnit = shrunkWindows is null ? null : WindowUnit(series.ChartSeries.BinGranularity),
-        };
+        return BuildForSeries(series, null) with { ShrunkWindows = BuildShrunkWindows(series) };
     }
 
     /// <summary>
@@ -96,18 +90,6 @@ public static class ChartTooltipMetadataBuilder
         }
 
         return shrunkWindows.Count == 0 ? null : shrunkWindows;
-    }
-
-    private static string WindowUnit(BinGranularities binGranularity)
-    {
-        return binGranularity switch
-        {
-            BinGranularities.ByYear => "yr",
-            BinGranularities.ByYearAndMonth => "mo",
-            BinGranularities.ByYearAndWeek => "wk",
-            BinGranularities.ByYearAndDay => "day",
-            _ => "pt",
-        };
     }
 
     private static ChartSeriesTooltipMetadata? BuildAnomaly(SeriesWithData series, DataSet dataSet)

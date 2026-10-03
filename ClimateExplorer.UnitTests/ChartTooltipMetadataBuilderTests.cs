@@ -130,7 +130,6 @@ public class ChartTooltipMetadataBuilderTests
         Assert.HasCount(2, result.ShrunkWindows);
         Assert.AreEqual(7, result.ShrunkWindows[18]);
         Assert.AreEqual(6, result.ShrunkWindows[19]);
-        Assert.AreEqual("yr", result.WindowUnit);
     }
 
     [TestMethod]
@@ -142,7 +141,6 @@ public class ChartTooltipMetadataBuilderTests
         var result = ChartTooltipMetadataBuilder.BuildForSeries(series);
 
         Assert.IsNull(result.ShrunkWindows);
-        Assert.IsNull(result.WindowUnit);
     }
 
     [TestMethod]

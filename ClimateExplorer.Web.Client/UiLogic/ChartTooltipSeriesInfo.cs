@@ -15,12 +15,7 @@ public record ChartTooltipSeriesInfo
     /// <summary>
     /// Chart point index to the number of bins its smoothed value was averaged over, for the points
     /// where that is less than the requested smoothing window. The chart draws these points' line
-    /// segments dashed and the tooltip shows the window size next to the value. Null when there are none.
+    /// segments dashed and the tooltip shows the window size. Null when there are none.
     /// </summary>
     public IReadOnlyDictionary<int, int>? ShrunkWindows { get; init; }
-
-    /// <summary>
-    /// Short unit for <see cref="ShrunkWindows"/> sizes (e.g. "yr"), shown as "6-yr avg".
-    /// </summary>
-    public string? WindowUnit { get; init; }
 }

@@ -295,7 +295,7 @@ clean. The UI has not been looked at.
 2. `ChartTooltipMetadataBuilder.BuildForSeries` maps those bins onto chart point indexes, using
    the processed data set (one record per chart bin, in chart order). It adds them to
    `ChartTooltipSeriesInfo.ShrunkWindows` (index to size, sparse, so long daily series don't send a
-   long array), with a short `WindowUnit` ("yr", "mo", "wk", "day"). Trend datasets get none.
+   long array). Trend datasets get none.
 3. `ChartView` passes the tooltip metadata to a new JS function, `configureShrunkWindowSegments`
    in `App.razor`, right after `configureChartTooltip`.
 
@@ -310,9 +310,12 @@ ignore `segment`.
 
 ### Tooltip
 
-A shrunk point gets a short muted note after its value, such as `14.2 6-yr avg`, in both the
-simple and anomaly-table layouts (class `chart-external-tooltip-window`, `0.75rem`). Points with a
-full window show nothing extra, so the tooltip only grows at the ends of the line.
+The tooltip is already large, so the window size is just a number with no unit. In the anomaly
+table, a **Size** column appears after **Value** only when at least one hovered row has a shrunk
+window. Rows with a full window leave the cell empty. In the simple layout (mobile and non-yearly
+charts), which has no columns, a muted `size 6` follows the value (class
+`chart-external-tooltip-window`, `0.75rem`). A first version put `6-yr avg` in the Value cell,
+which took up too much room.
 
 ### Tests added
 
