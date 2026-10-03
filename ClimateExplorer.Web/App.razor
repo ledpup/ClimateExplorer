@@ -294,10 +294,15 @@
             const title = (tooltip.title ?? []).map(x => `<div class="chart-external-tooltip-title">${x}</div>`).join("");
             const points = tooltip.dataPoints ?? [];
 
+            // Line chart points are drawn unfilled, so their colour key takes its fill from the outline.
+            const keyColour = colour => colour.backgroundColor === "transparent"
+                ? { ...colour, backgroundColor: colour.borderColor }
+                : colour;
+
             const rows = points.map((point, index) => ({
                 point,
                 info: seriesInfo?.[point.datasetIndex],
-                colour: tooltip.labelColors?.[index] ?? { backgroundColor: "#425f59", borderColor: "#425f59" },
+                colour: keyColour(tooltip.labelColors?.[index] ?? { backgroundColor: "#425f59", borderColor: "#425f59" }),
             }));
 
             const isMobile = window.matchMedia("(max-width: 767px)").matches;
