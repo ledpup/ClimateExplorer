@@ -229,6 +229,27 @@
             tooltipElement.style.top = `${Math.max(y, 0)}px`;
         }
 
+        // Shows the tooltip to the right of the point at (x, y), or to the left when there is no room
+        // on the right, so that it never covers the hovered points. The element's left/top is its
+        // top-left corner.
+        function showFloatingTooltipBeside(tooltipElement, html, x, y, containerWidth, containerHeight) {
+            tooltipElement.innerHTML = html;
+            tooltipElement.style.opacity = 1;
+
+            const isMobile = window.matchMedia("(max-width: 767px)").matches;
+            const gap = isMobile ? 24 : 50;
+            const padding = 8;
+            const width = tooltipElement.offsetWidth;
+            const height = tooltipElement.offsetHeight;
+
+            const fitsOnRight = x + gap + width <= containerWidth - padding;
+            const left = fitsOnRight ? x + gap : Math.max(x - gap - width, padding);
+            const top = Math.max(0, Math.min(y - (height / 2), containerHeight - height));
+
+            tooltipElement.style.left = `${left}px`;
+            tooltipElement.style.top = `${top}px`;
+        }
+
         // Number of decimal places to use when a series has no rounding info from .NET (shouldn't
         // normally happen - every series gets one from Enums.UnitOfMeasureRounding), inferred from how
         // chart.js formatted the hovered value itself.
@@ -346,7 +367,7 @@
                     return;
                 }
 
-                showFloatingTooltip(tooltipElement, buildTooltipHtml(tooltip, seriesInfo), tooltip.caretX, tooltip.caretY, wrapperElement.clientWidth);
+                showFloatingTooltipBeside(tooltipElement, buildTooltipHtml(tooltip, seriesInfo), tooltip.caretX, tooltip.caretY, wrapperElement.clientWidth, wrapperElement.clientHeight);
             };
         }
 

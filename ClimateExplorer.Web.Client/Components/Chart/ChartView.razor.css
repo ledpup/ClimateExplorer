@@ -131,7 +131,6 @@
     position: absolute;
     left: 0;
     top: 0;
-    transform: translate(-50%, calc(-100% - 12px));
     background: #fff;
     color: #000;
     border-radius: 8px;
