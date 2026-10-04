@@ -43,57 +43,6 @@ public sealed partial class RecentObservationsCalculator
         return groups;
     }
 
-    private static IReadOnlyList<RecentObservationExpandedTabViewModel> BuildExpandedTabs(
-        PeriodObservation period,
-        MetricDomain domain,
-        IReadOnlyDictionary<string, HistoricalValues> distributions,
-        IReadOnlyList<RecentObservationMetricGroupViewModel> recordGroups)
-    {
-        var tabs = new List<RecentObservationExpandedTabViewModel>();
-
-        foreach (var group in recordGroups)
-        {
-            tabs.Add(new RecentObservationRankingsTabViewModel
-            {
-                Key = group.Key,
-                Title = group.Title,
-                Metrics = group.Metrics,
-            });
-        }
-
-        var variationMetrics = BuildVariationMetrics(period, domain, distributions);
-        if (variationMetrics.Count > 0)
-        {
-            tabs.Add(new RecentObservationAverageTabViewModel
-            {
-                Key = MetricGroupKey.Average,
-                Title = "Average",
-                Metrics = variationMetrics,
-            });
-
-            tabs.Add(new RecentObservationVariationTabViewModel
-            {
-                Key = MetricGroupKey.Variation,
-                Title = "Variation",
-                Metrics = variationMetrics,
-            });
-        }
-
-        var trendMetricKeys = period.Kind == RecentObservationPeriodKind.Daily ? domain.DailyVariationMetrics : domain.VariationMetrics;
-        if (trendMetricKeys.Any(metric => period.MetricValues.ContainsKey(metric.Key)))
-        {
-            tabs.Add(new RecentObservationTrendTabViewModel
-            {
-                Key = MetricGroupKey.Trend,
-                Title = "Trend",
-                MetricsFactory = new Lazy<IReadOnlyList<RecentObservationTrendViewModel>>(
-                    () => BuildTrendMetrics(period, domain, distributions)),
-            });
-        }
-
-        return tabs;
-    }
-
     private static RecentObservationRankingsViewModel BuildMetric(Metric metric, MetricObservationValue currentValue, HistoricalValues? distribution)
     {
         var ranking = distribution is null
@@ -204,5 +153,56 @@ public sealed partial class RecentObservationsCalculator
         }
 
         return "low";
+    }
+
+    private IReadOnlyList<RecentObservationExpandedTabViewModel> BuildExpandedTabs(
+        PeriodObservation period,
+        MetricDomain domain,
+        IReadOnlyDictionary<string, HistoricalValues> distributions,
+        IReadOnlyList<RecentObservationMetricGroupViewModel> recordGroups)
+    {
+        var tabs = new List<RecentObservationExpandedTabViewModel>();
+
+        foreach (var group in recordGroups)
+        {
+            tabs.Add(new RecentObservationRankingsTabViewModel
+            {
+                Key = group.Key,
+                Title = group.Title,
+                Metrics = group.Metrics,
+            });
+        }
+
+        var variationMetrics = BuildVariationMetrics(period, domain, distributions);
+        if (variationMetrics.Count > 0)
+        {
+            tabs.Add(new RecentObservationAverageTabViewModel
+            {
+                Key = MetricGroupKey.Average,
+                Title = "Average",
+                Metrics = variationMetrics,
+            });
+
+            tabs.Add(new RecentObservationVariationTabViewModel
+            {
+                Key = MetricGroupKey.Variation,
+                Title = "Variation",
+                Metrics = variationMetrics,
+            });
+        }
+
+        var trendMetricKeys = period.Kind == RecentObservationPeriodKind.Daily ? domain.DailyVariationMetrics : domain.VariationMetrics;
+        if (trendMetricKeys.Any(metric => period.MetricValues.ContainsKey(metric.Key)))
+        {
+            tabs.Add(new RecentObservationTrendTabViewModel
+            {
+                Key = MetricGroupKey.Trend,
+                Title = "Trend",
+                MetricsFactory = new Lazy<IReadOnlyList<RecentObservationTrendViewModel>>(
+                    () => BuildTrendMetrics(period, domain, distributions)),
+            });
+        }
+
+        return tabs;
     }
 }

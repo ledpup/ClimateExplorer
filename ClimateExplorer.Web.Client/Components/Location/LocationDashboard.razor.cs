@@ -22,6 +22,9 @@ public partial class LocationDashboard
     private LocationDataSetMetadataSidePanel? dataSetMetadataSidePanel;
 
     [Inject]
+    public UiLogic.DateLabels DateLabels { get; set; } = default!;
+
+    [Inject]
     public IDataService? DataService { get; set; }
 
     [Inject]
@@ -147,7 +150,7 @@ public partial class LocationDashboard
             var recordHigh = Location.RecordHigh;
             var recordHighDate = recordHigh.Day == null
                 ? $"{CultureInfo.InvariantCulture.DateTimeFormat.GetAbbreviatedMonthName(recordHigh.Month!.Value)} {recordHigh.Year}"
-                : ClimateExplorer.Web.UiLogic.DateLabels.ShortDayMonthYear(new DateOnly(recordHigh.Year, recordHigh.Month!.Value, recordHigh.Day.Value));
+                : DateLabels.ShortDayMonthYear(new DateOnly(recordHigh.Year, recordHigh.Month!.Value, recordHigh.Day.Value));
 
             RecordHighToolTip = $"{Location.Name} record high of {recordHigh.Value}°C set {recordHighDate}.<br>Click for more records.";
         }

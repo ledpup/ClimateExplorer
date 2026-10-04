@@ -7,26 +7,6 @@ using ClimateExplorer.Web.Client.UiModel.RecentObservations;
 // average and typical (standard-deviation) spread for each metric in the domain.
 public sealed partial class RecentObservationsCalculator
 {
-    private static IReadOnlyList<RecentObservationVariationViewModel> BuildVariationMetrics(
-        PeriodObservation period,
-        MetricDomain domain,
-        IReadOnlyDictionary<string, HistoricalValues> distributions)
-    {
-        var metrics = period.Kind == RecentObservationPeriodKind.Daily ? domain.DailyVariationMetrics : domain.VariationMetrics;
-        var result = new List<RecentObservationVariationViewModel>();
-        var currentPeriodLabel = CreateCurrentPeriodLabel(period);
-
-        foreach (var metric in metrics)
-        {
-            if (period.MetricValues.TryGetValue(metric.Key, out var currentValue))
-            {
-                result.Add(BuildVariationMetric(metric, currentValue, distributions.GetValueOrDefault(metric.Key), currentPeriodLabel));
-            }
-        }
-
-        return result;
-    }
-
     private static RecentObservationVariationViewModel BuildVariationMetric(
         Metric metric,
         MetricObservationValue currentValue,
@@ -73,5 +53,25 @@ public sealed partial class RecentObservationsCalculator
             AnomalyDirectionText = anomaly >= 0 ? "above average" : "below average",
             ComparablePeriodCount = distribution.ComparablePeriodCount,
         };
+    }
+
+    private IReadOnlyList<RecentObservationVariationViewModel> BuildVariationMetrics(
+        PeriodObservation period,
+        MetricDomain domain,
+        IReadOnlyDictionary<string, HistoricalValues> distributions)
+    {
+        var metrics = period.Kind == RecentObservationPeriodKind.Daily ? domain.DailyVariationMetrics : domain.VariationMetrics;
+        var result = new List<RecentObservationVariationViewModel>();
+        var currentPeriodLabel = CreateCurrentPeriodLabel(period);
+
+        foreach (var metric in metrics)
+        {
+            if (period.MetricValues.TryGetValue(metric.Key, out var currentValue))
+            {
+                result.Add(BuildVariationMetric(metric, currentValue, distributions.GetValueOrDefault(metric.Key), currentPeriodLabel));
+            }
+        }
+
+        return result;
     }
 }

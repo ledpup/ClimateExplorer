@@ -146,7 +146,7 @@ public class DataSetBuilder
             // Guard against non-daily resolutions to avoid downstream null Month/Day exceptions.
             if (dataResolution != DataResolution.Daily)
             {
-                throw new System.InvalidOperationException("ByDayOnly binning with a year filter is only supported for daily data resolution.");
+                throw new InvalidOperationException("ByDayOnly binning with a year filter is only supported for daily data resolution.");
             }
 
             return new DataSetPointsResult(ConvertDataRecordsToDayOnlyChartableDataPoints(filteredDataRecords), AggregationApplied: false);

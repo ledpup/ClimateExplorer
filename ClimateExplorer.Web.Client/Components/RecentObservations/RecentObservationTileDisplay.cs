@@ -13,15 +13,15 @@ internal static class RecentObservationTileDisplay
         _ => "none",
     };
 
-    public static string FormatCurrentMetricDate(DateOnly date)
+    public static string FormatCurrentMetricDate(DateLabels dateLabels, DateOnly date)
     {
-        return DateLabels.ShortDayMonth(date);
+        return dateLabels.ShortDayMonth(date);
     }
 
-    public static string FormatDayRecordOccurrence(RecentObservationMetricRecordViewModel record)
+    public static string FormatDayRecordOccurrence(DateLabels dateLabels, RecentObservationMetricRecordViewModel record)
     {
         return record.Date.HasValue
-            ? $" · {DateLabels.ShortDayMonthYear(record.Date.Value)}"
+            ? $" · {dateLabels.ShortDayMonthYear(record.Date.Value)}"
             : FormatPeriodRecordOccurrence(record);
     }
 

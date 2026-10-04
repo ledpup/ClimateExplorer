@@ -49,28 +49,28 @@ public sealed partial class RecentObservationsCalculator
             : value[..1].ToLower(CultureInfo.InvariantCulture) + value[1..];
     }
 
-    private static string FormatFullDate(DateOnly date)
-    {
-        return DateLabels.DayMonthYear(date);
-    }
-
-    private static string FormatDayMonth(DateOnly date)
-    {
-        return DateLabels.DayMonth(date);
-    }
-
-    private static string FormatShortDayMonth(DateOnly date)
-    {
-        return DateLabels.ShortDayMonth(date);
-    }
-
-    private static string FormatDayMonthYear(DateOnly date)
-    {
-        return DateLabels.ShortDayMonthYear(date);
-    }
-
     private static string MonthName(int month)
     {
         return CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month);
+    }
+
+    private string FormatFullDate(DateOnly date)
+    {
+        return dateLabels.DayMonthYear(date);
+    }
+
+    private string FormatDayMonth(DateOnly date)
+    {
+        return dateLabels.DayMonth(date);
+    }
+
+    private string FormatShortDayMonth(DateOnly date)
+    {
+        return dateLabels.ShortDayMonth(date);
+    }
+
+    private string FormatDayMonthYear(DateOnly date)
+    {
+        return dateLabels.ShortDayMonthYear(date);
     }
 }

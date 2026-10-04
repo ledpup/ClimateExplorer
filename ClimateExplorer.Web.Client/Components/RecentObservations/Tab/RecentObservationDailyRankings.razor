@@ -10,7 +10,7 @@
                     <span class="recent-observation-detail-current">@metric.CurrentValue</span>
                     @if (metric.CurrentValueDate.HasValue)
                     {
-                        <span class="recent-observation-detail-current-date">· @RecentObservationTileDisplay.FormatCurrentMetricDate(metric.CurrentValueDate.Value)</span>
+                        <span class="recent-observation-detail-current-date">· @RecentObservationTileDisplay.FormatCurrentMetricDate(DateLabels, metric.CurrentValueDate.Value)</span>
                     }
                 </div>
                 @if (!string.IsNullOrWhiteSpace(metric.RecordStatusText))
@@ -25,7 +25,7 @@
                 {
                     <span class="recent-observation-detail-record">
                         <span class="recent-observation-detail-record-label">@record.Label:</span>
-                        <span class="recent-observation-detail-record-value">@record.Value</span><span class="recent-observation-detail-record-date">@RecentObservationTileDisplay.FormatDayRecordOccurrence(record)</span>
+                        <span class="recent-observation-detail-record-value">@record.Value</span><span class="recent-observation-detail-record-date">@RecentObservationTileDisplay.FormatDayRecordOccurrence(DateLabels, record)</span>
                     </span>
                 }
             </dd>

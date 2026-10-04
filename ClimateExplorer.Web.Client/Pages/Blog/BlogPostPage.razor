@@ -2,6 +2,7 @@
 @using ClimateExplorer.Core.Blog
 @using System.Text.Json.Nodes
 @inject IBlogService BlogService
+@inject ClimateExplorer.Web.UiLogic.DateLabels DateLabels
 
 @if (post is null)
 {
@@ -35,7 +36,7 @@ else
 
     <div class="text-content">
         <div class="post-meta">
-            <time datetime="@post.Date.ToString("yyyy-MM-dd")">@ClimateExplorer.Web.UiLogic.DateLabels.DayMonthYear(post.Date)</time>
+            <time datetime="@post.Date.ToString("yyyy-MM-dd")">@DateLabels.DayMonthYear(post.Date)</time>
             @if (!string.IsNullOrEmpty(post.Category))
             {
                 <span class="post-category">@post.Category</span>

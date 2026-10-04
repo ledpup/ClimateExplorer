@@ -37,6 +37,9 @@ public partial class ClimateRecords
     public List<ClimateRecordViewModel> ClimateRecordRows { get; set; } = [];
 
     [Inject]
+    private UiLogic.DateLabels DateLabels { get; set; } = default!;
+
+    [Inject]
     private IDataService? DataService { get; set; }
 
     [Inject]

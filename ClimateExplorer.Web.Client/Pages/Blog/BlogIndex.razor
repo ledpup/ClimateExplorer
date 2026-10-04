@@ -1,6 +1,7 @@
 @page "/blog"
 @using ClimateExplorer.Core.Blog
 @inject IBlogService BlogService
+@inject ClimateExplorer.Web.UiLogic.DateLabels DateLabels
 
 <PageTitle>Blog – ClimateExplorer</PageTitle>
 <HeadContent>
@@ -18,7 +19,7 @@
     {
         <article class="post-card">
             <div class="post-meta">
-                <time datetime="@post.Date.ToString("yyyy-MM-dd")">@ClimateExplorer.Web.UiLogic.DateLabels.DayMonthYear(post.Date)</time>
+                <time datetime="@post.Date.ToString("yyyy-MM-dd")">@DateLabels.DayMonthYear(post.Date)</time>
                 @if (!string.IsNullOrEmpty(post.Category))
                 {
                     <span class="post-category">@post.Category</span>

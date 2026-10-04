@@ -8,4 +8,7 @@ public partial class RecentObservationDailyRankings
     [Parameter]
     [EditorRequired]
     public IReadOnlyList<RecentObservationRankingsViewModel> Metrics { get; set; } = [];
+
+    [Inject]
+    private UiLogic.DateLabels DateLabels { get; set; } = default!;
 }

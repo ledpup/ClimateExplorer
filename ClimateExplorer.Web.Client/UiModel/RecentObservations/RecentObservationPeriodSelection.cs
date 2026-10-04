@@ -1,6 +1,7 @@
 namespace ClimateExplorer.Web.Client.UiModel.RecentObservations;
 
 using System.Globalization;
+using ClimateExplorer.Web.UiLogic;
 
 public sealed class RecentObservationPeriodSelection
 {
@@ -15,6 +16,12 @@ public sealed class RecentObservationPeriodSelection
     private bool isLatestSevenDaysRemoved;
     private bool defaultsSeeded;
     private bool isModified;
+
+    /// <summary>
+    /// Formats the dates in the "add earlier" button labels. Set by the owning component to the
+    /// reader's own instance so the day/month order matches the rest of the page.
+    /// </summary>
+    public DateLabels DateLabels { get; set; } = new();
 
     public int PreviousDayCount => visiblePreviousDayOffsets.Count;
     public int PreviousMonthCount => visibleMonthOffsets.Count(offset => offset > 0);
@@ -226,7 +233,7 @@ public sealed class RecentObservationPeriodSelection
     {
         return tile.PeriodKind switch
         {
-            RecentObservationPeriodKind.Daily => ClimateExplorer.Web.UiLogic.DateLabels.DayMonth(tile.PeriodStartDate),
+            RecentObservationPeriodKind.Daily => DateLabels.DayMonth(tile.PeriodStartDate),
             RecentObservationPeriodKind.Month => tile.PeriodStartDate.ToString("MMMM yyyy", CultureInfo.CurrentCulture),
             RecentObservationPeriodKind.Year => tile.PeriodStartDate.ToString("yyyy", CultureInfo.CurrentCulture),
             _ => tile.PeriodTitle,

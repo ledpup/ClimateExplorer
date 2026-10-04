@@ -1,4 +1,3 @@
-#pragma warning disable SA1201, SA1204
 namespace ClimateExplorer.Web.Client.Services;
 
 using System.Globalization;
@@ -10,7 +9,43 @@ using ClimateExplorer.Web.Client.UiModel.RecentObservations;
 // period, offset 0, and complete past ones, offset 1+) and the titles/labels shown for each one.
 public sealed partial class RecentObservationsCalculator
 {
-    private static List<PeriodObservation> BuildPeriods(
+    // Shared "walk back N whole units from an anchor" shape behind the month and year loops
+    // above - each supplies only its own step-back and end-of-period rules. Season's own
+    // previous-period walk stays in MeteorologicalSeasonCalculator (Core, public, independently
+    // tested) rather than being rebuilt on top of this - see the design doc for why.
+    private static IEnumerable<(DateOnly StartDate, DateOnly EndDate, int Offset)> GetPreviousPeriods(
+        DateOnly anchorStart,
+        int count,
+        Func<DateOnly, int, DateOnly> stepBack,
+        Func<DateOnly, DateOnly> getEndDate)
+    {
+        for (var offset = 1; offset <= count; offset++)
+        {
+            var startDate = stepBack(anchorStart, offset);
+            yield return (startDate, getEndDate(startDate), offset);
+        }
+    }
+
+    private static int GetDayCount(DateOnly startDate, DateOnly endDate)
+    {
+        return endDate.DayNumber - startDate.DayNumber + 1;
+    }
+
+    private static bool IsFullCalendarYear(DateOnly startDate, DateOnly endDate)
+    {
+        return startDate.Month == 1 &&
+            startDate.Day == 1 &&
+            endDate.Month == 12 &&
+            endDate.Day == 31 &&
+            startDate.Year == endDate.Year;
+    }
+
+    private static bool IsCalendarYearEnd(DateOnly date)
+    {
+        return date.Month == 12 && date.Day == 31;
+    }
+
+    private List<PeriodObservation> BuildPeriods(
         List<DailyObservation> daily,
         DateOnly referenceDate,
         DateOnly today,
@@ -118,24 +153,7 @@ public sealed partial class RecentObservationsCalculator
         return periods;
     }
 
-    // Shared "walk back N whole units from an anchor" shape behind the month and year loops
-    // above - each supplies only its own step-back and end-of-period rules. Season's own
-    // previous-period walk stays in MeteorologicalSeasonCalculator (Core, public, independently
-    // tested) rather than being rebuilt on top of this - see the design doc for why.
-    private static IEnumerable<(DateOnly StartDate, DateOnly EndDate, int Offset)> GetPreviousPeriods(
-        DateOnly anchorStart,
-        int count,
-        Func<DateOnly, int, DateOnly> stepBack,
-        Func<DateOnly, DateOnly> getEndDate)
-    {
-        for (var offset = 1; offset <= count; offset++)
-        {
-            var startDate = stepBack(anchorStart, offset);
-            yield return (startDate, getEndDate(startDate), offset);
-        }
-    }
-
-    private static PeriodObservation CreateDailyPeriod(string title, DailyObservation record, MetricDomain domain, int periodOffset)
+    private PeriodObservation CreateDailyPeriod(string title, DailyObservation record, MetricDomain domain, int periodOffset)
     {
         return new PeriodObservation(
             title,
@@ -151,7 +169,7 @@ public sealed partial class RecentObservationsCalculator
             ComputeMetrics([record], domain));
     }
 
-    private static void AddRangePeriod(
+    private void AddRangePeriod(
         List<PeriodObservation> periods,
         List<DailyObservation> records,
         DateOnly startDate,
@@ -187,7 +205,7 @@ public sealed partial class RecentObservationsCalculator
             seasonPeriod));
     }
 
-    private static IEnumerable<PreviousDayPeriod<TRecord>> GetPreviousDayPeriods<TRecord>(
+    private IEnumerable<PreviousDayPeriod<TRecord>> GetPreviousDayPeriods<TRecord>(
         IEnumerable<TRecord> daily,
         Func<TRecord, DateOnly> getDate,
         DateOnly referenceDate,
@@ -203,12 +221,7 @@ public sealed partial class RecentObservationsCalculator
                 index + 1));
     }
 
-    private static int GetDayCount(DateOnly startDate, DateOnly endDate)
-    {
-        return endDate.DayNumber - startDate.DayNumber + 1;
-    }
-
-    private static string CreatePeriodTitle(
+    private string CreatePeriodTitle(
         RecentObservationPeriodKind kind,
         DateOnly startDate,
         DateOnly endDate,
@@ -238,7 +251,7 @@ public sealed partial class RecentObservationsCalculator
         };
     }
 
-    private static string CreateHistoricalContextLabel(PeriodObservation period)
+    private string CreateHistoricalContextLabel(PeriodObservation period)
     {
         if (period.Kind == RecentObservationPeriodKind.Season)
         {
@@ -267,7 +280,7 @@ public sealed partial class RecentObservationsCalculator
         return period.ComparisonLabel;
     }
 
-    private static string CreateComparisonLabel(
+    private string CreateComparisonLabel(
         RecentObservationPeriodKind kind,
         DateOnly endDate,
         int? periodOffset = null,
@@ -292,7 +305,7 @@ public sealed partial class RecentObservationsCalculator
         };
     }
 
-    private static string CreateComparisonLabelPlural(
+    private string CreateComparisonLabelPlural(
         RecentObservationPeriodKind kind,
         DateOnly endDate,
         int? periodOffset = null,
@@ -317,21 +330,7 @@ public sealed partial class RecentObservationsCalculator
         };
     }
 
-    private static bool IsFullCalendarYear(DateOnly startDate, DateOnly endDate)
-    {
-        return startDate.Month == 1 &&
-            startDate.Day == 1 &&
-            endDate.Month == 12 &&
-            endDate.Day == 31 &&
-            startDate.Year == endDate.Year;
-    }
-
-    private static bool IsCalendarYearEnd(DateOnly date)
-    {
-        return date.Month == 12 && date.Day == 31;
-    }
-
-    private static string CreateDailyPeriodTitle(DateOnly date, DateOnly referenceDate, DateOnly today)
+    private string CreateDailyPeriodTitle(DateOnly date, DateOnly referenceDate, DateOnly today)
     {
         if (date == referenceDate && referenceDate == today)
         {
@@ -353,7 +352,7 @@ public sealed partial class RecentObservationsCalculator
             : FormatDayMonthYear(date);
     }
 
-    private static string CreateCurrentPeriodLabel(PeriodObservation period)
+    private string CreateCurrentPeriodLabel(PeriodObservation period)
     {
         if (period.ComparisonMode == PeriodComparisonMode.DailyDate)
         {
@@ -371,11 +370,10 @@ public sealed partial class RecentObservationsCalculator
         return period.Title;
     }
 
-    private static string CreateComparableSampleLabel(PeriodObservation period)
+    private string CreateComparableSampleLabel(PeriodObservation period)
     {
         return period.ComparisonMode == PeriodComparisonMode.DailyDate
             ? $"comparable {FormatShortDayMonth(period.StartDate)} observations"
             : "comparable periods";
     }
 }
-#pragma warning restore SA1201, SA1204

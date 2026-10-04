@@ -39,6 +39,7 @@ builder.Services
     .AddScoped<IRecentObservationsCalculator, RecentObservationsCalculator>()
     .AddScoped<IRecentObservationsService, RecentObservationsService>()
     .AddScoped<ISiteOverviewService, SiteOverviewService>()
+    .AddScoped<DateLabels>()
     .AddCurrentDeviceService()
     .AddBlazoredLocalStorage();
 
@@ -54,6 +55,16 @@ builder.Services.AddHttpClient<IDataService, DataService>(client =>
 
 var host = builder.Build();
 
-await DateLabels.DetectBrowserOrderAsync(host.Services.GetRequiredService<IJSRuntime>());
+// Fallback for when the server's choice of date order doesn't arrive with the prerendered page
+try
+{
+    var browserLanguage = await host.Services.GetRequiredService<IJSRuntime>().GetValueAsync<string>("navigator.language");
+
+    host.Services.GetRequiredService<DateLabels>().MonthFirst = DateLabels.IsMonthFirstLocale(browserLanguage);
+}
+catch (Exception)
+{
+    // Date order is a nicety - never let it stop the app from starting
+}
 
 await host.RunAsync();

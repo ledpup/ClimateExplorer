@@ -63,7 +63,7 @@ public static class ChartSeriesListSerializer
     }
 
     private static T ParseEnum<T>(string s)
-        where T : notnull, System.Enum
+        where T : notnull, Enum
     {
         return (T)Enum.Parse(typeof(T), s);
     }
@@ -180,7 +180,7 @@ public static class ChartSeriesListSerializer
     }
 
     private static object? ParseOptionalNullableEnum<T>(string[] segments, int index)
-        where T : struct, System.Enum
+        where T : struct, Enum
     {
         return GetOptionalSegment(segments, index) is { } value && Enum.TryParse<T>(value, out var parsed)
             ? parsed

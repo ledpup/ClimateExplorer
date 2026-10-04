@@ -52,7 +52,7 @@ public sealed class AcornSatClimateRecordServiceTests
             Decision = AcornSatExtensionDecision.Eligible,
             LatestAcornSatDate = new DateOnly(2025, 12, 31),
             ComparisonSignature = "cached-signature",
-            OverlayRecords = [new ClimateExplorer.Core.Model.DataRecord(new DateOnly(2026, 1, 1), 21.3)],
+            OverlayRecords = [new Core.Model.DataRecord(new DateOnly(2026, 1, 1), 21.3)],
             RetrievedDate = new DateTimeOffset(2026, 7, 9, 0, 0, 0, TimeSpan.Zero),
         };
         await extensionCache.PutAsync(cachedEntry);
@@ -84,7 +84,7 @@ public sealed class AcornSatClimateRecordServiceTests
             Decision = AcornSatExtensionDecision.Eligible,
             LatestAcornSatDate = new DateOnly(2025, 12, 31),
             ComparisonSignature = "cached-signature",
-            OverlayRecords = [new ClimateExplorer.Core.Model.DataRecord(new DateOnly(2026, 1, 1), 21.3)],
+            OverlayRecords = [new Core.Model.DataRecord(new DateOnly(2026, 1, 1), 21.3)],
             RetrievedDate = new DateTimeOffset(2026, 7, 9, 0, 0, 0, TimeSpan.Zero),
         };
         await extensionCache.PutAsync(cachedEntry);

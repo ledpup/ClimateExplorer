@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace ClimateExplorer.UnitTests;
 
 /// <summary>
-/// Demonstrates why <see cref="ClimateExplorer.Core.Stats.LinearRegressionCalculator"/> squares
+/// Demonstrates why <see cref="Core.Stats.LinearRegressionCalculator"/> squares
 /// deviations with a direct multiplication instead of <c>Math.Pow(value, 2)</c>. <c>Math.Pow</c>
 /// implements the general real-exponent case (handling negative/fractional exponents, NaN, and
 /// infinities) and is dramatically slower than a single hardware multiply for the fixed exponent
