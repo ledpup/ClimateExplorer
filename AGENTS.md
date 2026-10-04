@@ -4,6 +4,8 @@
 - Do not run the website, Playwright, Lighthouse, or browser tests. This includes starting
   `dotnet run`/dev servers for the Web or WebApi projects for manual or automated UI verification.
   Verify with `dotnet build` and the unit test suite only.
+- When estimating effort, don't give time estimates (hours/days). Report how many files would
+  change and by roughly how much (e.g. "3 files, ~40 lines; 1 new file").
 
 ## C#
 
