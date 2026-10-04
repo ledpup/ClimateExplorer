@@ -364,12 +364,15 @@
             const table =
                 `<table class="chart-external-tooltip-table"><thead><tr><th></th><th>Value</th>${hasSmoothingWindow ? "<th>Size</th>" : ""}<th>Early</th><th>Avg</th><th>Last 30</th></tr></thead><tbody>${tableRows}</tbody></table>`;
 
+            // The hovered x-axis label (usually the year), so the legend names what is being compared.
+            const current = tooltip.title?.[0] || "current value";
+
             const legend =
                 `<div class="chart-external-tooltip-legend">` +
                 (hasSmoothingWindow ? `<div><b>Size</b>: points in the moving average window</div>` : "") +
-                `<div><b>Early</b>: current value vs the first-half average</div>` +
-                `<div><b>Avg</b>: current value vs the whole-record average</div>` +
-                `<div><b>Last 30</b>: current value vs the last-30-year average</div>` +
+                `<div><b>Early</b>: ${current} vs the first-half average</div>` +
+                `<div><b>Avg</b>: ${current} vs the whole-record average</div>` +
+                `<div><b>Last 30</b>: ${current} vs the last-30-year average</div>` +
                 `</div>`;
 
             return `${title}${table}${legend}`;
