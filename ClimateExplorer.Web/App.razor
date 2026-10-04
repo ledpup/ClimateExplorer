@@ -375,6 +375,11 @@
             return `${title}${table}${legend}`;
         }
 
+        // Must be called before the chart.update() that follows a Blazorise setOptions (which replaces
+        // the options object, dropping the handler). The handler is written to the raw config options
+        // so that update picks it up. Setting it after the update is unreliable: update replays the
+        // last pointer event, and the tooltip plugin then caches "no external handler" until the
+        // next update, so the tooltip never appears.
         function configureChartTooltip(wrapperElement, seriesInfo) {
             const canvas = wrapperElement.querySelector("canvas");
             if (!canvas || typeof Chart === "undefined") return;
@@ -385,10 +390,11 @@
             const tooltipElement = getOrCreateFloatingTooltip(wrapperElement, "chart-external-tooltip");
             hideFloatingTooltip(tooltipElement);
 
-            chartInstance.options.plugins ??= {};
-            chartInstance.options.plugins.tooltip ??= {};
-            chartInstance.options.plugins.tooltip.enabled = false;
-            chartInstance.options.plugins.tooltip.external = function (context) {
+            const options = chartInstance.config.options ??= {};
+            options.plugins ??= {};
+            options.plugins.tooltip ??= {};
+            options.plugins.tooltip.enabled = false;
+            options.plugins.tooltip.external = function (context) {
                 const tooltip = context.tooltip;
 
                 if (!tooltip || tooltip.opacity === 0) {
@@ -401,16 +407,14 @@
         }
 
         // Draws the line dashed wherever a series' smoothing window was shrunk (the ends of a shrinking
-        // moving average), using chart.js per-segment styling so it stays one dataset. Has to run after
-        // every Blazorise chart update, because that replaces the datasets.
+        // moving average), using chart.js per-segment styling so it stays one dataset. Has to run every
+        // time the datasets are replaced, and before the chart.update() that draws them.
         function configureShrunkWindowSegments(wrapperElement, seriesInfo) {
             const canvas = wrapperElement.querySelector("canvas");
             if (!canvas || typeof Chart === "undefined") return;
 
             const chartInstance = Chart.getChart(canvas);
             if (!chartInstance) return;
-
-            let changed = false;
 
             chartInstance.data.datasets.forEach((dataset, index) => {
                 const shrunkWindows = seriesInfo?.[index]?.shrunkWindows;
@@ -421,12 +425,7 @@
                     borderDash: ctx => isShrunk(ctx.p0DataIndex) || isShrunk(ctx.p1DataIndex) ? [6, 6] : undefined,
                 };
                 dataset.pointBackgroundColor = ctx => isShrunk(ctx.dataIndex) ? shrunkWindowPointFill : "transparent";
-                changed = true;
             });
-
-            if (changed) {
-                chartInstance.update("none");
-            }
         }
 
         function registerChartHoverCursor(wrapperElement) {

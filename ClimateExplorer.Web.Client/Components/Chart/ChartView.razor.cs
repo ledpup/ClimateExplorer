@@ -339,10 +339,13 @@ public partial class ChartView : IAsyncDisposable
             }
         }
 
-        await chart.Update();
-
+        // These customise the options and datasets set above, so they have to be in place before the
+        // update. Applying them afterwards left the tooltip intermittently unhooked.
         await JsRuntime!.InvokeVoidAsync("configureChartTooltip", chartWrapper, tooltipMetadata);
         await JsRuntime!.InvokeVoidAsync("configureShrunkWindowSegments", chartWrapper, tooltipMetadata);
+
+        await chart.Update();
+
         await JsRuntime!.InvokeVoidAsync("registerChartHoverCursor", chartWrapper);
 
         // The below line is required to get the chart.js component to honour the styling applied on the parent div
