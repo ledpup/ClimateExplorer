@@ -367,9 +367,9 @@
             const legend =
                 `<div class="chart-external-tooltip-legend">` +
                 (hasSmoothingWindow ? `<div><b>Size</b>: points in the moving average window</div>` : "") +
-                `<div><b>Early</b>: compared with the first half of the data</div>` +
-                `<div><b>Avg</b>: compared with the whole dataset</div>` +
-                `<div><b>Last 30</b>: compared with the last 30 years</div>` +
+                `<div><b>Early</b>: current value vs the first-half average</div>` +
+                `<div><b>Avg</b>: current value vs the whole-record average</div>` +
+                `<div><b>Last 30</b>: current value vs the last-30-year average</div>` +
                 `</div>`;
 
             return `${title}${table}${legend}`;
