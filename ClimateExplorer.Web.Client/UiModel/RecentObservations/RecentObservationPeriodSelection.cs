@@ -226,7 +226,7 @@ public sealed class RecentObservationPeriodSelection
     {
         return tile.PeriodKind switch
         {
-            RecentObservationPeriodKind.Daily => tile.PeriodStartDate.ToString("d MMMM", CultureInfo.CurrentCulture),
+            RecentObservationPeriodKind.Daily => ClimateExplorer.Web.UiLogic.DateLabels.DayMonth(tile.PeriodStartDate),
             RecentObservationPeriodKind.Month => tile.PeriodStartDate.ToString("MMMM yyyy", CultureInfo.CurrentCulture),
             RecentObservationPeriodKind.Year => tile.PeriodStartDate.ToString("yyyy", CultureInfo.CurrentCulture),
             _ => tile.PeriodTitle,

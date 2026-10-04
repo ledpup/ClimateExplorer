@@ -335,17 +335,17 @@ public sealed partial class RecentObservationsCalculator
     {
         if (date == referenceDate && referenceDate == today)
         {
-            return "Today - " + FormatShortDayMonth(date);
+            return "Today - " + FormatDayMonth(date);
         }
 
         if (date == referenceDate && referenceDate == today.AddDays(-1))
         {
-            return "Yesterday - " + FormatShortDayMonth(date);
+            return "Yesterday - " + FormatDayMonth(date);
         }
 
         if (date == referenceDate.AddDays(-1) && referenceDate == today)
         {
-            return "Yesterday - " + FormatShortDayMonth(date);
+            return "Yesterday - " + FormatDayMonth(date);
         }
 
         return date.Year == today.Year

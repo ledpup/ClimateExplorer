@@ -362,7 +362,7 @@ public class RecentObservationsServiceTests
     [TestMethod]
     public async Task GetPrecipitationRecordsLabelsLatestSevenDaysWithRecentDateRange()
     {
-        var endLabel = new DateOnly(2026, 6, 14).ToString("d MMM", CultureInfo.CurrentCulture);
+        var endLabel = new DateOnly(2026, 6, 14).ToString("d MMM", CultureInfo.InvariantCulture);
         var historicalRecords = CreateHistoricalRangeRecords(new DateOnly(2026, 6, 8), new DateOnly(2026, 6, 14));
         var service = CreateService(historicalRecords: historicalRecords);
 
@@ -387,7 +387,7 @@ public class RecentObservationsServiceTests
     {
         var latestDate = new DateOnly(2026, 6, 2);
         var latestSevenDaysStart = new DateOnly(2026, 5, 27);
-        var endLabel = latestDate.ToString("d MMM", CultureInfo.CurrentCulture);
+        var endLabel = latestDate.ToString("d MMM", CultureInfo.InvariantCulture);
         var historicalRecords = CreateHistoricalRangeRecords(latestSevenDaysStart, latestDate);
         var service = CreateService(
             recentStartDate: new DateOnly(2026, 5, 1),
@@ -523,7 +523,7 @@ public class RecentObservationsServiceTests
     public async Task DailyPrecipitationTileShowsLimitedComparisonWithOneHistoricalYear()
     {
         var day = new DateOnly(2026, 6, 14);
-        var dayLabel = day.ToString("d MMM", CultureInfo.CurrentCulture);
+        var dayLabel = day.ToString("d MMM", CultureInfo.InvariantCulture);
         var historicalRecords = CreateHistoricalSameDateRecords(day, startYear: 2025, endYear: 2025, valueOffset: 4d);
         var service = CreateService(historicalRecords: historicalRecords);
 
@@ -556,7 +556,7 @@ public class RecentObservationsServiceTests
     public async Task DailyTemperatureTileShowsHistoricalRangeWithTwoComparableYears()
     {
         var day = new DateOnly(2026, 6, 14);
-        var dayLabel = day.ToString("d MMM", CultureInfo.CurrentCulture);
+        var dayLabel = day.ToString("d MMM", CultureInfo.InvariantCulture);
         var historicalRecords = CreateHistoricalSameDateRecords(day, startYear: 2024, endYear: 2025, valueOffset: 12d);
         var service = CreateTemperatureService(historicalRecords);
 
@@ -586,7 +586,7 @@ public class RecentObservationsServiceTests
     [TestMethod]
     public async Task AggregatePrecipitationTileShowsRangeWithTwoComparablePeriods()
     {
-        var endLabel = new DateOnly(2026, 6, 14).ToString("d MMM", CultureInfo.CurrentCulture);
+        var endLabel = new DateOnly(2026, 6, 14).ToString("d MMM", CultureInfo.InvariantCulture);
         var historicalRecords = CreateHistoricalRangeRecords(new DateOnly(2026, 6, 8), new DateOnly(2026, 6, 14), startYear: 2024, endYear: 2025);
         var service = CreateService(historicalRecords: historicalRecords);
 
@@ -1064,7 +1064,7 @@ public class RecentObservationsServiceTests
     [TestMethod]
     public async Task GetPrecipitationRecordsComparesGeneratedDaysAgainstHistoricalSameCalendarDate()
     {
-        var dayLabel = new DateOnly(2026, 6, 13).ToString("d MMM", CultureInfo.CurrentCulture);
+        var dayLabel = new DateOnly(2026, 6, 13).ToString("d MMM", CultureInfo.InvariantCulture);
         var historicalRecords = CreateHistoricalSameDateRecords(new DateOnly(2026, 6, 13), startYear: 2000, endYear: 2025, valueOffset: 0d);
         var service = CreateService(historicalRecords: historicalRecords);
 
@@ -1087,7 +1087,7 @@ public class RecentObservationsServiceTests
     [TestMethod]
     public async Task GetTemperatureRecordsGeneratedDaysKeepTemperatureStatsAndHistoricalRange()
     {
-        var dayLabel = new DateOnly(2026, 6, 13).ToString("d MMM", CultureInfo.CurrentCulture);
+        var dayLabel = new DateOnly(2026, 6, 13).ToString("d MMM", CultureInfo.InvariantCulture);
         var historicalRecords = CreateHistoricalSameDateRecords(new DateOnly(2026, 6, 13), startYear: 2000, endYear: 2025, valueOffset: 10d);
         var service = CreateTemperatureService(historicalRecords);
 

@@ -133,7 +133,7 @@
                                         <td>
                                             @if (record.Day.HasValue)
                                             {
-                                                <span class="secondary-text">@record.Day @CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(record.Month)</span>
+                                                <span class="secondary-text">@ClimateExplorer.Web.UiLogic.DateLabels.ShortDayMonth(record.Day.Value, record.Month)</span>
                                             }
                                             else
                                             {

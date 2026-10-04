@@ -150,7 +150,7 @@ public partial class Top100
     private TooltipLine FormatRecordLine(DataRecord record, int position)
     {
         var dateLabel = record.Day.HasValue && record.Month.HasValue
-            ? $"{record.Day} {CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(record.Month.Value)}"
+            ? ClimateExplorer.Web.UiLogic.DateLabels.ShortDayMonth(record.Day.Value, record.Month.Value)
             : "?";
 
         var valueLabel = record.Value.HasValue && Unit.HasValue

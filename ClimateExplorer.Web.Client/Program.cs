@@ -9,10 +9,12 @@ using ClimateExplorer.Web.Client.Services.Chart;
 using ClimateExplorer.Web.Client.Services.InfoPanelDismissal;
 using ClimateExplorer.Web.Client.Services.Notifications;
 using ClimateExplorer.Web.Client.Services.RecentObservations;
+using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.WebApiClient.Services;
 using CurrentDevice;
 using DPBlazorMapLibrary;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.JSInterop;
 #pragma warning restore SA1200 // Using directives should be placed correctly
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -50,4 +52,8 @@ builder.Services.AddHttpClient<IDataService, DataService>(client =>
     client.BaseAddress = new Uri(builder.Configuration["DataServiceBaseUri"]!);
 });
 
-await builder.Build().RunAsync();
+var host = builder.Build();
+
+await DateLabels.DetectBrowserOrderAsync(host.Services.GetRequiredService<IJSRuntime>());
+
+await host.RunAsync();

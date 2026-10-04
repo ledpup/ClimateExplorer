@@ -1,6 +1,7 @@
 namespace ClimateExplorer.Web.Client.Services;
 
 using System.Globalization;
+using ClimateExplorer.Web.UiLogic;
 
 // Shared string/number formatting used across the other RecentObservationsCalculator.*.cs
 // files: value formatting per unit, date/month formatting, and small text helpers.
@@ -50,22 +51,22 @@ public sealed partial class RecentObservationsCalculator
 
     private static string FormatFullDate(DateOnly date)
     {
-        return $"{FormatDayMonth(date)} {date.Year}";
+        return DateLabels.DayMonthYear(date);
     }
 
     private static string FormatDayMonth(DateOnly date)
     {
-        return $"{date.Day} {MonthName(date.Month)}";
+        return DateLabels.DayMonth(date);
     }
 
     private static string FormatShortDayMonth(DateOnly date)
     {
-        return date.ToString("d MMM", CultureInfo.CurrentCulture);
+        return DateLabels.ShortDayMonth(date);
     }
 
     private static string FormatDayMonthYear(DateOnly date)
     {
-        return date.ToString("d MMM yyyy", CultureInfo.InvariantCulture);
+        return DateLabels.ShortDayMonthYear(date);
     }
 
     private static string MonthName(int month)
