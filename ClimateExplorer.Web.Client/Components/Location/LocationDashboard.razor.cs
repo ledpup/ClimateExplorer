@@ -22,6 +22,9 @@ public partial class LocationDashboard
     private LocationDataSetMetadataSidePanel? dataSetMetadataSidePanel;
 
     [Inject]
+    public UiLogic.DateLabels DateLabels { get; set; } = default!;
+
+    [Inject]
     public IDataService? DataService { get; set; }
 
     [Inject]
@@ -144,7 +147,12 @@ public partial class LocationDashboard
 
         if (Location?.RecordHigh is not null)
         {
-            RecordHighToolTip = $"{Location.Name} record high of {Location.RecordHigh.Value}°C set {(Location.RecordHigh.Day == null ? string.Empty : Location.RecordHigh.Day)} {CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(Location.RecordHigh.Month!.Value)} {Location.RecordHigh.Year}.<br>Click for more records.";
+            var recordHigh = Location.RecordHigh;
+            var recordHighDate = recordHigh.Day == null
+                ? $"{CultureInfo.InvariantCulture.DateTimeFormat.GetAbbreviatedMonthName(recordHigh.Month!.Value)} {recordHigh.Year}"
+                : DateLabels.ShortDayMonthYear(new DateOnly(recordHigh.Year, recordHigh.Month!.Value, recordHigh.Day.Value));
+
+            RecordHighToolTip = $"{Location.Name} record high of {recordHigh.Value}°C set {recordHighDate}.<br>Click for more records.";
         }
 
         await base.OnParametersSetAsync();

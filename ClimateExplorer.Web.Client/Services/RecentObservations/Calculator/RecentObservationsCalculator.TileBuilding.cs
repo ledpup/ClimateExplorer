@@ -8,7 +8,102 @@ using ClimateExplorer.Web.Client.UiModel.RecentObservations;
 // the expandable rankings/average/variation/trend tabs (built in MetricGroups.cs).
 public sealed partial class RecentObservationsCalculator
 {
-    private static RecentObservationTileViewModel BuildTile(
+    private static RecentObservationRecordStatus GetRecordStatus(double currentValue, HistoricalValues? distribution)
+    {
+        var ranking = distribution is null
+            ? null
+            : RecentObservationComparison.Rank(currentValue, distribution.Values);
+
+        return ranking is null
+            ? RecentObservationRecordStatus.None
+            : RecentObservationComparison.DetermineRecordStatus(ranking);
+    }
+
+    private static string? FormatCollapsedRecordStatus(RecentObservationRecordStatus status)
+    {
+        return status switch
+        {
+            RecentObservationRecordStatus.NewRecord => "NEW RECORD",
+            RecentObservationRecordStatus.EqualRecord => "EQUAL RECORD",
+            _ => null,
+        };
+    }
+
+    private static string BuildPercentileSentence(
+        PeriodObservation period,
+        MetricDomain domain,
+        HistoricalValues historicalValues,
+        RecentObservationComparisonResult? ranking)
+    {
+        if (ranking is null)
+        {
+            return historicalValues.UnavailableReason ?? "No comparable historical data is available for this comparison.";
+        }
+
+        return historicalValues.CanShowPercentile
+            ? domain.BuildPercentileSentence(period.ComparisonLabelPlural, historicalValues.StartYear, ranking)
+            : $"Ranking unavailable: only {FormatHistoricalSampleCount(historicalValues.ComparablePeriodCount, period)}.";
+    }
+
+    private static string? BuildLimitedHistoryNote(
+        PeriodObservation period,
+        HistoricalValues historicalValues,
+        RecentObservationComparisonResult? ranking)
+    {
+        return ranking is not null && !historicalValues.CanShowRank
+            ? $"Limited history: comparison based on {FormatHistoricalSampleCount(historicalValues.ComparablePeriodCount, period)}."
+            : null;
+    }
+
+    private static string? CombineNotes(string? first, string? second)
+    {
+        if (string.IsNullOrWhiteSpace(first))
+        {
+            return string.IsNullOrWhiteSpace(second) ? null : second;
+        }
+
+        if (string.IsNullOrWhiteSpace(second) || first.Contains(second, StringComparison.Ordinal))
+        {
+            return first;
+        }
+
+        return $"{first} {second}";
+    }
+
+    private static string FormatHistoricalSampleCount(int count, PeriodObservation period)
+    {
+        var noun = period.ComparisonMode == PeriodComparisonMode.DailyDate ? "year" : "period";
+        return $"{count} comparable {Pluralize(noun, count)}";
+    }
+
+    private static RecentObservationTileTone GetTemperatureTone(RecentObservationComparisonResult? ranking)
+    {
+        return ranking?.Direction switch
+        {
+            RecentObservationComparisonDirection.High => RecentObservationTileTone.TemperatureWarm,
+            RecentObservationComparisonDirection.Low => RecentObservationTileTone.TemperatureCool,
+            null => RecentObservationTileTone.Unavailable,
+            _ => RecentObservationTileTone.Neutral,
+        };
+    }
+
+    private static RecentObservationTileTone GetPrecipitationTone(RecentObservationComparisonResult? ranking)
+    {
+        return ranking?.Direction switch
+        {
+            RecentObservationComparisonDirection.High => RecentObservationTileTone.PrecipitationWet,
+            RecentObservationComparisonDirection.Low => RecentObservationTileTone.PrecipitationDry,
+            null => RecentObservationTileTone.Unavailable,
+            _ => RecentObservationTileTone.Neutral,
+        };
+    }
+
+    private static RecentObservationTileTone GetCo2Tone(RecentObservationComparisonResult? ranking)
+    {
+        return ranking is null ? RecentObservationTileTone.Unavailable : RecentObservationTileTone.Neutral;
+    }
+
+    private RecentObservationTileViewModel BuildTile(
         PeriodObservation period,
         MetricDomain domain,
         IReadOnlyDictionary<string, HistoricalValues> distributions)
@@ -86,28 +181,7 @@ public sealed partial class RecentObservationsCalculator
         };
     }
 
-    private static RecentObservationRecordStatus GetRecordStatus(double currentValue, HistoricalValues? distribution)
-    {
-        var ranking = distribution is null
-            ? null
-            : RecentObservationComparison.Rank(currentValue, distribution.Values);
-
-        return ranking is null
-            ? RecentObservationRecordStatus.None
-            : RecentObservationComparison.DetermineRecordStatus(ranking);
-    }
-
-    private static string? FormatCollapsedRecordStatus(RecentObservationRecordStatus status)
-    {
-        return status switch
-        {
-            RecentObservationRecordStatus.NewRecord => "NEW RECORD",
-            RecentObservationRecordStatus.EqualRecord => "EQUAL RECORD",
-            _ => null,
-        };
-    }
-
-    private static string BuildTileHeadline(
+    private string BuildTileHeadline(
         PeriodObservation period,
         MetricDomain domain,
         HistoricalValues historicalValues,
@@ -123,7 +197,7 @@ public sealed partial class RecentObservationsCalculator
             : BuildLimitedSampleHeadline(period, domain, ranking);
     }
 
-    private static string BuildLimitedSampleHeadline(
+    private string BuildLimitedSampleHeadline(
         PeriodObservation period,
         MetricDomain domain,
         RecentObservationComparisonResult ranking)
@@ -151,79 +225,5 @@ public sealed partial class RecentObservationsCalculator
         }
 
         return "Limited historical comparison";
-    }
-
-    private static string BuildPercentileSentence(
-        PeriodObservation period,
-        MetricDomain domain,
-        HistoricalValues historicalValues,
-        RecentObservationComparisonResult? ranking)
-    {
-        if (ranking is null)
-        {
-            return historicalValues.UnavailableReason ?? "No comparable historical data is available for this comparison.";
-        }
-
-        return historicalValues.CanShowPercentile
-            ? domain.BuildPercentileSentence(period.ComparisonLabelPlural, historicalValues.StartYear, ranking)
-            : $"Ranking unavailable: only {FormatHistoricalSampleCount(historicalValues.ComparablePeriodCount, period)}.";
-    }
-
-    private static string? BuildLimitedHistoryNote(
-        PeriodObservation period,
-        HistoricalValues historicalValues,
-        RecentObservationComparisonResult? ranking)
-    {
-        return ranking is not null && !historicalValues.CanShowRank
-            ? $"Limited history: comparison based on {FormatHistoricalSampleCount(historicalValues.ComparablePeriodCount, period)}."
-            : null;
-    }
-
-    private static string? CombineNotes(string? first, string? second)
-    {
-        if (string.IsNullOrWhiteSpace(first))
-        {
-            return string.IsNullOrWhiteSpace(second) ? null : second;
-        }
-
-        if (string.IsNullOrWhiteSpace(second) || first.Contains(second, StringComparison.Ordinal))
-        {
-            return first;
-        }
-
-        return $"{first} {second}";
-    }
-
-    private static string FormatHistoricalSampleCount(int count, PeriodObservation period)
-    {
-        var noun = period.ComparisonMode == PeriodComparisonMode.DailyDate ? "year" : "period";
-        return $"{count} comparable {Pluralize(noun, count)}";
-    }
-
-    private static RecentObservationTileTone GetTemperatureTone(RecentObservationComparisonResult? ranking)
-    {
-        return ranking?.Direction switch
-        {
-            RecentObservationComparisonDirection.High => RecentObservationTileTone.TemperatureWarm,
-            RecentObservationComparisonDirection.Low => RecentObservationTileTone.TemperatureCool,
-            null => RecentObservationTileTone.Unavailable,
-            _ => RecentObservationTileTone.Neutral,
-        };
-    }
-
-    private static RecentObservationTileTone GetPrecipitationTone(RecentObservationComparisonResult? ranking)
-    {
-        return ranking?.Direction switch
-        {
-            RecentObservationComparisonDirection.High => RecentObservationTileTone.PrecipitationWet,
-            RecentObservationComparisonDirection.Low => RecentObservationTileTone.PrecipitationDry,
-            null => RecentObservationTileTone.Unavailable,
-            _ => RecentObservationTileTone.Neutral,
-        };
-    }
-
-    private static RecentObservationTileTone GetCo2Tone(RecentObservationComparisonResult? ranking)
-    {
-        return ranking is null ? RecentObservationTileTone.Unavailable : RecentObservationTileTone.Neutral;
     }
 }

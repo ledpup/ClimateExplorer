@@ -19,6 +19,8 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services
     .AddRazorComponents()
     .AddInteractiveServerComponents()
@@ -44,6 +46,7 @@ builder.Services
     .AddScoped<IRecentObservationsCalculator, RecentObservationsCalculator>()
     .AddScoped<IRecentObservationsService, RecentObservationsService>()
     .AddScoped<ISiteOverviewService, SiteOverviewService>()
+    .AddScoped(DateLabelsFactory.Create)
     .AddCurrentDeviceService()
     .AddBlazoredLocalStorage()
     .AddHttpClient<IDataService, DataService>(client =>

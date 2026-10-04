@@ -29,6 +29,9 @@ public partial class Top100
     public int SelectedMonth { get; set; }
 
     [Inject]
+    private UiLogic.DateLabels DateLabels { get; set; } = default!;
+
+    [Inject]
     private IJSRuntime JsRuntime { get; set; } = default!;
 
     [Inject]
@@ -150,7 +153,7 @@ public partial class Top100
     private TooltipLine FormatRecordLine(DataRecord record, int position)
     {
         var dateLabel = record.Day.HasValue && record.Month.HasValue
-            ? $"{record.Day} {CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(record.Month.Value)}"
+            ? DateLabels.ShortDayMonth(record.Day.Value, record.Month.Value)
             : "?";
 
         var valueLabel = record.Value.HasValue && Unit.HasValue

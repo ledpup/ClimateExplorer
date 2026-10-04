@@ -1,6 +1,6 @@
 ---
 layout: single
-title: "The one number"
+title: "The one number - CO₂ in the atmosphere"
 date: 2026-10-01 09:00:00 +1000
 categories: site-info
 ---

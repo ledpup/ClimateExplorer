@@ -1,8 +1,8 @@
 namespace ClimateExplorer.Web.Client.Components.RecentObservations;
 
-using System.Globalization;
 using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Web.Client.UiModel.RecentObservations;
+using ClimateExplorer.Web.UiLogic;
 
 internal static class RecentObservationTileDisplay
 {
@@ -13,15 +13,15 @@ internal static class RecentObservationTileDisplay
         _ => "none",
     };
 
-    public static string FormatCurrentMetricDate(DateOnly date)
+    public static string FormatCurrentMetricDate(DateLabels dateLabels, DateOnly date)
     {
-        return date.ToString("d MMM", CultureInfo.InvariantCulture);
+        return dateLabels.ShortDayMonth(date);
     }
 
-    public static string FormatDayRecordOccurrence(RecentObservationMetricRecordViewModel record)
+    public static string FormatDayRecordOccurrence(DateLabels dateLabels, RecentObservationMetricRecordViewModel record)
     {
         return record.Date.HasValue
-            ? $" · {record.Date.Value.ToString("d MMM yyyy", CultureInfo.InvariantCulture)}"
+            ? $" · {dateLabels.ShortDayMonthYear(record.Date.Value)}"
             : FormatPeriodRecordOccurrence(record);
     }
 

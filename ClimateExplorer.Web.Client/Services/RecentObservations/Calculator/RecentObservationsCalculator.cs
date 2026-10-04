@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.Client.Services.RecentObservations;
 using ClimateExplorer.Web.Client.UiModel.RecentObservations;
+using ClimateExplorer.Web.UiLogic;
 
 // Split by concern across the RecentObservationsCalculator.*.cs files in this folder:
 // this file is the public entry point and top-level orchestration; DailySeries builds the
@@ -25,9 +26,12 @@ public sealed partial class RecentObservationsCalculator : IRecentObservationsCa
 
     private readonly TimeProvider timeProvider;
 
-    public RecentObservationsCalculator(TimeProvider? timeProvider = null)
+    private readonly DateLabels dateLabels;
+
+    public RecentObservationsCalculator(TimeProvider? timeProvider = null, DateLabels? dateLabels = null)
     {
         this.timeProvider = timeProvider ?? TimeProvider.System;
+        this.dateLabels = dateLabels ?? new DateLabels();
     }
 
     public RecentObservationsTabResult Calculate(
@@ -335,7 +339,7 @@ public sealed partial class RecentObservationsCalculator : IRecentObservationsCa
             maximumReferenceDate);
     }
 
-    private static string? CreateReferenceDateNote(DateOnly? requestedReferenceDate, DateOnly referenceDate)
+    private string? CreateReferenceDateNote(DateOnly? requestedReferenceDate, DateOnly referenceDate)
     {
         return requestedReferenceDate.HasValue && requestedReferenceDate.Value != referenceDate
             ? $"No observation is available for {FormatDayMonthYear(requestedReferenceDate.Value)}; showing {FormatDayMonthYear(referenceDate)} instead."

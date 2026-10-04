@@ -38,6 +38,9 @@ public partial class RecentObservationsPanel
     public IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
 
     [Inject]
+    private UiLogic.DateLabels DateLabels { get; set; } = default!;
+
+    [Inject]
     private IRecentObservationsService RecentObservationsService { get; set; } = default!;
 
     [Inject]
@@ -113,6 +116,8 @@ public partial class RecentObservationsPanel
 
     protected override async Task OnParametersSetAsync()
     {
+        periodSelection.DateLabels = DateLabels;
+
         if (Context?.Id != internalContextId)
         {
             internalContextId = Context?.Id;

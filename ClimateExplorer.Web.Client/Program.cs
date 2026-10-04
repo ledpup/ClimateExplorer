@@ -9,10 +9,12 @@ using ClimateExplorer.Web.Client.Services.Chart;
 using ClimateExplorer.Web.Client.Services.InfoPanelDismissal;
 using ClimateExplorer.Web.Client.Services.Notifications;
 using ClimateExplorer.Web.Client.Services.RecentObservations;
+using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.WebApiClient.Services;
 using CurrentDevice;
 using DPBlazorMapLibrary;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.JSInterop;
 #pragma warning restore SA1200 // Using directives should be placed correctly
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -37,6 +39,7 @@ builder.Services
     .AddScoped<IRecentObservationsCalculator, RecentObservationsCalculator>()
     .AddScoped<IRecentObservationsService, RecentObservationsService>()
     .AddScoped<ISiteOverviewService, SiteOverviewService>()
+    .AddScoped<DateLabels>()
     .AddCurrentDeviceService()
     .AddBlazoredLocalStorage();
 
@@ -50,4 +53,18 @@ builder.Services.AddHttpClient<IDataService, DataService>(client =>
     client.BaseAddress = new Uri(builder.Configuration["DataServiceBaseUri"]!);
 });
 
-await builder.Build().RunAsync();
+var host = builder.Build();
+
+// Fallback for when the server's choice of date order doesn't arrive with the prerendered page
+try
+{
+    var browserLanguage = await host.Services.GetRequiredService<IJSRuntime>().GetValueAsync<string>("navigator.language");
+
+    host.Services.GetRequiredService<DateLabels>().MonthFirst = DateLabels.IsMonthFirstLocale(browserLanguage);
+}
+catch (Exception)
+{
+    // Date order is a nicety - never let it stop the app from starting
+}
+
+await host.RunAsync();

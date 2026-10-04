@@ -43,7 +43,7 @@ public class DataSetDefinitionViewModel
     {
         var dsds = new List<DataSetDefinitionViewModel>();
 
-        Enums.DataType? dataType = null;
+        DataType? dataType = null;
         DataAdjustment? dataAdjustment = null;
 
         foreach (var dataSubstitute in dataSubstitutes)
@@ -107,7 +107,7 @@ public class DataSetDefinitionViewModel
     public static DataSetAndMeasurementDefinition? GetDataSetDefinitionAndMeasurement(
         IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions,
         Guid locationId,
-        Enums.DataType dataType,
+        DataType dataType,
         DataAdjustment? dataAdjustment,
         bool throwIfNoMatch = true)
     {

@@ -107,7 +107,7 @@ public sealed class DataSetDownloadMetadataTests
     [DataRow(Core.Enums.DataResolution.Monthly, @"CO2\co2_mm_mlo.txt")]
     [DataRow(null, @"CO2\co2_mm_mlo.txt")]
     public async Task ResolveAsync_Co2RequestAtEachResolution_ResolvesThatResolutionsAsset(
-        Core.Enums.DataResolution? resolution,
+        Enums.DataResolution? resolution,
         string expectedRelativePath)
     {
         var request = new PostDataSetsRequestBody

@@ -11,6 +11,8 @@ using static ClimateExplorer.Core.Enums;
 
 public static class ChartLogic
 {
+    private const int MaxDropoutYears = 5;
+
     public static string BuildChartTitle(List<SeriesWithData> chartSeriesWithData, Dictionary<Guid, Location>? locationDictionary)
     {
         if (chartSeriesWithData.Count == 1)
@@ -331,7 +333,15 @@ public static class ChartLogic
         }
         else
         {
-            startBin = lastFirstBinAcrossAllDataSets!;
+            // Start where the last series starts, so the chart only covers the period the series
+            // have in common. That only works if every series is actually reporting at that point -
+            // a series can start, stop, and restart after another one has started, in which case
+            // cropping would hide its early data without giving a common period in return. When
+            // that happens, chart from the beginning instead.
+            var allDataSetsReportingAtLastStart =
+                preProcessedDataSets.All(x => IsReportingAt(x, lastFirstBinAcrossAllDataSets!));
+
+            startBin = allDataSetsReportingAtLastStart ? lastFirstBinAcrossAllDataSets! : firstBinAcrossAllDataSets!;
         }
 
         var endBin = lastBinAcrossAllDataSets;
@@ -412,5 +422,30 @@ public static class ChartLogic
         }
 
         return colour;
+    }
+
+    /// <summary>
+    /// Whether a data set is reporting at the given bin: it either has a value there, or the bin
+    /// falls in a short dropout - the values either side of it are no more than
+    /// <see cref="MaxDropoutYears"/> apart - rather than in a stretch where the series had stopped.
+    /// </summary>
+    private static bool IsReportingAt(DataSet dataSet, BinIdentifierForGaplessBin bin)
+    {
+        BinIdentifierForGaplessBin? previous = null;
+
+        foreach (var record in dataSet.DataRecords.Where(x => x.Value.HasValue))
+        {
+            var current = (BinIdentifierForGaplessBin)record.BinIdentifier!;
+
+            if (current.FirstDayInBin >= bin.FirstDayInBin)
+            {
+                return current.FirstDayInBin == bin.FirstDayInBin
+                    || (previous != null && current.FirstDayInBin <= previous.FirstDayInBin.AddYears(MaxDropoutYears));
+            }
+
+            previous = current;
+        }
+
+        return false;
     }
 }
