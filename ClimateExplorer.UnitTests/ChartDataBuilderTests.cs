@@ -191,6 +191,52 @@ public class ChartDataBuilderTests
     }
 
     [TestMethod]
+    public async Task BuildAsync_NotChartAllDataAndAllSeriesReportingAtLastStart_StartsAtLastStart()
+    {
+        var early = CreateYearDataSet(Enumerable.Range(1900, 101).Select(y => (y, (double?)y)));
+        var late = CreateYearDataSet(
+            Enumerable.Range(1950, 51).Select(y => (y, (double?)y)),
+            DataType.Precipitation,
+            UnitOfMeasure.Millimetres);
+
+        var result = await BuildTwoSeriesChart(early, late);
+
+        Assert.AreEqual((short)1950, result.ChartBins!.Cast<YearBinIdentifier>().First().Year);
+    }
+
+    [TestMethod]
+    public async Task BuildAsync_NotChartAllDataAndSeriesHasGapAtLastStart_StartsAtFirstStart()
+    {
+        // The first series starts, stops, and only restarts after the second series has started
+        var interrupted = CreateYearDataSet(
+            Enumerable.Range(1900, 101).Select(y => (y, y is > 1910 and < 1960 ? null : (double?)y)));
+        var late = CreateYearDataSet(
+            Enumerable.Range(1950, 51).Select(y => (y, (double?)y)),
+            DataType.Precipitation,
+            UnitOfMeasure.Millimetres);
+
+        var result = await BuildTwoSeriesChart(interrupted, late);
+
+        Assert.AreEqual((short)1900, result.ChartBins!.Cast<YearBinIdentifier>().First().Year);
+        Assert.AreEqual((short)1900, ((YearBinIdentifier)result.ChartStartBin!).Year);
+    }
+
+    [TestMethod]
+    public async Task BuildAsync_NotChartAllDataAndSeriesHasShortDropoutAtLastStart_StartsAtLastStart()
+    {
+        var shortDropout = CreateYearDataSet(
+            Enumerable.Range(1900, 101).Select(y => (y, y is >= 1949 and <= 1951 ? null : (double?)y)));
+        var late = CreateYearDataSet(
+            Enumerable.Range(1950, 51).Select(y => (y, (double?)y)),
+            DataType.Precipitation,
+            UnitOfMeasure.Millimetres);
+
+        var result = await BuildTwoSeriesChart(shortDropout, late);
+
+        Assert.AreEqual((short)1950, result.ChartBins!.Cast<YearBinIdentifier>().First().Year);
+    }
+
+    [TestMethod]
     public async Task ModularGranularityProducesTwelveMonthBins()
     {
         var records = Enumerable.Range(1, 12)
@@ -513,6 +559,18 @@ public class ChartDataBuilderTests
     private static ChartDataBuilder CreateBuilder(Mock<IDataService> dataService)
     {
         return new ChartDataBuilder(dataService.Object, NullLogger<ChartDataBuilder>.Instance);
+    }
+
+    private static Task<ChartDataBuildResult> BuildTwoSeriesChart(DataSet temperatureDataSet, DataSet precipitationDataSet)
+    {
+        var dataService = CreateSequentialDataService(temperatureDataSet, precipitationDataSet);
+        var precipitationSeries = CreateSeries(
+            dataType: DataType.Precipitation,
+            unitOfMeasure: UnitOfMeasure.Millimetres,
+            aggregation: SeriesAggregationOptions.Sum);
+
+        return CreateBuilder(dataService).BuildAsync(
+            new ChartState { ChartAllData = false, Series = [CreateSeries(), precipitationSeries] });
     }
 
     private static Mock<IDataService> CreateDataService(DataSet dataSet)

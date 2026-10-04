@@ -654,7 +654,12 @@ public partial class ChartView : IAsyncDisposable
             return;
         }
 
-        int startYear = ChartAllData ? StartYears!.First() : StartYears!.Last();
+        if (chartStartBin is not YearBinIdentifier startBin)
+        {
+            return;
+        }
+
+        int startYear = startBin.Year;
 
         var year = (short)(startYear + e.Index);
 
