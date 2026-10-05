@@ -67,8 +67,6 @@ This is where our version differs from MATLAB's. `movmean` only drops the years 
 
 The start of the record is handled the same way, so the line also begins at the first year of data rather than ten years in.
 
-We tried two other ways of filling in the ends before settling on this one. Both produced a straight line across the final ten years, because both reused the same last window for every one of those years. The shrinking window is different for every year, so the line keeps following the data.
-
 ### A worked example
 
 Here is the calculation on a made-up record of thirteen yearly temperatures, using a 12-year moving average. The smaller window keeps the arithmetic short, and the steps are the same as for a 20-year window.
