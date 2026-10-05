@@ -6,23 +6,26 @@ namespace ClimateExplorer.Core.Stats.Smoothing;
 internal static class SmoothingWindow
 {
     /// <summary>
-    /// Mean of the window of <paramref name="windowSize"/> centred on <paramref name="centre"/>, and
-    /// the size of that window. An even window can't be centred on a point, so it is a 2xN moving
+    /// Mean of the window of <paramref name="windowSize"/> centred on <paramref name="centre"/>, the
+    /// size of that window, and the indexes of its first and last slot. An even window can't be
+    /// centred on a point, so it is a 2xN moving
     /// average: N + 1 slots with the two end slots at half weight (e.g. 0.5, 1, 1, 1, 0.5 for N = 4).
     /// Slots outside <paramref name="first"/> to <paramref name="last"/> are cut off the window.
     /// The mean is <c>null</c>, and the size 0, if less than <paramref name="requiredDataThreshold"/>
     /// of the window's weight holds a value.
     /// </summary>
-    public static (double? Mean, int Size) CentredMean(IReadOnlyList<double?> values, int centre, int windowSize, int first, int last, float requiredDataThreshold)
+    public static (double? Mean, int Size, int Start, int End) CentredMean(IReadOnlyList<double?> values, int centre, int windowSize, int first, int last, float requiredDataThreshold)
     {
         int reach = windowSize / 2;
         bool isEvenWindow = windowSize % 2 == 0;
+        int start = Math.Max(first, centre - reach);
+        int end = Math.Min(last, centre + reach);
 
         double sum = 0;
         double weightPresent = 0;
         double weightOfWindow = 0;
 
-        for (int i = Math.Max(first, centre - reach); i <= Math.Min(last, centre + reach); i++)
+        for (int i = start; i <= end; i++)
         {
             double weight = isEvenWindow && Math.Abs(i - centre) == reach ? 0.5 : 1;
 
@@ -37,9 +40,9 @@ internal static class SmoothingWindow
 
         if (weightPresent > 0 && (float)(weightPresent / weightOfWindow) >= requiredDataThreshold)
         {
-            return (sum / weightPresent, (int)weightOfWindow);
+            return (sum / weightPresent, (int)weightOfWindow, start, end);
         }
 
-        return (null, 0);
+        return (null, 0, start, end);
     }
 }

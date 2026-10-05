@@ -340,6 +340,34 @@ public class ChartDataBuilderTests
     }
 
     [TestMethod]
+    public async Task BuildAsync_ShrinkingCentredMovingAverage_RecordsSmoothingWindowRangesByBin()
+    {
+        var records = Enumerable.Range(2000, 30).Select(year => (year, value: (double?)year)).ToArray();
+        var dataService = CreateDataService(CreateYearDataSet(records));
+        var series = CreateSeries(smoothing: SeriesSmoothingOptions.ShrinkingCentredMovingAverage, smoothingWindow: 10);
+
+        var result = await CreateBuilder(dataService).BuildAsync(new ChartState { ChartAllData = true, Series = [series] });
+
+        // A full even window spans 11 years, its two end years at half weight. The ends are cut off.
+        var ranges = result.SeriesWithData.Single().SmoothingWindowRanges;
+        Assert.HasCount(30, ranges);
+        Assert.AreEqual("2005-2015", ranges["y2010"]);
+        Assert.AreEqual("2000-2008", ranges["y2004"]);
+        Assert.AreEqual("2025-2029", ranges["y2029"]);
+    }
+
+    [TestMethod]
+    public async Task BuildAsync_UnsmoothedSeries_RecordsNoSmoothingWindowRanges()
+    {
+        var records = Enumerable.Range(2000, 30).Select(year => (year, value: (double?)year)).ToArray();
+        var dataService = CreateDataService(CreateYearDataSet(records));
+
+        var result = await CreateBuilder(dataService).BuildAsync(new ChartState { ChartAllData = true, Series = [CreateSeries()] });
+
+        Assert.IsEmpty(result.SeriesWithData.Single().SmoothingWindowRanges);
+    }
+
+    [TestMethod]
     public async Task BuildAsync_UnsmoothedSeries_RecordsNoSmoothingWindow()
     {
         var records = Enumerable.Range(2000, 30).Select(year => (year, value: (double?)year)).ToArray();

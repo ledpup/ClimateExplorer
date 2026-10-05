@@ -302,6 +302,16 @@
             return info?.shrunkWindows?.[point.dataIndex] ?? info?.smoothingWindow ?? undefined;
         }
 
+        // The span of bins a point's smoothed value averages, e.g. "2015-2025". Undefined for an
+        // unsmoothed series.
+        function smoothingWindowRange(point, info) {
+            if (point.raw === null || point.raw === undefined) {
+                return undefined;
+            }
+
+            return info?.windowRanges?.[point.dataIndex];
+        }
+
         // Fill colour of a line chart point whose smoothing window was shrunk.
         const shrunkWindowPointFill = "#ffffff";
 
@@ -345,7 +355,7 @@
                 const label = info?.label ?? point.dataset.label;
                 const swatch = `<span class="chart-external-tooltip-key" style="background:${colour.backgroundColor}; border-color:${colour.borderColor};"></span>`;
                 const value = formatValue(point, info?.rounding);
-                const sizeCell = hasSmoothingWindow ? `<td>${smoothingWindowSize(point, info) ?? ""}</td>` : "";
+                const sizeCell = hasSmoothingWindow ? `<td>${smoothingWindowSize(point, info) ?? ""}</td><td>${smoothingWindowRange(point, info) ?? ""}</td>` : "";
 
                 if (!info?.anomaly || point.raw === null || point.raw === undefined) {
                     return `<tr><td class="chart-external-tooltip-series">${swatch}${label}</td><td class="chart-external-tooltip-value">${value}</td>${sizeCell}<td colspan="3">–</td></tr>`;
@@ -362,14 +372,15 @@
             }).join("");
 
             const table =
-                `<table class="chart-external-tooltip-table"><thead><tr><th></th><th>Value</th>${hasSmoothingWindow ? "<th>Size</th>" : ""}<th>Early</th><th>Avg</th><th>Last 30</th></tr></thead><tbody>${tableRows}</tbody></table>`;
+                `<table class="chart-external-tooltip-table"><thead><tr><th></th><th>Value</th>${hasSmoothingWindow ? "<th>Size</th><th>Range</th>" : ""}<th>Early</th><th>Avg</th><th>Last 30</th></tr></thead><tbody>${tableRows}</tbody></table>`;
 
             // The hovered x-axis label (usually the year), so the legend names what is being compared.
             const current = tooltip.title?.[0] || "current value";
 
             const legend =
                 `<div class="chart-external-tooltip-legend">` +
-                (hasSmoothingWindow ? `<div><b>Size</b>: points in the moving average window</div>` : "") +
+                (hasSmoothingWindow ? `<div><b>Size</b>: points in the moving average window</div>` +
+                `<div><b>Range</b>: first to last point in the window (each end counts as half when Size is even)</div>` : "") +
                 `<div><b>Early</b>: ${current} vs the first-half average</div>` +
                 `<div><b>Avg</b>: ${current} vs the whole-record average</div>` +
                 `<div><b>Last 30</b>: ${current} vs the last-30-year average</div>` +

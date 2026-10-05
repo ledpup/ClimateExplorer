@@ -25,4 +25,10 @@ public record ChartTooltipSeriesInfo
     /// isn't smoothed.
     /// </summary>
     public int? SmoothingWindow { get; init; }
+
+    /// <summary>
+    /// Chart point index to the span of bins its smoothed value was averaged over (e.g. "2015-2025").
+    /// The tooltip shows it as the window range. Null when the series isn't smoothed.
+    /// </summary>
+    public IReadOnlyDictionary<int, string>? WindowRanges { get; init; }
 }

@@ -177,6 +177,22 @@ public class ShrinkingCentredMovingAverageCalculatorTests
     }
 
     [TestMethod]
+    public void Smooth_OddWindow21_ReportsWindowStartAndEndForEachPoint()
+    {
+        var values = CreateValues(1960, 2026);
+
+        var smoothed = calculator.Smooth(values, 21, Threshold);
+
+        // A full window is centred. Past the minimum half-width, only the side facing the end is cut off.
+        Assert.AreEqual(2006 - 1960, smoothed.WindowStarts[2016 - 1960]);
+        Assert.AreEqual(2026 - 1960, smoothed.WindowEnds[2016 - 1960]);
+        Assert.AreEqual(2022 - 1960, smoothed.WindowStarts[2026 - 1960]);
+        Assert.AreEqual(2026 - 1960, smoothed.WindowEnds[2026 - 1960]);
+        Assert.AreEqual(0, smoothed.WindowStarts[0]);
+        Assert.AreEqual(4, smoothed.WindowEnds[0]);
+    }
+
+    [TestMethod]
     public void Smooth_NullOutputs_ReportWindowSizeZero()
     {
         double?[] values = [null, .. CreateValues(1960, 2026)];

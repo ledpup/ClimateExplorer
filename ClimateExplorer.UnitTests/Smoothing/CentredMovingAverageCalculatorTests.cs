@@ -78,6 +78,18 @@ public class CentredMovingAverageCalculatorTests
     }
 
     [TestMethod]
+    public void Smooth_EvenWindow4_ReportsHalfWeightSlotsAsWindowStartAndEnd()
+    {
+        var result = new CentredMovingAverageCalculator().Smooth([1, 2, 3, 4, 5, 6], 4, 0.75f);
+
+        // Index 2 averages slots 0-4 and index 3 slots 1-5, each with its two end slots at half weight.
+        Assert.AreEqual(0, result.WindowStarts[2]);
+        Assert.AreEqual(4, result.WindowEnds[2]);
+        Assert.AreEqual(1, result.WindowStarts[3]);
+        Assert.AreEqual(5, result.WindowEnds[3]);
+    }
+
+    [TestMethod]
     public void Smooth_Window3WithCentralNull_GivesNullAroundGap()
     {
         var result = Smooth([1, 2, 3, null, 5, 6, 7], windowSize: 3);
