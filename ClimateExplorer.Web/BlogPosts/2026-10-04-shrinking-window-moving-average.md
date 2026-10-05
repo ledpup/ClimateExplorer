@@ -123,11 +123,15 @@ A value averaged over five years is not as smooth as one averaged over twenty. T
 
 To make that visible, a line chart draws the shrinking part of the line as a dotted line. The solid line is the full window, and the dotted line is where the window has shrunk.
 
-The chart tooltip now also reports the window size for the point you are hovering over, in the **Size** column.
+The chart tooltip now also reports the window for the point you are hovering over, in two columns. **Size** is the window size, and **Range** is the first and last year included in the average.
 
-![Part of a chart of Canberra mean temperature and precipitation with a 20-year moving average. The line is dotted from 2015 onwards, and the tooltip for 2019 shows a window size of 13]({{site.url}}/blog/assets/shrinking-window-tooltip.png)
+The range is the only way to tell when the window is no longer centred. In the 20-year table above, 2022 has a size of 8, and its range of 2018-2025 shows that the window reaches four years back but only three forward.
 
-*The tooltip for 2019 on a record that ends in 2025. The moving average is set to 20 years, but 2019 has only six years after it, so its window has shrunk to 13. The range is 2013-2025, specifying each year that is included in the average.*
+For a full window the range covers one more year than the size: a 20-year average plotted at 2015 has a range of 2005-2025, which is 21 years, because the first and last are counted at half weight.
+
+![Part of a chart of Canberra mean temperature and precipitation with a 20-year moving average. The line is dotted from 2015 onwards, and the tooltip for 2019 shows a window size of 13 and a range of 2013-2025]({{site.url}}/blog/assets/shrinking-window-tooltip.png)
+
+*The tooltip for 2019 on a record that ends in 2025. The moving average is set to 20 years, but 2019 has only six years after it, so its window has shrunk to 13. The range, 2013-2025, shows the first and last years included in the average.*
 
 The points on the dotted line should be considered preliminary. When the next year of data is added to the site, every one of them will be recalculated over a wider window and will shift a little. A point becomes final once the full window fits around it, which for a 20-year moving average is ten years later.
 
