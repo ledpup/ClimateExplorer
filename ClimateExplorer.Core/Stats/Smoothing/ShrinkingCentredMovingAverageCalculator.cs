@@ -15,6 +15,8 @@ public sealed class ShrinkingCentredMovingAverageCalculator : ISeriesSmoother
     {
         var result = new double?[values.Count];
         var windowSizes = new int[values.Count];
+        var windowStarts = new int[values.Count];
+        var windowEnds = new int[values.Count];
 
         int first = 0;
         while (first < values.Count && !values[first].HasValue)
@@ -37,9 +39,9 @@ public sealed class ShrinkingCentredMovingAverageCalculator : ISeriesSmoother
             int reach = Math.Min(halfWindow, Math.Max(room, floor));
             int shrunkWindowSize = Math.Min(windowSize, (2 * reach) + 1);
 
-            (result[i], windowSizes[i]) = SmoothingWindow.CentredMean(values, i, shrunkWindowSize, first, last, requiredDataThreshold);
+            (result[i], windowSizes[i], windowStarts[i], windowEnds[i]) = SmoothingWindow.CentredMean(values, i, shrunkWindowSize, first, last, requiredDataThreshold);
         }
 
-        return new SmoothedSeries(result, windowSizes);
+        return new SmoothedSeries(result, windowSizes, windowStarts, windowEnds);
     }
 }

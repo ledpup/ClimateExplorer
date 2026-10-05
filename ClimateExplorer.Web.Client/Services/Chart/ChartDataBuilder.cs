@@ -336,6 +336,24 @@ public sealed class ChartDataBuilder : IChartDataBuilder
         return shrunk;
     }
 
+    private static Dictionary<string, string> GetSmoothingWindowRanges(IList<BinnedRecord> records, SmoothedSeries smoothed)
+    {
+        var ranges = new Dictionary<string, string>();
+
+        for (var i = 0; i < records.Count; i++)
+        {
+            if (records[i].BinId is not null && smoothed.Values[i].HasValue)
+            {
+                var start = records[smoothed.WindowStarts[i]].BinIdentifier!.Label;
+                var end = records[smoothed.WindowEnds[i]].BinIdentifier!.Label;
+
+                ranges[records[i].BinId] = $"{start}-{end}";
+            }
+        }
+
+        return ranges;
+    }
+
     private async Task<List<SeriesWithData>> RetrieveDataSets(
         IReadOnlyList<ChartSeriesDefinition> chartSeriesList,
         BinGranularities binGranularity,
@@ -465,6 +483,7 @@ public sealed class ChartDataBuilder : IChartDataBuilder
                 IEnumerable<double?> values = smoothed.Values;
                 cs.ShrunkSmoothingWindows = GetShrunkSmoothingWindows(cs.SourceDataSet.DataRecords, smoothed, cs.ChartSeries!.SmoothingWindow);
                 cs.SmoothingWindow = cs.ChartSeries!.SmoothingWindow;
+                cs.SmoothingWindowRanges = GetSmoothingWindowRanges(cs.SourceDataSet.DataRecords, smoothed);
 
                 if (values.Count(y => y != null) < 10)
                 {
@@ -477,6 +496,7 @@ public sealed class ChartDataBuilder : IChartDataBuilder
                     cs.DataStatus = ChartSeriesDataStatus.FallbackToUnsmoothedData;
                     cs.ShrunkSmoothingWindows = new Dictionary<string, int>();
                     cs.SmoothingWindow = null;
+                    cs.SmoothingWindowRanges = new Dictionary<string, string>();
                     values = cs.SourceDataSet.DataRecords
                                             .Where(x => x.Value.HasValue)
                                             .Select(x => x.Value);

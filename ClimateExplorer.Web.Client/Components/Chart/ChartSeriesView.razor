@@ -58,10 +58,10 @@
                                         }
                                         else
                                         {
-                                            <SelectItem Value="SeriesAggregationOptions.Mean">Mean</SelectItem>
-                                            <SelectItem Value="SeriesAggregationOptions.Minimum">Minimum</SelectItem>
                                             <SelectItem Value="SeriesAggregationOptions.Maximum">Maximum</SelectItem>
+                                            <SelectItem Value="SeriesAggregationOptions.Mean">Mean</SelectItem>
                                             <SelectItem Value="SeriesAggregationOptions.Median">Median</SelectItem>
+                                            <SelectItem Value="SeriesAggregationOptions.Minimum">Minimum</SelectItem>
                                             <SelectItem Value="SeriesAggregationOptions.Sum">Sum</SelectItem>
                                         }
                                     </Select>
@@ -96,8 +96,8 @@
                                             Value="@ChartSeries.Smoothing"
                                             ValueChanged="@OnSmoothingChanged">
                                         <SelectItem Value="SeriesSmoothingOptions.None">None</SelectItem>
-                                        <SelectItem Value="SeriesSmoothingOptions.ShrinkingCentredMovingAverage">Shrinking moving average</SelectItem>
                                         <SelectItem Value="SeriesSmoothingOptions.CentredMovingAverage">Centred moving average</SelectItem>
+                                        <SelectItem Value="SeriesSmoothingOptions.ShrinkingCentredMovingAverage">Shrinking moving average</SelectItem>
                                     </Select>
                                 </span>
                             </div>
@@ -134,8 +134,8 @@
                                             Value="@ChartSeries.Value"
                                             ValueChanged="@OnValueChanged"
                                             Disabled="@ShouldDisableDisplay(ChartSeries)">
-                                        <SelectItem Value="SeriesValueOptions.Value">Value</SelectItem>
                                         <SelectItem Value="SeriesValueOptions.Anomaly">Anomaly relative to mean</SelectItem>
+                                        <SelectItem Value="SeriesValueOptions.Value">Value</SelectItem>
                                     </Select>
                                 </span>
                             </div>
@@ -149,10 +149,10 @@
                                             Value="@ChartSeries.SeriesTransformation"
                                             ValueChanged="@OnTransformationChanged"
                                             Disabled="@ShouldDisableTransformation(ChartSeries)">
+                                        <SelectItem Value="SeriesTransformations.Custom">Custom</SelectItem>
                                         <SelectItem Value="SeriesTransformations.Identity">Identity</SelectItem>
                                         <SelectItem Value="SeriesTransformations.Negate">Negate</SelectItem>
                                         <SelectItem Value="SeriesTransformations.DayOfYearIfFrost">Day of year if frost</SelectItem>
-                                        <SelectItem Value="SeriesTransformations.Custom">Custom</SelectItem>
                                     </Select>
                                 </span>
                             </div>
@@ -186,8 +186,8 @@
                                             Size="Size.Small"
                                             Value="@ChartSeries.DisplayStyle"
                                             ValueChanged="@OnDisplayStyleChanged">
-                                        <SelectItem Value="SeriesDisplayStyle.Line">Line</SelectItem>
                                         <SelectItem Value="SeriesDisplayStyle.Bar">Bar</SelectItem>
+                                        <SelectItem Value="SeriesDisplayStyle.Line">Line</SelectItem>
                                         <SelectItem Value="SeriesDisplayStyle.Scatter">Scatter</SelectItem>
                                     </Select>
                                 </span>

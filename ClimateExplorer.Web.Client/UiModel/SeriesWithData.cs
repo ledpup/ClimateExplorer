@@ -34,4 +34,12 @@ public sealed record SeriesWithData
     /// window size. Null when the series isn't smoothed, including when it fell back to unsmoothed data.
     /// </summary>
     public int? SmoothingWindow { get; set; }
+
+    /// <summary>
+    /// The span of bins each smoothed value was averaged over, keyed by bin id, as the labels of the
+    /// window's first and last bin (e.g. "2015-2025"). For an even window those two bins carry half
+    /// weight. The tooltip shows it as the window range. Empty when the series isn't smoothed,
+    /// including when it fell back to unsmoothed data.
+    /// </summary>
+    public IReadOnlyDictionary<string, string> SmoothingWindowRanges { get; set; } = new Dictionary<string, string>();
 }

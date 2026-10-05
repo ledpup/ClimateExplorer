@@ -37,8 +37,9 @@ public static class ChartTooltipMetadataBuilder
     {
         return BuildForSeries(series, null) with
         {
-            ShrunkWindows = BuildShrunkWindows(series),
+            ShrunkWindows = MapBinsToChartIndexes(series, series.ShrunkSmoothingWindows),
             SmoothingWindow = series.SmoothingWindow,
+            WindowRanges = MapBinsToChartIndexes(series, series.SmoothingWindowRanges),
         };
     }
 
@@ -70,30 +71,31 @@ public static class ChartTooltipMetadataBuilder
     }
 
     /// <summary>
-    /// Maps each shrunk smoothing window onto the index of its point in the chart. The processed data
-    /// set holds exactly one record per chart bin, in chart order, so a record's position is its index.
+    /// Maps per-bin smoothing window details (a shrunk window's size, a window's range) onto the index
+    /// of each bin's point in the chart. The processed data set holds exactly one record per chart
+    /// bin, in chart order, so a record's position is its index. Null when no plotted bin has one.
     /// </summary>
-    private static Dictionary<int, int>? BuildShrunkWindows(SeriesWithData series)
+    private static Dictionary<int, T>? MapBinsToChartIndexes<T>(SeriesWithData series, IReadOnlyDictionary<string, T> byBin)
     {
-        if (series.ShrunkSmoothingWindows.Count == 0 || series.ProcessedDataSet is null)
+        if (byBin.Count == 0 || series.ProcessedDataSet is null)
         {
             return null;
         }
 
-        var shrunkWindows = new Dictionary<int, int>();
+        var byChartIndex = new Dictionary<int, T>();
         var index = 0;
 
         foreach (var record in series.ProcessedDataSet.DataRecords)
         {
-            if (record.BinId is not null && series.ShrunkSmoothingWindows.TryGetValue(record.BinId, out var windowSize))
+            if (record.BinId is not null && byBin.TryGetValue(record.BinId, out var value))
             {
-                shrunkWindows[index] = windowSize;
+                byChartIndex[index] = value;
             }
 
             index++;
         }
 
-        return shrunkWindows.Count == 0 ? null : shrunkWindows;
+        return byChartIndex.Count == 0 ? null : byChartIndex;
     }
 
     private static ChartSeriesTooltipMetadata? BuildAnomaly(SeriesWithData series, DataSet dataSet)

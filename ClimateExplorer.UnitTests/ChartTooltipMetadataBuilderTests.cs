@@ -156,6 +156,45 @@ public class ChartTooltipMetadataBuilderTests
     }
 
     [TestMethod]
+    public void BuildForSeries_SmoothingWindowRanges_MapsBinsToChartIndexes()
+    {
+        var series = CreateSeriesWithData(BinGranularities.ByYear, YearRange(1950, 2019));
+        series.ProcessedDataSet = BuildDataSet(YearRange(2000, 2019));
+        series.SmoothingWindowRanges = new Dictionary<string, string> { ["y1950"] = "1950-1954", ["y2010"] = "2005-2015", ["y2019"] = "2015-2019" };
+
+        var result = ChartTooltipMetadataBuilder.BuildForSeries(series);
+
+        // 1950 is not plotted. 2010 and 2019 are chart points 10 and 19.
+        Assert.IsNotNull(result.WindowRanges);
+        Assert.HasCount(2, result.WindowRanges);
+        Assert.AreEqual("2005-2015", result.WindowRanges[10]);
+        Assert.AreEqual("2015-2019", result.WindowRanges[19]);
+    }
+
+    [TestMethod]
+    public void BuildForSeries_UnsmoothedSeries_WindowRangesIsNull()
+    {
+        var series = CreateSeriesWithData(BinGranularities.ByYear, YearRange(1950, 2019));
+        series.ProcessedDataSet = BuildDataSet(YearRange(1950, 2019));
+
+        var result = ChartTooltipMetadataBuilder.BuildForSeries(series);
+
+        Assert.IsNull(result.WindowRanges);
+    }
+
+    [TestMethod]
+    public void BuildForTrendSeries_SmoothingWindowRanges_WindowRangesIsNull()
+    {
+        var series = CreateSeriesWithData(BinGranularities.ByYear, YearRange(1950, 2019));
+        series.ProcessedDataSet = BuildDataSet(YearRange(1950, 2019));
+        series.SmoothingWindowRanges = new Dictionary<string, string> { ["y2019"] = "2015-2019" };
+
+        var result = ChartTooltipMetadataBuilder.BuildForTrendSeries(series, "Trend");
+
+        Assert.IsNull(result.WindowRanges);
+    }
+
+    [TestMethod]
     public void BuildForSeries_SmoothedSeries_SmoothingWindowIsSeriesWindow()
     {
         var series = CreateSeriesWithData(BinGranularities.ByYear, YearRange(1950, 2019));

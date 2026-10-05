@@ -10,14 +10,16 @@ public sealed class CentredMovingAverageCalculator : ISeriesSmoother
     {
         var result = new double?[values.Count];
         var windowSizes = new int[values.Count];
+        var windowStarts = new int[values.Count];
+        var windowEnds = new int[values.Count];
 
         int reach = windowSize / 2;
 
         for (int i = reach; i < values.Count - reach; i++)
         {
-            (result[i], windowSizes[i]) = SmoothingWindow.CentredMean(values, i, windowSize, 0, values.Count - 1, requiredDataThreshold);
+            (result[i], windowSizes[i], windowStarts[i], windowEnds[i]) = SmoothingWindow.CentredMean(values, i, windowSize, 0, values.Count - 1, requiredDataThreshold);
         }
 
-        return new SmoothedSeries(result, windowSizes);
+        return new SmoothedSeries(result, windowSizes, windowStarts, windowEnds);
     }
 }
