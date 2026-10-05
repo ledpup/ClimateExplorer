@@ -1,15 +1,35 @@
 ---
 layout: single
-title: "Shrinking moving average"
+title: "Shrinking window moving average"
 date: 2026-10-04 09:00:00 +1000
 categories: site-info
 ---
 
-Most charts on ClimateExplorer show a moving average rather than the raw yearly values. A single year's temperature or rainfall is noisy, and a 20-year moving average (the setting used by most of our presets) smooths the noise so the long-term change is easier to see.
+Most charts on ClimateExplorer show a [moving average](https://en.wikipedia.org/wiki/Moving_average) rather than the raw yearly values. A single year's temperature or rainfall is noisy, and a 20-year moving average (the setting used by most of our presets) smooths the noise so the long-term change is easier to see.
 
-For more than four years the site has used a *centred* moving average for this. It has a side effect: with a 20-year window, the line stopped ten years before the end of the data. A record that runs to 2025 was charted only to 2015. The most recent years are the ones we are most interested in, and they looked as though they were missing from the chart.
+For more than four years the site has used a [*centred* moving average](https://en.wikipedia.org/wiki/Moving_average#Simple_moving_average) for this. It has a side effect: with a 20-year window, the line stopped ten years before the end of the data. A record that runs to 2025 was charted only to 2015. The most recent years are the ones we are most interested in, and they looked as though they were missing from the chart.
 
-The charts now use a *shrinking* moving average, which carries the line through to the last year of data.
+The charts now use a *shrinking window* moving average, which carries the line through to the last year of data.
+
+## First, a fix for even-sized windows
+
+To begin, there is a change to the centred moving average itself.
+
+A centred moving average should have the same number of years either side of the year being plotted. That only works for an odd window size: a 5-year window is the year itself plus two years either side. Strictly, odd numbers should be used. But people like to think in round numbers such as 10, 20 and 30, and an even window can't be centred on a year. A 4-year window has to sit as either 2018–2021 or 2019–2022, and neither has 2020 in the middle.
+
+The centred moving average now handles an even window size by using half weights on the two end years. A 4-year window centred on 2020 reaches two years either side, so it spans five years, with the half weights on 2018 and 2022:
+
+| Year | 2018 | 2019 | 2020 | 2021 | 2022 |
+|---|---|---|---|---|---|
+| Weight | 0.5 | 1 | 1 | 1 | 0.5 |
+
+The weights add up to 4, so the total is divided by 4:
+
+((0.5 × 2018) + 2019 + 2020 + 2021 + (0.5 × 2022)) ÷ 4
+
+The method is known as a 2×4 moving average, and it is the standard way of centring an even-sized window. It is described in [Forecasting: Principles and Practice](https://otexts.com/fpp3/moving-averages.html) by Rob Hyndman and George Athanasopoulos (section 3.3, under "Moving averages of moving averages"), where it is called a "centred moving average of order 4". It is the same technique used to average a full year around a month in [the de-seasonalisation process for CO₂]({{site.url}}/blog/the-one-number).
+
+The 20-year windows in the rest of this post work the same way: ten years either side, 21 years in all, with the first and last at half weight.
 
 ## Why the line stopped early
 
@@ -22,6 +42,8 @@ The recent years were always part of the chart: 2025 was included in the average
 ## The shrinking window
 
 The shrinking moving average is the same as the centred moving average wherever the full window fits. Near either end of the record, where the full window would run past the data, the window gets smaller so that it still fits.
+
+The idea and the name are borrowed from MATLAB's [`movmean`](https://www.mathworks.com/help/matlab/ref/movmean.html) function, where `"shrink"` is the default way of handling the endpoints: "Shrink the window size near the endpoints of the input to include only existing elements."
 
 For a 20-year moving average on a record that ends in 2025:
 
@@ -40,6 +62,8 @@ For a 20-year moving average on a record that ends in 2025:
 | 2025 | 2021–2025 | 5 |
 
 From 2016 to 2021 the window shrinks evenly on both sides, so it stays centred on the year being plotted. Once it reaches four years either side it stops shrinking on the earlier side. From 2022 onwards the window still reaches back four years, and only the later side is cut off by the end of the data. Without that limit, the value for 2025 would be the single raw value for 2025, with no smoothing at all.
+
+This is where our version differs from MATLAB's. `movmean` only drops the years that don't exist, so its window keeps all ten earlier years and becomes lopsided as soon as it reaches the end of the data. Ours stays centred for as long as it can.
 
 The start of the record is handled the same way, so the line also begins at the first year of data rather than ten years in.
 
@@ -65,7 +89,7 @@ Here is the calculation on a made-up record of thirteen yearly temperatures, usi
 | 2024 | 14.5 |
 | 2025 | 14.0 |
 
-**Step 1: the full window (2019).** A 12-year window centred on 2019 reaches six years either side, from 2013 to 2025. That is thirteen years, not twelve, so the two end years are counted at half weight. That keeps the window balanced around 2019 and makes the weights add up to twelve.
+**Step 1: the full window (2019).** A 12-year window centred on 2019 reaches six years either side, from 2013 to 2025. That is thirteen years, not twelve, so the two end years are counted at half weight, as described above. The weights add up to twelve.
 
 - Half of 2013 and half of 2025: 6.8 + 7.0 = 13.8
 - The eleven years from 2014 to 2024, in full: 153.3
@@ -103,7 +127,7 @@ The chart tooltip now also reports the window size for the point you are hoverin
 
 ![Part of a chart of Canberra mean temperature and precipitation with a 20-year moving average. The line is dotted from 2015 onwards, and the tooltip for 2019 shows a window size of 13]({{site.url}}/blog/assets/shrinking-window-tooltip.png)
 
-*The tooltip for 2019 on a record that ends in 2025. The moving average is set to 20 years, but 2019 has only six years after it, so its window has shrunk to 13.*
+*The tooltip for 2019 on a record that ends in 2025. The moving average is set to 20 years, but 2019 has only six years after it, so its window has shrunk to 13. The range is 2013-2025, specifying each year that is included in the average.*
 
 The points on the dotted line should be considered preliminary. When the next year of data is added to the site, every one of them will be recalculated over a wider window and will shift a little. A point becomes final once the full window fits around it, which for a 20-year moving average is ten years later.
 
@@ -111,7 +135,7 @@ The points on the dotted line should be considered preliminary. When the next ye
 
 A chart with a trend line is affected in two ways.
 
-1. **The trend calculation now includes the shrinking years.** The trend is a regression fitted to the moving average, and the moving average now runs to the end of the record. Those end points are less smooth than the rest, so they can pull the trend more than a full-window point would.
+1. **The trend calculation now includes the shrinking years.** The trend is a [linear regression](https://en.wikipedia.org/wiki/Linear_regression#Trend_line) fitted to the moving average, and the moving average now runs to the end of the record. Those end points are less smooth than the rest, so they can pull the trend more than a full-window point would.
 2. **There is no longer a gap before the projection.** Previously the moving average stopped ten years short and the projected period began after the last year of data, leaving a break in between. Now the moving average ends where the projection starts.
 
 The first point is a potential weakness. The second makes it much easier to see what the chart is doing. We think it's a reasonable trade-off.
