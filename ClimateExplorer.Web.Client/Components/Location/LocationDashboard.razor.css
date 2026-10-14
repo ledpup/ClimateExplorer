@@ -53,6 +53,20 @@
     margin: 8px 8px;
 }
 
+/* Match the Bootstrap .form-check geometry (1em box, label at 1.5em) so the icon sits under the checkbox */
+.dropdown-menu-content ::deep .dropdown-item {
+    display: flex;
+    align-items: center;
+    padding-left: 0;
+}
+
+.dropdown-menu-content ::deep .dropdown-item-icon {
+    display: inline-block;
+    width: 1em;
+    margin-right: 0.5em;
+    text-align: center;
+}
+
 .dashboard-overview-fields--loading {
     min-height: 53px;
 }
