@@ -7,7 +7,7 @@ categories: site-info
 
 Recent work on this website has added trend calculations to project future values of temperatures and other metrics. The **recent observations** panel on every location page reports a rate of change per decade for temperature and rainfall. Every chart can have up to three trend lines per series. There are built-in presets - a per-location temperature trend, and a global CO₂ trend. All of it rests on the same two pieces of maths: **linear regression** (the straight line through a set of points) and **quadratic regression** (letting that line bend into a curve). This post explains how they're calculated.
 
-## Where you'll find it
+## Where to find trends and projections
 
 The **Trend** tab in Recent Observations fits a straight line to a metric's yearly history and reports the slope as a rate per decade, for three overlapping windows: the **full period of record**, the **last 30 years**, and the **first half of the record**. Comparing the three is a quick check for acceleration - if the last-30-years rate is steeper than the early-period rate, the metric isn't just trending, it's trending faster than it used to. A trend only gets reported at all once it clears a statistical significance bar; short of that, the tile plainly says "No significant trend" rather than printing a number that isn't reliably different from noise. There's a much fuller explanation of all of this, worked example included, behind the "About trends" link on that tab.
 
@@ -75,7 +75,7 @@ Now the most recent complete decade on record, 2016 to 2025:
 
 Same method, mean year 2020.5 and mean concentration 415.4ppm, gives Σ(x−x̄)(y−ȳ) = 208.0 and Σ(x−x̄)² = 82.5 - the spread of years is identical. The slope is 208.0 ÷ 82.5 ≈ **2.5 ppm per year**.
 
-The straight-line rate more than triples: 0.8 ppm per year vs 2.5 ppm per year. Reported as flat numbers, that reads like two disconnected facts about CO₂ - it rose at one pace once, it rises at a different, faster pace now - with nothing in the maths itself to say whether that's one long acceleration or two unrelated regimes. That's the real limit of ordinary least squares: it forces one constant rate of change onto whatever window you feed it, whether or not the metric behind it is actually climbing at a steady pace throughout. Recent Observations shows three overlapping windows for exactly this reason, and charts let you stack multiple trend lines: comparing them is how you notice a record that isn't behaving in a straight line at all.
+The straight-line rate more than tripled between the 1960s and 2020s: 0.8 ppm per year vs 2.5 ppm per year. That's the limit of ordinary least squares: it forces one constant rate of change onto whatever window you feed it. Recent Observations shows three overlapping windows for this reason, and charts let you stack multiple trend lines: comparing them is how you notice a record that isn't behaving in a straight line at all.
 
 ## Quadratic regression: letting the line bend
 
