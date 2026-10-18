@@ -26,29 +26,38 @@ public static class LocationTrendFieldBuilder
         var full = location.FullPeriodTemperatureTrend;
         var last30 = location.Last30YearTemperatureTrend;
 
+        var tooltip = "<p>Statistically significant linear trends.</p>";
+
         if (last30 is { IsSignificant: true })
         {
-            var tooltip = $"Statistically significant linear trend over the last {TrendDefaults.RecentWindowYears} years of records "
-                + $"({DescribePeriod(last30, lastYear)}): {FormatRate(last30)}.";
+            var rows = BuildRow($"Last {TrendDefaults.RecentWindowYears} years", last30, lastYear);
 
             if (full is { IsSignificant: true })
             {
-                tooltip += $"<br>Full record ({DescribePeriod(full, lastYear)}): {FormatRate(full)}.";
+                rows += BuildRow("Full period", full, lastYear);
             }
 
-            return new LocationTrendField($"Last {TrendDefaults.RecentWindowYears} year trend", FormatRate(last30), tooltip);
+            return new LocationTrendField($"Last {TrendDefaults.RecentWindowYears} year trend", FormatRate(last30), tooltip + WrapRows(rows));
         }
 
         if (full is { IsSignificant: true })
         {
-            return new LocationTrendField(
-                "Trend",
-                FormatRate(full),
-                $"Statistically significant linear trend over the full record ({DescribePeriod(full, lastYear)}): {FormatRate(full)}.");
+            return new LocationTrendField("Trend", FormatRate(full), tooltip + WrapRows(BuildRow("Full period", full, lastYear)));
         }
 
         return null;
     }
+
+    // The tooltip is rendered outside any component's scoped CSS, so the layout is inline. A headerless
+    // table keeps the period labels, year ranges and rates aligned in columns when there are two rows.
+    private static string WrapRows(string rows) => $"<table style=\"border-collapse: collapse; margin: 0 auto;\">{rows}</table>";
+
+    private static string BuildRow(string label, TrendSummary trend, int lastYear) =>
+        "<tr>"
+        + $"<td style=\"text-align: left; padding-right: 12px; white-space: nowrap;\">{label}</td>"
+        + $"<td style=\"text-align: left; padding-right: 12px; white-space: nowrap;\">{DescribePeriod(trend, lastYear)}</td>"
+        + $"<td style=\"text-align: right; white-space: nowrap;\">{FormatRate(trend)}</td>"
+        + "</tr>";
 
     private static string DescribePeriod(TrendSummary trend, int lastYear) => $"{trend.FirstYear}–{lastYear}";
 
