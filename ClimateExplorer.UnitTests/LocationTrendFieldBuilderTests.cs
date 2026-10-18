@@ -37,7 +37,7 @@ public class LocationTrendFieldBuilderTests
     public void Build_OnlyFullTrendCalculatedAndSignificant_LabelsTrend()
     {
         var location = TemperatureTrendCalculatorTests.CreateLocation();
-        location.TemperatureTrends = [new TrendSummary(1980, 0.014, true)];
+        location.TemperatureTrends = [new TrendSummary(TrendWindow.Full, 1980, 0.014, true)];
         location.LastYear = 2024;
 
         var field = LocationTrendFieldBuilder.Build(location);
@@ -92,7 +92,7 @@ public class LocationTrendFieldBuilderTests
     public void Build_NegativeTrend_FormatsWithoutPlusSign()
     {
         var location = TemperatureTrendCalculatorTests.CreateLocation();
-        location.TemperatureTrends = [new TrendSummary(1910, -0.021, true)];
+        location.TemperatureTrends = [new TrendSummary(TrendWindow.Full, 1910, -0.021, true)];
         location.LastYear = 2024;
 
         Assert.AreEqual("-0.21°C /decade", LocationTrendFieldBuilder.Build(location)?.Value);
@@ -103,8 +103,8 @@ public class LocationTrendFieldBuilderTests
         var location = TemperatureTrendCalculatorTests.CreateLocation();
         location.TemperatureTrends =
         [
-            new TrendSummary(1910, 0.014, fullSignificant),
-            new TrendSummary(1995, 0.032, last30Significant),
+            new TrendSummary(TrendWindow.Full, 1910, 0.014, fullSignificant),
+            new TrendSummary(TrendWindow.Last30, 1995, 0.032, last30Significant),
         ];
         location.LastYear = 2024;
 

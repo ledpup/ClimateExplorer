@@ -2,6 +2,7 @@ namespace ClimateExplorer.UnitTests;
 
 using System;
 using ClimateExplorer.Core.DataPreparation;
+using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.UiModel.Trends;
 using ClimateExplorer.Web.UiModel;

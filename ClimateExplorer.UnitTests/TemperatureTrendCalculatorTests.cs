@@ -105,7 +105,7 @@ public class TemperatureTrendCalculatorTests
     }
 
     [TestMethod]
-    public void Summarise_60CompleteYears_MapsFirstYearSlopeAndSignificance()
+    public void Summarise_60CompleteYears_MapsWindowFirstYearSlopeAndSignificance()
     {
         var fits = TemperatureTrendCalculator.Fit(CreateNoisyLine(1960, 60))!;
 
@@ -113,9 +113,11 @@ public class TemperatureTrendCalculatorTests
 
         Assert.IsNotNull(summaries);
         Assert.HasCount(2, summaries);
+        Assert.AreEqual(TrendWindow.Full, summaries[0].Window);
         Assert.AreEqual(1960, summaries[0].FirstYear);
         Assert.AreEqual(fits.FullPeriod.Curve.Slope, summaries[0].Slope, 1e-5);
         Assert.AreEqual(fits.FullPeriod.Significance.IsSlopeSignificant, summaries[0].IsSignificant);
+        Assert.AreEqual(TrendWindow.Last30, summaries[1].Window);
         Assert.AreEqual(1990, summaries[1].FirstYear);
         Assert.AreEqual(fits.Last30Years!.Curve.Slope, summaries[1].Slope, 1e-5);
         Assert.AreEqual(fits.Last30Years.Significance.IsSlopeSignificant, summaries[1].IsSignificant);

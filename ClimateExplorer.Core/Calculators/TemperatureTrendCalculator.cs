@@ -51,11 +51,11 @@ public static class TemperatureTrendCalculator
             return null;
         }
 
-        var summaries = new List<TrendSummary> { ToSummary(fits.FullPeriod) };
+        var summaries = new List<TrendSummary> { ToSummary(TrendWindow.Full, fits.FullPeriod) };
 
         if (fits.Last30Years is not null && double.IsFinite(fits.Last30Years.Curve.Slope))
         {
-            summaries.Add(ToSummary(fits.Last30Years));
+            summaries.Add(ToSummary(TrendWindow.Last30, fits.Last30Years));
         }
 
         return summaries;
@@ -98,9 +98,10 @@ public static class TemperatureTrendCalculator
                 .Select(x => new DataPoint(((YearBinIdentifier)BinIdentifier.Parse(x.BinId!)).Year, x.Value!.Value))];
     }
 
-    private static TrendSummary ToSummary(PolynomialRegressionResult fit)
+    private static TrendSummary ToSummary(TrendWindow window, PolynomialRegressionResult fit)
     {
         return new TrendSummary(
+            window,
             (int)Math.Round(fit.Input.MinimumX),
             Math.Round(fit.Curve.Slope, SlopeDecimalPlaces),
             fit.Significance.IsSlopeSignificant);

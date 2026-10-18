@@ -2,6 +2,7 @@ namespace ClimateExplorer.Web.Client.Components.Chart.Trend;
 
 using System.Globalization;
 using Blazorise;
+using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.Client.UiModel.Trends;
 using Microsoft.AspNetCore.Components;
 

@@ -31,9 +31,28 @@ public class LocationTemperatureTrendsSerializationTests
     }
 
     [TestMethod]
-    public void FullPeriodTemperatureTrend_TwoTrends_ReturnsEarliestFirstYear()
+    public void Serialize_TemperatureTrends_WritesWindowByName()
+    {
+        var json = JsonSerializer.Serialize(CreateLocationWithTrends());
+
+        StringAssert.Contains(json, "\"Window\":\"Full\"");
+        StringAssert.Contains(json, "\"Window\":\"Last30\"");
+    }
+
+    [TestMethod]
+    public void FullPeriodTemperatureTrend_TwoTrends_ReturnsTrendForEachWindow()
     {
         var location = CreateLocationWithTrends();
+
+        Assert.AreEqual(1910, location.FullPeriodTemperatureTrend!.FirstYear);
+        Assert.AreEqual(1995, location.Last30YearTemperatureTrend!.FirstYear);
+    }
+
+    [TestMethod]
+    public void FullPeriodTemperatureTrend_TrendsOutOfOrder_SelectsByWindow()
+    {
+        var location = TemperatureTrendCalculatorTests.CreateLocation();
+        location.TemperatureTrends = [new TrendSummary(TrendWindow.Last30, 1995, 0.03456, false), new TrendSummary(TrendWindow.Full, 1910, 0.01234, true)];
 
         Assert.AreEqual(1910, location.FullPeriodTemperatureTrend!.FirstYear);
         Assert.AreEqual(1995, location.Last30YearTemperatureTrend!.FirstYear);
@@ -43,7 +62,7 @@ public class LocationTemperatureTrendsSerializationTests
     public void Last30YearTemperatureTrend_OneTrend_ReturnsNull()
     {
         var location = TemperatureTrendCalculatorTests.CreateLocation();
-        location.TemperatureTrends = [new TrendSummary(1980, 0.02, true)];
+        location.TemperatureTrends = [new TrendSummary(TrendWindow.Full, 1980, 0.02, true)];
         location.LastYear = 2024;
 
         Assert.AreEqual(1980, location.FullPeriodTemperatureTrend!.FirstYear);
@@ -66,14 +85,14 @@ public class LocationTemperatureTrendsSerializationTests
 
         Assert.AreEqual(2024, roundTripped.LastYear);
         Assert.HasCount(2, roundTripped.TemperatureTrends!);
-        Assert.AreEqual(new TrendSummary(1910, 0.01234, true), roundTripped.TemperatureTrends![0]);
-        Assert.AreEqual(new TrendSummary(1995, 0.03456, false), roundTripped.TemperatureTrends[1]);
+        Assert.AreEqual(new TrendSummary(TrendWindow.Full, 1910, 0.01234, true), roundTripped.TemperatureTrends![0]);
+        Assert.AreEqual(new TrendSummary(TrendWindow.Last30, 1995, 0.03456, false), roundTripped.TemperatureTrends[1]);
     }
 
     private static Location CreateLocationWithTrends()
     {
         var location = TemperatureTrendCalculatorTests.CreateLocation();
-        location.TemperatureTrends = [new TrendSummary(1910, 0.01234, true), new TrendSummary(1995, 0.03456, false)];
+        location.TemperatureTrends = [new TrendSummary(TrendWindow.Full, 1910, 0.01234, true), new TrendSummary(TrendWindow.Last30, 1995, 0.03456, false)];
         location.LastYear = 2024;
 
         return location;

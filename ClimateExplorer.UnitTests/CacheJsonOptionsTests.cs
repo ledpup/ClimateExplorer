@@ -66,7 +66,7 @@ public class CacheJsonOptionsTests
     public void Serialize_OtherDoubles_AreNotRounded()
     {
         var location = CreateLocation(1, new Coordinates { Latitude = 1, Longitude = 2, Elevation = 3 });
-        location.TemperatureTrends = [new TrendSummary(1990, 0.123456789, true)];
+        location.TemperatureTrends = [new TrendSummary(TrendWindow.Full, 1990, 0.123456789, true)];
 
         var json = JsonSerializer.Serialize(location, CacheJsonOptions.Create());
 

@@ -1,4 +1,4 @@
-﻿namespace ClimateExplorer.Core.Model;
+namespace ClimateExplorer.Core.Model;
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -24,19 +24,11 @@ public class Location : GeographicalEntity
 
     public DataRecord? RecordHigh { get; set; }
 
-    /// <summary>
-    /// The full-record trend: the one starting earliest, since the full record contains every year.
-    /// </summary>
     [JsonIgnore]
-    public TrendSummary? FullPeriodTemperatureTrend => TemperatureTrends?.MinBy(x => x.FirstYear);
+    public TrendSummary? FullPeriodTemperatureTrend => TemperatureTrends?.FirstOrDefault(x => x.Window == TrendWindow.Full);
 
-    /// <summary>
-    /// The last-30-years trend, when there is one. It always starts later than the full record, because
-    /// it's only calculated when there are at least 60 complete years.
-    /// </summary>
     [JsonIgnore]
-    public TrendSummary? Last30YearTemperatureTrend =>
-        TemperatureTrends is { Count: > 1 } ? TemperatureTrends.MaxBy(x => x.FirstYear) : null;
+    public TrendSummary? Last30YearTemperatureTrend => TemperatureTrends?.FirstOrDefault(x => x.Window == TrendWindow.Last30);
 
     [JsonIgnore]
     public string FullTitle =>
