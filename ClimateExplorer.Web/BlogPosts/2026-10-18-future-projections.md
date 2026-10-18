@@ -32,7 +32,9 @@ A trend line here is an [ordinary least-squares linear regression](https://en.wi
 
 For every year, take how far that year is from the average year, and how far its value is from the average value, and multiply the two together; add that up across every year for the sum on top. The sum on the bottom does the same thing with just the years, squared. Divide one by the other and the result is the slope - how much the fitted line rises for every extra year.
 
-A small worked example: take the annual mean CO₂ concentration measured at Mauna Loa for 1960 to 1969, in parts per million, rounded to the nearest whole number:
+### Worked example
+
+Take the annual mean CO₂ concentration measured at Mauna Loa for 1960 to 1969, in parts per million, rounded to the nearest whole number:
 
 | Year | ppm |
 | ---: | --: |
