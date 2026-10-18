@@ -13,7 +13,30 @@ public class Location : GeographicalEntity
     public required Coordinates Coordinates { get; set; }
     public double? WarmingAnomaly { get; set; }
     public short? HeatingScore { get; set; }
+
+    /// <summary>
+    /// Linear trends of the location's yearly temperature series. Null below 30 complete years; the
+    /// full-record trend only for 30-59 years; full record then last 30 years from 60.
+    /// </summary>
+    public List<TrendSummary>? TemperatureTrends { get; set; }
+
+    public int? LastYear { get; set; }
+
     public DataRecord? RecordHigh { get; set; }
+
+    /// <summary>
+    /// The full-record trend: the one starting earliest, since the full record contains every year.
+    /// </summary>
+    [JsonIgnore]
+    public TrendSummary? FullPeriodTemperatureTrend => TemperatureTrends?.MinBy(x => x.FirstYear);
+
+    /// <summary>
+    /// The last-30-years trend, when there is one. It always starts later than the full record, because
+    /// it's only calculated when there are at least 60 complete years.
+    /// </summary>
+    [JsonIgnore]
+    public TrendSummary? Last30YearTemperatureTrend =>
+        TemperatureTrends is { Count: > 1 } ? TemperatureTrends.MaxBy(x => x.FirstYear) : null;
 
     [JsonIgnore]
     public string FullTitle =>

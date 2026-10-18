@@ -96,12 +96,24 @@ internal static class LocationEndpoints
                                         DataAdjustment = dsdmd.MeasurementDefinition.DataAdjustment,
                                         DataSetDefinitionId = dsdmd.DataSetDefinition.Id,
                                         DataType = dsdmd.MeasurementDefinition.DataType,
+                                        DataResolution = dsdmd.MeasurementDefinition.DataResolution,
                                         LocationId = location.Id,
                                     },
                                 ],
                         });
 
                 location.WarmingAnomaly = AnomalyCalculator.CalculateAnomaly(series.DataPoints)?.AnomalyValue;
+
+                // Caught separately so a trend failure doesn't also cost the location its RecordHigh below.
+                try
+                {
+                    TemperatureTrendCalculator.SetTemperatureTrends(location, series.DataPoints);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Exception while calculating temperature trends for " + location.Name + ": " + ex.ToString());
+                }
+
                 foreach (var adj in new DataAdjustment?[] { DataAdjustment.Adjusted, DataAdjustment.Unadjusted, null })
                 {
                     var tempMaxResponse = await ClimateRecordsEndpoints.GetClimateRecords(services, location.Id, DataType.TempMax, adj, take: 1);

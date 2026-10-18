@@ -179,6 +179,38 @@ public class PolynomialRegressionCalculatorTests
     }
 
     [TestMethod]
+    public void Calculate_ConstantSeries_IsNotSignificant()
+    {
+        // No variance to explain: the flat, intercept-only model the F-test compares against already
+        // fits perfectly, so there's no evidence of a trend - not an infinitely significant one.
+        var result = PolynomialRegressionCalculator.Calculate(
+        [
+            new DataPoint(1, 5),
+            new DataPoint(2, 5),
+            new DataPoint(3, 5),
+            new DataPoint(4, 5),
+        ]);
+
+        Assert.AreEqual(0, result.Curve.Slope, 1e-12);
+        Assert.AreEqual(0, result.Significance.FStatistic);
+        Assert.AreEqual(1, result.Significance.PValue);
+        Assert.IsFalse(result.Significance.IsSlopeSignificant);
+    }
+
+    [TestMethod]
+    [DataRow(2)]
+    [DataRow(3)]
+    public void Calculate_ConstantSeriesAtHigherDegree_IsNotSignificant(int degree)
+    {
+        var points = Enumerable.Range(1, 10).Select(x => new DataPoint(x, 5)).ToList();
+
+        var result = PolynomialRegressionCalculator.Calculate(points, degree);
+
+        Assert.AreEqual(1, result.Significance.PValue);
+        Assert.IsFalse(result.Significance.IsSlopeSignificant);
+    }
+
+    [TestMethod]
     public void Calculate_PerfectNegativeLine_ReturnsNegativeSlope()
     {
         var result = PolynomialRegressionCalculator.Calculate(
