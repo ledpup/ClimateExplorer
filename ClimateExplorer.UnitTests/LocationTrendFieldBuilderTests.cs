@@ -15,7 +15,9 @@ public class LocationTrendFieldBuilderTests
         Assert.IsNotNull(field);
         Assert.AreEqual("Last 30 year trend", field.Label);
         Assert.AreEqual("+0.32°C /decade", field.Value);
-        StringAssert.Contains(field.Tooltip, "last 30 years of records (1995–2024): +0.32°C /decade");
+        StringAssert.Contains(field.Tooltip, ">Last 30 years</td>");
+        StringAssert.Contains(field.Tooltip, ">1995–2024</td>");
+        StringAssert.Contains(field.Tooltip, "<b>+0.32°C /decade</b>");
     }
 
     [TestMethod]
@@ -26,7 +28,9 @@ public class LocationTrendFieldBuilderTests
         Assert.IsNotNull(field);
         Assert.AreEqual("Trend", field.Label);
         Assert.AreEqual("+0.14°C /decade", field.Value);
-        StringAssert.Contains(field.Tooltip, "full record (1910–2024): +0.14°C /decade");
+        StringAssert.Contains(field.Tooltip, ">Full period</td>");
+        StringAssert.Contains(field.Tooltip, ">1910–2024</td>");
+        StringAssert.Contains(field.Tooltip, "<b>+0.14°C /decade</b>");
     }
 
     [TestMethod]
@@ -69,7 +73,10 @@ public class LocationTrendFieldBuilderTests
 
         Assert.IsNotNull(field);
         Assert.AreEqual("Last 30 year trend", field.Label);
-        StringAssert.Contains(field.Tooltip, "<br>Full record (1910–2024): +0.14°C /decade.");
+        StringAssert.Contains(field.Tooltip, ">Last 30 years</td>");
+        StringAssert.Contains(field.Tooltip, ">Full period</td>");
+        StringAssert.Contains(field.Tooltip, ">1910–2024</td>");
+        StringAssert.Contains(field.Tooltip, "<b>+0.14°C /decade</b>");
     }
 
     [TestMethod]
@@ -78,7 +85,7 @@ public class LocationTrendFieldBuilderTests
         var field = LocationTrendFieldBuilder.Build(CreateLocation(fullSignificant: false, last30Significant: true));
 
         Assert.IsNotNull(field);
-        Assert.DoesNotContain("Full record", field.Tooltip);
+        Assert.DoesNotContain("Full period", field.Tooltip);
     }
 
     [TestMethod]

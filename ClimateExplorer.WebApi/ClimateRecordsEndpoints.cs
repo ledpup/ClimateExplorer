@@ -27,6 +27,7 @@ internal static class ClimateRecordsEndpoints
         bool monthly = false,
         int? day = null,
         bool sortByDate = false,
+        bool permitSourceDownload = true,
         CancellationToken cancellationToken = default,
         [FromServices] AcornSatClimateRecordService? acornSatClimateRecordService = null)
     {
@@ -100,15 +101,17 @@ internal static class ClimateRecordsEndpoints
         // ACORN-SAT is an explicit exception (see docs/design/2026-07-17-01-acorn-sat-on-request-extension-plan.md):
         // an adjusted temperature request through /climate-record may be extended with current CDO
         // observations. Every other request - including direct /dataset access to the same measurement -
-        // takes the ordinary path below.
+        // takes the ordinary path below. The extension always refreshes CDO, so it is skipped when source
+        // updates are not permitted.
         var isAcornSatAdjustedTemperatureRequest =
+            permitSourceDownload &&
             matchingDsd.Id == AcornSatDatasetIds.AcornSat &&
             md.DataAdjustment == DataAdjustment.Adjusted &&
             dataType is DataType.TempMean or DataType.TempMax or DataType.TempMin;
 
         var (dataSet, refreshFailed) = isAcornSatAdjustedTemperatureRequest && acornSatClimateRecordService != null
             ? await acornSatClimateRecordService.BuildComposedDataSetAsync(requestBody, cancellationToken)
-            : await DataSetEndpoints.PostDataSetsCore(requestBody, services, permitSourceUpdate: true, cancellationToken);
+            : await DataSetEndpoints.PostDataSetsCore(requestBody, services, permitSourceDownload, cancellationToken);
 
         static int YearOf(BinnedRecord r) => r.BinIdentifier switch
         {

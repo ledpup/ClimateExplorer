@@ -158,6 +158,38 @@ public sealed class ClimateRecordsEndpointsTests
             ClimateRecordsEndpoints.GetClimateRecords(services, ghcndLocationId, DataType.TempMax, DataAdjustment.Unadjusted, cancellationToken: cts.Token));
     }
 
+    [TestMethod]
+    public async Task GetClimateRecords_DefaultArguments_PermitsSourceDownload()
+    {
+        var ghcndLocationId = await GetSingleStationGhcndLocationId("AE000041196");
+        var coordinator = new RecordingSourceUpdateCoordinator();
+        var services = new ClimateExplorerApiServices(new MemoryCache(), new MemoryCache(), new HttpClient(), new HttpClient(), coordinator);
+
+        await ClimateRecordsEndpoints.GetClimateRecords(services, ghcndLocationId, DataType.TempMax, DataAdjustment.Unadjusted, take: 1);
+
+        Assert.IsTrue(coordinator.PermitSourceUpdate);
+    }
+
+    [TestMethod]
+    public async Task GetClimateRecords_SourceDownloadNotPermitted_DoesNotPermitSourceUpdate()
+    {
+        // The location cache build calls GetClimateRecords this way for RecordHigh; it must never download.
+        var ghcndLocationId = await GetSingleStationGhcndLocationId("AE000041196");
+        var coordinator = new RecordingSourceUpdateCoordinator();
+        var services = new ClimateExplorerApiServices(new MemoryCache(), new MemoryCache(), new HttpClient(), new HttpClient(), coordinator);
+
+        var response = await ClimateRecordsEndpoints.GetClimateRecords(
+            services,
+            ghcndLocationId,
+            DataType.TempMax,
+            DataAdjustment.Unadjusted,
+            take: 1,
+            permitSourceDownload: false);
+
+        Assert.IsFalse(coordinator.PermitSourceUpdate);
+        Assert.HasCount(1, response.Records);
+    }
+
     private static async Task<Guid> GetSingleStationGhcndLocationId(string stationId)
     {
         var definitions = await DataSetDefinition.GetDataSetDefinitions();
@@ -182,6 +214,21 @@ public sealed class ClimateRecordsEndpointsTests
             CancellationToken cancellationToken)
         {
             return Task.FromResult(result);
+        }
+    }
+
+    private sealed class RecordingSourceUpdateCoordinator : IDataSetSourceUpdateCoordinator
+    {
+        public bool? PermitSourceUpdate { get; private set; }
+
+        public Task<DataSetSourcePreparationResult> PrepareAsync(
+            PostDataSetsRequestBody request,
+            ICachedData? cachedData,
+            bool permitSourceUpdate,
+            CancellationToken cancellationToken)
+        {
+            PermitSourceUpdate = permitSourceUpdate;
+            return Task.FromResult(new DataSetSourcePreparationResult(DataSetSourcePreparationOutcome.Rebuild));
         }
     }
 
