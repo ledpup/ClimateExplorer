@@ -23,11 +23,12 @@ Two chart presets use this. **Temperature + trend**, on every location page, fit
 
 ## Linear regression: a straight line through the data
 
-A trend line here is an ordinary least-squares linear regression - the straight line through a set of yearly values that minimises the sum of the squared vertical distances from each year's value to the line. Picture each year as a point: *x* is the year, *y* is that year's value. The slope, β, comes from:
+A trend line here is an [ordinary least-squares linear regression](https://en.wikipedia.org/wiki/Ordinary_least_squares). Picture each year as a point: *x* is the year, *y* is that year's value. The slope, β, comes from:
 
 <p style="text-align:center">β = Σ(x − x̄)(y − ȳ) / Σ(x − x̄)²</p>
 
-**x̄** and **ȳ** are the average year and average value across the record
+- **Σ** is the mathematical symbol for sum: perform the calculation for each year, then add all the results together.
+- **x̄** and **ȳ** are the average year and average value across the record
 
 For every year, take how far that year is from the average year, and how far its value is from the average value, and multiply the two together; add that up across every year for the sum on top. The sum on the bottom does the same thing with just the years, squared. Divide one by the other and the result is the slope - how much the fitted line rises for every extra year.
 
@@ -200,6 +201,6 @@ None of that means either curve is "right" and the other "wrong" - it means a st
 
 ## Why not cubic?
 
-The regression tool in ClimateExplorer supports one degree beyond quadratic - a cubic fit, Y = β₀ + β₁X + β₂X² + β₃X³, which can bend one way and then the other. It's a real shape some records have, and it's available if you want it. It's also the most flexible of the three shapes on offer, and flexible curves fit noise readily - with four parameters to estimate instead of three, a cubic needs a longer, cleaner record before its extra bend is describing something real rather than the particular years it happened to be fitted to. We don't use it in either built-in preset, and we'd suggest reaching for it deliberately rather than by default: treat a barely-significant cubic fit with more scepticism than a barely-significant line or curve.
+The regression tool in ClimateExplorer supports one degree beyond quadratic - a cubic fit, Y = β₀ + β₁X + β₂X² + β₃X³, which can bend one way and then the other. We don't use it in either built-in preset. Treat a barely-significant cubic fit with more scepticism than a barely-significant line or curve.
 
-If you want to poke at any of this yourself, every trend on a chart or in Recent Observations carries a tooltip with the underlying statistics - p-value, R², sample size - and the "About trends" panel has the same worked-through maths, using its own shorter illustrative example.
+Every trend on a chart or in Recent Observations carries a tooltip with the underlying statistics - p-value, R², sample size - and the "About trends" panel has the same worked-through maths, using its own shorter illustrative example.
