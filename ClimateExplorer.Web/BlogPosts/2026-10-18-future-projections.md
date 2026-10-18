@@ -1,7 +1,7 @@
 ---
 layout: single
 title: "Future projections"
-date: 2026-10-05 09:00:00 +1000
+date: 2026-10-18 09:00:00 +1000
 categories: site-info
 ---
 
@@ -89,7 +89,7 @@ The full equation of the straight line is:
 
 <p style="text-align:center">y = β₀ + β₁(x − x̄)</p>
 
-- β₀ is ȳ (described above) - the average of the years
+- β₀ is ȳ (described above) - the average of the values
 - β₁ is the slope β calculated above
 
 The line goes through the average year at the average value, and rises β₁ for every year after that. A quadratic regression adds one more term:
@@ -185,8 +185,16 @@ The **Atmospheric CO₂ vs emissions** preset plots two series together: CO₂ m
 Set the implausible negative-emissions projection aside for a moment and look at what the two trends are actually saying about *now*, not 2100: atmospheric CO₂'s rate of increase is accelerating, and reported emissions appear to be flattening out. Those are opposite directions for numbers that, naively, ought to move together - more emitted should mean more measured. A few reasons a gap like this can open up:
 
 - **A direct measurement versus a modelled estimate.** Mauna Loa's reading is air sampled and analysed on-site. Reported national emissions are built from energy-use statistics, industrial data and modelling assumptions, and are revised for years after first publication - the most recent few years of almost any emissions inventory are its least certain, and the most likely to be revised upwards later.
-- **Weakening sinks, not just changing sources.** Only roughly half of the CO₂ humanity emits in a given year stays in the atmosphere; land ecosystems and the ocean absorb the rest. If those sinks are becoming less effective as the planet warms - drought-stressed forests, marine heatwaves, ocean carbon chemistry - a larger share of the *same* emissions ends up staying airborne. That alone would show up as atmospheric CO₂ accelerating even against flat emissions.
-- **Untracked emissions.** Emissions from militaries and conflicts have been deliberately excluded from tracking by governments.
+- **Untracked military and conflict emissions.**
+  - [UNFCCC Decision 2/CP.3](https://unfccc.int/sites/default/files/resource/docs/cop3/l05.pdf), adopted at Kyoto in 1997 following lobbying by the US Department of Defense, explicitly excludes emissions from multilateral operations under the UN Charter from national totals. The Paris Agreement (2015) went further, making all military reporting voluntary; as of 2023 only Germany, the UK, the US and Norway reported any military figures.
+  - The IPCC's 2006 inventory guidelines ([Volume 1, Chapter 8](https://www.ipcc-nggip.iges.or.jp/public/2006gl/pdf/1_Volume1/V1_8_Ch8_Reporting_Guidance.pdf)) place military fuel use under category 1.A.5 and permit aggregation for national security reasons.
+  - Wartime and conflict emissions receive no guidance at all.
+  - The Global Carbon Project's (GCP) national totals, built from the same UNFCCC-based energy statistics, inherit these gaps.
+- **International aviation and shipping.**
+  - Emissions from international flights and voyages have been excluded from national inventories since the original 1994 IPCC guidelines, reaffirmed by Decision 2/CP.3. Kyoto's Article 2.2 delegated responsibility for these to ICAO (aviation) and the IMO (shipping) rather than national governments, but neither agency has established binding reduction targets comparable to national inventory obligations.
+  - GCP does include international bunker fuels in its global figures, reported separately from national totals, so they appear in the black series on the chart above — but no country carries them in its national target.
+- **Weakening sinks, not just changing sources.** Atmospheric CO₂ concentration reflects the cumulative balance of all human emissions against all absorption — not just this year's. Land ecosystems and the ocean draw CO₂ down continuously from the total atmospheric stock, on timescales ranging from months (surface vegetation) to centuries (deep ocean). Historically, roughly half of all cumulative human emissions have been absorbed this way — a ratio called the airborne fraction. If those sinks are becoming less effective as the planet warms — drought-stressed forests, wildfires, marine heatwaves, shifting ocean carbon chemistry — the airborne fraction rises: a larger share of each year's emissions accumulates rather than being drawn down. That alone would show up as atmospheric CO₂ accelerating even against flat emissions.
+- **Natural carbon feedbacks.** As temperatures rise, some natural carbon stores that were previously stable or net-absorbing have started to emit. Thawing permafrost releases CO₂ and methane from organic matter frozen since the last ice age; warming ocean surfaces, which hold less dissolved gas at higher temperatures, return CO₂ to the air. Destabilising seafloor sediments release further methane (methane hydrates). None of these sources appear in any human emissions inventory. The permafrost carbon pool alone holds roughly twice as much carbon as is currently in the atmosphere — even a small fraction mobilising over decades would register clearly at Mauna Loa.
 
 None of that means either curve is "right" and the other "wrong" - it means a straight mathematical extrapolation of either one, 75 years into the future, is leaning on an assumption (today's rate of change holding indefinitely) that a 30-year window can't itself confirm. That's the same limitation the app's own trend explainer calls out for curved fits: the shorter and more recent the window, the harder that assumption has to work.
 
