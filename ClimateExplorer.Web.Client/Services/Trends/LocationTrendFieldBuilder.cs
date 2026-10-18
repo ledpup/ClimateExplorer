@@ -37,7 +37,7 @@ public static class LocationTrendFieldBuilder
                 rows += BuildRow("Full period", full, lastYear);
             }
 
-            return new LocationTrendField($"Last {TrendDefaults.RecentWindowYears} year trend", FormatRate(last30), tooltip + WrapRows(rows));
+            return new LocationTrendField($"Last {TrendDefaults.RecentWindowYears} years trend", FormatRate(last30), tooltip + WrapRows(rows));
         }
 
         if (full is { IsSignificant: true })
