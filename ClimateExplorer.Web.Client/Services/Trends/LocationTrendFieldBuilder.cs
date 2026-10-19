@@ -38,12 +38,12 @@ public static class LocationTrendFieldBuilder
                 rows += BuildRow("Full period", full, lastYear);
             }
 
-            return new LocationTrendField($"Last {TrendDefaults.RecentWindowYears} years trend", FormatRate(last30), tooltip + WrapRows(rows) + ClickHint);
+            return new LocationTrendField($"Last {TrendDefaults.RecentWindowYears} years trend", FormatRate(last30), tooltip + WrapRows(rows) + ClickHint, last30.Slope);
         }
 
         if (full is { IsSignificant: true })
         {
-            return new LocationTrendField("Trend", FormatRate(full), tooltip + WrapRows(BuildRow("Full period", full, lastYear)) + ClickHint);
+            return new LocationTrendField("Trend", FormatRate(full), tooltip + WrapRows(BuildRow("Full period", full, lastYear)) + ClickHint, full.Slope);
         }
 
         return null;
