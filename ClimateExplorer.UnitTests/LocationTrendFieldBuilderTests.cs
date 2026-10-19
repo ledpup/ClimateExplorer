@@ -89,6 +89,15 @@ public class LocationTrendFieldBuilderTests
     }
 
     [TestMethod]
+    public void Build_SignificantTrend_TooltipSaysClickForMore()
+    {
+        var field = LocationTrendFieldBuilder.Build(CreateLocation(fullSignificant: true, last30Significant: false));
+
+        Assert.IsNotNull(field);
+        Assert.EndsWith("<p>Click for information on trends.</p>", field.Tooltip);
+    }
+
+    [TestMethod]
     public void Build_NegativeTrend_FormatsWithoutPlusSign()
     {
         var location = TemperatureTrendCalculatorTests.CreateLocation();

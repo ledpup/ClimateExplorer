@@ -549,3 +549,29 @@ absolute and at the normal `bin/<x>/net10.0` depth.
    the 778 KB baseline (estimate: ~+270 KB).
 2. Check the dashboard field and tooltip in the browser, and check a 30–59 year location's chart trends.
 3. Next stage: the trend modal (§6).
+
+## Addendum — trend modal (stage 2)
+
+Implemented 2026-10-19 on `development`, following §6. Build is clean. The new and changed trend tests
+pass (22). The full suite has 5 failures, none caused by this stage: three
+`LocationTrendFieldBuilderTests` expect `<b>` around the tooltip rates, which `HEAD`'s builder doesn't
+emit, and two `CacheJsonOptionsTests` rounding tests fail. The modal UI is unverified (not run, per AGENTS.md).
+
+- **Three windows.** `TemperatureTrendCalculator.Fit` now also fits the early period (`TrendWindow.FirstHalf`,
+  the first `n / 2` complete years) from 60 years, alongside the full period and the last 30. The new
+  `GetWindowPoints(orderedPoints, window)` is the one definition of each window's points, used by `Fit`
+  and by the modal. `Summarise` still stores only Full and Last30 on `Location`, so the download size
+  doesn't change.
+- **Modal.** `LocationDashboard` passes the stripe's `temperatureAnomaly.DataSet` and `Location` to the new
+  `Components/Location/Info/TemperatureTrendInfo` through the field's `PopupContent` (title "Temperature
+  trend"), the same way `WarmingAnomalyInfo` gets its anomaly. `LocationTrendDetailsBuilder` (Web.Client)
+  recalculates the windows into `LocationTrendDetails` / `LocationTrendWindow`. The modal explains each
+  window's years, rate and p-value, and why a window isn't significant.
+- **About trends.** A `TrendsAboutButton` opens `TemperatureTrendAboutPanel`, a `SidePanel` with an
+  Overview tab (`TrendsOverviewExplainer`) and one tab per window (`TrendStatTable` via
+  `TrendStatSectionBuilder`), plus the Recent Observations-style "Download data" CSV button
+  (`IExporter.ExportTrendData`).
+- **Tooltip.** The field's tooltip now ends with "Click for information on trends."
+- **Risk.** The side panel renders inside the Blazorise modal. Its overlay (`z-index: 1100`) should sit
+  above the modal (Bootstrap 1055), as nested side panels already do in Recent Observations. This needs
+  checking in the browser.

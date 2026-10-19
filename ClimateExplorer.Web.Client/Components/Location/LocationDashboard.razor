@@ -54,7 +54,7 @@
                 }
                 @if (TemperatureTrendField is not null)
                 {
-                    <OverviewField Label="@TemperatureTrendField.Label" Tooltip="@TemperatureTrendField.Tooltip" TooltipMultiline="false"><Value>@TemperatureTrendField.Value</Value></OverviewField>
+                    <OverviewField Label="@TemperatureTrendField.Label" Tooltip="@TemperatureTrendField.Tooltip" TooltipMultiline="false" PopupTitle="Temperature trend" PopupContent="@TemperatureTrendContent"><Value>@TemperatureTrendField.Value</Value></OverviewField>
                 }
                 @if (DisplayPrecipitation && PrecipitationAnomalyAsString != null && PrecipitationAnomalyAsString != "NA")
                 {

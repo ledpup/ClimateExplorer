@@ -13,6 +13,7 @@ using ClimateExplorer.Web.Client.UiModel.Trends;
 public static class LocationTrendFieldBuilder
 {
     private const string Unit = "°C";
+    private const string ClickHint = "<p>Click for information on trends.</p>";
 
     public static LocationTrendField? Build(Location location)
     {
@@ -37,12 +38,12 @@ public static class LocationTrendFieldBuilder
                 rows += BuildRow("Full period", full, lastYear);
             }
 
-            return new LocationTrendField($"Last {TrendDefaults.RecentWindowYears} years trend", FormatRate(last30), tooltip + WrapRows(rows));
+            return new LocationTrendField($"Last {TrendDefaults.RecentWindowYears} years trend", FormatRate(last30), tooltip + WrapRows(rows) + ClickHint);
         }
 
         if (full is { IsSignificant: true })
         {
-            return new LocationTrendField("Trend", FormatRate(full), tooltip + WrapRows(BuildRow("Full period", full, lastYear)));
+            return new LocationTrendField("Trend", FormatRate(full), tooltip + WrapRows(BuildRow("Full period", full, lastYear)) + ClickHint);
         }
 
         return null;

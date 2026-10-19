@@ -28,6 +28,7 @@ public class TemperatureTrendCalculatorTests
         Assert.IsNotNull(fits);
         Assert.AreEqual(30, fits.FullPeriod.Input.Count);
         Assert.IsNull(fits.Last30Years);
+        Assert.IsNull(fits.FirstHalf);
     }
 
     [TestMethod]
@@ -38,10 +39,11 @@ public class TemperatureTrendCalculatorTests
         Assert.IsNotNull(fits);
         Assert.AreEqual(59, fits.FullPeriod.Input.Count);
         Assert.IsNull(fits.Last30Years);
+        Assert.IsNull(fits.FirstHalf);
     }
 
     [TestMethod]
-    public void Fit_60CompleteYears_ReturnsFullAndLast30()
+    public void Fit_60CompleteYears_ReturnsFullLast30AndEarlyPeriod()
     {
         var fits = TemperatureTrendCalculator.Fit(CreateNoisyLine(1960, 60));
 
@@ -51,6 +53,10 @@ public class TemperatureTrendCalculatorTests
         Assert.AreEqual(TrendDefaults.RecentWindowYears, fits.Last30Years.Input.Count);
         Assert.AreEqual(2019 - 29, fits.Last30Years.Input.MinimumX);
         Assert.AreEqual(2019, fits.Last30Years.Input.MaximumX);
+        Assert.IsNotNull(fits.FirstHalf);
+        Assert.AreEqual(30, fits.FirstHalf.Input.Count);
+        Assert.AreEqual(1960, fits.FirstHalf.Input.MinimumX);
+        Assert.AreEqual(1989, fits.FirstHalf.Input.MaximumX);
     }
 
     [TestMethod]
@@ -74,10 +80,33 @@ public class TemperatureTrendCalculatorTests
         var fits = TemperatureTrendCalculator.Fit(points)!;
         var expectedFull = PolynomialRegressionCalculator.Calculate(points, degree: 1);
         var expectedLast30 = PolynomialRegressionCalculator.Calculate(points.TakeLast(30), degree: 1);
+        var expectedFirstHalf = PolynomialRegressionCalculator.Calculate(points.Take(50), degree: 1);
 
         Assert.AreEqual(expectedFull.Curve.Slope, fits.FullPeriod.Curve.Slope, 1e-12);
         Assert.AreEqual(expectedFull.Significance.PValue, fits.FullPeriod.Significance.PValue, 1e-12);
         Assert.AreEqual(expectedLast30.Curve.Slope, fits.Last30Years!.Curve.Slope, 1e-12);
+        Assert.AreEqual(expectedFirstHalf.Curve.Slope, fits.FirstHalf!.Curve.Slope, 1e-12);
+    }
+
+    [TestMethod]
+    public void GetWindowPoints_OddCount_SlicesEachWindowFromTheOrderedPoints()
+    {
+        var ordered = CreateNoisyLine(1900, 61);
+
+        var full = TemperatureTrendCalculator.GetWindowPoints(ordered, TrendWindow.Full);
+        var last30 = TemperatureTrendCalculator.GetWindowPoints(ordered, TrendWindow.Last30);
+        var firstHalf = TemperatureTrendCalculator.GetWindowPoints(ordered, TrendWindow.FirstHalf);
+
+        Assert.HasCount(61, full);
+        CollectionAssert.AreEqual(ordered.TakeLast(30).ToList(), last30.ToList());
+        CollectionAssert.AreEqual(ordered.Take(30).ToList(), firstHalf.ToList());
+    }
+
+    [TestMethod]
+    public void GetWindowPoints_RecentDecade_Throws()
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            TemperatureTrendCalculator.GetWindowPoints(CreateNoisyLine(1900, 61), TrendWindow.RecentDecade));
     }
 
     [TestMethod]
@@ -111,6 +140,8 @@ public class TemperatureTrendCalculatorTests
 
         var summaries = TemperatureTrendCalculator.Summarise(fits);
 
+        // The early period is fitted (for the modal) but deliberately not summarised onto Location.
+        Assert.IsNotNull(fits.FirstHalf);
         Assert.IsNotNull(summaries);
         Assert.HasCount(2, summaries);
         Assert.AreEqual(TrendWindow.Full, summaries[0].Window);
@@ -189,7 +220,7 @@ public class TemperatureTrendCalculatorTests
         };
     }
 
-    private static List<DataPoint> CreateNoisyLine(int startYear, int count)
+    internal static List<DataPoint> CreateNoisyLine(int startYear, int count)
     {
         var random = new Random(20261018);
 

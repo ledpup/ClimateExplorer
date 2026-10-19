@@ -1,0 +1,40 @@
+@namespace ClimateExplorer.Web.Client.Components.Info
+@using ClimateExplorer.Core.Stats
+@using ClimateExplorer.Web.Client.Components.RecentObservations
+@using ClimateExplorer.Web.Client.Services.Trends
+
+<p>The temperature trend is the rate at which yearly temperatures have been changing, shown per decade. It is the straight line of best fit (an ordinary least squares linear regression) through every complete year of temperature records.</p>
+<p>A trend is only shown on the dashboard when it is statistically significant (p &lt; 0.05). The last @TrendDefaults.RecentWindowYears years trend is shown when it is significant, because it says the most about the climate now; otherwise the full period trend is shown.</p>
+
+@if (Details is { Windows.Count: > 0 } details)
+{
+    <p>At <strong>@Location?.Name</strong>:</p>
+    <ul>
+        @foreach (var window in details.Windows)
+        {
+            <li>
+                <strong>@TrendWindowLabel.Get(window.Window)</strong> (@DescribePeriod(window)):
+                @if (window.IsSignificant)
+                {
+                    <strong>@FormatRate(window)</strong>@($", statistically significant ({FormatPValue(window)}).")
+                }
+                else
+                {
+                    @($"no statistically significant trend ({FormatPValue(window)}). The fitted rate is {FormatRate(window)}, but the year-to-year variation is too large, relative to the number of years, to tell it apart from no trend at all.")
+                }
+            </li>
+        }
+    </ul>
+}
+else if (Details is { } noTrendDetails)
+{
+    <p>There are only @noTrendDetails.CompleteYearCount complete years of temperature records at <strong>@Location?.Name</strong>, so no trend can be calculated.</p>
+}
+
+<p>A minimum of @TrendDefaults.MinimumYearsForTrend complete years of data is required to calculate a trend, to fit the convention of the <a href="https://en.wikipedia.org/wiki/Climatological_normal" target="_blank" rel="noopener noreferrer">climatological normal</a>, so that it reflects the climate rather than year-to-year variability. The last @TrendDefaults.RecentWindowYears years and early period trends need @TrendDefaults.MinimumYearsForSubPeriodWindows complete years, so each has at least @TrendDefaults.MinimumYearsForTrend years of its own.</p>
+
+@if (Details is { Windows.Count: > 0 })
+{
+    <TrendsAboutButton OnClick="@ShowAboutTrends" />
+    <TemperatureTrendAboutPanel @ref="aboutPanel" Location="@Location" Details="@Details" />
+}

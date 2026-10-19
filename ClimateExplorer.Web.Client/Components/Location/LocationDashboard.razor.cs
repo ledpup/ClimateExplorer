@@ -69,6 +69,7 @@ public partial class LocationDashboard
     private RenderFragment? WarmingAnomalyContent { get; set; }
     private string? WarmingAnomalyAsString { get; set; }
     private LocationTrendField? TemperatureTrendField { get; set; }
+    private RenderFragment? TemperatureTrendContent { get; set; }
 
     private List<YearlyValues>? PrecipitationAnomalyRecords { get; set; }
     private double? PrecipitationLocationMean { get; set; }
@@ -188,6 +189,15 @@ public partial class LocationDashboard
                             builder.AddAttribute(2, "CalculatedAnomaly", temperatureAnomaly.CalculatedAnomaly);
                             builder.CloseComponent();
                         };
+                TemperatureTrendContent = Location == null
+                        ? null
+                        : builder =>
+                        {
+                            builder.OpenComponent(0, typeof(TemperatureTrendInfo));
+                            builder.AddAttribute(1, "Location", Location);
+                            builder.AddAttribute(2, "DataSet", temperatureAnomaly.DataSet);
+                            builder.CloseComponent();
+                        };
                 TemperatureLocationMean = temperatureAnomaly?.DataSet?.DataRecords.Average(x => x.Value);
                 TemperatureAnomalyRecords = temperatureAnomaly?.AnomalyRecords;
             }
@@ -195,6 +205,7 @@ public partial class LocationDashboard
             {
                 TemperatureDataType = null;
                 WarmingAnomalyContent = null;
+                TemperatureTrendContent = null;
                 TemperatureLocationMean = null;
                 TemperatureAnomalyRecords = null;
             }
