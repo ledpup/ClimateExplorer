@@ -1,6 +1,7 @@
 namespace ClimateExplorer.Web.Client.Components.Chart.Trend;
 
 using System.Globalization;
+using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.Services.Trends;
 using ClimateExplorer.Web.Client.UiModel.Trends;

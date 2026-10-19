@@ -1,5 +1,6 @@
 namespace ClimateExplorer.Web.Client.Components.RecentObservations;
 
+using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.Stats.Model;
 using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.Services.Trends;

@@ -3,6 +3,7 @@ namespace ClimateExplorer.UnitTests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.Stats;
 using ClimateExplorer.Core.Stats.Model;
 using ClimateExplorer.Web.Client.Services.Trends;
@@ -28,24 +29,68 @@ public class ChartSeriesTrendCalculatorTests
     }
 
     [TestMethod]
-    public void Calculate_ExactlyTheMinimumYears_FitsEveryWindow()
+    public void Calculate_ExactlyTheMinimumYears_FitsFullAndRecentDecadeOnly()
     {
         var points = CreatePerfectLine(1960, ChartSeriesTrendCalculator.MinimumYearsForTrend, slope: 0.02);
 
         var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, TrendWindow.Full, predictionYears: 20);
 
         Assert.IsNull(result.UnavailableReason);
-        Assert.HasCount(4, result.Windows);
+        Assert.HasCount(2, result.Windows);
         Assert.IsNotNull(result.GetWindow(TrendWindow.Full));
-        Assert.IsNotNull(result.GetWindow(TrendWindow.Last30));
+        Assert.IsNull(result.GetWindow(TrendWindow.Last30));
         Assert.IsNotNull(result.GetWindow(TrendWindow.RecentDecade));
-        Assert.IsNotNull(result.GetWindow(TrendWindow.FirstHalf));
+        Assert.IsNull(result.GetWindow(TrendWindow.FirstHalf));
+    }
+
+    [TestMethod]
+    public void Calculate_59Years_OmitsLast30AndEarlyPeriodWindows()
+    {
+        var points = CreatePerfectLine(1960, TrendDefaults.MinimumYearsForSubPeriodWindows - 1, slope: 0.02);
+
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, TrendWindow.Full, predictionYears: 20);
+
+        CollectionAssert.AreEqual(
+            new[] { TrendWindow.Full, TrendWindow.RecentDecade },
+            result.Windows.Select(x => x.Window).ToList());
+    }
+
+    [TestMethod]
+    public void Calculate_60Years_FitsEveryWindow()
+    {
+        var points = CreatePerfectLine(1960, TrendDefaults.MinimumYearsForSubPeriodWindows, slope: 0.02);
+
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, TrendWindow.Full, predictionYears: 20);
+
+        Assert.HasCount(4, result.Windows);
+        Assert.HasCount(30, result.GetWindow(TrendWindow.Last30)!.Points);
+        Assert.HasCount(30, result.GetWindow(TrendWindow.FirstHalf)!.Points);
+    }
+
+    [TestMethod]
+    public void Calculate_SavedLast30PeriodBelow60Years_FallsBackToFull()
+    {
+        var points = CreatePerfectLine(1960, TrendDefaults.MinimumYearsForSubPeriodWindows - 1, slope: 0.02);
+
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, TrendWindow.Last30, predictionYears: 20);
+
+        Assert.AreEqual(TrendWindow.Full, result.Projection?.Window);
+    }
+
+    [TestMethod]
+    public void Calculate_SavedEarlyPeriodBelow60Years_FallsBackToFull()
+    {
+        var points = CreatePerfectLine(1960, TrendDefaults.MinimumYearsForSubPeriodWindows - 1, slope: 0.02);
+
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, TrendWindow.FirstHalf, predictionYears: 20);
+
+        Assert.AreEqual(TrendWindow.Full, result.Projection?.Window);
     }
 
     [TestMethod]
     public void Calculate_WindowsAreInDropdownDisplayOrder()
     {
-        var points = CreatePerfectLine(1960, ChartSeriesTrendCalculator.MinimumYearsForTrend, slope: 0.02);
+        var points = CreatePerfectLine(1960, TrendDefaults.MinimumYearsForSubPeriodWindows, slope: 0.02);
 
         var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, TrendWindow.Full, predictionYears: 20);
 

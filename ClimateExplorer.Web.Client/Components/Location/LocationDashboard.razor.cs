@@ -8,7 +8,9 @@ using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.Components.Info;
 using ClimateExplorer.Web.Client.Services;
+using ClimateExplorer.Web.Client.Services.Trends;
 using ClimateExplorer.Web.Client.UiModel;
+using ClimateExplorer.Web.Client.UiModel.Trends;
 using ClimateExplorer.Web.UiModel;
 using ClimateExplorer.WebApiClient.Services;
 using Microsoft.AspNetCore.Components;
@@ -66,6 +68,8 @@ public partial class LocationDashboard
     private double? TemperatureLocationMean { get; set; }
     private RenderFragment? WarmingAnomalyContent { get; set; }
     private string? WarmingAnomalyAsString { get; set; }
+    private LocationTrendField? TemperatureTrendField { get; set; }
+    private RenderFragment? TemperatureTrendContent { get; set; }
 
     private List<YearlyValues>? PrecipitationAnomalyRecords { get; set; }
     private double? PrecipitationLocationMean { get; set; }
@@ -144,6 +148,7 @@ public partial class LocationDashboard
         StripeLoadingIndicatorVisible = true;
 
         WarmingAnomalyAsString = Location!.WarmingAnomaly == null ? "NA" : new CalculatedAnomaly { AnomalyValue = Location.WarmingAnomaly.Value }.ValueAsString(UnitOfMeasure.DegreesCelsius);
+        TemperatureTrendField = LocationTrendFieldBuilder.Build(Location);
 
         if (Location?.RecordHigh is not null)
         {
@@ -184,6 +189,15 @@ public partial class LocationDashboard
                             builder.AddAttribute(2, "CalculatedAnomaly", temperatureAnomaly.CalculatedAnomaly);
                             builder.CloseComponent();
                         };
+                TemperatureTrendContent = Location == null
+                        ? null
+                        : builder =>
+                        {
+                            builder.OpenComponent(0, typeof(TemperatureTrendInfo));
+                            builder.AddAttribute(1, "Location", Location);
+                            builder.AddAttribute(2, "DataSet", temperatureAnomaly.DataSet);
+                            builder.CloseComponent();
+                        };
                 TemperatureLocationMean = temperatureAnomaly?.DataSet?.DataRecords.Average(x => x.Value);
                 TemperatureAnomalyRecords = temperatureAnomaly?.AnomalyRecords;
             }
@@ -191,6 +205,7 @@ public partial class LocationDashboard
             {
                 TemperatureDataType = null;
                 WarmingAnomalyContent = null;
+                TemperatureTrendContent = null;
                 TemperatureLocationMean = null;
                 TemperatureAnomalyRecords = null;
             }

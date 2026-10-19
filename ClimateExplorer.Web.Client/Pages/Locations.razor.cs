@@ -6,6 +6,8 @@ using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.Components.Location;
+using ClimateExplorer.Web.Client.Services.Trends;
+using ClimateExplorer.Web.Client.UiModel.Trends;
 using ClimateExplorer.WebApiClient.Services;
 using Microsoft.AspNetCore.Components;
 using static ClimateExplorer.Core.Enums;
@@ -19,6 +21,7 @@ public partial class Locations
     private IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions = [];
     private Dictionary<Guid, List<DataType>> locationDataTypes = new();
     private Dictionary<Guid, List<string>> locationDataSources = new();
+    private Dictionary<Guid, LocationTrendField> locationTrends = new();
     private string? countryFilter;
     private string? heatingScoreFilter;
     private string sortColumn = "name";
@@ -82,6 +85,9 @@ public partial class Locations
                 "heatingscore" => sortAscending
                     ? query.OrderBy(l => l.HeatingScore ?? int.MinValue)
                     : query.OrderByDescending(l => l.HeatingScore ?? int.MinValue),
+                "trend" => sortAscending
+                    ? query.OrderBy(l => GetTrendSlope(l.Id))
+                    : query.OrderByDescending(l => GetTrendSlope(l.Id)),
                 "recordhigh" => sortAscending
                     ? query.OrderBy(l => l.RecordHigh?.Value ?? double.MinValue)
                     : query.OrderByDescending(l => l.RecordHigh?.Value ?? double.MinValue),
@@ -140,6 +146,14 @@ public partial class Locations
                 {
                     sources.Add(dsd.ShortName);
                 }
+            }
+        }
+
+        foreach (var location in allLocations)
+        {
+            if (LocationTrendFieldBuilder.Build(location) is { } trend)
+            {
+                locationTrends[location.Id] = trend;
             }
         }
 
@@ -268,6 +282,12 @@ public partial class Locations
 
         return sortAscending ? "fa-sort-up" : "fa-sort-down";
     }
+
+    private string GetTrendDisplay(Guid locationId) =>
+        locationTrends.TryGetValue(locationId, out var trend) ? trend.Value : "—";
+
+    private double GetTrendSlope(Guid locationId) =>
+        locationTrends.TryGetValue(locationId, out var trend) ? trend.Slope : double.MinValue;
 
     private string GetDataTypesDisplay(Guid locationId)
     {

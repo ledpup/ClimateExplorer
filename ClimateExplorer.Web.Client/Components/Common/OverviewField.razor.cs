@@ -14,6 +14,13 @@ public partial class OverviewField
     [Parameter]
     public string? Tooltip { get; set; }
 
+    /// <summary>
+    /// Multiline tooltips are capped at 15rem wide. Turn off for tooltips with fixed-width content,
+    /// such as a table, so the tooltip grows to fit it.
+    /// </summary>
+    [Parameter]
+    public bool TooltipMultiline { get; set; } = true;
+
     [Parameter]
     public string? AdditionalInfo { get; set; }
 

@@ -1,5 +1,6 @@
 namespace ClimateExplorer.Web.Client.UiModel.Trends;
 
+using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.Stats.Model;
 
 /// <summary>

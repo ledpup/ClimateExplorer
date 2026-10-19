@@ -415,12 +415,29 @@ public static class PolynomialRegressionCalculator
         var slopeStandardError = Math.Sqrt(Math.Max(0, covariance[1, 1]));
         var tStatistic = CalculateTStatistic(slope, slopeStandardError);
 
-        var fStatistic = residualVariance == 0
-            ? double.PositiveInfinity
-            : (regressionSumOfSquares / degree) / residualVariance;
-        var pValue = double.IsPositiveInfinity(fStatistic)
-            ? 0
-            : FDistributionCalculator.UpperTailPValue(fStatistic, degree, residualDegreesOfFreedom);
+        // A fit that explains no variance (e.g. a constant series) is no better than the flat,
+        // intercept-only model the F-test compares against, so it is never significant - even when its
+        // residuals are also zero and F would strictly be 0/0. Reported as F = 0, p = 1 to stay finite.
+        // A fit that explains some variance with zero residuals (a perfect line or curve) is the
+        // limiting case of an ever-better fit, so it gets the infinite F.
+        double fStatistic;
+        double pValue;
+
+        if (regressionSumOfSquares == 0)
+        {
+            fStatistic = 0;
+            pValue = 1;
+        }
+        else if (residualVariance == 0)
+        {
+            fStatistic = double.PositiveInfinity;
+            pValue = 0;
+        }
+        else
+        {
+            fStatistic = (regressionSumOfSquares / degree) / residualVariance;
+            pValue = FDistributionCalculator.UpperTailPValue(fStatistic, degree, residualDegreesOfFreedom);
+        }
 
         var slopeConfidenceInterval = CalculateSlopeConfidenceInterval(slope, slopeStandardError, residualDegreesOfFreedom, alpha);
 
