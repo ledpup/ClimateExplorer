@@ -13,7 +13,7 @@ using ClimateExplorer.Web.Client.UiModel.Trends;
 public static class LocationTrendFieldBuilder
 {
     private const string Unit = "°C";
-    private const string ClickHint = "<p>Click for information on trends.</p>";
+    private const string ClickHint = "<p style=\"margin: 12px 0 0 0;\">Click for information on trends.</p>";
 
     public static LocationTrendField? Build(Location location)
     {

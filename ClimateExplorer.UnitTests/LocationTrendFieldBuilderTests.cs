@@ -94,7 +94,7 @@ public class LocationTrendFieldBuilderTests
         var field = LocationTrendFieldBuilder.Build(CreateLocation(fullSignificant: true, last30Significant: false));
 
         Assert.IsNotNull(field);
-        Assert.EndsWith("<p>Click for information on trends.</p>", field.Tooltip);
+        Assert.EndsWith("Click for information on trends.</p>", field.Tooltip);
     }
 
     [TestMethod]
