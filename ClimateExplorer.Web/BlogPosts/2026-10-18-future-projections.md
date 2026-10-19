@@ -7,15 +7,34 @@ categories: site-info
 
 Recent additions to this website have added trend calculations to project future values of temperatures and other metrics. They are found in:
 
+- The **temperature trend** on the location dashboard, and as a sortable column on the locations list. It reports a linear rate of change per decade over the last 30 years, or, if that is not a significant trend, over the full range of years.
 - The **recent observations** panel on every location page. It reports a linear rate of change per decade for temperature and rainfall.
 - **Charts** that can have up to three trend lines per series.
 - Built-in **presets** for charts - a per-location temperature trend, and a global CO₂ trend.
 
-All of it rests on the same two pieces of maths: **linear regression** (the straight line through a set of points) and **quadratic regression** (letting that line bend into a curve). This post explains how they're calculated.
+It rests on two pieces of maths:
+
+- **linear regression**: the straight line through a set of points
+- **quadratic regression**: an approach that allows the line to bend into a curve
+
+This post explains how they're calculated.
 
 ## Where to find trends
 
-The **Trend** tab in Recent Observations fits a straight line to a metric's yearly history and reports the slope as a rate per decade, for three overlapping windows: the **full period of record**, the **last 30 years**, and the **first half of the record**. Comparing the three is a quick check for acceleration - if the last-30-years rate is steeper than the early-period rate, the metric isn't just trending, it's trending faster than it used to. A trend only gets reported at all once it clears a statistical significance bar; short of that, the tile plainly says "No significant trend" rather than printing a number that isn't reliably different from noise. There's a much fuller explanation of all of this, worked example included, behind the "About trends" link on that tab.
+### Location dashboard
+
+Each location's **dashboard** shows a single headline temperature trend that is:
+
+- the rate of change per decade over the last 30 years when that is statistically significant, otherwise over 
+- the full record
+
+Click it for the detail. The popup lists three windows (the full period, the last 30 years and the first half of the record), says whether each is significant and gives its p-value. Its "About trends" panel then breaks each window down into the statistics behind it, using that location's own numbers, and lets you download the yearly data. The same headline rate is a sortable **Temperature trend** column on the locations list, so you can rank locations from fastest warming to slowest. Locations with no significant trend have no value and sort to the end.
+
+### Trend tab in Recent Observations
+
+The **Trend** tab in Recent Observations fits a straight line to a metric's yearly history and reports the slope as a rate per decade, for the same three overlapping windows: the **full period of record**, the **last 30 years**, and the **first half of the record**. Comparing the three is a quick check for acceleration - if the last-30-years rate is steeper than the early-period rate, the metric isn't just trending, it's trending faster than it used to. As on the dashboard, a trend only gets reported at all once it clears a statistical significance bar; short of that, the tile plainly says "No significant trend" rather than printing a number that isn't reliably different from noise. There's a much fuller explanation of all of this, worked example included, behind the "About trends" link on that tab.
+
+### Charts
 
 Charts go further. Any chart series can carry up to three trend lines, each independently configured: **linear**, **quadratic**, or **cubic**; fitted to the full record, the last 30 years, or the first half; and projected forward by a fixed number of years or out to a target year. We deliberately support more than one trend per series, because a trend line is a possible future, not a certainty - showing three different fits side by side (say, the full-record trend against the last-30-years trend) is a better answer to "where is this headed?" than picking one and presenting it as the answer.
 
@@ -109,7 +128,7 @@ It isn't much harder to calculate. Call the new quantity **z = (x − x̄)²**, 
 
 So it's one extra table and one extra division. That shortcut depends on the years being evenly spaced with no gaps. If some years are missing, the three coefficients have to be found together by solving three simultaneous equations (the "normal equations"). That's what ClimateExplorer does in general, and for a gap-free record like this one the answer is identical.
 
-### How fast is CO₂ really accelerating?
+### How fast is CO₂ accelerating?
 
 Atmospheric CO₂, measured continuously at the Mauna Loa Observatory since 1958, is a good candidate because the signal is so clean: it goes up practically every year. This time we use the whole record: every complete year from 1959 to 2025, which is 67 years. (Measurements started in March 1958, and 2026 isn't over yet.) The annual means are rounded to the nearest whole ppm, as in the linear example. The middle year is x̄ = 1992 and the average concentration is ȳ = 24,205 ÷ 67 ≈ 361.27ppm.
 
@@ -205,4 +224,6 @@ None of that means either curve is "right" and the other "wrong" - it means a st
 
 The regression tool in ClimateExplorer supports one degree beyond quadratic - a cubic fit, Y = β₀ + β₁X + β₂X² + β₃X³, which can bend one way and then the other. We don't use it in either built-in preset. Treat a barely-significant cubic fit with more scepticism than a barely-significant line or curve.
 
-Every trend on a chart or in Recent Observations carries a tooltip with the underlying statistics - p-value, R², sample size - and the "About trends" panel has the same worked-through maths, using its own shorter illustrative example.
+## Checking the numbers
+
+Every trend on a chart or in Recent Observations carries a tooltip with the underlying statistics - p-value, R², sample size - and the "About trends" panel has the same worked-through maths, using its own shorter illustrative example. On a location's dashboard, the trend popup shows each window's p-value, and its "About trends" panel shows the full statistics for that location, with the yearly data available to download.
