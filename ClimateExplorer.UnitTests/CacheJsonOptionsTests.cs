@@ -33,7 +33,7 @@ public class CacheJsonOptionsTests
 
         var json = JsonSerializer.Serialize(location, CacheJsonOptions.Create());
 
-        StringAssert.Contains(json, "\"WarmingAnomaly\":1.46");
+        StringAssert.Contains(json, "\"WarmingAnomaly\":1.461,");
         StringAssert.Contains(json, "\"Latitude\":43.366901");
         StringAssert.Contains(json, "\"Longitude\":-8.4192");
         StringAssert.Contains(json, "\"Elevation\":58");
@@ -43,7 +43,7 @@ public class CacheJsonOptionsTests
     [TestMethod]
     public void Serialize_NegativeValueRoundingToZero_WritesZeroNotNegativeZero()
     {
-        var location = CreateLocation(-0.001, new Coordinates { Latitude = -0.0000001, Longitude = 0, Elevation = -0.4 });
+        var location = CreateLocation(-0.0004, new Coordinates { Latitude = -0.0000001, Longitude = 0, Elevation = -0.4 });
 
         var json = JsonSerializer.Serialize(location, CacheJsonOptions.Create());
 
@@ -93,7 +93,7 @@ public class CacheJsonOptionsTests
         var json = JsonSerializer.Serialize(new[] { location }, CacheJsonOptions.Create());
         var roundTripped = JsonSerializer.Deserialize<List<Location>>(json)!;
 
-        Assert.AreEqual(1.46, roundTripped[0].WarmingAnomaly);
+        Assert.AreEqual(1.461, roundTripped[0].WarmingAnomaly);
         Assert.AreEqual(43.366901, roundTripped[0].Coordinates.Latitude);
         Assert.AreEqual(58, roundTripped[0].Coordinates.Elevation);
     }

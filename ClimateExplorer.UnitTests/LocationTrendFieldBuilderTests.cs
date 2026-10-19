@@ -17,7 +17,7 @@ public class LocationTrendFieldBuilderTests
         Assert.AreEqual("+0.32°C /decade", field.Value);
         StringAssert.Contains(field.Tooltip, ">Last 30 years</td>");
         StringAssert.Contains(field.Tooltip, ">1995–2024</td>");
-        StringAssert.Contains(field.Tooltip, "<b>+0.32°C /decade</b>");
+        StringAssert.Contains(field.Tooltip, ">+0.32°C /decade</td>");
     }
 
     [TestMethod]
@@ -30,7 +30,7 @@ public class LocationTrendFieldBuilderTests
         Assert.AreEqual("+0.14°C /decade", field.Value);
         StringAssert.Contains(field.Tooltip, ">Full period</td>");
         StringAssert.Contains(field.Tooltip, ">1910–2024</td>");
-        StringAssert.Contains(field.Tooltip, "<b>+0.14°C /decade</b>");
+        StringAssert.Contains(field.Tooltip, ">+0.14°C /decade</td>");
     }
 
     [TestMethod]
@@ -76,7 +76,7 @@ public class LocationTrendFieldBuilderTests
         StringAssert.Contains(field.Tooltip, ">Last 30 years</td>");
         StringAssert.Contains(field.Tooltip, ">Full period</td>");
         StringAssert.Contains(field.Tooltip, ">1910–2024</td>");
-        StringAssert.Contains(field.Tooltip, "<b>+0.14°C /decade</b>");
+        StringAssert.Contains(field.Tooltip, ">+0.14°C /decade</td>");
     }
 
     [TestMethod]
