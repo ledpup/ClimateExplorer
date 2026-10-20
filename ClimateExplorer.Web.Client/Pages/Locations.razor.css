@@ -1,5 +1,5 @@
 .locations-container {
-    max-width: 100em;
+    max-width: 120em;
     margin: auto;
     padding: 0 1rem 2rem;
 }
@@ -38,11 +38,18 @@
 
 /* ── Fixed-width columns (stop re-sorting from resizing the table) ──────── */
 ::deep .name-col {
-    min-width: 14em;
+    min-width: 20em;
 }
 
 ::deep .country-col {
-    min-width: 20em;
+    min-width: 30em;
+}
+
+/* ── Column sub-header ───────────────────────────────────────────────────── */
+.trend-subheader {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: normal;
 }
 
 /* ── Heating score badge ─────────────────────────────────────────────────── */

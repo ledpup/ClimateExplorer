@@ -61,10 +61,19 @@ internal static class TrendFormatting
     /// </summary>
     public static string FormatPerDecadeValue(double slopePerYear, string unit)
     {
+        return $"{FormatPerDecadeAmount(slopePerYear, unit)} /decade";
+    }
+
+    /// <summary>
+    /// The signed per-decade amount with its unit but without the "/decade" suffix - for places that
+    /// state the period separately, such as a column sub-header.
+    /// </summary>
+    public static string FormatPerDecadeAmount(double slopePerYear, string unit)
+    {
         var perDecade = slopePerYear * 10;
         var sign = perDecade >= 0 ? "+" : string.Empty;
 
-        return $"{sign}{FormatNumber(perDecade, unit)}{FormatUnitSuffix(unit)} /decade";
+        return $"{sign}{FormatNumber(perDecade, unit)}{FormatUnitSuffix(unit)}";
     }
 
     public static string FormatValue(double value, string unit)
