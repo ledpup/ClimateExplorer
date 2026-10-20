@@ -49,6 +49,9 @@ public static class LocationTrendFieldBuilder
         return null;
     }
 
+    // The per-decade rate without the "/decade" suffix, for a column that labels the period itself.
+    public static string FormatAmountPerDecade(double slopePerYear) => TrendFormatting.FormatPerDecadeAmount(slopePerYear, Unit);
+
     // The tooltip is rendered outside any component's scoped CSS, so the layout is inline. A headerless
     // table keeps the period labels, year ranges and rates aligned in columns when there are two rows.
     private static string WrapRows(string rows) => $"<table style=\"border-collapse: collapse; margin: 0 auto;\">{rows}</table>";

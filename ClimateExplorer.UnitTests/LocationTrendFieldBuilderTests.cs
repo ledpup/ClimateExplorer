@@ -107,6 +107,13 @@ public class LocationTrendFieldBuilderTests
         Assert.AreEqual("-0.21°C /decade", LocationTrendFieldBuilder.Build(location)?.Value);
     }
 
+    [TestMethod]
+    public void FormatAmountPerDecade_PositiveAndNegativeSlopes_OmitsPeriodSuffix()
+    {
+        Assert.AreEqual("+0.32°C", LocationTrendFieldBuilder.FormatAmountPerDecade(0.032));
+        Assert.AreEqual("-0.21°C", LocationTrendFieldBuilder.FormatAmountPerDecade(-0.021));
+    }
+
     private static Location CreateLocation(bool fullSignificant, bool last30Significant)
     {
         var location = TemperatureTrendCalculatorTests.CreateLocation();
