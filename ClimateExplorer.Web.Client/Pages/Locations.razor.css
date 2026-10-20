@@ -36,6 +36,15 @@
     flex-shrink: 0;
 }
 
+/* ── Fixed-width columns (stop re-sorting from resizing the table) ──────── */
+::deep .name-col {
+    min-width: 14em;
+}
+
+::deep .country-col {
+    min-width: 20em;
+}
+
 /* ── Heating score badge ─────────────────────────────────────────────────── */
 .heating-badge {
     display: inline-block;
@@ -104,6 +113,10 @@
     ::deep .recent-observations-col,
     ::deep .recent-observations-cell {
         display: none;
+    }
+
+    ::deep .name-col {
+        min-width: 9em;
     }
 
     .locations-container {
