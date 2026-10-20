@@ -1,6 +1,6 @@
 namespace ClimateExplorer.Web.Client.Services.Trends;
 
-using ClimateExplorer.Core.Calculators;
+using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.Stats;
 using ClimateExplorer.Core.Stats.Model;
 using ClimateExplorer.Web.Client.UiModel.Trends;
@@ -10,12 +10,14 @@ using ClimateExplorer.Web.Client.UiModel.Trends;
 /// the selected one forward.
 /// </summary>
 /// <remarks>
-/// The full-period, last-30-years, last-10-years and early-period windows, the minimum data
-/// requirement and the significance test are all deliberately the same shape as the Recent
-/// Observations trend tab's - same four window definitions, same significance rule generalised from
-/// a slope t-test to an overall-model F-test (identical to the t-test at degree 1) - so the chart and
-/// the tile never disagree about whether a location has a trend, when both are looking at a linear
-/// fit. Unlike the tile, every window here can be fit at degree 1, 2 or 3
+/// The full-period, last-30-years, last-10-years and early-period windows and the significance test
+/// are deliberately the same shape as the Recent Observations trend tab's - same four window
+/// definitions, same significance rule generalised from a slope t-test to an overall-model F-test
+/// (identical to the t-test at degree 1). The minimum data requirement is not: the chart (like the
+/// location dashboard) fits a trend from <see cref="TrendDefaults.MinimumYearsForTrend"/> complete
+/// years, and only adds the last-30-years and early-period windows from
+/// <see cref="TrendDefaults.MinimumYearsForSubPeriodWindows"/>, while the tile keeps the warming
+/// anomaly's 60-year floor for every window. Unlike the tile, every window here can be fit at degree 1, 2 or 3
 /// (<see cref="TrendRegressionType"/>): picking a curve can make a window newly significant or newly
 /// not, so every window is fit directly with <see cref="PolynomialRegressionCalculator"/> at the
 /// requested degree rather than through <c>TrendWindowCalculator</c>, which is fixed at degree 1 by
@@ -26,12 +28,12 @@ using ClimateExplorer.Web.Client.UiModel.Trends;
 public static class ChartSeriesTrendCalculator
 {
     /// <summary>
-    /// Matches the Recent Observations trend tab: the same 60-year floor used for the warming
-    /// anomaly and the heating score, so short records don't produce headline long-term trends.
+    /// The same 30-year floor as the location dashboard's trend - the standard climate-normal period -
+    /// so a trend reflects climate rather than year-to-year variability.
     /// </summary>
-    public const int MinimumYearsForTrend = AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly;
+    public const int MinimumYearsForTrend = TrendDefaults.MinimumYearsForTrend;
 
-    public const int RecentWindowYears = 30;
+    public const int RecentWindowYears = TrendDefaults.RecentWindowYears;
 
     public const int RecentDecadeWindowYears = 10;
 
@@ -76,8 +78,8 @@ public static class ChartSeriesTrendCalculator
                 Points = ordered,
                 UnavailableReason =
                     $"Only {ordered.Count} complete {(ordered.Count == 1 ? "year" : "years")} of data are plotted, and a trend needs at least "
-                    + $"{MinimumYearsForTrend}. That minimum is used across the site (for example the warming anomaly and the heating "
-                    + "score) so long-term trends aren't skewed by short records.",
+                    + $"{MinimumYearsForTrend} - the standard {MinimumYearsForTrend}-year climate period - so a trend reflects climate "
+                    + "rather than year-to-year variability.",
                 LastDataYear = lastMeasuredYear ?? (ordered.Count == 0 ? 0 : (int)Math.Round(ordered[^1].X)),
             };
         }
@@ -91,15 +93,29 @@ public static class ChartSeriesTrendCalculator
         var recentDecadePoints = ordered.TakeLast(recentDecadeCount).ToList();
         var firstHalfPoints = ordered.Take(firstHalfCount).ToList();
 
+        // The last-30-years and early-period windows need enough years to stand as periods of their
+        // own (the warming anomaly's rule, which compares exactly those two): below that, the last 30
+        // is nearly the whole record and the early period is a short, low-power fit.
+        var hasSubPeriodWindows = ordered.Count >= TrendDefaults.MinimumYearsForSubPeriodWindows;
+
         // Declared in dropdown/tab display order: full period first, matching SelectionPriority
         // below.
         var windows = new List<ChartSeriesTrendWindowResult>
         {
             new(TrendWindow.Full, PolynomialRegressionCalculator.Calculate(ordered, degree), ordered),
-            new(TrendWindow.Last30, PolynomialRegressionCalculator.Calculate(recentPoints, degree), recentPoints),
-            new(TrendWindow.RecentDecade, PolynomialRegressionCalculator.Calculate(recentDecadePoints, degree), recentDecadePoints),
-            new(TrendWindow.FirstHalf, PolynomialRegressionCalculator.Calculate(firstHalfPoints, degree), firstHalfPoints),
         };
+
+        if (hasSubPeriodWindows)
+        {
+            windows.Add(new(TrendWindow.Last30, PolynomialRegressionCalculator.Calculate(recentPoints, degree), recentPoints));
+        }
+
+        windows.Add(new(TrendWindow.RecentDecade, PolynomialRegressionCalculator.Calculate(recentDecadePoints, degree), recentDecadePoints));
+
+        if (hasSubPeriodWindows)
+        {
+            windows.Add(new(TrendWindow.FirstHalf, PolynomialRegressionCalculator.Calculate(firstHalfPoints, degree), firstHalfPoints));
+        }
 
         // Ordinarily the same as the last fitted point, but a caller fitting a smoothed series
         // (a centred moving average trims the trailing years it can't fill a full window for)

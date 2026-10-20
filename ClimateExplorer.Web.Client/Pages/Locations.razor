@@ -78,6 +78,9 @@
                         <TableHeaderCell TextAlignment="TextAlignment.Center" @onclick='() => OnSortChanged("heatingscore")' Style="cursor: pointer; user-select: none; white-space: normal; width: 5em;">
                             <Strong>Heating score <i class="fas @GetSortIconClass("heatingscore")"></i></Strong>
                         </TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.Center" Class="trend-col" @onclick='() => OnSortChanged("trend")' Style="cursor: pointer; user-select: none; white-space: normal; width: 7em;">
+                            <Strong>Temperature trend <i class="fas @GetSortIconClass("trend")"></i></Strong>
+                        </TableHeaderCell>
                         <TableHeaderCell TextAlignment="TextAlignment.Center" Class="data-types-col">
                             <Strong>Data types</Strong>
                         </TableHeaderCell>
@@ -109,6 +112,7 @@
                                     <span>&#x2014;</span>
                                 }
                             </td>
+                            <td class="trend-cell text-center">@GetTrendDisplay(location.Id)</td>
                             <td class="data-types-cell">@GetDataTypesDisplay(location.Id)</td>
                             <td class="data-sources-cell">
                                 @if (HasDataSources(location.Id))

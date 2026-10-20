@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 public interface ICache
@@ -76,11 +75,7 @@ public class FileBackedTwoLayerCache : ICache
     {
         this.cacheFolderName = cacheFolderName;
 
-        jsonOptions = new()
-        {
-            WriteIndented = true,
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-        };
+        jsonOptions = CacheJsonOptions.Create();
     }
 
     public async Task<T> Get<T>(string key)

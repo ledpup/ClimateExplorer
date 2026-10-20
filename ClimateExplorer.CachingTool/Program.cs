@@ -16,19 +16,13 @@ var filesToDelete = files.Where(x => !x.Contains("hash_")).ToList();
 filesToDelete.ForEach(File.Delete);
 
 var memoryCache = new MemoryCache(new MemoryCacheOptions { SizeLimit = DataService.CacheSizeLimit });
-var dataService = new DataService(new HttpClient() { BaseAddress = new Uri("http://localhost:54836/") }, memoryCache);
+// The /location rebuild computes every location's stats in a single request, which can easily exceed the
+// default 100 second HttpClient timeout.
+var httpClient = new HttpClient() { BaseAddress = new Uri("http://localhost:54836/"), Timeout = Timeout.InfiniteTimeSpan };
+var dataService = new DataService(httpClient, memoryCache);
 
-// Get the basic list of locations. We need this to calculate the climate records
-var locations = await dataService.GetLocations(permitCreateCache: false);
-
-await Parallel.ForEachAsync(locations!, new ParallelOptions(), async (location, token) =>
-{
-    logger.LogInformation($"Creating climate records for {location.Name}");
-    await dataService.GetClimateRecords(location.Id);
-    logger.LogInformation($"Finished creating climate records for {location.Name}");
-});
-
-// Generate cached locations. This will include the RecordHigh climate record
+// Generate cached locations (WarmingAnomaly, TemperatureTrends, RecordHigh, heating scores). This only reads the
+// source files already published; it never downloads data - that is done by ClimateExplorer.Data.Misc.
 logger.LogInformation("Creating locations cache");
-locations = await dataService.GetLocations(permitCreateCache: true);
+await dataService.GetLocations(permitCreateCache: true);
 logger.LogInformation("Finished creating locations cache");

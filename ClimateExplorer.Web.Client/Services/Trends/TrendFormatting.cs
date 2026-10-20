@@ -52,7 +52,16 @@ internal static class TrendFormatting
     /// </param>
     public static string FormatPerDecadeValue(PolynomialRegressionResult trend, double atX, string unit)
     {
-        var perDecade = trend.Curve.Derivative(atX) * 10;
+        return FormatPerDecadeValue(trend.Curve.Derivative(atX), unit);
+    }
+
+    /// <summary>
+    /// The per-decade rate for an already-known per-year rate - e.g. a stored
+    /// <see cref="Core.Model.TrendSummary.Slope"/> - formatted exactly as the regression overload does.
+    /// </summary>
+    public static string FormatPerDecadeValue(double slopePerYear, string unit)
+    {
+        var perDecade = slopePerYear * 10;
         var sign = perDecade >= 0 ? "+" : string.Empty;
 
         return $"{sign}{FormatNumber(perDecade, unit)}{FormatUnitSuffix(unit)} /decade";

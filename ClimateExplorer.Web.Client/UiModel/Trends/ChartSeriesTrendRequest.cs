@@ -1,5 +1,7 @@
 namespace ClimateExplorer.Web.Client.UiModel.Trends;
 
+using ClimateExplorer.Core.Model;
+
 /// <summary>
 /// One entry in <see cref="ChartSeriesDefinition.Trends"/> - the user's request for a single trend
 /// projection on a chart series (up to three per series). Mutable, like the definition it sits on:

@@ -11,6 +11,10 @@ using Microsoft.AspNetCore.Mvc;
 
 internal static class MetadataEndpoints
 {
+    // Dataset definitions and their data file mappings only change on deploy, so build them once per
+    // process. A faulted build is discarded so the next request retries instead of failing forever.
+    private static Task<IReadOnlyList<DataSetDefinitionViewModel>> cachedDataSetDefinitions;
+
     public static string GetRoot()
     {
         return
@@ -65,7 +69,31 @@ internal static class MetadataEndpoints
             };
     }
 
-    public static async Task<List<DataSetDefinitionViewModel>> GetDataSetDefinitions()
+    public static Task<IReadOnlyList<DataSetDefinitionViewModel>> GetDataSetDefinitions()
+    {
+        var task = cachedDataSetDefinitions;
+        if (task == null || task.IsFaulted || task.IsCanceled)
+        {
+            task = BuildDataSetDefinitions();
+            cachedDataSetDefinitions = task;
+        }
+
+        return task;
+    }
+
+    public static async Task<Dictionary<string, string>> GetCountries()
+    {
+        return (await Country.GetCountries(@"MetaData\countries.txt")).ToDictionary(x => x.Key, x => x.Value.Name);
+    }
+
+    public static async Task<IEnumerable<HeatingScoreRow>> GetHeatingScoreTable(
+        [FromServices] ClimateExplorerApiServices services)
+    {
+        var result = await services.LongtermCache.Get<List<HeatingScoreRow>>(ClimateExplorerApiConstants.HeatingScoreTable);
+        return result;
+    }
+
+    private static async Task<IReadOnlyList<DataSetDefinitionViewModel>> BuildDataSetDefinitions()
     {
         var definitions = await DataSetDefinition.GetDataSetDefinitions();
 
@@ -92,17 +120,5 @@ internal static class MetadataEndpoints
             .ToList();
 
         return dtos;
-    }
-
-    public static async Task<Dictionary<string, string>> GetCountries()
-    {
-        return (await Country.GetCountries(@"MetaData\countries.txt")).ToDictionary(x => x.Key, x => x.Value.Name);
-    }
-
-    public static async Task<IEnumerable<HeatingScoreRow>> GetHeatingScoreTable(
-        [FromServices] ClimateExplorerApiServices services)
-    {
-        var result = await services.LongtermCache.Get<List<HeatingScoreRow>>(ClimateExplorerApiConstants.HeatingScoreTable);
-        return result;
     }
 }

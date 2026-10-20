@@ -1,4 +1,4 @@
-﻿namespace ClimateExplorer.Core.Model;
+namespace ClimateExplorer.Core.Model;
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -13,7 +13,22 @@ public class Location : GeographicalEntity
     public required Coordinates Coordinates { get; set; }
     public double? WarmingAnomaly { get; set; }
     public short? HeatingScore { get; set; }
+
+    /// <summary>
+    /// Linear trends of the location's yearly temperature series. Null below 30 complete years; the
+    /// full-record trend only for 30-59 years; full record then last 30 years from 60.
+    /// </summary>
+    public List<TrendSummary>? TemperatureTrends { get; set; }
+
+    public int? LastYear { get; set; }
+
     public DataRecord? RecordHigh { get; set; }
+
+    [JsonIgnore]
+    public TrendSummary? FullPeriodTemperatureTrend => TemperatureTrends?.FirstOrDefault(x => x.Window == TrendWindow.Full);
+
+    [JsonIgnore]
+    public TrendSummary? Last30YearTemperatureTrend => TemperatureTrends?.FirstOrDefault(x => x.Window == TrendWindow.Last30);
 
     [JsonIgnore]
     public string FullTitle =>

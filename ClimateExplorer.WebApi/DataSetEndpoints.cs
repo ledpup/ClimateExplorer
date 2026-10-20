@@ -29,13 +29,13 @@ internal static class DataSetEndpoints
     internal static async Task<DataSetRetrievalOutcome> PostDataSetsCore(
         PostDataSetsRequestBody body,
         ClimateExplorerApiServices services,
-        bool permitSourceUpdate = false,
+        bool permitSourceDownload = false,
         CancellationToken cancellationToken = default)
     {
         string cacheKey = "DataSet_v2_" + JsonSerializer.Serialize(body);
 
         var result = await services.Cache.Get<DataSet>(cacheKey);
-        var sourcePreparation = await services.DataSetSourceUpdateCoordinator.PrepareAsync(body, result, permitSourceUpdate, cancellationToken);
+        var sourcePreparation = await services.DataSetSourceUpdateCoordinator.PrepareAsync(body, result, permitSourceDownload, cancellationToken);
         var refreshFailed = sourcePreparation.Outcome == DataSetSourcePreparationOutcome.RefreshFailed;
 
         if (result != null && sourcePreparation.Outcome is DataSetSourcePreparationOutcome.UseCached or DataSetSourcePreparationOutcome.RefreshFailed)

@@ -2,6 +2,7 @@ namespace ClimateExplorer.UnitTests;
 
 using System.Collections.Generic;
 using System.Linq;
+using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.Stats.Model;
 using ClimateExplorer.Web.Client.Services.Trends;
 using ClimateExplorer.Web.Client.UiModel;

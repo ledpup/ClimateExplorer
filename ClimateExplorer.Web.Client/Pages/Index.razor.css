@@ -48,7 +48,7 @@
     }
 
     .map-space-reserver {
-        flex: 1 1 480px;
+        flex: 1 1 320px;
         min-width: 320px;
         /* location-dashboard-container comes first in source order (mobile shows the map on top, so it's first in markup); reorder here so the dashboard is on the left */
         order: 2;
@@ -59,8 +59,9 @@
     }
 
     .location-dashboard-container {
-        /* Main dashboard content grows with the screen, up to a readable cap; the map flexes to fill whatever width is left */
-        flex: 1 1 480px;
+        /* Main dashboard content grows twice as fast as the map (roughly 2/3 of the width) so all the overview fields fit,
+           up to a readable cap; the map flexes to fill whatever width is left */
+        flex: 2 1 480px;
         max-width: 1040px;
         order: 1;
     }

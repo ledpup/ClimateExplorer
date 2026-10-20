@@ -511,7 +511,7 @@ public class ChartDataBuilderTests
         var sufficientDataSet = CreateYearDataSet(
             Enumerable.Range(1950, 70).Select(year => (year, (double?)(10 + ((year - 1950) * 0.1)))));
         var insufficientDataSet = CreateYearDataSet(
-            Enumerable.Range(1990, 30).Select(year => (year, (double?)(10 + ((year - 1990) * 0.1)))));
+            Enumerable.Range(1990, 20).Select(year => (year, (double?)(10 + ((year - 1990) * 0.1)))));
         var dataService = CreateSequentialDataService(sufficientDataSet, insufficientDataSet, sufficientDataSet);
 
         var series = CreateSeries();
