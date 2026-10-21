@@ -63,7 +63,7 @@
                 </div>
                 <span class="location-count">@filteredCount location@(filteredCount == 1 ? string.Empty : "s")</span>
             </div>
-            <Table Striped>
+            <Table Striped Class="locations-table">
                 <TableHeader>
                     <TableRow>
                         <TableHeaderCell Class="name-col" @onclick='() => OnSortChanged("name")' Style="cursor: pointer; user-select: none;">
@@ -72,13 +72,13 @@
                         <TableHeaderCell TextAlignment="TextAlignment.Center" Class="country-col" @onclick='() => OnSortChanged("country")' Style="cursor: pointer; user-select: none;">
                             <Strong>Country <i class="fas @GetSortIconClass("country")"></i></Strong>
                         </TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.Center" Class="anomaly-col" @onclick='() => OnSortChanged("anomaly")' Style="cursor: pointer; user-select: none; white-space: normal; width: 6em;">
+                        <TableHeaderCell TextAlignment="TextAlignment.Center" Class="anomaly-col" @onclick='() => OnSortChanged("anomaly")' Style="cursor: pointer; user-select: none; white-space: normal;">
                             <Strong>Warming anomaly <i class="fas @GetSortIconClass("anomaly")"></i></Strong>
                         </TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.Center" @onclick='() => OnSortChanged("heatingscore")' Style="cursor: pointer; user-select: none; white-space: normal; width: 5em;">
+                        <TableHeaderCell TextAlignment="TextAlignment.Center" Class="heating-col" @onclick='() => OnSortChanged("heatingscore")' Style="cursor: pointer; user-select: none; white-space: normal;">
                             <Strong>Heating score <i class="fas @GetSortIconClass("heatingscore")"></i></Strong>
                         </TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.Center" Class="trend-col" @onclick='() => OnSortChanged("trend")' Style="cursor: pointer; user-select: none; white-space: normal; width: 7em;">
+                        <TableHeaderCell TextAlignment="TextAlignment.Center" Class="trend-col" @onclick='() => OnSortChanged("trend")' Style="cursor: pointer; user-select: none; white-space: normal;">
                             <Strong>Temperature trend <i class="fas @GetSortIconClass("trend")"></i></Strong>
                             <span class="trend-subheader">per decade</span>
                         </TableHeaderCell>
@@ -88,10 +88,10 @@
                         <TableHeaderCell TextAlignment="TextAlignment.Center" Class="data-sources-col">
                             <Strong>Data sources</Strong>
                         </TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.Center" Class="recent-observations-col">
+                        <TableHeaderCell TextAlignment="TextAlignment.Center" Class="recent-observations-col" Style="white-space: normal;">
                             <Strong>Recent observations</Strong>
                         </TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.End" @onclick='() => OnSortChanged("recordhigh")' Style="cursor: pointer; user-select: none;">
+                        <TableHeaderCell TextAlignment="TextAlignment.End" Class="record-high-col" @onclick='() => OnSortChanged("recordhigh")' Style="cursor: pointer; user-select: none;">
                             <Strong>Record high <i class="fas @GetSortIconClass("recordhigh")"></i></Strong>
                         </TableHeaderCell>
                     </TableRow>
