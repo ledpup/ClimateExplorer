@@ -9,9 +9,9 @@ httpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd(acceptLanguage);
 
 const string SourceDataFolder = @"..\..\..\..\ClimateExplorer.SourceData";
 
-AcornSatDownloader.DownloadAndExtractData("acorn_sat_v2.6.0_daily_tmean", $@"{SourceDataFolder}\Temperature\ACORN-SAT\daily_tmean");
-AcornSatDownloader.DownloadAndExtractData("acorn_sat_v2.6.0_daily_tmax", $@"{SourceDataFolder}\Temperature\ACORN-SAT\daily_tmax");
-AcornSatDownloader.DownloadAndExtractData("acorn_sat_v2.6.0_daily_tmin", $@"{SourceDataFolder}\Temperature\ACORN-SAT\daily_tmin");
+AcornSatDownloader.DownloadAndExtractData("acorn_sat_v2.7.0_daily_tmean", $@"{SourceDataFolder}\Temperature\ACORN-SAT\daily_tmean");
+AcornSatDownloader.DownloadAndExtractData("acorn_sat_v2.7.0_daily_tmax", $@"{SourceDataFolder}\Temperature\ACORN-SAT\daily_tmax");
+AcornSatDownloader.DownloadAndExtractData("acorn_sat_v2.7.0_daily_tmin", $@"{SourceDataFolder}\Temperature\ACORN-SAT\daily_tmin");
 
 var outDirectories = new Dictionary<ObsCode, string>
     {
