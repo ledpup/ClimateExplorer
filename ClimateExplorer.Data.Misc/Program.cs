@@ -38,7 +38,7 @@ var dataSetSourceUpdateCoordinator = new DataSetSourceUpdateCoordinator(
         // any dataset whose downloader key isn't in this list, so comment lines out to limit a local run.
         new DirectHttpDataSetDownloader(dataSetHttpFileDownloader),
         new GhcndDataSetDownloader(GhcndHttpClientFactory.CreateHttpClient()),
-        new BomDataSetDownloader(new BomDailyDataClient(httpClient)),
+        new BomDataSetDownloader(new BomDailyDataClient(BomHttpClientFactory.CreateBomHttpClient())),
         new NoaaGlobalTempDataSetDownloader(dataSetHttpFileDownloader, timeProvider),
         new GreenlandDataSetDownloader(new GreenlandMeltDataClient(httpClient), dataSetSourceFileStore, timeProvider),
         new TransformingDataSetDownloader("ocean-acidity", dataSetHttpFileDownloader, new OceanAciditySourceFileTransformer()),
