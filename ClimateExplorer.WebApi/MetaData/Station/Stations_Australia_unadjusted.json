@@ -691,7 +691,7 @@
   },
   {
     "Id": "018192",
-    "Name": "NORTH SHIELDS (PORT LINCOLN AWS)",
+    "Name": "NORTH SHIELDS (PORT LINCOLN)",
     "CountryCode": "AS",
     "Coordinates": {
       "Latitude": -34.5993,
@@ -1281,7 +1281,7 @@
   },
   {
     "Id": "046012",
-    "Name": "WILCANNIA AERODROME AWS",
+    "Name": "WILCANNIA AERODROME",
     "CountryCode": "AS",
     "Coordinates": {
       "Latitude": -31.5194,
@@ -1351,7 +1351,7 @@
   },
   {
     "Id": "048245",
-    "Name": "BOURKE AIRPORT AWS",
+    "Name": "BOURKE AIRPORT",
     "CountryCode": "AS",
     "Coordinates": {
       "Latitude": -30.0362,
@@ -1371,7 +1371,7 @@
   },
   {
     "Id": "050017",
-    "Name": "WEST WYALONG AIRPORT AWS",
+    "Name": "WEST WYALONG AIRPORT",
     "CountryCode": "AS",
     "Coordinates": {
       "Latitude": -33.9382,
@@ -1391,7 +1391,7 @@
   },
   {
     "Id": "052088",
-    "Name": "WALGETT AIRPORT AWS",
+    "Name": "WALGETT AIRPORT",
     "CountryCode": "AS",
     "Coordinates": {
       "Latitude": -30.0372,
@@ -1511,7 +1511,7 @@
   },
   {
     "Id": "060168",
-    "Name": "PORT MACQUARIE AIRPORT AWS",
+    "Name": "PORT MACQUARIE AIRPORT",
     "CountryCode": "AS",
     "Coordinates": {
       "Latitude": -31.4343,
@@ -1541,7 +1541,7 @@
   },
   {
     "Id": "061363",
-    "Name": "SCONE AIRPORT AWS",
+    "Name": "SCONE AIRPORT",
     "CountryCode": "AS",
     "Coordinates": {
       "Latitude": -32.0335,
@@ -1571,7 +1571,7 @@
   },
   {
     "Id": "065070",
-    "Name": "DUBBO AIRPORT AWS",
+    "Name": "DUBBO AIRPORT",
     "CountryCode": "AS",
     "Coordinates": {
       "Latitude": -32.2206,
@@ -1631,7 +1631,7 @@
   },
   {
     "Id": "068072",
-    "Name": "NOWRA RAN AIR STATION AWS",
+    "Name": "NOWRA RAN AIR STATION",
     "CountryCode": "AS",
     "Coordinates": {
       "Latitude": -34.9469,
@@ -1651,7 +1651,7 @@
   },
   {
     "Id": "068151",
-    "Name": "JERVIS BAY (POINT PERPENDICULAR AWS)",
+    "Name": "JERVIS BAY (POINT PERPENDICULAR)",
     "CountryCode": "AS",
     "Coordinates": {
       "Latitude": -35.0936,
@@ -1730,7 +1730,7 @@
   },
   {
     "Id": "072161",
-    "Name": "CABRAMURRA SMHEA AWS",
+    "Name": "CABRAMURRA SMHEA",
     "CountryCode": "AS",
     "Coordinates": {
       "Latitude": -35.9371,
@@ -1750,7 +1750,7 @@
   },
   {
     "Id": "074258",
-    "Name": "DENILIQUIN AIRPORT AWS",
+    "Name": "DENILIQUIN AIRPORT",
     "CountryCode": "AS",
     "Coordinates": {
       "Latitude": -35.5575,

@@ -48,6 +48,17 @@ public static class BomLocationsAndStationsMapper
         var primarySitesFile = File.ReadAllLines(@"MetaData\ACORN-SAT\primarysites.txt");
         var stationRegEx = new Regex(@"^(?<id>\d+)\s(?<start>\d+)\s(?<end>\d+)$");
 
+        // Every record in an ACORN-SAT release ends at the release cutoff (e.g. 2025/12/31 for 2.7). That isn't a
+        // closure: until the next release, the station's unadjusted CDO data stands in for ACORN-SAT, so the cutoff
+        // is written as an open (null) end date.
+        var releaseCutoff = DateOnly.ParseExact(
+            primarySitesFile
+                .SelectMany(row => Regex.Matches(row, @"\b\d{8}\b").Select(x => x.Value))
+                .Where(x => x != "99999999")
+                .Max()!,
+            "yyyyMMdd",
+            CultureInfo.InvariantCulture);
+
         foreach (var row in primarySitesFile)
         {
             var rowRegEx = new Regex(@"^^(?<primarysite>\d+)\s(?<station1>\d+\s\d+\s\d+)\s(?<station2>\d+\s\d+\s\d+)\s(?<station3>\d+\s\d+\s\d+)$");
@@ -80,8 +91,7 @@ public static class BomLocationsAndStationsMapper
 
                 // 1910/01/01 is the start-date for ACORN-SAT. We're only dealing with unadjusted data for the dates. Therefore, we can set 1910/01/01 to null and start when the data starts
                 var startDate = start == DateOnly.Parse("1910/01/01") ? null : (DateOnly?)start;
-                // 2019/12/31 is the end-date for ACORN-SAT 2.1, what we have for the primary sites file. We don't need to honour that date.
-                var endDate = end == DateOnly.Parse("2019/12/31") ? null : (DateOnly?)end;
+                var endDate = end == releaseCutoff ? null : (DateOnly?)end;
 
                 var dataFileFilterAndAdjustment = new DataFileFilterAndAdjustment()
                 {

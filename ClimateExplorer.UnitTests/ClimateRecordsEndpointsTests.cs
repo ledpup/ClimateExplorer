@@ -82,7 +82,7 @@ public sealed class ClimateRecordsEndpointsTests
         var ghcndLocationId = await GetSingleStationGhcndLocationId("AE000041196");
         var coordinator = new StubSourceUpdateCoordinator(
             new DataSetSourcePreparationResult(DataSetSourcePreparationOutcome.Rebuild, DateTimeOffset.UtcNow));
-        var services = new ClimateExplorerApiServices(new MemoryCache(), new MemoryCache(), new HttpClient(), new HttpClient(), coordinator);
+        var services = new ClimateExplorerApiServices(new MemoryCache(), new MemoryCache(), new HttpClient(), coordinator);
 
         var response = await ClimateRecordsEndpoints.GetClimateRecords(services, ghcndLocationId, DataType.TempMax, DataAdjustment.Unadjusted);
 
@@ -150,7 +150,7 @@ public sealed class ClimateRecordsEndpointsTests
     {
         var ghcndLocationId = await GetSingleStationGhcndLocationId("AE000041196");
         var coordinator = new CancellingSourceUpdateCoordinator();
-        var services = new ClimateExplorerApiServices(new MemoryCache(), new MemoryCache(), new HttpClient(), new HttpClient(), coordinator);
+        var services = new ClimateExplorerApiServices(new MemoryCache(), new MemoryCache(), new HttpClient(), coordinator);
         using var cts = new CancellationTokenSource();
         cts.Cancel();
 
@@ -163,7 +163,7 @@ public sealed class ClimateRecordsEndpointsTests
     {
         var ghcndLocationId = await GetSingleStationGhcndLocationId("AE000041196");
         var coordinator = new RecordingSourceUpdateCoordinator();
-        var services = new ClimateExplorerApiServices(new MemoryCache(), new MemoryCache(), new HttpClient(), new HttpClient(), coordinator);
+        var services = new ClimateExplorerApiServices(new MemoryCache(), new MemoryCache(), new HttpClient(), coordinator);
 
         await ClimateRecordsEndpoints.GetClimateRecords(services, ghcndLocationId, DataType.TempMax, DataAdjustment.Unadjusted, take: 1);
 
@@ -176,7 +176,7 @@ public sealed class ClimateRecordsEndpointsTests
         // The location cache build calls GetClimateRecords this way for RecordHigh; it must never download.
         var ghcndLocationId = await GetSingleStationGhcndLocationId("AE000041196");
         var coordinator = new RecordingSourceUpdateCoordinator();
-        var services = new ClimateExplorerApiServices(new MemoryCache(), new MemoryCache(), new HttpClient(), new HttpClient(), coordinator);
+        var services = new ClimateExplorerApiServices(new MemoryCache(), new MemoryCache(), new HttpClient(), coordinator);
 
         var response = await ClimateRecordsEndpoints.GetClimateRecords(
             services,
@@ -202,7 +202,7 @@ public sealed class ClimateRecordsEndpointsTests
     {
         var coordinator = new StubSourceUpdateCoordinator(
             new DataSetSourcePreparationResult(DataSetSourcePreparationOutcome.RefreshFailed));
-        return new ClimateExplorerApiServices(new MemoryCache(), new MemoryCache(), new HttpClient(), new HttpClient(), coordinator);
+        return new ClimateExplorerApiServices(new MemoryCache(), new MemoryCache(), new HttpClient(), coordinator);
     }
 
     private sealed class StubSourceUpdateCoordinator(DataSetSourcePreparationResult result) : IDataSetSourceUpdateCoordinator

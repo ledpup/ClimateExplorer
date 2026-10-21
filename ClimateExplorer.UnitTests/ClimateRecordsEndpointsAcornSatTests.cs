@@ -124,7 +124,7 @@ public sealed class ClimateRecordsEndpointsAcornSatTests
     {
         var coordinator = new StubSourceUpdateCoordinator(
             new DataSetSourcePreparationResult(DataSetSourcePreparationOutcome.RefreshFailed));
-        return new ClimateExplorerApiServices(new MemoryCache(), new MemoryCache(), new HttpClient(), new HttpClient(), coordinator);
+        return new ClimateExplorerApiServices(new MemoryCache(), new MemoryCache(), new HttpClient(), coordinator);
     }
 
     private static AcornSatClimateRecordService CreateAcornSatService()

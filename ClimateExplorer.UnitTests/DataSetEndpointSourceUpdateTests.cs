@@ -178,7 +178,7 @@ public sealed class DataSetEndpointSourceUpdateTests
         ICache cache,
         IDataSetSourceUpdateCoordinator coordinator)
     {
-        return new ClimateExplorerApiServices(cache, new MemoryCache(), new HttpClient(), new HttpClient(), coordinator);
+        return new ClimateExplorerApiServices(cache, new MemoryCache(), new HttpClient(), coordinator);
     }
 
     private static string GetCacheKey(PostDataSetsRequestBody body)
