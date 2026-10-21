@@ -10,16 +10,21 @@ using static ClimateExplorer.Core.Enums;
 
 public sealed class RecentObservationsDataProvider : IRecentObservationsDataProvider
 {
+    private static readonly TimeSpan DefaultFailedFetchRetryDelay = TimeSpan.FromSeconds(1);
+
     private readonly IDataService dataService;
     private readonly ILogger<RecentObservationsDataProvider>? logger;
+    private readonly TimeSpan failedFetchRetryDelay;
     private readonly Dictionary<RecentObservationsDataCacheKey, Task<RecentObservationsDataSet>> cache = [];
 
     public RecentObservationsDataProvider(
         IDataService dataService,
-        ILogger<RecentObservationsDataProvider>? logger = null)
+        ILogger<RecentObservationsDataProvider>? logger = null,
+        TimeSpan? failedFetchRetryDelay = null)
     {
         this.dataService = dataService;
         this.logger = logger;
+        this.failedFetchRetryDelay = failedFetchRetryDelay ?? DefaultFailedFetchRetryDelay;
     }
 
     public Task<RecentObservationsDataSet> LoadTemperatureData(Location location, DataAdjustment? preferredAdjustment = DataAdjustment.Adjusted)
@@ -64,7 +69,7 @@ public sealed class RecentObservationsDataProvider : IRecentObservationsDataProv
         }
 
         logger?.LogInformation("Loading recent observations {Domain} data for location {LocationId}", key.DomainKey, key.LocationId);
-        var task = fetch();
+        var task = FetchWithRetry(key, fetch);
         cache[key] = task;
 
         try
@@ -90,6 +95,27 @@ public sealed class RecentObservationsDataProvider : IRecentObservationsDataProv
 
             throw;
         }
+    }
+
+    // A request the API fails outright (as opposed to answering RefreshFailed) has so far proved transient -
+    // it tends to happen while a source refresh is in flight, and the user's own Retry then succeeds
+    // straight away - so try once more on their behalf before reporting it. Timeouts aren't retried: a
+    // second wait of the same length is no help.
+    private async Task<RecentObservationsDataSet> FetchWithRetry(
+        RecentObservationsDataCacheKey key,
+        Func<Task<RecentObservationsDataSet>> fetch)
+    {
+        try
+        {
+            return await fetch();
+        }
+        catch (HttpRequestException ex)
+        {
+            logger?.LogWarning(ex, "Loading recent observations {Domain} data for location {LocationId} failed; retrying once", key.DomainKey, key.LocationId);
+        }
+
+        await Task.Delay(failedFetchRetryDelay);
+        return await fetch();
     }
 
     private async Task<RecentObservationsDataSet> FetchTemperatureData(Guid locationId, DataAdjustment? preferredAdjustment)

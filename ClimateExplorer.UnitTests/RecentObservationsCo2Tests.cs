@@ -3,6 +3,7 @@ namespace ClimateExplorer.UnitTests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.Client.Services;
@@ -93,6 +94,76 @@ public class RecentObservationsCo2Tests
     }
 
     [TestMethod]
+    public async Task LoadData_FirstRequestFails_RetriesOnceAndReturnsData()
+    {
+        var dataService = new Mock<IDataService>();
+        dataService
+            .SetupSequence(x => x.GetClimateRecords(
+                ContextId,
+                DataType.CO2,
+                null,
+                It.IsAny<bool>(),
+                It.IsAny<int?>(),
+                It.IsAny<int?>(),
+                It.IsAny<int?>(),
+                false,
+                It.IsAny<int?>()))
+            .ThrowsAsync(new HttpRequestException("Response status code does not indicate success: 500 (Internal Server Error)."))
+            .ReturnsAsync(CreateResponse(CreateDailyRecords(new DateOnly(2026, 6, 1), new DateOnly(2026, 6, 14))));
+        var service = CreateService(dataService);
+
+        var dataSet = await service.LoadData(ContextId, ObservationDomainCatalog.Co2);
+
+        Assert.IsTrue(dataSet.IsSupported);
+        dataService.Verify(
+            x => x.GetClimateRecords(
+                ContextId,
+                DataType.CO2,
+                null,
+                It.IsAny<bool>(),
+                It.IsAny<int?>(),
+                It.IsAny<int?>(),
+                It.IsAny<int?>(),
+                false,
+                It.IsAny<int?>()),
+            Times.Exactly(2));
+    }
+
+    [TestMethod]
+    public async Task LoadData_RetryAlsoFails_ThrowsHttpRequestException()
+    {
+        var dataService = new Mock<IDataService>();
+        dataService
+            .Setup(x => x.GetClimateRecords(
+                ContextId,
+                DataType.CO2,
+                null,
+                It.IsAny<bool>(),
+                It.IsAny<int?>(),
+                It.IsAny<int?>(),
+                It.IsAny<int?>(),
+                false,
+                It.IsAny<int?>()))
+            .ThrowsAsync(new HttpRequestException("Response status code does not indicate success: 500 (Internal Server Error)."));
+        var service = CreateService(dataService);
+
+        await Assert.ThrowsExactlyAsync<HttpRequestException>(
+            () => service.LoadData(ContextId, ObservationDomainCatalog.Co2));
+        dataService.Verify(
+            x => x.GetClimateRecords(
+                ContextId,
+                DataType.CO2,
+                null,
+                It.IsAny<bool>(),
+                It.IsAny<int?>(),
+                It.IsAny<int?>(),
+                It.IsAny<int?>(),
+                false,
+                It.IsAny<int?>()),
+            Times.Exactly(2));
+    }
+
+    [TestMethod]
     public async Task Calculate_Co2Domain_ProducesNoSeasonTilesAndFormatsPpm()
     {
         var dataService = new Mock<IDataService>();
@@ -140,7 +211,7 @@ public class RecentObservationsCo2Tests
     private static RecentObservationsService CreateService(Mock<IDataService> dataService)
     {
         return new RecentObservationsService(
-            new RecentObservationsDataProvider(dataService.Object),
+            new RecentObservationsDataProvider(dataService.Object, failedFetchRetryDelay: TimeSpan.Zero),
             new RecentObservationsCalculator());
     }
 
