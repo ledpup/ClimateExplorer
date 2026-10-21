@@ -90,7 +90,8 @@ public sealed class DataSetSourceUpdateCoordinator(
             logger.LogDebug("Cached response is fresh for assets [{AssetKeys}]; no download attempted", string.Join(", ", assets.Select(x => x.AssetKey)));
             return new DataSetSourcePreparationResult(
                 DataSetSourcePreparationOutcome.UseCached,
-                DataSetRetrievalDate.OldestFor(currentStates));
+                DataSetRetrievalDate.OldestFor(currentStates),
+                OldestLatestRecordDate(currentStates));
         }
 
         if (currentStates == null && permitSourceUpdate && IsBackingOff(assets))
@@ -141,7 +142,8 @@ public sealed class DataSetSourceUpdateCoordinator(
 
         return new DataSetSourcePreparationResult(
             DataSetSourcePreparationOutcome.Rebuild,
-            DataSetRetrievalDate.OldestFor(refreshedStates));
+            DataSetRetrievalDate.OldestFor(refreshedStates),
+            OldestLatestRecordDate(refreshedStates));
     }
 
     public async Task<IReadOnlyList<DataSetSourceState>?> EnsureCurrentAsync(
@@ -168,6 +170,13 @@ public sealed class DataSetSourceUpdateCoordinator(
         }
 
         return states;
+    }
+
+    private static DateOnly? OldestLatestRecordDate(IReadOnlyList<DataSetSourceState> states)
+    {
+        return states.Count == 0 || states.Any(x => x.LatestRecordDate == null)
+            ? null
+            : states.Min(x => x.LatestRecordDate);
     }
 
     private bool IsBackingOff(IReadOnlyList<DataSetDownloadRequest> assets)
