@@ -202,6 +202,11 @@ public partial class RecentObservationsPanel
         await EnsureTabLoaded(domain);
     }
 
+    private void DismissRefreshWarning()
+    {
+        CurrentState.RefreshFailed = false;
+    }
+
     // RecalculateTab writes each result's reference date back into selectedReferenceDate, so after
     // the first load every later calculation is pinned to that day - even once reloaded data has a
     // newer one. While it's still sitting on the newest day the old data had, the user is viewing
