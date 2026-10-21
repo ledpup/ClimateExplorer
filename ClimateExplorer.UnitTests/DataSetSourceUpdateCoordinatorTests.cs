@@ -58,6 +58,20 @@ public sealed class DataSetSourceUpdateCoordinatorTests
     }
 
     [TestMethod]
+    public async Task PrepareAsync_ColdManagedSource_RecordsHashOfPublishedContent()
+    {
+        var stateStore = new MemoryStateStore();
+        var coordinator = CreateCoordinator(new StubDownloader(ValidNinoContent), stateStore: stateStore);
+
+        await coordinator.PrepareAsync(await CreateNinoRequest(), null, permitSourceUpdate: true, CancellationToken.None);
+
+        var published = await DataSetSourceFileStore.ComputeFileInfoAsync(Path.Combine(temporaryRoot, "Nino34", "nino34.long.anom.data.txt"), CancellationToken.None);
+        var state = await stateStore.GetAsync("NINO34/NINO34.LONG.ANOM.DATA.TXT", CancellationToken.None);
+        Assert.AreEqual(published.Sha256, state!.Sha256);
+        Assert.AreEqual(published.Length, state.Length);
+    }
+
+    [TestMethod]
     public async Task PrepareAsync_ColdManagedSourceWithoutPermitSourceUpdate_DoesNotDownloadAndReturnsRefreshFailed()
     {
         var downloader = new StubDownloader(ValidNinoContent);
@@ -169,6 +183,24 @@ public sealed class DataSetSourceUpdateCoordinatorTests
     }
 
     [TestMethod]
+    public async Task PrepareAsync_PublishedBomSourceAdopted_RecordsHashAndDateOfPublishedFile()
+    {
+        var yesterday = DateOnly.FromDateTime(Now.UtcDateTime).AddDays(-1);
+        var stateStore = new MemoryStateStore();
+        var coordinator = CreateCoordinator(new StubDownloader(string.Empty, key: "bom-station"), stateStore: stateStore);
+        var (request, stationId) = await CreateBomRequest();
+        WriteBomArchive(stationId, lastDate: yesterday);
+
+        await coordinator.PrepareAsync(request, null, permitSourceUpdate: true, CancellationToken.None);
+
+        var published = await DataSetSourceFileStore.ComputeFileInfoAsync(Path.Combine(temporaryRoot, "BOM", $"{stationId}.zip"), CancellationToken.None);
+        var state = await stateStore.GetAsync($"BOM/{stationId}.ZIP", CancellationToken.None);
+        Assert.AreEqual(published.Sha256, state!.Sha256);
+        Assert.AreEqual(yesterday, state.LatestRecordDate);
+        Assert.AreEqual(published.LastWriteTimeUtc, state.RetrievedDate);
+    }
+
+    [TestMethod]
     public async Task PrepareAsync_FreshResponseAndCurrentBomSource_ReturnsSourceLatestRecordDate()
     {
         var yesterday = DateOnly.FromDateTime(Now.UtcDateTime).AddDays(-1);
@@ -245,7 +277,8 @@ public sealed class DataSetSourceUpdateCoordinatorTests
         IDataSetDownloader downloader,
         DataSetAssetLockProvider? lockProvider = null,
         TimeSpan? onRequestRefreshTimeout = null,
-        TimeProvider? timeProvider = null)
+        TimeProvider? timeProvider = null,
+        IDataSetSourceStateStore? stateStore = null)
     {
         timeProvider ??= new FixedTimeProvider(Now);
         return new DataSetSourceUpdateCoordinator(
@@ -254,7 +287,7 @@ public sealed class DataSetSourceUpdateCoordinatorTests
             lockProvider ?? new DataSetAssetLockProvider(),
             new DataSetDownloadWorkspaceFactory(),
             new DataSetSourceFileStore(temporaryRoot),
-            new MemoryStateStore(),
+            stateStore ?? new MemoryStateStore(),
             new DataSetDownloadValidator(),
             [downloader],
             timeProvider,
