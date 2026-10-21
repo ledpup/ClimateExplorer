@@ -47,7 +47,7 @@ public sealed class FileDataSetSourceStateStore(string stateFolder) : IDataSetSo
         }
     }
 
-    private string GetStatePath(string assetKey)
+    public string GetStatePath(string assetKey)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(assetKey);
         var hash = SHA256.HashData(Encoding.UTF8.GetBytes(assetKey));
