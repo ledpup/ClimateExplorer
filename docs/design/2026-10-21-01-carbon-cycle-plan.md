@@ -1,6 +1,10 @@
-# Carbon Cycle page — Plan
+# Carbon Cycle page — Overview
 
-Status: draft v0.7 (21 Oct 2026). Scope of this plan: **Tab 1 (Fossil fuels and limestone)** and the **parameter system**. Tabs 2–7 are stubbed to define the hand-off contract (§7).
+- **Date:** 2026-10-21
+- **Status:** Proposed (draft v0.8)
+- **Author:** Patrick Lea (with Claude)
+- **Scope:** the Carbon Cycle page as a whole: purpose, tab layout, design principle, the input-tab contract, the parameter system and data. Each tab has its own plan (§1.2).
+- **Branch context:** `issues/carbon-cycle`
 
 ---
 
@@ -43,17 +47,17 @@ The input tabs produce species (view 2), the model turns species into agents (vi
 
 ### 1.2 Tabs
 
-The page reads left to right:
+The page reads left to right. Tabs 1–3 are optional input tabs: the user needs at least one and can use all three (§2.1).
 
-| Tab | Topic | Takes | Produces |
-|---|---|---|---|
-| 1 | Fossil fuels and limestone | User inputs | Emissions: CO₂, CH₄, CO, NOx, VOC, SO₂, BC, contrails (§2) |
-| 2 | Land and agriculture | User inputs | Emissions: CO₂ (land clearing), CH₄, N₂O, NH₃, BC/OC; albedo change (§7) |
-| 3 | Waste and industrial gases (proposed, Q13) | User inputs | Emissions: CH₄ (landfill, wastewater), halogenated gases, industrial N₂O (§7) |
-| 4 | Circulation and lifetimes | Tabs 1–3 emissions | Carbon in atmosphere / land / ocean / crust over time; CH₄, N₂O and halocarbon decay |
-| 5 | Radiative forcing | Tab 4 concentrations + short-lived emissions | W/m² by agent, attributable to species and activities |
-| 6 | Temperature | Tab 5 forcing | °C response |
-| 7 | Modelled vs measured | Tabs 1–6 run on historical emissions | Model output overlaid on observed records and the §1.1 chart |
+| Tab | Topic | Takes | Produces | Plan |
+|---|---|---|---|---|
+| 1 | Fossil fuels and limestone | User inputs (optional) | Emissions: CO₂, CH₄, CO, NOx, VOC, SO₂, BC, contrails | [Tab 1](2026-10-21-04-carbon-cycle-tab1-fossil-fuels-plan.md) |
+| 2 | Land and agriculture | User inputs (optional) | Emissions: CO₂ (land clearing), CH₄, N₂O, NH₃, BC/OC; albedo change | [Tab 2](2026-10-21-05-carbon-cycle-tab2-land-agriculture-plan.md) (stub) |
+| 3 | Waste and industrial gases | User inputs (optional) | Emissions: CH₄ (landfill, wastewater), halogenated gases, industrial N₂O | [Tab 3](2026-10-21-06-carbon-cycle-tab3-waste-industrial-gases-plan.md) (stub) |
+| 4 | Circulation and lifetimes | Emissions from the included input tabs | Carbon in atmosphere / land / ocean / crust over time; CH₄, N₂O and halocarbon decay | §7 (stub) |
+| 5 | Radiative forcing | Tab 4 concentrations + short-lived emissions | W/m² by agent, attributable to species and activities | §7 (stub) |
+| 6 | Temperature | Tab 5 forcing | °C response | §7 (stub) |
+| 7 | Modelled vs measured | Tabs 1–6 run on historical emissions | Model output overlaid on observed records and the §1.1 chart | [Tab 7](2026-10-21-07-carbon-cycle-tab7-modelled-vs-measured-plan.md) (stub) |
 
 Not a personal carbon-footprint calculator and not a consumer tool. It must work equally for "one truck driving 1,000 km" and "a nation's annual coal burn".
 
@@ -87,384 +91,27 @@ Rules:
 
 ---
 
-## 2. Tab 1 — Fossil fuels and limestone: extraction, refinement, transport, combustion and calcination
-
-### 2.1 Sub-sections
-
-1. **Combustion (main focus)**, alongside **limestone calcination** (§2.2.1)
-2. **Incomplete combustion and tropospheric ozone** (sub-section: CO, NMVOCs, CH₄ and NOx as ozone precursors)
-3. **Sulfur and sulfate aerosols** (sub-section: the cooling by-product)
-4. **Upstream: extraction, refinement, transport** (overhead factors, kept light)
-5. **Where it's burned** (combustors: transport, power, industry, buildings, and a per-passenger / per-tonne transport comparison)
-6. **Calculator** (inputs → result → "send to Tab 4")
-
-Every sub-section follows §1.3. Each one opens with its Level 1 overview, a sentence or two and at most one picture or table, and the rest sits behind an expand.
-
-### 2.2 Combustion chemistry content
-
-Worked examples, in this order (easiest first, §1.3):
-
-1. **Level 1: coal** (simplified as carbon): `C + O₂ → CO₂`. One carbon atom plus oxygen from the air gives one CO₂.
-   **Level 1, alongside coal: limestone** `CaCO₃ → CaO + CO₂`. Heating rock releases CO₂ with no burning at all (§2.2.1).
-2. **Level 2: methane**: `CH₄ + 2 O₂ → CO₂ + 2 H₂O`. The hydrogen burns to water too.
-3. **Level 2: octane** (petrol): `2 C₈H₁₈ + 25 O₂ → 16 CO₂ + 18 H₂O`.
-4. **Level 2: the general rule** for any hydrocarbon:
-
-```
-CxHy + (x + y/4) O₂ → x CO₂ + (y/2) H₂O + heat
-```
-
-Key teaching points. Mass gain is Level 1; the other two start with a one-line plain version at Level 1 and give the explanation at Level 2:
-
-- **Mass gain**: each carbon atom (12 g/mol) leaves as CO₂ (44 g/mol), so 1 kg of carbon → 3.664 kg CO₂. This is why 1 L of petrol (~0.74 kg) produces ~2.3 kg CO₂ — the oxygen comes from the air.
-- **Hydrogen fraction matters**: more H per C means more energy per unit of CO₂ (methane best, coal worst). Show CO₂ per MJ alongside CO₂ per kg.
-- **Carbon vs CO₂ units**: the carbon-cycle literature uses GtC; emissions reporting uses Gt CO₂. Show both everywhere, and convert explicitly (×3.664).
-
-### 2.2.1 Limestone: calcination (cement and lime)
-
-**Main point (Level 1):** making cement means heating limestone to ~900 °C, which drives CO₂ out of the rock:
-
-```
-CaCO₃ + heat → CaO + CO₂
-```
-
-Most of a cement kiln's CO₂ comes from the rock, not the fuel. The heat itself comes from burning coal or petroleum coke, so a cement kiln has two CO₂ streams: roughly 60% from the limestone and 40% from the fuel (to verify). Globally, the rock alone gives ~1.6 Gt CO₂/yr, about 4% of the CO₂ from fossil fuels and limestone together.
-
-**Level 2 content:**
-- **Mass:** CaCO₃ (100.09 g/mol) → CO₂ (44.01), so 1 kg of pure limestone releases 0.44 kg CO₂. That's a fixed constant. The editable assumption is how much CaO ends up in the product.
-- **Clinker:** ~65% CaO, so ~0.51–0.52 t CO₂ per t clinker from the rock. That's IPCC's Tier 1 default; to verify. Cement is clinker ground with gypsum and fillers, at a clinker ratio of ~0.65–0.75. Lowering that ratio is a real-world lever, so make it editable.
-- **Lime** (CaO for steelmaking, construction, water treatment): the same reaction. ~0.75 t CO₂ per t high-calcium lime (IPCC default; to verify). Dolomitic lime also releases CO₂ from MgCO₃ → MgO + CO₂.
-- **Recarbonation:** over decades, concrete slowly reabsorbs some CO₂ from the air (CaO + CO₂ → CaCO₃ at the surface). The Global Carbon Budget now counts this as a sink. v1 mentions it in text only, with no model.
-- **Related non-combustion releases of fossil carbon** (same scope rule, §1; Level 2 text, rows later):
-  - steam methane reforming for hydrogen and ammonia, `CH₄ + 2 H₂O → CO₂ + 4 H₂`
-  - iron-ore reduction in blast furnaces, `Fe₂O₃ + 3 CO → 2 Fe + 3 CO₂`, which is part of the blast-furnace row's coke use
-
-**Tie to later tabs:** this is carbon from the crust reservoir. Tab 4 should compare the rates. People move carbon from geological stores to the air at ~38 Gt CO₂/yr (fossil fuels plus limestone). Volcanoes move ~0.3–0.4 Gt CO₂/yr. That's about 100 times faster (to verify).
-
-**Model inputs (editable):** CaO content of clinker, clinker ratio of cement, lime type, and the kiln fuel and fuel energy per t clinker (§2.6.3). Defaults per §3.5.
-
-### 2.3 Incomplete combustion and tropospheric ozone (sub-section)
-
-**Main point:** combustion by-products are ozone precursors, and tropospheric ozone (O₃) is a greenhouse gas. Incomplete combustion barely changes the carbon budget, because CO becomes CO₂ within months. What it adds is ozone formation.
-
-**Level 1** is the main point in plain words: "Engines and fires also give off gases that, in sunlight, make ozone near the ground. Ozone is a short-lived greenhouse gas and a pollutant." Everything below is Level 2.
-
-**Precursors and where they come from:**
-
-| Precursor | Source | Role in ozone formation | ~Atmospheric lifetime |
-|---|---|---|---|
-| CO | Incomplete combustion | Fuel: oxidised by OH, driving the cycle | ~1–2 months |
-| Unburnt hydrocarbons (NMVOCs) | Incomplete combustion, evaporation | Fuel: oxidised by OH, driving the cycle | hours–weeks |
-| CH₄ | Fugitive emissions (§2.8), unburnt gas slip | Fuel: slow, global background ozone source | ~10 years |
-| NOx (NO + NO₂) | High-temperature combustion | Catalyst: needed to turn the oxidation into O₃ | ~days |
-
-- **Correctness note:** NOx is *not* an incomplete-combustion product. It comes from hot, oxygen-rich combustion, where N₂ from the air reacts with O₂ (plus nitrogen in the fuel itself). Cleaner, hotter combustion can mean *less* CO but *more* NOx. The page should frame this subsection as "combustion by-products", with incomplete combustion as one source among them.
-- Keep the existing pieces: soot/black carbon is noted and deferred to Tab 5; example equation `2 CH₄ + 3 O₂ → 2 CO + 4 H₂O`.
-
-**Chemistry to show (CO as the worked example):**
-
-```
-CO  + OH        → CO₂ + H
-H   + O₂ (+M)   → HO₂
-HO₂ + NO        → OH  + NO₂
-NO₂ + sunlight  → NO  + O
-O   + O₂ (+M)   → O₃
------------------------------------
-net:  CO + 2 O₂ → CO₂ + O₃      (NOx and OH regenerated)
-```
-
-The same pattern with CH₄ and the NMVOCs produces more O₃ per molecule. Teaching points: sunlight drives it, NOx acts as a catalyst, ozone is short-lived (weeks), and its effect is regional rather than well mixed.
-
-**Simplifications to state openly on the page:**
-- Ozone production depends nonlinearly on the NOx and VOC levels already present. v1 uses an editable "ozone yield per unit precursor" factor rather than chemistry.
-- NOx also generates OH, which shortens methane's lifetime, an indirect *cooling* effect. Mention it in the text; don't model it in v1.
-- CO competes for OH, which lengthens methane's lifetime, an indirect warming effect. Also text only in v1.
-
-**Model inputs (editable, per combustor):**
-- Combustion completeness: fraction of carbon leaving as CO₂ versus CO and unburnt HC. Default ~99%+ for modern engines, lower for e.g. open burning.
-- Emission factors for CO, NOx and NMVOC, in g per kg of fuel. Defaults to be sourced per §3.5 (IPCC first; the EMEP/EEA Guidebook where IPCC has no Tier 1 factor).
-- Precursor masses are carried to Tab 5 for ozone forcing. CO's carbon is still counted in the carbon total sent to Tab 4.
-
-### 2.4 Sulfur and sulfate aerosols (sub-section)
-
-**Main point:** sulfur in fuel is the main by-product that *cools* the climate. It works in the opposite direction to CO₂ and ozone and, globally, masks a sizeable part of the warming. Unlike CO₂, its effect stops within weeks of the emissions stopping. That makes it the counterweight in the story: cleaning up sulfur improves air quality and acid rain, and it also removes some of that cooling.
-
-**Level 1** is that main point plus one picture: a satellite image of ship tracks. The chemistry, inputs and sulfur table are Level 2.
-
-**Chemistry to show:**
-
-```
-S (in fuel) + O₂        → SO₂                    (in the flame)
-SO₂ + OH (+M)           → HOSO₂                  (gas phase)
-HOSO₂ + O₂              → HO₂ + SO₃
-SO₃ + H₂O               → H₂SO₄                  → sulfate aerosol
-SO₂ + H₂O₂ (in cloud)   → H₂SO₄                  (aqueous phase, usually the larger route)
-```
-
-- Mass gain again: 1 kg S → 2 kg SO₂ (32 → 64 g/mol). This is a fixed constant.
-- The aerosol droplets scatter sunlight (direct effect) and seed more numerous, smaller cloud droplets, giving brighter clouds (indirect effect).
-- They last days to a couple of weeks, and the effect is regional, strongest downwind of sources.
-- Side effects to mention: acid rain, and fine-particle health impacts, which are why sulfur has been regulated.
-
-**Teaching examples:**
-- **Ship tracks:** lines of bright cloud along shipping lanes, visible in satellite images. They are a direct view of the indirect effect.
-- **The 2020 shipping fuel change:** the IMO global cap cut bunker fuel sulfur from ~3.5% to 0.5%. That reduced the cooling over busy shipping lanes. This is useful as a preset ("bunker fuel before / after 2020").
-- **Coal power scrubbers:** flue-gas desulfurisation removes most of the SO₂ before it leaves the stack.
-
-**Model inputs (editable):**
-- Sulfur content per fuel (mass fraction). This becomes a new fuel-table column (§2.5).
-- SO₂ removal efficiency per combustor (scrubbers on power stations, exhaust scrubbers on ships). Default 0% for vehicles.
-- SO₂ mass is carried to Tab 5 as a negative forcing that tracks the emission rate, the same short-lived treatment as ozone.
-
-Provisional sulfur contents (to verify):
-
-| Fuel | ~Sulfur content |
-|---|---|
-| Methane / natural gas | ~0 (H₂S removed at processing; trace odorant) |
-| LPG | very low, <0.02% |
-| Petrol | ~10 ppm in ultra-low-sulfur markets; higher elsewhere |
-| Diesel | ~10 ppm (ULSD); much higher in some markets |
-| Jet fuel | spec max 0.3%; typically ~0.03–0.08% |
-| Bunker fuel (HFO) | ≤0.5% global cap since 2020 (≤0.1% in emission control areas); ~2.5–3.5% before |
-| Lignite | ~0.3–2.5%, highly variable |
-| Sub-bituminous coal | ~0.2–1% (Indonesian and US Powder River Basin coal are low-sulfur) |
-| Bituminous coal | ~0.5–3% |
-| Anthracite | ~0.5–1% |
-
-### 2.5 Fuel table
-
-**Level 1 short list (6 rows):**
-
-| Short-list row | Stands for (Level 2 rows) | Default when used as one row |
-|---|---|---|
-| Coal | Brown coal (lignite), sub-bituminous coal, black coal (bituminous), anthracite; plus coke and petroleum coke | Bituminous, as received (to revisit: a burn-weighted world-average coal may be better) |
-| Natural gas | Methane / natural gas, CNG, LPG | Natural gas |
-| Petrol | Petrol | Petrol |
-| Diesel | Diesel | Diesel |
-| Jet fuel | Jet fuel, kerosene | Jet fuel |
-| Ship fuel | Heavy fuel oil (bunker fuel) | HFO |
-
-Level 1 columns: Name, Image, CO₂ per kg, CO₂ per litre (per m³ for gas), CO₂ per unit of energy. All other columns are Level 2 ("Show all columns").
-
-**Sorting (Q1, resolved):** the table is sortable on any column. Default sort: CO₂ per unit of energy, highest first. That puts coal at the top, matching the coal-first chemistry, and natural gas at the bottom, which is the main teaching point of this table.
-
-The full (Level 2) table follows. Values are **provisional starting points to verify** using the source order in §3.5. IPCC comes first; the IPCC defaults are listed after this table.
-
-| Fuel | Representative composition | ~H:C (atomic) | ~C mass fraction | ~kg CO₂ / kg | ~Density (kg/L) | ~kg CO₂ / L (or m³) |
-|---|---|---|---|---|---|---|
-| Lignite (brown coal) | variable, high moisture | ~0.8–1.0 | 25–35% | ~1.0–1.3 | solid | — |
-| Sub-bituminous coal | variable, moderate moisture | ~0.8–0.9 | ~45–55% | ~1.7–2.0 | solid | — |
-| Bituminous (black) coal | variable | ~0.7–0.9 | 60–80% | ~2.2–2.9 | solid | — |
-| Methane / natural gas | CH₄ | 4.0 | 75% | 2.75 | 0.72 kg/m³ (0 °C) | ~1.9–2.0 per m³ |
-| LPG | C₃H₈ / C₄H₁₀ mix | 2.5–2.67 | ~82% | ~3.0 | ~0.51–0.58 | ~1.6 |
-| Petrol (gasoline) | ~C₈H₁₈ (octane) | 2.25 (octane); ~1.8–2.0 real blend | ~85% | ~3.1 | ~0.74 | ~2.3 |
-| Jet fuel (Jet A-1 kerosene) | ~C₁₂H₂₆ | 2.17 (dodecane); ~1.9–2.0 real | ~86% | ~3.16 | ~0.80 | ~2.5 |
-| Diesel | ~C₁₂–C₁₆ (cetane C₁₆H₃₄) | 2.125 (cetane); ~1.8–1.9 real | ~86% | ~3.2 | ~0.835 | ~2.7 |
-| Bunker fuel (HFO) | heavy residual, ~C₂₀+ | ~1.4–1.6 | ~85–87% | ~3.11 (IMO) | ~0.98 | ~3.1 |
-| Anthracite | mostly C | ~0.3–0.5 | 85–92% | ~3.0–3.3 | solid | — |
-
-Notes:
-- Four coal ranks at Level 2, in order of rank: lignite, sub-bituminous, bituminous, anthracite. Sub-bituminous is included (Q2) because Indonesia, the largest thermal-coal exporter, ships mostly sub-bituminous coal, and much of the US and Indian coal burn is sub-bituminous or high-ash.
-- Level 2 names lead with the plain name, e.g. "Anthracite (hard coal, almost pure carbon)" and "Lignite (brown coal)".
-- Coal values are *as received*; moisture and ash dominate the spread. Show a range plus an editable default.
-- Natural gas is mostly methane; real pipeline gas has ethane/CO₂/N₂. Row is "Methane (natural gas)" with an editable purity.
-- H:C for liquid fuels: the representative molecule gives one value, the real blend is lower because of aromatics. Show the real-blend value as the editable default and the molecule's value as the fixed reference.
-- H:C is the column that explains *why* CO₂ per MJ differs. The sort order runs almost exactly opposite to CO₂/MJ.
-
-**IPCC defaults (primary source for this table).** IPCC 2006 Guidelines Vol 2 Ch 1 (the 2019 Refinement leaves these in place) gives, per fuel, a net calorific value, a carbon content (kg C/GJ) and a CO₂ emission factor (kg CO₂/TJ), each with a 95% range. The page's editable carbon mass fraction default is **carbon content × NCV**. For diesel that is 20.2 kg C/GJ × 43.0 MJ/kg ≈ 0.87. The CO₂-per-MJ column is the IPCC emission factor itself, so the page's chemistry has a published number to check against. Values from memory, to verify against the tables:
-
-| IPCC fuel | NCV (MJ/kg) | kg CO₂/TJ (= mg/kJ) | → kg CO₂/kg |
-|---|---|---|---|
-| Natural gas | 48.0 | 56,100 | 2.69 |
-| LPG | 47.3 | 63,100 | 2.98 |
-| Motor gasoline | 44.3 | 69,300 | 3.07 |
-| Jet kerosene | 44.1 | 71,500 | 3.15 |
-| Other kerosene | 43.8 | 71,900 | 3.15 |
-| Gas/diesel oil | 43.0 | 74,100 | 3.19 |
-| Residual fuel oil | 40.4 | 77,400 | 3.13 |
-| Petroleum coke | 32.5 | 97,500 | 3.17 |
-| Anthracite | 26.7 | 98,300 | 2.62 |
-| Coking / other bituminous coal | 28.2 / 25.8 | 94,600 | 2.67 / 2.44 |
-| Sub-bituminous coal | 18.9 | 96,100 | 1.82 |
-| Lignite | 11.9 | 101,000 | 1.20 |
-| Coke oven coke | 28.2 | 107,000 | 3.02 |
-
-- **Discrepancy to resolve:** the fuel table's anthracite range (~3.0–3.3 kg CO₂/kg) is on a near dry, ash-free basis. IPCC's as-received default comes to ~2.6. Use the as-received basis throughout, to match the other coals, and say so.
-- IPCC assumes an oxidation factor of 1 (all carbon ends up as CO₂). That matches this page's accounting rule (§2.9).
-- **Rows to add for global coverage:** *kerosene* (cooking and lighting in South Asia and Africa; nearly the same as jet fuel), *petroleum coke* (a major cement-kiln fuel, especially in India), *coke* (blast furnaces), and *CNG*. CNG is the methane row with a "compressed, in kg" unit, used by auto-rickshaws, buses and cars in India, Pakistan and Iran.
-
-**Columns** (Level 1 shows Name, Image and the three CO₂ yield columns; "Show all columns" reveals the rest; per-column visibility toggles come later):
-
-1. **Name**
-2. **Image** — friendly illustration (petrol can, gas flame/cylinder, cartoon coal lumps, jet, ship tank…)
-3. **Composition** — formula / representative molecule (petrol centred on octane) plus a one-line note
-4. **Structure** — short text description of the molecular structure (see below)
-5. **Chemical diagram** — structural/skeletal formula of the representative molecule (coal shown as a simplified aromatic-ring fragment)
-6. **Approx. H:C ratio** — atomic ratio
-7. **Carbon mass fraction** — kg C per kg fuel
-8. **Density** — kg/L (kg/m³ for gas)
-9. **Net calorific value** — MJ/kg
-10. **Sulfur content** — mass fraction (§2.4)
-11. **CO₂ yield per kg**
-12. **CO₂ yield per L** (per m³ for gas)
-13. **CO₂ yield per MJ**
-
-Starting text for the Structure column:
-
-| Fuel | Structure |
-|---|---|
-| Methane | Single carbon bonded to four hydrogens (tetrahedral); the smallest hydrocarbon |
-| LPG | Short straight chains of 3–4 carbons (propane, butane) |
-| Petrol | Mix of C5–C10 straight and branched chains plus some aromatic rings; octane (C8) is the reference |
-| Jet fuel | C8–C16 chains, with some ring (cycloalkane) and aromatic molecules |
-| Diesel | Longer C10–C22 chains plus aromatics; cetane (C16) is the reference |
-| Bunker fuel | Heavy refinery residue: large, multi-ring aromatic molecules and asphaltenes, C20+ |
-| Lignite | Loose network of small aromatic clusters with a lot of oxygen, bound water and mineral matter |
-| Sub-bituminous coal | Between lignite and bituminous: somewhat larger aromatic clusters, still fairly moist (~15–30% water) |
-| Bituminous coal | Larger, more tightly linked aromatic ring clusters; less oxygen and water |
-| Anthracite | Highly condensed, nearly graphite-like stacked aromatic sheets; almost pure carbon |
-
-Fixed vs editable per fuel:
-- Fixed: molecular formula of the representative molecule, molar masses, stoichiometry.
-- Editable: carbon mass fraction (for mixtures/coal), density, net calorific value, sulfur content, upstream overhead.
-
-**Image style:** one consistent set — flat SVG illustrations, same palette, stroke weight, perspective and canvas size; light/dark-theme friendly. Chemical diagrams likewise one consistent SVG style (consider rendering from SMILES at build time so they're uniform, e.g. via RDKit, then hand-check).
-
-### 2.6 Combustor table ("where the carbon is burned")
-
-Scope (Q5, resolved): transport, power stations, and the other large fossil-fuel combustors: industry, buildings, and oil and gas operations. Rows are grouped by sector. The approximate global split shows where the carbon actually goes, and the page should open on it so the table isn't read as "mostly cars".
-
-**Global energy-related CO₂ by sector (approx., ~37 Gt CO₂/yr; IEA; to verify):**
-
-| Sector | ~Share | Main combustors |
-|---|---|---|
-| Electricity and heat | ~40% | Coal and gas power stations, district-heating boilers |
-| Industry | ~25% | Blast furnaces, cement kilns, industrial boilers, brick kilns, chemicals |
-| Transport | ~22% | Road ~75% of this; aviation and shipping ~10% each; rail ~1% |
-| Buildings (direct) | ~8% | Cooking and space heating |
-| Other energy industry | ~5% | Refinery own use, gas flaring, oil and gas field equipment |
-
-**Level 1 short list (§1.3):** the sector split above, plus about ten plain-named combustors: motorbike, car, bus, truck, train, plane, ship, coal power station, gas power station, steelworks, cement kiln, and home cooking and heating. Each one stands for its group in the Level 2 tables below. For example, "Truck" defaults to the heavy truck and expands to the light, medium and heavy rows. Level 1 columns: name, image, fuel, and CO₂ per km (or per MWh, or per tonne of product). Efficiency, capacity, emission factors and SO₂ removal are Level 2.
-
-Defaults in the tables below are **provisional placeholders to be sourced** (§3.5). Every row has: default fuel (changeable to any compatible fuel), fuel-use or efficiency input, combustion completeness, CO / NOx / NMVOC emission factors (§2.3; these vary far more by combustor than by fuel), and SO₂ removal efficiency (§2.4).
-
-#### 2.6.1 Transport: passenger
-
-Representative vehicles are chosen by global count, not Western fleets. Transport rows also carry capacity and load factor (§2.6.4).
-
-| Combustor | Representative example | Default fuel | ~Fuel use per vehicle-km | ~Capacity | ~Typical load |
-|---|---|---|---|---|---|
-| Motorcycle / scooter | 100–125 cc commuter bike (the most numerous motor vehicle in India and South-East Asia) | Petrol | ~2 L/100 km | 2 | ~1.3–2 |
-| Three-wheeler (auto-rickshaw) | CNG auto-rickshaw (India, Pakistan, Bangladesh) | CNG (methane), also LPG / petrol / diesel | ~3 kg CNG/100 km | 3–4 (often more) | ~2 |
-| Small car | 1.0–1.5 L hatchback / compact (largest segments in India and China) | Petrol | ~5–6 L/100 km | 4–5 | ~1.5 |
-| Large car / SUV | Mid-size SUV (fastest-growing segment worldwide, incl. China) | Petrol | ~8–10 L/100 km | 5 | ~1.5 |
-| Car (diesel) | Compact diesel | Diesel | ~5–6 L/100 km | 5 | ~1.5 |
-| City bus | 12 m diesel or CNG bus | Diesel / CNG | ~30–45 L/100 km | ~60–90 incl. standing | ~20–60, very place-dependent |
-| Intercity coach | 45–55 seat coach | Diesel | ~25–30 L/100 km | ~50 | ~30–45 |
-| Passenger train (diesel) | Diesel-hauled long-distance train | Diesel | per train-km, to source | ~1,000–2,000+ | high in India and China |
-| Airliner (narrow-body) | A320 / 737 class | Jet fuel | ~3–4 L/km | ~180 | ~80–85% |
-| Airliner (wide-body) | 787 / A350 / 777 class | Jet fuel | ~8–10 L/km | ~300 | ~80% |
-
-#### 2.6.2 Transport: freight
-
-| Combustor | Representative example | Default fuel | ~Fuel use per vehicle-km | ~Payload capacity | Load factor notes |
-|---|---|---|---|---|---|
-| Light commercial vehicle | ~1 t mini-truck (e.g. the small pickups and mini-trucks common in India and China) | Diesel | ~7–9 L/100 km | ~1 t | Includes empty running |
-| Medium rigid truck | ~10 t payload | Diesel | ~20–25 L/100 km | ~10 t | Empty running ~20–30% of km |
-| Heavy truck (tractor-trailer) | ~25 t payload | Diesel | ~30–35 L/100 km | ~25 t | As above |
-| Freight train (diesel) | Diesel-hauled bulk / container train | Diesel | per train-km, to source | ~2,000–5,000 t | Often empty one way (coal, ore) |
-| Container ship | ~8,000–14,000 TEU | Bunker fuel | per day at speed, to source (IMO) | ~100,000+ t | Slow steaming matters a lot |
-| Bulk carrier | Panamax / Capesize | Bunker fuel | to source (IMO) | ~70,000–180,000 t | Returns in ballast |
-| Oil tanker | VLCC | Bunker fuel | to source (IMO) | ~300,000 t | Returns in ballast |
-| Air freighter | 777F / 747-8F class | Jet fuel | ~9–11 L/km | ~100 t | ~60–70% |
-
-Aviation shows CO₂ only here. Contrails and NOx at altitude add a substantial non-CO₂ effect. That is a Tab 5 topic; the comparison view should carry a footnote saying so.
-
-#### 2.6.3 Stationary combustors
-
-| Combustor | Default fuel | Efficiency input (editable) | ~Default | Activity unit |
-|---|---|---|---|---|
-| Coal power station (subcritical) | Bituminous / sub-bituminous coal | thermal efficiency | ~33–38% (much of the Indian and older Chinese fleets) | MWh |
-| Coal power station (supercritical / ultra-supercritical) | Bituminous coal | thermal efficiency | ~40–47% (most new Chinese capacity) | MWh |
-| Lignite power station | Lignite | thermal efficiency | ~30–40% | MWh |
-| Gas power station (open cycle) | Natural gas | thermal efficiency | ~35–40% | MWh |
-| Gas power station (combined cycle) | Natural gas | thermal efficiency | ~55–60% | MWh |
-| Oil / diesel generator sets | Diesel / residual fuel oil | thermal efficiency | ~30–40% (backup power in India, Nigeria, the Middle East, islands) | MWh |
-| District-heating / CHP boiler | Coal / gas | heat efficiency | ~70–90% | MWh heat |
-| Blast furnace (steel) | Coke (from coking coal) | GJ or t coke per t hot metal | to source | t steel |
-| Cement kiln | Coal / petroleum coke, **plus limestone** | GJ per t clinker; CaO fraction; clinker ratio | ~3–3.5 GJ/t; ~65%; ~0.7 | t clinker or t cement |
-| Lime kiln | Coal / gas, **plus limestone** | GJ per t lime; lime type | to source | t lime |
-| Brick kiln | Coal | GJ per 1,000 bricks | to source (South Asia; also large black-carbon source) | 1,000 bricks |
-| Industrial boiler | Coal / gas / oil | boiler efficiency | ~75–90% | MWh steam |
-| Residential cooking stove | LPG / kerosene / coal | fuel per household-year | to source (LPG is now dominant in urban India) | household-year |
-| Residential / commercial space heating | Gas / coal / heating oil | fuel per household-year | to source (coal stoves in northern China; gas in Europe, Russia, North America) | household-year |
-| Gas flare | Natural gas | flaring combustion efficiency | ~95–98% (unburnt slip feeds §2.3) | bcm flared |
-| Off-road diesel | Diesel | L per operating hour | to source (tractors, irrigation pumpsets in India, mining haul trucks, construction plant) | operating hour |
-
-Other combustors, noted but not given rows in v1:
-- **Waste incineration:** plastics are fossil carbon, so burning them is fossil CO₂. Paper and food waste are biogenic.
-- **Fishing vessels and inland waterway barges:** cover with the ship rows and an edited size.
-- **Traditional biomass and crop-residue burning:** large in South Asia and Africa, but not fossil carbon. Mention it as out of scope, because it is a big source of the same CO and black-carbon by-products.
-
-Cement and lime kilns report two lines, **fuel CO₂** and **rock (calcination) CO₂**, so the reader sees that most of the kiln's CO₂ comes from the limestone (§2.2.1).
-
-#### 2.6.4 Moving people and goods: per passenger-km and per tonne-km
-
-Resolved (Q7): included. The point is to compare **which modes move the most for the least carbon**. It is not a personal footprint.
-
-Transport rows carry:
-- **Capacity:** seats (or standing capacity), or payload tonnes.
-- **Load factor:** occupancy or payload utilisation, including empty return trips. Editable, with a "typical" default (§2.6.1–2.6.2) and a one-click "full" option. This shows how much load factor matters: a crowded bus or train against a half-empty one, or a laden ship against one returning in ballast.
-- **Fuel use per vehicle-km.** v1 treats this as independent of load, and the page says so. A full truck burns more than an empty one; a later version could make fuel use rise linearly from empty to full.
-
-Derived outputs: g CO₂ per vehicle-km, per **passenger-km**, and per **tonne-km**.
-
-**Comparison view:**
-- Level 1: the short-list modes at typical load, on two simple charts, with the plain labels "CO₂ per passenger per km" and "CO₂ per tonne of goods per km". Full load, the full vehicle list, log scale and the well-to-wheel toggle are Level 2.
-- Two ranked bar charts, one for passenger modes (g CO₂/pkm) and one for freight modes (g CO₂/tkm). Never put both on one axis.
-- Freight spans ~2 orders of magnitude (bulk ship ~3–8, rail ~15–30, heavy truck ~60–120, light commercial ~300+, air freight ~500–1,000 g CO₂/tkm; order of magnitude, to verify), so offer a log scale.
-- Each bar shows "typical" and "full" load, so the reader sees the load-factor range, not one number.
-- Basis: combustion only (tank-to-wheel) by default. A toggle adds upstream (§2.8) to give well-to-wheel, which is the basis used by the GLEC Framework / ISO 14083 for freight.
-
-**Allocation rule:** mixed passenger and freight vehicles (belly cargo on airliners, ro-pax ferries) allocate everything to the primary use in v1. The ICAO calculator and GLEC have allocation methods; note them as a refinement.
-
-**Electric modes (Q11):** most of the world's passenger rail (India, China, Europe) and a large share of China's new cars are electric. A comparison without them would mislead. Proposal: an electric row has energy use (kWh per vehicle-km) and a grid intensity (kg CO₂/MWh), taken from a power-station row or a chosen generation mix. The carbon then comes from the power station, which keeps it inside this tab's combustion story.
-
-### 2.7 Calculator: input modes and scale
-
-The same engine must cover 10⁰–10¹³ kg.
-
-Level 1 (§1.3): presets plus the Activity mode with short-list combustors, and a result in auto-scaled units with one relatability anchor. Other input modes, the emission profile, the breakdown and scientific notation are Level 2.
-
-Input modes:
-
-1. **Activity**: combustor × distance (km), output (MWh), product (t clinker, t steel) or operating time × count
-2. **Transport task**: passengers × km or tonnes × km, plus a mode. The vehicle count comes from capacity and load factor (§2.6.4), and the vehicle count is shown.
-3. **Fuel quantity**: amount of a fuel directly (L, kL, ML, GL, kg, t, Mt, m³, bcm)
-4. **Presets**: "a heavy truck driving 1,000 km", "a Delhi–Mumbai flight", "one container ship crossing Shanghai–Rotterdam", "move 1 Mt of iron ore 1,000 km by ship / rail / truck", "one year of a 1 GW subcritical coal plant", "1 tonne of cement", "a year of China's cement production", "China's annual coal combustion", "global annual fossil emissions" (presets are just parameter sets, i.e. ready-made thought experiments, §1)
-   - **Population-scaled presets** (from OWID data, §4): any activity × a country's population for a chosen year, e.g. "everyone in India rides a motorcycle 10 km a day for a year". Shown as per-person activity × population, so the scale-up is visible.
-5. *(optional)* **Energy**: MJ/PJ/EJ of a fuel
-
-Emission profile:
-- **Single pulse (default)**: the whole amount is released at t = 0. Tab 1 deals only in quantity; time first appears in Tab 4.
-- **Constant rate (option)**: the same amount repeated each year for N years, e.g. "this nation's coal burn, every year for 30 years". This is a small Tab 1 control (on/off and N). Tab 4 handles it by summing pulses, so it costs little to support.
-
-Output display:
-- kg → t → kt → Mt → Gt with SI prefixes; scientific notation toggle
-- Always both **CO₂** and **C**
-- Relatability anchors at scale: equivalent ppm of atmospheric CO₂ if all stayed airborne (1 ppm ≈ 2.12 GtC ≈ 7.8 Gt CO₂); fraction of current global annual emissions
-- Breakdown: combustion vs upstream overhead
-
-Numeric type: `double` is sufficient (range and precision are far beyond need); keep calculation in SI base units (kg, J, m) internally, convert only at the UI edge.
-
-### 2.8 Upstream overheads
-
-- Per-fuel editable factors: extraction, refining, transport, each as % of combustion CO₂ (or kg CO₂ per unit fuel).
-- **Fugitive methane** (leaks from gas and coal) is a large upstream effect but is CH₄, not CO₂. Show it as a separate line, never merged into CO₂. Its mass is carried to Tab 5 twice over: as a greenhouse gas in its own right, and as an ozone precursor (§2.3). Editable leak rate per fuel (% of throughput for gas; m³ CH₄ per tonne for coal).
-
-### 2.9 Output contract to Tabs 4 and 5
-
-All input tabs (1–3) produce the same shape. Tab 4 and Tab 5 sum the results across tabs and keep track of which tab and activity each part came from, so forcing can be attributed back to activities (§1.1).
+## 2. Input tabs
+
+Tabs 1–3 are the input tabs. Each one turns activities into emissions; the downstream tabs (4–6) turn emissions into concentrations, forcing and temperature.
+
+### 2.1 Each input tab is optional
+
+- The user can use any one, two or all three input tabs. Tabs 4–6 need at least one.
+- An input tab is **in use** once it holds at least one activity (an entered input or a preset). Clearing its inputs takes it out of use.
+- Each in-use tab has an **"Include in model"** toggle beside its result, on by default. It switches the tab's contribution off without losing its inputs, so the reader can compare, for example, fossil fuels alone against fossil fuels plus land clearing.
+- The tab strip marks which input tabs are in use and included (a badge with an accessible name such as "In use, included").
+- Tabs 4–6 sum the included tabs. Each chart and table says which input tabs it draws on ("From: Fossil fuels and limestone; Land and agriculture"), and attribution (§1.1, view 3) lists only those tabs.
+- With no input tab in use, Tabs 4–6 show an empty state rather than blank charts or zeros: a short explanation, a link to each input tab, and one starter preset per tab.
+- No input tab depends on another. Links between them (fertiliser production in Tab 1, its N₂O in Tab 2; plastics incineration in Tab 1, landfill in Tab 3) are explanatory text, not data dependencies.
+- Tabs can use different emission profiles (one a single pulse, another a constant rate over N years). Tab 4 sums pulses, so mixing them works.
+- Which tabs are in use and included is part of the shared URL state, alongside the inputs and edited parameters (§3.3).
+- Later: page-level presets that fill several input tabs at once, e.g. "the world's emissions in 2022" across all three.
+- Tab 7 is separate. It runs every source path on historical emissions, whatever the user has entered in the input tabs ([Tab 7 plan](2026-10-21-07-carbon-cycle-tab7-modelled-vs-measured-plan.md)).
+
+### 2.2 Output contract to Tabs 4 and 5
+
+All input tabs produce the same shape. Tab 4 and Tab 5 sum the results across the included tabs and keep track of which tab and activity each part came from, so forcing can be attributed back to activities (§1.1).
 
 ```
 EmissionResult
@@ -479,11 +126,16 @@ EmissionResult
   ParameterSnapshot     // which parameter values produced this
 ```
 
-Tab 4 consumes carbon mass, the long-lived gases and the profile. Tab 5 additionally consumes the short-lived species for ozone, aerosol, contrail and albedo forcing. Changing any input tab re-runs the downstream tabs in order.
+Tab 4 consumes carbon mass, the long-lived gases and the profile. Tab 5 additionally consumes the short-lived species for ozone, aerosol, contrail and albedo forcing. Changing any input tab, or its include toggle, re-runs the downstream tabs in order.
 
-Carbon accounting rules:
+### 2.3 Carbon accounting rules
+
 - Carbon in CO, NMVOC and **fossil** CH₄ is included in `CarbonMassKg`, since it all ends up as CO₂. It is also reported in `NonCo2` for its short-term effects. The UI must label this clearly so it isn't read as double counting.
-- Carbon in **biogenic** CH₄ (cattle, rice, manure, landfill) is *not* added to `CarbonMassKg`. It was taken from the air recently, and it returns there as CO₂ when the CH₄ breaks down. The CH₄ itself still counts in full for forcing (§1, "What counts").
+- Carbon in **biogenic** CH₄ (cattle, rice, manure, landfill) is *not* added to `CarbonMassKg`. It was taken from the air recently, and it returns there as CO₂ when the CH₄ breaks down. The CH₄ itself still counts in full for forcing (§1.2, "What counts").
+
+### 2.4 Results display
+
+Every input tab's result uses the same display: auto-scaled units (kg → t → kt → Mt → Gt), both CO₂ and C, and the relatability anchors. [Tab 1 §7](2026-10-21-04-carbon-cycle-tab1-fossil-fuels-plan.md) specifies it; Tabs 2 and 3 reuse it.
 
 ---
 
@@ -526,7 +178,7 @@ Group / Tab        // for filtering
 
 Resolved (Q6): the latest IPCC material wins; other sources fill the gaps IPCC leaves. No national (e.g. Australian) inventory factors as defaults. Each parameter's `Source` records which tier it came from.
 
-1. **IPCC.** The 2006 Guidelines as amended by the **2019 Refinement**, which is the latest inventory methodology. Vol 2 (Energy) covers fuel NCV, carbon content and CO₂ factors, Tier 1 CH₄ / N₂O factors for stationary and mobile combustion, and fugitive emissions (Ch 4). The IPCC Emission Factor Database (EFDB) adds to it. **AR6** (WG1) is used for the physical constants and later-tab parameters (forcing, lifetimes, GWPs), and **AR6 WG3** for the sector split in §2.6.
+1. **IPCC.** The 2006 Guidelines as amended by the **2019 Refinement**, which is the latest inventory methodology. Vol 2 (Energy) covers fuel NCV, carbon content and CO₂ factors, Tier 1 CH₄ / N₂O factors for stationary and mobile combustion, and fugitive emissions (Ch 4). The IPCC Emission Factor Database (EFDB) adds to it. **AR6** (WG1) is used for the physical constants and later-tab parameters (forcing, lifetimes, GWPs), and **AR6 WG3** for the sector split in [Tab 1 §6](2026-10-21-04-carbon-cycle-tab1-fossil-fuels-plan.md).
 2. **Sector bodies, where IPCC gives no number** (vehicle fuel use, occupancy, plant efficiency, density, sulfur):
    - Shipping: the latest IMO GHG Study (Fourth, 2020, unless a newer one has been published).
    - Aviation: the ICAO Carbon Emissions Calculator methodology (fuel per km by aircraft type, load factors, per-passenger allocation).
@@ -552,10 +204,10 @@ Columns of interest (confirmed in the codebook):
 - `land_use_change_co2`, `methane`, `primary_energy_consumption`
 
 Uses:
-- Population-scaled presets (§2.7).
+- Population-scaled presets ([Tab 1 §7](2026-10-21-04-carbon-cycle-tab1-fossil-fuels-plan.md)).
 - National presets: "China's coal CO₂ in 2024" as a ready-made quantity, for any country.
 - Reference anchors in the results: "this is X% of the world's (or a chosen country's) annual fossil CO₂".
-- Gas flaring: `flaring_co2` gives a national check for the gas-flare combustor (§2.6.3).
+- Gas flaring: `flaring_co2` gives a national check for the gas-flare combustor ([Tab 1 §6.3](2026-10-21-04-carbon-cycle-tab1-fossil-fuels-plan.md)).
 
 Notes:
 - OWID's CO₂ figures *are* Global Carbon Budget numbers, processed and converted at 3.664. The two are the same source, so cite both.
@@ -566,93 +218,43 @@ Notes:
 ### 4.2 Other ClimateExplorer data
 
 Likely needs (to confirm):
-- Tab 7: Mauna Loa CO₂ (from 1958) and global surface temperature, plus optional observed CH₄ and ocean pH (see §7).
+- Tab 7: Mauna Loa CO₂ (from 1958) and global surface temperature, plus optional observed CH₄ and ocean pH (see the [Tab 7 plan](2026-10-21-07-carbon-cycle-tab7-modelled-vs-measured-plan.md)).
 
 ---
 
-## 5. Work breakdown (Tab 1)
+---
+
+## 5. Work breakdown (cross-cutting)
+
+Per-tab work is in each tab's plan (§1.2).
 
 1. Parameter system: record type, registry, constants set, edit popover, assumptions panel, URL state (incl. expansion state, §1.3)
-2. Calculation engine + unit tests
-3. Source and verify all fuel and combustor defaults; record citations
-4. Fuel table UI (sortable, default sort CO₂ per unit energy; units toggle; Level 1 short list and columns, "show all" for Level 2; per-column visibility controls later)
-5. Combustor table UI, grouped by sector (transport passenger, transport freight, stationary)
-6. Transport comparison view: g CO₂/pkm and g CO₂/tkm rankings, typical vs full load, log scale
-7. Calculator UI: input modes (incl. transport task), unit scaling, presets, results breakdown
-8. Chemistry content: equations (coal → methane → octane), mass-gain explainer, incomplete combustion and ozone formation sub-section, plus Level 1 plain-language text and term definitions for every section
-9. Illustration set (fuels and combustors) and chemical diagrams — single style
-10. Hand-off to Tab 4 (contract + placeholder Tab 4 that displays the received result)
+2. Page shell: the seven tabs, input-tab in-use state and "Include in model" toggles, tab-strip badges, the empty state for Tabs 4–6, and URL state for all of these (§2.1)
+3. `EmissionResult` type, summing across included input tabs, and attribution back to tab and activity (§2.2, §2.3)
+4. Shared results display (§2.4)
+5. OWID CO₂ dataset ingestion (§4.1)
 
 ---
 
 ## 6. Open questions
 
-- ~~Q1~~ Resolved: the table is sortable on any column; default sort is CO₂ per unit energy, highest first (§2.5).
-- ~~Q2~~ Resolved: sub-bituminous coal is a Level 2 row (§2.5).
-- ~~Q3~~ Resolved: single pulse by default, constant rate over N years as an option (§2.7).
-- ~~Q4~~ Resolved: fugitive methane is in v1 as a separate line, feeding Tab 5 as a GHG and an ozone precursor (§2.8).
-- **Q8** Ozone and sulfate in Tab 5: a simple editable yield factor per precursor, or published per-precursor forcing coefficients (e.g. AR6 emissions-based ERF)? The second is more defensible, but it attributes forcing to global emissions rather than computing ozone or aerosol. Now that the page's purpose is attribution (§1.1), leaning towards the published coefficients (AR6 Ch 6; Thornhill et al. 2021) for the short-lived agents, with the reactions shown as the explanation of where each coefficient comes from.
-- **Q9** Tab 7 spin-up: start the model run at 1750 using estimated historical emissions, or at 1958 from an assumed starting state? See §7.
-- **Q10** Tab 7 temperature comparison: start it at 1958 to match CO₂, or show the full instrumental record back to ~1850?
-- ~~Q5~~ Resolved: transport (globally common vehicles), power stations, industry, buildings and gas flaring are all in (§2.6).
+Question numbers are shared across the Carbon Cycle plans. Tab-specific questions are in each tab's plan (Q1–Q5, Q7, Q11, Q12 in [Tab 1](2026-10-21-04-carbon-cycle-tab1-fossil-fuels-plan.md); Q9, Q10 in [Tab 7](2026-10-21-07-carbon-cycle-tab7-modelled-vs-measured-plan.md)).
+
 - ~~Q6~~ Resolved: latest IPCC first, then sector bodies, then literature; no country-specific defaults (§3.5).
-- ~~Q7~~ Resolved: per passenger-km and per tonne-km are in, with a mode-comparison view (§2.6.4).
-- **Q11** Electric modes (electric rail, metro, EVs, e-buses) in v1, using kWh per vehicle-km × grid intensity from a power-station row? Recommended: yes for rail and buses at least, or the pkm comparison under-represents the lowest-carbon modes (§2.6.4).
-- ~~Q12~~ Resolved: limestone calcination is in, at Level 1 next to coal. Tab 1's scope rule is carbon released from geological stores (fossil fuels and carbonate rock). Land clearing is now in Tab 2. The CO₂ from biofuels and other fast-cycle carbon is out, but their non-CO₂ emissions count (§1, §2.2.1).
-- **Q13** A third input tab, "Waste and industrial gases" (landfills, wastewater, refrigerants and other halogenated gases, industrial N₂O)? Recommended: yes. Halogenated gases are +0.41 W/m², about as large as ozone, and they don't fit with combustion or agriculture. The alternative is to put halogenated gases and industrial N₂O in Tab 1 as "industry" and landfills in Tab 2.
+- **Q8** Ozone and sulfate in Tab 5: a simple editable yield factor per precursor, or published per-precursor forcing coefficients (e.g. AR6 emissions-based ERF)? The second is more defensible, but it attributes forcing to global emissions rather than computing ozone or aerosol. Now that the page's purpose is attribution (§1.1), leaning towards the published coefficients (AR6 Ch 6; Thornhill et al. 2021) for the short-lived agents, with the reactions shown as the explanation of where each coefficient comes from.
+- ~~Q13~~ Resolved: "Waste and industrial gases" is a third input tab ([Tab 3 plan](2026-10-21-06-carbon-cycle-tab3-waste-industrial-gases-plan.md)).
 - **Q14** Natural sources that respond to warming, such as wetland methane and permafrost: leave out (the page models human forcing only), or add as a Level 2 feedback in Tab 4? Wetlands are the largest single methane source, and their emissions are rising.
+- ~~Q15~~ Resolved: every input tab is optional; the user needs at least one and can use all three (§2.1).
 
 ---
 
-## 7. Other tabs (stubs; Tabs 2, 3 and 7 in more detail)
+## 7. Downstream tabs (stubs until planned)
 
-The §1.3 layering applies to every tab. For example:
-- Tab 2 Level 1: "microbes that live without air make methane: in a cow's stomach, a flooded rice field and a manure pond."
-- Tab 4 Level 1: "of each tonne of CO₂ released, roughly 40% is still in the air after a century, and about a fifth after a thousand years".
-- Tab 5 Level 1: the §1.1 forcing chart, where each bar can be clicked to show its sources. "More CO₂ traps more heat"; the logarithmic relation is at Level 2.
-- Tab 7 Level 1: one chart of model against measurement, with residuals and fit statistics at Level 2.
+Tabs 4–6 get their own plans when they are designed in detail. Level 1 examples (§1.3):
+- Tab 4: "of each tonne of CO₂ released, roughly 40% is still in the air after a century, and about a fifth after a thousand years".
+- Tab 5: the §1.1 forcing chart, where each bar can be clicked to show its sources. "More CO₂ traps more heat"; the logarithmic relation is at Level 2.
 
-### Tab 2 — Land and agriculture
-
-**Purpose:** the activity sources of forcing that aren't fossil fuel or limestone. "Cutting down trees" and "cows" are the two biggest, but rice paddies and fertiliser are also major, and they're central to the global (Asian) picture. Pigs and chickens matter mostly through their manure. They have no rumen, so their enteric methane is small: a pig emits ~1–1.5 kg CH₄/yr, against ~50–120 kg for a cow (IPCC Tier 1; to verify).
-
-**Level 1 short list:**
-
-| Activity | Main output | Forcing agents | Unifying chemistry |
-|---|---|---|---|
-| Clearing forest | CO₂ from burnt or rotting wood and soil; land turned lighter | CO₂ (+), albedo (−), BC / OC from burning | Wood is ~47–50% carbon by dry mass: `(CH₂O)n + n O₂ → n CO₂ + n H₂O` |
-| Cattle (and other ruminants) | Methane belched from the rumen | CH₄ → also ozone, stratospheric water vapour | Microbes without air: `CO₂ + 4 H₂ → CH₄ + 2 H₂O` |
-| Rice paddies | Methane from flooded soil | CH₄ | Microbes without air: `CH₃COOH → CH₄ + CO₂` |
-| Fertiliser | N₂O leaks from soil microbes; ammonia | N₂O (+); NH₃ → nitrate and sulfate aerosol (−) | Nitrification / denitrification: `NH₄⁺ → NO₃⁻ → … N₂O … → N₂` |
-
-**Level 2 rows:** buffalo, sheep and goats (enteric); pigs and chickens (manure CH₄ and N₂O); manure management systems (lagoon against dry lot, which changes CH₄ a lot); peatland drainage and peat fires (e.g. Indonesia: a large CO₂ source); crop-residue and savanna burning (CO, BC, OC, NOx; the CO₂ is not counted, §1); irrigation (part of the land-use albedo term).
-
-**Model shape (thought experiments, §1):**
-- **Clearing forest:** hectares × forest type → biomass (t dry matter/ha) × carbon fraction → CO₂. Optional soil-carbon loss and regrowth, and an albedo change per hectare by latitude. Default biomass and carbon fraction from IPCC 2006 / 2019 Refinement Vol 4 (AFOLU).
-- **Livestock:** head count × emission factor (kg CH₄/head/yr), from IPCC Tier 1 by animal type and region, plus manure CH₄ and N₂O by management system.
-- **Rice:** hectares × days flooded × daily emission factor (IPCC baseline, scaled by water regime).
-- **Fertiliser:** kg N applied × N₂O emission factor. IPCC default ~1% of applied N leaves as N₂O-N; the 2019 Refinement splits this into wet and dry climates (to verify). Convert N₂O-N to N₂O with ×44/28.
-- Presets, e.g. "every cow on Earth for a year" (~1.5 billion head; to verify), "clear 1 million ha of tropical forest", "a year of India's rice".
-- Fertiliser *production* (Haber–Bosch hydrogen from methane) belongs in Tab 1 (§2.2.1); its N₂O after it reaches the field is here.
-
-### Tab 3 — Waste and industrial gases (proposed, Q13)
-
-**Purpose:** the remaining human sources. These are the halogenated-gas bar, about as big as ozone, and the waste share of methane (~18% of human CH₄; to verify).
-
-| Activity | Forcing agents | Chemistry / Level 1 point |
-|---|---|---|
-| Landfill (rotting food, paper, wood without air) | CH₄; the CO₂ is not counted (§1) | `C₆H₁₀O₅ + H₂O → 3 CH₄ + 3 CO₂`: the same "microbes without air" story as Tab 2 |
-| Wastewater | CH₄, N₂O | As above |
-| Refrigerants, foams, sprays (CFCs, HCFCs, HFCs) | Halogenated-gas forcing (+); CFCs and HCFCs also destroy stratospheric ozone (−) | Per kg, thousands of times stronger than CO₂. They leak slowly from equipment in use ("banks"), so emissions lag production by years |
-| Electrical switchgear (SF₆), aluminium smelting (PFCs) | Halogenated-gas forcing | Lifetimes of thousands of years |
-| Nitric and adipic acid plants | N₂O | Industrial; largely avoidable with catalytic abatement |
-
-Level 2 chemistry: stratospheric ozone destruction. UV breaks a CFC (`CFCl₃ + UV → CFCl₂ + Cl`), then `Cl + O₃ → ClO + O₂` and `ClO + O → Cl + O₂`. The net is `O₃ + O → 2 O₂`, and one chlorine atom destroys thousands of ozone molecules. A teaching point: the Montreal Protocol is why the halogenated-gas bar has stopped growing, and HFCs are why it hasn't fallen faster.
-
-Model shape: kg of gas emitted (or bank × annual leak rate) by species. Radiative efficiency and lifetime per species come from AR6 Ch 7 Supplementary Material.
-
-### Tabs 4–6
-
+Scope:
 - **Tab 4 — Circulation and lifetimes:**
   - CO₂: reservoirs (atmosphere, land biosphere and soil, ocean surface and deep, crust as limestone and kerogen); the impulse-response curve for the airborne fraction over time; a summary table at years, centuries and millennia.
   - Other long-lived gases: single-lifetime decay. CH₄ ~12 yr (perturbation lifetime), N₂O ~110 yr, halogenated gases per species (to verify against AR6).
@@ -665,28 +267,3 @@ Model shape: kg of gas emitted (or bank × annual leak rate) by species. Radiati
   - Land-use albedo: from area converted.
   - Solar and volcanic: footnote only.
 - **Tab 6 — Temperature:** forcing → transient and equilibrium response.
-
-### Tab 7 — Modelled vs measured
-
-**Purpose:** run the same chain (Tabs 1–6) on historical emissions and overlay the result on observed records. It shows whether the simplified model reproduces what has actually happened, and how far each assumption moves the fit. Assumption edits made on other tabs flow through, so the user can see an edit improve or worsen the match.
-
-**Measured series (comparison window):**
-- **CO₂:** Mauna Loa monthly and annual means, starting 1958, the first continuous direct measurements. This is the anchor series.
-- **Temperature:** global mean surface temperature record (e.g. HadCRUT5, GISTEMP, NOAA, Berkeley Earth; pick one, optionally show the spread).
-- Optional later: atmospheric CH₄ (NOAA network, from the 1980s) to check the methane path; ocean pH (e.g. Hawaii Ocean Time-series, from 1988) if ocean acidification goes into Tab 4.
-
-**Model input:**
-- Historical fossil emissions by year, by fuel where available (OWID CO₂ dataset, §4.1), plus SO₂ and the ozone precursors for the non-CO₂ terms. Uses the constant-rate / time-series profile path, not a single pulse.
-- Label clearly that these are *inventory estimates* built from fuel production and trade statistics. They are the model's input, not a measurement, and the comparison only tests the model against what was actually measured.
-- Land-use CO₂ (OWID `land_use_change_co2`) and historical CH₄, N₂O and halogenated-gas emissions feed the Tab 2 and Tab 3 paths. Leaving out land-use CO₂ alone would drop about a third of cumulative CO₂, and the model would under-predict.
-- A second comparison target: the §1.1 forcing chart. The model's ERF by agent for 1750 → latest year, set against Forster et al.'s values and ranges.
-
-**Why the run can't simply start in 1958:** in 1958 the system was already ~200 years into a disturbance. The ocean and land were taking up carbon because the atmosphere was above equilibrium. A model started cold at 315 ppm, assumed to be in balance, would have almost no ocean uptake at first and would overshoot the measured curve. Options (Q9):
-1. Run from 1750 using estimated emissions; show only 1958 onward in the comparison. Most defensible; the pre-1958 emissions are estimates but the comparison stays on measured data.
-2. Start in 1958 with an assumed reservoir state (e.g. a prescribed initial ocean uptake rate). Simpler, but the starting state is itself an assumption that has to be made editable.
-- Pre-1958 ice-core CO₂ (e.g. Law Dome) could be shown as a separately labelled proxy line, off by default, kept visually distinct from the direct measurements.
-
-**Display:**
-- Measured vs modelled on one chart per quantity, with residual (modelled − measured) underneath.
-- Simple fit statistics: mean bias, RMSE, and trend comparison (model vs measured ppm/yr and °C/decade).
-- Which assumptions were edited, from the parameter snapshot, so a fit can be reproduced.
