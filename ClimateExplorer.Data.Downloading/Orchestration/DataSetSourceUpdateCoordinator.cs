@@ -37,9 +37,19 @@ public sealed class DataSetSourceUpdateCoordinator(
     /// <see cref="DefaultOnRequestRefreshTimeout"/>.
     /// </summary>
     public static readonly TimeSpan RefreshFailureBackoff = TimeSpan.FromMinutes(15);
+
+    /// <summary>
+    /// How long after publishing a source this instance trusts its own record of it without re-reading the file.
+    /// App Service's shared storage can return the replaced file for a few seconds after a publish, so the hash
+    /// check would fail and a request that waited on the refresh (e.g. the panel's TempMin behind its TempMax)
+    /// would download the same data again. Re-reading guards against the file being replaced behind the record -
+    /// a deploy restoring the committed copy - and a deploy restarts the app, which clears this.
+    /// </summary>
+    public static readonly TimeSpan RecentlyPublishedTrustWindow = TimeSpan.FromMinutes(1);
     private readonly IReadOnlyDictionary<string, IDataSetDownloader> downloaders = downloaders.ToDictionary(x => x.Key, StringComparer.Ordinal);
     private readonly TimeSpan onRequestRefreshTimeout = onRequestRefreshTimeout ?? DefaultOnRequestRefreshTimeout;
     private readonly ConcurrentDictionary<string, DateTimeOffset> refreshFailedUntil = new(StringComparer.Ordinal);
+    private readonly ConcurrentDictionary<string, (string Sha256, DateTimeOffset PublishedAt)> recentlyPublished = new(StringComparer.Ordinal);
 
     /// <summary>
     /// Whether a downloader is registered for the given key. Used by <see cref="DataSetBatchRefresher"/> to
@@ -179,6 +189,13 @@ public sealed class DataSetSourceUpdateCoordinator(
             : states.Min(x => x.LatestRecordDate);
     }
 
+    private bool IsRecentlyPublished(DataSetSourceState state)
+    {
+        return recentlyPublished.TryGetValue(state.AssetKey, out var published) &&
+            string.Equals(published.Sha256, state.Sha256, StringComparison.Ordinal) &&
+            timeProvider.GetUtcNow() - published.PublishedAt < RecentlyPublishedTrustWindow;
+    }
+
     private bool IsBackingOff(IReadOnlyList<DataSetDownloadRequest> assets)
     {
         var now = timeProvider.GetUtcNow();
@@ -217,6 +234,11 @@ public sealed class DataSetSourceUpdateCoordinator(
                 !asset.Measurements.All(x => freshnessPolicy.IsFresh(state, x.MeasurementDefinition.DataResolution, asset.DownloaderKey)))
             {
                 return null;
+            }
+
+            if (IsRecentlyPublished(state))
+            {
+                return state;
             }
 
             var fileInfo = await sourceFileStore.GetFileInfoAsync(asset.RelativePath, cancellationToken);
@@ -290,6 +312,7 @@ public sealed class DataSetSourceUpdateCoordinator(
                 LatestRecordDate = latestRecordDate,
             };
             await stateStore.PutAsync(state, cancellationToken);
+            recentlyPublished[asset.AssetKey] = (state.Sha256, timeProvider.GetUtcNow());
             logger.LogInformation(
                 "Refreshed dataset source {AssetKey} via {DownloaderKey} in {ElapsedMs}ms; published {Length} bytes, latest record date {LatestRecordDate}",
                 asset.AssetKey,

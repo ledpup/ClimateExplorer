@@ -72,6 +72,42 @@ public sealed class DataSetSourceUpdateCoordinatorTests
     }
 
     [TestMethod]
+    public async Task PrepareAsync_PublishedFileReadsDifferentlyJustAfterRefresh_TrustsOwnRecordWithoutDownloadingAgain()
+    {
+        var downloader = new StubDownloader(ValidNinoContent);
+        var timeProvider = new FixedTimeProvider(Now);
+        var coordinator = CreateCoordinator(downloader, timeProvider: timeProvider);
+        var request = await CreateNinoRequest();
+        await coordinator.PrepareAsync(request, null, permitSourceUpdate: true, CancellationToken.None);
+
+        // Stands in for shared storage still returning the replaced file just after the publish.
+        await File.WriteAllTextAsync(Path.Combine(temporaryRoot, "Nino34", "nino34.long.anom.data.txt"), ValidNinoContent + "\n");
+        timeProvider.Now = Now.Add(DataSetSourceUpdateCoordinator.RecentlyPublishedTrustWindow / 2);
+        var result = await coordinator.PrepareAsync(request, null, permitSourceUpdate: true, CancellationToken.None);
+
+        Assert.AreEqual(DataSetSourcePreparationOutcome.Rebuild, result.Outcome);
+        Assert.AreEqual(Now, result.RetrievedDate);
+        Assert.AreEqual(1, downloader.CallCount);
+    }
+
+    [TestMethod]
+    public async Task PrepareAsync_PublishedFileReplacedAfterTrustWindow_DownloadsAgain()
+    {
+        var downloader = new StubDownloader(ValidNinoContent);
+        var timeProvider = new FixedTimeProvider(Now);
+        var coordinator = CreateCoordinator(downloader, timeProvider: timeProvider);
+        var request = await CreateNinoRequest();
+        await coordinator.PrepareAsync(request, null, permitSourceUpdate: true, CancellationToken.None);
+
+        // Stands in for a deploy restoring a different copy of the file behind the record.
+        await File.WriteAllTextAsync(Path.Combine(temporaryRoot, "Nino34", "nino34.long.anom.data.txt"), ValidNinoContent + "\n");
+        timeProvider.Now = Now.Add(DataSetSourceUpdateCoordinator.RecentlyPublishedTrustWindow);
+        await coordinator.PrepareAsync(request, null, permitSourceUpdate: true, CancellationToken.None);
+
+        Assert.AreEqual(2, downloader.CallCount);
+    }
+
+    [TestMethod]
     public async Task PrepareAsync_ColdManagedSourceWithoutPermitSourceUpdate_DoesNotDownloadAndReturnsRefreshFailed()
     {
         var downloader = new StubDownloader(ValidNinoContent);
