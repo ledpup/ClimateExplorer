@@ -62,7 +62,9 @@ internal sealed class AcornSatClimateRecordService(
 
         var preparation = await coordinator.PrepareAsync(cdoRequest, cachedEntry, permitSourceUpdate: true, cancellationToken);
 
-        if (preparation.Outcome == DataSetSourcePreparationOutcome.UseCached && cachedEntry is { IsConclusive: true })
+        if (preparation.Outcome == DataSetSourcePreparationOutcome.UseCached &&
+            cachedEntry is { IsConclusive: true } &&
+            CoversCurrentSource(cachedEntry, preparation))
         {
             logger.LogDebug(
                 "CDO source fresh for {LocationId}/{DataType}; reusing cached ACORN-SAT extension decision without re-reading series",
@@ -121,6 +123,9 @@ internal sealed class AcornSatClimateRecordService(
                 ComparisonSignature = extension.ComparisonSignature!,
                 OverlayRecords = extension.OverlayRecords.ToList(),
                 RetrievedDate = retrievedDate,
+                LatestCdoSourceRecordDate = cdoSeries.DataRecords?
+                    .Where(x => x.Value.HasValue && double.IsFinite(x.Value.Value) && x.Date.HasValue)
+                    .Max(x => x.Date),
             };
             await extensionCache.PutAsync(entry);
         }
@@ -173,6 +178,21 @@ internal sealed class AcornSatClimateRecordService(
         }
 
         return new DataSetRetrievalOutcome(dataSet, outcome.RefreshFailed);
+    }
+
+    /// <summary>
+    /// Whether a cached entry was built from CDO data at least as recent as the source now holds. Being saved
+    /// recently isn't enough on its own: an entry has been seen built from the file as it was before a refresh
+    /// yet carrying the refresh's retrieval time (Hobart TempMax, 2026-10-22, with the API on several instances
+    /// sharing the source file and the cache), and was then served as current until it aged out. The source's
+    /// latest record date is the
+    /// oldest across its measurements, so an entry built from the current file always reaches it. Entries saved
+    /// before this date was recorded don't, and are rebuilt once.
+    /// </summary>
+    private static bool CoversCurrentSource(AcornSatExtensionCacheEntry cachedEntry, DataSetSourcePreparationResult preparation)
+    {
+        return preparation.LatestRecordDate is not { } sourceLatestRecordDate ||
+            cachedEntry.LatestCdoSourceRecordDate >= sourceLatestRecordDate;
     }
 
     private static PostDataSetsRequestBody BuildCdoRequest(Guid cdoDataSetDefinitionId, Guid locationId, DataType dataType)

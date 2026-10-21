@@ -169,6 +169,22 @@ public sealed class DataSetSourceUpdateCoordinatorTests
     }
 
     [TestMethod]
+    public async Task PrepareAsync_FreshResponseAndCurrentBomSource_ReturnsSourceLatestRecordDate()
+    {
+        var yesterday = DateOnly.FromDateTime(Now.UtcDateTime).AddDays(-1);
+        var coordinator = CreateCoordinator(new StubDownloader(string.Empty, key: "bom-station"));
+        var (request, stationId) = await CreateBomRequest();
+        WriteBomArchive(stationId, lastDate: yesterday);
+        var rebuild = await coordinator.PrepareAsync(request, null, permitSourceUpdate: true, CancellationToken.None);
+
+        var result = await coordinator.PrepareAsync(request, new DataSet { RetrievedDate = Now }, permitSourceUpdate: true, CancellationToken.None);
+
+        Assert.AreEqual(yesterday, rebuild.LatestRecordDate);
+        Assert.AreEqual(DataSetSourcePreparationOutcome.UseCached, result.Outcome);
+        Assert.AreEqual(yesterday, result.LatestRecordDate);
+    }
+
+    [TestMethod]
     public async Task PrepareAsync_PublishedBomSourceLacksYesterdaysRecordAndNoState_Downloads()
     {
         var downloader = new StubDownloader(string.Empty, key: "bom-station");
