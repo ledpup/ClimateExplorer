@@ -1,5 +1,6 @@
 namespace ClimateExplorer.Data.Downloading.Orchestration;
 
+using System.Collections.Concurrent;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Interface;
 using ClimateExplorer.Core.Model;
@@ -29,8 +30,16 @@ public sealed class DataSetSourceUpdateCoordinator(
     /// as a RefreshFailed response rather than the client abandoning the request outright.
     /// </summary>
     public static readonly TimeSpan DefaultOnRequestRefreshTimeout = TimeSpan.FromSeconds(30);
+
+    /// <summary>
+    /// How long an asset whose on-request refresh failed is left alone before another request may try again.
+    /// Without it every request (and every series on a page) repeats the same failing download, each waiting up to
+    /// <see cref="DefaultOnRequestRefreshTimeout"/>.
+    /// </summary>
+    public static readonly TimeSpan RefreshFailureBackoff = TimeSpan.FromMinutes(15);
     private readonly IReadOnlyDictionary<string, IDataSetDownloader> downloaders = downloaders.ToDictionary(x => x.Key, StringComparer.Ordinal);
     private readonly TimeSpan onRequestRefreshTimeout = onRequestRefreshTimeout ?? DefaultOnRequestRefreshTimeout;
+    private readonly ConcurrentDictionary<string, DateTimeOffset> refreshFailedUntil = new(StringComparer.Ordinal);
 
     /// <summary>
     /// Whether a downloader is registered for the given key. Used by <see cref="DataSetBatchRefresher"/> to
@@ -84,6 +93,14 @@ public sealed class DataSetSourceUpdateCoordinator(
                 DataSetRetrievalDate.OldestFor(currentStates));
         }
 
+        if (currentStates == null && permitSourceUpdate && IsBackingOff(assets))
+        {
+            logger.LogDebug(
+                "Skipping refresh of assets [{AssetKeys}]; a recent refresh failed",
+                string.Join(", ", assets.Select(x => x.AssetKey)));
+            return new DataSetSourcePreparationResult(DataSetSourcePreparationOutcome.RefreshFailed);
+        }
+
         // Only the caller's own cancellation propagates. Hitting the refresh timeout cancels the linked token,
         // which RefreshAsync and GetCurrentStateAsync rethrow, and is treated here as an ordinary refresh failure.
         IReadOnlyList<DataSetSourceState>? refreshedStates;
@@ -106,6 +123,15 @@ public sealed class DataSetSourceUpdateCoordinator(
 
         if (refreshedStates == null)
         {
+            if (permitSourceUpdate)
+            {
+                var retryAfter = timeProvider.GetUtcNow().Add(RefreshFailureBackoff);
+                foreach (var asset in assets)
+                {
+                    refreshFailedUntil[asset.AssetKey] = retryAfter;
+                }
+            }
+
             logger.LogWarning(
                 "Refresh failed for one or more of assets [{AssetKeys}]; falling back to {Fallback}",
                 string.Join(", ", assets.Select(x => x.AssetKey)),
@@ -142,6 +168,12 @@ public sealed class DataSetSourceUpdateCoordinator(
         }
 
         return states;
+    }
+
+    private bool IsBackingOff(IReadOnlyList<DataSetDownloadRequest> assets)
+    {
+        var now = timeProvider.GetUtcNow();
+        return assets.Any(x => refreshFailedUntil.TryGetValue(x.AssetKey, out var retryAfter) && retryAfter > now);
     }
 
     private async Task<IReadOnlyList<DataSetSourceState>?> GetCurrentStatesAsync(

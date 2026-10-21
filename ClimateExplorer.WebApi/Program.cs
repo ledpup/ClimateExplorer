@@ -92,7 +92,10 @@ builder.Services.AddSingleton<IDataSetDownloader, DirectHttpDataSetDownloader>()
 builder.Services.AddSingleton<IDataSetDownloader>(
     new GhcndDataSetDownloader(GhcndHttpClientFactory.CreateHttpClient()));
 builder.Services.AddSingleton<IDataSetDownloader>(
-    new BomDataSetDownloader(new BomDailyDataClient(BomHttpClientFactory.CreateBomHttpClient())));
+    services => new BomFtpDataSetDownloader(
+        new BomFtpDailyTableSource(),
+        services.GetRequiredService<DataSetSourceFileStore>(),
+        services.GetRequiredService<TimeProvider>()));
 builder.Services.AddSingleton<DataSetSourceUpdateCoordinator>();
 builder.Services.AddSingleton<IDataSetSourceUpdateCoordinator>(
     services => services.GetRequiredService<DataSetSourceUpdateCoordinator>());
@@ -100,7 +103,6 @@ builder.Services.AddSingleton(
     services => new ClimateExplorerApiServices(
         everydayCache,
         yearLongCache,
-        BomHttpClientFactory.CreateBomHttpClient(),
         GhcndHttpClientFactory.CreateHttpClient(),
         services.GetRequiredService<IDataSetSourceUpdateCoordinator>(),
         services.GetRequiredService<ILogger<ClimateExplorerApiServices>>()));

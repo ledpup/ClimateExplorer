@@ -37,12 +37,34 @@
 }
 
 /* ── Fixed-width columns (stop re-sorting from resizing the table) ──────── */
-::deep .name-col {
-    min-width: 20em;
+/* Column widths come from the header row only, so page content can't shift them.
+   Columns without a width (name, country, data types, data sources) share what's left. */
+::deep .locations-table {
+    table-layout: fixed;
 }
 
 ::deep .country-col {
-    min-width: 30em;
+    width: 20%;
+}
+
+::deep .anomaly-col {
+    width: 7em;
+}
+
+::deep .heating-col {
+    width: 6em;
+}
+
+::deep .trend-col {
+    width: 8em;
+}
+
+::deep .recent-observations-col {
+    width: 8em;
+}
+
+::deep .record-high-col {
+    width: 10em;
 }
 
 /* ── Column sub-header ───────────────────────────────────────────────────── */
@@ -124,8 +146,8 @@
         display: none;
     }
 
-    ::deep .name-col {
-        min-width: 9em;
+    ::deep .record-high-col {
+        width: 7em;
     }
 
     .locations-container {

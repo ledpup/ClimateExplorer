@@ -181,12 +181,57 @@ public sealed class DataSetSourceUpdateCoordinatorTests
         Assert.AreEqual(1, downloader.CallCount);
     }
 
+    [TestMethod]
+    public async Task PrepareAsync_RefreshFailedRecently_SkipsDownloadUntilBackoffExpires()
+    {
+        var downloader = new StubDownloader("not a valid dataset");
+        var timeProvider = new FixedTimeProvider(Now);
+        var coordinator = CreateCoordinator(downloader, timeProvider: timeProvider);
+        var request = await CreateNinoRequest();
+
+        var first = await coordinator.PrepareAsync(request, new DataSet(), permitSourceUpdate: true, CancellationToken.None);
+        var duringBackoff = await coordinator.PrepareAsync(request, new DataSet(), permitSourceUpdate: true, CancellationToken.None);
+        timeProvider.Now = Now.Add(DataSetSourceUpdateCoordinator.RefreshFailureBackoff);
+        var afterBackoff = await coordinator.PrepareAsync(request, new DataSet(), permitSourceUpdate: true, CancellationToken.None);
+
+        Assert.AreEqual(DataSetSourcePreparationOutcome.RefreshFailed, first.Outcome);
+        Assert.AreEqual(DataSetSourcePreparationOutcome.RefreshFailed, duringBackoff.Outcome);
+        Assert.AreEqual(DataSetSourcePreparationOutcome.RefreshFailed, afterBackoff.Outcome);
+        Assert.AreEqual(2, downloader.CallCount);
+    }
+
+    [TestMethod]
+    public async Task PrepareAsync_RefreshNotPermittedThenPermitted_DownloadsWithoutBackoff()
+    {
+        var downloader = new StubDownloader(ValidNinoContent);
+        var coordinator = CreateCoordinator(downloader);
+        var request = await CreateNinoRequest();
+
+        await coordinator.PrepareAsync(request, null, permitSourceUpdate: false, CancellationToken.None);
+        var result = await coordinator.PrepareAsync(request, null, permitSourceUpdate: true, CancellationToken.None);
+
+        Assert.AreEqual(DataSetSourcePreparationOutcome.Rebuild, result.Outcome);
+        Assert.AreEqual(1, downloader.CallCount);
+    }
+
+    [TestMethod]
+    public async Task TryAcquireAsync_LockHeldBeyondTimeout_ReturnsNull()
+    {
+        var lockProvider = new DataSetAssetLockProvider();
+        await using var heldLock = await lockProvider.AcquireAsync("asset", CancellationToken.None);
+
+        var lease = await lockProvider.TryAcquireAsync("asset", TimeSpan.FromMilliseconds(50), CancellationToken.None);
+
+        Assert.IsNull(lease);
+    }
+
     private DataSetSourceUpdateCoordinator CreateCoordinator(
         IDataSetDownloader downloader,
         DataSetAssetLockProvider? lockProvider = null,
-        TimeSpan? onRequestRefreshTimeout = null)
+        TimeSpan? onRequestRefreshTimeout = null,
+        TimeProvider? timeProvider = null)
     {
-        var timeProvider = new FixedTimeProvider(Now);
+        timeProvider ??= new FixedTimeProvider(Now);
         return new DataSetSourceUpdateCoordinator(
             new DataSetSourceAssetResolver(Path.Combine(Folders.MetaDataFolder, "DataFileMapping")),
             new DataSetFreshnessPolicy(timeProvider),
@@ -327,6 +372,8 @@ public sealed class DataSetSourceUpdateCoordinatorTests
 
     private sealed class FixedTimeProvider(DateTimeOffset now) : TimeProvider
     {
-        public override DateTimeOffset GetUtcNow() => now;
+        public DateTimeOffset Now { get; set; } = now;
+
+        public override DateTimeOffset GetUtcNow() => Now;
     }
 }

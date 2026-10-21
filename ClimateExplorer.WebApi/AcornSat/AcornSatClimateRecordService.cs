@@ -45,7 +45,17 @@ internal sealed class AcornSatClimateRecordService(
         }
 
         var extensionKey = $"acorn-sat-extension:{locationId:D}:{dataType}";
-        await using var extensionLease = await lockProvider.AcquireAsync(extensionKey, cancellationToken);
+
+        // The lock only stops concurrent requests for the same series repeating the same work, so a request that
+        // has waited as long as a refresh may take carries on without it rather than queueing indefinitely.
+        await using var extensionLease = await lockProvider.TryAcquireAsync(extensionKey, DataSetSourceUpdateCoordinator.DefaultOnRequestRefreshTimeout, cancellationToken);
+        if (extensionLease == null)
+        {
+            logger.LogWarning(
+                "Timed out waiting for the ACORN-SAT extension lock for {LocationId}/{DataType}; continuing without it",
+                locationId,
+                dataType);
+        }
 
         var cachedEntry = await extensionCache.GetAsync(locationId, dataType);
         var cdoRequest = BuildCdoRequest(cdoDataSet.Id, locationId, dataType);

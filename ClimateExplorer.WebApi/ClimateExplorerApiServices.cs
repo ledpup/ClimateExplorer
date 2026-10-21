@@ -9,16 +9,14 @@ using Microsoft.Extensions.Logging.Abstractions;
 public sealed class ClimateExplorerApiServices(
     ICache cache,
     ICache longtermCache,
-    HttpClient bomHttpClient,
     HttpClient ghcndHttpClient)
 {
     internal ClimateExplorerApiServices(
         ICache cache,
         ICache longtermCache,
-        HttpClient bomHttpClient,
         HttpClient ghcndHttpClient,
         IDataSetSourceUpdateCoordinator dataSetSourceUpdateCoordinator)
-        : this(cache, longtermCache, bomHttpClient, ghcndHttpClient)
+        : this(cache, longtermCache, ghcndHttpClient)
     {
         DataSetSourceUpdateCoordinator = dataSetSourceUpdateCoordinator;
     }
@@ -26,11 +24,10 @@ public sealed class ClimateExplorerApiServices(
     internal ClimateExplorerApiServices(
         ICache cache,
         ICache longtermCache,
-        HttpClient bomHttpClient,
         HttpClient ghcndHttpClient,
         IDataSetSourceUpdateCoordinator dataSetSourceUpdateCoordinator,
         ILogger<ClimateExplorerApiServices> logger)
-        : this(cache, longtermCache, bomHttpClient, ghcndHttpClient, dataSetSourceUpdateCoordinator)
+        : this(cache, longtermCache, ghcndHttpClient, dataSetSourceUpdateCoordinator)
     {
         Logger = logger;
     }
@@ -38,8 +35,6 @@ public sealed class ClimateExplorerApiServices(
     public ICache Cache { get; } = cache;
 
     public ICache LongtermCache { get; } = longtermCache;
-
-    public HttpClient BomHttpClient { get; } = bomHttpClient;
 
     public HttpClient GhcndHttpClient { get; } = ghcndHttpClient;
 

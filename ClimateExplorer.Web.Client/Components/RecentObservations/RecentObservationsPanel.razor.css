@@ -225,6 +225,25 @@
     background: rgb(255 255 255 / 70%);
 }
 
+.recent-observations-state-actions {
+    align-items: center;
+    display: flex;
+    gap: 0.5rem;
+    margin-left: auto;
+}
+
+.recent-observations-state-actions ::deep .recent-observations-dismiss {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    color: inherit;
+    padding: 0.35rem 0.55rem;
+}
+
+.recent-observations-state-actions ::deep .recent-observations-dismiss:hover {
+    background: rgb(255 255 255 / 70%);
+}
+
 @keyframes recent-observation-slot-in {
     from {
         opacity: 0;
@@ -267,6 +286,10 @@
     }
 
     .recent-observations-retry {
+        margin-left: 0;
+    }
+
+    .recent-observations-state-actions {
         margin-left: 0;
     }
 

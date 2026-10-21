@@ -6,6 +6,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="CsvHelper" Version="33.1.0" />
+    <PackageReference Include="FluentFTP" Version="54.1.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ClimateExplorer.Core\ClimateExplorer.Core.csproj" />
