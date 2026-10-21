@@ -30,6 +30,7 @@ public static partial class SuggestedPresetLists
 
         var sunspots = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Sun), DataType.SunspotNumber, null, throwIfNoMatch: true);
         var tsi = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Sun), DataType.SolarRadiation, null, throwIfNoMatch: true);
+        var transmission = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Atmosphere), DataType.ApparentTransmission, null, throwIfNoMatch: true);
 
         var globalTemp = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Earth), DataType.TempMean, null, throwIfNoMatch: true);
         var globalLandTemp = DataSetDefinitionViewModel.GetDataSetDefinitionAndMeasurement(dataSetDefinitions, Region.RegionId(Region.Land), DataType.TempMean, null, throwIfNoMatch: true);
@@ -672,6 +673,29 @@ public static partial class SuggestedPresetLists
                         DisplayStyle = SeriesDisplayStyle.Line,
                         GroupingThreshold = 0.1f,
                         RequestedColour = UiLogic.Colours.Orange,
+                    },
+                ],
+                Variants =
+                [
+                    new SuggestedChartPresetModel()
+                    {
+                        Title = "Atmospheric transmission",
+                        Description = "Apparent atmospheric transmission of solar radiation at Mauna Loa. Dips show the effect of volcanic eruptions",
+                        ChartSeriesList =
+                        [
+                            new ChartSeriesDefinition()
+                            {
+                                SeriesDerivationType = SeriesDerivationTypes.ReturnSingleSeries,
+                                SourceSeriesSpecifications = SourceSeriesSpecification.BuildArray(Region.GetRegion(Region.Atmosphere), transmission!),
+                                Aggregation = SeriesAggregationOptions.Mean,
+                                BinGranularity = BinGranularities.ByYear,
+                                Smoothing = SeriesSmoothingOptions.None,
+                                SmoothingWindow = 10,
+                                Value = SeriesValueOptions.Value,
+                                DisplayStyle = SeriesDisplayStyle.Line,
+                                RequestedColour = UiLogic.Colours.Pink,
+                            },
+                        ],
                     },
                 ],
             });

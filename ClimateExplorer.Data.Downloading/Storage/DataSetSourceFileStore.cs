@@ -6,6 +6,8 @@ public sealed class DataSetSourceFileStore(string datasetsRoot)
 {
     private readonly string datasetsRoot = Path.GetFullPath(datasetsRoot).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
+    public string RootPath => datasetsRoot;
+
     public async Task PublishAsync(string candidateFilePath, string destinationRelativePath, CancellationToken cancellationToken)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(candidateFilePath);
@@ -48,7 +50,7 @@ public sealed class DataSetSourceFileStore(string datasetsRoot)
 
         await using var stream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read, 81920, FileOptions.Asynchronous | FileOptions.SequentialScan);
         var hash = await SHA256.HashDataAsync(stream, cancellationToken);
-        return new SourceFileInfo(stream.Length, Convert.ToHexString(hash));
+        return new SourceFileInfo(stream.Length, Convert.ToHexString(hash), File.GetLastWriteTimeUtc(fullPath));
     }
 
     public string ResolvePath(string relativePath)
@@ -68,5 +70,5 @@ public sealed class DataSetSourceFileStore(string datasetsRoot)
         return fullPath;
     }
 
-    public sealed record SourceFileInfo(long Length, string Sha256);
+    public sealed record SourceFileInfo(long Length, string Sha256, DateTimeOffset LastWriteTimeUtc);
 }
