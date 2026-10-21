@@ -9,42 +9,28 @@ using ClimateExplorer.Data.Downloading.Storage;
 using ClimateExplorer.Data.Downloading.Workspace;
 using Microsoft.Extensions.Logging;
 
-public sealed class DataSetSourceUpdateCoordinator : IDataSetSourceUpdateCoordinator
+public sealed class DataSetSourceUpdateCoordinator(
+    DataSetSourceAssetResolver assetResolver,
+    DataSetFreshnessPolicy freshnessPolicy,
+    DataSetAssetLockProvider lockProvider,
+    DataSetDownloadWorkspaceFactory workspaceFactory,
+    DataSetSourceFileStore sourceFileStore,
+    IDataSetSourceStateStore stateStore,
+    DataSetDownloadValidator validator,
+    IEnumerable<IDataSetDownloader> downloaders,
+    TimeProvider timeProvider,
+    ILogger<DataSetSourceUpdateCoordinator> logger,
+    TimeSpan? onRequestRefreshTimeout = null) : IDataSetSourceUpdateCoordinator
 {
-    private readonly DataSetSourceAssetResolver assetResolver;
-    private readonly DataSetFreshnessPolicy freshnessPolicy;
-    private readonly DataSetAssetLockProvider lockProvider;
-    private readonly DataSetDownloadWorkspaceFactory workspaceFactory;
-    private readonly DataSetSourceFileStore sourceFileStore;
-    private readonly IDataSetSourceStateStore stateStore;
-    private readonly DataSetDownloadValidator validator;
-    private readonly IReadOnlyDictionary<string, IDataSetDownloader> downloaders;
-    private readonly TimeProvider timeProvider;
-    private readonly ILogger<DataSetSourceUpdateCoordinator> logger;
-
-    public DataSetSourceUpdateCoordinator(
-        DataSetSourceAssetResolver assetResolver,
-        DataSetFreshnessPolicy freshnessPolicy,
-        DataSetAssetLockProvider lockProvider,
-        DataSetDownloadWorkspaceFactory workspaceFactory,
-        DataSetSourceFileStore sourceFileStore,
-        IDataSetSourceStateStore stateStore,
-        DataSetDownloadValidator validator,
-        IEnumerable<IDataSetDownloader> downloaders,
-        TimeProvider timeProvider,
-        ILogger<DataSetSourceUpdateCoordinator> logger)
-    {
-        this.assetResolver = assetResolver;
-        this.freshnessPolicy = freshnessPolicy;
-        this.lockProvider = lockProvider;
-        this.workspaceFactory = workspaceFactory;
-        this.sourceFileStore = sourceFileStore;
-        this.stateStore = stateStore;
-        this.validator = validator;
-        this.timeProvider = timeProvider;
-        this.logger = logger;
-        this.downloaders = downloaders.ToDictionary(x => x.Key, StringComparer.Ordinal);
-    }
+    /// <summary>
+    /// How long <see cref="PrepareAsync"/> spends bringing sources current - waiting on another request's
+    /// download of the same asset included - before giving up and falling back to the existing source. Kept
+    /// well under the web client's 100 second <c>HttpClient.Timeout</c> so a slow upstream (e.g. BOM) surfaces
+    /// as a RefreshFailed response rather than the client abandoning the request outright.
+    /// </summary>
+    public static readonly TimeSpan DefaultOnRequestRefreshTimeout = TimeSpan.FromSeconds(30);
+    private readonly IReadOnlyDictionary<string, IDataSetDownloader> downloaders = downloaders.ToDictionary(x => x.Key, StringComparer.Ordinal);
+    private readonly TimeSpan onRequestRefreshTimeout = onRequestRefreshTimeout ?? DefaultOnRequestRefreshTimeout;
 
     /// <summary>
     /// Whether a downloader is registered for the given key. Used by <see cref="DataSetBatchRefresher"/> to
@@ -98,7 +84,26 @@ public sealed class DataSetSourceUpdateCoordinator : IDataSetSourceUpdateCoordin
                 DataSetRetrievalDate.OldestFor(currentStates));
         }
 
-        var refreshedStates = await EnsureCurrentAsync(assets, forceRefresh: false, permitSourceUpdate, cancellationToken);
+        // Only the caller's own cancellation propagates. Hitting the refresh timeout cancels the linked token,
+        // which RefreshAsync and GetCurrentStateAsync rethrow, and is treated here as an ordinary refresh failure.
+        IReadOnlyList<DataSetSourceState>? refreshedStates;
+        using (var refreshTimeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
+        {
+            refreshTimeout.CancelAfter(onRequestRefreshTimeout);
+            try
+            {
+                refreshedStates = await EnsureCurrentAsync(assets, forceRefresh: false, permitSourceUpdate, refreshTimeout.Token);
+            }
+            catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
+            {
+                logger.LogWarning(
+                    "Refresh of assets [{AssetKeys}] did not complete within {Timeout}",
+                    string.Join(", ", assets.Select(x => x.AssetKey)),
+                    onRequestRefreshTimeout);
+                refreshedStates = null;
+            }
+        }
+
         if (refreshedStates == null)
         {
             logger.LogWarning(
@@ -208,6 +213,12 @@ public sealed class DataSetSourceUpdateCoordinator : IDataSetSourceUpdateCoordin
             {
                 return stateAfterLock;
             }
+
+            var adoptedState = await TryAdoptPublishedSourceAsync(asset, cancellationToken);
+            if (adoptedState != null)
+            {
+                return adoptedState;
+            }
         }
 
         if (!downloaders.TryGetValue(asset.DownloaderKey, out var downloader))
@@ -256,6 +267,62 @@ public sealed class DataSetSourceUpdateCoordinator : IDataSetSourceUpdateCoordin
                 asset.AssetKey,
                 asset.DownloaderKey,
                 stopwatch.ElapsedMilliseconds);
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// The state store lives in per-instance temporary storage, so an app restart or a new instance loses it
+    /// while the published file it described is still on disk. When that file's own content already proves
+    /// it current (a content-aware daily source holding yesterday's record), record a state for it as-is
+    /// rather than downloading what is already there. Anything less is left to the ordinary download.
+    /// </summary>
+    private async Task<DataSetSourceState?> TryAdoptPublishedSourceAsync(
+        DataSetDownloadRequest asset,
+        CancellationToken cancellationToken)
+    {
+        if (!asset.Measurements.All(x => freshnessPolicy.CanBeCurrentByContent(x.MeasurementDefinition.DataResolution, asset.DownloaderKey)))
+        {
+            return null;
+        }
+
+        try
+        {
+            var fileInfo = await sourceFileStore.GetFileInfoAsync(asset.RelativePath, cancellationToken);
+            if (fileInfo == null)
+            {
+                return null;
+            }
+
+            var latestRecordDate = await validator.ValidateAsync(asset, sourceFileStore.RootPath, cancellationToken);
+            if (!freshnessPolicy.HasYesterdaysRecord(latestRecordDate))
+            {
+                return null;
+            }
+
+            var state = new DataSetSourceState
+            {
+                AssetKey = asset.AssetKey,
+                RelativePath = asset.RelativePath,
+                Length = fileInfo.Length,
+                Sha256 = fileInfo.Sha256,
+                RetrievedDate = fileInfo.LastWriteTimeUtc,
+                LatestRecordDate = latestRecordDate,
+            };
+            await stateStore.PutAsync(state, cancellationToken);
+            logger.LogInformation(
+                "Adopted already published dataset source {AssetKey} without downloading; latest record date {LatestRecordDate}",
+                asset.AssetKey,
+                latestRecordDate);
+            return state;
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "Failed to adopt published dataset source {AssetKey}; downloading instead", asset.AssetKey);
             return null;
         }
     }
