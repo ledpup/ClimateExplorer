@@ -284,7 +284,7 @@ public partial class Locations
     }
 
     private string GetTrendDisplay(Guid locationId) =>
-        locationTrends.TryGetValue(locationId, out var trend) ? trend.Value : "—";
+        locationTrends.TryGetValue(locationId, out var trend) ? LocationTrendFieldBuilder.FormatAmountPerDecade(trend.Slope) : "—";
 
     private double GetTrendSlope(Guid locationId) =>
         locationTrends.TryGetValue(locationId, out var trend) ? trend.Slope : double.MinValue;
