@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ClimateExplorer.Core\ClimateExplorer.Core.csproj" />
+    <ProjectReference Include="..\ClimateExplorer.Data.Downloading\ClimateExplorer.Data.Downloading.csproj" />
   </ItemGroup>
 
   <ItemGroup>

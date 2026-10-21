@@ -1,10 +1,10 @@
-namespace ClimateExplorer.WebApi;
+namespace ClimateExplorer.Data.Downloading.Downloaders;
 
 using System.Net.Http;
 
-internal static class BomHttpClientFactory
+public static class BomHttpClientFactory
 {
-    internal static HttpClient CreateBomHttpClient()
+    public static HttpClient CreateBomHttpClient()
     {
         var httpClient = new HttpClient();
         var userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36";

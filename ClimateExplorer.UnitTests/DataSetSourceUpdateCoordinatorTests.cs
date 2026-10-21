@@ -4,6 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -114,20 +115,90 @@ public sealed class DataSetSourceUpdateCoordinatorTests
         Assert.AreEqual(1, downloader.CallCount);
     }
 
-    private DataSetSourceUpdateCoordinator CreateCoordinator(IDataSetDownloader downloader)
+    [TestMethod]
+    public async Task PrepareAsync_DownloadExceedsRefreshTimeout_ReturnsRefreshFailed()
+    {
+        var downloader = new StubDownloader(ValidNinoContent, TimeSpan.FromSeconds(30));
+        var coordinator = CreateCoordinator(downloader, onRequestRefreshTimeout: TimeSpan.FromMilliseconds(100));
+
+        var result = await coordinator.PrepareAsync(await CreateNinoRequest(), new DataSet(), permitSourceUpdate: true, CancellationToken.None);
+
+        Assert.AreEqual(DataSetSourcePreparationOutcome.RefreshFailed, result.Outcome);
+        Assert.AreEqual(1, downloader.CallCount);
+    }
+
+    [TestMethod]
+    public async Task PrepareAsync_AssetLockHeldBeyondRefreshTimeout_ReturnsRefreshFailedWithoutDownloading()
+    {
+        var downloader = new StubDownloader(ValidNinoContent);
+        var lockProvider = new DataSetAssetLockProvider();
+        var coordinator = CreateCoordinator(downloader, lockProvider, TimeSpan.FromMilliseconds(100));
+        var request = await CreateNinoRequest();
+        await using var heldLock = await lockProvider.AcquireAsync("NINO34/NINO34.LONG.ANOM.DATA.TXT", CancellationToken.None);
+
+        var result = await coordinator.PrepareAsync(request, new DataSet(), permitSourceUpdate: true, CancellationToken.None);
+
+        Assert.AreEqual(DataSetSourcePreparationOutcome.RefreshFailed, result.Outcome);
+        Assert.AreEqual(0, downloader.CallCount);
+    }
+
+    [TestMethod]
+    public async Task PrepareAsync_CallerCancelsDuringDownload_ThrowsOperationCanceled()
+    {
+        var downloader = new StubDownloader(ValidNinoContent, TimeSpan.FromSeconds(30));
+        var coordinator = CreateCoordinator(downloader);
+        var request = await CreateNinoRequest();
+        using var cancellation = new CancellationTokenSource(TimeSpan.FromMilliseconds(100));
+
+        await Assert.ThrowsAsync<OperationCanceledException>(
+            () => coordinator.PrepareAsync(request, new DataSet(), permitSourceUpdate: true, cancellation.Token));
+    }
+
+    [TestMethod]
+    public async Task PrepareAsync_PublishedBomSourceHasYesterdaysRecordButNoState_AdoptsWithoutDownloading()
+    {
+        var downloader = new StubDownloader(string.Empty, key: "bom-station");
+        var coordinator = CreateCoordinator(downloader);
+        var (request, stationId) = await CreateBomRequest();
+        WriteBomArchive(stationId, lastDate: DateOnly.FromDateTime(Now.UtcDateTime).AddDays(-1));
+
+        var result = await coordinator.PrepareAsync(request, null, permitSourceUpdate: true, CancellationToken.None);
+
+        Assert.AreEqual(DataSetSourcePreparationOutcome.Rebuild, result.Outcome);
+        Assert.AreEqual(0, downloader.CallCount);
+    }
+
+    [TestMethod]
+    public async Task PrepareAsync_PublishedBomSourceLacksYesterdaysRecordAndNoState_Downloads()
+    {
+        var downloader = new StubDownloader(string.Empty, key: "bom-station");
+        var coordinator = CreateCoordinator(downloader);
+        var (request, stationId) = await CreateBomRequest();
+        WriteBomArchive(stationId, lastDate: DateOnly.FromDateTime(Now.UtcDateTime).AddDays(-3));
+
+        await coordinator.PrepareAsync(request, null, permitSourceUpdate: true, CancellationToken.None);
+
+        Assert.AreEqual(1, downloader.CallCount);
+    }
+
+    private DataSetSourceUpdateCoordinator CreateCoordinator(
+        IDataSetDownloader downloader,
+        DataSetAssetLockProvider? lockProvider = null,
+        TimeSpan? onRequestRefreshTimeout = null)
     {
         var timeProvider = new FixedTimeProvider(Now);
         return new DataSetSourceUpdateCoordinator(
             new DataSetSourceAssetResolver(Path.Combine(Folders.MetaDataFolder, "DataFileMapping")),
             new DataSetFreshnessPolicy(timeProvider),
-            new DataSetAssetLockProvider(),
+            lockProvider ?? new DataSetAssetLockProvider(),
             new DataSetDownloadWorkspaceFactory(),
             new DataSetSourceFileStore(temporaryRoot),
             new MemoryStateStore(),
             new DataSetDownloadValidator(),
             [downloader],
             timeProvider,
-            NullLogger<DataSetSourceUpdateCoordinator>.Instance);
+            NullLogger<DataSetSourceUpdateCoordinator>.Instance,
+            onRequestRefreshTimeout);
     }
 
     private static async Task<PostDataSetsRequestBody> CreateNinoRequest()
@@ -154,13 +225,67 @@ public sealed class DataSetSourceUpdateCoordinatorTests
         };
     }
 
+    private static async Task<(PostDataSetsRequestBody Request, string StationId)> CreateBomRequest()
+    {
+        var definition = (await DataSetDefinition.GetDataSetDefinitions(Path.Combine(Folders.MetaDataFolder, "DataFileMapping")))
+            .Single(x => x.ShortName == "BOM-CDO");
+        var (locationId, filters) = definition.DataLocationMapping!.LocationIdToDataFileMappings
+            .First(x => x.Value.Count == 1 && x.Value[0].EndDate is null);
+        var request = new PostDataSetsRequestBody
+        {
+            SeriesSpecifications =
+            [
+                new SeriesSpecification
+                {
+                    DataSetDefinitionId = definition.Id,
+                    DataType = DataType.TempMax,
+                    LocationId = locationId,
+                    DataAdjustment = DataAdjustment.Unadjusted,
+                },
+            ],
+            BinningRule = BinGranularities.ByYearAndDay,
+            BinAggregationFunction = ContainerAggregationFunctions.Mean,
+            CupSize = 1,
+            RequiredBinDataProportion = 1,
+            RequiredBucketDataProportion = 1,
+            RequiredCupDataProportion = 1,
+        };
+        return (request, filters[0].Id);
+    }
+
+    private void WriteBomArchive(string stationId, DateOnly lastDate)
+    {
+        var dates = new[] { lastDate.AddDays(-1), lastDate };
+        string BomRows(string productCode, bool hasQualityColumns) => string.Join(
+            Environment.NewLine,
+            dates.Select(x => $"{productCode},{stationId},{x:yyyy},{x:MM},{x:dd},15.0" + (hasQualityColumns ? ",1,N" : string.Empty)));
+
+        var entries = new Dictionary<string, string>
+        {
+            ["tempmean"] = string.Join(Environment.NewLine, dates.Select(x => $"{x:yyyyMMdd},15.0")),
+            ["tempmax"] = BomRows("IDCJAC0010", hasQualityColumns: true),
+            ["tempmin"] = BomRows("IDCJAC0011", hasQualityColumns: true),
+            ["rainfall"] = BomRows("IDCJAC0009", hasQualityColumns: true),
+            ["solarradiation"] = BomRows("IDCJAC0016", hasQualityColumns: false),
+        };
+
+        var archivePath = Path.Combine(temporaryRoot, "BOM", $"{stationId}.zip");
+        Directory.CreateDirectory(Path.GetDirectoryName(archivePath)!);
+        using var archive = ZipFile.Open(archivePath, ZipArchiveMode.Create);
+        foreach (var (name, content) in entries)
+        {
+            using var writer = new StreamWriter(archive.CreateEntry($"{stationId}_daily_{name}.csv").Open());
+            writer.Write(content);
+        }
+    }
+
     private const string ValidNinoContent = "2025 1.0 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0 2.1";
 
-    private sealed class StubDownloader(string content, TimeSpan? delay = null) : IDataSetDownloader
+    private sealed class StubDownloader(string content, TimeSpan? delay = null, string key = "direct-http") : IDataSetDownloader
     {
         private int callCount;
 
-        public string Key => "direct-http";
+        public string Key => key;
 
         public int CallCount => callCount;
 

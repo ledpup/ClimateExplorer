@@ -31,15 +31,27 @@ public sealed class DataSetFreshnessPolicy(TimeProvider timeProvider)
 
     public bool IsFresh(DataSetSourceState? state, DataResolution dataResolution, string downloaderKey)
     {
-        if (dataResolution != DataResolution.Daily || !ContentAwareDownloaderKeys.Contains(downloaderKey))
+        if (!CanBeCurrentByContent(dataResolution, downloaderKey))
         {
             return IsFresh(state, dataResolution);
         }
 
-        var today = DateOnly.FromDateTime(timeProvider.GetUtcNow().UtcDateTime);
-        var hasYesterdaysRecord = state?.LatestRecordDate is { } latest && latest >= today.AddDays(-1) && latest <= today;
+        return HasYesterdaysRecord(state?.LatestRecordDate) || IsFreshWithinHours(state, contentAwareRetryWindowHours: 6);
+    }
 
-        return hasYesterdaysRecord || IsFreshWithinHours(state, contentAwareRetryWindowHours: 6);
+    /// <summary>
+    /// Whether a source can be judged current from its own content alone (see <see cref="HasYesterdaysRecord"/>),
+    /// independent of when it was retrieved.
+    /// </summary>
+    public bool CanBeCurrentByContent(DataResolution dataResolution, string downloaderKey)
+    {
+        return dataResolution == DataResolution.Daily && ContentAwareDownloaderKeys.Contains(downloaderKey);
+    }
+
+    public bool HasYesterdaysRecord(DateOnly? latestRecordDate)
+    {
+        var today = DateOnly.FromDateTime(timeProvider.GetUtcNow().UtcDateTime);
+        return latestRecordDate is { } latest && latest >= today.AddDays(-1) && latest <= today;
     }
 
     private bool IsFreshWithinHours(ICachedData? cachedData, int contentAwareRetryWindowHours)
