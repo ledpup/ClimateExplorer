@@ -19,6 +19,10 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Console output isn't captured on Windows App Service; this feeds App Service logs (filesystem/log stream)
+// instead, and does nothing when not running there.
+builder.Logging.AddAzureWebAppDiagnostics();
+
 builder.Services.AddHttpContextAccessor();
 
 builder.Services
