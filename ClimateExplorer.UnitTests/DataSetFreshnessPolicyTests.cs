@@ -91,21 +91,24 @@ public sealed class DataSetFreshnessPolicyTests
     }
 
     [TestMethod]
-    public void IsFresh_BomOrGhcndStationMissingYesterdaysRecord_IsFreshOnlyWithinSixHoursOfRetrieval()
+    public void IsFresh_BomOrGhcndStationMissingYesterdaysRecord_IsFreshOnlyWithinRetryWindowOfRetrieval()
     {
         var staleRecordDate = DateOnly.FromDateTime(Now.UtcDateTime).AddDays(-2);
+        var window = DataSetFreshnessPolicy.ContentAwareRetryWindow;
 
-        Assert.IsTrue(policy.IsFresh(CreateState(Now.AddHours(-5).AddTicks(1), staleRecordDate), DataResolution.Daily, "bom-station"));
-        Assert.IsFalse(policy.IsFresh(CreateState(Now.AddHours(-6), staleRecordDate), DataResolution.Daily, "bom-station"));
+        Assert.IsTrue(policy.IsFresh(CreateState(Now.Subtract(window).AddTicks(1), staleRecordDate), DataResolution.Daily, "bom-station"));
+        Assert.IsFalse(policy.IsFresh(CreateState(Now.Subtract(window), staleRecordDate), DataResolution.Daily, "bom-station"));
+        Assert.IsFalse(policy.IsFresh(CreateState(Now.Subtract(window), staleRecordDate), DataResolution.Daily, "ghcnd-station"));
     }
 
     [TestMethod]
     public void IsFresh_BomOrGhcndStationWithFutureLatestRecordDate_TreatedAsMissingAndFallsBackToRetryWindow()
     {
         var futureRecordDate = DateOnly.FromDateTime(Now.UtcDateTime).AddDays(1);
+        var window = DataSetFreshnessPolicy.ContentAwareRetryWindow;
 
-        Assert.IsTrue(policy.IsFresh(CreateState(Now.AddHours(-1), futureRecordDate), DataResolution.Daily, "bom-station"));
-        Assert.IsFalse(policy.IsFresh(CreateState(Now.AddHours(-7), futureRecordDate), DataResolution.Daily, "bom-station"));
+        Assert.IsTrue(policy.IsFresh(CreateState(Now.Subtract(window / 2), futureRecordDate), DataResolution.Daily, "bom-station"));
+        Assert.IsFalse(policy.IsFresh(CreateState(Now.Subtract(window).AddMinutes(-1), futureRecordDate), DataResolution.Daily, "bom-station"));
     }
 
     [TestMethod]
