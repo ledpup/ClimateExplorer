@@ -1,7 +1,7 @@
 # Carbon Cycle page — Tab 1: Fossil fuels and limestone
 
 - **Date:** 2026-10-21
-- **Status:** Proposed (draft v0.8; split out of the overview plan)
+- **Status:** Proposed (draft v0.9; split out of the overview plan)
 - **Author:** Patrick Lea (with Claude)
 - **Scope:** Tab 1 of the Carbon Cycle page: extraction, refinement, transport, combustion and calcination
 - **Builds on:** [Carbon Cycle page — Overview](2026-10-21-01-carbon-cycle-plan.md) (purpose, tab layout, design principle, output contract, parameter system, data)
@@ -266,7 +266,7 @@ Scope (Q5, resolved): transport, power stations, and the other large fossil-fuel
 | Buildings (direct) | ~8% | Cooking and space heating |
 | Other energy industry | ~5% | Refinery own use, gas flaring, oil and gas field equipment |
 
-**Level 1 short list ([overview §1.3](2026-10-21-01-carbon-cycle-plan.md)):** the sector split above, plus about ten plain-named combustors: motorbike, car, bus, truck, train, plane, ship, coal power station, gas power station, steelworks, cement kiln, and home cooking and heating. Each one stands for its group in the Level 2 tables below. For example, "Truck" defaults to the heavy truck and expands to the light, medium and heavy rows. Level 1 columns: name, image, fuel, and CO₂ per km (or per MWh, or per tonne of product). Efficiency, capacity, emission factors and SO₂ removal are Level 2.
+**Level 1 short list ([overview §1.3](2026-10-21-01-carbon-cycle-plan.md)):** the sector split above, plus about ten plain-named combustors: bicycle (the zero-fuel baseline), motorbike, car, bus, truck, train, plane, ship, coal power station, gas power station, steelworks, cement kiln, and home cooking and heating. Each one stands for its group in the Level 2 tables below. For example, "Truck" defaults to the heavy truck and expands to the light, medium and heavy rows. Level 1 columns: name, image, fuel, and CO₂ per km (or per MWh, or per tonne of product). Efficiency, capacity, emission factors and SO₂ removal are Level 2.
 
 Defaults in the tables below are **provisional placeholders to be sourced** ([overview §3.5](2026-10-21-01-carbon-cycle-plan.md)). Every row has: default fuel (changeable to any compatible fuel), fuel-use or efficiency input, combustion completeness, CO / NOx / NMVOC emission factors (§3; these vary far more by combustor than by fuel), and SO₂ removal efficiency (§4).
 
@@ -276,6 +276,8 @@ Representative vehicles are chosen by global count, not Western fleets. Transpor
 
 | Combustor | Representative example | Default fuel | ~Fuel use per vehicle-km | ~Capacity | ~Typical load |
 |---|---|---|---|---|---|
+| Bicycle | Steel utility bicycle (the world's most numerous vehicle; China, India, the Netherlands) | None | 0 (carbon is all fixed cost, §6.4) | 1 (2 with a carrier) | ~1 |
+| Electric two-wheeler | E-bike / e-scooter (several hundred million in China; growing in India and Vietnam; count to verify) | Grid electricity | ~1.5–3 kWh/100 km | 1–2 | ~1.2 |
 | Motorcycle / scooter | 100–125 cc commuter bike (the most numerous motor vehicle in India and South-East Asia) | Petrol | ~2 L/100 km | 2 | ~1.3–2 |
 | Three-wheeler (auto-rickshaw) | CNG auto-rickshaw (India, Pakistan, Bangladesh) | CNG (methane), also LPG / petrol / diesel | ~3 kg CNG/100 km | 3–4 (often more) | ~2 |
 | Small car | 1.0–1.5 L hatchback / compact (largest segments in India and China) | Petrol | ~5–6 L/100 km | 4–5 | ~1.5 |
@@ -283,9 +285,16 @@ Representative vehicles are chosen by global count, not Western fleets. Transpor
 | Car (diesel) | Compact diesel | Diesel | ~5–6 L/100 km | 5 | ~1.5 |
 | City bus | 12 m diesel or CNG bus | Diesel / CNG | ~30–45 L/100 km | ~60–90 incl. standing | ~20–60, very place-dependent |
 | Intercity coach | 45–55 seat coach | Diesel | ~25–30 L/100 km | ~50 | ~30–45 |
-| Passenger train (diesel) | Diesel-hauled long-distance train | Diesel | per train-km, to source | ~1,000–2,000+ | high in India and China |
+| Passenger train (electric) | Metro, suburban, intercity and high-speed (most passenger rail in China, India, Europe and Japan) | Grid electricity | kWh per train-km, to source | ~1,000–2,000+ | high in India and China |
+| Passenger train (diesel) | Diesel-hauled long-distance train (Africa, parts of the Americas, regional lines elsewhere; India's broad-gauge network is now almost all electric, to verify) | Diesel | per train-km, to source | ~500–1,500 | to source |
 | Airliner (narrow-body) | A320 / 737 class | Jet fuel | ~3–4 L/km | ~180 | ~80–85% |
 | Airliner (wide-body) | 787 / A350 / 777 class | Jet fuel | ~8–10 L/km | ~300 | ~80% |
+| Private jet *(outlier)* | Large-cabin business jet (G650 / Global 7500 class) | Jet fuel | ~1.5–2.5 L/km | ~13–19 | 1 (see below) |
+| Superyacht *(outlier)* | 70–100 m motor yacht | Marine diesel | ~10–40 L/km at cruise, plus generators at anchor; to source | 12 guests (the usual regulatory cap) | 1 (see below) |
+
+**Outliers.** The private jet and the superyacht are not common vehicles. They are in as extremes, labelled as such, and are Level 2 only: on the Level 1 linear chart they would flatten every other bar. Their default load is 1, the owner. Crew are not passengers, as with the airliner's pilots and cabin crew. The load is editable. For the jet, occupied flights often carry 2–4 passengers, but a large share of flights (~40% reported, to source) are empty positioning legs, so ~1–2 averaged over all km. Most of a superyacht's fuel is burned by generators while it sits at anchor, not per km, so it also gets a per-year preset (§7).
+
+**Excluded: electric cars and electric buses (Q11).** Electric modes are in only where they give a step change per passenger-km. On today's world-average grid (~470 g CO₂/kWh), a mid-size electric SUV at ~0.2 kWh/km emits ~95 g CO₂/km at the power station. A small petrol car emits ~130 g/km at the tailpipe. A small EV emits about half the SUV's figure, and an e-bus about a third less than a diesel bus. These are real gains, but they are not the order-of-magnitude gap between a car and a bus, train, bicycle or e-bike. An electric car also still needs a city built around cars: roads and parking take a large share of urban land (~25–35% in many cities, over half in some US downtowns; to source). That is an environmental and social cost outside this page's scope. The comparison view carries a footnote saying all this.
 
 ### 6.2 Transport: freight
 
@@ -294,7 +303,8 @@ Representative vehicles are chosen by global count, not Western fleets. Transpor
 | Light commercial vehicle | ~1 t mini-truck (e.g. the small pickups and mini-trucks common in India and China) | Diesel | ~7–9 L/100 km | ~1 t | Includes empty running |
 | Medium rigid truck | ~10 t payload | Diesel | ~20–25 L/100 km | ~10 t | Empty running ~20–30% of km |
 | Heavy truck (tractor-trailer) | ~25 t payload | Diesel | ~30–35 L/100 km | ~25 t | As above |
-| Freight train (diesel) | Diesel-hauled bulk / container train | Diesel | per train-km, to source | ~2,000–5,000 t | Often empty one way (coal, ore) |
+| Freight train (electric) | Electric bulk / container train (most freight rail in China and India) | Grid electricity | kWh per train-km, to source | ~2,000–5,000 t | Often empty one way (coal, ore) |
+| Freight train (diesel) | Diesel-hauled bulk / container train (North America, Russia's unelectrified lines, Africa, Australia) | Diesel | per train-km, to source | ~2,000–10,000+ t | Often empty one way (coal, ore) |
 | Container ship | ~8,000–14,000 TEU | Bunker fuel | per day at speed, to source (IMO) | ~100,000+ t | Slow steaming matters a lot |
 | Bulk carrier | Panamax / Capesize | Bunker fuel | to source (IMO) | ~70,000–180,000 t | Returns in ballast |
 | Oil tanker | VLCC | Bunker fuel | to source (IMO) | ~300,000 t | Returns in ballast |
@@ -338,19 +348,34 @@ Transport rows carry:
 - **Capacity:** seats (or standing capacity), or payload tonnes.
 - **Load factor:** occupancy or payload utilisation, including empty return trips. Editable, with a "typical" default (§6.1–6.2) and a one-click "full" option. This shows how much load factor matters: a crowded bus or train against a half-empty one, or a laden ship against one returning in ballast.
 - **Fuel use per vehicle-km.** v1 treats this as independent of load, and the page says so. A full truck burns more than an empty one; a later version could make fuel use rise linearly from empty to full.
+- **Fixed cost (manufacture and maintenance):** kg CO₂ per vehicle over its life, and lifetime vehicle-km. Dividing one by the other gives g CO₂ per vehicle-km. This is still fossil carbon from this tab: the steelworks, aluminium smelters (via their power stations) and factories that built the vehicle. Infrastructure (roads, track, airports, ports) is excluded.
+
+Fixed-cost defaults (provisional, to source):
+
+| Vehicle | ~Manufacture + maintenance | ~Lifetime | ~g CO₂ per vehicle-km |
+|---|---|---|---|
+| Steel bicycle | ~100–150 kg | ~20,000 km | ~5–8 |
+| Aluminium bicycle | higher: aluminium is ~8–16 kg CO₂/kg against steel's ~2 | ~20,000 km | to source |
+| Small car | ~5–8 t | ~200,000 km | ~25–40 |
+| Airliner, ship, train | small relative to fuel (~1–3%) | to source | to source |
+
+LCA sources report these figures as CO₂e. Most of it is energy-related CO₂, so v1 treats it as CO₂ and says so.
 
 Derived outputs: g CO₂ per vehicle-km, per **passenger-km**, and per **tonne-km**.
 
 **Comparison view:**
 - Level 1: the short-list modes at typical load, on two simple charts, with the plain labels "CO₂ per passenger per km" and "CO₂ per tonne of goods per km". Full load, the full vehicle list, log scale and the well-to-wheel toggle are Level 2.
 - Two ranked bar charts, one for passenger modes (g CO₂/pkm) and one for freight modes (g CO₂/tkm). Never put both on one axis.
-- Freight spans ~2 orders of magnitude (bulk ship ~3–8, rail ~15–30, heavy truck ~60–120, light commercial ~300+, air freight ~500–1,000 g CO₂/tkm; order of magnitude, to verify), so offer a log scale.
+- Both charts offer a log scale. Freight spans ~2 orders of magnitude (bulk ship ~3–8, rail ~15–30, heavy truck ~60–120, light commercial ~300+, air freight ~500–1,000 g CO₂/tkm). Passenger spans ~4 (bicycle ~5–8, airliner ~80–100, private jet ~5,000, superyacht tens of thousands of g CO₂/pkm). All order of magnitude, to verify.
 - Each bar shows "typical" and "full" load, so the reader sees the load-factor range, not one number.
-- Basis: combustion only (tank-to-wheel) by default. A toggle adds upstream (§8) to give well-to-wheel, which is the basis used by the GLEC Framework / ISO 14083 for freight.
+- Basis: combustion only (tank-to-wheel) by default. A toggle adds upstream (§8) to give well-to-wheel, which is the basis used by the GLEC Framework / ISO 14083 for freight. For electric rows, "combustion" is at the power station.
+- Fixed cost is shown by default as a lighter stacked segment on each bar, with a toggle to hide it. Without it the bicycle would be a zero bar, which a log axis can't draw.
 
 **Allocation rule:** mixed passenger and freight vehicles (belly cargo on airliners, ro-pax ferries) allocate everything to the primary use in v1. The ICAO calculator and GLEC have allocation methods; note them as a refinement.
 
-**Electric modes (Q11):** most of the world's passenger rail (India, China, Europe) and a large share of China's new cars are electric. A comparison without them would mislead. Proposal: an electric row has energy use (kWh per vehicle-km) and a grid intensity (kg CO₂/MWh), taken from a power-station row or a chosen generation mix. The carbon then comes from the power station, which keeps it inside this tab's combustion story.
+**Electric modes (Q11, resolved):** in where they are a step change per passenger-km or are the common form of the mode: e-bikes and e-scooters, and electric passenger and freight trains (metro, suburban, intercity and high-speed share one row; their energy per passenger-km is similar). Electric cars and buses are out (§6.1). An electric row has energy use (kWh per vehicle-km) and a grid intensity (g CO₂/kWh). The grid intensity comes from a power-station row or a chosen mix, so the carbon comes from the power station and stays inside this tab's combustion story.
+
+Grid-intensity choices (to source): world average (~470 g/kWh; ~60% fossil, ~32% renewable, ~9% nuclear, Ember 2024), China (~550), India (~700), coal-only (~1,000), gas combined-cycle (~350–400), low-carbon (~20–50). The coal-only choice teaches the main point: grid mix decides the result. An electric motor is ~90% efficient, but a coal station is ~33–40%, and transmission and charging lose more on top. Coal also emits ~30% more CO₂ per unit of energy than diesel. On a coal-only grid, electric rail is therefore roughly level with diesel rail. Its advantages there are regenerative braking and not carrying an engine and fuel. On today's average grid it is roughly a third to a half lower, and on a low-carbon grid it is an order of magnitude lower.
 
 ## 7. Calculator: input modes and scale
 
@@ -363,7 +388,7 @@ Input modes:
 1. **Activity**: combustor × distance (km), output (MWh), product (t clinker, t steel) or operating time × count
 2. **Transport task**: passengers × km or tonnes × km, plus a mode. The vehicle count comes from capacity and load factor (§6.4), and the vehicle count is shown.
 3. **Fuel quantity**: amount of a fuel directly (L, kL, ML, GL, kg, t, Mt, m³, bcm)
-4. **Presets**: "a heavy truck driving 1,000 km", "a Delhi–Mumbai flight", "one container ship crossing Shanghai–Rotterdam", "move 1 Mt of iron ore 1,000 km by ship / rail / truck", "one year of a 1 GW subcritical coal plant", "1 tonne of cement", "a year of China's cement production", "China's annual coal combustion", "global annual fossil emissions" (presets are just parameter sets, i.e. ready-made thought experiments, [overview §1](2026-10-21-01-carbon-cycle-plan.md))
+4. **Presets**: "a heavy truck driving 1,000 km", "a Delhi–Mumbai flight", "one container ship crossing Shanghai–Rotterdam", "move 1 Mt of iron ore 1,000 km by ship / rail / truck", "one year of a 1 GW subcritical coal plant", "one year of a superyacht" (cruising plus generators at anchor; published estimates are thousands of tonnes of CO₂ a year, to source), "1 tonne of cement", "a year of China's cement production", "China's annual coal combustion", "global annual fossil emissions" (presets are just parameter sets, i.e. ready-made thought experiments, [overview §1](2026-10-21-01-carbon-cycle-plan.md))
    - **Population-scaled presets** (from OWID data, [overview §4](2026-10-21-01-carbon-cycle-plan.md)): any activity × a country's population for a chosen year, e.g. "everyone in India rides a motorcycle 10 km a day for a year". Shown as per-person activity × population, so the scale-up is visible.
 5. *(optional)* **Energy**: MJ/PJ/EJ of a fuel
 
@@ -389,7 +414,7 @@ Numeric type: `double` is sufficient (range and precision are far beyond need); 
 Tab 1 fills the shared `EmissionResult` ([overview §2.2](2026-10-21-01-carbon-cycle-plan.md)):
 
 - `CarbonMassKg`: carbon from combustion, calcination and upstream, including the carbon in CO, NMVOC and fossil CH₄ ([overview §2.3](2026-10-21-01-carbon-cycle-plan.md)).
-- `Breakdown`: combustion, calcination (rock), upstream, incomplete-combustion products.
+- `Breakdown`: combustion, calcination (rock), upstream, vehicle fixed cost (§6.4), incomplete-combustion products.
 - `NonCo2`: fossil CH₄ (fugitive leaks and unburnt slip, §8), CO, NMVOC, NOx, SO₂ (§4), black carbon.
 - `Other`: aircraft-km, for contrails in Tab 5.
 - `Source`: Tab 1 plus the activity (combustor or preset).
@@ -422,5 +447,5 @@ Question numbers are shared across the Carbon Cycle plans.
 - ~~Q4~~ Resolved: fugitive methane is in v1 as a separate line, feeding Tab 5 as a GHG and an ozone precursor (§8).
 - ~~Q5~~ Resolved: transport (globally common vehicles), power stations, industry, buildings and gas flaring are all in (§6).
 - ~~Q7~~ Resolved: per passenger-km and per tonne-km are in, with a mode-comparison view (§6.4).
-- **Q11** Electric modes (electric rail, metro, EVs, e-buses) in v1, using kWh per vehicle-km × grid intensity from a power-station row? Recommended: yes for rail and buses at least, or the pkm comparison under-represents the lowest-carbon modes (§6.4).
+- ~~Q11~~ Resolved: electric modes are in only where they give a step change or are the usual form of the mode: e-two-wheelers and electric passenger and freight rail. Electric cars and buses are out, with a footnote. Bicycle, private jet and superyacht are added. Transport rows gain a fixed-cost (manufacture and maintenance) column (§6.1, §6.4).
 - ~~Q12~~ Resolved: limestone calcination is in, at Level 1 next to coal. Tab 1's scope rule is carbon released from geological stores (fossil fuels and carbonate rock). Land clearing is in [Tab 2](2026-10-21-05-carbon-cycle-tab2-land-agriculture-plan.md). The CO₂ from biofuels and other fast-cycle carbon is out, but their non-CO₂ emissions count ([overview §1.2](2026-10-21-01-carbon-cycle-plan.md), §2.1).

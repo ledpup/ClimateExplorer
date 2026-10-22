@@ -12,38 +12,16 @@
 
 **The goal is a good understanding of radiative forcing: where each part of it comes from.** The page is a simplified, explorable model that traces human activities through emissions, chemical reactions, concentrations and radiative forcing to temperature. The reactions and the numbers flow visibly through the model. The chemistry, physics and Earth science are first-class content, not footnotes. The emphasis shifts across the page: the input tabs (1–3) are mostly chemistry and biology, Tab 4 is Earth science (reservoirs, fluxes and lifetimes), and Tab 5 is mostly physics (molecular absorption, emission height, energy balance).
 
-### 1.1 The target: explain every bar of the forcing chart
-
-The reference is the effective radiative forcing (ERF) chart from *Indicators of Global Climate Change 2022* (Forster et al., ESSD 15, 2295–2327, 2023; [figure](https://en.wikipedia.org/wiki/Radiative_forcing#/media/File:ESSD_Radiative_Forcing_1750_to_2022.png)). The page should let a reader point at any bar and follow it back to the activities and reactions behind it. Tab 7 checks whether the page's own model gets close to these numbers.
-
-| Agent | ERF 1750–2022 (W/m²) | Where it comes from (approx. shares, to verify) | Input tab |
-|---|---|---|---|
-| CO₂ | +2.25 | Fossil fuels and limestone (~2/3 of cumulative emissions since 1750); land clearing (~1/3) | 1, 2 |
-| CH₄ | +0.56 | Agriculture and waste ~60% of human emissions (cattle and other ruminants, rice paddies, manure, landfills); fossil fuels ~1/3 (gas leaks, coal mines, oil); biomass burning the rest | 1, 2, 3 |
-| N₂O | +0.22 | Agriculture ~2/3 of human emissions (fertiliser, manure); also industry (nitric and adipic acid), combustion, wastewater | 2 (some 1, 3) |
-| Halogenated gases | +0.41 | CFCs and HCFCs (old refrigerants, foams, spray cans: phased out under the Montreal Protocol and declining slowly, lifetimes ~50–100 yr); HFCs (replacement refrigerants, rising; Kigali Amendment); SF₆ (electrical switchgear); PFCs (aluminium smelting) | 3 |
-| Ozone | +0.48 [0.24 to 0.72] | Tropospheric ozone made from CH₄, NOx, CO and VOCs (+), minus stratospheric ozone destroyed by CFCs (−) | 1, 2, 3 |
-| Stratospheric water vapour | +0.05 (AR6) | Methane oxidised in the stratosphere (`CH₄ + 2 O₂ → CO₂ + 2 H₂O` overall). Aircraft water vapour is a tiny part | via CH₄ |
-| Contrails and contrail cirrus | +0.05 [0.02 to 0.09] | Aircraft | 1 |
-| Black carbon on snow | +0.06 [0.00 to 0.14] | Soot from diesel, coal and biomass burning, settling on snow and ice | 1, 2 |
-| Land use (albedo, irrigation) | −0.20 (AR6) | Dark forest cleared to lighter cropland and pasture reflects more sunlight; irrigation | 2 |
-| Aerosol–radiation | −0.21 [−0.42 to 0.00] | Sulfate (SO₂ from coal, oil, ships); nitrate (NOx, plus ammonia from agriculture); organic carbon. Black carbon partly offsets (+) | 1, 2 |
-| Aerosol–cloud | −0.77 [−1.33 to −0.23] | The same aerosols seeding brighter clouds. Largest uncertainty on the chart | 1, 2 |
-| **Total anthropogenic** | **+2.91 [2.19 to 3.63]** | | |
-| Solar, volcanic | ~0.01; episodic | Natural. A footnote only | — |
-
-So the reader's guesses are mostly right, with a few corrections:
-- Land clearing is about a third of the CO₂ bar, not only the albedo bar.
-- Stratospheric water vapour is methane's, not aircraft's.
-- Rice paddies, fertiliser and landfills are major sources alongside cows and trees.
-- Agriculture also shows up in the aerosol bars, through ammonia.
-
 **Three ways to slice forcing.** The page connects all three:
 1. **By agent**, as in the chart: what is in the atmosphere now (CO₂, CH₄, ozone, aerosols, …).
 2. **By emitted species**: what was released (CO₂, CH₄, NOx, CO, VOC, SO₂, NH₃, BC, …). AR6 WG1 Fig 6.12 / SPM.2 does this. Methane's emissions-based ERF is roughly double its concentration-based value, because CH₄ also makes ozone and stratospheric water vapour and ends up as CO₂ (to verify).
 3. **By activity**: what people did (burn coal, keep cattle, clear forest). This is what the input tabs build.
 
 The input tabs produce species (view 2), the model turns species into agents (view 1), and the forcing tab can attribute each agent back to activities (view 3).
+
+### 1.1 User experience
+
+The interaction intent is closer to a software toy than a climate model. For example, "compare a billion people on e-scooters vs a million on luxury yachts."
 
 ### 1.2 Tabs
 
@@ -191,7 +169,7 @@ Resolved (Q6): the latest IPCC material wins; other sources fill the gaps IPCC l
 
 ---
 
-## 4. Data from ClimateExplorer
+## 4. Data
 
 ### 4.1 Emissions and population: OWID CO₂ dataset
 
@@ -215,7 +193,7 @@ Notes:
 - OWID gives CO₂ by fuel, not fuel quantities. A national preset entered as "coal CO₂" skips the combustion chemistry. To keep the chemistry in play, back-calculate fuel mass with the page's own emission factor, and show that step ("≈ N Mt of bituminous coal at the current carbon fraction"). An alternative is to drive presets from `primary_energy_consumption` through the energy input mode.
 - Updated about annually. Pin a version or snapshot date in the parameter source field.
 
-### 4.2 Other ClimateExplorer data
+### 4.2 ClimateExplorer data
 
 Likely needs (to confirm):
 - Tab 7: Mauna Loa CO₂ (from 1958) and global surface temperature, plus optional observed CH₄ and ocean pH (see the [Tab 7 plan](2026-10-21-07-carbon-cycle-tab7-modelled-vs-measured-plan.md)).
@@ -267,3 +245,24 @@ Scope:
   - Land-use albedo: from area converted.
   - Solar and volcanic: footnote only.
 - **Tab 6 — Temperature:** forcing → transient and equilibrium response.
+
+
+### 8. The target: explain every bar of the forcing chart
+
+The reference is the effective radiative forcing (ERF) chart from *Indicators of Global Climate Change 2022* (Forster et al., ESSD 15, 2295–2327, 2023; [figure](https://en.wikipedia.org/wiki/Radiative_forcing#/media/File:ESSD_Radiative_Forcing_1750_to_2022.png)). The page should let a reader point at any bar and follow it back to the activities and reactions behind it. Tab 7 checks whether the page's own model gets close to these numbers.
+
+| Agent | ERF 1750–2022 (W/m²) | Where it comes from (approx. shares, to verify) | Input tab |
+|---|---|---|---|
+| CO₂ | +2.25 | Fossil fuels and limestone (~2/3 of cumulative emissions since 1750); land clearing (~1/3) | 1, 2 |
+| CH₄ | +0.56 | Agriculture and waste ~60% of human emissions (cattle and other ruminants, rice paddies, manure, landfills); fossil fuels ~1/3 (gas leaks, coal mines, oil); biomass burning the rest | 1, 2, 3 |
+| N₂O | +0.22 | Agriculture ~2/3 of human emissions (fertiliser, manure); also industry (nitric and adipic acid), combustion, wastewater | 2 (some 1, 3) |
+| Halogenated gases | +0.41 | CFCs and HCFCs (old refrigerants, foams, spray cans: phased out under the Montreal Protocol and declining slowly, lifetimes ~50–100 yr); HFCs (replacement refrigerants, rising; Kigali Amendment); SF₆ (electrical switchgear); PFCs (aluminium smelting) | 3 |
+| Ozone | +0.48 [0.24 to 0.72] | Tropospheric ozone made from CH₄, NOx, CO and VOCs (+), minus stratospheric ozone destroyed by CFCs (−) | 1, 2, 3 |
+| Stratospheric water vapour | +0.05 (AR6) | Methane oxidised in the stratosphere (`CH₄ + 2 O₂ → CO₂ + 2 H₂O` overall). Aircraft water vapour is a tiny part | via CH₄ |
+| Contrails and contrail cirrus | +0.05 [0.02 to 0.09] | Aircraft | 1 |
+| Black carbon on snow | +0.06 [0.00 to 0.14] | Soot from diesel, coal and biomass burning, settling on snow and ice | 1, 2 |
+| Land use (albedo, irrigation) | −0.20 (AR6) | Dark forest cleared to lighter cropland and pasture reflects more sunlight; irrigation | 2 |
+| Aerosol–radiation | −0.21 [−0.42 to 0.00] | Sulfate (SO₂ from coal, oil, ships); nitrate (NOx, plus ammonia from agriculture); organic carbon. Black carbon partly offsets (+) | 1, 2 |
+| Aerosol–cloud | −0.77 [−1.33 to −0.23] | The same aerosols seeding brighter clouds. Largest uncertainty on the chart | 1, 2 |
+| **Total anthropogenic** | **+2.91 [2.19 to 3.63]** | | |
+| Solar, volcanic | ~0.01; episodic | Natural. A footnote only | — |
