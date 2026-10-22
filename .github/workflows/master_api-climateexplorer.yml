@@ -9,9 +9,11 @@ on:
       - master
     paths:
       - ClimateExplorer.Core/**
-      - ClimateExplorer.SourceData/**
-      - ClimateExplorer.DataPipeline/**
       - ClimateExplorer.WebApi/**
+      - ClimateExplorer.Data.Downloading/**
+      - ClimateExplorer.Data.Ghcnd/**
+      - .globalconfig
+      - .github/workflows/master_api-climateexplorer.yml
 
   workflow_dispatch:
 

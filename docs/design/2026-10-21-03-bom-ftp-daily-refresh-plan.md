@@ -168,7 +168,9 @@ Each release resets this. A station that is newly adjusted doesn't use CDO as a 
 
 - **Publication time.** The October file was issued at 06:31 GMT (17:31 AEDT). If the tables only update once a day,
   then between 00:00 UTC and the update, the UTC-based "yesterday" record isn't available yet. The content-aware
-  6-hour retry window keeps that to a few cheap FTP fetches a day.
+  6-hour retry window keeps that to a few cheap FTP fetches a day. *(2026-10-22: shortened to 30 minutes. A 6-hour
+  window could leave a new day hidden for up to 6 hours after BOM published it. Observed: the 22:31 UTC re-issue adds
+  no new day; yesterday arrives with the 06:31 UTC issue, about 5:30pm AEDT, later in the day than CDO used to have it.)*
 - **FTP from Azure App Service.** This needs outbound passive-mode FTP. The batch tool already uses FTP for ACORN-SAT,
   but the App Service has not been tested.
 - **Product continuity.** IDCKWCDEA0 is an evapotranspiration product. BOM could change or retire it, and the

@@ -7,6 +7,13 @@ using static ClimateExplorer.Core.Enums;
 public sealed class DataSetFreshnessPolicy(TimeProvider timeProvider)
 {
     /// <summary>
+    /// How long a content-aware source that doesn't yet hold yesterday's record is left before another request may
+    /// check again. Kept short so a new day shows soon after the source publishes it - BOM's FTP daily tables add
+    /// yesterday at about 06:30 UTC - rather than up to one window later.
+    /// </summary>
+    public static readonly TimeSpan ContentAwareRetryWindow = TimeSpan.FromMinutes(30);
+
+    /// <summary>
     /// Downloader keys whose sources publish daily and back enough location traffic that a content-aware
     /// freshness check (see the <see cref="DataSetSourceState"/> overload) is worth the extra retry cost.
     /// Every other downloader keeps using the plain time-since-fetch window below.
@@ -36,7 +43,7 @@ public sealed class DataSetFreshnessPolicy(TimeProvider timeProvider)
             return IsFresh(state, dataResolution);
         }
 
-        return HasYesterdaysRecord(state?.LatestRecordDate) || IsFreshWithinHours(state, contentAwareRetryWindowHours: 6);
+        return HasYesterdaysRecord(state?.LatestRecordDate) || IsFreshWithin(state, ContentAwareRetryWindow);
     }
 
     /// <summary>
@@ -54,7 +61,7 @@ public sealed class DataSetFreshnessPolicy(TimeProvider timeProvider)
         return latestRecordDate is { } latest && latest >= today.AddDays(-1) && latest <= today;
     }
 
-    private bool IsFreshWithinHours(ICachedData? cachedData, int contentAwareRetryWindowHours)
+    private bool IsFreshWithin(ICachedData? cachedData, TimeSpan window)
     {
         if (cachedData?.RetrievedDate == null)
         {
@@ -67,7 +74,7 @@ public sealed class DataSetFreshnessPolicy(TimeProvider timeProvider)
             return false;
         }
 
-        return cachedData.RetrievedDate.Value > now.Subtract(TimeSpan.FromHours(contentAwareRetryWindowHours));
+        return cachedData.RetrievedDate.Value > now.Subtract(window);
     }
 
     private static TimeSpan GetMaximumAge(DataResolution dataResolution)
