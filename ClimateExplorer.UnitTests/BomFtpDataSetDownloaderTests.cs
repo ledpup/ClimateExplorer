@@ -21,6 +21,8 @@ using static ClimateExplorer.Core.Enums;
 public sealed class BomFtpDataSetDownloaderTests
 {
     private const string OctoberTablePath = "/anon/gen/clim_data/IDCKWCDEA0/tables/wa/kalumburu/kalumburu-202610.csv";
+    private const string SeptemberTablePath = "/anon/gen/clim_data/IDCKWCDEA0/tables/wa/kalumburu/kalumburu-202609.csv";
+    private const string AugustTablePath = "/anon/gen/clim_data/IDCKWCDEA0/tables/wa/kalumburu/kalumburu-202608.csv";
     private static readonly DateTimeOffset Now = new(2026, 10, 21, 8, 0, 0, TimeSpan.Zero);
     private string temporaryRoot = null!;
     private string publishedRoot = null!;
@@ -89,6 +91,37 @@ public sealed class BomFtpDataSetDownloaderTests
 
         await Assert.ThrowsExactlyAsync<InvalidDataException>(
             () => CreateDownloader(new StubTableSource([])).DownloadAsync(request, workspace, CancellationToken.None));
+    }
+
+    [TestMethod]
+    public async Task DownloadAsync_EarlierMonthTableMissing_ThrowsInvalidDataException()
+    {
+        var request = await ResolveStationRequest();
+        WritePublishedArchive(lastDate: new DateOnly(2026, 8, 20));
+        var tables = new StubTableSource(new Dictionary<string, string>
+        {
+            [AugustTablePath] = OctoberTable.Replace("/10/2026", "/08/2026", StringComparison.Ordinal),
+            [OctoberTablePath] = OctoberTable,
+        });
+
+        await Assert.ThrowsExactlyAsync<InvalidDataException>(
+            () => CreateDownloader(tables).DownloadAsync(request, workspace, CancellationToken.None));
+    }
+
+    [TestMethod]
+    public async Task DownloadAsync_NewestMonthTableNotPublishedYet_AppendsEarlierMonths()
+    {
+        var request = await ResolveStationRequest();
+        WritePublishedArchive(lastDate: new DateOnly(2026, 9, 17));
+        var tables = new StubTableSource(new Dictionary<string, string>
+        {
+            [SeptemberTablePath] = OctoberTable.Replace("/10/2026", "/09/2026", StringComparison.Ordinal),
+        });
+
+        var artifact = await CreateDownloader(tables).DownloadAsync(request, workspace, CancellationToken.None);
+
+        using var archive = ZipFile.OpenRead(artifact.CandidateFilePath);
+        Assert.AreEqual("IDCJAC0010,001019,2026,09,20,34.5,1,N", ReadEntry(archive, "001019_daily_tempmax.csv").Last());
     }
 
     [TestMethod]
