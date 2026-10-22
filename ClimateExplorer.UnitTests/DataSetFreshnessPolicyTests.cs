@@ -91,21 +91,32 @@ public sealed class DataSetFreshnessPolicyTests
     }
 
     [TestMethod]
-    public void IsFresh_BomOrGhcndStationMissingYesterdaysRecord_IsFreshOnlyWithinRetryWindowOfRetrieval()
+    [DataRow("bom-station")]
+    [DataRow("ghcnd-station")]
+    public void IsFresh_BomOrGhcndStationMissingYesterdaysRecord_IsFreshOnlyWithinItsRetryWindowOfRetrieval(string downloaderKey)
     {
         var staleRecordDate = DateOnly.FromDateTime(Now.UtcDateTime).AddDays(-2);
-        var window = DataSetFreshnessPolicy.ContentAwareRetryWindow;
+        var window = downloaderKey == "bom-station" ? DataSetFreshnessPolicy.BomRetryWindow : DataSetFreshnessPolicy.GhcndRetryWindow;
 
-        Assert.IsTrue(policy.IsFresh(CreateState(Now.Subtract(window).AddTicks(1), staleRecordDate), DataResolution.Daily, "bom-station"));
-        Assert.IsFalse(policy.IsFresh(CreateState(Now.Subtract(window), staleRecordDate), DataResolution.Daily, "bom-station"));
-        Assert.IsFalse(policy.IsFresh(CreateState(Now.Subtract(window), staleRecordDate), DataResolution.Daily, "ghcnd-station"));
+        Assert.IsTrue(policy.IsFresh(CreateState(Now.Subtract(window).AddTicks(1), staleRecordDate), DataResolution.Daily, downloaderKey));
+        Assert.IsFalse(policy.IsFresh(CreateState(Now.Subtract(window), staleRecordDate), DataResolution.Daily, downloaderKey));
+    }
+
+    [TestMethod]
+    public void IsFresh_GhcndStationMissingYesterdaysRecord_WaitsLongerThanBomStation()
+    {
+        var staleRecordDate = DateOnly.FromDateTime(Now.UtcDateTime).AddDays(-2);
+        var retrievedAfterBomWindow = Now.Subtract(DataSetFreshnessPolicy.BomRetryWindow).AddMinutes(-1);
+
+        Assert.IsFalse(policy.IsFresh(CreateState(retrievedAfterBomWindow, staleRecordDate), DataResolution.Daily, "bom-station"));
+        Assert.IsTrue(policy.IsFresh(CreateState(retrievedAfterBomWindow, staleRecordDate), DataResolution.Daily, "ghcnd-station"));
     }
 
     [TestMethod]
     public void IsFresh_BomOrGhcndStationWithFutureLatestRecordDate_TreatedAsMissingAndFallsBackToRetryWindow()
     {
         var futureRecordDate = DateOnly.FromDateTime(Now.UtcDateTime).AddDays(1);
-        var window = DataSetFreshnessPolicy.ContentAwareRetryWindow;
+        var window = DataSetFreshnessPolicy.BomRetryWindow;
 
         Assert.IsTrue(policy.IsFresh(CreateState(Now.Subtract(window / 2), futureRecordDate), DataResolution.Daily, "bom-station"));
         Assert.IsFalse(policy.IsFresh(CreateState(Now.Subtract(window).AddMinutes(-1), futureRecordDate), DataResolution.Daily, "bom-station"));
