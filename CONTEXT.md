@@ -122,7 +122,7 @@ BuildDataSets()
 ---
 
 ### `ChartSeriesView` (`.razor` + `.razor.cs` + `.razor.css`)
-Collapsible "lozenge" card per series. Title bar shows short title + description + trash icon + chevron. Expanded panel is `position: absolute`, `z-index: 100`, floats over content, min-width 640px. Two-column edit grid with `Select` controls for: Aggregation, Secondary Calculation, Smoothing, Smoothing Window, Display (Value/Anomaly), Transformation, Display Style (Line/Bar). Series controls row: Lock, Duplicate, Show Trendline.
+Collapsible "lozenge" card per series. Title bar shows short title + description + info icon (opens `AboutData`) + trash icon + chevron. Expanded panel is `position: absolute`, `z-index: 100`, floats over content, min-width 640px. Two-column edit grid with `Select` controls for: Aggregation, Secondary Calculation, Smoothing, Smoothing Window, Display (Value/Anomaly), Transformation, Display Style (Line/Bar). Series controls row: Lock, Duplicate, Show Trendline.
 
 ---
 
@@ -222,9 +222,10 @@ All modals use `Class="custom-modal-header"` on `<ModalHeader>`:
 - **Root-element isolation problem:** If a component's root is a Blazorise component (not a plain HTML element), Blazor cannot stamp the CSS scope attribute, so `::deep` rules silently do nothing.
 - **Fix:** Wrap in a plain `<div>` with `display: contents` as the new outer root. This is layout-transparent (invisible to flexbox/grid) but gives Blazor a native element to stamp. Example: `ChartAxisListView` uses `<div class="axes-dropdown-wrapper">` with `display: contents`.
 
-### Responsive Breakpoints
-- **Mobile** (`max-width: 1024px`): map 250px tall, stacks vertically, chart height 30vh min 300px.
-- **Desktop** (`min-width: 1025px`): map positioned absolute right of location info, chart height 50vh, collapsible panel `min-height: 600px`.
+### Responsive Layout
+Screen-size breakpoints are defined in [AGENTS.md](AGENTS.md).
+- **Mobile and tablet**: map 250px tall, stacks vertically, chart height 30vh min 300px.
+- **Fullscreen**: map positioned absolute right of location info, chart height 50vh, collapsible panel `min-height: 600px`.
 
 ---
 

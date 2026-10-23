@@ -19,6 +19,11 @@
             <div class="description">@ChartSeries!.GetFriendlyDescription()</div>
         </div>
         <div class="title-bar-actions">
+            <DelayedTooltip Text="About this data">
+                <button type="button" class="info" aria-label="About this data" @onclick="@OnAboutThisDataClicked" @onclick:stopPropagation="true">
+                    <i class="fas fa-circle-info fa-lg"></i>
+                </button>
+            </DelayedTooltip>
             <DelayedTooltip Text="Remove this series">
                 <button type="button" class="trash" aria-label="Remove this series" @onclick="@OnRemoveSeriesClicked" @onclick:stopPropagation="true">
                     <i class="fas fa-trash fa-lg"></i>
