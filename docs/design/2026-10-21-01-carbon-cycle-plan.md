@@ -29,7 +29,7 @@ The page reads left to right. Tabs 1–3 are optional input tabs: the user needs
 
 | Tab | Topic | Takes | Produces | Plan |
 |---|---|---|---|---|
-| 1 | Fossil fuels and limestone | User inputs (optional) | Emissions: CO₂, CH₄, CO, NOx, VOC, SO₂, BC, contrails | [Tab 1](2026-10-21-04-carbon-cycle-tab1-fossil-fuels-plan.md) |
+| 1 | Fossil fuels and limestone | User inputs (optional) | Emissions: CO₂, CH₄, CO, NOx, VOC, SO₂, BC, contrails | [Tab 1](2026-10-21-04-carbon-cycle-tab1-fossil-fuels-plan.md); [combustors sub-plan](2026-10-23-01-carbon-cycle-tab1-combustors-plan.md) |
 | 2 | Land and agriculture | User inputs (optional) | Emissions: CO₂ (land clearing), CH₄, N₂O, NH₃, BC/OC; albedo change | [Tab 2](2026-10-21-05-carbon-cycle-tab2-land-agriculture-plan.md) (stub) |
 | 3 | Waste and industrial gases | User inputs (optional) | Emissions: CH₄ (landfill, wastewater), halogenated gases, industrial N₂O | [Tab 3](2026-10-21-06-carbon-cycle-tab3-waste-industrial-gases-plan.md) (stub) |
 | 4 | Circulation and lifetimes | Emissions from the included input tabs | Carbon in atmosphere / land / ocean / crust over time; CH₄, N₂O and halocarbon decay | §7 (stub) |
@@ -113,7 +113,7 @@ Tab 4 consumes carbon mass, the long-lived gases and the profile. Tab 5 addition
 
 ### 2.4 Results display
 
-Every input tab's result uses the same display: auto-scaled units (kg → t → kt → Mt → Gt), both CO₂ and C, and the relatability anchors. [Tab 1 §7](2026-10-21-04-carbon-cycle-tab1-fossil-fuels-plan.md) specifies it; Tabs 2 and 3 reuse it.
+Every input tab's result uses the same display: auto-scaled units (kg → t → kt → Mt → Gt), both CO₂ and C, and the relatability anchors. [Tab 1 §6](2026-10-21-04-carbon-cycle-tab1-fossil-fuels-plan.md) specifies it; Tabs 2 and 3 reuse it.
 
 ---
 
@@ -156,7 +156,7 @@ Group / Tab        // for filtering
 
 Resolved (Q6): the latest IPCC material wins; other sources fill the gaps IPCC leaves. No national (e.g. Australian) inventory factors as defaults. Each parameter's `Source` records which tier it came from.
 
-1. **IPCC.** The 2006 Guidelines as amended by the **2019 Refinement**, which is the latest inventory methodology. Vol 2 (Energy) covers fuel NCV, carbon content and CO₂ factors, Tier 1 CH₄ / N₂O factors for stationary and mobile combustion, and fugitive emissions (Ch 4). The IPCC Emission Factor Database (EFDB) adds to it. **AR6** (WG1) is used for the physical constants and later-tab parameters (forcing, lifetimes, GWPs), and **AR6 WG3** for the sector split in [Tab 1 §6](2026-10-21-04-carbon-cycle-tab1-fossil-fuels-plan.md).
+1. **IPCC.** The 2006 Guidelines as amended by the **2019 Refinement**, which is the latest inventory methodology. Vol 2 (Energy) covers fuel NCV, carbon content and CO₂ factors, Tier 1 CH₄ / N₂O factors for stationary and mobile combustion, and fugitive emissions (Ch 4). The IPCC Emission Factor Database (EFDB) adds to it. **AR6** (WG1) is used for the physical constants and later-tab parameters (forcing, lifetimes, GWPs), and **AR6 WG3** for the sector split in the [Tab 1 combustor sub-plan §2](2026-10-23-01-carbon-cycle-tab1-combustors-plan.md).
 2. **Sector bodies, where IPCC gives no number** (vehicle fuel use, occupancy, plant efficiency, density, sulfur):
    - Shipping: the latest IMO GHG Study (Fourth, 2020, unless a newer one has been published).
    - Aviation: the ICAO Carbon Emissions Calculator methodology (fuel per km by aircraft type, load factors, per-passenger allocation).
@@ -182,10 +182,10 @@ Columns of interest (confirmed in the codebook):
 - `land_use_change_co2`, `methane`, `primary_energy_consumption`
 
 Uses:
-- Population-scaled presets ([Tab 1 §7](2026-10-21-04-carbon-cycle-tab1-fossil-fuels-plan.md)).
+- Population-scaled presets ([Tab 1 §6](2026-10-21-04-carbon-cycle-tab1-fossil-fuels-plan.md); activity versions in the [combustor sub-plan §5](2026-10-23-01-carbon-cycle-tab1-combustors-plan.md)).
 - National presets: "China's coal CO₂ in 2024" as a ready-made quantity, for any country.
 - Reference anchors in the results: "this is X% of the world's (or a chosen country's) annual fossil CO₂".
-- Gas flaring: `flaring_co2` gives a national check for the gas-flare combustor ([Tab 1 §6.3](2026-10-21-04-carbon-cycle-tab1-fossil-fuels-plan.md)).
+- Gas flaring: `flaring_co2` gives a national check for the gas-flare combustor ([Tab 1 combustor sub-plan §2.3](2026-10-23-01-carbon-cycle-tab1-combustors-plan.md)).
 
 Notes:
 - OWID's CO₂ figures *are* Global Carbon Budget numbers, processed and converted at 3.664. The two are the same source, so cite both.
@@ -216,7 +216,7 @@ Per-tab work is in each tab's plan (§1.2).
 
 ## 6. Open questions
 
-Question numbers are shared across the Carbon Cycle plans. Tab-specific questions are in each tab's plan (Q1–Q5, Q7, Q11, Q12 in [Tab 1](2026-10-21-04-carbon-cycle-tab1-fossil-fuels-plan.md); Q9, Q10 in [Tab 7](2026-10-21-07-carbon-cycle-tab7-modelled-vs-measured-plan.md)).
+Question numbers are shared across the Carbon Cycle plans. Tab-specific questions are in each tab's plan (Q9, Q10 in [Tab 7](2026-10-21-07-carbon-cycle-tab7-modelled-vs-measured-plan.md)).
 
 - ~~Q6~~ Resolved: latest IPCC first, then sector bodies, then literature; no country-specific defaults (§3.5).
 - **Q8** Ozone and sulfate in Tab 5: a simple editable yield factor per precursor, or published per-precursor forcing coefficients (e.g. AR6 emissions-based ERF)? The second is more defensible, but it attributes forcing to global emissions rather than computing ozone or aerosol. Now that the page's purpose is attribution (§1.1), leaning towards the published coefficients (AR6 Ch 6; Thornhill et al. 2021) for the short-lived agents, with the reactions shown as the explanation of where each coefficient comes from.
