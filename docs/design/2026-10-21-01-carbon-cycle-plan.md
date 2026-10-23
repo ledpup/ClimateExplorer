@@ -1,7 +1,7 @@
 # Carbon Cycle page — Overview
 
 - **Date:** 2026-10-21
-- **Status:** Proposed (draft v0.8)
+- **Status:** Proposed (draft v0.9; Tab 8 simulation added 2026-10-24)
 - **Author:** Patrick Lea (with Claude)
 - **Scope:** the Carbon Cycle page as a whole: purpose, tab layout, design principle, the input-tab contract, the parameter system and data. Each tab has its own plan (§1.2).
 - **Branch context:** `issues/carbon-cycle`
@@ -36,6 +36,7 @@ The page reads left to right. Tabs 1–3 are optional input tabs: the user needs
 | 5 | Radiative forcing | Tab 4 concentrations + short-lived emissions | W/m² by agent, attributable to species and activities | §7 (stub) |
 | 6 | Temperature | Tab 5 forcing | °C response | §7 (stub) |
 | 7 | Modelled vs measured | Tabs 1–6 run on historical emissions | Model output overlaid on observed records and the §1.1 chart | [Tab 7](2026-10-21-07-carbon-cycle-tab7-modelled-vs-measured-plan.md) (stub) |
+| 8 | Simulation | Its own initial condition (a fuel, a rate and a duration) | A time-stepped box model run live in six scenarios side by side (sealed house, glass and ideal greenhouses, Earth with and without volcanoes) | [Tab 8](2026-10-24-01-carbon-cycle-tab8-simulation-plan.md) |
 
 Not a personal carbon-footprint calculator and not a consumer tool. It must work equally for "one truck driving 1,000 km" and "a nation's annual coal burn".
 
@@ -86,6 +87,7 @@ Tabs 1–3 are the input tabs. Each one turns activities into emissions; the dow
 - Which tabs are in use and included is part of the shared URL state, alongside the inputs and edited parameters (§3.3).
 - Later: page-level presets that fill several input tabs at once, e.g. "the world's emissions in 2022" across all three.
 - Tab 7 is separate. It runs every source path on historical emissions, whatever the user has entered in the input tabs ([Tab 7 plan](2026-10-21-07-carbon-cycle-tab7-modelled-vs-measured-plan.md)).
+- Tab 8 is separate too. It has its own initial condition and does not feed Tabs 4–6. It reuses the Tab 1 chemistry engine and fuel table ([Tab 8 plan](2026-10-24-01-carbon-cycle-tab8-simulation-plan.md)).
 
 ### 2.2 Output contract to Tabs 4 and 5
 
@@ -197,6 +199,7 @@ Notes:
 
 Likely needs (to confirm):
 - Tab 7: Mauna Loa CO₂ (from 1958) and global surface temperature, plus optional observed CH₄ and ocean pH (see the [Tab 7 plan](2026-10-21-07-carbon-cycle-tab7-modelled-vs-measured-plan.md)).
+- Tab 8: daily total solar irradiance (NOAA NCEI TSI CDR, already in ClimateExplorer) as the sunlight for the greenhouse and Earth scenarios; latest CO₂, CH₄ and N₂O and the global temperature anomaly as starting values; Global Carbon Budget CO₂ emissions for a preset ([Tab 8 §6](2026-10-24-01-carbon-cycle-tab8-simulation-plan.md)).
 
 ---
 
@@ -216,7 +219,7 @@ Per-tab work is in each tab's plan (§1.2).
 
 ## 6. Open questions
 
-Question numbers are shared across the Carbon Cycle plans. Tab-specific questions are in each tab's plan (Q9, Q10 in [Tab 7](2026-10-21-07-carbon-cycle-tab7-modelled-vs-measured-plan.md)).
+Question numbers are shared across the Carbon Cycle plans. Tab-specific questions are in each tab's plan (Q9, Q10 in [Tab 7](2026-10-21-07-carbon-cycle-tab7-modelled-vs-measured-plan.md); Q16–Q21 in [Tab 8](2026-10-24-01-carbon-cycle-tab8-simulation-plan.md)). Q21 touches Tabs 4–6: whether they share Tab 8's Earth model.
 
 - ~~Q6~~ Resolved: latest IPCC first, then sector bodies, then literature; no country-specific defaults (§3.5).
 - **Q8** Ozone and sulfate in Tab 5: a simple editable yield factor per precursor, or published per-precursor forcing coefficients (e.g. AR6 emissions-based ERF)? The second is more defensible, but it attributes forcing to global emissions rather than computing ozone or aerosol. Now that the page's purpose is attribution (§1.1), leaning towards the published coefficients (AR6 Ch 6; Thornhill et al. 2021) for the short-lived agents, with the reactions shown as the explanation of where each coefficient comes from.
