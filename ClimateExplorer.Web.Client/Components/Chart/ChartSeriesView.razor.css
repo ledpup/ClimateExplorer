@@ -42,13 +42,18 @@
             transition: background-color 0.25s;
         }
 
-        .chart-series-config .title-bar .trash {
+        .chart-series-config .title-bar .trash,
+        .chart-series-config .title-bar .info {
             padding: 8px;
             padding-top: 12px;
             color: #a00000;
             margin-left: 0;
             border: 0;
             background: transparent;
+        }
+
+        .chart-series-config .title-bar .info {
+            color: var(--climate-color-info-icon);
         }
 
         .chart-series-config .title-bar .expander {
