@@ -71,6 +71,9 @@ public partial class Index : ChartablePage
     private Location? Location { get; set; }
     private bool ChangeLocationModalLoading { get; set; }
     private bool ShowChangeLocationModalAfterRender { get; set; }
+    private bool NearMeLoading { get; set; }
+    private bool NearMeUsed { get; set; }
+    private string? NearMeErrorMessage { get; set; }
 
     private Location? PreviousLocation { get; set; }
     private Guid? ChartStateLocationChangeAppliedForLocationId { get; set; }
@@ -606,6 +609,44 @@ public partial class Index : ChartablePage
 
         await EnsureLocationDictionaryLoadedAsync();
         await ChangeLocationModal!.Show();
+    }
+
+    private async Task ShowNearMeAsync()
+    {
+        if (NearMeLoading || JsRuntime is null)
+        {
+            return;
+        }
+
+        NearMeLoading = true;
+        NearMeErrorMessage = null;
+        StateHasChanged();
+
+        try
+        {
+            await EnsureLocationDictionaryLoadedAsync();
+            if (LocationDictionary is null)
+            {
+                return;
+            }
+
+            var result = await BrowserGeolocation.FindNearestLocationAsync(JsRuntime, LocationDictionary.Values);
+            if (result.LocationId is null)
+            {
+                NearMeErrorMessage = result.ErrorMessage;
+                return;
+            }
+
+            // They've granted permission and been moved to their nearest location, so the
+            // welcome panel's prompt has done its job.
+            NearMeUsed = true;
+            await SelectedLocationChanged(result.LocationId.Value);
+        }
+        finally
+        {
+            NearMeLoading = false;
+            StateHasChanged();
+        }
     }
 
     private void HandleShowRequested()

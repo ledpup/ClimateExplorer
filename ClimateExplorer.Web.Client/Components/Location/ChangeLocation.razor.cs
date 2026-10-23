@@ -4,7 +4,6 @@ using Blazorise;
 using Blazorise.Components;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.WebApiClient.Services;
-using GeoCoordinatePortable;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
@@ -147,22 +146,16 @@ public partial class ChangeLocation
             return;
         }
 
-        var getLocationResult = await JsRuntime.InvokeAsync<GetLocationResult>("getLocation");
+        var result = await BrowserGeolocation.FindNearestLocationAsync(JsRuntime, LocationDictionary!.Values);
 
-        BrowserLocationErrorMessage = null;
-        if (getLocationResult.ErrorCode > 0)
+        BrowserLocationErrorMessage = result.ErrorMessage;
+        if (result.LocationId is null)
         {
-            BrowserLocationErrorMessage = "Unable to determine your location" + (!string.IsNullOrWhiteSpace(getLocationResult.ErrorMessage) ? $" ({getLocationResult.ErrorMessage})" : string.Empty);
             Logger!.LogError(BrowserLocationErrorMessage);
             return;
         }
 
-        var geoCoord = new GeoCoordinate(getLocationResult.Latitude, getLocationResult.Longitude);
-
-        var distances = Location.GetDistances(geoCoord, LocationDictionary!.Values!);
-        var closestLocation = distances.OrderBy(x => x.Distance).First();
-
-        await OnLocationChange.InvokeAsync(closestLocation.LocationId);
+        await OnLocationChange.InvokeAsync(result.LocationId.Value);
         await Hide();
     }
 
@@ -181,14 +174,5 @@ public partial class ChangeLocation
         var randomLocation = random.Next(LocationDictionary!.Values.Count());
         await OnLocationChange.InvokeAsync(LocationDictionary!.Values.ToArray()[randomLocation].Id);
         await Hide();
-    }
-
-    private class GetLocationResult
-    {
-        public float Latitude { get; set; }
-        public float Longitude { get; set; }
-
-        public float ErrorCode { get; set; }
-        public string? ErrorMessage { get; set; }
     }
 }
