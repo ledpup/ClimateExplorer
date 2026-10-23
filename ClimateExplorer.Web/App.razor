@@ -74,12 +74,8 @@
         bootstrap and leaflet are deferred: they download in parallel but execute after HTML
         parsing, so SSR content renders sooner and they are not needed before Blazor interactivity.
 
-        chart.js and chartjs-plugin-trendline must NOT be deferred. In Blazor Server mode there
-        is no WASM hydration delay — the SignalR connection is established in milliseconds and
-        OnAfterRenderAsync fires almost immediately. If these scripts are deferred they will not
-        have executed yet when Blazorise calls `new Chart(canvas, config)` via JS interop, causing
-        the chart to silently fail to initialise and remain stuck on the loading spinner.
-        Execution order of the two chart scripts is preserved because they are sequential.
+        chart.js and chartjs-plugin-trendline are not loaded here: ChartJsChart imports them through
+        its collocated JS module the first time a chart is shown.
     -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
@@ -188,17 +184,6 @@
         async function svgToImageCopy(svgElement) {
             const blob = await svgToPngBlob(svgElement);
             await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
-        }
-
-        async function waitForChartReady(wrapperElement) {
-            const maxWaitMs = 10000;
-            const intervalMs = 20;
-            const start = Date.now();
-            while (Date.now() - start < maxWaitMs) {
-                const canvas = wrapperElement.querySelector('canvas');
-                if (canvas && typeof Chart !== 'undefined' && Chart.getChart(canvas)) return;
-                await new Promise(r => setTimeout(r, intervalMs));
-            }
         }
 
         function getOrCreateFloatingTooltip(wrapperElement, className) {
@@ -389,7 +374,7 @@
             return `${title}${table}${legend}`;
         }
 
-        // Must be called before the chart.update() that follows a Blazorise setOptions (which replaces
+        // Must be called before the chart.update() that follows ChartJsChart's setOptions (which replaces
         // the options object, dropping the handler). The handler is written to the raw config options
         // so that update picks it up. Setting it after the update is unreliable: update replays the
         // last pointer event, and the tooltip plugin then caches "no external handler" until the
