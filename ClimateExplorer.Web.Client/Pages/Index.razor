@@ -75,8 +75,13 @@
                 OnLocationChange="@SelectedLocationChanged"
                 BrowserLocationErrorMessage="@BrowserLocationErrorMessage" />
 
-<InfoPanel @ref="siteOverviewPanel" PanelName="home-overview" Version="1.2" Title="Welcome to ClimateExplorer" Height="30vh" MobileHeight="40vh">
-    <HomeOverviewInfo OnAddDataSet="ShowAddDataSetModal"
+<InfoPanel @ref="siteOverviewPanel" PanelName="home-overview" Version="1.3" Title="Welcome to ClimateExplorer" Height="35vh" MobileHeight="40vh">
+    <HomeOverviewInfo LocationName="@Location?.Name"
+                      ShowLocationPrompt="@(!NearMeUsed)"
+                      NearMeLoading="@NearMeLoading"
+                      NearMeErrorMessage="@NearMeErrorMessage"
+                      OnNearMe="ShowNearMeAsync"
+                      OnAddDataSet="ShowAddDataSetModal"
                       OnToggleSuggestedCharts="ToggleSuggestedCharts"
                       OnShowRecordHigh="ShowRecordHighAsync"
                       OnShowRecentObservations="ShowRecentObservationsAsync" />
