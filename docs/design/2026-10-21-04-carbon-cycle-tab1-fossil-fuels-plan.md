@@ -1,7 +1,7 @@
 # Carbon Cycle page — Tab 1: Fossil fuels and limestone
 
 - **Date:** 2026-10-21
-- **Status:** Proposed (draft v1.0; split out of the overview plan; combustors and upstream moved to a sub-plan 2026-10-23)
+- **Status:** Proposed (draft v1.0; split out of the overview plan; combustors and upstream moved to a sub-plan 2026-10-23; ideal and real fuels added 2026-10-23)
 - **Author:** Patrick Lea (with Claude)
 - **Scope:** Tab 1 of the Carbon Cycle page, stage 1: combustion and calcination as chemistry, covering reactants, products and energy, including incomplete combustion and aerosols
 - **Builds on:** [Carbon Cycle page — Overview](2026-10-21-01-carbon-cycle-plan.md) (purpose, tab layout, design principle, output contract, parameter system, data)
@@ -30,7 +30,7 @@ Every sub-section follows [overview §1.3](2026-10-21-01-carbon-cycle-plan.md). 
 
 ## 2. Combustion chemistry content
 
-Worked examples, in this order (easiest first, [overview §1.3](2026-10-21-01-carbon-cycle-plan.md)):
+Worked examples burn ideal fuels, one pure molecule each (§2.3), in this order (easiest first, [overview §1.3](2026-10-21-01-carbon-cycle-plan.md)):
 
 1. **Level 1: coal** (simplified as carbon): `C + O₂ → CO₂ + heat`. One carbon atom plus oxygen from the air gives one CO₂ and releases heat.
    **Level 1, alongside coal: limestone** `CaCO₃ + heat → CaO + CO₂`. Heating rock releases CO₂ with no burning at all, and it takes in heat rather than giving it out (§2.1).
@@ -93,6 +93,20 @@ The rock gives off CO₂ without burning. The heat has to come from somewhere, u
 - **Heat for calcination:** 1 kg of rock CO₂ needs ~4.0 MJ (178 kJ per 44 g). Supplying that from carbon at ~112 g CO₂/MJ adds at least ~0.45 kg of fuel CO₂. This is the floor with no heat lost. A real kiln also heats the material to ~1,450 °C to form clinker, and loses heat. Its real fuel use is in the [combustor sub-plan](2026-10-23-01-carbon-cycle-tab1-combustors-plan.md).
 - **Incomplete combustion releases less heat** (§3): carbon burned only to CO gives out about 28% of the heat of burning it to CO₂.
 - **Water vapour product:** combustion also makes water (methane: 2.25 kg H₂O per kg). Show it as a product. Emitted at ground level it has no lasting climate effect, because the water cycle removes it within days. The page says so in one line. (Water vapour at cruise altitude, as contrails, is in the combustor sub-plan and Tab 5.)
+
+### 2.3 Ideal and real fuels
+
+**Main point (Level 1):** the equations above burn *ideal* fuels, one pure molecule each: coal as pure carbon, natural gas as methane, petrol as octane. Fuels in the real world are mixtures, and the page uses the real fuel for every number it sends to Tab 4.
+
+- **Ideal fuel:** one molecule. Its equation is clean, and its products and heat follow from the chemistry with nothing to look up. Fixed, not editable. The worked examples (§2) and the incomplete-combustion series (§3) use ideal fuels.
+- **Real fuel:** a mixture of parts, each with a mass fraction. Petrol is alkanes centred on octane, plus aromatics (such as toluene), sometimes ethanol, and a trace of sulfur. Diesel and jet fuel are similar, centred on cetane and dodecane. Natural gas is mostly methane, with some ethane, CO₂ and N₂. Coal, coke and heavy fuel oil have no molecules to list, so they are written as their elements (carbon, hydrogen, oxygen, nitrogen, sulfur) plus moisture and ash, as received. Real fuels fill the fuel table (§5) and the calculator (§6). The composition and heating value are editable assumptions.
+- **The switch belongs to the fuel, not the combustor.** A fuel's composition is the same whatever burns it. The [combustor sub-plan](2026-10-23-01-carbon-cycle-tab1-combustors-plan.md) takes a real fuel and decides how completely it burns, how much NOx it makes and whether its sulfur is scrubbed.
+- **Level 2 shows the two side by side.** For example, 1 kg of coal as pure carbon gives 3.66 kg CO₂ and 32.8 MJ. Real bituminous coal gives ~2.4–2.7 kg CO₂ and ~26–28 MJ, because water, ash, oxygen and hydrogen make up part of its mass. For petrol, the real blend has a lower H:C than octane because of its aromatics.
+- **Heat:** an ideal fuel's heat comes from the chemistry (§2.2). A real fuel's comes from its net calorific value (IPCC first, §5). Where a real fuel's parts are all molecules, Level 2 also shows the heat added up from its parts, as a check on the composition.
+- **Sulfur is only in real fuels** (§4). No ideal fuel contains any.
+- **Biofuel blends:** a part can be fast-cycle carbon, such as the ethanol in E10 petrol or the biodiesel in B7 diesel. Its CO₂ is not counted ([overview §1.2](2026-10-21-01-carbon-cycle-plan.md)), but its CO, soot and other by-products are. Rows come later; the fuel model supports them from the start.
+
+The engine design for both kinds of fuel is in the [chemistry engine plan §5](2026-10-23-02-carbon-cycle-tab1-chemistry-engine-plan.md).
 
 ## 3. Incomplete combustion and tropospheric ozone (sub-section)
 
@@ -191,7 +205,7 @@ SO₂ + H₂O₂ (in cloud)   → H₂SO₄                   (aqueous phase, us
 - **The 2020 shipping fuel change:** the IMO global cap cut bunker fuel sulfur from ~3.5% to 0.5%. That reduced the cooling over busy shipping lanes. This is useful as a preset ("1 t of bunker fuel before / after 2020"), since it is purely a change in the fuel.
 
 **Model inputs (editable):**
-- Sulfur content per fuel (mass fraction). This is a fuel-table column (§5).
+- Sulfur content per real fuel (mass fraction; one of its parts, §2.3). Ideal fuels contain none. This is a fuel-table column (§5).
 - All of the fuel's sulfur leaves as SO₂ in stage 1. Removing SO₂ before it leaves the stack (scrubbers) is equipment, so it is in the [combustor sub-plan](2026-10-23-01-carbon-cycle-tab1-combustors-plan.md).
 - SO₂ mass is carried to Tab 5 as a negative forcing that tracks the emission rate, the same short-lived treatment as ozone.
 
@@ -227,9 +241,9 @@ Level 1 columns: Name, Image, CO₂ per kg, CO₂ per litre (per m³ for gas), C
 
 **Sorting:** the table is sortable on any column. Default sort: CO₂ per unit of energy, highest first. That puts coal at the top, matching the coal-first chemistry, and natural gas at the bottom, which is the main teaching point of this table.
 
-The full (Level 2) table follows. Values are **provisional starting points to verify** using the source order in [overview §3.5](2026-10-21-01-carbon-cycle-plan.md). IPCC comes first; the IPCC defaults are listed after this table.
+Every row is a real fuel (§2.3). Its ideal fuel appears beside it at Level 2. The full (Level 2) table follows. Values are **provisional starting points to verify** using the source order in [overview §3.5](2026-10-21-01-carbon-cycle-plan.md). IPCC comes first; the IPCC defaults are listed after this table.
 
-| Fuel | Representative composition | ~H:C (atomic) | ~C mass fraction | ~kg CO₂ / kg | ~Density (kg/L) | ~kg CO₂ / L (or m³) |
+| Fuel | Ideal fuel (representative molecule) | ~H:C (atomic) | ~C mass fraction | ~kg CO₂ / kg | ~Density (kg/L) | ~kg CO₂ / L (or m³) |
 |---|---|---|---|---|---|---|
 | Lignite (brown coal) | variable, high moisture | ~0.8–1.0 | 25–35% | ~1.0–1.3 | solid | — |
 | Sub-bituminous coal | variable, moderate moisture | ~0.8–0.9 | ~45–55% | ~1.7–2.0 | solid | — |
@@ -247,10 +261,10 @@ Notes:
 - Level 2 names lead with the plain name, e.g. "Anthracite (hard coal, almost pure carbon)" and "Lignite (brown coal)".
 - Coal values are *as received*; moisture and ash dominate the spread. Show a range plus an editable default.
 - Natural gas is mostly methane; real pipeline gas has ethane/CO₂/N₂. Row is "Methane (natural gas)" with an editable purity.
-- H:C for liquid fuels: the representative molecule gives one value, the real blend is lower because of aromatics. Show the real-blend value as the editable default and the molecule's value as the fixed reference.
+- H:C for liquid fuels: the ideal fuel's molecule gives one value, the real blend is lower because of aromatics. The real-blend value is derived from the real fuel's parts (§2.3), and the molecule's value is the fixed reference.
 - H:C is the column that explains *why* CO₂ per MJ differs (§2.2). The sort order runs almost exactly opposite to CO₂/MJ.
 
-**IPCC defaults (primary source for this table).** IPCC 2006 Guidelines Vol 2 Ch 1 (the 2019 Refinement leaves these in place) gives, per fuel, a net calorific value, a carbon content (kg C/GJ) and a CO₂ emission factor (kg CO₂/TJ), each with a 95% range. The page's editable carbon mass fraction default is **carbon content × NCV**. For diesel that is 20.2 kg C/GJ × 43.0 MJ/kg ≈ 0.87. The CO₂-per-MJ column is the IPCC emission factor itself, so the page's chemistry (§2.2) has a published number to check against. Values from memory, to verify against the tables:
+**IPCC defaults (primary source for this table).** IPCC 2006 Guidelines Vol 2 Ch 1 (the 2019 Refinement leaves these in place) gives, per fuel, a net calorific value, a carbon content (kg C/GJ) and a CO₂ emission factor (kg CO₂/TJ), each with a 95% range. Each real fuel's default parts are chosen so that its derived carbon mass fraction equals **carbon content × NCV**. For diesel that is 20.2 kg C/GJ × 43.0 MJ/kg ≈ 0.87. The CO₂-per-MJ column is the IPCC emission factor itself, so the page's chemistry (§2.2) has a published number to check against. Values from memory, to verify against the tables:
 
 | IPCC fuel | NCV (MJ/kg) | kg CO₂/TJ (= mg/kJ) | → kg CO₂/kg |
 |---|---|---|---|
@@ -276,7 +290,7 @@ Notes:
 
 1. **Name**
 2. **Image** — friendly illustration (petrol can, gas flame/cylinder, cartoon coal lumps, jet, ship tank…)
-3. **Composition** — formula / representative molecule (petrol centred on octane) plus a one-line note
+3. **Composition** — the ideal fuel's molecule (petrol centred on octane) and the real fuel's parts (petrol: alkanes, aromatics, sulfur), plus a one-line note
 4. **Structure** — short text description of the molecular structure (see below)
 5. **Chemical diagram** — structural/skeletal formula of the representative molecule (coal shown as a simplified aromatic-ring fragment)
 6. **Approx. H:C ratio** — atomic ratio
@@ -304,8 +318,8 @@ Starting text for the Structure column:
 | Anthracite | Highly condensed, nearly graphite-like stacked aromatic sheets; almost pure carbon |
 
 Fixed vs editable per fuel:
-- Fixed: molecular formula of the representative molecule, molar masses, stoichiometry, standard enthalpies of the worked-example reactions.
-- Editable: carbon mass fraction (for mixtures/coal), density, net calorific value, sulfur content, NOx default (§3). The combustor sub-plan adds the upstream overhead.
+- Fixed: the ideal fuel (its molecule, molar mass, equation and heat), molar masses, stoichiometry, standard enthalpies of the worked-example reactions.
+- Editable: the real fuel's parts (e.g. aromatics share, sulfur content, moisture and ash for coal), density, net calorific value, NOx default (§3). Carbon mass fraction and H:C are derived from the parts, so they can't disagree. The combustor sub-plan adds the upstream overhead.
 
 **Image style:** one consistent set — flat SVG illustrations, same palette, stroke weight, perspective and canvas size; light/dark-theme friendly. Chemical diagrams likewise one consistent SVG style (consider rendering from SMILES at build time so they're uniform, e.g. via RDKit, then hand-check).
 
@@ -355,7 +369,7 @@ The combustor sub-plan adds upstream, vehicle fixed cost, fugitive CH₄ and air
 
 The parameter system and page shell are cross-cutting ([overview §5](2026-10-21-01-carbon-cycle-plan.md)). Combustor and upstream work is in the [combustor sub-plan](2026-10-23-01-carbon-cycle-tab1-combustors-plan.md).
 
-1. Calculation engine + unit tests: stoichiometry, product masses, heat released or absorbed, carbon split, calcination
+1. Calculation engine + unit tests: stoichiometry, product masses, heat released or absorbed, carbon split, calcination ([technical plan](2026-10-23-02-carbon-cycle-tab1-chemistry-engine-plan.md))
 2. Source and verify all fuel defaults and reaction enthalpies; record citations
 3. Fuel table UI (sortable, default sort CO₂ per unit energy; units toggle; Level 1 short list and columns, "show all" for Level 2; per-column visibility controls later)
 4. Reaction display: balanced equation, products and energy for the chosen fuel and carbon split
