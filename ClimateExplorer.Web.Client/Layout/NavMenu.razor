@@ -72,6 +72,16 @@
                 <BarItem Class="unit-switch-nav-item">
                     <UnitSwitch />
                 </BarItem>
+                <BarItem Class="options-nav-item">
+                    <Dropdown>
+                        <DropdownToggle Class="options-toggle" aria-label="Options">
+                            <i class="fas fa-cog" aria-hidden="true"></i>
+                        </DropdownToggle>
+                        <DropdownMenu>
+                            <UnitSwitch Class="unit-switch-menu-item" />
+                        </DropdownMenu>
+                    </Dropdown>
+                </BarItem>
                 <BarItem Class="co2-nav-item">
                     <Co2NavTile OnClick="ShowCo2PanelAsync" />
                 </BarItem>
