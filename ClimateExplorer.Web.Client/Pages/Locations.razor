@@ -102,7 +102,7 @@
                         <tr>
                             <td><a href="location/@location.UrlReadyName()">@location.Name</a></td>
                             <td class="country-cell">@(location.Country ?? location.CountryCode)</td>
-                            <td class="anomaly-cell text-center">@FormatAnomaly(location.WarmingAnomaly)</td>
+                            <td class="anomaly-cell text-center">@FormatAnomaly(location)</td>
                             <td class="text-center">
                                 @if (location.HeatingScore.HasValue)
                                 {
@@ -135,7 +135,7 @@
                             <td class="@(location.RecordHigh is null ? null : "text-end")">
                                 @if (location.RecordHigh is not null)
                                 {
-                                    <ClimateButton Variant="ButtonVariant.Link" Text="@FormatRecordHigh(location.RecordHigh)" Class="record-link" OnClick="@(() => ShowClimateRecordsAsync(location))" />
+                                    <ClimateButton Variant="ButtonVariant.Link" Text="@FormatRecordHigh(location)" Class="record-link" OnClick="@(() => ShowClimateRecordsAsync(location))" />
                                 }
                                 else
                                 {

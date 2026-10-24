@@ -126,7 +126,7 @@
                                     {
                                         <td>@record.Year</td>
                                         <td class="text-end">@(record.Anomaly.HasValue ? FormatAnomaly(record.Anomaly.Value, unitOfMeasure) : "N/A")</td>
-                                        <td class="text-end">@(record.Average.HasValue ? FormatValue(record.Average.Value, unitOfMeasure) : "N/A")</td>
+                                        <td class="text-end">@(record.Average.HasValue ? FormatAverage(record.Average.Value, unitOfMeasure) : "N/A")</td>
                                     }
                                     else
                                     {

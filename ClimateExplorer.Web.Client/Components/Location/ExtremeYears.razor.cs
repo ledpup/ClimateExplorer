@@ -1,6 +1,7 @@
 namespace ClimateExplorer.Web.Client.Components.Location;
 
 using ClimateExplorer.Web.Client.UiModel;
+using ClimateExplorer.Web.Client.Units;
 using ClimateExplorer.Web.UiModel;
 using Microsoft.AspNetCore.Components;
 using static ClimateExplorer.Core.Enums;
@@ -25,6 +26,9 @@ public partial class ExtremeYears
     [Parameter]
     public UnitOfMeasure UnitOfMeasure { get; set; }
 
+    [CascadingParameter]
+    public IUnitFormatter Units { get; set; } = UnitFormatter.Metric;
+
     private List<short> HighList => [.. DataRecords!.OrderByDescending(x => x.Absolute).Take(5).Select(x => x.Year)];
     private List<short> LowList => [.. DataRecords!.OrderBy(x => x.Absolute).Take(5).Select(x => x.Year)];
 
@@ -36,7 +40,7 @@ public partial class ExtremeYears
     private string GetTooltip(short year)
     {
         var record = DataRecords?.FirstOrDefault(x => x.Year == year);
-        return record is null ? string.Empty : YearlyValuesHelper.GetTooltip(record, UnitOfMeasure, false);
+        return record is null ? string.Empty : YearlyValuesHelper.GetTooltip(record, UnitOfMeasure, Units, includeYear: false);
     }
 
     private async Task FilterToYear(short year)

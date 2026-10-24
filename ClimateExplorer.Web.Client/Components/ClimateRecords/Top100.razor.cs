@@ -3,6 +3,8 @@ namespace ClimateExplorer.Web.Client.Components.Location;
 using System.Globalization;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.Client.UiModel;
+using ClimateExplorer.Web.Client.Units;
+using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
 using ClimateExplorer.WebApiClient.Services;
 using Microsoft.AspNetCore.Components;
@@ -28,6 +30,9 @@ public partial class Top100
     [Parameter]
     public int SelectedMonth { get; set; }
 
+    [CascadingParameter]
+    public IUnitFormatter Units { get; set; } = UnitFormatter.Metric;
+
     [Inject]
     private UiLogic.DateLabels DateLabels { get; set; } = default!;
 
@@ -46,6 +51,7 @@ public partial class Top100
     private bool IsLoading { get; set; }
     private Guid? InternalLocationId { get; set; }
     private List<Top100Model.RecordCount>? TooltipConfiguredFor { get; set; }
+    private IUnitFormatter? TooltipConfiguredUnits { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -59,9 +65,10 @@ public partial class Top100
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (YearCounts.Count > 0 && !ReferenceEquals(YearCounts, TooltipConfiguredFor))
+        if (YearCounts.Count > 0 && (!ReferenceEquals(YearCounts, TooltipConfiguredFor) || !ReferenceEquals(Units, TooltipConfiguredUnits)))
         {
             TooltipConfiguredFor = YearCounts;
+            TooltipConfiguredUnits = Units;
             await JsRuntime.InvokeVoidAsync("configureTop100Tooltip", svgRef, BuildTooltipData());
         }
     }
@@ -157,7 +164,7 @@ public partial class Top100
             : "?";
 
         var valueLabel = record.Value.HasValue && Unit.HasValue
-            ? record.Value.Value.ToString("F" + UnitOfMeasureRounding(Unit.Value), CultureInfo.InvariantCulture) + UnitOfMeasureLabelShort(Unit.Value)
+            ? Units.Format(ApiMeasures.ClimateRecordValue(record.Value.Value, Unit.Value))
             : "?";
 
         return new TooltipLine(position, dateLabel, valueLabel);

@@ -62,11 +62,16 @@
                                     <a class="@("dropdown-item" + (IsCurrentPage(item.Route!) ? " hamburger-current" : string.Empty))" href="@item.Route">@item.Text</a>
                                 }
                             }
+                            <DropdownDivider />
+                            <UnitSwitch Class="unit-switch-menu-item" />
                         </DropdownMenu>
                     </Dropdown>
                 </BarItem>
             </BarStart>
             <BarEnd>
+                <BarItem Class="unit-switch-nav-item">
+                    <UnitSwitch />
+                </BarItem>
                 <BarItem Class="co2-nav-item">
                     <Co2NavTile OnClick="ShowCo2PanelAsync" />
                 </BarItem>

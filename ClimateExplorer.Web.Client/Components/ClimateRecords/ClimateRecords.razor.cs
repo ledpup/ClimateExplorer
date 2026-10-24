@@ -7,6 +7,8 @@ using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Services;
 using ClimateExplorer.Web.Client.UiModel;
+using ClimateExplorer.Web.Client.Units;
+using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
 using ClimateExplorer.WebApiClient.Services;
 using Microsoft.AspNetCore.Components;
@@ -30,6 +32,9 @@ public partial class ClimateRecords
     [Parameter]
     [EditorRequired]
     public IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
+
+    [CascadingParameter]
+    public IUnitFormatter Units { get; set; } = UnitFormatter.Metric;
 
     [PersistentState]
     public ClimateRecordsResponse? ClimateRecordsResult { get; set; }
@@ -202,15 +207,20 @@ public partial class ClimateRecords
         })];
     }
 
-    private static string FormatAnomaly(double anomaly, UnitOfMeasure unitOfMeasure)
+    // Records are always shown to at least one decimal place, so a daily rainfall record keeps its 0.1 mm.
+    private string FormatAnomaly(double anomaly, UnitOfMeasure unitOfMeasure)
     {
-        var sign = anomaly >= 0 ? "+" : string.Empty;
-        return $"{sign}{anomaly.ToString("0.0", CultureInfo.InvariantCulture)}{Enums.UnitOfMeasureLabelShort(unitOfMeasure)}";
+        return Units.Format(ApiMeasures.ClimateRecordAnomaly(anomaly, unitOfMeasure), signed: true, minimumDecimals: 1);
     }
 
-    private static string FormatValue(double value, UnitOfMeasure unitOfMeasure)
+    private string FormatAverage(double average, UnitOfMeasure unitOfMeasure)
     {
-        return $"{value.ToString("0.0", CultureInfo.InvariantCulture)}{Enums.UnitOfMeasureLabelShort(unitOfMeasure)}";
+        return Units.Format(ApiMeasures.ClimateRecordAverage(average, unitOfMeasure), minimumDecimals: 1);
+    }
+
+    private string FormatValue(double value, UnitOfMeasure unitOfMeasure)
+    {
+        return Units.Format(ApiMeasures.ClimateRecordValue(value, unitOfMeasure), minimumDecimals: 1);
     }
 
     private ClimateRecordsResponse CreateSelectedClimateRecordsResponse(DataResolution? dataResolution = null)
@@ -561,7 +571,7 @@ public partial class ClimateRecords
             return;
         }
 
-        var fileStream = Exporter!.ExportClimateRecords(Logger!, Location, records, NavManager!.Uri, exportDataResolution, exportUnitOfMeasure);
+        var fileStream = Exporter!.ExportClimateRecords(Logger!, Location, records, NavManager!.Uri, exportDataResolution, exportUnitOfMeasure, Units);
         var adj = SelectedDataAdjustment.HasValue ? $"-{SelectedDataAdjustment.Value}" : string.Empty;
         var monthLabel = SelectedMonth != 0 ? $"-{CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(SelectedMonth)}" : string.Empty;
         var fileName = $"{Location.Name}-{SelectedDataType}{adj}-{ActiveView.ToString().ToLowerInvariant()}{monthLabel}-records.csv";

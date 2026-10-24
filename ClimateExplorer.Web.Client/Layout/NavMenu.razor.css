@@ -132,6 +132,18 @@
     align-items: center;
 }
 
+/* The unit switch sits beside the CO₂ tile; on mobile it moves into the hamburger menu instead. */
+::deep .unit-switch-nav-item {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 0;
+}
+
+::deep .dropdown-menu .unit-switch-menu-item {
+    width: 100%;
+    padding: 0 0.75rem;
+}
+
 /* ── Hamburger toggle button ─────────────────────────────────────────────── */
 ::deep .hamburger-toggle {
     background: none !important;
@@ -308,6 +320,10 @@
     }
 
     ::deep .desktop-secondary-nav-item {
+        display: none;
+    }
+
+    ::deep .unit-switch-nav-item {
         display: none;
     }
 

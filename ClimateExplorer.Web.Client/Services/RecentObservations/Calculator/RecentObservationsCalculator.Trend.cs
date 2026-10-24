@@ -7,6 +7,8 @@ using ClimateExplorer.Core.Stats.Model;
 using ClimateExplorer.Web.Client.Services.RecentObservations;
 using ClimateExplorer.Web.Client.Services.Trends;
 using ClimateExplorer.Web.Client.UiModel.RecentObservations;
+using ClimateExplorer.Web.Client.Units;
+using static ClimateExplorer.Core.Enums;
 
 // Builds the "Trend" tab: the full-period, recent-window and first-half linear trends for
 // each metric, sharing TrendFormatting with the About-trends modal so both describe a trend
@@ -16,7 +18,8 @@ public sealed partial class RecentObservationsCalculator
     private static IReadOnlyList<RecentObservationTrendViewModel> BuildTrendMetrics(
         PeriodObservation period,
         MetricDomain domain,
-        IReadOnlyDictionary<string, HistoricalValues> distributions)
+        IReadOnlyDictionary<string, HistoricalValues> distributions,
+        IUnitFormatter units)
     {
         var metrics = period.Kind == RecentObservationPeriodKind.Daily ? domain.DailyVariationMetrics : domain.VariationMetrics;
         var result = new List<RecentObservationTrendViewModel>();
@@ -25,7 +28,7 @@ public sealed partial class RecentObservationsCalculator
         {
             if (period.MetricValues.TryGetValue(metric.Key, out var currentValue))
             {
-                result.Add(BuildTrendMetric(metric, currentValue, period.StartDate.Year, distributions.GetValueOrDefault(metric.Key)));
+                result.Add(BuildTrendMetric(metric, currentValue, period.StartDate.Year, distributions.GetValueOrDefault(metric.Key), units));
             }
         }
 
@@ -44,7 +47,8 @@ public sealed partial class RecentObservationsCalculator
         Metric metric,
         MetricObservationValue currentValue,
         int currentPeriodYear,
-        HistoricalValues? distribution)
+        HistoricalValues? distribution,
+        IUnitFormatter units)
     {
         // The tile's own current period is sliced identically to every historical
         // comparable (GetHistoricalDailyRangeDistributions/GetHistoricalDailyDateDistributions
@@ -87,18 +91,18 @@ public sealed partial class RecentObservationsCalculator
             Label = metric.VariationLabel,
             Unit = metric.Unit,
             CompleteYearCount = trendSet.CompletePointCount,
-            HeadlineText = TrendFormatting.FormatPerDecade(trendSet.HistoricalTrend, trendSet.HistoricalTrend.Input.MaximumX, metric.Unit),
+            HeadlineText = TrendFormatting.FormatPerDecade(trendSet.HistoricalTrend, trendSet.HistoricalTrend.Input.MaximumX, metric.Unit, units),
             IsHeadlinePositive = TrendFormatting.IsTrendPositive(trendSet.HistoricalTrend, trendSet.HistoricalTrend.Input.MaximumX),
             HeadlineCaption = FormatYearRange(trendSet.HistoricalTrend),
-            FullPeriodTooltip = BuildTrendTooltip(ordered, trendSet.HistoricalTrend, metric.Unit),
+            FullPeriodTooltip = BuildTrendTooltip(ordered, trendSet.HistoricalTrend, metric.Unit, units),
             RecentTrendYearRange = FormatYearRange(trendSet.RecentTrend),
-            RecentTrendValueText = TrendFormatting.FormatPerDecade(trendSet.RecentTrend, trendSet.RecentTrend.Input.MaximumX, metric.Unit),
+            RecentTrendValueText = TrendFormatting.FormatPerDecade(trendSet.RecentTrend, trendSet.RecentTrend.Input.MaximumX, metric.Unit, units),
             IsRecentTrendPositive = TrendFormatting.IsTrendPositive(trendSet.RecentTrend, trendSet.RecentTrend.Input.MaximumX),
-            RecentTrendTooltip = BuildTrendTooltip(recentPoints, trendSet.RecentTrend, metric.Unit),
+            RecentTrendTooltip = BuildTrendTooltip(recentPoints, trendSet.RecentTrend, metric.Unit, units),
             FirstHalfTrendYearRange = FormatYearRange(trendSet.FirstHalfTrend),
-            FirstHalfTrendValueText = TrendFormatting.FormatPerDecade(trendSet.FirstHalfTrend, trendSet.FirstHalfTrend.Input.MaximumX, metric.Unit),
+            FirstHalfTrendValueText = TrendFormatting.FormatPerDecade(trendSet.FirstHalfTrend, trendSet.FirstHalfTrend.Input.MaximumX, metric.Unit, units),
             IsFirstHalfTrendPositive = TrendFormatting.IsTrendPositive(trendSet.FirstHalfTrend, trendSet.FirstHalfTrend.Input.MaximumX),
-            FirstHalfTrendTooltip = BuildTrendTooltip(firstHalfPoints, trendSet.FirstHalfTrend, metric.Unit),
+            FirstHalfTrendTooltip = BuildTrendTooltip(firstHalfPoints, trendSet.FirstHalfTrend, metric.Unit, units),
             FullPeriodTrend = trendSet.HistoricalTrend,
             RecentTrend = trendSet.RecentTrend,
             FirstHalfTrend = trendSet.FirstHalfTrend,
@@ -113,7 +117,7 @@ public sealed partial class RecentObservationsCalculator
         return $"{trend.Input.MinimumX.ToString("0", CultureInfo.InvariantCulture)}-{trend.Input.MaximumX.ToString("0", CultureInfo.InvariantCulture)}";
     }
 
-    private static string BuildTrendTooltip(IEnumerable<DataPoint> segmentPoints, PolynomialRegressionResult trend, string unit)
+    private static string BuildTrendTooltip(IEnumerable<DataPoint> segmentPoints, PolynomialRegressionResult trend, UnitOfMeasure unit, IUnitFormatter units)
     {
         var years = segmentPoints.Select(x => (int)Math.Round(x.X)).OrderBy(x => x).ToList();
         var minYear = years[0];
@@ -133,7 +137,7 @@ public sealed partial class RecentObservationsCalculator
         string? notSignificantText = null;
         if (!trend.Significance.IsSlopeSignificant)
         {
-            notSignificantText = $"The fitted rate is {TrendFormatting.FormatPerDecadeValue(trend, trend.Input.MaximumX, unit)}, but the year-to-year scatter is too "
+            notSignificantText = $"The fitted rate is {TrendFormatting.FormatPerDecadeValue(trend, trend.Input.MaximumX, unit, units)}, but the year-to-year scatter is too "
                                 + "large relative to the number of years for this to be distinguished from no trend at all.";
         }
 

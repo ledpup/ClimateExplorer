@@ -7,6 +7,7 @@ using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.Client.UiModel.Trends;
+using ClimateExplorer.Web.Client.Units;
 using ClimateExplorer.Web.UiLogic;
 using static ClimateExplorer.Core.Enums;
 
@@ -259,7 +260,8 @@ public class ChartSeriesDefinition
     /// reading values off the tooltip. Transformations covered by <see cref="GetTransformationOverrideLabel"/>
     /// bypass this trimming and use their override label instead, matching the chart legend.
     /// </summary>
-    public string GetTooltipLabel(UnitOfMeasure unitOfMeasure)
+    /// <param name="unitLabel">The series' unit as displayed, from <see cref="UiLogic.SeriesDisplayUnits"/>.</param>
+    public string GetTooltipLabel(string unitLabel)
     {
         var overrideLabel = GetTransformationOverrideLabel();
 
@@ -272,8 +274,6 @@ public class ChartSeriesDefinition
             SourceSeriesSpecifications!.Length == 1
             ? BuildTooltipDescriptorForSeries(SourceSeriesSpecifications.Single())
             : GetFriendlyTitleShort();
-
-        var unitLabel = Enums.UnitOfMeasureLabelShort(unitOfMeasure);
 
         return string.IsNullOrWhiteSpace(descriptor) ? unitLabel : $"{descriptor} | {unitLabel}";
     }
@@ -296,7 +296,8 @@ public class ChartSeriesDefinition
         }
     }
 
-    public string GetFriendlyDescription()
+    /// <param name="units">The reader's unit system. Defaults to metric.</param>
+    public string GetFriendlyDescription(IUnitFormatter? units = null)
     {
         var segments = new List<string>();
 
@@ -313,7 +314,7 @@ public class ChartSeriesDefinition
 
             if (sss.MeasurementDefinition != null)
             {
-                uomLabel = Enums.UnitOfMeasureLabelShort(sss.MeasurementDefinition.UnitOfMeasure);
+                uomLabel = SeriesDisplayUnits.Resolve(this, sss.MeasurementDefinition.UnitOfMeasure, units ?? UnitFormatter.Metric).ShortLabel;
             }
         }
 

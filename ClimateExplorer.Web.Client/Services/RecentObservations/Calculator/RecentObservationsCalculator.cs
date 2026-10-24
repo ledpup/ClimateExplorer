@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.Client.Services.RecentObservations;
 using ClimateExplorer.Web.Client.UiModel.RecentObservations;
+using ClimateExplorer.Web.Client.Units;
 using ClimateExplorer.Web.UiLogic;
 
 // Split by concern across the RecentObservationsCalculator.*.cs files in this folder:
@@ -90,7 +91,8 @@ public sealed partial class RecentObservationsCalculator : IRecentObservationsCa
             dataSet.NoPeriodsMessage,
             dataSet.EmptyMessage,
             dataSet.SourceMetadata,
-            supportsSeasonTiles: true);
+            supportsSeasonTiles: true,
+            units: options.Units);
     }
 
     private RecentObservationsTabResult CalculatePrecipitation(
@@ -124,7 +126,8 @@ public sealed partial class RecentObservationsCalculator : IRecentObservationsCa
             dataSet.NoPeriodsMessage,
             dataSet.EmptyMessage,
             dataSet.SourceMetadata,
-            supportsSeasonTiles: true);
+            supportsSeasonTiles: true,
+            units: options.Units);
     }
 
     private RecentObservationsTabResult CalculateCo2(
@@ -157,7 +160,8 @@ public sealed partial class RecentObservationsCalculator : IRecentObservationsCa
             dataSet.NoPeriodsMessage,
             dataSet.EmptyMessage,
             dataSet.SourceMetadata,
-            supportsSeasonTiles: false);
+            supportsSeasonTiles: false,
+            units: options.Units);
     }
 
     // See the dailySeriesCache field for why this is memoized per dataset instance.
@@ -219,7 +223,8 @@ public sealed partial class RecentObservationsCalculator : IRecentObservationsCa
         string noPeriodsMessage,
         string emptyMessage,
         IReadOnlyList<RecentObservationSourceMetadata> sourceMetadata,
-        bool supportsSeasonTiles)
+        bool supportsSeasonTiles,
+        IUnitFormatter units)
     {
         previousDayCount = Math.Max(previousDayCount, RecentObservationPeriodSelection.DefaultPreviousDayCount);
         previousMonthCount = Math.Max(previousMonthCount, 0);
@@ -296,7 +301,7 @@ public sealed partial class RecentObservationsCalculator : IRecentObservationsCa
         foreach (var period in periods)
         {
             var distributions = GetOrBuildHistoricalDistributions(history, period, domain.AllMetrics, comparisonEndMode, minimumRankSampleSize);
-            tiles.Add(BuildTile(period, domain, distributions));
+            tiles.Add(BuildTile(period, domain, distributions, units));
         }
 
         return new RecentObservationsTabResult

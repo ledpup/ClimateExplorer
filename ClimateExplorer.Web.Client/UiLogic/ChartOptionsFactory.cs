@@ -1,7 +1,9 @@
 namespace ClimateExplorer.Web.UiLogic;
 
 using System.Dynamic;
+using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Web.Client.UiModel;
+using ClimateExplorer.Web.Client.Units;
 using ClimateExplorer.Web.UiModel;
 using static ClimateExplorer.Core.Enums;
 
@@ -22,9 +24,11 @@ public static class ChartOptionsFactory
     /// <summary>
     /// Builds a global min/max per axis from the full source datasets, before any display range filtering.
     /// This ensures the y-axis range reflects the complete dataset even when "chart all data" is off.
+    /// The range is in display units, so axis padding and scale-to-zero apply to what the reader sees.
     /// </summary>
     public static (Dictionary<string, (double Min, double Max)> AxisMinMax, HashSet<string> AxisHasBarSeries) CalculateAxisMinMax(
-        IReadOnlyList<SeriesWithData> seriesWithData)
+        IReadOnlyList<SeriesWithData> seriesWithData,
+        IUnitFormatter? units = null)
     {
         Dictionary<string, (double Min, double Max)> axisMinMax = [];
         HashSet<string> axisHasBarSeries = [];
@@ -32,7 +36,8 @@ public static class ChartOptionsFactory
         {
             var cs = swd.ChartSeries!;
             var uom = cs.SourceSeriesSpecifications!.First().MeasurementDefinition!.UnitOfMeasure;
-            var axisId = ChartLogic.GetYAxisId(cs.SeriesTransformation, cs.CustomTransformation, uom, cs.Aggregation);
+            var displayUnits = SeriesDisplayUnits.Resolve(cs, uom, units ?? UnitFormatter.Metric);
+            var axisId = displayUnits.AxisId;
 
             if (cs.DisplayStyle == SeriesDisplayStyle.Bar)
             {
@@ -42,7 +47,7 @@ public static class ChartOptionsFactory
             var values = swd.PreProcessedDataSet!.DataRecords!
                 .Select(x => x.Value)
                 .Where(v => v.HasValue)
-                .Select(v => v!.Value)
+                .Select(v => displayUnits.ToDisplay(v!.Value))
                 .ToList();
 
             // A projection can rise above (or fall below) everything in the record, and these
@@ -52,7 +57,7 @@ public static class ChartOptionsFactory
             {
                 if (trend.Projection is { } projection)
                 {
-                    values.AddRange(projection.Predictions.Select(x => x.PredictedY));
+                    values.AddRange(projection.Predictions.Select(x => displayUnits.ToDisplay(x.PredictedY)));
                 }
             }
 
@@ -106,21 +111,22 @@ public static class ChartOptionsFactory
 
     private static IReadOnlyList<AxisInfo> CreateYAxes(dynamic scales, ChartOptionsRequest request)
     {
-        var (axisMinMax, axisHasBarSeries) = CalculateAxisMinMax(request.SeriesWithData);
+        var (axisMinMax, axisHasBarSeries) = CalculateAxisMinMax(request.SeriesWithData, request.Units);
 
         var axes = new List<string>();
         var currentAxes = new List<AxisInfo>();
         foreach (var s in request.Series.Where(x => x.DataAvailable))
         {
             var uom = s.SourceSeriesSpecifications!.First().MeasurementDefinition!.UnitOfMeasure;
-            var axisId = ChartLogic.GetYAxisId(s.SeriesTransformation, s.CustomTransformation, uom, s.Aggregation);
+            var displayUnits = SeriesDisplayUnits.Resolve(s, uom, request.Units);
+            var axisId = displayUnits.AxisId;
             if (!axes.Contains(axisId))
             {
                 axisMinMax.TryGetValue(axisId, out var globalMinMax);
                 var axisRange = globalMinMax.Max - globalMinMax.Min;
                 var axisPadding = !axisHasBarSeries.Contains(axisId) ? axisRange * 0.02 : 0.0;
                 var scaleToZero = request.AxesScaleToZero.TryGetValue(axisId, out var s2z) && s2z;
-                var label = UnitOfMeasureLabel(s.SeriesTransformation, s.CustomTransformation, uom, s.Aggregation, s.Value, s.Hemisphere);
+                var label = GetYAxisLabel(s, uom, displayUnits);
                 currentAxes.Add(new AxisInfo(axisId, label));
                 ((IDictionary<string, object>)scales).Add(
                     axisId,
@@ -144,6 +150,23 @@ public static class ChartOptionsFactory
         }
 
         return currentAxes;
+    }
+
+    /// <summary>
+    /// The axis title. Only an untransformed series can be converted, so when it is, the title is the
+    /// display unit's own label with the same anomaly wording Core adds; otherwise it's Core's metric
+    /// title, unchanged.
+    /// </summary>
+    private static string GetYAxisLabel(ChartSeriesDefinition s, UnitOfMeasure uom, SeriesDisplayUnits displayUnits)
+    {
+        if (s.SeriesTransformation == SeriesTransformations.Identity && displayUnits.Formatter.Converts(uom))
+        {
+            var label = displayUnits.Formatter.Label(uom);
+
+            return s.Value == SeriesValueOptions.Anomaly ? $"{label} - Anomaly" : label;
+        }
+
+        return UnitOfMeasureLabel(s.SeriesTransformation, s.CustomTransformation, uom, s.Aggregation, s.Value, s.Hemisphere);
     }
 
     private static object CreateChartOptions(ChartOptionsRequest request, dynamic scales)

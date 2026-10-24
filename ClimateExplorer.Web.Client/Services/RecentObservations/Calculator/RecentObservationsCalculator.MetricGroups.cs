@@ -2,6 +2,7 @@ namespace ClimateExplorer.Web.Client.Services;
 
 using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Web.Client.UiModel.RecentObservations;
+using ClimateExplorer.Web.Client.Units;
 
 // Builds the "Ranking"/"Daily ranking" metric groups shown collapsed on the tile, and the
 // full set of expandable tabs (rankings + Average/Variation/Trend) shown when a tile expands.
@@ -10,7 +11,8 @@ public sealed partial class RecentObservationsCalculator
     private static IReadOnlyList<RecentObservationMetricGroupViewModel> BuildMetricGroups(
         PeriodObservation period,
         MetricDomain domain,
-        IReadOnlyDictionary<string, HistoricalValues> distributions)
+        IReadOnlyDictionary<string, HistoricalValues> distributions,
+        IUnitFormatter units)
     {
         var groups = new List<RecentObservationMetricGroupViewModel>();
 
@@ -25,7 +27,7 @@ public sealed partial class RecentObservationsCalculator
             {
                 if (period.MetricValues.TryGetValue(metric.Key, out var value))
                 {
-                    metrics.Add(BuildMetric(metric, value, distributions.GetValueOrDefault(metric.Key)));
+                    metrics.Add(BuildMetric(metric, value, distributions.GetValueOrDefault(metric.Key), units));
                 }
             }
 
@@ -43,7 +45,7 @@ public sealed partial class RecentObservationsCalculator
         return groups;
     }
 
-    private static RecentObservationRankingsViewModel BuildMetric(Metric metric, MetricObservationValue currentValue, HistoricalValues? distribution)
+    private static RecentObservationRankingsViewModel BuildMetric(Metric metric, MetricObservationValue currentValue, HistoricalValues? distribution, IUnitFormatter units)
     {
         var ranking = distribution is null
             ? null
@@ -54,7 +56,7 @@ public sealed partial class RecentObservationsCalculator
             return new RecentObservationRankingsViewModel
             {
                 Label = metric.DetailLabel,
-                CurrentValue = metric.Format(currentValue.Value!.Value),
+                CurrentValue = metric.FormatLevel(currentValue.Value!.Value, units),
                 CurrentValueDate = currentValue.OccurredOn,
                 ComparablePeriodCount = distribution?.ComparablePeriodCount ?? 0,
                 CanShowHistoricalRecord = distribution?.CanShowHistoricalRecord ?? false,
@@ -72,13 +74,13 @@ public sealed partial class RecentObservationsCalculator
         return new RecentObservationRankingsViewModel
         {
             Label = metric.DetailLabel,
-            CurrentValue = metric.Format(currentValue.Value!.Value),
+            CurrentValue = metric.FormatLevel(currentValue.Value!.Value, units),
             CurrentValueDate = currentValue.OccurredOn,
             RecordStatus = status,
             RecordStatusText = FormatRecordStatus(status, ranking, distribution),
             RankText = distribution.CanShowRank ? BuildRankText(ranking, status) : null,
-            RecordHigh = distribution.CanShowHistoricalRange ? BuildRecordReference(metric, "Record high", ranking.HistoricalMax, distribution.MaxValue) : null,
-            RecordLow = distribution.CanShowHistoricalRange ? BuildRecordReference(metric, "Record low", ranking.HistoricalMin, distribution.MinValue) : null,
+            RecordHigh = distribution.CanShowHistoricalRange ? BuildRecordReference(metric, "Record high", ranking.HistoricalMax, distribution.MaxValue, units) : null,
+            RecordLow = distribution.CanShowHistoricalRange ? BuildRecordReference(metric, "Record low", ranking.HistoricalMin, distribution.MinValue, units) : null,
             ComparablePeriodCount = distribution.ComparablePeriodCount,
             CanShowHistoricalRecord = distribution.CanShowHistoricalRecord,
             CanShowHistoricalRange = distribution.CanShowHistoricalRange,
@@ -105,12 +107,13 @@ public sealed partial class RecentObservationsCalculator
         Metric metric,
         string label,
         double value,
-        HistoricalPeriodValue? occurrence)
+        HistoricalPeriodValue? occurrence,
+        IUnitFormatter units)
     {
         return new RecentObservationMetricRecordViewModel
         {
             Label = label,
-            Value = metric.Format(value),
+            Value = metric.FormatLevel(value, units),
             Year = FormatHistoricalOccurrence(occurrence),
             Date = occurrence?.OccurredOn,
         };
@@ -159,7 +162,8 @@ public sealed partial class RecentObservationsCalculator
         PeriodObservation period,
         MetricDomain domain,
         IReadOnlyDictionary<string, HistoricalValues> distributions,
-        IReadOnlyList<RecentObservationMetricGroupViewModel> recordGroups)
+        IReadOnlyList<RecentObservationMetricGroupViewModel> recordGroups,
+        IUnitFormatter units)
     {
         var tabs = new List<RecentObservationExpandedTabViewModel>();
 
@@ -173,7 +177,7 @@ public sealed partial class RecentObservationsCalculator
             });
         }
 
-        var variationMetrics = BuildVariationMetrics(period, domain, distributions);
+        var variationMetrics = BuildVariationMetrics(period, domain, distributions, units);
         if (variationMetrics.Count > 0)
         {
             tabs.Add(new RecentObservationAverageTabViewModel
@@ -199,7 +203,7 @@ public sealed partial class RecentObservationsCalculator
                 Key = MetricGroupKey.Trend,
                 Title = "Trend",
                 MetricsFactory = new Lazy<IReadOnlyList<RecentObservationTrendViewModel>>(
-                    () => BuildTrendMetrics(period, domain, distributions)),
+                    () => BuildTrendMetrics(period, domain, distributions, units)),
             });
         }
 

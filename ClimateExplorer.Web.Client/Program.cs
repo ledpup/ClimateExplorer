@@ -9,6 +9,7 @@ using ClimateExplorer.Web.Client.Services.Chart;
 using ClimateExplorer.Web.Client.Services.InfoPanelDismissal;
 using ClimateExplorer.Web.Client.Services.Notifications;
 using ClimateExplorer.Web.Client.Services.RecentObservations;
+using ClimateExplorer.Web.Client.Units;
 using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.WebApiClient.Services;
 using CurrentDevice;
@@ -40,6 +41,7 @@ builder.Services
     .AddScoped<IRecentObservationsService, RecentObservationsService>()
     .AddScoped<ISiteOverviewService, SiteOverviewService>()
     .AddScoped<DateLabels>()
+    .AddScoped<UnitPreference>()
     .AddCurrentDeviceService()
     .AddBlazoredLocalStorage();
 

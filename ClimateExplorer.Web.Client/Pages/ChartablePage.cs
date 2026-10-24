@@ -11,6 +11,7 @@ using ClimateExplorer.Web.Client.Services;
 using ClimateExplorer.Web.Client.Services.Chart;
 using ClimateExplorer.Web.Client.Services.Notifications;
 using ClimateExplorer.Web.Client.UiModel;
+using ClimateExplorer.Web.Client.Units;
 using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
 using ClimateExplorer.WebApiClient.Services;
@@ -51,6 +52,9 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
 
     [Inject]
     protected IChartDataBuilder? ChartDataBuilder { get; set; }
+
+    [Inject]
+    protected UnitPreference? UnitPreference { get; set; }
 
     [Inject]
     protected IUserNotificationService? NotificationService { get; set; }
@@ -179,7 +183,9 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
 
         try
         {
-            var buildResult = await ChartDataBuilder!.BuildAsync(state);
+            // Only the notification text uses the unit system; the data itself is built in metric.
+            await UnitPreference!.LoadAsync();
+            var buildResult = await ChartDataBuilder!.BuildAsync(state, UnitPreference.Formatter);
 
             if (buildVersion != chartBuildVersion)
             {

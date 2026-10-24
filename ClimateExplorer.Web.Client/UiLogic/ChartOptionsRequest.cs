@@ -1,6 +1,7 @@
 namespace ClimateExplorer.Web.UiLogic;
 
 using ClimateExplorer.Core.DataPreparation;
+using ClimateExplorer.Web.Client.Units;
 using ClimateExplorer.Web.UiModel;
 
 /// <summary>
@@ -23,4 +24,7 @@ public sealed record ChartOptionsRequest
     public required IReadOnlyList<ChartSeriesDefinition> Series { get; init; }
 
     public required IReadOnlyDictionary<string, bool> AxesScaleToZero { get; init; }
+
+    /// <summary>The reader's unit system, which the axis ranges and titles are given in.</summary>
+    public IUnitFormatter Units { get; init; } = UnitFormatter.Metric;
 }

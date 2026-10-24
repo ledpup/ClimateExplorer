@@ -21,7 +21,7 @@
     @if (Location.WarmingAnomaly.HasValue)
     {
         <p>
-            The warming anomaly for <strong>@Location.Name</strong> is <strong>@(Location.WarmingAnomaly!.Value.ToString("0.00"))°C</strong>. Its heating score is <Strong>@Location.HeatingScore</Strong>, highlighted below.
+            The warming anomaly for <strong>@Location.Name</strong> is <strong>@FormatLocationAnomaly(Location)</strong>. Its heating score is <Strong>@Location.HeatingScore</Strong>, highlighted below.
         </p>
     }
     
@@ -33,7 +33,7 @@
             <TableHeader>
                 <TableRow>
                     <TableHeaderCell TextAlignment="TextAlignment.Start"><Strong>Heating score</Strong></TableHeaderCell>
-                    <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Warming anomaly range (°C)</Strong></TableHeaderCell>
+                    <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Warming anomaly range (@AnomalyUnitLabel)</Strong></TableHeaderCell>
                 </TableRow>
             </TableHeader>
             <TableBody>
@@ -41,7 +41,7 @@
                 {
                     <TableRow Color="@(Location.HeatingScore == heatingScoreRow.Score ? Color.Info : Color.Default)">
                         <TableRowCell>@heatingScoreRow.Score</TableRowCell>
-                        <TableRowCell>@heatingScoreRow.MinimumWarmingAnomaly.ToString("0.00") - @heatingScoreRow.MaximumWarmingAnomaly.ToString("0.00")</TableRowCell>
+                        <TableRowCell>@FormatBound(heatingScoreRow.MinimumWarmingAnomaly) - @FormatBound(heatingScoreRow.MaximumWarmingAnomaly)</TableRowCell>
                     </TableRow>
                 }
             </TableBody>

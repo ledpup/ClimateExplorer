@@ -2,6 +2,7 @@ namespace ClimateExplorer.Web.Client.Services;
 
 using ClimateExplorer.Core.Stats;
 using ClimateExplorer.Web.Client.UiModel.RecentObservations;
+using ClimateExplorer.Web.Client.Units;
 
 // Builds the "Average"/"Variation" tab: how the current value compares to the historical
 // average and typical (standard-deviation) spread for each metric in the domain.
@@ -11,7 +12,8 @@ public sealed partial class RecentObservationsCalculator
         Metric metric,
         MetricObservationValue currentValue,
         HistoricalValues? distribution,
-        string currentPeriodLabel)
+        string currentPeriodLabel,
+        IUnitFormatter units)
     {
         var values = distribution?.FiniteValues ?? [];
         if (distribution is null || values.Count == 0 || !currentValue.Value.HasValue || !double.IsFinite(currentValue.Value.Value))
@@ -19,7 +21,7 @@ public sealed partial class RecentObservationsCalculator
             return new RecentObservationVariationViewModel
             {
                 Label = metric.VariationLabel,
-                Unit = metric.Unit,
+                Unit = units.ShortLabel(metric.Unit),
                 UnavailableReason = distribution?.UnavailableReason ?? "No comparable historical data is available for this comparison.",
                 ComparablePeriodCount = distribution?.ComparablePeriodCount ?? 0,
             };
@@ -41,15 +43,15 @@ public sealed partial class RecentObservationsCalculator
             CurrentValue = currentValue.Value,
             TypicalVariation = standardDeviation,
             StandardScore = score,
-            Unit = metric.Unit,
-            HistoricalRangeText = $"Historical range: {metric.Format(values.Min())} to {metric.Format(values.Max())}",
-            HistoricalAverageText = $"Historical average: {metric.Format(average)}",
-            TypicalVariationText = standardDeviation is null ? null : $"Typical variation: ±{metric.Format(standardDeviation.Value)}",
-            CurrentPeriodText = $"{currentPeriodLabel}: {metric.Format(currentValue.Value.Value)}",
+            Unit = units.ShortLabel(metric.Unit),
+            HistoricalRangeText = $"Historical range: {metric.FormatLevel(values.Min(), units)} to {metric.FormatLevel(values.Max(), units)}",
+            HistoricalAverageText = $"Historical average: {metric.FormatLevel(average, units)}",
+            TypicalVariationText = standardDeviation is null ? null : $"Typical variation: ±{metric.FormatChange(standardDeviation.Value, units)}",
+            CurrentPeriodText = $"{currentPeriodLabel}: {metric.FormatLevel(currentValue.Value.Value, units)}",
             StandardScoreLabel = score.HasValue && double.IsFinite(score.Value) ? "standard score" : null,
             StandardScoreValue = score.HasValue && double.IsFinite(score.Value) ? FormatStandardScore(score.Value) : null,
             Anomaly = anomaly,
-            AnomalyText = FormatAnomaly(anomaly, metric),
+            AnomalyText = FormatAnomaly(anomaly, metric, units),
             AnomalyDirectionText = anomaly >= 0 ? "above average" : "below average",
             ComparablePeriodCount = distribution.ComparablePeriodCount,
         };
@@ -58,7 +60,8 @@ public sealed partial class RecentObservationsCalculator
     private IReadOnlyList<RecentObservationVariationViewModel> BuildVariationMetrics(
         PeriodObservation period,
         MetricDomain domain,
-        IReadOnlyDictionary<string, HistoricalValues> distributions)
+        IReadOnlyDictionary<string, HistoricalValues> distributions,
+        IUnitFormatter units)
     {
         var metrics = period.Kind == RecentObservationPeriodKind.Daily ? domain.DailyVariationMetrics : domain.VariationMetrics;
         var result = new List<RecentObservationVariationViewModel>();
@@ -68,7 +71,7 @@ public sealed partial class RecentObservationsCalculator
         {
             if (period.MetricValues.TryGetValue(metric.Key, out var currentValue))
             {
-                result.Add(BuildVariationMetric(metric, currentValue, distributions.GetValueOrDefault(metric.Key), currentPeriodLabel));
+                result.Add(BuildVariationMetric(metric, currentValue, distributions.GetValueOrDefault(metric.Key), currentPeriodLabel, units));
             }
         }
 

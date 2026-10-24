@@ -7,6 +7,7 @@ using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Services;
 using ClimateExplorer.Web.Client.Services.RecentObservations;
 using ClimateExplorer.Web.Client.UiModel.RecentObservations;
+using ClimateExplorer.Web.Client.Units;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using static ClimateExplorer.Core.Enums;
@@ -21,6 +22,7 @@ public partial class RecentObservationsPanel
     private readonly RecentObservationPeriodSelection periodSelection = new();
     private float completenessThreshold = RecentObservationCompletenessThreshold.Default;
     private Guid? internalContextId;
+    private IUnitFormatter? calculatedUnits;
     private DateOnly? selectedReferenceDate;
     private string referenceDateInputValue = string.Empty;
     private string? referenceDateValidationMessage;
@@ -36,6 +38,9 @@ public partial class RecentObservationsPanel
 
     [Parameter]
     public IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
+
+    [CascadingParameter]
+    public IUnitFormatter Units { get; set; } = UnitFormatter.Metric;
 
     [Inject]
     private UiLogic.DateLabels DateLabels { get; set; } = default!;
@@ -130,6 +135,15 @@ public partial class RecentObservationsPanel
             ActiveTabKey = Context?.Domains.FirstOrDefault()?.Key;
             UpdateAvailableDataAdjustments();
         }
+
+        // The tiles' text is formatted in the reader's units, so another unit system means recalculating
+        // from the data already loaded. Nothing is refetched.
+        if (calculatedUnits is not null && !ReferenceEquals(calculatedUnits, Units))
+        {
+            RecalculateLoadedTabs();
+        }
+
+        calculatedUnits = Units;
 
         if (Context is not null && ActiveDomain is not null && GetState(ActiveDomain.Key).DataSet is null)
         {
@@ -482,7 +496,7 @@ public partial class RecentObservationsPanel
             return;
         }
 
-        var fileStream = Exporter.ExportTrendData(Logger, Location, request.DataTypeLabel, request.WindowLabel, request.Points, NavManager.Uri);
+        var fileStream = Exporter.ExportTrendData(Logger, Location, request.DataTypeLabel, request.WindowLabel, request.Points, NavManager.Uri, request.Unit);
         var fileName = $"{Location.Name}-{request.DataTypeLabel}-{request.WindowLabel}-trend-data.csv";
 
         using var streamRef = new DotNetStreamReference(stream: fileStream);
@@ -633,6 +647,7 @@ public partial class RecentObservationsPanel
             PreviousMonthCount = periodSelection.PreviousMonthCount + previousMonthLookahead,
             PreviousSeasonCount = periodSelection.PreviousSeasonCount + previousSeasonLookahead,
             PreviousYearCount = periodSelection.PreviousYearCount + previousYearLookahead,
+            Units = Units,
         };
     }
 
