@@ -1,6 +1,4 @@
 @using Blazorise
-@using Blazorise.Charts
-@using Blazorise.Charts.Trendline
 @using ClimateExplorer.Core.DataPreparation;
 @using ClimateExplorer.Web.Client.Components.Common
 @using ClimateExplorer.Web.Client.Components.Info
@@ -24,9 +22,7 @@
                                 <div>No chart data is available for the selected location and series.</div>
                             </div>
                         }
-                        <Chart @ref="chart" TItem="double?" Clicked="@OnLineChartClicked" Type="ChartType.Line">
-                            <ChartTrendline @ref="chartTrendline" TItem="double?" />
-                        </Chart>
+                        <ChartJsChart @ref="chart" Clicked="@OnLineChartClicked" />
                     </div>
 
                     <div class="chart-controls">

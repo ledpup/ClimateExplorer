@@ -1,7 +1,5 @@
 ﻿namespace ClimateExplorer.Web.UiLogic;
 
-using Blazorise.Charts;
-using Blazorise.Charts.Trendline;
 using ClimateExplorer.Core;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
@@ -55,26 +53,22 @@ public static class ChartLogic
         return subtitle;
     }
 
-    public static LineChartDataset<double?> GetLineChartDataset(
+    public static ChartJsDataset GetLineChartDataset(
         string label,
         List<double?> values,
-        ChartColor chartColor,
+        string chartColour,
         UnitOfMeasure unitOfMeasure,
         SeriesTransformations seriesTransformations,
         string? customTransformation,
         bool renderSmallPoints,
         SeriesAggregationOptions seriesAggregationOptions)
     {
-        var count = values.Count;
-        var colour = new List<string>();
-        for (var i = 0; i < count; i++)
-        {
-            colour.Add(chartColor);
-        }
+        var colour = Enumerable.Repeat<string?>(chartColour, values.Count).ToList();
 
         var lineChartDataset =
-            new LineChartDataset<double?>
+            new ChartJsDataset
             {
+                Type = "line",
                 Label = label,
                 Data = values,
                 BackgroundColor = colour,
@@ -89,31 +83,27 @@ public static class ChartLogic
                 BorderDash = [],
                 BorderWidth = 4,
 
-                YAxisID = GetYAxisId(seriesTransformations, customTransformation, unitOfMeasure, seriesAggregationOptions),
+                YAxisId = GetYAxisId(seriesTransformations, customTransformation, unitOfMeasure, seriesAggregationOptions),
             };
 
         return lineChartDataset;
     }
 
-    public static LineChartDataset<double?> GetScatterChartDataset(
+    public static ChartJsDataset GetScatterChartDataset(
         string label,
         List<double?> values,
-        ChartColor chartColor,
+        string chartColour,
         UnitOfMeasure unitOfMeasure,
         SeriesTransformations seriesTransformations,
         string? customTransformation,
         SeriesAggregationOptions seriesAggregationOptions)
     {
-        var count = values.Count;
-        var colour = new List<string>();
-        for (var i = 0; i < count; i++)
-        {
-            colour.Add(chartColor);
-        }
+        var colour = Enumerable.Repeat<string?>(chartColour, values.Count).ToList();
 
         return
-            new LineChartDataset<double?>
+            new ChartJsDataset
             {
+                Type = "line",
                 Label = label,
                 Data = values,
                 BackgroundColor = colour,
@@ -126,14 +116,14 @@ public static class ChartLogic
                 PointHoverBackgroundColor = colour,
                 BorderWidth = 0,
 
-                YAxisID = GetYAxisId(seriesTransformations, customTransformation, unitOfMeasure, seriesAggregationOptions),
+                YAxisId = GetYAxisId(seriesTransformations, customTransformation, unitOfMeasure, seriesAggregationOptions),
             };
     }
 
-    public static BarChartDataset<double?> GetBarChartDataset(
+    public static ChartJsDataset GetBarChartDataset(
         string label,
         List<double?> values,
-        ChartColor chartColor,
+        string chartColour,
         UnitOfMeasure unitOfMeasure,
         bool? absoluteValues,
         Colours? positiveValueColour,
@@ -142,25 +132,26 @@ public static class ChartLogic
         string? customTransformation,
         SeriesAggregationOptions seriesAggregationOptions)
     {
-        var colour = GetBarChartColourSet(values, chartColor, positiveValueColour, negativeValueColour);
+        var colour = GetBarChartColourSet(values, chartColour, positiveValueColour, negativeValueColour);
 
         return
-            new BarChartDataset<double?>
+            new ChartJsDataset
             {
+                Type = "bar",
                 Label = label,
                 Data = values.Select(x => absoluteValues.GetValueOrDefault() && x.HasValue ? Math.Abs(x.Value) : x).ToList(),
                 BorderColor = colour,
                 BackgroundColor = colour,
-                YAxisID = GetYAxisId(seriesTransformations, customTransformation, unitOfMeasure, seriesAggregationOptions),
+                YAxisId = GetYAxisId(seriesTransformations, customTransformation, unitOfMeasure, seriesAggregationOptions),
             };
     }
 
-    public static ChartDataset<double?> GetChartDataset(
+    public static ChartJsDataset GetChartDataset(
         string label,
         List<double?> values,
         UnitOfMeasure unitOfMeasure,
         SeriesDisplayStyle displayStyle,
-        ChartColor? chartColour = null,
+        string chartColour,
         bool? absoluteValues = false,
         Colours? positiveValueColour = null,
         Colours? negativeValueColour = null,
@@ -169,16 +160,11 @@ public static class ChartLogic
         SeriesAggregationOptions seriesAggregationOptions = SeriesAggregationOptions.Mean,
         bool renderSmallPoints = false)
     {
-        if (!chartColour.HasValue)
-        {
-            throw new NullReferenceException(nameof(chartColour));
-        }
-
         return displayStyle switch
         {
-            SeriesDisplayStyle.Line => GetLineChartDataset(label, values, chartColour.Value, unitOfMeasure, seriesTransformations, customTransformation, renderSmallPoints, seriesAggregationOptions),
-            SeriesDisplayStyle.Bar => GetBarChartDataset(label, values, chartColour!.Value, unitOfMeasure, absoluteValues, positiveValueColour, negativeValueColour, seriesTransformations, customTransformation, seriesAggregationOptions),
-            SeriesDisplayStyle.Scatter => GetScatterChartDataset(label, values, chartColour.Value, unitOfMeasure, seriesTransformations, customTransformation, seriesAggregationOptions),
+            SeriesDisplayStyle.Line => GetLineChartDataset(label, values, chartColour, unitOfMeasure, seriesTransformations, customTransformation, renderSmallPoints, seriesAggregationOptions),
+            SeriesDisplayStyle.Bar => GetBarChartDataset(label, values, chartColour, unitOfMeasure, absoluteValues, positiveValueColour, negativeValueColour, seriesTransformations, customTransformation, seriesAggregationOptions),
+            SeriesDisplayStyle.Scatter => GetScatterChartDataset(label, values, chartColour, unitOfMeasure, seriesTransformations, customTransformation, seriesAggregationOptions),
             _ => throw new NotImplementedException($"SeriesDisplayStyle {displayStyle}"),
         };
     }
@@ -190,17 +176,18 @@ public static class ChartLogic
     /// dash pattern or a colour offset from the real data. Pinned to the parent's y-axis so the two
     /// are read against the same scale.
     /// </summary>
-    public static LineChartDataset<double?> GetTrendChartDataset(
+    public static ChartJsDataset GetTrendChartDataset(
         string label,
         List<double?> values,
-        ChartColor chartColor,
+        string chartColour,
         string yAxisId)
     {
-        var colour = Enumerable.Repeat((string)chartColor, values.Count).ToList();
+        var colour = Enumerable.Repeat<string?>(chartColour, values.Count).ToList();
 
         return
-            new LineChartDataset<double?>
+            new ChartJsDataset
             {
+                Type = "line",
                 Label = label,
                 Data = values,
                 BackgroundColor = colour,
@@ -213,19 +200,13 @@ public static class ChartLogic
                 PointHoverBackgroundColor = colour,
                 BorderWidth = 0,
 
-                YAxisID = yAxisId,
+                YAxisId = yAxisId,
             };
     }
 
-    public static ChartTrendlineData CreateTrendline(int datasetIndex, ChartColor colour)
+    public static ChartJsTrendline CreateTrendline(string colour)
     {
-        return
-            new ChartTrendlineData
-            {
-                DatasetIndex = datasetIndex,
-                Width = 3,
-                Color = colour,
-            };
+        return new ChartJsTrendline(colour, "solid", 3);
     }
 
     public static string GetXAxisLabel(BinGranularities binGranularity)
@@ -244,8 +225,7 @@ public static class ChartLogic
         };
     }
 
-    public static async Task AddDataSetToChart(
-        Chart<double?> chart,
+    public static ChartJsDataset GetSeriesChartDataset(
         SeriesWithData chartSeries,
         DataSet dataSet,
         string label,
@@ -258,13 +238,13 @@ public static class ChartLogic
             .Select(x => x.Value)
             .ToList();
 
-        var colour = ChartColor.FromHtmlColorCode(htmlColourCode);
-
         chartSeries.ChartSeries!.Colour = htmlColourCode;
 
-        var chartDataset = GetChartDataset(label, values, dataSet.MeasurementDefinition!.UnitOfMeasure, chartSeries.ChartSeries.DisplayStyle, colour, absoluteValues, chartSeries.ChartSeries.PositiveValueColour, chartSeries.ChartSeries.NegativeValueColour, chartSeries.ChartSeries.SeriesTransformation, chartSeries.ChartSeries.CustomTransformation, chartSeries.ChartSeries.Aggregation, renderSmallPoints);
+        var chartDataset = GetChartDataset(label, values, dataSet.MeasurementDefinition!.UnitOfMeasure, chartSeries.ChartSeries.DisplayStyle, htmlColourCode, absoluteValues, chartSeries.ChartSeries.PositiveValueColour, chartSeries.ChartSeries.NegativeValueColour, chartSeries.ChartSeries.SeriesTransformation, chartSeries.ChartSeries.CustomTransformation, chartSeries.ChartSeries.Aggregation, renderSmallPoints);
 
-        await chart.AddDataSet(chartDataset);
+        return chartSeries.ChartSeries.ShowTrendline
+            ? chartDataset with { TrendlineLinear = CreateTrendline(htmlColourCode) }
+            : chartDataset;
     }
 
     public static Tuple<BinIdentifier, BinIdentifier> GetBinRangeToPlotForGaplessRange(
@@ -385,39 +365,39 @@ public static class ChartLogic
         };
     }
 
-    public static List<string> GetBarChartColourSet(List<double?> values, ChartColor chartColor, Colours? positiveValueColour = null, Colours? negativeValueColour = null)
+    public static List<string?> GetBarChartColourSet(List<double?> values, string chartColour, Colours? positiveValueColour = null, Colours? negativeValueColour = null)
     {
         var count = values.Count;
 
         // Default positive/negative colours, used whenever a series doesn't request its own via
         // PositiveValueColour/NegativeValueColour - matches this chart's long-standing default.
-        var positiveColour = positiveValueColour.HasValue ? ChartColor.FromHtmlColorCode(ColourServer.GetHtmlColourCode(positiveValueColour.Value)) : ChartColor.FromRgba(255, 63, 63, 1f);
-        var negativeColour = negativeValueColour.HasValue ? ChartColor.FromHtmlColorCode(ColourServer.GetHtmlColourCode(negativeValueColour.Value)) : ChartColor.FromRgba(63, 63, 255, 1f);
+        var positiveColour = positiveValueColour.HasValue ? ColourServer.GetHtmlColourCode(positiveValueColour.Value) : "rgba(255,63,63,1)";
+        var negativeColour = negativeValueColour.HasValue ? ColourServer.GetHtmlColourCode(negativeValueColour.Value) : "rgba(63,63,255,1)";
 
         var hasPositive = values.Any(v => v.HasValue && v.Value > 0);
         var hasNegative = values.Any(v => v.HasValue && v.Value < 0);
         var useMixedColours = hasPositive && hasNegative;
 
-        var colour = new List<string>();
+        var colour = new List<string?>();
         for (var i = 0; i < count; i++)
         {
             if (values[i].HasValue)
             {
-                ChartColor barColour;
+                string barColour;
                 if (useMixedColours)
                 {
                     barColour = values[i]!.Value > 0 ? positiveColour : negativeColour;
                 }
                 else
                 {
-                    barColour = chartColor;
+                    barColour = chartColour;
                 }
 
                 colour.Add(barColour);
             }
             else
             {
-                colour.Add(null!);
+                colour.Add(null);
             }
         }
 

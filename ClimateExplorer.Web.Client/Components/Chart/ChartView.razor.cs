@@ -1,7 +1,5 @@
 namespace ClimateExplorer.Web.Client.Components.Chart;
 
-using Blazorise.Charts;
-using Blazorise.Charts.Trendline;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Infrastructure;
 using ClimateExplorer.Core.Model;
@@ -18,13 +16,12 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using static ClimateExplorer.Core.Enums;
 
-public partial class ChartView : IAsyncDisposable
+public partial class ChartView : IDisposable
 {
     private bool haveCalledResizeAtLeastOnce = false;
     private bool disposed;
 
-    private Chart<double?>? chart;
-    private ChartTrendline<double?>? chartTrendline;
+    private ChartJsChart? chart;
     private ElementReference chartWrapper;
 
     private BinIdentifier? chartStartBin;
@@ -114,32 +111,14 @@ public partial class ChartView : IAsyncDisposable
 
     private ColourServer Colours { get; set; } = new ColourServer();
 
-    /// <summary>
-    /// The chart type applied to the chart control. If any series is in "Bar" mode, we switch
-    /// the entire chart to Bar type to ensure it renders, at the cost of a small misalignment
-    /// between grid lines and datapoints for any line series that are being displayed.
-    /// Otherwise, we display in "Line" mode to avoid that cost. "Scatter" series are also rendered
-    /// using "Line" mode, as a line dataset with no connecting line and larger points.
-    /// </summary>
-    private ChartType InternalChartType { get; set; }
-
     private List<AxisInfo> CurrentAxes { get; set; } = [];
 
     private Dictionary<string, bool> AxesScaleToZero { get; set; } = [];
 
-    public async ValueTask DisposeAsync()
+    // The ChartJsChart child destroys the Chart.js instance when it is disposed.
+    public void Dispose()
     {
         disposed = true;
-        if (chart is not null)
-        {
-            try
-            {
-                await chart.Destroy();
-            }
-            catch (JSDisconnectedException)
-            {
-            }
-        }
     }
 
     protected override void OnInitialized()
@@ -188,15 +167,8 @@ public partial class ChartView : IAsyncDisposable
             renderedLoadingErrored = LoadingErrored;
             renderChartInProcess = true;
 
-            // In Blazor Server the parent can provide data before the child Chart<T> component
-            // has completed its JS initialisation. Wait until chart.js has created the canvas instance.
             try
             {
-                if (!OperatingSystem.IsBrowser() && JsRuntime is not null)
-                {
-                    await JsRuntime.InvokeVoidAsync("waitForChartReady", chartWrapper);
-                }
-
                 ApplyChartData(Data);
                 await RenderChart();
             }
@@ -236,7 +208,7 @@ public partial class ChartView : IAsyncDisposable
 
         try
         {
-            await chart.Clear();
+            await chart.ClearAsync();
         }
         catch (Exception ex)
         {
@@ -249,19 +221,18 @@ public partial class ChartView : IAsyncDisposable
 
         var title = string.Empty;
         var subtitle = string.Empty;
-        List<ChartTrendlineData>? trendlines = null;
         List<ChartTooltipSeriesInfo> tooltipMetadata = [];
 
         if (ChartLoadingErrored)
         {
-            await chart.SetOptionsObject(new { });
+            await chart.SetOptionsAsync(new { });
             NoChartDataAvailable = true;
 
             l.LogError("We have identified an error. Will not try to render the chart normally");
         }
-        else if (ChartSeriesWithData == null || ChartSeriesWithData.Count == 0 || chartTrendline == null)
+        else if (ChartSeriesWithData == null || ChartSeriesWithData.Count == 0)
         {
-            await chart.SetOptionsObject(new { });
+            await chart.SetOptionsAsync(new { });
 
             NoChartDataAvailable = true;
             ChartLoadingIndicatorVisible = false;
@@ -274,18 +245,15 @@ public partial class ChartView : IAsyncDisposable
         {
             LogChartSeriesList();
 
-            // We now set ChartType to Bar if any series is of type Bar, and Line otherwise.
-            var newInternalChartType =
+            // If any series is in "Bar" mode, we switch the entire chart to Bar type to ensure it
+            // renders, at the cost of a small misalignment between grid lines and datapoints for any
+            // line series that are being displayed. Otherwise, we display in "Line" mode to avoid that
+            // cost. "Scatter" series are also rendered using "Line" mode, as a line dataset with no
+            // connecting line and larger points.
+            var chartType =
                 ChartSeriesWithData.Any(x => x.ChartSeries!.DisplayStyle == SeriesDisplayStyle.Bar)
-                ? ChartType.Bar
-                : ChartType.Line;
-
-            if (newInternalChartType != InternalChartType)
-            {
-                InternalChartType = newInternalChartType;
-
-                await chart.ChangeType(newInternalChartType);
-            }
+                ? ChartJsType.Bar
+                : ChartJsType.Line;
 
             Colours = new ColourServer();
 
@@ -293,7 +261,7 @@ public partial class ChartView : IAsyncDisposable
             // secondary calculations, bin selection). RenderChart consumes that prepared state directly.
             if (!hasRenderableChartData)
             {
-                await chart.SetOptionsObject(new { });
+                await chart.SetOptionsAsync(new { });
                 NoChartDataAvailable = true;
                 ChartLoadingIndicatorVisible = false;
                 StateHasChanged();
@@ -307,16 +275,12 @@ public partial class ChartView : IAsyncDisposable
             title = ChartLogic.BuildChartTitle(ChartSeriesWithData, GetChartTitleLocations());
             subtitle = ChartLogic.BuildChartSubtitle(chartStartBin, chartEndBin, SelectedBinGranularity, IsMobileDevice!.Value, SelectedGroupingDays, GetGroupingThresholdText());
 
-            l.LogInformation("Calling AddDataSetsToGraph");
+            l.LogInformation("Building datasets");
 
-            (trendlines, tooltipMetadata) = await AddDataSetsToChart();
-
-            l.LogInformation("Trendlines count: " + trendlines.Count);
-
-            l.LogInformation("Calling AddLabels");
+            (var datasets, tooltipMetadata) = BuildChartDatasets();
 
             var labels = ChartBins!.Select(x => x.Label).ToArray();
-            await chart.AddLabels(labels);
+            await chart.SetDataAsync(chartType, labels, datasets);
 
             var optionsResult = ChartOptionsFactory.Build(new ChartOptionsRequest
             {
@@ -331,12 +295,7 @@ public partial class ChartView : IAsyncDisposable
 
             CurrentAxes = [.. optionsResult.Axes];
 
-            await chart.SetOptionsObject(optionsResult.Options);
-
-            if (trendlines != null && trendlines.Count > 0)
-            {
-                await chartTrendline.AddTrendLineOptions(trendlines);
-            }
+            await chart.SetOptionsAsync(optionsResult.Options);
         }
 
         // These customise the options and datasets set above, so they have to be in place before the
@@ -344,7 +303,7 @@ public partial class ChartView : IAsyncDisposable
         await JsRuntime!.InvokeVoidAsync("configureChartTooltip", chartWrapper, tooltipMetadata);
         await JsRuntime!.InvokeVoidAsync("configureShrunkWindowSegments", chartWrapper, tooltipMetadata);
 
-        await chart.Update();
+        await chart.UpdateAsync();
 
         await JsRuntime!.InvokeVoidAsync("registerChartHoverCursor", chartWrapper);
 
@@ -354,7 +313,7 @@ public partial class ChartView : IAsyncDisposable
         // See https://www.chartjs.org/docs/latest/configuration/responsive.html for more information
         if (!haveCalledResizeAtLeastOnce && !ChartLoadingErrored)
         {
-            await chart.Resize();
+            await chart.ResizeAsync();
             haveCalledResizeAtLeastOnce = true;
         }
 
@@ -476,18 +435,16 @@ public partial class ChartView : IAsyncDisposable
         return chartOptionsInfoPanel!.ShowAsync();
     }
 
-    private async Task<(List<ChartTrendlineData> Trendlines, List<ChartTooltipSeriesInfo> TooltipMetadata)> AddDataSetsToChart()
+    private (List<ChartJsDataset> Datasets, List<ChartTooltipSeriesInfo> TooltipMetadata) BuildChartDatasets()
     {
-        var dataSetIndex = 0;
-
         Colours = new ColourServer();
 
-        var trendlines = new List<ChartTrendlineData>();
+        var datasets = new List<ChartJsDataset>();
 
-        // Built in the same order datasets are actually added to the chart (real series first, then -
-        // once every real series is in - the derived trend overlays below), so its indexes stay aligned
-        // with chart.js's dataset indexes. That alignment is what lets the external tooltip look up a
-        // hovered trend point's underlying series and show it against that series' own averages.
+        // Built in the same order as the datasets (real series first, then - once every real series is
+        // in - the derived trend overlays below), so its indexes stay aligned with chart.js's dataset
+        // indexes. That alignment is what lets the external tooltip look up a hovered trend point's
+        // underlying series and show it against that series' own averages.
         var tooltipMetadata = new List<ChartTooltipSeriesInfo>();
 
         var requestedColours = ChartSeriesWithData!
@@ -504,41 +461,30 @@ public partial class ChartView : IAsyncDisposable
                 ? chartSeries.ChartSeries.GetFriendlyTitleShort()
                 : $"{chartSeries.ChartSeries.FriendlyTitle} | {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition!.UnitOfMeasure)}";
 
-            await ChartLogic.AddDataSetToChart(
-                chart!,
+            datasets.Add(ChartLogic.GetSeriesChartDataset(
                 chartSeries,
                 dataSet,
                 GetChartLabel(chartSeries.ChartSeries, defaultLabel),
                 htmlColourCode,
-                renderSmallPoints: renderSmallPoints);
+                renderSmallPoints: renderSmallPoints));
 
             tooltipMetadata.Add(ChartTooltipMetadataBuilder.BuildForSeries(chartSeries));
-
-            if (chartSeries.ChartSeries.ShowTrendline)
-            {
-                trendlines.Add(ChartLogic.CreateTrendline(dataSetIndex, ChartColor.FromHtmlColorCode(htmlColourCode)));
-            }
-
-            dataSetIndex++;
         }
 
-        // Trend projections are appended only once every real series has been added, because the
-        // ChartTrendlineData built above addresses its series by dataset index - interleaving trend
-        // datasets would silently point those overlays at the wrong series.
-        tooltipMetadata.AddRange(await AddTrendDataSetsToChart());
+        // Trend projections are appended only once every real series has been added, because
+        // OnLineChartClicked treats any dataset index past the real series as a trend overlay.
+        AddTrendDatasets(datasets, tooltipMetadata);
 
-        return (trendlines, tooltipMetadata);
+        return (datasets, tooltipMetadata);
     }
 
-    private async Task<List<ChartTooltipSeriesInfo>> AddTrendDataSetsToChart()
+    private void AddTrendDatasets(List<ChartJsDataset> datasets, List<ChartTooltipSeriesInfo> tooltipMetadata)
     {
-        var tooltipMetadata = new List<ChartTooltipSeriesInfo>();
-
         var binIndexesByYear = BuildBinIndexesByYear();
 
         if (binIndexesByYear.Count == 0)
         {
-            return tooltipMetadata;
+            return;
         }
 
         foreach (var chartSeries in ChartSeriesWithData!)
@@ -574,11 +520,11 @@ public partial class ChartView : IAsyncDisposable
                 var trendColour = TrendSeriesColour.Derive(csd.Colour!, tier);
                 var trendLabel = BuildTrendLabel(csd, chartSeries.Trends[tier], hasMultipleTrends);
 
-                await chart!.AddDataSet(
+                datasets.Add(
                     ChartLogic.GetTrendChartDataset(
                         trendLabel,
                         values,
-                        ChartColor.FromHtmlColorCode(trendColour),
+                        trendColour,
                         ChartLogic.GetYAxisId(csd.SeriesTransformation, csd.CustomTransformation, unitOfMeasure, csd.Aggregation)));
 
                 // The projection has no anomaly history of its own - it's compared against the real series
@@ -587,8 +533,6 @@ public partial class ChartView : IAsyncDisposable
                 tooltipMetadata.Add(ChartTooltipMetadataBuilder.BuildForTrendSeries(chartSeries, BuildTrendTooltipLabel(csd, chartSeries.Trends[tier], hasMultipleTrends, unitOfMeasure)));
             }
         }
-
-        return tooltipMetadata;
     }
 
     /// <summary>
@@ -649,7 +593,7 @@ public partial class ChartView : IAsyncDisposable
                     : $"{MathF.Round((float)groupingThreshold * 100, 0)}% (preset defined)";
     }
 
-    private async Task OnLineChartClicked(ChartMouseEventArgs e)
+    private async Task OnLineChartClicked(ChartJsClickEventArgs e)
     {
         if (SelectedBinGranularity != BinGranularities.ByYear)
         {
