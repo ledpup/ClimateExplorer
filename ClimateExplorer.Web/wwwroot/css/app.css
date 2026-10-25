@@ -326,6 +326,10 @@ th {
     margin: 0 0 0.9rem;
 }
 
+.trend-stats .trends-about-tabs {
+    margin-bottom: 1rem;
+}
+
 .trend-stats .trends-about-unavailable {
     color: #5d6d69;
 }
