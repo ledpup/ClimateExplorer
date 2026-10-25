@@ -294,7 +294,8 @@ public partial class ChartView : IDisposable
             NoChartDataAvailable = false;
 
             title = ChartLogic.BuildChartTitle(ChartSeriesWithData, Locations);
-            subtitle = ChartLogic.BuildChartSubtitle(chartStartBin, chartEndBin, SelectedBinGranularity, IsMobileDevice!.Value, SelectedGroupingDays, GetGroupingThresholdText());
+            subtitle = ChartLogic.BuildChartSubtitle(chartStartBin, chartEndBin, SelectedBinGranularity);
+            var aggregationText = ChartLogic.BuildAggregationText(SelectedGroupingDays, GetGroupingThresholdText());
 
             l.LogInformation("Building datasets");
 
@@ -307,6 +308,7 @@ public partial class ChartView : IDisposable
             {
                 Title = title,
                 Subtitle = subtitle,
+                AggregationText = aggregationText,
                 BinGranularity = SelectedBinGranularity,
                 IsMobileDevice = IsMobileDevice!.Value,
                 SeriesWithData = ChartSeriesWithData,

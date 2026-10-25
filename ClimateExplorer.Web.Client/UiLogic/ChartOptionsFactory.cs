@@ -234,6 +234,16 @@ public static class ChartOptionsFactory
                     Text = request.Subtitle,
                     Display = true,
                     Color = "black",
+
+                    // More than the default bottom padding, so the corner text clears the top tick label of a right-hand axis.
+                    Padding = new { Top = 0, Bottom = 15 },
+                },
+
+                // Drawn by the cornerNote plugin in ChartJsChart.razor.js. Left off on mobile, where there isn't room.
+                CornerNote = new
+                {
+                    Text = request.IsMobileDevice ? null : request.AggregationText,
+                    Color = "#595959",
                 },
                 Tooltip = new
                 {

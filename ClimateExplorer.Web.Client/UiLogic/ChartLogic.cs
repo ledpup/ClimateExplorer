@@ -41,21 +41,21 @@ public static class ChartLogic
         return "Climate data";
     }
 
-    public static string BuildChartSubtitle(BinIdentifier? chartStartBin, BinIdentifier? chartEndBin, BinGranularities binGranularity, bool isMobileDevice, short groupingDays, string groupingThresholdText)
+    public static string BuildChartSubtitle(BinIdentifier? chartStartBin, BinIdentifier? chartEndBin, BinGranularities binGranularity)
     {
-        var subtitle =
-                        (chartStartBin != null && chartEndBin != null)
-                        ? chartStartBin is YearBinIdentifier
-                            ? $"{chartStartBin.Label}-{chartEndBin.Label}, {Convert.ToInt16(chartEndBin.Label) - Convert.ToInt16(chartStartBin.Label)} years"
-                            : $"{chartStartBin.Label}-{chartEndBin.Label}"
-                        : binGranularity.ToFriendlyString();
+        return (chartStartBin != null && chartEndBin != null)
+            ? chartStartBin is YearBinIdentifier
+                ? $"{chartStartBin.Label}-{chartEndBin.Label}, {Convert.ToInt16(chartEndBin.Label) - Convert.ToInt16(chartStartBin.Label)} years"
+                : $"{chartStartBin.Label}-{chartEndBin.Label}"
+            : binGranularity.ToFriendlyString();
+    }
 
-        if (!isMobileDevice)
-        {
-            subtitle += $" | Aggregation: {AggregationSettings.GroupingDaysText(groupingDays)} at {groupingThresholdText}";
-        }
-
-        return subtitle;
+    /// <summary>
+    /// The aggregation settings, shown in the chart's top-right corner rather than in the subtitle.
+    /// </summary>
+    public static string BuildAggregationText(short groupingDays, string groupingThresholdText)
+    {
+        return $"Aggregation: {AggregationSettings.GroupingDaysText(groupingDays)} at {groupingThresholdText}";
     }
 
     public static ChartJsDataset GetLineChartDataset(

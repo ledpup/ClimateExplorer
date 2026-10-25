@@ -52,6 +52,34 @@ const axisTitleSwatches = {
     }
 };
 
+// Draws options.plugins.cornerNote.text right-aligned on the subtitle's row, in the chart's top-right corner.
+// Chart.js has only the title and subtitle, and each draws a single aligned block of text.
+const cornerNote = {
+    id: "cornerNote",
+    afterDraw(chart, args, options) {
+        if (!options?.text) return;
+
+        // The subtitle isn't exposed like chart.titleBlock, so find it among the top layout boxes.
+        const row = chart.boxes.find(b => b !== chart.titleBlock && b.position === "top" && b.options?.display && b.options.text)
+            ?? chart.titleBlock;
+        if (!row) return;
+
+        const font = Chart.helpers.toFont(row.options.font);
+        const padding = Chart.helpers.toPadding(row.options.padding);
+        const ctx = chart.ctx;
+
+        ctx.save();
+        ctx.font = font.string;
+        ctx.fillStyle = options.color ?? "black";
+        ctx.textAlign = "right";
+        ctx.textBaseline = "middle";
+        ctx.fillText(options.text, row.right, row.top + padding.top + font.lineHeight / 2);
+        ctx.restore();
+    }
+};
+
+const plugins = [axisTitleSwatches, cornerNote];
+
 export function create(canvas, type, dotNetRef) {
     destroy(canvas);
 
@@ -72,7 +100,7 @@ export function create(canvas, type, dotNetRef) {
     };
 
     states.set(canvas, state);
-    new Chart(canvas, { type, data: { labels: [], datasets: [] }, options: {}, plugins: [axisTitleSwatches] });
+    new Chart(canvas, { type, data: { labels: [], datasets: [] }, options: {}, plugins });
 }
 
 export function clear(canvas) {
@@ -92,7 +120,7 @@ export function setData(canvas, type, labels, datasets) {
 
     if (chart.config.type !== type) {
         chart.destroy();
-        chart = new Chart(canvas, { type, data: { labels: [], datasets: [] }, options: {}, plugins: [axisTitleSwatches] });
+        chart = new Chart(canvas, { type, data: { labels: [], datasets: [] }, options: {}, plugins });
     }
 
     chart.data.labels = labels;

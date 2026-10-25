@@ -136,6 +136,7 @@ public class ChartDisplayBuilderTests
         {
             Title = "Test",
             Subtitle = "Test",
+            AggregationText = "Test",
             BinGranularity = BinGranularities.ByYear,
             IsMobileDevice = false,
             SeriesWithData = result.SeriesWithData,
