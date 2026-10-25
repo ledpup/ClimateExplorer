@@ -110,7 +110,7 @@ public partial class Top100
         }
     }
 
-    private string BuildTitle() => Location?.FullTitle ?? string.Empty;
+    private string BuildTitle() => Location?.DisplayTitle ?? string.Empty;
 
     private string BuildSubtitle()
     {

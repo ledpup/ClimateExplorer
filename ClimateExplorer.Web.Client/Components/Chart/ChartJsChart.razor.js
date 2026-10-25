@@ -22,7 +22,7 @@ const axisTitleSwatches = {
             const isLeft = scale.options.position === "left";
             const size = font.size * 1.05;
             const gap = 4;
-            const textGap = 10;
+            const textGap = 6;
 
             ctx.save();
             ctx.font = font.string;
