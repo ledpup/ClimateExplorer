@@ -1,5 +1,7 @@
 namespace ClimateExplorer.Web.Client.UiModel.RecentObservations;
 
+using ClimateExplorer.Web.Client.Units;
+
 public sealed record RecentObservationsOptions
 {
     public const int DefaultMinimumRankSampleSize = 10;
@@ -12,4 +14,9 @@ public sealed record RecentObservationsOptions
     public int PreviousMonthCount { get; init; } = int.MaxValue;
     public int PreviousSeasonCount { get; init; } = int.MaxValue;
     public int PreviousYearCount { get; init; } = int.MaxValue;
+
+    /// <summary>
+    /// The unit system the tiles' text is formatted in. Every comparison is still calculated in metric.
+    /// </summary>
+    public IUnitFormatter Units { get; init; } = UnitFormatter.Metric;
 }

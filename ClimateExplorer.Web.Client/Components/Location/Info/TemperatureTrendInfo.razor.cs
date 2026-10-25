@@ -3,7 +3,9 @@ namespace ClimateExplorer.Web.Client.Components.Info;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.Client.Services.Trends;
 using ClimateExplorer.Web.Client.UiModel.Trends;
+using ClimateExplorer.Web.Client.Units;
 using Microsoft.AspNetCore.Components;
+using static ClimateExplorer.Core.Enums;
 
 /// <summary>
 /// The dashboard temperature trend field's modal. It recalculates the full-period, last-30-years and
@@ -12,7 +14,7 @@ using Microsoft.AspNetCore.Components;
 /// </summary>
 public partial class TemperatureTrendInfo
 {
-    private const string Unit = "°C";
+    private const UnitOfMeasure Unit = UnitOfMeasure.DegreesCelsius;
 
     private TemperatureTrendAboutPanel? aboutPanel;
 
@@ -25,6 +27,9 @@ public partial class TemperatureTrendInfo
     /// </summary>
     [Parameter]
     public DataSet? DataSet { get; set; }
+
+    [CascadingParameter]
+    public IUnitFormatter Units { get; set; } = UnitFormatter.Metric;
 
     private LocationTrendDetails? Details { get; set; }
 
@@ -42,9 +47,6 @@ public partial class TemperatureTrendInfo
             : description;
     }
 
-    private static string FormatRate(LocationTrendWindow window) =>
-        TrendFormatting.FormatPerDecadeValue(window.Regression, window.Regression.Input.MaximumX, Unit);
-
     // FormatPValue gives "< 0.0001" for very small values, which reads as "p < 0.0001", not "p = < 0.0001".
     private static string FormatPValue(LocationTrendWindow window)
     {
@@ -52,6 +54,9 @@ public partial class TemperatureTrendInfo
 
         return pValue.StartsWith('<') ? $"p {pValue}" : $"p = {pValue}";
     }
+
+    private string FormatRate(LocationTrendWindow window) =>
+        TrendFormatting.FormatPerDecadeValue(window.Regression, window.Regression.Input.MaximumX, Unit, Units);
 
     private Task ShowAboutTrends()
     {

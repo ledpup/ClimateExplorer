@@ -2,6 +2,7 @@ namespace ClimateExplorer.Web.Client.Services;
 
 using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Web.Client.UiModel.RecentObservations;
+using ClimateExplorer.Web.Client.Units;
 
 // Assembles the top-level RecentObservationTileViewModel for a period: the headline,
 // primary value, supporting max/min stats, historical range, and tone - everything above
@@ -106,7 +107,8 @@ public sealed partial class RecentObservationsCalculator
     private RecentObservationTileViewModel BuildTile(
         PeriodObservation period,
         MetricDomain domain,
-        IReadOnlyDictionary<string, HistoricalValues> distributions)
+        IReadOnlyDictionary<string, HistoricalValues> distributions,
+        IUnitFormatter units)
     {
         var historicalValues = distributions[domain.Primary.Key];
         var primaryValue = period.MetricValues[domain.Primary.Key];
@@ -123,7 +125,7 @@ public sealed partial class RecentObservationsCalculator
                 supportingStats.Add(new RecentObservationStatViewModel
                 {
                     Label = singular ? metric.SingularLabel : metric.PluralLabel,
-                    Value = metric.Format(value.Value!.Value),
+                    Value = metric.FormatLevel(value.Value!.Value, units),
                     RecordStatus = status,
                     RecordStatusText = FormatCollapsedRecordStatus(status),
                 });
@@ -136,15 +138,15 @@ public sealed partial class RecentObservationsCalculator
 
         if (ranking is not null)
         {
-            stats.Add(new RecentObservationStatViewModel { Label = "Historical average", Value = domain.Primary.Format(ranking.HistoricalAverage) });
-            stats.Add(new RecentObservationStatViewModel { Label = "Anomaly", Value = FormatAnomaly(ranking.Anomaly, domain.Primary), AnomalyValue = ranking.Anomaly });
+            stats.Add(new RecentObservationStatViewModel { Label = "Historical average", Value = domain.Primary.FormatLevel(ranking.HistoricalAverage, units) });
+            stats.Add(new RecentObservationStatViewModel { Label = "Anomaly", Value = FormatAnomaly(ranking.Anomaly, domain.Primary, units), AnomalyValue = ranking.Anomaly });
         }
 
         var showHistoricalRange = ranking is not null && historicalValues.CanShowHistoricalRange;
         var historicalContext = showHistoricalRange ? CreateHistoricalContextLabel(period) : null;
         var showMin = domain.ShowHistoricalMin;
 
-        var metricGroups = BuildMetricGroups(period, domain, distributions);
+        var metricGroups = BuildMetricGroups(period, domain, distributions, units);
         return new RecentObservationTileViewModel
         {
             PeriodKind = period.Kind,
@@ -155,14 +157,14 @@ public sealed partial class RecentObservationsCalculator
             Headline = BuildTileHeadline(period, domain, historicalValues, ranking),
             PercentileSentence = BuildPercentileSentence(period, domain, historicalValues, ranking),
             PrimaryLabel = singular ? domain.Primary.SingularLabel : domain.Primary.PluralLabel,
-            PrimaryValue = domain.Primary.Format(primaryValue.Value!.Value),
+            PrimaryValue = domain.Primary.FormatLevel(primaryValue.Value!.Value, units),
             PrimaryRecordStatus = primaryStatus,
             PrimaryRecordStatusText = FormatCollapsedRecordStatus(primaryStatus),
             HistoricalMaxLabel = showHistoricalRange ? $"{domain.HistoricalMaxWord} {historicalContext}" : null,
-            HistoricalMaxValue = showHistoricalRange ? domain.Primary.Format(ranking!.HistoricalMax) : null,
+            HistoricalMaxValue = showHistoricalRange ? domain.Primary.FormatLevel(ranking!.HistoricalMax, units) : null,
             HistoricalMaxOccurred = showHistoricalRange ? FormatHistoricalOccurrence(historicalValues.MaxValue) : null,
             HistoricalMinLabel = showHistoricalRange && showMin ? $"{domain.HistoricalMinWord} {historicalContext}" : null,
-            HistoricalMinValue = showHistoricalRange && showMin ? domain.Primary.Format(ranking!.HistoricalMin) : null,
+            HistoricalMinValue = showHistoricalRange && showMin ? domain.Primary.FormatLevel(ranking!.HistoricalMin, units) : null,
             HistoricalMinOccurred = showHistoricalRange && showMin ? FormatHistoricalOccurrence(historicalValues.MinValue) : null,
             HasComparison = ranking is not null,
             Tone = domain.GetTone(ranking),
@@ -170,7 +172,7 @@ public sealed partial class RecentObservationsCalculator
             Stats = stats,
             SupportingStats = supportingStats,
             MetricGroups = metricGroups,
-            ExpandedTabs = BuildExpandedTabs(period, domain, distributions, metricGroups),
+            ExpandedTabs = BuildExpandedTabs(period, domain, distributions, metricGroups, units),
             ComparablePeriodCount = historicalValues.ComparablePeriodCount,
             CanShowHistoricalRecord = historicalValues.CanShowHistoricalRecord,
             CanShowHistoricalRange = historicalValues.CanShowHistoricalRange,

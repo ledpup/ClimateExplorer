@@ -5,6 +5,7 @@ using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.Client.Components;
 using ClimateExplorer.Web.Client.UiModel.Trends;
+using ClimateExplorer.Web.Client.Units;
 using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
 using Microsoft.AspNetCore.Components;
@@ -24,6 +25,9 @@ public partial class ChartSeriesView
 
     [Parameter]
     public ChartSeriesDefinition? ChartSeries { get; set; }
+
+    [CascadingParameter]
+    public IUnitFormatter Units { get; set; } = UnitFormatter.Metric;
 
     [Parameter]
     public IReadOnlyList<DataSetMetadata>? SourceMetadata { get; set; }

@@ -3,6 +3,8 @@ namespace ClimateExplorer.Web.Client.Services.Trends;
 using System.Globalization;
 using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.Client.UiModel.Trends;
+using ClimateExplorer.Web.Client.Units;
+using static ClimateExplorer.Core.Enums;
 
 /// <summary>
 /// Explains, in one notification per series, why any trend period is missing from the trend
@@ -23,12 +25,14 @@ public static class ChartSeriesTrendNotificationBuilder
     /// other - and omitted otherwise, keeping the single-trend wording byte-identical to before
     /// multiple trends per series existed.
     /// </param>
+    /// <param name="units">The reader's unit system for the fitted rates. Defaults to metric.</param>
     public static UserNotification? Build(
         string seriesTitle,
         ChartSeriesTrend trend,
         string? locationName,
         Guid? locationId,
-        int? trendOrdinal = null)
+        int? trendOrdinal = null,
+        IUnitFormatter? units = null)
     {
         ArgumentNullException.ThrowIfNull(trend);
 
@@ -52,7 +56,7 @@ public static class ChartSeriesTrendNotificationBuilder
 
         var detail = string.Join(
             " ",
-            rejected.Select(window => DescribeRejectedWindow(window, trend.Subject.Unit)));
+            rejected.Select(window => DescribeRejectedWindow(window, trend.Subject.Unit, trend.Subject.FormatterFor(units ?? UnitFormatter.Metric))));
 
         var threshold = ThresholdText(trend);
 
@@ -79,11 +83,11 @@ public static class ChartSeriesTrendNotificationBuilder
             locationId);
     }
 
-    private static string DescribeRejectedWindow(ChartSeriesTrendWindowResult window, string unit)
+    private static string DescribeRejectedWindow(ChartSeriesTrendWindowResult window, UnitOfMeasure? unit, IUnitFormatter units)
     {
         var label = TrendWindowLabel.Get(window.Window);
         var years = $"{window.FirstYear.ToString(CultureInfo.InvariantCulture)}-{window.LastYear.ToString(CultureInfo.InvariantCulture)}";
-        var rate = TrendFormatting.FormatPerDecadeValue(window.Regression, window.Regression.Input.MaximumX, unit);
+        var rate = TrendFormatting.FormatPerDecadeValue(window.Regression, window.Regression.Input.MaximumX, unit, units);
         var pValue = TrendFormatting.FormatPValue(window.Regression.Significance.PValue);
 
         return $"<b>{label}</b> ({years}): the fitted rate is {rate}, but p = {pValue} - the year-to-year scatter is too large, "

@@ -8,11 +8,12 @@ using ClimateExplorer.Web.Client.Services.Trends;
 using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.Client.UiModel.Trends;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static ClimateExplorer.Core.Enums;
 
 [TestClass]
 public class ChartSeriesTrendNotificationBuilderTests
 {
-    private static readonly TrendStatSubject Subject = new("Maximum temperature", "°C");
+    private static readonly TrendStatSubject Subject = new("Maximum temperature", UnitOfMeasure.DegreesCelsius);
 
     [TestMethod]
     public void Build_EveryWindowSignificant_ReturnsNoNotification()

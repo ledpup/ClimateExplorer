@@ -5,6 +5,7 @@ using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.Services.Trends;
 using ClimateExplorer.Web.Client.UiModel.Trends;
+using ClimateExplorer.Web.Client.Units;
 using Microsoft.AspNetCore.Components;
 
 /// <summary>
@@ -30,6 +31,9 @@ public partial class ChartTrendPanel
     /// </summary>
     [Parameter]
     public string? SlotLabel { get; set; }
+
+    [CascadingParameter]
+    public IUnitFormatter Units { get; set; } = UnitFormatter.Metric;
 
     private string PanelTitle => SlotLabel is null ? "About trends" : $"About trends — {SlotLabel}";
 
@@ -74,17 +78,18 @@ public partial class ChartTrendPanel
     {
         var years = $"{window.FirstYear.ToString(CultureInfo.InvariantCulture)}-{window.LastYear.ToString(CultureInfo.InvariantCulture)}";
         var unit = Trend!.Subject.Unit;
+        var units = Trend.Subject.FormatterFor(Units);
 
         if (!window.IsSignificant)
         {
             return $"{TrendWindowLabel.Get(window.Window)} ({years}): the fitted rate is "
-                + $"{TrendFormatting.FormatPerDecadeValue(window.Regression, window.Regression.Input.MaximumX, unit)}, but it isn't statistically significant, "
+                + $"{TrendFormatting.FormatPerDecadeValue(window.Regression, window.Regression.Input.MaximumX, unit, units)}, but it isn't statistically significant, "
                 + "so this period isn't offered as a trend to display.";
         }
 
         var isDisplayed = Trend.Projection?.Window == window.Window;
 
-        return $"{TrendWindowLabel.Get(window.Window)} ({years}): {TrendFormatting.FormatPerDecadeValue(window.Regression, window.Regression.Input.MaximumX, unit)}"
+        return $"{TrendWindowLabel.Get(window.Window)} ({years}): {TrendFormatting.FormatPerDecadeValue(window.Regression, window.Regression.Input.MaximumX, unit, units)}"
             + (isDisplayed ? ", currently displayed on the chart." : ", available to display on the chart.");
     }
 

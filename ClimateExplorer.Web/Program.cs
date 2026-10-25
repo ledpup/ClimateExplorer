@@ -11,6 +11,7 @@ using ClimateExplorer.Web.Client.Services.Chart;
 using ClimateExplorer.Web.Client.Services.InfoPanelDismissal;
 using ClimateExplorer.Web.Client.Services.Notifications;
 using ClimateExplorer.Web.Client.Services.RecentObservations;
+using ClimateExplorer.Web.Client.Units;
 using ClimateExplorer.WebApiClient.Services;
 using CurrentDevice;
 using DPBlazorMapLibrary;
@@ -51,6 +52,7 @@ builder.Services
     .AddScoped<IRecentObservationsService, RecentObservationsService>()
     .AddScoped<ISiteOverviewService, SiteOverviewService>()
     .AddScoped(DateLabelsFactory.Create)
+    .AddScoped<UnitPreference>()
     .AddCurrentDeviceService()
     .AddBlazoredLocalStorage()
     .AddHttpClient<IDataService, DataService>(client =>

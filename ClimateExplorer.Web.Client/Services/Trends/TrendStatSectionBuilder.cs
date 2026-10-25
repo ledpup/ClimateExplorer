@@ -80,7 +80,7 @@ internal static class TrendStatSectionBuilder
         XInterceptStatistics? xIntercept,
         IReadOnlyList<double>? roots)
     {
-        var unit = subject.Unit;
+        var unit = subject.MetricUnitLabel;
         var isLinear = trend.Degree == 1;
         var intercept = trend.Curve.Intercept;
 
@@ -126,7 +126,7 @@ internal static class TrendStatSectionBuilder
     private static TrendStatRow BuildReciprocalRateSummaryRow(TrendStatSubject subject, PolynomialRegressionResult trend, double rate)
     {
         var reciprocal = 1 / rate;
-        var perUnitLabel = TrendFormatting.FormatUnitAmount(1, subject.Unit);
+        var perUnitLabel = TrendFormatting.FormatUnitAmount(1, subject.MetricUnitLabel);
         var isLinear = trend.Degree == 1;
 
         var reciprocalClimateExplanation = isLinear
@@ -150,7 +150,7 @@ internal static class TrendStatSectionBuilder
         XInterceptStatistics? xIntercept,
         IReadOnlyList<double>? roots)
     {
-        var unit = subject.Unit;
+        var unit = subject.MetricUnitLabel;
         var isLinear = trend.Degree == 1;
         var intercept = trend.Curve.Intercept;
         var rateSeText = TrendFormatting.FormatPerYearMagnitude(rate.StandardError, unit);
@@ -193,7 +193,7 @@ internal static class TrendStatSectionBuilder
         XInterceptStatistics? xIntercept,
         IReadOnlyList<double>? roots)
     {
-        var unit = subject.Unit;
+        var unit = subject.MetricUnitLabel;
 
         var rateRow = new TrendStatRow(
             RateLabel(trend),
@@ -278,7 +278,7 @@ internal static class TrendStatSectionBuilder
         IReadOnlyList<double> years,
         bool isCurve)
     {
-        var unit = subject.Unit;
+        var unit = subject.MetricUnitLabel;
         var label = subject.Label.ToLowerInvariant();
         var curveWord = isCurve ? "curve" : "line";
 
@@ -309,7 +309,7 @@ internal static class TrendStatSectionBuilder
         XInterceptStatistics? xIntercept,
         IReadOnlyList<double>? roots)
     {
-        var unit = subject.Unit;
+        var unit = subject.MetricUnitLabel;
 
         if (xIntercept is not null)
         {
@@ -397,10 +397,10 @@ internal static class TrendStatSectionBuilder
 
         var syxRow = new TrendStatRow(
             "Sy.x",
-            TrendFormatting.FormatValue(trend.Fit.ResidualStandardError, subject.Unit),
+            TrendFormatting.FormatValue(trend.Fit.ResidualStandardError, subject.MetricUnitLabel),
             IsEmphasized: false,
             AbstractExplanation: "Sy.x is the typical size of a residual - how far a single year's value scatters from the fitted curve, in the same units as Y.",
-            ClimateExplanation: $"A typical year here differs from the smooth fitted curve by about {TrendFormatting.FormatValue(trend.Fit.ResidualStandardError, subject.Unit)}, which is why a single unusually hot, cold, wet or dry year doesn't by itself change the assessment of the fitted trend.",
+            ClimateExplanation: $"A typical year here differs from the smooth fitted curve by about {TrendFormatting.FormatValue(trend.Fit.ResidualStandardError, subject.MetricUnitLabel)}, which is why a single unusually hot, cold, wet or dry year doesn't by itself change the assessment of the fitted trend.",
             WorkedExamples: null);
 
         return new TrendStatSection("Goodness of Fit", [rSquaredRow, syxRow]);
@@ -484,10 +484,10 @@ internal static class TrendStatSectionBuilder
 
         var workedExamples = new List<string>
         {
-            $"In {earlyX.ToString("0", CultureInfo.InvariantCulture)} this {(trend.Degree == 1 ? "line" : "curve")} predicts {TrendFormatting.FormatValue(earlyPrediction.PredictedY, subject.Unit)} (95% range for that year's actual value: {TrendFormatting.FormatValue(earlyPrediction.ObservationPredictionInterval.Lower, subject.Unit)} to {TrendFormatting.FormatValue(earlyPrediction.ObservationPredictionInterval.Upper, subject.Unit)}).",
+            $"In {earlyX.ToString("0", CultureInfo.InvariantCulture)} this {(trend.Degree == 1 ? "line" : "curve")} predicts {TrendFormatting.FormatValue(earlyPrediction.PredictedY, subject.MetricUnitLabel)} (95% range for that year's actual value: {TrendFormatting.FormatValue(earlyPrediction.ObservationPredictionInterval.Lower, subject.MetricUnitLabel)} to {TrendFormatting.FormatValue(earlyPrediction.ObservationPredictionInterval.Upper, subject.MetricUnitLabel)}).",
             BuildNowExample(subject, nowX, nowPrediction, fullPeriodPoints),
-            $"In {lateX.ToString("0", CultureInfo.InvariantCulture)} it predicts {TrendFormatting.FormatValue(latePrediction.PredictedY, subject.Unit)} ({TrendFormatting.FormatValue(latePrediction.ObservationPredictionInterval.Lower, subject.Unit)} to {TrendFormatting.FormatValue(latePrediction.ObservationPredictionInterval.Upper, subject.Unit)}).",
-            $"In {laterX.ToString("0", CultureInfo.InvariantCulture)} it predicts {TrendFormatting.FormatValue(laterPrediction.PredictedY, subject.Unit)} ({TrendFormatting.FormatValue(laterPrediction.ObservationPredictionInterval.Lower, subject.Unit)} to {TrendFormatting.FormatValue(laterPrediction.ObservationPredictionInterval.Upper, subject.Unit)}).",
+            $"In {lateX.ToString("0", CultureInfo.InvariantCulture)} it predicts {TrendFormatting.FormatValue(latePrediction.PredictedY, subject.MetricUnitLabel)} ({TrendFormatting.FormatValue(latePrediction.ObservationPredictionInterval.Lower, subject.MetricUnitLabel)} to {TrendFormatting.FormatValue(latePrediction.ObservationPredictionInterval.Upper, subject.MetricUnitLabel)}).",
+            $"In {laterX.ToString("0", CultureInfo.InvariantCulture)} it predicts {TrendFormatting.FormatValue(laterPrediction.PredictedY, subject.MetricUnitLabel)} ({TrendFormatting.FormatValue(laterPrediction.ObservationPredictionInterval.Lower, subject.MetricUnitLabel)} to {TrendFormatting.FormatValue(laterPrediction.ObservationPredictionInterval.Upper, subject.MetricUnitLabel)}).",
         };
 
         var row = new TrendStatRow(
@@ -528,7 +528,7 @@ internal static class TrendStatSectionBuilder
 
     private static string BuildNowExample(TrendStatSubject subject, int nowX, RegressionPrediction nowPrediction, IReadOnlyList<DataPoint> fullPeriodPoints)
     {
-        var unit = subject.Unit;
+        var unit = subject.MetricUnitLabel;
         var predictedText = $"In {nowX.ToString("0", CultureInfo.InvariantCulture)}, it predicts {TrendFormatting.FormatValue(nowPrediction.PredictedY, unit)} ({TrendFormatting.FormatValue(nowPrediction.ObservationPredictionInterval.Lower, unit)} to {TrendFormatting.FormatValue(nowPrediction.ObservationPredictionInterval.Upper, unit)}).";
         var actualPoint = fullPeriodPoints.FirstOrDefault(p => (int)Math.Round(p.X) == nowX);
         if (actualPoint is null)

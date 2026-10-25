@@ -1,0 +1,9 @@
+<button type="button"
+        role="switch"
+        class="unit-switch @Class"
+        aria-checked="@(IsOn ? "true" : "false")"
+        aria-label="US units (°F, inches and square miles)"
+        @onclick="ToggleAsync">
+    <span class="unit-switch-track" aria-hidden="true"><span class="unit-switch-knob"></span></span>
+    <span class="unit-switch-label">US units</span>
+</button>

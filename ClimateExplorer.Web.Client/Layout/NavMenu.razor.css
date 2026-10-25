@@ -132,6 +132,56 @@
     align-items: center;
 }
 
+/* The unit switch sits beside the CO₂ tile on tablets; on mobile it moves into the hamburger menu instead,
+   and at full-screen size it moves behind the options cog. */
+::deep .unit-switch-nav-item {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 0;
+}
+
+::deep .options-nav-item {
+    display: none;
+    align-items: center;
+    margin-right: 0;
+}
+
+/* Cog and drop-down arrow only, in the style of the hamburger toggle */
+::deep .options-toggle {
+    background: none !important;
+    border: none !important;
+    color: white !important;
+    padding: 0 8px !important;
+    font-size: 1.25rem;
+    box-shadow: none !important;
+    line-height: 2;
+    vertical-align: middle;
+}
+
+    ::deep .options-toggle:hover {
+        color: #aaa !important;
+    }
+
+::deep .options-nav-item .dropdown-menu {
+    left: auto;
+    right: 0;
+}
+
+@media (min-width: 768px) {
+    ::deep .unit-switch-nav-item {
+        display: none;
+    }
+
+    ::deep .options-nav-item {
+        display: inline-flex;
+    }
+}
+
+::deep .dropdown-menu .unit-switch-menu-item {
+    width: 100%;
+    padding: 0 0.75rem;
+}
+
 /* ── Hamburger toggle button ─────────────────────────────────────────────── */
 ::deep .hamburger-toggle {
     background: none !important;
@@ -308,6 +358,10 @@
     }
 
     ::deep .desktop-secondary-nav-item {
+        display: none;
+    }
+
+    ::deep .unit-switch-nav-item {
         display: none;
     }
 

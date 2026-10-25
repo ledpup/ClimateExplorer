@@ -11,6 +11,8 @@ using ClimateExplorer.Web.Client.Services;
 using ClimateExplorer.Web.Client.Services.Trends;
 using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.Client.UiModel.Trends;
+using ClimateExplorer.Web.Client.Units;
+using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
 using ClimateExplorer.WebApiClient.Services;
 using Microsoft.AspNetCore.Components;
@@ -53,6 +55,9 @@ public partial class LocationDashboard
     [Parameter]
     public EventCallback<YearAndDataTypeFilter> OnYearFilterChange { get; set; }
 
+    [CascadingParameter]
+    public IUnitFormatter Units { get; set; } = UnitFormatter.Metric;
+
     private Collapsible? LocationCollapsible { get; set;  }
 
     private string LocationMapUrl => Location == null ? "https://maps.google.com/" : $"https://maps.google.com/?q={Location.Coordinates.Latitude},{Location.Coordinates.Longitude}";
@@ -67,14 +72,27 @@ public partial class LocationDashboard
     private List<YearlyValues>? TemperatureAnomalyRecords { get; set; }
     private double? TemperatureLocationMean { get; set; }
     private RenderFragment? WarmingAnomalyContent { get; set; }
-    private string? WarmingAnomalyAsString { get; set; }
-    private LocationTrendField? TemperatureTrendField { get; set; }
+
+    // The location the overview fields describe, set once per location. The fields themselves are
+    // formatted at render, so they follow a change of unit system without recalculating anything.
+    private Location? OverviewLocation { get; set; }
+
+    private string? WarmingAnomalyAsString => OverviewLocation is null
+        ? null
+        : ApiMeasures.WarmingAnomaly(OverviewLocation) is { } anomaly ? Units.Format(anomaly, signed: true) : "NA";
+
+    private LocationTrendField? TemperatureTrendField => OverviewLocation is null ? null : LocationTrendFieldBuilder.Build(OverviewLocation, Units);
     private RenderFragment? TemperatureTrendContent { get; set; }
 
     private List<YearlyValues>? PrecipitationAnomalyRecords { get; set; }
     private double? PrecipitationLocationMean { get; set; }
     private RenderFragment? PrecipitationAnomalyContent { get; set; }
-    private string? PrecipitationAnomalyAsString { get; set; }
+    private bool PrecipitationAnomalyLoaded { get; set; }
+    private CalculatedAnomaly? PrecipitationAnomaly { get; set; }
+
+    private string? PrecipitationAnomalyAsString => !PrecipitationAnomalyLoaded
+        ? null
+        : PrecipitationAnomaly is null ? "NA" : Units.Format(ApiMeasures.Anomaly(PrecipitationAnomaly, UnitOfMeasure.Millimetres), signed: true);
 
     private Guid? LocationIdLastTimeOnParametersSetAsyncWasCalled { get; set; }
 
@@ -82,7 +100,22 @@ public partial class LocationDashboard
 
     private RenderFragment? HeatingScoreContent { get; set; }
 
-    private string? RecordHighToolTip { get; set; }
+    private string? RecordHighToolTip
+    {
+        get
+        {
+            if (OverviewLocation?.RecordHigh is not { } recordHigh || ApiMeasures.RecordHigh(OverviewLocation) is not { } value)
+            {
+                return null;
+            }
+
+            var recordHighDate = recordHigh.Day == null
+                ? $"{CultureInfo.InvariantCulture.DateTimeFormat.GetAbbreviatedMonthName(recordHigh.Month!.Value)} {recordHigh.Year}"
+                : DateLabels.ShortDayMonthYear(new DateOnly(recordHigh.Year, recordHigh.Month!.Value, recordHigh.Day.Value));
+
+            return $"{OverviewLocation.Name} record high of {Units.Format(value)} set {recordHighDate}.<br>Click for more records.";
+        }
+    }
 
     private string DataSourcesButtonLabel => Location is null
         ? "View data sources"
@@ -111,18 +144,6 @@ public partial class LocationDashboard
 
     public async Task OpenLocationMapAsync() => await JS!.InvokeVoidAsync("open", LocationMapUrl, "_blank");
 
-    protected static string GetPrecipitationAnomalyAsString(CalculatedAnomaly anomaly)
-    {
-        if (anomaly == null)
-        {
-            return "NA";
-        }
-
-        var value = anomaly.AnomalyValue;
-
-        return $"{(value >= 0 ? "+" : string.Empty)}{string.Format("{0:0}", value)}mm";
-    }
-
     protected override void OnInitialized()
     {
         LocationLoadingIndicatorVisible = true;
@@ -147,18 +168,7 @@ public partial class LocationDashboard
         LoadStripeData = true;
         StripeLoadingIndicatorVisible = true;
 
-        WarmingAnomalyAsString = Location!.WarmingAnomaly == null ? "NA" : new CalculatedAnomaly { AnomalyValue = Location.WarmingAnomaly.Value }.ValueAsString(UnitOfMeasure.DegreesCelsius);
-        TemperatureTrendField = LocationTrendFieldBuilder.Build(Location);
-
-        if (Location?.RecordHigh is not null)
-        {
-            var recordHigh = Location.RecordHigh;
-            var recordHighDate = recordHigh.Day == null
-                ? $"{CultureInfo.InvariantCulture.DateTimeFormat.GetAbbreviatedMonthName(recordHigh.Month!.Value)} {recordHigh.Year}"
-                : DateLabels.ShortDayMonthYear(new DateOnly(recordHigh.Year, recordHigh.Month!.Value, recordHigh.Day.Value));
-
-            RecordHighToolTip = $"{Location.Name} record high of {recordHigh.Value}°C set {recordHighDate}.<br>Click for more records.";
-        }
+        OverviewLocation = Location;
 
         await base.OnParametersSetAsync();
     }
@@ -257,7 +267,7 @@ public partial class LocationDashboard
     {
         DisplayPrecipitation = !DisplayPrecipitation;
 
-        if (DisplayPrecipitation && PrecipitationAnomalyAsString == null)
+        if (DisplayPrecipitation && !PrecipitationAnomalyLoaded)
         {
             await GeneratePrecipitationView();
         }
@@ -268,7 +278,8 @@ public partial class LocationDashboard
         var precipitationAnomaly = await CalculateAnomaly([new DataSubstitute { DataType = DataType.Precipitation }], ContainerAggregationFunctions.Sum);
         if (precipitationAnomaly != null)
         {
-            PrecipitationAnomalyAsString = GetPrecipitationAnomalyAsString(precipitationAnomaly.CalculatedAnomaly!);
+            PrecipitationAnomalyLoaded = true;
+            PrecipitationAnomaly = precipitationAnomaly.CalculatedAnomaly;
             PrecipitationLocationMean = precipitationAnomaly.DataSet?.DataRecords.Average(x => x.Value);
             PrecipitationAnomalyRecords = precipitationAnomaly.AnomalyRecords;
             PrecipitationAnomalyContent = Location == null
@@ -283,7 +294,8 @@ public partial class LocationDashboard
         }
         else
         {
-            PrecipitationAnomalyAsString = null;
+            PrecipitationAnomalyLoaded = false;
+            PrecipitationAnomaly = null;
             PrecipitationLocationMean = null;
             PrecipitationAnomalyRecords = null;
             PrecipitationAnomalyContent = null;

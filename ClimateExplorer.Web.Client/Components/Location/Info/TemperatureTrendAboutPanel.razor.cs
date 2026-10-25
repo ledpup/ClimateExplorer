@@ -6,8 +6,10 @@ using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.Services;
 using ClimateExplorer.Web.Client.Services.Trends;
 using ClimateExplorer.Web.Client.UiModel.Trends;
+using ClimateExplorer.Web.Client.Units;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using static ClimateExplorer.Core.Enums;
 
 /// <summary>
 /// The temperature trend modal's "About trends" side panel: the shared overview of what a trend is,
@@ -18,7 +20,7 @@ public partial class TemperatureTrendAboutPanel
 {
     private const string OverviewTabName = "Overview";
     private const string DataTypeLabel = "Temperature";
-    private const string Unit = "°C";
+    private const UnitOfMeasure Unit = UnitOfMeasure.DegreesCelsius;
 
     private SidePanel? sidePanel;
     private string selectedTab = OverviewTabName;
@@ -29,6 +31,9 @@ public partial class TemperatureTrendAboutPanel
     [Parameter]
     [EditorRequired]
     public LocationTrendDetails? Details { get; set; }
+
+    [CascadingParameter]
+    public IUnitFormatter Units { get; set; } = UnitFormatter.Metric;
 
     [Inject]
     private IExporter Exporter { get; set; } = default!;
@@ -53,10 +58,10 @@ public partial class TemperatureTrendAboutPanel
 
     private static string TabName(LocationTrendWindow window) => window.Window.ToString();
 
-    private static string DescribeWindow(LocationTrendWindow window)
+    private string DescribeWindow(LocationTrendWindow window)
     {
         var years = $"{window.FirstYear.ToString(CultureInfo.InvariantCulture)}-{window.LastYear.ToString(CultureInfo.InvariantCulture)}";
-        var rate = TrendFormatting.FormatPerDecadeValue(window.Regression, window.Regression.Input.MaximumX, Unit);
+        var rate = TrendFormatting.FormatPerDecadeValue(window.Regression, window.Regression.Input.MaximumX, Unit, Units);
 
         return window.IsSignificant
             ? $"{TrendWindowLabel.Get(window.Window)} ({years}): {rate}."
@@ -81,7 +86,7 @@ public partial class TemperatureTrendAboutPanel
         }
 
         var windowLabel = TrendWindowLabel.Get(window.Window);
-        var fileStream = Exporter.ExportTrendData(Logger, Location, DataTypeLabel, windowLabel, window.Points, NavManager.Uri);
+        var fileStream = Exporter.ExportTrendData(Logger, Location, DataTypeLabel, windowLabel, window.Points, NavManager.Uri, Unit);
         var fileName = $"{Location.Name}-{DataTypeLabel}-{windowLabel}-trend-data.csv";
 
         using var streamRef = new DotNetStreamReference(stream: fileStream);

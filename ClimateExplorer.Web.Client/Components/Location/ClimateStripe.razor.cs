@@ -3,6 +3,7 @@ namespace ClimateExplorer.Web.Client.Components.Location;
 using Blazorise;
 using ClimateExplorer.Core;
 using ClimateExplorer.Web.Client.UiModel;
+using ClimateExplorer.Web.Client.Units;
 using ClimateExplorer.Web.UiModel;
 using Microsoft.AspNetCore.Components;
 using static ClimateExplorer.Core.Enums;
@@ -11,9 +12,6 @@ public partial class ClimateStripe
 {
     private double min;
     private double max;
-
-    private string? uomString;
-    private int uomRounding;
 
     private Modal? popup;
 
@@ -38,15 +36,15 @@ public partial class ClimateStripe
     [Parameter]
     public EventCallback<short> OnYearFilterChange { get; set; }
 
+    [CascadingParameter]
+    public IUnitFormatter Units { get; set; } = UnitFormatter.Metric;
+
     protected override async Task OnParametersSetAsync()
     {
         if (UnitOfMeasure == null)
         {
             return;
         }
-
-        uomString = UnitOfMeasureLabelShort(UnitOfMeasure.Value);
-        uomRounding = UnitOfMeasureRounding(UnitOfMeasure.Value);
 
         if (LocationMean == null)
         {
@@ -113,10 +111,14 @@ public partial class ClimateStripe
         return $"rgba({c.R}, {c.G}, {c.B}, 97%)";
     }
 
-    private string GetRelativeValue(YearlyValues values) => UnitOfMeasure == Enums.UnitOfMeasure.Millimetres ? $"{Math.Round(values.PercentageOfAverage, 0)}%" : $"{(values.Relative >= 0 ? "+" : string.Empty)}{values.Relative.ToString($"F{uomRounding}")}{uomString}";
-    private string GetAbsoluteValue(double v) => $"{v.ToString($"F{uomRounding}")}{uomString}";
+    // Colours above come from the metric anomalies, so the stripe looks the same in every unit system.
+    private string GetRelativeValue(YearlyValues values) => UnitOfMeasure == Enums.UnitOfMeasure.Millimetres
+        ? $"{Math.Round(values.PercentageOfAverage, 0)}%"
+        : Units.Format(YearlyValuesHelper.Relative(values, UnitOfMeasure!.Value), signed: true);
 
-    private string GetTooltip(YearlyValues values) => YearlyValuesHelper.GetTooltip(values, UnitOfMeasure!.Value);
+    private string GetAbsoluteValue(YearlyValues values) => Units.Format(YearlyValuesHelper.Absolute(values, UnitOfMeasure!.Value));
+
+    private string GetTooltip(YearlyValues values) => YearlyValuesHelper.GetTooltip(values, UnitOfMeasure!.Value, Units);
 
     private async Task FilterToYear(short year)
     {

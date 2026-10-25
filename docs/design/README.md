@@ -38,6 +38,15 @@ keeps the doc an accurate record rather than a stale proposal.
 Link related docs with relative markdown links (`[text](file.md)`), not bare
 filenames — and update them if a doc is ever renamed.
 
-## Don't estimate effort
+## Summary and change size
 
-Don't include effort estimates. Risk assessments may be useful.
+End every plan with a `## Summary` section: a short paragraph on what the change does, followed by
+a `### Change size` subsection with:
+
+- **Projects:** List the projects that will be changed. Optionally, in another list, list notable ones that don't change.
+- A table by area: files **added**, **changed** and **removed**, with approximate lines for each
+  row (`+N` for new files, `~N` for lines changed in existing ones). Count tests as their own rows.
+- A **Total** row, and a note if a large share of "new" lines is code moved from elsewhere.
+
+Size the change in files and lines only. Don't give time estimates (hours/days). Risk assessments
+may be useful.
