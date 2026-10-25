@@ -108,12 +108,23 @@ public static class ChartOptionsFactory
     {
         var (axisMinMax, axisHasBarSeries) = CalculateAxisMinMax(request.SeriesWithData);
 
+        var seriesWithAxis = request.Series
+            .Where(x => x.DataAvailable)
+            .Select(s =>
+            {
+                var uom = s.SourceSeriesSpecifications!.First().MeasurementDefinition!.UnitOfMeasure;
+                return (Series: s, Uom: uom, AxisId: ChartLogic.GetYAxisId(s.SeriesTransformation, s.CustomTransformation, uom, s.Aggregation));
+            })
+            .ToList();
+
+        var coloursByAxis = seriesWithAxis
+            .GroupBy(x => x.AxisId)
+            .ToDictionary(g => g.Key, g => g.Select(x => x.Series.Colour).Distinct().ToArray());
+
         var axes = new List<string>();
         var currentAxes = new List<AxisInfo>();
-        foreach (var s in request.Series.Where(x => x.DataAvailable))
+        foreach (var (s, uom, axisId) in seriesWithAxis)
         {
-            var uom = s.SourceSeriesSpecifications!.First().MeasurementDefinition!.UnitOfMeasure;
-            var axisId = ChartLogic.GetYAxisId(s.SeriesTransformation, s.CustomTransformation, uom, s.Aggregation);
             if (!axes.Contains(axisId))
             {
                 axisMinMax.TryGetValue(axisId, out var globalMinMax);
@@ -134,7 +145,8 @@ public static class ChartOptionsFactory
                         {
                             Text = label,
                             Display = true,
-                            Color = s.Colour,
+                            Color = "black",
+                            SwatchColours = coloursByAxis[axisId],
                         },
                         Min = scaleToZero && globalMinMax.Min > 0 ? 0.0 : globalMinMax.Min == 0 ? globalMinMax.Min : globalMinMax.Min - axisPadding,
                         Max = globalMinMax.Max == 0 ? globalMinMax.Max : globalMinMax.Max + axisPadding,

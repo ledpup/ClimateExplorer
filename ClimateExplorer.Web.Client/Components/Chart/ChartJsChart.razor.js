@@ -5,6 +5,49 @@ import "../../lib/chartjs/chartjs-plugin-trendline.min.js";
 
 const states = new WeakMap();
 
+// Draws a filled square for each series colour at the start of every y axis title that has swatchColours,
+// so the title text can stay black. Chart.js can't colour part of a title and doesn't expose its position.
+const axisTitleSwatches = {
+    id: "axisTitleSwatches",
+    afterDraw(chart) {
+        const ctx = chart.ctx;
+
+        for (const scale of Object.values(chart.scales)) {
+            const title = scale.options.title;
+            const colours = title?.swatchColours;
+            if (!title?.display || !colours?.length || !title.text || scale.isHorizontal()) continue;
+
+            const font = Chart.helpers.toFont(title.font);
+            const padding = Chart.helpers.toPadding(title.padding);
+            const isLeft = scale.options.position === "left";
+            const size = font.size * 1.05;
+            const gap = 4;
+            const textGap = 10;
+
+            ctx.save();
+            ctx.font = font.string;
+            const textWidth = ctx.measureText(title.text).width;
+
+            // A left axis title reads bottom to top, a right axis title top to bottom.
+            const centreX = isLeft ? scale.left + font.lineHeight / 2 + padding.top : scale.right - font.lineHeight / 2 - padding.top;
+            const centreY = (scale.top + scale.bottom) / 2;
+
+            // The first colour is read first, so it is the furthest from the text.
+            colours.forEach((colour, i) => {
+                const distance = (colours.length - 1 - i) * (size + gap);
+                const y = isLeft
+                    ? centreY + textWidth / 2 + textGap + distance
+                    : centreY - textWidth / 2 - textGap - size - distance;
+
+                ctx.fillStyle = colour;
+                ctx.fillRect(centreX - size / 2, y, size, size);
+            });
+
+            ctx.restore();
+        }
+    }
+};
+
 export function create(canvas, type, dotNetRef) {
     destroy(canvas);
 
@@ -25,7 +68,7 @@ export function create(canvas, type, dotNetRef) {
     };
 
     states.set(canvas, state);
-    new Chart(canvas, { type, data: { labels: [], datasets: [] }, options: {} });
+    new Chart(canvas, { type, data: { labels: [], datasets: [] }, options: {}, plugins: [axisTitleSwatches] });
 }
 
 export function clear(canvas) {
@@ -45,7 +88,7 @@ export function setData(canvas, type, labels, datasets) {
 
     if (chart.config.type !== type) {
         chart.destroy();
-        chart = new Chart(canvas, { type, data: { labels: [], datasets: [] }, options: {} });
+        chart = new Chart(canvas, { type, data: { labels: [], datasets: [] }, options: {}, plugins: [axisTitleSwatches] });
     }
 
     chart.data.labels = labels;
