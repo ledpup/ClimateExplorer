@@ -1,6 +1,5 @@
 namespace ClimateExplorer.Web.Client.Components;
 
-using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.UiModel;
 using Microsoft.AspNetCore.Components;

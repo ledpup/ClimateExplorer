@@ -6,7 +6,6 @@ using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Services.Chart;
 using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
-using Microsoft.AspNetCore.Components;
 using static ClimateExplorer.Core.Enums;
 
 public partial class Global : ChartablePage

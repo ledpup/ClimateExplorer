@@ -6,16 +6,13 @@ using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.Services.Chart;
-using ClimateExplorer.Web.Client.Services.Trends;
 using ClimateExplorer.Web.Client.UiModel;
-using ClimateExplorer.Web.Client.UiModel.Trends;
 using ClimateExplorer.Web.Client.Units;
 using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
 using CurrentDevice;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using static ClimateExplorer.Core.Enums;
 
 public partial class ChartView : IDisposable
 {

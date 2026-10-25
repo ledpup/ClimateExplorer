@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using ClimateExplorer.Core.Stats;
 using ClimateExplorer.Core.Stats.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

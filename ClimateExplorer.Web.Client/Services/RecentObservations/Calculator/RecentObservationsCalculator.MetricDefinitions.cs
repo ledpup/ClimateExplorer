@@ -3,7 +3,6 @@ namespace ClimateExplorer.Web.Client.Services;
 
 using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Web.Client.UiModel.RecentObservations;
-using ClimateExplorer.Web.Client.Units;
 using static ClimateExplorer.Core.Enums;
 
 // The concrete Metric/MetricDomain instances for each observation domain. Kept apart from

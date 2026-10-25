@@ -1,7 +1,6 @@
 namespace ClimateExplorer.Web.UiLogic;
 
 using ClimateExplorer.Core.DataPreparation;
-using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.Client.Units;
 using ClimateExplorer.Web.UiModel;
 using static ClimateExplorer.Core.Enums;

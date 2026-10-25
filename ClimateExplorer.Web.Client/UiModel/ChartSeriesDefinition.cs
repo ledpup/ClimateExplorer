@@ -2,7 +2,6 @@
 
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
-using ClimateExplorer.Core;
 using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;

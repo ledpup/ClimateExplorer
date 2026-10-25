@@ -2,7 +2,6 @@ namespace ClimateExplorer.Web.Client.Services;
 
 using System.Globalization;
 using ClimateExplorer.Web.Client.Units;
-using ClimateExplorer.Web.UiLogic;
 
 // Shared string/number formatting used across the other RecentObservationsCalculator.*.cs
 // files: value formatting per unit, date/month formatting, and small text helpers.

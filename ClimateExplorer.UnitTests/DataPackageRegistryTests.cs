@@ -1,6 +1,5 @@
 namespace ClimateExplorer.UnitTests;
 
-using System;
 using System.IO;
 using ClimateExplorer.DataPipeline;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

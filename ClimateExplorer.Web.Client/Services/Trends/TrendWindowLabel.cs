@@ -1,7 +1,6 @@
 namespace ClimateExplorer.Web.Client.Services.Trends;
 
 using ClimateExplorer.Core.Model;
-using ClimateExplorer.Web.Client.UiModel.Trends;
 
 /// <summary>
 /// The one place the trend windows are named, so the chart's dropdown, the About-trends panels and

@@ -3,7 +3,6 @@ namespace ClimateExplorer.UnitTests;
 using System.Collections.Generic;
 using System.Linq;
 using ClimateExplorer.Core.Calculators;
-using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.Stats.Model;
 using ClimateExplorer.Web.Client.Services.Trends;
