@@ -14,20 +14,24 @@ public static class ChartLogic
 
     public static string BuildChartTitle(List<SeriesWithData> chartSeriesWithData, Dictionary<Guid, Location>? locationDictionary)
     {
-        if (chartSeriesWithData.Count == 1)
-        {
-            return chartSeriesWithData.Single().ChartSeries!.FriendlyTitle;
-        }
-
         var specs = chartSeriesWithData
             .SelectMany(x => x.ChartSeries!.SourceSeriesSpecifications!);
 
         var ids = specs.Select(x => x.LocationId).Distinct().ToArray();
         var names = specs.Select(x => x.LocationName).Distinct().ToArray();
 
-        if (ids.Length == 1 && locationDictionary is not null)
+        var singleLocation = ids.Length == 1 && locationDictionary is not null && locationDictionary.TryGetValue(ids.Single(), out var location)
+            ? location
+            : null;
+
+        if (chartSeriesWithData.Count == 1)
         {
-            return locationDictionary![ids.Single()].FullTitle;
+            return chartSeriesWithData.Single().ChartSeries!.GetFriendlyTitle(singleLocation?.DisplayTitle);
+        }
+
+        if (singleLocation is not null)
+        {
+            return singleLocation.DisplayTitle;
         }
         else if (ids.Length > 0)
         {
