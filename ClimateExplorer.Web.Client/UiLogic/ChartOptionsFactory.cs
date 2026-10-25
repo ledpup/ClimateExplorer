@@ -118,7 +118,8 @@ public static class ChartOptionsFactory
             .Select(s =>
             {
                 var uom = s.SourceSeriesSpecifications!.First().MeasurementDefinition!.UnitOfMeasure;
-                return (Series: s, Uom: uom, AxisId: ChartLogic.GetYAxisId(s.SeriesTransformation, s.CustomTransformation, uom, s.Aggregation));
+                var displayUnits = SeriesDisplayUnits.Resolve(s, uom, request.Units);
+                return (Series: s, Uom: uom, DisplayUnits: displayUnits, AxisId: displayUnits.AxisId);
             })
             .ToList();
 
@@ -128,11 +129,8 @@ public static class ChartOptionsFactory
 
         var axes = new List<string>();
         var currentAxes = new List<AxisInfo>();
-        foreach (var (s, uom, axisId) in seriesWithAxis)
+        foreach (var (s, uom, displayUnits, axisId) in seriesWithAxis)
         {
-            var uom = s.SourceSeriesSpecifications!.First().MeasurementDefinition!.UnitOfMeasure;
-            var displayUnits = SeriesDisplayUnits.Resolve(s, uom, request.Units);
-            var axisId = displayUnits.AxisId;
             if (!axes.Contains(axisId))
             {
                 axisMinMax.TryGetValue(axisId, out var globalMinMax);
