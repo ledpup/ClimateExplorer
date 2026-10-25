@@ -13,6 +13,9 @@ public sealed record ChartOptionsRequest
 
     public required string Subtitle { get; init; }
 
+    /// <summary>Gets the aggregation settings text, drawn in the top-right corner of the chart.</summary>
+    public required string AggregationText { get; init; }
+
     public required BinGranularities BinGranularity { get; init; }
 
     public required bool IsMobileDevice { get; init; }

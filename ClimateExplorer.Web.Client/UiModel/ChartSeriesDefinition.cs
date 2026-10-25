@@ -100,83 +100,7 @@ public class ChartSeriesDefinition
         SourceSeriesSpecifications is { Length: > 0 } specs
         && specs.All(x => Region.IsRegionId(x.LocationId));
 
-    public string FriendlyTitle
-    {
-        get
-        {
-            var segments = new List<string>();
-
-            if (SourceSeriesSpecifications!.Length == 1)
-            {
-                var sss = SourceSeriesSpecifications.Single();
-
-                if (sss.LocationName != null)
-                {
-                    segments.Add(sss.LocationName);
-                }
-
-                if (Year != null)
-                {
-                    segments.Add(Year.ToString()!);
-                }
-
-                segments.Add(MapDataTypeToFriendlyName(sss.MeasurementDefinition!.DataType));
-
-                if (sss.MeasurementDefinition.DataAdjustment != null)
-                {
-                    segments.Add(sss.MeasurementDefinition.DataAdjustment.ToString()!);
-                }
-            }
-            else
-            {
-                return GetFriendlyTitleShort();
-            }
-
-            if (SeriesTransformation != SeriesTransformations.Identity)
-            {
-                segments.Add("Transformation: " + GetFriendlySeriesTransformationLabel(SeriesTransformation));
-            }
-
-            if (Aggregation != SeriesAggregationOptions.Mean || (Year == null && BinGranularity == BinGranularities.ByMonthOnly))
-            {
-                segments.Add("Aggregation: " + Aggregation);
-            }
-
-            if (TemporalCalculation == TemporalCalculationOptions.AnnualChange)
-            {
-                segments.Add("annual change");
-            }
-
-            if (TemporalCalculation == TemporalCalculationOptions.Cumulative)
-            {
-                segments.Add("cumulative");
-            }
-
-            if (Value != SeriesValueOptions.Value)
-            {
-                segments.Add("Value: " + Value);
-            }
-
-            // Smoothing only happens when the x-axis is linear
-            if (BinGranularity.IsLinear())
-            {
-                switch (Smoothing)
-                {
-                    case SeriesSmoothingOptions.ShrinkingCentredMovingAverage:
-                        segments.Add($"{SmoothingWindow} {(BinGranularity == BinGranularities.ByYear ? "year" : "month")} moving average");
-                        break;
-                    case SeriesSmoothingOptions.CentredMovingAverage:
-                        segments.Add($"{SmoothingWindow} {(BinGranularity == BinGranularities.ByYear ? "year" : "month")} centred moving average");
-                        break;
-                    case SeriesSmoothingOptions.Trendline:
-                        segments.Add("Trendline");
-                        break;
-                }
-            }
-
-            return string.Join(" | ", segments);
-        }
-    }
+    public string FriendlyTitle => GetFriendlyTitle();
 
     public static string BuildFriendlyTitleShortForSeries(SourceSeriesSpecification sss, BinGranularities binGranularity, SeriesAggregationOptions aggregation, short? year = null)
     {
@@ -224,6 +148,85 @@ public class ChartSeriesDefinition
             "x >= 35" => "Value is 35 or more",
             _ => transformation,
         };
+    }
+
+    /// <summary>
+    /// Builds the friendly title. <paramref name="locationTitle"/> replaces the location name for a
+    /// single-source series, e.g. to show "Canberra, Australia" in the chart title.
+    /// </summary>
+    public string GetFriendlyTitle(string? locationTitle = null)
+    {
+        var segments = new List<string>();
+
+        if (SourceSeriesSpecifications!.Length == 1)
+        {
+            var sss = SourceSeriesSpecifications.Single();
+
+            if (sss.LocationName != null)
+            {
+                segments.Add(locationTitle ?? sss.LocationName);
+            }
+
+            if (Year != null)
+            {
+                segments.Add(Year.ToString()!);
+            }
+
+            segments.Add(MapDataTypeToFriendlyName(sss.MeasurementDefinition!.DataType));
+
+            if (sss.MeasurementDefinition.DataAdjustment != null)
+            {
+                segments.Add(sss.MeasurementDefinition.DataAdjustment.ToString()!);
+            }
+        }
+        else
+        {
+            return GetFriendlyTitleShort();
+        }
+
+        if (SeriesTransformation != SeriesTransformations.Identity)
+        {
+            segments.Add("Transformation: " + GetFriendlySeriesTransformationLabel(SeriesTransformation));
+        }
+
+        if (Aggregation != SeriesAggregationOptions.Mean || (Year == null && BinGranularity == BinGranularities.ByMonthOnly))
+        {
+            segments.Add("Aggregation: " + Aggregation);
+        }
+
+        if (TemporalCalculation == TemporalCalculationOptions.AnnualChange)
+        {
+            segments.Add("annual change");
+        }
+
+        if (TemporalCalculation == TemporalCalculationOptions.Cumulative)
+        {
+            segments.Add("cumulative");
+        }
+
+        if (Value != SeriesValueOptions.Value)
+        {
+            segments.Add("Value: " + Value);
+        }
+
+        // Smoothing only happens when the x-axis is linear
+        if (BinGranularity.IsLinear())
+        {
+            switch (Smoothing)
+            {
+                case SeriesSmoothingOptions.ShrinkingCentredMovingAverage:
+                    segments.Add($"{SmoothingWindow} {(BinGranularity == BinGranularities.ByYear ? "year" : "month")} moving average");
+                    break;
+                case SeriesSmoothingOptions.CentredMovingAverage:
+                    segments.Add($"{SmoothingWindow} {(BinGranularity == BinGranularities.ByYear ? "year" : "month")} centred moving average");
+                    break;
+                case SeriesSmoothingOptions.Trendline:
+                    segments.Add("Trendline");
+                    break;
+            }
+        }
+
+        return string.Join(" | ", segments);
     }
 
     public override string ToString()

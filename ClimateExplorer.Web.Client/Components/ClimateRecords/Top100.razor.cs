@@ -1,6 +1,7 @@
 namespace ClimateExplorer.Web.Client.Components.Location;
 
 using System.Globalization;
+using System.Text.RegularExpressions;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.Client.Units;
@@ -109,7 +110,9 @@ public partial class Top100
         }
     }
 
-    private string BuildTitle()
+    private string BuildTitle() => Location?.DisplayTitle ?? string.Empty;
+
+    private string BuildSubtitle()
     {
         if (DataType is null)
         {
@@ -125,25 +128,25 @@ public partial class Top100
         };
 
         var recordType = ChartSeriesDefinition.MapDataTypeToFriendlyName(DataType.Value);
-        var monthSuffix = SelectedMonth == 0 ? string.Empty : " - " + CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(SelectedMonth);
+        var monthSuffix = SelectedMonth == 0 ? string.Empty : " | " + CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(SelectedMonth);
 
-        return $"{Location?.Name} - {prefix} 100 daily {recordType.ToLower()} records{monthSuffix}";
+        return $"{prefix} 100 daily {recordType.ToLower()}{monthSuffix} | {StartYear}-{EndYear}";
+    }
+
+    private string BuildFileName(string extension)
+    {
+        var name = Regex.Replace($"{BuildTitle()} {BuildSubtitle()}".ToLowerInvariant(), "[^a-z0-9]+", "-").Trim('-');
+        return $"{name}.{extension}";
     }
 
     private async Task CopyAsImage() =>
         await JsRuntime.InvokeVoidAsync("svgToImageCopy", svgRef);
 
-    private async Task DownloadImage()
-    {
-        var fileName = BuildTitle().Replace(" ", "-").Replace("/", "-").ToLowerInvariant() + ".png";
-        await JsRuntime.InvokeVoidAsync("svgToImageDownload", svgRef, fileName);
-    }
+    private async Task DownloadImage() =>
+        await JsRuntime.InvokeVoidAsync("svgToImageDownload", svgRef, BuildFileName("png"));
 
-    private async Task DownloadSvg()
-    {
-        var fileName = BuildTitle().Replace(" ", "-").Replace("/", "-").ToLowerInvariant() + ".svg";
-        await JsRuntime.InvokeVoidAsync("svgToSvgDownload", svgRef, fileName);
-    }
+    private async Task DownloadSvg() =>
+        await JsRuntime.InvokeVoidAsync("svgToSvgDownload", svgRef, BuildFileName("svg"));
 
     private Dictionary<string, TooltipYearInfo> BuildTooltipData()
     {

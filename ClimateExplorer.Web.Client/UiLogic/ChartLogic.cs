@@ -14,20 +14,24 @@ public static class ChartLogic
 
     public static string BuildChartTitle(List<SeriesWithData> chartSeriesWithData, Dictionary<Guid, Location>? locationDictionary)
     {
-        if (chartSeriesWithData.Count == 1)
-        {
-            return chartSeriesWithData.Single().ChartSeries!.FriendlyTitle;
-        }
-
         var specs = chartSeriesWithData
             .SelectMany(x => x.ChartSeries!.SourceSeriesSpecifications!);
 
         var ids = specs.Select(x => x.LocationId).Distinct().ToArray();
         var names = specs.Select(x => x.LocationName).Distinct().ToArray();
 
-        if (ids.Length == 1 && locationDictionary is not null)
+        var singleLocation = ids.Length == 1 && locationDictionary is not null && locationDictionary.TryGetValue(ids.Single(), out var location)
+            ? location
+            : null;
+
+        if (chartSeriesWithData.Count == 1)
         {
-            return locationDictionary![ids.Single()].FullTitle;
+            return chartSeriesWithData.Single().ChartSeries!.GetFriendlyTitle(singleLocation?.DisplayTitle);
+        }
+
+        if (singleLocation is not null)
+        {
+            return singleLocation.DisplayTitle;
         }
         else if (ids.Length > 0)
         {
@@ -37,21 +41,21 @@ public static class ChartLogic
         return "Climate data";
     }
 
-    public static string BuildChartSubtitle(BinIdentifier? chartStartBin, BinIdentifier? chartEndBin, BinGranularities binGranularity, bool isMobileDevice, short groupingDays, string groupingThresholdText)
+    public static string BuildChartSubtitle(BinIdentifier? chartStartBin, BinIdentifier? chartEndBin, BinGranularities binGranularity)
     {
-        var subtitle =
-                        (chartStartBin != null && chartEndBin != null)
-                        ? chartStartBin is YearBinIdentifier
-                            ? $"{chartStartBin.Label}-{chartEndBin.Label}, {Convert.ToInt16(chartEndBin.Label) - Convert.ToInt16(chartStartBin.Label)} years"
-                            : $"{chartStartBin.Label}-{chartEndBin.Label}"
-                        : binGranularity.ToFriendlyString();
+        return (chartStartBin != null && chartEndBin != null)
+            ? chartStartBin is YearBinIdentifier
+                ? $"{chartStartBin.Label}-{chartEndBin.Label}, {Convert.ToInt16(chartEndBin.Label) - Convert.ToInt16(chartStartBin.Label)} years"
+                : $"{chartStartBin.Label}-{chartEndBin.Label}"
+            : binGranularity.ToFriendlyString();
+    }
 
-        if (!isMobileDevice)
-        {
-            subtitle += $" | Aggregation: {AggregationSettings.GroupingDaysText(groupingDays)} at {groupingThresholdText}";
-        }
-
-        return subtitle;
+    /// <summary>
+    /// The aggregation settings, shown in the chart's top-right corner rather than in the subtitle.
+    /// </summary>
+    public static string BuildAggregationText(short groupingDays, string groupingThresholdText)
+    {
+        return $"Aggregation: {AggregationSettings.GroupingDaysText(groupingDays)} at {groupingThresholdText}";
     }
 
     public static ChartJsDataset GetLineChartDataset(

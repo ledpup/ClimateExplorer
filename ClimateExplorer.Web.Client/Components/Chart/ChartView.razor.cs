@@ -64,6 +64,13 @@ public partial class ChartView : IDisposable
     public EventCallback<YearAndDataTypeFilter> YearFilterRequested { get; set; }
 
     /// <summary>
+    /// Full location details for the chart title. A data set's GeographicalEntity can't be used: it
+    /// deserialises from the API as the base type, without the country.
+    /// </summary>
+    [Parameter]
+    public Dictionary<Guid, Location>? Locations { get; set; }
+
+    /// <summary>
     /// Only here so that choosing another unit system re-renders this component, which then redraws the
     /// chart. Drawing uses <see cref="UnitPreference"/>, whose stored choice the first draw waits for.
     /// </summary>
@@ -286,8 +293,9 @@ public partial class ChartView : IDisposable
 
             NoChartDataAvailable = false;
 
-            title = ChartLogic.BuildChartTitle(ChartSeriesWithData, GetChartTitleLocations());
-            subtitle = ChartLogic.BuildChartSubtitle(chartStartBin, chartEndBin, SelectedBinGranularity, IsMobileDevice!.Value, SelectedGroupingDays, GetGroupingThresholdText());
+            title = ChartLogic.BuildChartTitle(ChartSeriesWithData, Locations);
+            subtitle = ChartLogic.BuildChartSubtitle(chartStartBin, chartEndBin, SelectedBinGranularity);
+            var aggregationText = ChartLogic.BuildAggregationText(SelectedGroupingDays, GetGroupingThresholdText());
 
             l.LogInformation("Building datasets");
 
@@ -300,6 +308,7 @@ public partial class ChartView : IDisposable
             {
                 Title = title,
                 Subtitle = subtitle,
+                AggregationText = aggregationText,
                 BinGranularity = SelectedBinGranularity,
                 IsMobileDevice = IsMobileDevice!.Value,
                 SeriesWithData = ChartSeriesWithData,
@@ -384,19 +393,6 @@ public partial class ChartView : IDisposable
         hasRenderableChartData = buildResult.HasRenderableData;
 
         Logger!.LogInformation("Applied chart data. ChartSeriesWithData now has " + ChartSeriesWithData.Count + " entries.");
-    }
-
-    private Dictionary<Guid, Location>? GetChartTitleLocations()
-    {
-        var locations = ChartSeriesWithData?
-            .Select(x => x.SourceDataSet?.GeographicalEntity)
-            .OfType<Location>()
-            .GroupBy(x => x.Id)
-            .ToDictionary(x => x.Key, x => x.First());
-
-        return locations is { Count: > 0 }
-            ? locations
-            : null;
     }
 
     private void LogChartSeriesList()

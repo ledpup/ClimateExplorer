@@ -63,6 +63,12 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
 
     protected Dictionary<Guid, Location>? LocationDictionary { get; set; }
 
+    /// <summary>
+    /// Full <see cref="Location"/> details for the chart title. <see cref="LocationDictionary"/> loads
+    /// lazily on Index, so this falls back to the page's current location until it does.
+    /// </summary>
+    protected Dictionary<Guid, Location>? KnownLocations => GetKnownLocationDictionary(GetCurrentLocationForChartUrlContext());
+
     protected IEnumerable<Region>? Regions { get; set; }
 
     protected ChartState? CurrentChartState { get; set; }
