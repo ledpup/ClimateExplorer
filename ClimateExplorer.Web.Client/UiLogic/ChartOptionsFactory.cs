@@ -133,24 +133,48 @@ public static class ChartOptionsFactory
                 var scaleToZero = request.AxesScaleToZero.TryGetValue(axisId, out var s2z) && s2z;
                 var label = UnitOfMeasureLabel(s.SeriesTransformation, s.CustomTransformation, uom, s.Aggregation, s.Value, s.Hemisphere);
                 currentAxes.Add(new AxisInfo(axisId, label));
-                ((IDictionary<string, object>)scales).Add(
-                    axisId,
-                    new
-                    {
-                        Display = true,
-                        Axis = "y",
-                        Position = axes.Count % 2 == 0 ? "left" : "right",
-                        Grid = new { DrawOnChartArea = axes.Count == 0 },
-                        Title = new
-                        {
-                            Text = label,
-                            Display = true,
-                            Color = "black",
-                            SwatchColours = coloursByAxis[axisId],
-                        },
-                        Min = scaleToZero && globalMinMax.Min > 0 ? 0.0 : globalMinMax.Min == 0 ? globalMinMax.Min : globalMinMax.Min - axisPadding,
-                        Max = globalMinMax.Max == 0 ? globalMinMax.Max : globalMinMax.Max + axisPadding,
-                    });
+
+                // Hard Min/Max make Chart.js label the exact bounds (e.g. 11.7, 12.0, 12.5), which looks wrong.
+                // Where a bound is padded, suggest it instead: with the default bounds: 'ticks', Chart.js then
+                // rounds the axis out to the next tick label once it has chosen the label step.
+
+                // ExpandoObject keys are not run through the camelCase naming policy, so they are written camelCased here.
+                var axisScale = new Dictionary<string, object>();
+                axisScale["display"] = true;
+                axisScale["axis"] = "y";
+                axisScale["position"] = axes.Count % 2 == 0 ? "left" : "right";
+                axisScale["grid"] = new { DrawOnChartArea = axes.Count == 0 };
+                axisScale["title"] = new
+                {
+                    Text = label,
+                    Display = true,
+                    Color = "black",
+                    SwatchColours = coloursByAxis[axisId],
+                };
+
+                if (scaleToZero && globalMinMax.Min > 0)
+                {
+                    axisScale["min"] = 0.0;
+                }
+                else if (globalMinMax.Min == 0)
+                {
+                    axisScale["min"] = 0.0;
+                }
+                else
+                {
+                    axisScale["suggestedMin"] = globalMinMax.Min - axisPadding;
+                }
+
+                if (globalMinMax.Max == 0)
+                {
+                    axisScale["max"] = 0.0;
+                }
+                else
+                {
+                    axisScale["suggestedMax"] = globalMinMax.Max + axisPadding;
+                }
+
+                ((IDictionary<string, object>)scales).Add(axisId, axisScale);
                 axes.Add(axisId);
             }
         }
