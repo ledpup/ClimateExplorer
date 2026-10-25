@@ -113,9 +113,22 @@ public static class ChartOptionsFactory
     {
         var (axisMinMax, axisHasBarSeries) = CalculateAxisMinMax(request.SeriesWithData, request.Units);
 
+        var seriesWithAxis = request.Series
+            .Where(x => x.DataAvailable)
+            .Select(s =>
+            {
+                var uom = s.SourceSeriesSpecifications!.First().MeasurementDefinition!.UnitOfMeasure;
+                return (Series: s, Uom: uom, AxisId: ChartLogic.GetYAxisId(s.SeriesTransformation, s.CustomTransformation, uom, s.Aggregation));
+            })
+            .ToList();
+
+        var coloursByAxis = seriesWithAxis
+            .GroupBy(x => x.AxisId)
+            .ToDictionary(g => g.Key, g => g.Select(x => x.Series.Colour).Distinct().ToArray());
+
         var axes = new List<string>();
         var currentAxes = new List<AxisInfo>();
-        foreach (var s in request.Series.Where(x => x.DataAvailable))
+        foreach (var (s, uom, axisId) in seriesWithAxis)
         {
             var uom = s.SourceSeriesSpecifications!.First().MeasurementDefinition!.UnitOfMeasure;
             var displayUnits = SeriesDisplayUnits.Resolve(s, uom, request.Units);
@@ -128,23 +141,48 @@ public static class ChartOptionsFactory
                 var scaleToZero = request.AxesScaleToZero.TryGetValue(axisId, out var s2z) && s2z;
                 var label = GetYAxisLabel(s, uom, displayUnits);
                 currentAxes.Add(new AxisInfo(axisId, label));
-                ((IDictionary<string, object>)scales).Add(
-                    axisId,
-                    new
-                    {
-                        Display = true,
-                        Axis = "y",
-                        Position = axes.Count % 2 == 0 ? "left" : "right",
-                        Grid = new { DrawOnChartArea = axes.Count == 0 },
-                        Title = new
-                        {
-                            Text = label,
-                            Display = true,
-                            Color = s.Colour,
-                        },
-                        Min = scaleToZero && globalMinMax.Min > 0 ? 0.0 : globalMinMax.Min == 0 ? globalMinMax.Min : globalMinMax.Min - axisPadding,
-                        Max = globalMinMax.Max == 0 ? globalMinMax.Max : globalMinMax.Max + axisPadding,
-                    });
+
+                // Hard Min/Max make Chart.js label the exact bounds (e.g. 11.7, 12.0, 12.5), which looks wrong.
+                // Where a bound is padded, suggest it instead: with the default bounds: 'ticks', Chart.js then
+                // rounds the axis out to the next tick label once it has chosen the label step.
+
+                // ExpandoObject keys are not run through the camelCase naming policy, so they are written camelCased here.
+                var axisScale = new Dictionary<string, object>();
+                axisScale["display"] = true;
+                axisScale["axis"] = "y";
+                axisScale["position"] = axes.Count % 2 == 0 ? "left" : "right";
+                axisScale["grid"] = new { DrawOnChartArea = axes.Count == 0 };
+                axisScale["title"] = new
+                {
+                    Text = label,
+                    Display = true,
+                    Color = "black",
+                    SwatchColours = coloursByAxis[axisId],
+                };
+
+                if (scaleToZero && globalMinMax.Min > 0)
+                {
+                    axisScale["min"] = 0.0;
+                }
+                else if (globalMinMax.Min == 0)
+                {
+                    axisScale["min"] = 0.0;
+                }
+                else
+                {
+                    axisScale["suggestedMin"] = globalMinMax.Min - axisPadding;
+                }
+
+                if (globalMinMax.Max == 0)
+                {
+                    axisScale["max"] = 0.0;
+                }
+                else
+                {
+                    axisScale["suggestedMax"] = globalMinMax.Max + axisPadding;
+                }
+
+                ((IDictionary<string, object>)scales).Add(axisId, axisScale);
                 axes.Add(axisId);
             }
         }
