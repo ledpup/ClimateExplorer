@@ -29,7 +29,11 @@ const axisTitleSwatches = {
             const textWidth = ctx.measureText(title.text).width;
 
             // A left axis title reads bottom to top, a right axis title top to bottom.
-            const centreX = isLeft ? scale.left + font.lineHeight / 2 + padding.top : scale.right - font.lineHeight / 2 - padding.top;
+            // Nudged by a couple of pixels towards the top of the text so the square's bottom is flush with the baseline.
+            const baselineNudge = 3;
+            const centreX = isLeft
+                ? scale.left + font.lineHeight / 2 + padding.top - baselineNudge
+                : scale.right - font.lineHeight / 2 - padding.top + baselineNudge;
             const centreY = (scale.top + scale.bottom) / 2;
 
             // The first colour is read first, so it is the furthest from the text.
