@@ -12,9 +12,12 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using static ClimateExplorer.Core.Enums;
 
-public partial class Top100
+public partial class Top100 : IAsyncDisposable
 {
     private ElementReference svgRef;
+    private ElementReference spaceRef;
+    private IJSObjectReference? module;
+    private DotNetObjectReference<Top100>? dotNetRef;
 
     [Parameter]
     public Location? Location { get; set; }
@@ -50,9 +53,36 @@ public partial class Top100
     private int StartYear { get; set; }
     private int EndYear { get; set; }
     private bool IsLoading { get; set; }
+
+    // The chart is drawn at its container's pixel width, which is only known once rendered in the browser.
+    private int ChartWidth { get; set; }
     private Guid? InternalLocationId { get; set; }
     private List<Top100Model.RecordCount>? TooltipConfiguredFor { get; set; }
     private IUnitFormatter? TooltipConfiguredUnits { get; set; }
+
+    [JSInvokable]
+    public Task OnWidthChanged(int width)
+    {
+        ChartWidth = width;
+        return InvokeAsync(StateHasChanged);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            if (module is not null)
+            {
+                await module.InvokeVoidAsync("unobserveWidth", spaceRef);
+                await module.DisposeAsync();
+            }
+        }
+        catch (JSDisconnectedException)
+        {
+        }
+
+        dotNetRef?.Dispose();
+    }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -66,7 +96,14 @@ public partial class Top100
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (YearCounts.Count > 0 && (!ReferenceEquals(YearCounts, TooltipConfiguredFor) || !ReferenceEquals(Units, TooltipConfiguredUnits)))
+        if (firstRender)
+        {
+            module = await JsRuntime.InvokeAsync<IJSObjectReference>("import", "./Components/ClimateRecords/Top100.razor.js");
+            dotNetRef = DotNetObjectReference.Create(this);
+            await module.InvokeVoidAsync("observeWidth", spaceRef, dotNetRef);
+        }
+
+        if (YearCounts.Count > 0 && ChartWidth > 0 && (!ReferenceEquals(YearCounts, TooltipConfiguredFor) || !ReferenceEquals(Units, TooltipConfiguredUnits)))
         {
             TooltipConfiguredFor = YearCounts;
             TooltipConfiguredUnits = Units;
