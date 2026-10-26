@@ -93,7 +93,64 @@ public class ChartDisplayBuilderTests
         var options = ChartOptionsFactory.Build(CreateOptionsRequest(result, UnitFormatter.UsCustomary));
 
         Assert.AreEqual(1.8, datasets[0].Data[0]!.Value, 1e-9);
-        Assert.AreEqual("Degrees Fahrenheit (°F) - Anomaly", options.Axes.Single().Label);
+        Assert.AreEqual("Temperature anomaly (°F)", options.Axes.Single().Label);
+    }
+
+    [TestMethod]
+    public async Task Build_MetricAnomalySeries_AxisTitledTemperatureAnomaly()
+    {
+        var series = CreateSeries();
+        series.Value = SeriesValueOptions.Anomaly;
+
+        var result = await BuildChart([series], [CreateDataSet(Constant(1))]);
+        var options = ChartOptionsFactory.Build(CreateOptionsRequest(result, UnitFormatter.Metric));
+
+        Assert.AreEqual("Temperature anomaly (°C)", options.Axes.Single().Label);
+    }
+
+    [TestMethod]
+    public async Task Build_AnomalyDataSetShownAsAnomaly_AxisTitleNotDoubled()
+    {
+        var series = CreateSeries(unit: UnitOfMeasure.DegreesCelsiusAnomaly);
+        series.Value = SeriesValueOptions.Anomaly;
+
+        var result = await BuildChart([series], [CreateDataSet(Constant(1), UnitOfMeasure.DegreesCelsiusAnomaly)]);
+        var options = ChartOptionsFactory.Build(CreateOptionsRequest(result, UnitFormatter.Metric));
+
+        Assert.AreEqual("Temperature anomaly (°C)", options.Axes.Single().Label);
+    }
+
+    [TestMethod]
+    public async Task Build_Mobile_AxisTitleIsShortLabel()
+    {
+        var result = await BuildChart([CreateSeries()], [CreateDataSet(Constant(10))]);
+        var options = ChartOptionsFactory.Build(CreateOptionsRequest(result, UnitFormatter.Metric) with { IsMobileDevice = true });
+
+        Assert.AreEqual("°C", options.Axes.Single().Label);
+    }
+
+    [TestMethod]
+    public async Task Build_MobileUsCustomaryAnomalySeries_AxisTitleIsShortAnomalyLabel()
+    {
+        var series = CreateSeries();
+        series.Value = SeriesValueOptions.Anomaly;
+
+        var result = await BuildChart([series], [CreateDataSet(Constant(1))]);
+        var options = ChartOptionsFactory.Build(CreateOptionsRequest(result, UnitFormatter.UsCustomary) with { IsMobileDevice = true });
+
+        Assert.AreEqual("°F anomaly", options.Axes.Single().Label);
+    }
+
+    [TestMethod]
+    public async Task Build_MobileAnomalyOfUnconvertedUnit_AxisTitleHasShortAnomalySuffix()
+    {
+        var series = CreateSeries(unit: UnitOfMeasure.PartsPerMillion);
+        series.Value = SeriesValueOptions.Anomaly;
+
+        var result = await BuildChart([series], [CreateDataSet(Constant(1), UnitOfMeasure.PartsPerMillion)]);
+        var options = ChartOptionsFactory.Build(CreateOptionsRequest(result, UnitFormatter.Metric) with { IsMobileDevice = true });
+
+        Assert.AreEqual("ppm anomaly", options.Axes.Single().Label);
     }
 
     [TestMethod]
@@ -210,32 +267,33 @@ public class ChartDisplayBuilderTests
         return await builder.BuildAsync(new ChartState { ChartAllData = true, Series = [.. series] });
     }
 
-    private static DataSet CreateDataSet(Func<int, double> valueForYear)
+    private static DataSet CreateDataSet(Func<int, double> valueForYear, UnitOfMeasure unit = UnitOfMeasure.DegreesCelsius)
     {
         return new DataSet
         {
             GeographicalEntity = new Location { Id = LocationId, Name = "Testville", CountryCode = "TC", Coordinates = new Coordinates(1, 2) },
-            MeasurementDefinition = CreateMeasurementDefinition(),
+            MeasurementDefinition = CreateMeasurementDefinition(unit),
             DataRecords = [.. Enumerable.Range(1950, 70).Select(year => new BinnedRecord(new YearBinIdentifier((short)year).Id, valueForYear(year)))],
         };
     }
 
-    private static MeasurementDefinitionViewModel CreateMeasurementDefinition()
+    private static MeasurementDefinitionViewModel CreateMeasurementDefinition(UnitOfMeasure unit = UnitOfMeasure.DegreesCelsius)
     {
         return new MeasurementDefinitionViewModel
         {
             DataType = DataType.TempMean,
             DataAdjustment = DataAdjustment.Adjusted,
             DataResolution = DataResolution.Monthly,
-            UnitOfMeasure = UnitOfMeasure.DegreesCelsius,
+            UnitOfMeasure = unit,
         };
     }
 
     private static ChartSeriesDefinition CreateSeries(
         TemporalCalculationOptions temporalCalculation = TemporalCalculationOptions.None,
-        SeriesAggregationOptions aggregation = SeriesAggregationOptions.Mean)
+        SeriesAggregationOptions aggregation = SeriesAggregationOptions.Mean,
+        UnitOfMeasure unit = UnitOfMeasure.DegreesCelsius)
     {
-        var measurementDefinition = CreateMeasurementDefinition();
+        var measurementDefinition = CreateMeasurementDefinition(unit);
 
         return new ChartSeriesDefinition
         {

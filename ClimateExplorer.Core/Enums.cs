@@ -112,16 +112,44 @@ public static class Enums
         var label = seriesTransformations switch
         {
             SeriesTransformations.DayOfYearIfFrost => GetDayOfYearIfFrostLabel(seriesAggregationOptions, hemisphere),
-            SeriesTransformations.Custom => seriesAggregationOptions == SeriesAggregationOptions.Sum ? $"Count of {customTransformation}" : customTransformation!,
-            _ => UnitOfMeasureLabel(unitOfMeasure),
+            SeriesTransformations.Custom => seriesAggregationOptions == SeriesAggregationOptions.Sum ? $"Count of {customTransformation}" : customTransformation,
+            _ => null,
         };
 
-        if (seriesValueOptions == SeriesValueOptions.Anomaly)
+        if (label is null)
         {
-            label += " - Anomaly";
+            var titleUnit = AxisTitleUnit(unitOfMeasure, seriesValueOptions);
+
+            return NeedsAnomalySuffix(titleUnit, seriesValueOptions) ? $"{UnitOfMeasureLabel(titleUnit)} - Anomaly" : UnitOfMeasureLabel(titleUnit);
         }
 
-        return label;
+        return seriesValueOptions == SeriesValueOptions.Anomaly ? $"{label} - Anomaly" : label;
+    }
+
+    /// <summary>
+    /// The unit an axis title names. A temperature anomaly gets the same title whether the API
+    /// calculated it or the dataset was published as anomalies.
+    /// </summary>
+    /// <param name="unitOfMeasure">The unit the series' source data is published in.</param>
+    /// <param name="seriesValueOptions">Whether the series shows values or anomalies.</param>
+    /// <returns>The unit whose label titles the axis.</returns>
+    public static UnitOfMeasure AxisTitleUnit(UnitOfMeasure unitOfMeasure, SeriesValueOptions seriesValueOptions)
+    {
+        return seriesValueOptions == SeriesValueOptions.Anomaly && unitOfMeasure == UnitOfMeasure.DegreesCelsius
+            ? UnitOfMeasure.DegreesCelsiusAnomaly
+            : unitOfMeasure;
+    }
+
+    /// <summary>
+    /// Whether an axis title naming <paramref name="titleUnit"/> must also say the values are anomalies.
+    /// An anomaly unit's own label already says so.
+    /// </summary>
+    /// <param name="titleUnit">The unit from <see cref="AxisTitleUnit"/>.</param>
+    /// <param name="seriesValueOptions">Whether the series shows values or anomalies.</param>
+    /// <returns>True if the title needs an anomaly suffix.</returns>
+    public static bool NeedsAnomalySuffix(UnitOfMeasure titleUnit, SeriesValueOptions seriesValueOptions)
+    {
+        return seriesValueOptions == SeriesValueOptions.Anomaly && titleUnit != UnitOfMeasure.DegreesCelsiusAnomaly;
     }
 
     /// <summary>
@@ -188,7 +216,7 @@ public static class Enums
         return unitOfMeasure switch
         {
             UnitOfMeasure.DegreesCelsius => "Degrees celsius (°C)",
-            UnitOfMeasure.DegreesCelsiusAnomaly => "Degrees celsius (°C) - anomaly",
+            UnitOfMeasure.DegreesCelsiusAnomaly => "Temperature anomaly (°C)",
             UnitOfMeasure.Millimetres => "Millimetres (mm)",
             UnitOfMeasure.PartsPerMillion => "Parts per million (ppm)",
             UnitOfMeasure.PartsPerBillion => "Parts per billion (ppb)",

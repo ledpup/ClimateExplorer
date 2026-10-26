@@ -26,7 +26,7 @@ public sealed class UnitFormatter : IUnitFormatter
     private static readonly Dictionary<UnitOfMeasure, Conversion> UsCustomaryConversions = new()
     {
         [UnitOfMeasure.DegreesCelsius] = new(1.8, 32, "°F", "Degrees Fahrenheit (°F)", 1, Tight: true),
-        [UnitOfMeasure.DegreesCelsiusAnomaly] = new(1.8, 0, "°F anomaly", "Degrees Fahrenheit (°F) - anomaly", 1, Tight: false),
+        [UnitOfMeasure.DegreesCelsiusAnomaly] = new(1.8, 0, "°F anomaly", "Temperature anomaly (°F)", 1, Tight: false),
         [UnitOfMeasure.Millimetres] = new(1 / MillimetresPerInch, 0, "in", "Inches (in)", 2, Tight: false),
         [UnitOfMeasure.SqKm] = new(1 / SqKmPerSqMile, 0, "mi²", "Square miles (mi²)", 0, Tight: false),
         [UnitOfMeasure.MillionSqKm] = new(1 / SqKmPerSqMile, 0, "million mi²", "Million square miles", 2, Tight: false),
