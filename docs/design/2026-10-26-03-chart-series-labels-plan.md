@@ -46,7 +46,9 @@ examples below show the note without the prefix.
 | Canberra max + min temperature, adjusted, 20 year CMA | `Maximum temperature`, `Minimum temperature` | `Adjusted \| 20 year centred moving average` |
 | Canberra + Hobart mean temperature, adjusted | `Canberra`, `Hobart` | `Mean temperature \| Adjusted` |
 | Canberra mean temperature + rainfall | `Mean temperature \| Adjusted \| °C`, `Rainfall \| mm` | – |
-| Canberra + Hobart mean temperature, each with a trend | `Canberra`, `Canberra \| {period} trend`, `Hobart`, `Hobart \| {period} trend` | `Mean temperature \| Adjusted` |
+| Canberra + Hobart mean temperature, each with a trend | `Canberra \| Adjusted`, `Canberra \| {period} trend`, `Hobart \| Adjusted`, `Hobart \| {period} trend` | `Mean temperature` |
+| Canberra mean temperature, adjusted, 10 year moving average, two trends (the "temperature + trend" preset) | `Adjusted \| 10 year centred moving average`, `{regression} {period} trend to {year}` ×2 | `Mean temperature` |
+| Canberra rainfall with a trend | `Rainfall`, `Rainfall \| {period} trend` | – |
 | Canberra mean temperature, adjusted + unadjusted, each with a trend | `Adjusted`, `Adjusted \| {period} trend`, `Unadjusted`, `Unadjusted \| {period} trend` | `Mean temperature` |
 
 Data type names are illustrative; they come from `DataType.ToFriendlyName()`.
@@ -75,21 +77,27 @@ segment list is thrown away, so nothing downstream can tell which part is the lo
 1. **Labels are joined before anything can compare them.** The builders already build a segment list and join it.
    The rules are applied to the segments, before they're joined: the builders return segments tagged with what
    they are (see [Design](#design)), and segments are compared by part **and** text. No string is ever split.
-2. **One series.** With one series, everything in its label is trivially shared, so rule 2 would move the whole
-   label into `seriesNote` and leave an empty legend entry. **Decided: rule 2 needs at least two series** (not
-   counting trend overlays). One series still gets rules 1 and 3.
+2. **One series.** With one series and no trend, everything in its label is trivially shared, so rule 2 would move
+   the whole label into `seriesNote` and leave an empty legend entry. **Decided: rule 2 needs at least two legend
+   entries, counting trend overlays.** One series without a trend still gets rules 1 and 3. *(Revised: it
+   originally needed two series, which left the "temperature + trend" preset repeating `Mean temperature` on all
+   three entries.)*
 3. **Labels that end up identical or empty.** Two series that differ only in something the label doesn't show
    (display style, colour, or smoothing on a derived series, see 5) share every segment. Rule 2 would empty both
    labels. **If any label would be empty after rule 2, skip rule 2 for the whole chart** and keep rule 1. These
    labels are already identical today.
 4. **Trend overlays.** Trend datasets are legend entries too, but they aren't series:
-   - The shared parts are worked out from the real series only. A trend's own text (`{period} trend`,
-     regression type, predict-until year) is never moved.
+   - A trend entry counts towards the shared parts by its prefix, the short title, which never has the
+     adjustment, transformation or smoothing. So those stay on the series' labels when any series has a trend, and
+     the note never claims a trend is smoothed. A trend's own text (`{period} trend`, regression type,
+     predict-until year) is never moved.
    - A trend label's prefix (today `GetFriendlyTitleShort()`) drops the same parts as its parent: the location
      under rule 1 and the shared parts under rule 2.
    - That can leave the prefix empty. In the last desktop example, the short title is `Canberra | Mean temperature`,
      and both parts are removed, so two trends would both read `{period} trend`. **When the stripped short title is
-     empty, the prefix is the parent's stripped legend label** (`Adjusted`). It can't be empty, because of 3.
+     empty, the prefix is the parent's stripped legend label** (`Adjusted`). It can't be empty, because of 3. With
+     one series there's no other trend to confuse it with, so the prefix stays empty and the trend label is just
+     its own text.
 5. **Override and derived series.**
    - An override label (DayOfYearIfFrost, Custom) replaces the whole label, as now. It is one opaque segment that
      is never moved, so in practice a chart with one has no `seriesNote`. It has no location to remove.
@@ -170,13 +178,14 @@ legend label, each series' trend prefix and the `seriesNote`:
    segments plus a `Unit` segment, and on mobile the short title segments. Location is left out when `onePlace`.
 3. On desktop, if every series has the same `Unit` segment, remove it (rule 3). An override series has no unit,
    so a chart with one keeps the other series' units.
-4. On desktop with two or more series: the shared parts are the `(Part, Text)` pairs, other than `Location`,
-   `Unit` and `Whole`, that every series has. Remove them from every label; if any label is then empty, keep them
+4. On desktop with two or more legend entries (series plus series with a trend): the shared parts are the
+   `(Part, Text)` pairs, other than `Location`, `Unit` and `Whole`, that every series label and the short title of
+   every series with a trend has. Remove them from every label; if any label is then empty, keep them
    all (issue 3).
 5. `seriesNote` is the shared segments joined with ` | `, in the order of the first series. Null when there are none
    and always on mobile.
 6. Trend prefix: the series' short title segments without the location (if `onePlace`) and without the shared
-   parts; if that is empty, the series' legend label (4).
+   parts; if that is empty, the series' legend label (4), unless it's the only series.
 
 ### `ChartDisplayBuilder`
 
@@ -256,6 +265,9 @@ New `SeriesLabellerTests`:
 - `Build_LocationAndRegion_KeepsBoth`
 - `Build_Trends_PrefixDropsLocationAndSharedParts`
 - `Build_TrendPrefixEmpty_UsesParentLabel`
+- `Build_Trends_PartNotInTrendPrefixStaysInLabels`
+- `Build_OneSeriesWithTrend_MovesPartsInTrendPrefixToNote`
+- `Build_OneSeriesWithTrendLabelEmptyAfterSharing_SkipsNote`
 
 `ChartDisplayBuilderTests`: update the tuple deconstructions for the new result record, and add one test that the
 note reaches `ChartOptionsFactory`'s output. The single-series `StringAssert.EndsWith(datasets[0].Label, "| °F")` and

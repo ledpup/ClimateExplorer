@@ -7,8 +7,9 @@ using ClimateExplorer.Web.UiModel;
 /// <list type="bullet">
 /// <item>With one place on the chart, the location is left out. The chart title names it.</item>
 /// <item>On desktop, a unit every series shares is left out. Every y axis title shows its unit.</item>
-/// <item>On desktop, with two or more series, the other parts every series shares are left out of the labels and
-/// shown once in the series note.</item>
+/// <item>On desktop, with two or more legend entries (trend overlays count), the other parts every entry shares are
+/// left out of the labels and shown once in the series note. A trend's entry is compared by its prefix, the short
+/// title, so parts it doesn't have (e.g. smoothing) stay on its series' label.</item>
 /// </list>
 /// The rules work on <see cref="SeriesLabelSegment"/>s, before they're joined, so parts are compared by what
 /// they are as well as their text.
@@ -17,8 +18,9 @@ public static class SeriesLabeller
 {
     /// <param name="series">The rendered series, in chart order.</param>
     /// <param name="unitLabels">Each series' unit as displayed, from <see cref="SeriesDisplayUnits"/>.</param>
+    /// <param name="hasTrends">Whether each series has a trend overlay on the chart.</param>
     /// <param name="isMobileDevice">Whether to use the short labels, which only leave out the location.</param>
-    public static SeriesLabels Build(IReadOnlyList<ChartSeriesDefinition> series, IReadOnlyList<string> unitLabels, bool isMobileDevice)
+    public static SeriesLabels Build(IReadOnlyList<ChartSeriesDefinition> series, IReadOnlyList<string> unitLabels, IReadOnlyList<bool> hasTrends, bool isMobileDevice)
     {
         var includeLocation = ChartLogic.GetPlaces(series).Length != 1;
         var shortTitles = series.Select(x => x.GetFriendlyTitleShortSegments(includeLocation)).ToList();
@@ -37,7 +39,7 @@ public static class SeriesLabeller
 
         RemoveSharedUnit(labels);
 
-        var shared = GetSharedSegments(labels);
+        var shared = GetSharedSegments(labels, [.. shortTitles.Where((_, i) => hasTrends[i])]);
         var sharedParts = shared.Select(x => x.Part).ToHashSet();
 
         foreach (var label in labels)
@@ -46,12 +48,13 @@ public static class SeriesLabeller
         }
 
         // The short title loses the same parts as the legend label. When that leaves nothing, the trend is named
-        // by what's left of its series' legend label, so two trends can't both be just "{period} trend".
+        // by what's left of its series' legend label, so two trends can't both be just "{period} trend". With one
+        // series there's nothing to confuse it with, so the prefix is left empty.
         var trendPrefixes = shortTitles
             .Select((title, i) =>
             {
                 var prefix = title.Where(x => !sharedParts.Contains(x.Part)).ToList();
-                return SeriesLabelSegment.Join(prefix.Count > 0 ? prefix : labels[i]);
+                return SeriesLabelSegment.Join(prefix.Count > 0 || series.Count == 1 ? prefix : labels[i]);
             })
             .ToList();
 
@@ -92,20 +95,21 @@ public static class SeriesLabeller
     }
 
     /// <summary>
-    /// The segments every label has, in the first label's order. Never the location (with one place it's already
-    /// gone, and with several it's what tells the series apart), the unit (a shared one is already gone, and one
-    /// that differs says which axis to read), or a whole label.
+    /// The segments every label and trend prefix has, in the first label's order. Never the location (with one
+    /// place it's already gone, and with several it's what tells the series apart), the unit (a shared one is
+    /// already gone, and one that differs says which axis to read), or a whole label.
     /// </summary>
-    private static List<SeriesLabelSegment> GetSharedSegments(List<List<SeriesLabelSegment>> labels)
+    /// <param name="trendPrefixes">The short title of each series with a trend overlay.</param>
+    private static List<SeriesLabelSegment> GetSharedSegments(List<List<SeriesLabelSegment>> labels, List<List<SeriesLabelSegment>> trendPrefixes)
     {
-        if (labels.Count < 2)
+        if (labels.Count + trendPrefixes.Count < 2)
         {
             return [];
         }
 
         var shared = labels[0]
             .Where(x => x.Part is not (SeriesLabelPart.Location or SeriesLabelPart.Unit or SeriesLabelPart.Whole))
-            .Where(x => labels.All(label => label.Contains(x)))
+            .Where(x => labels.All(label => label.Contains(x)) && trendPrefixes.All(prefix => prefix.Contains(x)))
             .ToList();
 
         // Series that differ only in something the label doesn't show (e.g. bar and line) share every part.

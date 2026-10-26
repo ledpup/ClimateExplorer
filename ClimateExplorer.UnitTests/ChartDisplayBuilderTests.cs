@@ -131,7 +131,7 @@ public class ChartDisplayBuilderTests
     }
 
     [TestMethod]
-    public async Task BuildDatasets_TrendOnOnePlace_TrendLabelLeavesOutLocation()
+    public async Task BuildDatasets_OneSeriesWithTrend_SharedPartsMoveToNoteAndTrendHasNoPrefix()
     {
         var mean = CreateSeries();
         mean.Trends = [new ChartSeriesTrendRequest { RegressionType = TrendRegressionType.Linear, TrendPeriod = TrendWindow.Full }];
@@ -140,8 +140,10 @@ public class ChartDisplayBuilderTests
         var (datasets, _, seriesNote) = ChartDisplayBuilder.BuildDatasets(result.SeriesWithData, result.ChartBins!, false, UnitFormatter.Metric);
 
         Assert.HasCount(2, datasets);
-        StringAssert.StartsWith(datasets[1].Label, "Mean temperature | ");
-        Assert.IsNull(seriesNote);
+        Assert.AreEqual("Adjusted", datasets[0].Label);
+        StringAssert.EndsWith(datasets[1].Label, " trend");
+        Assert.IsFalse(datasets[1].Label.Contains('|'), datasets[1].Label);
+        Assert.AreEqual("Mean temperature", seriesNote);
     }
 
     private static async Task<List<Measure>> RecordDisplayMeasures(double shift)

@@ -34,6 +34,7 @@ public static class ChartDisplayBuilder
         var labels = SeriesLabeller.Build(
             [.. seriesWithData.Select(x => x.ChartSeries!)],
             [.. displayUnits.Select(x => x.ShortLabel)],
+            [.. seriesWithData.Select(x => x.Trends.Any(t => t.Projection != null))],
             isMobileDevice);
 
         var datasets = new List<ChartJsDataset>();
@@ -81,14 +82,16 @@ public static class ChartDisplayBuilder
     /// never produce the same label even when they share a window (e.g. a linear and a quadratic fit
     /// over the same period, or the same fit projected to two different years).
     /// </summary>
-    /// <param name="prefix">The parent's part of the label, from <see cref="SeriesLabels.TrendPrefixes"/>.</param>
+    /// <param name="prefix">The parent's part of the label, from <see cref="SeriesLabels.TrendPrefixes"/>. May be empty.</param>
     private static string BuildTrendLabel(string prefix, ChartSeriesTrend trend, bool hasMultipleTrends)
     {
         var period = TrendWindowLabel.Get(trend.Projection!.Window);
 
-        return hasMultipleTrends
-            ? $"{prefix} | {trend.RegressionType} {period} trend to {trend.Projection.LastYear}"
-            : $"{prefix} | {period} trend";
+        var text = hasMultipleTrends
+            ? $"{trend.RegressionType} {period} trend to {trend.Projection.LastYear}"
+            : $"{period} trend";
+
+        return prefix.Length == 0 ? text : $"{prefix}{SeriesLabelSegment.Separator}{text}";
     }
 
     private static string BuildTrendTooltipLabel(ChartSeriesDefinition csd, ChartSeriesTrend trend, bool hasMultipleTrends, string unitLabel)

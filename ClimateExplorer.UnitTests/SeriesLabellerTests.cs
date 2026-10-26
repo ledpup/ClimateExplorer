@@ -184,24 +184,54 @@ public class SeriesLabellerTests
     [TestMethod]
     public void Build_Trends_PrefixDropsLocationAndSharedParts()
     {
-        var labels = Build([Series(Canberra, DataType.TempMean), Series(Hobart, DataType.TempMean)], ["°C", "°C"]);
+        var labels = Build([Series(Canberra, DataType.TempMean), Series(Hobart, DataType.TempMean)], ["°C", "°C"], hasTrends: [true, true]);
 
         CollectionAssert.AreEqual(new[] { "Canberra", "Hobart" }, ToArray(labels.TrendPrefixes));
     }
 
     [TestMethod]
+    public void Build_Trends_PartNotInTrendPrefixStaysInLabels()
+    {
+        // The trend prefix is the short title, which has no adjustment, so "Adjusted" isn't shared by every entry.
+        var labels = Build([Series(Canberra, DataType.TempMean), Series(Hobart, DataType.TempMean)], ["°C", "°C"], hasTrends: [true, false]);
+
+        CollectionAssert.AreEqual(new[] { "Canberra | Adjusted", "Hobart | Adjusted" }, ToArray(labels.Labels));
+        Assert.AreEqual(MeanTemp, labels.SeriesNote);
+    }
+
+    [TestMethod]
     public void Build_TrendPrefixEmpty_UsesParentLabel()
     {
-        var labels = Build([Series(Canberra, DataType.TempMean), Series(Canberra, DataType.TempMean, DataAdjustment.Unadjusted)], ["°C", "°C"]);
+        var labels = Build([Series(Canberra, DataType.TempMean), Series(Canberra, DataType.TempMean, DataAdjustment.Unadjusted)], ["°C", "°C"], hasTrends: [true, true]);
 
         CollectionAssert.AreEqual(new[] { "Adjusted", "Unadjusted" }, ToArray(labels.Labels));
         CollectionAssert.AreEqual(new[] { "Adjusted", "Unadjusted" }, ToArray(labels.TrendPrefixes));
         Assert.AreEqual(MeanTemp, labels.SeriesNote);
     }
 
-    private static SeriesLabels Build(ChartSeriesDefinition[] series, string[] unitLabels, bool isMobileDevice = false)
+    [TestMethod]
+    public void Build_OneSeriesWithTrend_MovesPartsInTrendPrefixToNote()
     {
-        return SeriesLabeller.Build(series, unitLabels, isMobileDevice);
+        var labels = Build([Smoothed(Series(Canberra, DataType.TempMean))], ["°C"], hasTrends: [true]);
+
+        Assert.AreEqual("Adjusted | 20 year centred moving average", labels.Labels[0]);
+        Assert.AreEqual(string.Empty, labels.TrendPrefixes[0]);
+        Assert.AreEqual(MeanTemp, labels.SeriesNote);
+    }
+
+    [TestMethod]
+    public void Build_OneSeriesWithTrendLabelEmptyAfterSharing_SkipsNote()
+    {
+        var labels = Build([Series(Canberra, DataType.Precipitation, adjustment: null)], ["mm"], hasTrends: [true]);
+
+        Assert.AreEqual(Rainfall, labels.Labels[0]);
+        Assert.AreEqual(Rainfall, labels.TrendPrefixes[0]);
+        Assert.IsNull(labels.SeriesNote);
+    }
+
+    private static SeriesLabels Build(ChartSeriesDefinition[] series, string[] unitLabels, bool isMobileDevice = false, bool[]? hasTrends = null)
+    {
+        return SeriesLabeller.Build(series, unitLabels, hasTrends ?? new bool[series.Length], isMobileDevice);
     }
 
     private static string[] ToArray(IReadOnlyList<string> labels) => [.. labels];
