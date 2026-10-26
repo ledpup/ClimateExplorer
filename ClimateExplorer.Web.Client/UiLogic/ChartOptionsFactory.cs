@@ -137,7 +137,7 @@ public static class ChartOptionsFactory
                 var axisRange = globalMinMax.Max - globalMinMax.Min;
                 var axisPadding = !axisHasBarSeries.Contains(axisId) ? axisRange * 0.02 : 0.0;
                 var scaleToZero = request.AxesScaleToZero.TryGetValue(axisId, out var s2z) && s2z;
-                var label = GetYAxisLabel(s, uom, displayUnits);
+                var label = GetYAxisLabel(s, uom, displayUnits, request.IsMobileDevice);
                 currentAxes.Add(new AxisInfo(axisId, label));
 
                 // Hard Min/Max make Chart.js label the exact bounds (e.g. 11.7, 12.0, 12.5), which looks wrong.
@@ -189,20 +189,30 @@ public static class ChartOptionsFactory
     }
 
     /// <summary>
-    /// The axis title. Only an untransformed series can be converted, so when it is, the title is the
-    /// display unit's own label with the same anomaly wording Core adds; otherwise it's Core's metric
-    /// title, unchanged.
+    /// The axis title. Frost days and custom transformations are titled by what they count, from Core.
+    /// Every other title names the display unit with the same anomaly wording Core uses. On mobile, the
+    /// rotated title has little room, so an anomaly - the longest title - uses the short unit label.
     /// </summary>
-    private static string GetYAxisLabel(ChartSeriesDefinition s, UnitOfMeasure uom, SeriesDisplayUnits displayUnits)
+    private static string GetYAxisLabel(ChartSeriesDefinition s, UnitOfMeasure uom, SeriesDisplayUnits displayUnits, bool isMobileDevice)
     {
-        if (s.SeriesTransformation == SeriesTransformations.Identity && displayUnits.Formatter.Converts(uom))
+        if (s.SeriesTransformation is SeriesTransformations.DayOfYearIfFrost or SeriesTransformations.Custom)
         {
-            var label = displayUnits.Formatter.Label(uom);
-
-            return s.Value == SeriesValueOptions.Anomaly ? $"{label} - Anomaly" : label;
+            return UnitOfMeasureLabel(s.SeriesTransformation, s.CustomTransformation, uom, s.Aggregation, s.Value, s.Hemisphere);
         }
 
-        return UnitOfMeasureLabel(s.SeriesTransformation, s.CustomTransformation, uom, s.Aggregation, s.Value, s.Hemisphere);
+        var titleUnit = AxisTitleUnit(uom, s.Value);
+        var needsSuffix = NeedsAnomalySuffix(titleUnit, s.Value);
+
+        if (isMobileDevice && (needsSuffix || titleUnit == UnitOfMeasure.DegreesCelsiusAnomaly))
+        {
+            var shortLabel = displayUnits.Formatter.ShortLabel(titleUnit);
+
+            return needsSuffix ? $"{shortLabel} anomaly" : shortLabel;
+        }
+
+        var label = displayUnits.Formatter.Label(titleUnit);
+
+        return needsSuffix ? $"{label} - Anomaly" : label;
     }
 
     private static object CreateChartOptions(ChartOptionsRequest request, dynamic scales)

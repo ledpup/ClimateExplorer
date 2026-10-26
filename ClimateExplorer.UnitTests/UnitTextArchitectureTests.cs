@@ -22,7 +22,7 @@ public partial class UnitTextArchitectureTests
         ["Components/Common/Trends/TrendsOverviewExplainer.razor"] = "A worked metric example; converting it would mean rewriting the arithmetic.",
         ["UiModel/SuggestedPresetLists.LocationBased.cs"] = "Preset descriptions name the metric thresholds their calculations use.",
         ["Services/Trends/TrendFormatting.cs"] = "The metric label tables used by the always-metric regression report.",
-        ["UiLogic/ChartOptionsFactory.cs"] = "Core's axis title, used only for series that aren't converted.",
+        ["UiLogic/ChartOptionsFactory.cs"] = "Core's axis title for frost-day and custom series, which count something other than a unit.",
         ["Components/AboutDataDetails.razor.cs"] = "Describes the unit a dataset is published in.",
         ["Components/Common/UnitSwitch.razor"] = "The switch's accessible name says which units it switches to.",
     };
