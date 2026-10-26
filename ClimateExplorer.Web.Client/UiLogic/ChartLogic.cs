@@ -11,34 +11,29 @@ using static ClimateExplorer.Core.Enums;
 public static class ChartLogic
 {
     private const int MaxDropoutYears = 5;
+    private const int MaxTitleLocationsWithCountry = 4;
+    private const string TitleGroupSeparator = " — ";
 
+    /// <summary>
+    /// The chart title names only places. Locations are grouped by country (<c>Canberra, Hobart | Australia</c>),
+    /// unrelated groups and regions are separated by <see cref="TitleGroupSeparator"/>, and locations come before regions.
+    /// </summary>
     public static string BuildChartTitle(List<SeriesWithData> chartSeriesWithData, Dictionary<Guid, Location>? locationDictionary)
     {
         var specs = chartSeriesWithData
-            .SelectMany(x => x.ChartSeries!.SourceSeriesSpecifications!);
+            .SelectMany(x => x.ChartSeries!.SourceSeriesSpecifications!)
+            .DistinctBy(x => x.LocationId)
+            .ToArray();
 
-        var ids = specs.Select(x => x.LocationId).Distinct().ToArray();
-        var names = specs.Select(x => x.LocationName).Distinct().ToArray();
-
-        var singleLocation = ids.Length == 1 && locationDictionary is not null && locationDictionary.TryGetValue(ids.Single(), out var location)
-            ? location
-            : null;
-
-        if (chartSeriesWithData.Count == 1)
+        if (specs.Length == 0)
         {
-            return chartSeriesWithData.Single().ChartSeries!.GetFriendlyTitle(singleLocation?.DisplayTitle);
+            return "Climate data";
         }
 
-        if (singleLocation is not null)
-        {
-            return singleLocation.DisplayTitle;
-        }
-        else if (ids.Length > 0)
-        {
-            return string.Join(", ", names);
-        }
+        var locationSpecs = specs.Where(x => !Region.IsRegionId(x.LocationId)).ToArray();
+        var regionNames = specs.Where(x => Region.IsRegionId(x.LocationId)).Select(x => Region.GetRegion(x.LocationId).Name);
 
-        return "Climate data";
+        return string.Join(TitleGroupSeparator, BuildLocationTitleGroups(locationSpecs, locationDictionary).Concat(regionNames));
     }
 
     public static string BuildChartSubtitle(BinIdentifier? chartStartBin, BinIdentifier? chartEndBin, BinGranularities binGranularity)
@@ -455,5 +450,47 @@ public static class ChartLogic
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// One title group per country, in the order the locations were added. A single location uses its
+    /// <see cref="Location.DisplayTitle"/>; more than <see cref="MaxTitleLocationsWithCountry"/> locations are
+    /// listed by name only. A location missing from the dictionary is shown by name, as its own group.
+    /// </summary>
+    private static IEnumerable<string> BuildLocationTitleGroups(SourceSeriesSpecification[] specs, Dictionary<Guid, Location>? locationDictionary)
+    {
+        if (specs.Length > MaxTitleLocationsWithCountry)
+        {
+            return [string.Join(", ", specs.Select(x => x.LocationName))];
+        }
+
+        var locations = specs
+            .Select(x => (x.LocationName, Location: locationDictionary?.GetValueOrDefault(x.LocationId), x.LocationId))
+            .ToArray();
+
+        if (locations is [{ Location: { } singleLocation }])
+        {
+            return [singleLocation.DisplayTitle];
+        }
+
+        var groups = locations
+            .GroupBy(x => x.Location?.CountryCode ?? x.LocationId.ToString())
+            .ToArray();
+
+        var useCountryCode = groups.Count(x => x.First().Location is not null) > 2;
+
+        return groups.Select(group =>
+        {
+            var names = string.Join(", ", group.Select(x => x.LocationName));
+            var location = group.First().Location;
+            var country = useCountryCode ? location?.CountryCode : location?.CountryWithoutOwner;
+
+            if (string.IsNullOrWhiteSpace(country))
+            {
+                return names;
+            }
+
+            return group.Count() == 1 ? $"{names}, {country}" : $"{names} | {country}";
+        });
     }
 }

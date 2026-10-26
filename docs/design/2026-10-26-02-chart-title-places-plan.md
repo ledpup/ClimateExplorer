@@ -1,7 +1,7 @@
 # Chart title shows only places
 
 - **Date:** 2026-10-26
-- **Status:** Proposed
+- **Status:** Implemented
 - **Author:** Patrick (with Claude)
 - **Scope:** `ChartLogic.BuildChartTitle`, `Location`, `ChartLogicTitleTests`
 - **Builds on:** [ISO country codes](2026-10-26-01-iso-country-codes-plan.md). The title scheme below shows
@@ -18,48 +18,78 @@ doesn't repeat anything and is out of scope.
 
 ## Chart title
 
-The title is built by `ChartLogic.BuildChartTitle` and contains only places:
+The title is built by `ChartLogic.BuildChartTitle` and contains only places. Locations are grouped by
+country, and the title is a list of groups.
+
+**Delimiters**, tightest first:
+
+| Delimiter | Separates | Example |
+|---|---|---|
+| `, ` | location names in a group, or a single name from its country | `Canberra, Hobart` / `Canberra, Australia` |
+| ` \| ` | a group's names from its country (two or more names) | `Canberra, Hobart \| Australia` |
+| ` — ` (spaced em dash) | unrelated groups: different countries, or a region | `… \| Australia — Auckland, New Zealand` |
+
+`|` keeps the meaning it has in the legend labels: it separates aspects of one thing (there, a series; here, a
+country group). The group separator has to look like a bigger break than `|`, or
+`Canberra, Hobart | Australia; Auckland, New Zealand` reads as if `Australia; Auckland` belong together. That
+rules out `;` and `·` (look tighter than `|`) and `/` (looks like `|`). `&` or `and` work for two groups but
+not for three or more.
+
+**A group** is the locations from one country, in the order the series were added:
+
+- one location: `Name, Country` (this is `DisplayTitle` when the country is the full name)
+- two or more: `Name, Name | Country`
+
+`Country` is `CountryWithoutOwner` when the chart has one or two countries, and `CountryCode` when it has more
+than two. These are ISO codes (see [ISO country codes](2026-10-26-01-iso-country-codes-plan.md)).
+
+**Examples:**
+
+| Locations | Title |
+|---|---|
+| Canberra | `Canberra, Australia` |
+| Canberra, Hobart | `Canberra, Hobart \| Australia` |
+| Canberra, Auckland | `Canberra, Australia — Auckland, New Zealand` |
+| Canberra, Hobart, Auckland | `Canberra, Hobart \| Australia — Auckland, New Zealand` |
+| Canberra, Hobart, Auckland, Suva | `Canberra, Hobart \| AU — Auckland, NZ — Suva, FJ` |
+| Canberra + Greenland region | `Canberra, Australia — Greenland` |
 
 - **One location** (any number of series): `DisplayTitle`. This means removing the single-series branch that
   calls `GetFriendlyTitle`. The legend is always shown (`ChartOptionsFactory` sets `Legend.Position = "bottom"`
   and never hides it), so no series information is lost.
-- **Several locations, same country:** names separated by commas, then `|`, then `CountryWithoutOwner`, e.g.
-  `Canberra, Hobart | Australia`.
-- **Two countries:** each `DisplayTitle`, separated by `|`.
-- **More than two countries:** `Name, CountryCode` for each, separated by `|`. These are ISO codes (see
-  [ISO country codes](2026-10-26-01-iso-country-codes-plan.md)).
-- **A location and a region:** `DisplayTitle | Region.Name`. Locations always come before regions.
+- **A location and a region:** the region is its own group, after the locations: `DisplayTitle — Region.Name`.
+  Locations always come before regions.
 
 `Location.CountryWithoutOwner` becomes public. Same-country checks compare `CountryCode`, not the name with the
 owner removed, so Nuuk (`GL`) and Copenhagen (`DK`) stay different countries. Regions are recognised with
 `Region.IsRegionId` / `Region.GetRegion`; they aren't in the `Locations` dictionary that `ChartView` passes in.
 
-### Decisions needed
+### Decided
 
-1. **Two countries with more than two locations.** The rule gives `Canberra, Australia | Hobart, Australia |
-   Auckland, New Zealand`, which repeats the country. Suggest grouping by country, and doing the same for more
-   than two countries.
-2. **What `|` means.** In the same-country rule it separates names from the country. In the others it
-   separates locations. Suggest choosing one meaning, e.g. "`|` separates country groups".
-3. **Region cases not covered yet:** one region alone (suggest `Name`), several regions (common on the Global
-   page, e.g. Atmosphere and Ocean), several locations plus regions, one location plus several regions.
-   Suggest: the locations part by the rules above, then each region's `Name` after a `|`.
-4. **Order of locations.** Suggest the order the series were added in, which is what the current
-   `Distinct()` over the series gives.
-5. **Location not in the dictionary** (`Locations` null, not loaded yet, or the ID missing): fall back to
-   `SourceSeriesSpecification.LocationName` with no country. Keep `Climate data` for no series at all.
-6. **Length.** The Chart.js title is one line and doesn't wrap. The 30-character limit only applies inside
-   `DisplayTitle`, so same-country lists and more-than-two-countries titles have no limit and will overflow on
-   mobile (≤767px). Options: cap the number of locations shown (`+2 more`), or pass the title to Chart.js as an
-   array of lines.
-7. **Minor:** a location in Greenland plus the `Greenland` region gives `Nuuk, Greenland | Greenland`. Two
-   locations with the same name in the same country give `Richmond, Richmond | Australia`.
+- **Several countries with several locations:** group by country (see above), for any number of countries.
+- **What `|` means:** it separates a group's names from its country, as in the legend where it separates
+  aspects of a series. Unrelated groups are separated by ` — `.
+- **Order of groups:** the order the series were added in, which is what the current `Distinct()` over the
+  series gives. A group appears where its first location appears, and names within a group keep that order.
+- **Location not in the dictionary** (`Locations` null, not loaded yet, or the ID missing): this shouldn't
+  happen, but if it does, fall back to `SourceSeriesSpecification.LocationName` with no country. Keep
+  `Climate data` for no series at all.
+
+- **Regions:** the location groups by the rules above, then each region's `Name` as its own group after
+  ` — `. One region alone is its `Name`; several regions give e.g. `Atmosphere — Ocean`.
+- **Length:** with more than four locations, the locations part is just their names separated by commas,
+  with no countries (regions still follow after ` — `). Charts with that many series are rare and already hard
+  to read, so this is a simple rule rather than a full fix for overflow.
+- **Minor cases left as they are:** a location in Greenland plus the `Greenland` region gives
+  `Nuuk, Greenland — Greenland`. Two locations with the same name in the same country give
+  `Richmond, Richmond | Australia`.
 
 ### Tests
 
-`ChartLogicTitleTests`: the two single-series tests change to expect `DisplayTitle` only. Add one test per rule
-and per decision above (same country, two countries, more than two countries, location plus region, region
-order, missing dictionary entry, owner territory).
+`ChartLogicTitleTests`: the two single-series tests change to expect `DisplayTitle` only. Add one test per
+example row above and per decision (same country, two countries, two countries with a multi-location
+group, more than two countries, more than four locations, location plus region, regions only, group order,
+missing dictionary entry, owner territory).
 
 ## Later: series labels
 
@@ -69,9 +99,10 @@ single-location chart can drop the location from each legend label.
 
 ## Summary
 
-The chart title is rewritten to show only places: the location's `DisplayTitle` for one location, a grouped
-list for several locations in one country, and `Name, CountryCode` when more than two countries are shown.
-Regions follow locations. The decisions listed above need to be made first.
+The chart title is rewritten to show only places. Locations are grouped by country: `,` separates names,
+`|` separates a multi-location group's names from its country, and ` — ` separates groups. Countries are
+full names for one or two countries and ISO codes for more. Regions are their own groups, after locations.
+More than four locations shows names only.
 
 ### Change size
 
