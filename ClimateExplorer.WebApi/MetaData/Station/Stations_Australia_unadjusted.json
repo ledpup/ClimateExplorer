@@ -2,7 +2,7 @@
   {
     "Id": "001021",
     "Name": "KALUMBURU MISSION",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -14.2961,
       "Longitude": 126.6431,
@@ -12,7 +12,7 @@
   {
     "Id": "001019",
     "Name": "KALUMBURU",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -14.2964,
       "Longitude": 126.6453,
@@ -22,7 +22,7 @@
   {
     "Id": "002011",
     "Name": "OLD HALLS CREEK",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -18.2519,
       "Longitude": 127.7817,
@@ -32,7 +32,7 @@
   {
     "Id": "002012",
     "Name": "HALLS CREEK METEOROLOGICAL OFFICE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -18.2291,
       "Longitude": 127.6636,
@@ -42,7 +42,7 @@
   {
     "Id": "002079",
     "Name": "HALLS CREEK AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -18.2337,
       "Longitude": 127.6666,
@@ -52,7 +52,7 @@
   {
     "Id": "003002",
     "Name": "BROOME POST OFFICE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -17.95,
       "Longitude": 122.25,
@@ -62,7 +62,7 @@
   {
     "Id": "003003",
     "Name": "BROOME AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -17.9475,
       "Longitude": 122.2352,
@@ -72,7 +72,7 @@
   {
     "Id": "004002",
     "Name": "PORT HEDLAND POST OFFICE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -20.3139,
       "Longitude": 118.5742,
@@ -82,7 +82,7 @@
   {
     "Id": "004032",
     "Name": "PORT HEDLAND AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -20.3725,
       "Longitude": 118.6317,
@@ -92,7 +92,7 @@
   {
     "Id": "004020",
     "Name": "MARBLE BAR COMPARISON",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -21.1756,
       "Longitude": 119.7497,
@@ -102,7 +102,7 @@
   {
     "Id": "004106",
     "Name": "MARBLE BAR",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -21.1756,
       "Longitude": 119.7497,
@@ -112,7 +112,7 @@
   {
     "Id": "005007",
     "Name": "LEARMONTH AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -22.2406,
       "Longitude": 114.0967,
@@ -122,7 +122,7 @@
   {
     "Id": "005026",
     "Name": "WITTENOOM",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -22.2425,
       "Longitude": 118.3358,
@@ -132,7 +132,7 @@
   {
     "Id": "005098",
     "Name": "KARIJINI NORTH",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -22.2999,
       "Longitude": 118.4498,
@@ -142,7 +142,7 @@
   {
     "Id": "006062",
     "Name": "CARNARVON POST OFFICE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -24.8858,
       "Longitude": 113.6565,
@@ -152,7 +152,7 @@
   {
     "Id": "006011",
     "Name": "CARNARVON AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -24.8878,
       "Longitude": 113.67,
@@ -162,7 +162,7 @@
   {
     "Id": "007046",
     "Name": "MEEKATHARRA POST OFFICE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -26.5933,
       "Longitude": 118.4883,
@@ -172,7 +172,7 @@
   {
     "Id": "007045",
     "Name": "MEEKATHARRA AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -26.6136,
       "Longitude": 118.5372,
@@ -182,7 +182,7 @@
   {
     "Id": "008093",
     "Name": "MORAWA",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -29.2103,
       "Longitude": 116.0089,
@@ -192,7 +192,7 @@
   {
     "Id": "008296",
     "Name": "MORAWA AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -29.2039,
       "Longitude": 116.0247,
@@ -202,7 +202,7 @@
   {
     "Id": "008039",
     "Name": "DALWALLINU COMPARISON",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -30.2772,
       "Longitude": 116.6619,
@@ -212,7 +212,7 @@
   {
     "Id": "008297",
     "Name": "DALWALLINU",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -30.276,
       "Longitude": 116.6715,
@@ -222,7 +222,7 @@
   {
     "Id": "008050",
     "Name": "GERALDTON TOWN",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -28.7769,
       "Longitude": 114.605,
@@ -232,7 +232,7 @@
   {
     "Id": "008051",
     "Name": "GERALDTON AIRPORT COMPARISON",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -28.7953,
       "Longitude": 114.6975,
@@ -242,7 +242,7 @@
   {
     "Id": "008315",
     "Name": "GERALDTON AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -28.8047,
       "Longitude": 114.6989,
@@ -252,7 +252,7 @@
   {
     "Id": "009034",
     "Name": "PERTH REGIONAL OFFICE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -31.9556,
       "Longitude": 115.8697,
@@ -262,7 +262,7 @@
   {
     "Id": "009021",
     "Name": "PERTH AIRPORT M.O.",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -31.9275,
       "Longitude": 115.9764,
@@ -272,7 +272,7 @@
   {
     "Id": "009518",
     "Name": "CAPE LEEUWIN",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -34.3728,
       "Longitude": 115.1358,
@@ -282,7 +282,7 @@
   {
     "Id": "009510",
     "Name": "BRIDGETOWN COMPARISON",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -33.9575,
       "Longitude": 116.1375,
@@ -292,7 +292,7 @@
   {
     "Id": "009617",
     "Name": "BRIDGETOWN",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -33.9486,
       "Longitude": 116.1311,
@@ -302,7 +302,7 @@
   {
     "Id": "009541",
     "Name": "ESPERANCE POST OFFICE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -33.85,
       "Longitude": 121.8833,
@@ -312,7 +312,7 @@
   {
     "Id": "009789",
     "Name": "ESPERANCE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -33.83,
       "Longitude": 121.8925,
@@ -322,7 +322,7 @@
   {
     "Id": "009500",
     "Name": "ALBANY",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -35.0289,
       "Longitude": 117.8808,
@@ -332,7 +332,7 @@
   {
     "Id": "009741",
     "Name": "ALBANY AIRPORT COMPARISON",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -34.9414,
       "Longitude": 117.8022,
@@ -342,7 +342,7 @@
   {
     "Id": "009999",
     "Name": "ALBANY AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -34.9411,
       "Longitude": 117.8158,
@@ -352,7 +352,7 @@
   {
     "Id": "010093",
     "Name": "MERREDIN RESEARCH STATION",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -31.4994,
       "Longitude": 118.2242,
@@ -362,7 +362,7 @@
   {
     "Id": "010092",
     "Name": "MERREDIN",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -31.4756,
       "Longitude": 118.2789,
@@ -372,7 +372,7 @@
   {
     "Id": "010035",
     "Name": "CUNDERDIN",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -31.6494,
       "Longitude": 117.2331,
@@ -382,7 +382,7 @@
   {
     "Id": "010286",
     "Name": "CUNDERDIN AIRFIELD",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -31.622,
       "Longitude": 117.2282,
@@ -392,7 +392,7 @@
   {
     "Id": "010579",
     "Name": "KATANNING COMPARISON",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -33.6886,
       "Longitude": 117.5553,
@@ -402,7 +402,7 @@
   {
     "Id": "010916",
     "Name": "KATANNING",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -33.6856,
       "Longitude": 117.6064,
@@ -412,7 +412,7 @@
   {
     "Id": "010648",
     "Name": "WANDERING COMPARISON",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -32.6814,
       "Longitude": 116.6756,
@@ -422,7 +422,7 @@
   {
     "Id": "010917",
     "Name": "WANDERING",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -32.6722,
       "Longitude": 116.6706,
@@ -432,7 +432,7 @@
   {
     "Id": "011003",
     "Name": "EUCLA",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -31.6797,
       "Longitude": 128.8958,
@@ -442,7 +442,7 @@
   {
     "Id": "011004",
     "Name": "FORREST AERO",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -30.8389,
       "Longitude": 128.1139,
@@ -452,7 +452,7 @@
   {
     "Id": "011052",
     "Name": "FORREST",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -30.8453,
       "Longitude": 128.1092,
@@ -462,7 +462,7 @@
   {
     "Id": "012039",
     "Name": "KALGOORLIE POST OFFICE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -30.75,
       "Longitude": 121.4667,
@@ -472,7 +472,7 @@
   {
     "Id": "012038",
     "Name": "KALGOORLIE-BOULDER AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -30.7847,
       "Longitude": 121.4533,
@@ -482,7 +482,7 @@
   {
     "Id": "013017",
     "Name": "GILES METEOROLOGICAL OFFICE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -25.0341,
       "Longitude": 128.301,
@@ -492,7 +492,7 @@
   {
     "Id": "014016",
     "Name": "DARWIN POST OFFICE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -12.46,
       "Longitude": 130.84,
@@ -502,7 +502,7 @@
   {
     "Id": "014015",
     "Name": "DARWIN AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -12.4239,
       "Longitude": 130.8925,
@@ -512,7 +512,7 @@
   {
     "Id": "014825",
     "Name": "VICTORIA RIVER DOWNS",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -16.403,
       "Longitude": 131.0145,
@@ -522,7 +522,7 @@
   {
     "Id": "015087",
     "Name": "TENNANT CREEK POST OFFICE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -19.6475,
       "Longitude": 134.1896,
@@ -532,7 +532,7 @@
   {
     "Id": "015135",
     "Name": "TENNANT CREEK AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -19.6423,
       "Longitude": 134.1833,
@@ -542,7 +542,7 @@
   {
     "Id": "015540",
     "Name": "ALICE SPRINGS POST OFFICE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -23.71,
       "Longitude": 133.8683,
@@ -552,7 +552,7 @@
   {
     "Id": "015590",
     "Name": "ALICE SPRINGS AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -23.7951,
       "Longitude": 133.889,
@@ -562,7 +562,7 @@
   {
     "Id": "015548",
     "Name": "RABBIT FLAT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -20.1883,
       "Longitude": 130.0161,
@@ -572,7 +572,7 @@
   {
     "Id": "015666",
     "Name": "RABBIT FLAT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -20.1823,
       "Longitude": 130.0148,
@@ -582,7 +582,7 @@
   {
     "Id": "016001",
     "Name": "WOOMERA AERODROME",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -31.1558,
       "Longitude": 136.8054,
@@ -592,7 +592,7 @@
   {
     "Id": "016044",
     "Name": "TARCOOLA",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -30.7111,
       "Longitude": 134.5694,
@@ -602,7 +602,7 @@
   {
     "Id": "016098",
     "Name": "TARCOOLA AERO",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -30.7051,
       "Longitude": 134.5786,
@@ -612,7 +612,7 @@
   {
     "Id": "017043",
     "Name": "OODNADATTA AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -27.5553,
       "Longitude": 135.4456,
@@ -622,7 +622,7 @@
   {
     "Id": "017114",
     "Name": "OODNADATTA",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -27.5498,
       "Longitude": 135.4484,
@@ -632,7 +632,7 @@
   {
     "Id": "017024",
     "Name": "MARREE (FARINA)",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -30.066,
       "Longitude": 138.2739,
@@ -642,7 +642,7 @@
   {
     "Id": "017031",
     "Name": "MARREE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -29.6451,
       "Longitude": 138.0639,
@@ -652,7 +652,7 @@
   {
     "Id": "017126",
     "Name": "MARREE AERO",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -29.6587,
       "Longitude": 138.0684,
@@ -662,7 +662,7 @@
   {
     "Id": "018012",
     "Name": "CEDUNA AMO",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -32.1297,
       "Longitude": 133.6976,
@@ -672,7 +672,7 @@
   {
     "Id": "018044",
     "Name": "KYANCUTTA TOWN",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -33.1337,
       "Longitude": 135.5521,
@@ -682,7 +682,7 @@
   {
     "Id": "018070",
     "Name": "PORT LINCOLN",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -34.7225,
       "Longitude": 135.8558,
@@ -692,7 +692,7 @@
   {
     "Id": "018192",
     "Name": "NORTH SHIELDS (PORT LINCOLN)",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -34.5993,
       "Longitude": 135.8784,
@@ -702,7 +702,7 @@
   {
     "Id": "021046",
     "Name": "SNOWTOWN",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -33.7844,
       "Longitude": 138.2133,
@@ -712,7 +712,7 @@
   {
     "Id": "021133",
     "Name": "SNOWTOWN (RAYVILLE PARK)",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -33.7675,
       "Longitude": 138.2182,
@@ -722,7 +722,7 @@
   {
     "Id": "022801",
     "Name": "CAPE BORDA COMPARISON",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -35.7529,
       "Longitude": 136.5938,
@@ -732,7 +732,7 @@
   {
     "Id": "022823",
     "Name": "CAPE BORDA",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -35.7549,
       "Longitude": 136.5959,
@@ -742,7 +742,7 @@
   {
     "Id": "023000",
     "Name": "ADELAIDE (WEST TERRACE / NGAYIRDAPIRA)",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -34.9257,
       "Longitude": 138.5832,
@@ -752,7 +752,7 @@
   {
     "Id": "023090",
     "Name": "ADELAIDE (KENT TOWN)",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -34.9211,
       "Longitude": 138.6216,
@@ -762,7 +762,7 @@
   {
     "Id": "023321",
     "Name": "NURIOOTPA COMPARISON",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -34.4767,
       "Longitude": 139.0047,
@@ -772,7 +772,7 @@
   {
     "Id": "023373",
     "Name": "NURIOOTPA PIRSA",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -34.4761,
       "Longitude": 139.0056,
@@ -782,7 +782,7 @@
   {
     "Id": "026020",
     "Name": "MOUNT GAMBIER POST OFFICE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -37.8333,
       "Longitude": 140.7833,
@@ -792,7 +792,7 @@
   {
     "Id": "026021",
     "Name": "MOUNT GAMBIER AERO",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -37.7473,
       "Longitude": 140.7739,
@@ -802,7 +802,7 @@
   {
     "Id": "026026",
     "Name": "ROBE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -37.1628,
       "Longitude": 139.756,
@@ -812,7 +812,7 @@
   {
     "Id": "027042",
     "Name": "WEIPA EASTERN AVE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -12.6267,
       "Longitude": 141.8836,
@@ -822,7 +822,7 @@
   {
     "Id": "027045",
     "Name": "WEIPA AERO",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -12.6778,
       "Longitude": 141.9208,
@@ -832,7 +832,7 @@
   {
     "Id": "027022",
     "Name": "THURSDAY ISLAND MO",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -10.5853,
       "Longitude": 142.21,
@@ -842,7 +842,7 @@
   {
     "Id": "027021",
     "Name": "THURSDAY ISLAND TOWNSHIP",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -10.5831,
       "Longitude": 142.2203,
@@ -852,7 +852,7 @@
   {
     "Id": "027058",
     "Name": "HORN ISLAND",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -10.5844,
       "Longitude": 142.29,
@@ -862,7 +862,7 @@
   {
     "Id": "028004",
     "Name": "PALMERVILLE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -15.9999,
       "Longitude": 144.0754,
@@ -872,7 +872,7 @@
   {
     "Id": "029041",
     "Name": "NORMANTON POST OFFICE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -17.6706,
       "Longitude": 141.0672,
@@ -882,7 +882,7 @@
   {
     "Id": "029063",
     "Name": "NORMANTON AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -17.6872,
       "Longitude": 141.0733,
@@ -892,7 +892,7 @@
   {
     "Id": "029004",
     "Name": "BURKETOWN POST OFFICE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -17.7425,
       "Longitude": 139.5475,
@@ -902,7 +902,7 @@
   {
     "Id": "029077",
     "Name": "BURKETOWN AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -17.7483,
       "Longitude": 139.5356,
@@ -912,7 +912,7 @@
   {
     "Id": "030045",
     "Name": "RICHMOND POST OFFICE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -20.7289,
       "Longitude": 143.1425,
@@ -922,7 +922,7 @@
   {
     "Id": "030161",
     "Name": "RICHMOND AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -20.7001,
       "Longitude": 143.1137,
@@ -932,7 +932,7 @@
   {
     "Id": "030018",
     "Name": "GEORGETOWN POST OFFICE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -18.2922,
       "Longitude": 143.5483,
@@ -942,7 +942,7 @@
   {
     "Id": "030124",
     "Name": "GEORGETOWN AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -18.3039,
       "Longitude": 143.5306,
@@ -952,7 +952,7 @@
   {
     "Id": "031010",
     "Name": "CAIRNS POST OFFICE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -16.9333,
       "Longitude": 145.7833,
@@ -962,7 +962,7 @@
   {
     "Id": "031011",
     "Name": "CAIRNS AERO",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -16.8736,
       "Longitude": 145.7458,
@@ -972,7 +972,7 @@
   {
     "Id": "032040",
     "Name": "TOWNSVILLE AERO",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -19.2483,
       "Longitude": 146.7661,
@@ -982,7 +982,7 @@
   {
     "Id": "033046",
     "Name": "MACKAY POST OFFICE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -21.15,
       "Longitude": 149.1833,
@@ -992,7 +992,7 @@
   {
     "Id": "033047",
     "Name": "TE KOWAI EXP STN",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -21.1642,
       "Longitude": 149.1192,
@@ -1002,7 +1002,7 @@
   {
     "Id": "033119",
     "Name": "MACKAY M.O",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -21.1172,
       "Longitude": 149.2169,
@@ -1012,7 +1012,7 @@
   {
     "Id": "034002",
     "Name": "CHARTERS TOWERS POST OFFICE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -20.0781,
       "Longitude": 146.2614,
@@ -1022,7 +1022,7 @@
   {
     "Id": "034084",
     "Name": "CHARTERS TOWERS AIRPORT COMPARISON",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -20.0427,
       "Longitude": 146.2716,
@@ -1032,7 +1032,7 @@
   {
     "Id": "036007",
     "Name": "BARCALDINE POST OFFICE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -23.5544,
       "Longitude": 145.2883,
@@ -1042,7 +1042,7 @@
   {
     "Id": "036030",
     "Name": "LONGREACH POST OFFICE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -23.45,
       "Longitude": 144.25,
@@ -1052,7 +1052,7 @@
   {
     "Id": "036031",
     "Name": "LONGREACH AERO",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -23.4397,
       "Longitude": 144.2828,
@@ -1062,7 +1062,7 @@
   {
     "Id": "037010",
     "Name": "CAMOOWEAL TOWNSHIP",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -19.9225,
       "Longitude": 138.1214,
@@ -1072,7 +1072,7 @@
   {
     "Id": "038003",
     "Name": "BOULIA AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -22.9117,
       "Longitude": 139.9039,
@@ -1082,7 +1082,7 @@
   {
     "Id": "038002",
     "Name": "BIRDSVILLE POLICE STATION",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -25.9003,
       "Longitude": 139.3492,
@@ -1092,7 +1092,7 @@
   {
     "Id": "038026",
     "Name": "BIRDSVILLE AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -25.8975,
       "Longitude": 139.3472,
@@ -1102,7 +1102,7 @@
   {
     "Id": "039039",
     "Name": "GAYNDAH POST OFFICE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -25.6258,
       "Longitude": 151.6094,
@@ -1112,7 +1112,7 @@
   {
     "Id": "039066",
     "Name": "GAYNDAH AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -25.6167,
       "Longitude": 151.6156,
@@ -1122,7 +1122,7 @@
   {
     "Id": "039083",
     "Name": "ROCKHAMPTON AERO",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -23.3753,
       "Longitude": 150.4775,
@@ -1132,7 +1132,7 @@
   {
     "Id": "039015",
     "Name": "BUNDABERG POST OFFICE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -24.8667,
       "Longitude": 152.3467,
@@ -1142,7 +1142,7 @@
   {
     "Id": "039128",
     "Name": "BUNDABERG AERO",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -24.9069,
       "Longitude": 152.323,
@@ -1152,7 +1152,7 @@
   {
     "Id": "040004",
     "Name": "AMBERLEY AMO",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -27.6297,
       "Longitude": 152.7111,
@@ -1162,7 +1162,7 @@
   {
     "Id": "040043",
     "Name": "CAPE MORETON LIGHTHOUSE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -27.0314,
       "Longitude": 153.4661,
@@ -1172,7 +1172,7 @@
   {
     "Id": "040223",
     "Name": "BRISBANE AERO",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -27.4178,
       "Longitude": 153.1142,
@@ -1182,7 +1182,7 @@
   {
     "Id": "040842",
     "Name": "BRISBANE AERO",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -27.3917,
       "Longitude": 153.1292,
@@ -1192,7 +1192,7 @@
   {
     "Id": "042023",
     "Name": "MILES POST OFFICE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -26.6581,
       "Longitude": 150.1844,
@@ -1202,7 +1202,7 @@
   {
     "Id": "042112",
     "Name": "MILES CONSTANCE STREET",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -26.6569,
       "Longitude": 150.1819,
@@ -1212,7 +1212,7 @@
   {
     "Id": "043034",
     "Name": "ST GEORGE POST OFFICE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -28.0361,
       "Longitude": 148.5814,
@@ -1222,7 +1222,7 @@
   {
     "Id": "043109",
     "Name": "ST GEORGE AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -28.0478,
       "Longitude": 148.5957,
@@ -1232,7 +1232,7 @@
   {
     "Id": "044022",
     "Name": "CHARLEVILLE POST OFFICE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -26.4025,
       "Longitude": 146.2381,
@@ -1242,7 +1242,7 @@
   {
     "Id": "044021",
     "Name": "CHARLEVILLE AERO",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -26.4139,
       "Longitude": 146.2558,
@@ -1252,7 +1252,7 @@
   {
     "Id": "045017",
     "Name": "THARGOMINDAH POST OFFICE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -27.9978,
       "Longitude": 143.8197,
@@ -1262,7 +1262,7 @@
   {
     "Id": "045025",
     "Name": "THARGOMINDAH AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -27.9867,
       "Longitude": 143.815,
@@ -1272,7 +1272,7 @@
   {
     "Id": "046043",
     "Name": "WILCANNIA (REID ST)",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -31.5631,
       "Longitude": 143.3747,
@@ -1282,7 +1282,7 @@
   {
     "Id": "046012",
     "Name": "WILCANNIA AERODROME",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -31.5194,
       "Longitude": 143.385,
@@ -1292,7 +1292,7 @@
   {
     "Id": "046037",
     "Name": "TIBOOBURRA POST OFFICE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -29.4362,
       "Longitude": 142.0097,
@@ -1302,7 +1302,7 @@
   {
     "Id": "046126",
     "Name": "TIBOOBURRA AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -29.4448,
       "Longitude": 142.0567,
@@ -1312,7 +1312,7 @@
   {
     "Id": "048030",
     "Name": "COBAR POST OFFICE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -31.5,
       "Longitude": 145.8,
@@ -1322,7 +1322,7 @@
   {
     "Id": "048027",
     "Name": "COBAR MO",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -31.484,
       "Longitude": 145.8294,
@@ -1332,7 +1332,7 @@
   {
     "Id": "048013",
     "Name": "BOURKE POST OFFICE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -30.0917,
       "Longitude": 145.9358,
@@ -1342,7 +1342,7 @@
   {
     "Id": "048239",
     "Name": "BOURKE AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -30.0423,
       "Longitude": 145.952,
@@ -1352,7 +1352,7 @@
   {
     "Id": "048245",
     "Name": "BOURKE AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -30.0362,
       "Longitude": 145.9521,
@@ -1362,7 +1362,7 @@
   {
     "Id": "073054",
     "Name": "WYALONG POST OFFICE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -33.9262,
       "Longitude": 147.2418,
@@ -1372,7 +1372,7 @@
   {
     "Id": "050017",
     "Name": "WEST WYALONG AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -33.9382,
       "Longitude": 147.1962,
@@ -1382,7 +1382,7 @@
   {
     "Id": "052026",
     "Name": "WALGETT COUNCIL DEPOT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -30.0236,
       "Longitude": 148.1218,
@@ -1392,7 +1392,7 @@
   {
     "Id": "052088",
     "Name": "WALGETT AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -30.0372,
       "Longitude": 148.1223,
@@ -1402,7 +1402,7 @@
   {
     "Id": "053027",
     "Name": "MOREE POST OFFICE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -29.5,
       "Longitude": 149.9,
@@ -1412,7 +1412,7 @@
   {
     "Id": "053048",
     "Name": "MOREE COMPARISON",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -29.4819,
       "Longitude": 149.8383,
@@ -1422,7 +1422,7 @@
   {
     "Id": "053115",
     "Name": "MOREE AERO",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -29.4898,
       "Longitude": 149.8471,
@@ -1432,7 +1432,7 @@
   {
     "Id": "055024",
     "Name": "GUNNEDAH RESOURCE CENTRE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -31.0261,
       "Longitude": 150.2687,
@@ -1442,7 +1442,7 @@
   {
     "Id": "056017",
     "Name": "INVERELL COMPARISON",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -29.7783,
       "Longitude": 151.1114,
@@ -1452,7 +1452,7 @@
   {
     "Id": "056242",
     "Name": "INVERELL (RAGLAN ST)",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -29.7796,
       "Longitude": 151.1121,
@@ -1462,7 +1462,7 @@
   {
     "Id": "058012",
     "Name": "YAMBA PILOT STATION",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -29.4325,
       "Longitude": 153.3632,
@@ -1472,7 +1472,7 @@
   {
     "Id": "059040",
     "Name": "COFFS HARBOUR MO",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -30.3107,
       "Longitude": 153.1187,
@@ -1482,7 +1482,7 @@
   {
     "Id": "059151",
     "Name": "COFFS HARBOUR AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -30.3189,
       "Longitude": 153.1162,
@@ -1492,7 +1492,7 @@
   {
     "Id": "060026",
     "Name": "PORT MACQUARIE (HILL ST)",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -31.4399,
       "Longitude": 152.911,
@@ -1502,7 +1502,7 @@
   {
     "Id": "060139",
     "Name": "PORT MACQUARIE AIRPORT AWS (COMPARISON)",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -31.4335,
       "Longitude": 152.8655,
@@ -1512,7 +1512,7 @@
   {
     "Id": "060168",
     "Name": "PORT MACQUARIE AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -31.4343,
       "Longitude": 152.8662,
@@ -1522,7 +1522,7 @@
   {
     "Id": "061078",
     "Name": "WILLIAMTOWN RAAF",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -32.7939,
       "Longitude": 151.8364,
@@ -1532,7 +1532,7 @@
   {
     "Id": "061089",
     "Name": "SCONE SCS",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -32.0632,
       "Longitude": 150.9271,
@@ -1542,7 +1542,7 @@
   {
     "Id": "061363",
     "Name": "SCONE AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -32.0335,
       "Longitude": 150.8264,
@@ -1552,7 +1552,7 @@
   {
     "Id": "063005",
     "Name": "BATHURST AG STATION COMPARISON",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -33.4288,
       "Longitude": 149.5559,
@@ -1562,7 +1562,7 @@
   {
     "Id": "065012",
     "Name": "DUBBO (DARLING STREET)",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -32.2385,
       "Longitude": 148.6089,
@@ -1572,7 +1572,7 @@
   {
     "Id": "065070",
     "Name": "DUBBO AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -32.2206,
       "Longitude": 148.5753,
@@ -1582,7 +1582,7 @@
   {
     "Id": "066062",
     "Name": "SYDNEY (OBSERVATORY HILL)",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -33.8607,
       "Longitude": 151.205,
@@ -1592,7 +1592,7 @@
   {
     "Id": "066214",
     "Name": "SYDNEY (OBSERVATORY HILL)",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -33.8593,
       "Longitude": 151.2048,
@@ -1602,7 +1602,7 @@
   {
     "Id": "067033",
     "Name": "RICHMOND RAAF",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -33.6022,
       "Longitude": 150.7794,
@@ -1612,7 +1612,7 @@
   {
     "Id": "067105",
     "Name": "RICHMOND RAAF",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -33.6004,
       "Longitude": 150.7761,
@@ -1622,7 +1622,7 @@
   {
     "Id": "068076",
     "Name": "NOWRA RAN AIR STATION",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -34.9449,
       "Longitude": 150.545,
@@ -1632,7 +1632,7 @@
   {
     "Id": "068072",
     "Name": "NOWRA RAN AIR STATION",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -34.9469,
       "Longitude": 150.5353,
@@ -1642,7 +1642,7 @@
   {
     "Id": "068034",
     "Name": "JERVIS BAY (POINT PERPENDICULAR LIGHTHOU",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -35.0936,
       "Longitude": 150.8048,
@@ -1652,7 +1652,7 @@
   {
     "Id": "068151",
     "Name": "JERVIS BAY (POINT PERPENDICULAR)",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -35.0936,
       "Longitude": 150.8049,
@@ -1662,7 +1662,7 @@
   {
     "Id": "069018",
     "Name": "MORUYA HEADS PILOT STATION",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -35.9093,
       "Longitude": 150.1532,
@@ -1672,7 +1672,7 @@
   {
     "Id": "070099",
     "Name": "CANBERRA (ACTON)",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -35.3,
       "Longitude": 149.1
@@ -1681,7 +1681,7 @@
   {
     "Id": "070014",
     "Name": "CANBERRA AIRPORT COMPARISON",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -35.3049,
       "Longitude": 149.2014,
@@ -1691,7 +1691,7 @@
   {
     "Id": "070351",
     "Name": "CANBERRA AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -35.3106,
       "Longitude": 149.197,
@@ -1701,7 +1701,7 @@
   {
     "Id": "072151",
     "Name": "WAGGA WAGGA (KOORINGAL)",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -35.1333,
       "Longitude": 147.3667,
@@ -1711,7 +1711,7 @@
   {
     "Id": "072150",
     "Name": "WAGGA WAGGA AMO",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -35.1583,
       "Longitude": 147.4575,
@@ -1721,7 +1721,7 @@
   {
     "Id": "072091",
     "Name": "CABRAMURRA SMHEA",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -35.9383,
       "Longitude": 148.3842,
@@ -1731,7 +1731,7 @@
   {
     "Id": "072161",
     "Name": "CABRAMURRA SMHEA",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -35.9371,
       "Longitude": 148.3779,
@@ -1741,7 +1741,7 @@
   {
     "Id": "074128",
     "Name": "DENILIQUIN (VISITOR INFORMATION CENTRE)",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -35.5283,
       "Longitude": 144.9651,
@@ -1751,7 +1751,7 @@
   {
     "Id": "074258",
     "Name": "DENILIQUIN AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -35.5575,
       "Longitude": 144.9458,
@@ -1761,7 +1761,7 @@
   {
     "Id": "076077",
     "Name": "MILDURA POST OFFICE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -34.1833,
       "Longitude": 142.2,
@@ -1771,7 +1771,7 @@
   {
     "Id": "076031",
     "Name": "MILDURA AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -34.2358,
       "Longitude": 142.0867,
@@ -1781,7 +1781,7 @@
   {
     "Id": "078031",
     "Name": "NHILL",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -36.3347,
       "Longitude": 141.6367,
@@ -1791,7 +1791,7 @@
   {
     "Id": "078015",
     "Name": "NHILL AERODROME",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -36.3093,
       "Longitude": 141.6486,
@@ -1801,7 +1801,7 @@
   {
     "Id": "080023",
     "Name": "KERANG",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -35.7466,
       "Longitude": 143.935,
@@ -1811,7 +1811,7 @@
   {
     "Id": "082039",
     "Name": "RUTHERGLEN RESEARCH",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -36.1048,
       "Longitude": 146.5094,
@@ -1821,7 +1821,7 @@
   {
     "Id": "084016",
     "Name": "GABO ISLAND LIGHTHOUSE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -37.5679,
       "Longitude": 149.9158,
@@ -1831,7 +1831,7 @@
   {
     "Id": "084030",
     "Name": "ORBOST (COMPARISON)",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -37.6917,
       "Longitude": 148.4589,
@@ -1841,7 +1841,7 @@
   {
     "Id": "084145",
     "Name": "ORBOST",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -37.6922,
       "Longitude": 148.4667,
@@ -1851,7 +1851,7 @@
   {
     "Id": "085133",
     "Name": "SALE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -38.1,
       "Longitude": 147.05,
@@ -1861,7 +1861,7 @@
   {
     "Id": "085072",
     "Name": "EAST SALE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -38.1156,
       "Longitude": 147.1323,
@@ -1871,7 +1871,7 @@
   {
     "Id": "085096",
     "Name": "WILSONS PROMONTORY LIGHTHOUSE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -39.1297,
       "Longitude": 146.4246,
@@ -1881,7 +1881,7 @@
   {
     "Id": "086071",
     "Name": "MELBOURNE REGIONAL OFFICE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -37.8075,
       "Longitude": 144.97,
@@ -1891,7 +1891,7 @@
   {
     "Id": "086338",
     "Name": "MELBOURNE (OLYMPIC PARK)",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -37.8255,
       "Longitude": 144.9816,
@@ -1901,7 +1901,7 @@
   {
     "Id": "087031",
     "Name": "LAVERTON RAAF",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -37.8565,
       "Longitude": 144.7565,
@@ -1911,7 +1911,7 @@
   {
     "Id": "090015",
     "Name": "CAPE OTWAY LIGHTHOUSE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -38.8557,
       "Longitude": 143.513,
@@ -1921,7 +1921,7 @@
   {
     "Id": "091057",
     "Name": "LOW HEAD (COMPARISON)",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -41.0567,
       "Longitude": 146.7883,
@@ -1931,7 +1931,7 @@
   {
     "Id": "091293",
     "Name": "LOW HEAD",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -41.0547,
       "Longitude": 146.7874,
@@ -1941,7 +1941,7 @@
   {
     "Id": "091049",
     "Name": "LAUNCESTON (CITY)",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -41.4264,
       "Longitude": 147.1275,
@@ -1951,7 +1951,7 @@
   {
     "Id": "091104",
     "Name": "LAUNCESTON AIRPORT COMPARISON",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -41.5397,
       "Longitude": 147.2033,
@@ -1961,7 +1961,7 @@
   {
     "Id": "091311",
     "Name": "LAUNCESTON AIRPORT",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -41.5476,
       "Longitude": 147.2156,
@@ -1971,7 +1971,7 @@
   {
     "Id": "092045",
     "Name": "LARAPUNA (EDDYSTONE POINT)",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -40.9928,
       "Longitude": 148.3467,
@@ -1981,7 +1981,7 @@
   {
     "Id": "094010",
     "Name": "CAPE BRUNY LIGHTHOUSE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -43.4892,
       "Longitude": 147.1453,
@@ -1991,7 +1991,7 @@
   {
     "Id": "094198",
     "Name": "CAPE BRUNY (CAPE BRUNY)",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -43.4886,
       "Longitude": 147.1444,
@@ -2001,7 +2001,7 @@
   {
     "Id": "094029",
     "Name": "HOBART (ELLERSLIE ROAD)",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -42.8897,
       "Longitude": 147.3278,
@@ -2011,7 +2011,7 @@
   {
     "Id": "094069",
     "Name": "GROVE (COMPARISON)",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -42.983,
       "Longitude": 147.0771,
@@ -2021,7 +2021,7 @@
   {
     "Id": "094220",
     "Name": "GROVE (RESEARCH STATION)",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -42.9844,
       "Longitude": 147.0756,
@@ -2031,7 +2031,7 @@
   {
     "Id": "096003",
     "Name": "BUTLERS GORGE",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -42.2753,
       "Longitude": 146.2758,
@@ -2041,7 +2041,7 @@
   {
     "Id": "096071",
     "Name": "LAKE ST CLAIR NATIONAL PARK",
-    "CountryCode": "AS",
+    "CountryCode": "AU",
     "Coordinates": {
       "Latitude": -42.1177,
       "Longitude": 146.1771,

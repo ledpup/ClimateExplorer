@@ -1,0 +1,245 @@
+# GHCNm FIPS 10-4 country code, ISO 3166-1 alpha-2 code, GHCNm's country name.
+# The name is for reviewing only. '--' means the code can't be mapped as a whole: every station
+# with it needs an entry in ghcnm-station-iso-overrides.txt.
+AC AG Antigua and Barbuda
+AE AE United Arab Emirates
+AF AF Afghanistan
+AG DZ Algeria
+AJ AZ Azerbaijan
+AL AL Albania
+AM AM Armenia
+AO AO Angola
+AQ AS American Samoa [United States of America]
+AR AR Argentina
+AS AU Australia
+AU AT Austria
+AY AQ Antarctica
+BA BH Bahrain
+BB BB Barbados
+BC BW Botswana
+BD BM Bermuda [United Kingdom]
+BE BE Belgium
+BF BS Bahamas, The
+BG BD Bangladesh
+BH BZ Belize
+BK BA Bosnia and Herzegovina
+BL BO Bolivia
+BM MM Burma
+BN BJ Benin
+BO BY Belarus
+BP SB Solomon Islands
+BR BR Brazil
+BU BG Bulgaria
+BX BN Brunei
+BY BI Burundi
+CA CA Canada
+CB KH Cambodia
+CD TD Chad
+CE LK Sri Lanka
+CF CG Congo (Brazzaville)
+CG CD Congo (Kinshasa)
+CH CN China
+CI CL Chile
+CJ KY Cayman Islands [United Kingdom]
+CK CC Cocos (Keeling) Islands [Australia]
+CM CM Cameroon
+CN KM Comoros
+CO CO Colombia
+CQ MP Northern Mariana Islands [United States of America]
+CS CR Costa Rica
+CT CF Central African Republic
+CU CU Cuba
+CV CV Cape Verde
+CW CK Cook Islands [New Zealand]
+CY CY Cyprus
+DA DK Denmark
+DJ DJ Djibouti
+DO DM Dominica
+DR DO Dominican Republic
+EC EC Ecuador
+EG EG Egypt
+EI IE Ireland
+EK GQ Equatorial Guinea
+EN EE Estonia
+ER ER Eritrea
+ES SV El Salvador
+ET ET Ethiopia
+EU TF Europa Island [France]
+EZ CZ Czech Republic
+FG GF French Guiana [France]
+FI FI Finland
+FJ FJ Fiji
+FK FK Falkland Islands (Islas Malvinas) [United Kingdom]
+FM FM Federated States of Micronesia
+FP PF French Polynesia
+FR FR France
+FS TF French Southern and Antarctic Lands [France]
+GA GM Gambia, The
+GB GA Gabon
+GG GE Georgia
+GH GH Ghana
+GI GI Gibraltar [United Kingdom]
+GJ GD Grenada
+GK GG Guernsey
+GL GL Greenland [Denmark]
+GM DE Germany
+GP GP Guadeloupe [France]
+GQ GU Guam [United States of America]
+GR GR Greece
+GT GT Guatemala
+GV GN Guinea
+GY GY Guyana
+HA HT Haiti
+HK HK Hong Kong
+HO HN Honduras
+HR HR Croatia
+HU HU Hungary
+IC IS Iceland
+ID ID Indonesia
+IM IM Isle of Man
+IN IN India
+IO IO British Indian Ocean Territory [United Kingdom]
+IR IR Iran
+IS IL Israel
+IT IT Italy
+IV CI Cote D'Ivoire
+IZ IQ Iraq
+JA JP Japan
+JE JE Jersey
+JM JM Jamaica
+JN SJ Jan Mayen [Norway]
+JO JO Jordan
+JQ UM Johnston Atoll [United States of America]
+JU TF Juan De Nova Island [France]
+KE KE Kenya
+KG KG Kyrgyzstan
+KN KP Korea, North
+KR KI Kiribati
+KS KR Korea, South
+KT CX Christmas Island [Australia]
+KU KW Kuwait
+KZ KZ Kazakhstan
+LA LA Laos
+LE LB Lebanon
+LG LV Latvia
+LH LT Lithuania
+LI LR Liberia
+LO SK Slovakia
+LQ UM Palmyra Atoll [United States of America]
+LS LI Liechtenstein
+LT LS Lesotho
+LU LU Luxembourg
+LY LY Libya
+MA MG Madagascar
+MB MQ Martinique [France]
+MC MO Macau S.A.R
+MD MD Moldova
+MF YT Mayotte [France]
+MG MN Mongolia
+MH MS Montserrat
+MI MW Malawi
+MJ ME Montenegro
+MK MK Macedonia
+ML ML Mali
+MN MC Monaco
+MO MA Morocco
+MP MU Mauritius
+MQ UM Midway Islands [United States of America]
+MR MR Mauritania
+MT MT Malta
+MU OM Oman
+MV MV Maldives
+MX MX Mexico
+MY MY Malaysia
+MZ MZ Mozambique
+NC NC New Caledonia [France]
+NE NU Niue [New Zealand]
+NF NF Norfolk Island [Australia]
+NG NE Niger
+NH VU Vanuatu
+NI NG Nigeria
+NL NL Netherlands
+NN SX Saint Maarten
+NO NO Norway
+NP NP Nepal
+NR NR Nauru
+NS SR Suriname
+NT -- Netherlands Antilles [Netherlands]
+NU NI Nicaragua
+NZ NZ New Zealand
+PA PY Paraguay
+PC PN Pitcairn Islands [United Kingdom]
+PE PE Peru
+PK PK Pakistan
+PL PL Poland
+PM PA Panama
+PO PT Portugal
+PP PG Papua New Guinea
+PS PW Palau
+PU GW Guinea-Bissau
+QA QA Qatar
+RE RE Reunion [France]
+RI RS Serbia
+RM MH Marshall Islands
+RO RO Romania
+RP PH Philippines
+RQ PR Puerto Rico [United States of America]
+RS RU Russia
+RW RW Rwanda
+SA SA Saudi Arabia
+SB PM Saint Pierre and Miquelon [France]
+SC KN Saint Kitts and Nevis
+SE SC Seychelles
+SF ZA South Africa
+SG SN Senegal
+SH SH Saint Helena [United Kingdom]
+SI SI Slovenia
+SL SL Sierra Leone
+SN SG Singapore
+SO SO Somalia
+SP ES Spain
+ST LC Saint Lucia
+SU SD Sudan
+SV SJ Svalbard [Norway]
+SW SE Sweden
+SX GS South Georgia and the South Sandwich Islands [United Kingdom]
+SY SY Syria
+SZ CH Switzerland
+TD TT Trinidad and Tobago
+TE TF Tromelin Island [France]
+TH TH Thailand
+TI TJ Tajikistan
+TL TK Tokelau [New Zealand]
+TN TO Tonga
+TO TG Togo
+TP ST Sao Tome and Principe
+TS TN Tunisia
+TT TL Timor-Leste
+TU TR Turkey
+TV TV Tuvalu
+TW TW Taiwan
+TX TM Turkmenistan
+TZ TZ Tanzania
+UC CW Curacao
+UG UG Uganda
+UK GB United Kingdom
+UP UA Ukraine
+US US United States of America
+UV BF Burkina Faso
+UY UY Uruguay
+UZ UZ Uzbekistan
+VC VC Saint Vincent and the Grenadines
+VE VE Venezuela
+VI VG Virgin Islands [United Kingdom]
+VM VN Vietnam
+VQ VI Virgin Islands [United States of America]
+WA NA Namibia
+WF WF Wallis and Futuna [France]
+WI EH Western Sahara
+WQ UM Wake Island [United States of America]
+WS WS Samoa
+WZ SZ Swaziland
+XX -- Unknown
+YM YE Yemen
+ZA ZM Zambia
+ZI ZW Zimbabwe
