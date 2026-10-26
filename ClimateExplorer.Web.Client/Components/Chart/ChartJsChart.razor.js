@@ -165,11 +165,19 @@ const sizingOptions = { responsive: true, maintainAspectRatio: false };
 export function create(canvas, type, dotNetRef) {
     destroy(canvas);
 
-    const state = { resizeRequestId: null };
+    const state = { resizeRequestId: null, windowWidth: window.innerWidth };
 
     // Chart.js resizes itself when its container does, but a canvas left with the inline width and
     // height of a wider window can stop the container shrinking. Clear them on window resize.
-    state.onWindowResize = () => scheduleResize(canvas, state);
+    // Height-only resizes are ignored: mobile browsers fire them as the address bar shows and hides
+    // while scrolling, and clearing the size then briefly renders the canvas at its device-pixel size,
+    // which makes the page jump.
+    state.onWindowResize = () => {
+        if (window.innerWidth === state.windowWidth) return;
+
+        state.windowWidth = window.innerWidth;
+        scheduleResize(canvas, state);
+    };
     window.addEventListener("resize", state.onWindowResize);
 
     canvas.onclick = event => {
