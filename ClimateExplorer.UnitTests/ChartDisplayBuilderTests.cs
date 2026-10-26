@@ -3,6 +3,7 @@ namespace ClimateExplorer.UnitTests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
@@ -36,15 +37,15 @@ public class ChartDisplayBuilderTests
     }
 
     [TestMethod]
-    public async Task BuildDatasets_UsCustomary_AxisLabelLegendTooltipAndValuesShareUnit()
+    public async Task BuildDatasets_UsCustomary_AxisLabelTooltipAndValuesShareUnit()
     {
         var result = await BuildChart([CreateSeries()], [CreateDataSet(Constant(10))]);
 
-        var (datasets, tooltip) = ChartDisplayBuilder.BuildDatasets(result.SeriesWithData, result.ChartBins!, false, UnitFormatter.UsCustomary);
+        var (datasets, tooltip, _) = ChartDisplayBuilder.BuildDatasets(result.SeriesWithData, result.ChartBins!, false, UnitFormatter.UsCustomary);
         var options = ChartOptionsFactory.Build(CreateOptionsRequest(result, UnitFormatter.UsCustomary));
 
         Assert.AreEqual(50, datasets[0].Data[0]!.Value, 1e-9);
-        StringAssert.EndsWith(datasets[0].Label, "| °F");
+        Assert.AreEqual("Mean temperature | Adjusted", datasets[0].Label);
         StringAssert.EndsWith(tooltip[0].Label, "| °F");
         Assert.AreEqual(1, tooltip[0].Rounding);
         Assert.AreEqual(50, tooltip[0].Anomaly!.FullPeriod.Average, 1e-9);
@@ -56,11 +57,11 @@ public class ChartDisplayBuilderTests
     {
         var result = await BuildChart([CreateSeries()], [CreateDataSet(Constant(10))]);
 
-        var (datasets, tooltip) = ChartDisplayBuilder.BuildDatasets(result.SeriesWithData, result.ChartBins!, false, UnitFormatter.Metric);
+        var (datasets, tooltip, _) = ChartDisplayBuilder.BuildDatasets(result.SeriesWithData, result.ChartBins!, false, UnitFormatter.Metric);
         var options = ChartOptionsFactory.Build(CreateOptionsRequest(result, UnitFormatter.Metric));
 
         Assert.AreEqual(10, datasets[0].Data[0]!.Value);
-        StringAssert.EndsWith(datasets[0].Label, "| °C");
+        Assert.AreEqual("Mean temperature | Adjusted", datasets[0].Label);
         StringAssert.EndsWith(tooltip[0].Label, "| °C");
         Assert.AreEqual("Degrees celsius (°C)", options.Axes.Single().Label);
         Assert.AreEqual("degreesCelsius", datasets[0].YAxisId);
@@ -88,7 +89,7 @@ public class ChartDisplayBuilderTests
         series.Value = SeriesValueOptions.Anomaly;
 
         var result = await BuildChart([series], [CreateDataSet(Constant(1))]);
-        var (datasets, _) = ChartDisplayBuilder.BuildDatasets(result.SeriesWithData, result.ChartBins!, false, UnitFormatter.UsCustomary);
+        var (datasets, _, _) = ChartDisplayBuilder.BuildDatasets(result.SeriesWithData, result.ChartBins!, false, UnitFormatter.UsCustomary);
         var options = ChartOptionsFactory.Build(CreateOptionsRequest(result, UnitFormatter.UsCustomary));
 
         Assert.AreEqual(1.8, datasets[0].Data[0]!.Value, 1e-9);
@@ -101,7 +102,7 @@ public class ChartDisplayBuilderTests
         var sum = CreateSeries(aggregation: SeriesAggregationOptions.Sum);
 
         var result = await BuildChart([CreateSeries(), sum], [CreateDataSet(Constant(10)), CreateDataSet(Constant(10))]);
-        var (datasets, _) = ChartDisplayBuilder.BuildDatasets(result.SeriesWithData, result.ChartBins!, false, UnitFormatter.UsCustomary);
+        var (datasets, _, _) = ChartDisplayBuilder.BuildDatasets(result.SeriesWithData, result.ChartBins!, false, UnitFormatter.UsCustomary);
         var options = ChartOptionsFactory.Build(CreateOptionsRequest(result, UnitFormatter.UsCustomary));
 
         Assert.AreEqual(50, datasets[0].Data[0]!.Value, 1e-9);
@@ -109,6 +110,38 @@ public class ChartDisplayBuilderTests
         StringAssert.EndsWith(datasets[1].Label, "| °C");
         Assert.AreNotEqual(datasets[0].YAxisId, datasets[1].YAxisId);
         Assert.HasCount(2, options.Axes);
+    }
+
+    [TestMethod]
+    public async Task BuildDatasets_SharedParts_NoteReachesChartOptions()
+    {
+        var sum = CreateSeries(aggregation: SeriesAggregationOptions.Sum);
+
+        var result = await BuildChart([CreateSeries(), sum], [CreateDataSet(Constant(10)), CreateDataSet(Constant(10))]);
+        var display = ChartDisplayBuilder.BuildDatasets(result.SeriesWithData, result.ChartBins!, false, UnitFormatter.UsCustomary);
+        var options = ChartOptionsFactory.Build(CreateOptionsRequest(result, UnitFormatter.UsCustomary) with { SeriesNote = display.SeriesNote });
+
+        // The sum of Celsius values stays metric, so the units differ and stay in the labels.
+        Assert.AreEqual("Mean temperature | Adjusted", display.SeriesNote);
+        Assert.AreEqual("°F", display.Datasets[0].Label);
+        Assert.AreEqual("Statistic: Sum | °C", display.Datasets[1].Label);
+
+        using var json = JsonDocument.Parse(JsonSerializer.Serialize(options.Options));
+        Assert.AreEqual("All series: Mean temperature | Adjusted", json.RootElement.GetProperty("Plugins").GetProperty("SeriesNote").GetProperty("Text").GetString());
+    }
+
+    [TestMethod]
+    public async Task BuildDatasets_TrendOnOnePlace_TrendLabelLeavesOutLocation()
+    {
+        var mean = CreateSeries();
+        mean.Trends = [new ChartSeriesTrendRequest { RegressionType = TrendRegressionType.Linear, TrendPeriod = TrendWindow.Full }];
+
+        var result = await BuildChart([mean], [CreateDataSet(year => 12 + ((year - 1950) * 0.03))]);
+        var (datasets, _, seriesNote) = ChartDisplayBuilder.BuildDatasets(result.SeriesWithData, result.ChartBins!, false, UnitFormatter.Metric);
+
+        Assert.HasCount(2, datasets);
+        StringAssert.StartsWith(datasets[1].Label, "Mean temperature | ");
+        Assert.IsNull(seriesNote);
     }
 
     private static async Task<List<Measure>> RecordDisplayMeasures(double shift)

@@ -1,0 +1,115 @@
+namespace ClimateExplorer.Web.UiLogic;
+
+using ClimateExplorer.Web.UiModel;
+
+/// <summary>
+/// Builds the chart legend labels without repeating what the chart already shows elsewhere:
+/// <list type="bullet">
+/// <item>With one place on the chart, the location is left out. The chart title names it.</item>
+/// <item>On desktop, a unit every series shares is left out. Every y axis title shows its unit.</item>
+/// <item>On desktop, with two or more series, the other parts every series shares are left out of the labels and
+/// shown once in the series note.</item>
+/// </list>
+/// The rules work on <see cref="SeriesLabelSegment"/>s, before they're joined, so parts are compared by what
+/// they are as well as their text.
+/// </summary>
+public static class SeriesLabeller
+{
+    /// <param name="series">The rendered series, in chart order.</param>
+    /// <param name="unitLabels">Each series' unit as displayed, from <see cref="SeriesDisplayUnits"/>.</param>
+    /// <param name="isMobileDevice">Whether to use the short labels, which only leave out the location.</param>
+    public static SeriesLabels Build(IReadOnlyList<ChartSeriesDefinition> series, IReadOnlyList<string> unitLabels, bool isMobileDevice)
+    {
+        var includeLocation = ChartLogic.GetPlaces(series).Length != 1;
+        var shortTitles = series.Select(x => x.GetFriendlyTitleShortSegments(includeLocation)).ToList();
+
+        if (isMobileDevice)
+        {
+            var shortLabels = shortTitles.Select(SeriesLabelSegment.Join).ToList();
+
+            return new SeriesLabels(
+                [.. series.Select((x, i) => x.GetTransformationOverrideLabel() ?? shortLabels[i])],
+                shortLabels,
+                null);
+        }
+
+        var labels = series.Select((x, i) => GetLabelSegments(x, unitLabels[i], includeLocation)).ToList();
+
+        RemoveSharedUnit(labels);
+
+        var shared = GetSharedSegments(labels);
+        var sharedParts = shared.Select(x => x.Part).ToHashSet();
+
+        foreach (var label in labels)
+        {
+            label.RemoveAll(shared.Contains);
+        }
+
+        // The short title loses the same parts as the legend label. When that leaves nothing, the trend is named
+        // by what's left of its series' legend label, so two trends can't both be just "{period} trend".
+        var trendPrefixes = shortTitles
+            .Select((title, i) =>
+            {
+                var prefix = title.Where(x => !sharedParts.Contains(x.Part)).ToList();
+                return SeriesLabelSegment.Join(prefix.Count > 0 ? prefix : labels[i]);
+            })
+            .ToList();
+
+        return new SeriesLabels(
+            [.. labels.Select(SeriesLabelSegment.Join)],
+            trendPrefixes,
+            shared.Count == 0 ? null : SeriesLabelSegment.Join(shared));
+    }
+
+    /// <summary>
+    /// An override label (e.g. "First day of frost") replaces the whole label, unit included, and is never shared.
+    /// </summary>
+    private static List<SeriesLabelSegment> GetLabelSegments(ChartSeriesDefinition series, string unitLabel, bool includeLocation)
+    {
+        if (series.GetTransformationOverrideLabel() is { } overrideLabel)
+        {
+            return [new(SeriesLabelPart.Whole, overrideLabel)];
+        }
+
+        var segments = series.GetFriendlyTitleSegments(includeLocation);
+
+        if (!string.IsNullOrWhiteSpace(unitLabel))
+        {
+            segments.Add(new(SeriesLabelPart.Unit, unitLabel));
+        }
+
+        return segments;
+    }
+
+    private static void RemoveSharedUnit(List<List<SeriesLabelSegment>> labels)
+    {
+        var units = labels.Select(x => x.SingleOrDefault(s => s.Part == SeriesLabelPart.Unit)).ToList();
+
+        if (units.FirstOrDefault() is { } unit && units.All(x => x == unit))
+        {
+            labels.ForEach(x => x.Remove(unit));
+        }
+    }
+
+    /// <summary>
+    /// The segments every label has, in the first label's order. Never the location (with one place it's already
+    /// gone, and with several it's what tells the series apart), the unit (a shared one is already gone, and one
+    /// that differs says which axis to read), or a whole label.
+    /// </summary>
+    private static List<SeriesLabelSegment> GetSharedSegments(List<List<SeriesLabelSegment>> labels)
+    {
+        if (labels.Count < 2)
+        {
+            return [];
+        }
+
+        var shared = labels[0]
+            .Where(x => x.Part is not (SeriesLabelPart.Location or SeriesLabelPart.Unit or SeriesLabelPart.Whole))
+            .Where(x => labels.All(label => label.Contains(x)))
+            .ToList();
+
+        // Series that differ only in something the label doesn't show (e.g. bar and line) share every part.
+        // Moving them all would leave those labels empty, so they keep the labels they'd have had.
+        return labels.Any(label => label.All(shared.Contains)) ? [] : shared;
+    }
+}

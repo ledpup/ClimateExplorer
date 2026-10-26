@@ -20,10 +20,7 @@ public static class ChartLogic
     /// </summary>
     public static string BuildChartTitle(List<SeriesWithData> chartSeriesWithData, Dictionary<Guid, Location>? locationDictionary)
     {
-        var specs = chartSeriesWithData
-            .SelectMany(x => x.ChartSeries!.SourceSeriesSpecifications!)
-            .DistinctBy(x => x.LocationId)
-            .ToArray();
+        var specs = GetPlaces(chartSeriesWithData.Select(x => x.ChartSeries!));
 
         if (specs.Length == 0)
         {
@@ -34,6 +31,18 @@ public static class ChartLogic
         var regionNames = specs.Where(x => Region.IsRegionId(x.LocationId)).Select(x => Region.GetRegion(x.LocationId).Name);
 
         return string.Join(TitleGroupSeparator, BuildLocationTitleGroups(locationSpecs, locationDictionary).Concat(regionNames));
+    }
+
+    /// <summary>
+    /// One source series spec for each distinct place (location or region) on the chart, in the order the
+    /// series were added. The title names these places, so the series labels can leave out a single place.
+    /// </summary>
+    public static SourceSeriesSpecification[] GetPlaces(IEnumerable<ChartSeriesDefinition> series)
+    {
+        return series
+            .SelectMany(x => x.SourceSeriesSpecifications!)
+            .DistinctBy(x => x.LocationId)
+            .ToArray();
     }
 
     public static string BuildChartSubtitle(BinIdentifier? chartStartBin, BinIdentifier? chartEndBin, BinGranularities binGranularity)

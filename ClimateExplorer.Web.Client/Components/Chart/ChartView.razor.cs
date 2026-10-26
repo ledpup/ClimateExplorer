@@ -296,7 +296,7 @@ public partial class ChartView : IDisposable
 
             l.LogInformation("Building datasets");
 
-            (var datasets, tooltipMetadata) = ChartDisplayBuilder.BuildDatasets(ChartSeriesWithData, ChartBins!, IsMobileDevice!.Value, units);
+            (var datasets, tooltipMetadata, var seriesNote) = ChartDisplayBuilder.BuildDatasets(ChartSeriesWithData, ChartBins!, IsMobileDevice!.Value, units);
 
             var labels = ChartBins!.Select(x => x.Label).ToArray();
             await chart.SetDataAsync(chartType, labels, datasets);
@@ -306,6 +306,7 @@ public partial class ChartView : IDisposable
                 Title = title,
                 Subtitle = subtitle,
                 AggregationText = aggregationText,
+                SeriesNote = seriesNote,
                 BinGranularity = SelectedBinGranularity,
                 IsMobileDevice = IsMobileDevice!.Value,
                 SeriesWithData = ChartSeriesWithData,

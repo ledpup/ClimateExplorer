@@ -81,7 +81,7 @@ public partial class ChartSeriesView
     /// <summary>Explains why the "Aggregation" control is disabled, when it is.</summary>
     private string AggregationTooltipText =>
         AggregationApplied == false
-        ? "This data has one reading per period already, so there's nothing to combine - every aggregation option would produce the same chart"
+        ? "This data has one reading per period already, so there's nothing to combine - every statistic would produce the same chart"
         : ChartSeries!.SeriesDerivationType == SeriesDerivationTypes.AverageOfAnomaliesInRegion
         ? "Averaging happens across locations for this series, so there's nothing left to combine within a period"
         : "How data values within each time period are combined into a single point";

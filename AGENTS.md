@@ -59,3 +59,9 @@ Use the `--climate-*` variables in `app.css` where one exists.
 | Secondary text | `#595959` |
 
 Border radius: controls 8px, cards 12px, modals/InfoPanel 16px. Minimum touch target height 44px.
+
+## Chart.js
+
+Chart.js is vendored in `ClimateExplorer.Web.Client/wwwroot/lib/chartjs` (4.6.1). The `seriesNote` plugin in
+`ChartJsChart.razor.js` wraps the private `Legend._fitRows`; when upgrading Chart.js, check it still exists and
+behaves the same.

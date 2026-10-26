@@ -16,6 +16,12 @@ public sealed record ChartOptionsRequest
     /// <summary>Gets the aggregation settings text, drawn in the top-right corner of the chart.</summary>
     public required string AggregationText { get; init; }
 
+    /// <summary>
+    /// Gets the label parts every series shares, drawn after "All series:" at the bottom left beside the legend.
+    /// Null on mobile.
+    /// </summary>
+    public string? SeriesNote { get; init; }
+
     public required BinGranularities BinGranularity { get; init; }
 
     public required bool IsMobileDevice { get; init; }

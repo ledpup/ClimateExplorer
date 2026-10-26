@@ -95,7 +95,8 @@ missing dictionary entry, owner territory).
 
 The legend labels repeat the location when every series is for the same place. That's a separate change
 after this one, and the title rules above are meant to make it possible: once the title names the place, a
-single-location chart can drop the location from each legend label.
+single-location chart can drop the location from each legend label. See
+[Chart series labels without repeated text](2026-10-26-03-chart-series-labels-plan.md).
 
 ## Summary
 
