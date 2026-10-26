@@ -33,7 +33,6 @@ public static class ChartDisplayBuilder
 
         var labels = SeriesLabeller.Build(
             [.. seriesWithData.Select(x => x.ChartSeries!)],
-            [.. displayUnits.Select(x => x.ShortLabel)],
             [.. seriesWithData.Select(x => x.Trends.Any(t => t.Projection != null))],
             isMobileDevice);
 

@@ -113,7 +113,7 @@ const seriesNote = {
         const ctx = chart.ctx;
 
         ctx.save();
-        ctx.font = Chart.helpers.toFont(legend.options.labels.font).string;
+        ctx.font = seriesNoteFont(legend);
         ctx.fillStyle = options.color ?? "black";
         ctx.textAlign = "left";
         ctx.textBaseline = "middle";
@@ -121,6 +121,11 @@ const seriesNote = {
         ctx.restore();
     }
 };
+
+// The note is bold so it reads as a heading for the whole legend rather than another series.
+function seriesNoteFont(legend) {
+    return Chart.helpers.toFont({ ...legend.options.labels.font, weight: "bold" }).string;
+}
 
 // Replaces legend._fitRows (called with the legend as this). Legend.fit has already set ctx.font to the label font,
 // and reads the full maxWidth before calling it, so the legend box keeps the full width.
@@ -131,7 +136,10 @@ function fitLegendRowsAroundSeriesNote(titleHeight, fontSize, boxWidth, itemHeig
     if (!this.seriesNoteText) return fitRows.apply(this, arguments);
 
     const fullWidth = this.maxWidth;
+    const labelFont = this.ctx.font;
+    this.ctx.font = seriesNoteFont(this);
     const reserved = 2 * (this.ctx.measureText(this.seriesNoteText).width + seriesNoteGap);
+    this.ctx.font = labelFont;
 
     if (fullWidth - reserved >= fullWidth / 2) {
         this.maxWidth = fullWidth - reserved;
@@ -147,6 +155,12 @@ function fitLegendRowsAroundSeriesNote(titleHeight, fontSize, boxWidth, itemHeig
 }
 
 const plugins = [axisTitleSwatches, cornerNote, seriesNote];
+
+// Chart.js sizes the canvas when the chart is constructed, and again only when its container resizes (or resize() is
+// called), not on update. Its defaults keep a 2:1 aspect ratio, so a chart constructed or resized without these would
+// be sized at the full width and half that high (overflowing the wrapper), or capped at the wrapper's height and only
+// twice that wide, and would keep that size after the real options arrive.
+const sizingOptions = { responsive: true, maintainAspectRatio: false };
 
 export function create(canvas, type, dotNetRef) {
     destroy(canvas);
@@ -168,7 +182,7 @@ export function create(canvas, type, dotNetRef) {
     };
 
     states.set(canvas, state);
-    new Chart(canvas, { type, data: { labels: [], datasets: [] }, options: {}, plugins });
+    new Chart(canvas, { type, data: { labels: [], datasets: [] }, options: { ...sizingOptions }, plugins });
 }
 
 export function clear(canvas) {
@@ -188,7 +202,7 @@ export function setData(canvas, type, labels, datasets) {
 
     if (chart.config.type !== type) {
         chart.destroy();
-        chart = new Chart(canvas, { type, data: { labels: [], datasets: [] }, options: {}, plugins });
+        chart = new Chart(canvas, { type, data: { labels: [], datasets: [] }, options: { ...sizingOptions }, plugins });
     }
 
     chart.data.labels = labels;
@@ -199,7 +213,8 @@ export function setOptions(canvas, options) {
     const chart = Chart.getChart(canvas);
     if (!chart) return;
 
-    chart.options = options;
+    // ChartView passes {} when there is nothing to draw, which would otherwise bring back the aspect ratio.
+    chart.options = { ...sizingOptions, ...options };
 }
 
 export function update(canvas) {
