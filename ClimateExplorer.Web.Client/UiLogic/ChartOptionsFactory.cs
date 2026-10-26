@@ -190,8 +190,8 @@ public static class ChartOptionsFactory
 
     /// <summary>
     /// The axis title. Frost days and custom transformations are titled by what they count, from Core.
-    /// Every other title names the display unit with the same anomaly wording Core uses; on mobile, the
-    /// rotated title has little room, so it's the short unit label instead.
+    /// Every other title names the display unit with the same anomaly wording Core uses. On mobile, the
+    /// rotated title has little room, so an anomaly - the longest title - uses the short unit label.
     /// </summary>
     private static string GetYAxisLabel(ChartSeriesDefinition s, UnitOfMeasure uom, SeriesDisplayUnits displayUnits, bool isMobileDevice)
     {
@@ -201,17 +201,18 @@ public static class ChartOptionsFactory
         }
 
         var titleUnit = AxisTitleUnit(uom, s.Value);
+        var needsSuffix = NeedsAnomalySuffix(titleUnit, s.Value);
 
-        if (isMobileDevice)
+        if (isMobileDevice && (needsSuffix || titleUnit == UnitOfMeasure.DegreesCelsiusAnomaly))
         {
             var shortLabel = displayUnits.Formatter.ShortLabel(titleUnit);
 
-            return NeedsAnomalySuffix(titleUnit, s.Value) ? $"{shortLabel} anomaly" : shortLabel;
+            return needsSuffix ? $"{shortLabel} anomaly" : shortLabel;
         }
 
         var label = displayUnits.Formatter.Label(titleUnit);
 
-        return NeedsAnomalySuffix(titleUnit, s.Value) ? $"{label} - Anomaly" : label;
+        return needsSuffix ? $"{label} - Anomaly" : label;
     }
 
     private static object CreateChartOptions(ChartOptionsRequest request, dynamic scales)

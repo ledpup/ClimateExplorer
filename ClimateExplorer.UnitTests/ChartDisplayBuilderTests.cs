@@ -121,12 +121,23 @@ public class ChartDisplayBuilderTests
     }
 
     [TestMethod]
-    public async Task Build_Mobile_AxisTitleIsShortLabel()
+    public async Task Build_MobileValueSeries_AxisTitleIsLongLabel()
     {
         var result = await BuildChart([CreateSeries()], [CreateDataSet(Constant(10))]);
         var options = ChartOptionsFactory.Build(CreateOptionsRequest(result, UnitFormatter.Metric) with { IsMobileDevice = true });
 
-        Assert.AreEqual("°C", options.Axes.Single().Label);
+        Assert.AreEqual("Degrees celsius (°C)", options.Axes.Single().Label);
+    }
+
+    [TestMethod]
+    public async Task Build_MobileAnomalyDataSet_AxisTitleIsShortAnomalyLabel()
+    {
+        var series = CreateSeries(unit: UnitOfMeasure.DegreesCelsiusAnomaly);
+
+        var result = await BuildChart([series], [CreateDataSet(Constant(1), UnitOfMeasure.DegreesCelsiusAnomaly)]);
+        var options = ChartOptionsFactory.Build(CreateOptionsRequest(result, UnitFormatter.Metric) with { IsMobileDevice = true });
+
+        Assert.AreEqual("°C anomaly", options.Axes.Single().Label);
     }
 
     [TestMethod]
