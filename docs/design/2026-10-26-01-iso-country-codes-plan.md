@@ -265,6 +265,15 @@ Shipped as designed, with these differences and findings:
   the merged or split codes: `TF` French Southern Territories [France], `SJ` Svalbard and Jan Mayen [Norway],
   `UM` United States Minor Outlying Islands [United States of America], `SX` Sint Maarten [Netherlands], `CW`
   Curacao [Netherlands]. Typos fixed: `Dijibouti` → `Djibouti`; `Montserrat` gained its `[United Kingdom]` owner.
+- **Checked after review** (against the selected stations and `Data.Ghcnd/ghcnd-stations.txt`, which uses the
+  same FIPS prefixes; the full GHCNm inventory wasn't available locally):
+  - `RI` → `RS`: the three `RI` stations are Nis, Belgrade and Novi Sad, and no selected or GHCNd station is in
+    Kosovo. FIPS has `KV` for Kosovo but GHCNm's list doesn't, so a Kosovo station would arrive as `RI`. Giving
+    one `XK` would be a policy choice: a station override plus an `XK Kosovo` line in `countries.txt`.
+  - `NN` → `SX`: FIPS `NN` is the Dutch side only (French Saint Martin is FIPS `RN`, which GHCNm doesn't list,
+    so such a station would be logged and skipped). GHCNd's only `NN` station is Princess Juliana.
+  - `NT`: only the two overridden stations are in use. A Bonaire station would need a `BQ` override; until
+    one is added, it's logged and skipped instead of mapped.
 - **`EnsureCountryRepresentation`** logs the ISO code instead of the country name, because the GHCNm name list
   is no longer loaded.
 - **Pinned-location tests** cover Canberra `AU`, Pago Pago `AS`, Mawson `AQ`, Zuerich Fluntern `CH`, Beijing
