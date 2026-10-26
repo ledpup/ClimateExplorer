@@ -2,7 +2,6 @@ namespace ClimateExplorer.Web.UiLogic;
 
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Web.Client.Services.Trends;
-using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.Client.UiModel.Trends;
 using ClimateExplorer.Web.Client.Units;
 using ClimateExplorer.Web.UiModel;
@@ -20,13 +19,23 @@ public static class ChartDisplayBuilder
     /// <param name="chartBins">The chart's x-axis bins, which run past the data when a trend is projected.</param>
     /// <param name="isMobileDevice">Whether to use the short legend labels and small points.</param>
     /// <param name="units">The reader's unit system.</param>
-    public static (List<ChartJsDataset> Datasets, List<ChartTooltipSeriesInfo> TooltipMetadata) BuildDatasets(
+    public static ChartDisplayBuildResult BuildDatasets(
         IReadOnlyList<SeriesWithData> seriesWithData,
         BinIdentifier[] chartBins,
         bool isMobileDevice,
         IUnitFormatter units)
     {
         var colours = new ColourServer();
+
+        var displayUnits = seriesWithData
+            .Select(x => SeriesDisplayUnits.Resolve(x.ChartSeries!, x.ProcessedDataSet!.MeasurementDefinition!.UnitOfMeasure, units))
+            .ToList();
+
+        var labels = SeriesLabeller.Build(
+            [.. seriesWithData.Select(x => x.ChartSeries!)],
+            [.. displayUnits.Select(x => x.ShortLabel)],
+            [.. seriesWithData.Select(x => x.Trends.Any(t => t.Projection != null))],
+            isMobileDevice);
 
         var datasets = new List<ChartJsDataset>();
 
@@ -41,37 +50,29 @@ public static class ChartDisplayBuilder
             .Select(x => x.ChartSeries!.RequestedColour)
             .ToList();
 
-        foreach (var chartSeries in seriesWithData)
+        for (var i = 0; i < seriesWithData.Count; i++)
         {
+            var chartSeries = seriesWithData[i];
             var dataSet = chartSeries.ProcessedDataSet!;
-            var displayUnits = SeriesDisplayUnits.Resolve(chartSeries.ChartSeries!, dataSet.MeasurementDefinition!.UnitOfMeasure, units);
             var htmlColourCode = colours.GetNextColour(chartSeries.ChartSeries!.RequestedColour, requestedColours);
             var renderSmallPoints = isMobileDevice || dataSet.DataRecords.Count() > 400;
-            var defaultLabel = isMobileDevice
-                ? chartSeries.ChartSeries.GetFriendlyTitleShort()
-                : $"{chartSeries.ChartSeries.FriendlyTitle} | {displayUnits.ShortLabel}";
 
             datasets.Add(ChartLogic.GetSeriesChartDataset(
                 chartSeries,
                 dataSet,
-                GetChartLabel(chartSeries.ChartSeries, defaultLabel),
+                labels.Labels[i],
                 htmlColourCode,
                 renderSmallPoints: renderSmallPoints,
-                displayUnits: displayUnits));
+                displayUnits: displayUnits[i]));
 
             tooltipMetadata.Add(ChartTooltipMetadataBuilder.BuildForSeries(chartSeries, units));
         }
 
         // Trend projections are appended only once every real series has been added, because
         // ChartView.OnLineChartClicked treats any dataset index past the real series as a trend overlay.
-        AddTrendDatasets(seriesWithData, chartBins, units, datasets, tooltipMetadata);
+        AddTrendDatasets(seriesWithData, chartBins, units, labels.TrendPrefixes, datasets, tooltipMetadata);
 
-        return (datasets, tooltipMetadata);
-    }
-
-    private static string GetChartLabel(ChartSeriesDefinition chartSeries, string defaultLabel)
-    {
-        return chartSeries.GetTransformationOverrideLabel() ?? defaultLabel;
+        return new ChartDisplayBuildResult(datasets, tooltipMetadata, labels.SeriesNote);
     }
 
     /// <summary>
@@ -81,13 +82,16 @@ public static class ChartDisplayBuilder
     /// never produce the same label even when they share a window (e.g. a linear and a quadratic fit
     /// over the same period, or the same fit projected to two different years).
     /// </summary>
-    private static string BuildTrendLabel(ChartSeriesDefinition csd, ChartSeriesTrend trend, bool hasMultipleTrends)
+    /// <param name="prefix">The parent's part of the label, from <see cref="SeriesLabels.TrendPrefixes"/>. May be empty.</param>
+    private static string BuildTrendLabel(string prefix, ChartSeriesTrend trend, bool hasMultipleTrends)
     {
         var period = TrendWindowLabel.Get(trend.Projection!.Window);
 
-        return hasMultipleTrends
-            ? $"{csd.GetFriendlyTitleShort()} | {trend.RegressionType} {period} trend to {trend.Projection.LastYear}"
-            : $"{csd.GetFriendlyTitleShort()} | {period} trend";
+        var text = hasMultipleTrends
+            ? $"{trend.RegressionType} {period} trend to {trend.Projection.LastYear}"
+            : $"{period} trend";
+
+        return prefix.Length == 0 ? text : $"{prefix}{SeriesLabelSegment.Separator}{text}";
     }
 
     private static string BuildTrendTooltipLabel(ChartSeriesDefinition csd, ChartSeriesTrend trend, bool hasMultipleTrends, string unitLabel)
@@ -103,6 +107,7 @@ public static class ChartDisplayBuilder
         IReadOnlyList<SeriesWithData> seriesWithData,
         BinIdentifier[] chartBins,
         IUnitFormatter units,
+        IReadOnlyList<string> trendPrefixes,
         List<ChartJsDataset> datasets,
         List<ChartTooltipSeriesInfo> tooltipMetadata)
     {
@@ -113,8 +118,9 @@ public static class ChartDisplayBuilder
             return;
         }
 
-        foreach (var chartSeries in seriesWithData)
+        for (var i = 0; i < seriesWithData.Count; i++)
         {
+            var chartSeries = seriesWithData[i];
             var csd = chartSeries.ChartSeries!;
             var hasMultipleTrends = chartSeries.Trends.Count > 1;
 
@@ -146,7 +152,7 @@ public static class ChartDisplayBuilder
                 }
 
                 var trendColour = TrendSeriesColour.Derive(csd.Colour!, tier);
-                var trendLabel = BuildTrendLabel(csd, chartSeries.Trends[tier], hasMultipleTrends);
+                var trendLabel = BuildTrendLabel(trendPrefixes[i], chartSeries.Trends[tier], hasMultipleTrends);
 
                 datasets.Add(ChartLogic.GetTrendChartDataset(trendLabel, values, trendColour, displayUnits.AxisId));
 

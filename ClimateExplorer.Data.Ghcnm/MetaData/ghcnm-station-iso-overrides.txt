@@ -1,0 +1,4 @@
+# GHCNm station ID, ISO 3166-1 alpha-2 code, station name. Checked before the station ID's FIPS prefix.
+# Netherlands Antilles (NT) was dissolved in 2010.
+NTM00078866 SX Princess Juliana Intl
+NTM00078988 CW Hato

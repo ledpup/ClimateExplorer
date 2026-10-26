@@ -60,7 +60,8 @@ public class Location : GeographicalEntity
         }
     }
 
-    private string CountryWithoutOwner
+    [JsonIgnore]
+    public string CountryWithoutOwner
     {
         get
         {

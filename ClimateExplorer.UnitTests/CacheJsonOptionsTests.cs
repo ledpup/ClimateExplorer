@@ -1,4 +1,3 @@
-using ClimateExplorer.Core;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.WebApi.Infrastructure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

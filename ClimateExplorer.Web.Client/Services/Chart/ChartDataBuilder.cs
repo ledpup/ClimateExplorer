@@ -4,7 +4,6 @@ using ClimateExplorer.Core;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Infrastructure;
 using ClimateExplorer.Core.Model;
-using ClimateExplorer.Core.Stats;
 using ClimateExplorer.Core.Stats.Model;
 using ClimateExplorer.Core.Stats.Smoothing;
 using ClimateExplorer.Web.Client.Services.Trends;

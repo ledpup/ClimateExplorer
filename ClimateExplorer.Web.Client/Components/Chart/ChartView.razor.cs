@@ -6,16 +6,13 @@ using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.Services.Chart;
-using ClimateExplorer.Web.Client.Services.Trends;
 using ClimateExplorer.Web.Client.UiModel;
-using ClimateExplorer.Web.Client.UiModel.Trends;
 using ClimateExplorer.Web.Client.Units;
 using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
 using CurrentDevice;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using static ClimateExplorer.Core.Enums;
 
 public partial class ChartView : IDisposable
 {
@@ -299,7 +296,7 @@ public partial class ChartView : IDisposable
 
             l.LogInformation("Building datasets");
 
-            (var datasets, tooltipMetadata) = ChartDisplayBuilder.BuildDatasets(ChartSeriesWithData, ChartBins!, IsMobileDevice!.Value, units);
+            (var datasets, tooltipMetadata, var seriesNote) = ChartDisplayBuilder.BuildDatasets(ChartSeriesWithData, ChartBins!, IsMobileDevice!.Value, units);
 
             var labels = ChartBins!.Select(x => x.Label).ToArray();
             await chart.SetDataAsync(chartType, labels, datasets);
@@ -309,6 +306,7 @@ public partial class ChartView : IDisposable
                 Title = title,
                 Subtitle = subtitle,
                 AggregationText = aggregationText,
+                SeriesNote = seriesNote,
                 BinGranularity = SelectedBinGranularity,
                 IsMobileDevice = IsMobileDevice!.Value,
                 SeriesWithData = ChartSeriesWithData,

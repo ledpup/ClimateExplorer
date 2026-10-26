@@ -3,7 +3,6 @@ namespace ClimateExplorer.UnitTests;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using ClimateExplorer.Core.Model;
 using ClimateExplorer.Data.Downloading.Extenders;
 using ClimateExplorer.WebApi.AcornSat;
 using ClimateExplorer.WebApi.Infrastructure;

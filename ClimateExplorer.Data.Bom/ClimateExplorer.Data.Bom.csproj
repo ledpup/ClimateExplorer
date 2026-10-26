@@ -8,11 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="MetaData\countries.txt" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="MetaData\countries.txt">
+    <Content Include="..\ClimateExplorer.WebApi\MetaData\countries.txt" Link="MetaData\countries.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

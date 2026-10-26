@@ -1,7 +1,5 @@
 namespace ClimateExplorer.Web.Client.Pages;
 
-using Blazorise;
-using ClimateExplorer.Core;
 using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;

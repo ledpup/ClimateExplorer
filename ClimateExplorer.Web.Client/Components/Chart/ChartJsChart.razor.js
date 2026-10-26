@@ -78,7 +78,75 @@ const cornerNote = {
     }
 };
 
-const plugins = [axisTitleSwatches, cornerNote];
+// The space kept between the series note and the nearest legend item.
+const seriesNoteGap = 16;
+
+// Draws options.plugins.seriesNote.text, the label parts every series shares, at the bottom left beside the legend.
+// The legend lays its rows out across the whole width and centres each one, so the note's space is reserved by
+// making the rows wrap at the width less the note on both sides: centred rows then stay clear of it, and the legend
+// stays centred under the chart. If that would leave the legend less than half the width, the note gets its own row
+// under the legend items instead.
+//
+// This wraps Legend._fitRows, which is private to Chart.js (unchanged from 4.5.0 to 4.6.1). Chart.js has no public way
+// to do it: legend.maxWidth clamps the box but not the width the rows wrap at. Check it when upgrading Chart.js.
+const seriesNote = {
+    id: "seriesNote",
+    beforeLayout(chart, args, options) {
+        const legend = chart.legend;
+        if (!legend) return;
+
+        if (!legend.seriesNoteFitRows) {
+            legend.seriesNoteFitRows = legend._fitRows;
+            legend._fitRows = fitLegendRowsAroundSeriesNote;
+        }
+
+        legend.seriesNoteText = options?.text || null;
+    },
+    afterDraw(chart, args, options) {
+        const legend = chart.legend;
+        const boxes = legend?.legendHitBoxes;
+        if (!options?.text || !legend.options.display || !boxes?.length) return;
+
+        // The legend draws each item's text vertically centred in its hit box; the last box is on the last row.
+        const last = boxes[boxes.length - 1];
+        const rowStep = legend.seriesNoteOwnRow ? last.height + legend.options.labels.padding : 0;
+        const ctx = chart.ctx;
+
+        ctx.save();
+        ctx.font = Chart.helpers.toFont(legend.options.labels.font).string;
+        ctx.fillStyle = options.color ?? "black";
+        ctx.textAlign = "left";
+        ctx.textBaseline = "middle";
+        ctx.fillText(options.text, legend.left + legend.options.labels.padding, last.top + last.height / 2 + rowStep);
+        ctx.restore();
+    }
+};
+
+// Replaces legend._fitRows (called with the legend as this). Legend.fit has already set ctx.font to the label font,
+// and reads the full maxWidth before calling it, so the legend box keeps the full width.
+function fitLegendRowsAroundSeriesNote(titleHeight, fontSize, boxWidth, itemHeight) {
+    const fitRows = this.seriesNoteFitRows;
+    this.seriesNoteOwnRow = false;
+
+    if (!this.seriesNoteText) return fitRows.apply(this, arguments);
+
+    const fullWidth = this.maxWidth;
+    const reserved = 2 * (this.ctx.measureText(this.seriesNoteText).width + seriesNoteGap);
+
+    if (fullWidth - reserved >= fullWidth / 2) {
+        this.maxWidth = fullWidth - reserved;
+        try {
+            return fitRows.apply(this, arguments);
+        } finally {
+            this.maxWidth = fullWidth;
+        }
+    }
+
+    this.seriesNoteOwnRow = true;
+    return fitRows.apply(this, arguments) + itemHeight + this.options.labels.padding;
+}
+
+const plugins = [axisTitleSwatches, cornerNote, seriesNote];
 
 export function create(canvas, type, dotNetRef) {
     destroy(canvas);

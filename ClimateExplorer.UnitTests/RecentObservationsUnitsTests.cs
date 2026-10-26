@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.Client.Services;
-using ClimateExplorer.Web.Client.Services.RecentObservations;
 using ClimateExplorer.Web.Client.UiModel.RecentObservations;
 using ClimateExplorer.Web.Client.Units;
 using ClimateExplorer.WebApiClient.Services;

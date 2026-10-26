@@ -1,6 +1,5 @@
 namespace ClimateExplorer.Web.Client.Pages;
 
-using System.Globalization;
 using ClimateExplorer.Core.Infrastructure;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;

@@ -31,7 +31,7 @@ public static class BomLocationsAndStationsMapper
             {
                 Id = oldLocation.Id,
                 Name = name,
-                CountryCode = "AS",
+                CountryCode = "AU",
                 Coordinates = new Coordinates
                 {
                     Latitude = float.Parse(splitRow[2]),
@@ -109,7 +109,7 @@ public static class BomLocationsAndStationsMapper
                         new Station
                         {
                             Id = externalStationCode,
-                            CountryCode = "AS",
+                            CountryCode = "AU",
                             Name = foundStationDetails ? stationDetails.Name : null,
                             Coordinates = foundStationDetails ? stationDetails.Coordinates : null,
                         });

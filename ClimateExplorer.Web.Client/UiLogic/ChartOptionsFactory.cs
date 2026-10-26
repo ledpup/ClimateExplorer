@@ -245,6 +245,13 @@ public static class ChartOptionsFactory
                     Text = request.IsMobileDevice ? null : request.AggregationText,
                     Color = "#595959",
                 },
+
+                // Drawn by the seriesNote plugin in ChartJsChart.razor.js, at the bottom left beside the legend.
+                SeriesNote = new
+                {
+                    Text = request.SeriesNote is null ? null : $"All series: {request.SeriesNote}",
+                    Color = "#595959",
+                },
                 Tooltip = new
                 {
                     // There are custom tooltips in App.razor

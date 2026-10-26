@@ -4,7 +4,6 @@ using System.Globalization;
 using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Core.Stats;
 using ClimateExplorer.Core.Stats.Model;
-using ClimateExplorer.Web.Client.Services.RecentObservations;
 using ClimateExplorer.Web.Client.Services.Trends;
 using ClimateExplorer.Web.Client.UiModel.RecentObservations;
 using ClimateExplorer.Web.Client.Units;

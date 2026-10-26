@@ -3,13 +3,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Services.Chart;
-using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.Client.UiModel.Trends;
 using ClimateExplorer.Web.UiModel;
 using ClimateExplorer.WebApiClient.Services;

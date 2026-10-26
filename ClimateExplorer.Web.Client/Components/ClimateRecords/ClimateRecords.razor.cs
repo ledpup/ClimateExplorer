@@ -1,7 +1,6 @@
 namespace ClimateExplorer.Web.Client.Components.ClimateRecords;
 
 using System.Globalization;
-using ClimateExplorer.Core;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
