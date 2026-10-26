@@ -15,7 +15,6 @@ public enum SeriesLabelPart
     TemporalCalculation,
     Value,
     Smoothing,
-    Unit,
 
     /// <summary>An override or derived-series label, kept whole.</summary>
     Whole,

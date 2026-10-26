@@ -340,3 +340,18 @@ Implemented as planned, with these differences:
 Verified with `dotnet build` and the unit tests (929 passing). Per `AGENTS.md`, the site wasn't run, so the
 `seriesNote` plugin's layout (rows wrapping around the note, the own-row fallback on narrow charts) and Chart.js
 4.6.1 with the trendline plugin still need checking by eye.
+
+### Follow-up 2026-10-27 — units left out of every label
+
+Rule 3 (and decision 7) is replaced: the unit is never in a legend label, shared or not, and never in
+`seriesNote`. Every y-axis title shows its unit, and the axis title swatches show which series read against which
+axis, so a unit that differs no longer needs to say it. `SeriesLabeller.Build` no longer takes unit labels and the
+`SeriesLabelPart.Unit` segment is gone. Tooltips are unchanged and keep their unit: a tooltip shows a number with no
+axis beside it.
+
+The US customary mean-and-sum chart above now gets the same labels as the metric one, with no note:
+`Mean temperature | Adjusted` and `Mean temperature | Adjusted | Statistic: Sum`.
+
+The same day, y-axis titles changed too: an anomaly of temperature is titled `Temperature anomaly (°C)` whether
+the API calculated it or the dataset was published as anomalies, and on mobile an anomaly title uses the short
+form (`°C anomaly`, `ppm anomaly`). Other titles are unchanged on both desktop and mobile.

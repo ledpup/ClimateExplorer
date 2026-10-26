@@ -24,45 +24,45 @@ public class SeriesLabellerTests
     [TestMethod]
     public void Build_OnePlace_RemovesLocationFromLabels()
     {
-        var labels = Build([Series(Canberra, DataType.TempMax), Series(Canberra, DataType.TempMin)], ["°C", "°C"]);
+        var labels = Build([Series(Canberra, DataType.TempMax), Series(Canberra, DataType.TempMin)]);
 
         CollectionAssert.AreEqual(new[] { MaxTemp, MinTemp }, ToArray(labels.Labels));
     }
 
     [TestMethod]
-    public void Build_OneSeries_KeepsAllPartsButLocationAndUnitAndHasNoNote()
+    public void Build_OneSeries_KeepsAllPartsButLocationAndHasNoNote()
     {
         var series = Series(Canberra, DataType.TempMean);
         series.Aggregation = SeriesAggregationOptions.Maximum;
 
-        var labels = Build([series], ["°C"]);
+        var labels = Build([series]);
 
         Assert.AreEqual($"{MeanTemp} | Adjusted | Statistic: Maximum", labels.Labels[0]);
         Assert.IsNull(labels.SeriesNote);
     }
 
     [TestMethod]
-    public void Build_SharedUnit_RemovedFromLabelsAndNotInNote()
+    public void Build_TwoPlaces_SharedPartsInNote()
     {
-        var labels = Build([Series(Canberra, DataType.TempMean), Series(Hobart, DataType.TempMean)], ["°C", "°C"]);
+        var labels = Build([Series(Canberra, DataType.TempMean), Series(Hobart, DataType.TempMean)]);
 
         CollectionAssert.AreEqual(new[] { "Canberra", "Hobart" }, ToArray(labels.Labels));
         Assert.AreEqual($"{MeanTemp} | Adjusted", labels.SeriesNote);
     }
 
     [TestMethod]
-    public void Build_DifferentUnits_KeptInLabels()
+    public void Build_DifferentUnits_LeftOutOfLabels()
     {
-        var labels = Build([Series(Canberra, DataType.TempMean), Series(Canberra, DataType.Precipitation, adjustment: null)], ["°C", "mm"]);
+        var labels = Build([Series(Canberra, DataType.TempMean), Series(Canberra, DataType.Precipitation, adjustment: null)]);
 
-        CollectionAssert.AreEqual(new[] { $"{MeanTemp} | Adjusted | °C", $"{Rainfall} | mm" }, ToArray(labels.Labels));
+        CollectionAssert.AreEqual(new[] { $"{MeanTemp} | Adjusted", Rainfall }, ToArray(labels.Labels));
         Assert.IsNull(labels.SeriesNote);
     }
 
     [TestMethod]
     public void Build_TwoLocations_KeepsLocationsAndMovesSharedPartsToNote()
     {
-        var labels = Build([Series(Canberra, DataType.TempMax), Series(Hobart, DataType.TempMin)], ["°C", "°C"]);
+        var labels = Build([Series(Canberra, DataType.TempMax), Series(Hobart, DataType.TempMin)]);
 
         CollectionAssert.AreEqual(new[] { $"Canberra | {MaxTemp}", $"Hobart | {MinTemp}" }, ToArray(labels.Labels));
         Assert.AreEqual("Adjusted", labels.SeriesNote);
@@ -74,7 +74,7 @@ public class SeriesLabellerTests
         var max = Smoothed(Series(Canberra, DataType.TempMax));
         var min = Smoothed(Series(Canberra, DataType.TempMin));
 
-        var labels = Build([max, min], ["°C", "°C"]);
+        var labels = Build([max, min]);
 
         CollectionAssert.AreEqual(new[] { MaxTemp, MinTemp }, ToArray(labels.Labels));
         Assert.AreEqual("Adjusted | 20 year centred moving average", labels.SeriesNote);
@@ -85,7 +85,7 @@ public class SeriesLabellerTests
     {
         var smoothed = Smoothed(Series(Canberra, DataType.TempMax));
 
-        var labels = Build([smoothed, Series(Canberra, DataType.TempMin)], ["°C", "°C"]);
+        var labels = Build([smoothed, Series(Canberra, DataType.TempMin)]);
 
         CollectionAssert.AreEqual(new[] { $"{MaxTemp} | 20 year centred moving average", MinTemp }, ToArray(labels.Labels));
         Assert.AreEqual("Adjusted", labels.SeriesNote);
@@ -99,7 +99,7 @@ public class SeriesLabellerTests
         yearly.Year = 2000;
         var named = Series(CreateLocation("2000"), DataType.TempMean);
 
-        var labels = Build([yearly, named], ["°C", "°C"]);
+        var labels = Build([yearly, named]);
 
         CollectionAssert.AreEqual(new[] { "Canberra | 2000", "2000" }, ToArray(labels.Labels));
         Assert.AreEqual($"{MeanTemp} | Adjusted", labels.SeriesNote);
@@ -112,7 +112,7 @@ public class SeriesLabellerTests
         var bar = Series(Canberra, DataType.TempMean);
         bar.DisplayStyle = SeriesDisplayStyle.Bar;
 
-        var labels = Build([line, bar], ["°C", "°C"]);
+        var labels = Build([line, bar]);
 
         CollectionAssert.AreEqual(new[] { $"{MeanTemp} | Adjusted", $"{MeanTemp} | Adjusted" }, ToArray(labels.Labels));
         Assert.IsNull(labels.SeriesNote);
@@ -121,7 +121,7 @@ public class SeriesLabellerTests
     [TestMethod]
     public void Build_Mobile_RemovesLocationOnlyAndHasNoNote()
     {
-        var labels = Build([Smoothed(Series(Canberra, DataType.TempMax)), Smoothed(Series(Canberra, DataType.TempMin))], ["°C", "°C"], isMobileDevice: true);
+        var labels = Build([Smoothed(Series(Canberra, DataType.TempMax)), Smoothed(Series(Canberra, DataType.TempMin))], isMobileDevice: true);
 
         CollectionAssert.AreEqual(new[] { MaxTemp, MinTemp }, ToArray(labels.Labels));
         Assert.IsNull(labels.SeriesNote);
@@ -130,22 +130,22 @@ public class SeriesLabellerTests
     [TestMethod]
     public void Build_MobileTwoLocations_LabelsUnchanged()
     {
-        var labels = Build([Series(Canberra, DataType.TempMean), Series(Hobart, DataType.TempMean)], ["°C", "°C"], isMobileDevice: true);
+        var labels = Build([Series(Canberra, DataType.TempMean), Series(Hobart, DataType.TempMean)], isMobileDevice: true);
 
         CollectionAssert.AreEqual(new[] { $"Canberra | {MeanTemp}", $"Hobart | {MeanTemp}" }, ToArray(labels.Labels));
         Assert.IsNull(labels.SeriesNote);
     }
 
     [TestMethod]
-    public void Build_OverrideSeriesWithOthers_KeepsOtherUnitsAndHasNoNote()
+    public void Build_OverrideSeriesWithOthers_HasNoNote()
     {
         var custom = Series(Canberra, DataType.TempMax);
         custom.SeriesTransformation = SeriesTransformations.Custom;
         custom.CustomTransformation = "x >= 25";
 
-        var labels = Build([custom, Series(Canberra, DataType.TempMax)], ["", "°C"]);
+        var labels = Build([custom, Series(Canberra, DataType.TempMax)]);
 
-        CollectionAssert.AreEqual(new[] { "Value is 25 or more", $"{MaxTemp} | Adjusted | °C" }, ToArray(labels.Labels));
+        CollectionAssert.AreEqual(new[] { "Value is 25 or more", $"{MaxTemp} | Adjusted" }, ToArray(labels.Labels));
         Assert.IsNull(labels.SeriesNote);
     }
 
@@ -156,7 +156,7 @@ public class SeriesLabellerTests
         difference.SeriesDerivationType = SeriesDerivationTypes.DifferenceBetweenTwoSeries;
         difference.SourceSeriesSpecifications = [.. difference.SourceSeriesSpecifications!, Spec(Canberra, DataType.TempMin, DataAdjustment.Adjusted)];
 
-        var labels = Build([difference], ["°C"]);
+        var labels = Build([difference]);
 
         Assert.AreEqual($"[{MaxTemp}] minus [{MinTemp}]", labels.Labels[0]);
     }
@@ -166,7 +166,7 @@ public class SeriesLabellerTests
     {
         var atmosphere = Region.GetRegion(Region.Atmosphere);
 
-        var labels = Build([Series(atmosphere, DataType.TempMax), Series(atmosphere, DataType.TempMin)], ["°C", "°C"]);
+        var labels = Build([Series(atmosphere, DataType.TempMax), Series(atmosphere, DataType.TempMin)]);
 
         CollectionAssert.AreEqual(new[] { MaxTemp, MinTemp }, ToArray(labels.Labels));
     }
@@ -176,7 +176,7 @@ public class SeriesLabellerTests
     {
         var atmosphere = Region.GetRegion(Region.Atmosphere);
 
-        var labels = Build([Series(Canberra, DataType.TempMax), Series(atmosphere, DataType.TempMin)], ["°C", "°C"]);
+        var labels = Build([Series(Canberra, DataType.TempMax), Series(atmosphere, DataType.TempMin)]);
 
         CollectionAssert.AreEqual(new[] { $"Canberra | {MaxTemp}", $"{atmosphere.Name} | {MinTemp}" }, ToArray(labels.Labels));
     }
@@ -184,7 +184,7 @@ public class SeriesLabellerTests
     [TestMethod]
     public void Build_Trends_PrefixDropsLocationAndSharedParts()
     {
-        var labels = Build([Series(Canberra, DataType.TempMean), Series(Hobart, DataType.TempMean)], ["°C", "°C"], hasTrends: [true, true]);
+        var labels = Build([Series(Canberra, DataType.TempMean), Series(Hobart, DataType.TempMean)], hasTrends: [true, true]);
 
         CollectionAssert.AreEqual(new[] { "Canberra", "Hobart" }, ToArray(labels.TrendPrefixes));
     }
@@ -193,7 +193,7 @@ public class SeriesLabellerTests
     public void Build_Trends_PartNotInTrendPrefixStaysInLabels()
     {
         // The trend prefix is the short title, which has no adjustment, so "Adjusted" isn't shared by every entry.
-        var labels = Build([Series(Canberra, DataType.TempMean), Series(Hobart, DataType.TempMean)], ["°C", "°C"], hasTrends: [true, false]);
+        var labels = Build([Series(Canberra, DataType.TempMean), Series(Hobart, DataType.TempMean)], hasTrends: [true, false]);
 
         CollectionAssert.AreEqual(new[] { "Canberra | Adjusted", "Hobart | Adjusted" }, ToArray(labels.Labels));
         Assert.AreEqual(MeanTemp, labels.SeriesNote);
@@ -202,7 +202,7 @@ public class SeriesLabellerTests
     [TestMethod]
     public void Build_TrendPrefixEmpty_UsesParentLabel()
     {
-        var labels = Build([Series(Canberra, DataType.TempMean), Series(Canberra, DataType.TempMean, DataAdjustment.Unadjusted)], ["°C", "°C"], hasTrends: [true, true]);
+        var labels = Build([Series(Canberra, DataType.TempMean), Series(Canberra, DataType.TempMean, DataAdjustment.Unadjusted)], hasTrends: [true, true]);
 
         CollectionAssert.AreEqual(new[] { "Adjusted", "Unadjusted" }, ToArray(labels.Labels));
         CollectionAssert.AreEqual(new[] { "Adjusted", "Unadjusted" }, ToArray(labels.TrendPrefixes));
@@ -212,7 +212,7 @@ public class SeriesLabellerTests
     [TestMethod]
     public void Build_OneSeriesWithTrend_MovesPartsInTrendPrefixToNote()
     {
-        var labels = Build([Smoothed(Series(Canberra, DataType.TempMean))], ["°C"], hasTrends: [true]);
+        var labels = Build([Smoothed(Series(Canberra, DataType.TempMean))], hasTrends: [true]);
 
         Assert.AreEqual("Adjusted | 20 year centred moving average", labels.Labels[0]);
         Assert.AreEqual(string.Empty, labels.TrendPrefixes[0]);
@@ -222,16 +222,16 @@ public class SeriesLabellerTests
     [TestMethod]
     public void Build_OneSeriesWithTrendLabelEmptyAfterSharing_SkipsNote()
     {
-        var labels = Build([Series(Canberra, DataType.Precipitation, adjustment: null)], ["mm"], hasTrends: [true]);
+        var labels = Build([Series(Canberra, DataType.Precipitation, adjustment: null)], hasTrends: [true]);
 
         Assert.AreEqual(Rainfall, labels.Labels[0]);
         Assert.AreEqual(Rainfall, labels.TrendPrefixes[0]);
         Assert.IsNull(labels.SeriesNote);
     }
 
-    private static SeriesLabels Build(ChartSeriesDefinition[] series, string[] unitLabels, bool isMobileDevice = false, bool[]? hasTrends = null)
+    private static SeriesLabels Build(ChartSeriesDefinition[] series, bool isMobileDevice = false, bool[]? hasTrends = null)
     {
-        return SeriesLabeller.Build(series, unitLabels, hasTrends ?? new bool[series.Length], isMobileDevice);
+        return SeriesLabeller.Build(series, hasTrends ?? new bool[series.Length], isMobileDevice);
     }
 
     private static string[] ToArray(IReadOnlyList<string> labels) => [.. labels];

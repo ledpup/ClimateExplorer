@@ -170,29 +170,44 @@ public class ChartDisplayBuilderTests
         var sum = CreateSeries(aggregation: SeriesAggregationOptions.Sum);
 
         var result = await BuildChart([CreateSeries(), sum], [CreateDataSet(Constant(10)), CreateDataSet(Constant(10))]);
-        var (datasets, _, _) = ChartDisplayBuilder.BuildDatasets(result.SeriesWithData, result.ChartBins!, false, UnitFormatter.UsCustomary);
+        var (datasets, tooltip, _) = ChartDisplayBuilder.BuildDatasets(result.SeriesWithData, result.ChartBins!, false, UnitFormatter.UsCustomary);
         var options = ChartOptionsFactory.Build(CreateOptionsRequest(result, UnitFormatter.UsCustomary));
 
         Assert.AreEqual(50, datasets[0].Data[0]!.Value, 1e-9);
         Assert.AreEqual(10, datasets[1].Data[0]!.Value);
-        StringAssert.EndsWith(datasets[1].Label, "| °C");
+        StringAssert.EndsWith(tooltip[1].Label, "| °C");
         Assert.AreNotEqual(datasets[0].YAxisId, datasets[1].YAxisId);
         Assert.HasCount(2, options.Axes);
+        Assert.AreEqual("Degrees celsius (°C)", options.Axes[1].Label);
+    }
+
+    [TestMethod]
+    public async Task BuildDatasets_DifferentUnits_UnitsLeftOutOfLegendLabels()
+    {
+        var sum = CreateSeries(aggregation: SeriesAggregationOptions.Sum);
+
+        var result = await BuildChart([CreateSeries(), sum], [CreateDataSet(Constant(10)), CreateDataSet(Constant(10))]);
+        var (datasets, _, seriesNote) = ChartDisplayBuilder.BuildDatasets(result.SeriesWithData, result.ChartBins!, false, UnitFormatter.UsCustomary);
+
+        // °F and °C: the axis titles show the units, so the legend labels don't.
+        Assert.AreEqual("Mean temperature | Adjusted", datasets[0].Label);
+        Assert.AreEqual("Mean temperature | Adjusted | Statistic: Sum", datasets[1].Label);
+        Assert.IsNull(seriesNote);
     }
 
     [TestMethod]
     public async Task BuildDatasets_SharedParts_NoteReachesChartOptions()
     {
-        var sum = CreateSeries(aggregation: SeriesAggregationOptions.Sum);
+        var max = CreateSeries(aggregation: SeriesAggregationOptions.Maximum);
+        var min = CreateSeries(aggregation: SeriesAggregationOptions.Minimum);
 
-        var result = await BuildChart([CreateSeries(), sum], [CreateDataSet(Constant(10)), CreateDataSet(Constant(10))]);
-        var display = ChartDisplayBuilder.BuildDatasets(result.SeriesWithData, result.ChartBins!, false, UnitFormatter.UsCustomary);
-        var options = ChartOptionsFactory.Build(CreateOptionsRequest(result, UnitFormatter.UsCustomary) with { SeriesNote = display.SeriesNote });
+        var result = await BuildChart([max, min], [CreateDataSet(Constant(10)), CreateDataSet(Constant(10))]);
+        var display = ChartDisplayBuilder.BuildDatasets(result.SeriesWithData, result.ChartBins!, false, UnitFormatter.Metric);
+        var options = ChartOptionsFactory.Build(CreateOptionsRequest(result, UnitFormatter.Metric) with { SeriesNote = display.SeriesNote });
 
-        // The sum of Celsius values stays metric, so the units differ and stay in the labels.
         Assert.AreEqual("Mean temperature | Adjusted", display.SeriesNote);
-        Assert.AreEqual("°F", display.Datasets[0].Label);
-        Assert.AreEqual("Statistic: Sum | °C", display.Datasets[1].Label);
+        Assert.AreEqual("Statistic: Maximum", display.Datasets[0].Label);
+        Assert.AreEqual("Statistic: Minimum", display.Datasets[1].Label);
 
         using var json = JsonDocument.Parse(JsonSerializer.Serialize(options.Options));
         Assert.AreEqual("All series: Mean temperature | Adjusted", json.RootElement.GetProperty("Plugins").GetProperty("SeriesNote").GetProperty("Text").GetString());

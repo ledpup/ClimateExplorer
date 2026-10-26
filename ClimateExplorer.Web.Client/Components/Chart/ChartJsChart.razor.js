@@ -113,7 +113,7 @@ const seriesNote = {
         const ctx = chart.ctx;
 
         ctx.save();
-        ctx.font = Chart.helpers.toFont(legend.options.labels.font).string;
+        ctx.font = seriesNoteFont(legend);
         ctx.fillStyle = options.color ?? "black";
         ctx.textAlign = "left";
         ctx.textBaseline = "middle";
@@ -121,6 +121,11 @@ const seriesNote = {
         ctx.restore();
     }
 };
+
+// The note is bold so it reads as a heading for the whole legend rather than another series.
+function seriesNoteFont(legend) {
+    return Chart.helpers.toFont({ ...legend.options.labels.font, weight: "bold" }).string;
+}
 
 // Replaces legend._fitRows (called with the legend as this). Legend.fit has already set ctx.font to the label font,
 // and reads the full maxWidth before calling it, so the legend box keeps the full width.
@@ -131,7 +136,10 @@ function fitLegendRowsAroundSeriesNote(titleHeight, fontSize, boxWidth, itemHeig
     if (!this.seriesNoteText) return fitRows.apply(this, arguments);
 
     const fullWidth = this.maxWidth;
+    const labelFont = this.ctx.font;
+    this.ctx.font = seriesNoteFont(this);
     const reserved = 2 * (this.ctx.measureText(this.seriesNoteText).width + seriesNoteGap);
+    this.ctx.font = labelFont;
 
     if (fullWidth - reserved >= fullWidth / 2) {
         this.maxWidth = fullWidth - reserved;
