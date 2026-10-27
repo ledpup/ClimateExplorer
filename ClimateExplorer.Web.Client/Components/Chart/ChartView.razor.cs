@@ -6,15 +6,13 @@ using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
 using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.Services.Chart;
-using ClimateExplorer.Web.Client.Services.Trends;
 using ClimateExplorer.Web.Client.UiModel;
-using ClimateExplorer.Web.Client.UiModel.Trends;
+using ClimateExplorer.Web.Client.Units;
 using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
 using CurrentDevice;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using static ClimateExplorer.Core.Enums;
 
 public partial class ChartView : IDisposable
 {
@@ -35,6 +33,7 @@ public partial class ChartView : IDisposable
     private ChartState? appliedState;
     private ChartDataBuildResult? renderedData;
     private bool renderedLoadingErrored;
+    private IUnitFormatter? renderedUnits;
     private bool renderChartInProcess;
 
     [Parameter]
@@ -60,6 +59,23 @@ public partial class ChartView : IDisposable
 
     [Parameter]
     public EventCallback<YearAndDataTypeFilter> YearFilterRequested { get; set; }
+
+    /// <summary>
+    /// Full location details for the chart title. A data set's GeographicalEntity can't be used: it
+    /// deserialises from the API as the base type, without the country.
+    /// </summary>
+    [Parameter]
+    public Dictionary<Guid, Location>? Locations { get; set; }
+
+    /// <summary>
+    /// Only here so that choosing another unit system re-renders this component, which then redraws the
+    /// chart. Drawing uses <see cref="UnitPreference"/>, whose stored choice the first draw waits for.
+    /// </summary>
+    [CascadingParameter]
+    public IUnitFormatter Units { get; set; } = UnitFormatter.Metric;
+
+    [Inject]
+    private UnitPreference? UnitPreference { get; set; }
 
     [Inject]
     private ICurrentDeviceService? CurrentDeviceService { get; set; }
@@ -108,8 +124,6 @@ public partial class ChartView : IDisposable
     private bool? IsMobileDevice { get; set; }
 
     private List<short>? StartYears { get; set; }
-
-    private ColourServer Colours { get; set; } = new ColourServer();
 
     private List<AxisInfo> CurrentAxes { get; set; } = [];
 
@@ -161,7 +175,8 @@ public partial class ChartView : IDisposable
             return;
         }
 
-        if (Data is not null && !renderChartInProcess && (!ReferenceEquals(Data, renderedData) || LoadingErrored != renderedLoadingErrored))
+        // A change of unit system redraws from the same data: nothing is refetched or recalculated.
+        if (Data is not null && !renderChartInProcess && (!ReferenceEquals(Data, renderedData) || LoadingErrored != renderedLoadingErrored || !ReferenceEquals(UnitPreference!.Formatter, renderedUnits)))
         {
             renderedData = Data;
             renderedLoadingErrored = LoadingErrored;
@@ -169,12 +184,17 @@ public partial class ChartView : IDisposable
 
             try
             {
+                // Wait for the stored unit choice, so a US customary reader's first chart is never drawn in metric.
+                await UnitPreference!.LoadAsync();
+                renderedUnits = UnitPreference.Formatter;
+
                 ApplyChartData(Data);
-                await RenderChart();
+                await RenderChart(renderedUnits);
             }
             catch
             {
                 renderedData = null;
+                renderedUnits = null;
                 throw;
             }
             finally
@@ -184,7 +204,7 @@ public partial class ChartView : IDisposable
         }
     }
 
-    protected async Task RenderChart()
+    protected async Task RenderChart(IUnitFormatter units)
     {
         var l = new LogAugmenter(Logger!, "RenderChart");
 
@@ -255,8 +275,6 @@ public partial class ChartView : IDisposable
                 ? ChartJsType.Bar
                 : ChartJsType.Line;
 
-            Colours = new ColourServer();
-
             // The data has already been fetched and prepared by the parent (gap filling, smoothing,
             // secondary calculations, bin selection). RenderChart consumes that prepared state directly.
             if (!hasRenderableChartData)
@@ -272,12 +290,13 @@ public partial class ChartView : IDisposable
 
             NoChartDataAvailable = false;
 
-            title = ChartLogic.BuildChartTitle(ChartSeriesWithData, GetChartTitleLocations());
-            subtitle = ChartLogic.BuildChartSubtitle(chartStartBin, chartEndBin, SelectedBinGranularity, IsMobileDevice!.Value, SelectedGroupingDays, GetGroupingThresholdText());
+            title = ChartLogic.BuildChartTitle(ChartSeriesWithData, Locations);
+            subtitle = ChartLogic.BuildChartSubtitle(chartStartBin, chartEndBin, SelectedBinGranularity);
+            var aggregationText = ChartLogic.BuildAggregationText(SelectedGroupingDays, GetGroupingThresholdText());
 
             l.LogInformation("Building datasets");
 
-            (var datasets, tooltipMetadata) = BuildChartDatasets();
+            (var datasets, tooltipMetadata, var seriesNote) = ChartDisplayBuilder.BuildDatasets(ChartSeriesWithData, ChartBins!, IsMobileDevice!.Value, units);
 
             var labels = ChartBins!.Select(x => x.Label).ToArray();
             await chart.SetDataAsync(chartType, labels, datasets);
@@ -286,11 +305,14 @@ public partial class ChartView : IDisposable
             {
                 Title = title,
                 Subtitle = subtitle,
+                AggregationText = aggregationText,
+                SeriesNote = seriesNote,
                 BinGranularity = SelectedBinGranularity,
                 IsMobileDevice = IsMobileDevice!.Value,
                 SeriesWithData = ChartSeriesWithData,
                 Series = ChartSeriesList!,
                 AxesScaleToZero = AxesScaleToZero,
+                Units = units,
             });
 
             CurrentAxes = [.. optionsResult.Axes];
@@ -321,36 +343,6 @@ public partial class ChartView : IDisposable
         StateHasChanged();
 
         l.LogInformation("Leaving");
-    }
-
-    private static string GetChartLabel(ChartSeriesDefinition chartSeries, string defaultLabel)
-    {
-        return chartSeries.GetTransformationOverrideLabel() ?? defaultLabel;
-    }
-
-    /// <summary>
-    /// The chart legend label for one trend dataset. Unchanged from before multiple trends per
-    /// series existed when a series has exactly one - "{parent} | {period} trend" - but folds in the
-    /// regression type and predict-until year once a series has more than one, so two trends can
-    /// never produce the same label even when they share a window (e.g. a linear and a quadratic fit
-    /// over the same period, or the same fit projected to two different years).
-    /// </summary>
-    private static string BuildTrendLabel(ChartSeriesDefinition csd, ChartSeriesTrend trend, bool hasMultipleTrends)
-    {
-        var period = TrendWindowLabel.Get(trend.Projection!.Window);
-
-        return hasMultipleTrends
-            ? $"{csd.GetFriendlyTitleShort()} | {trend.RegressionType} {period} trend to {trend.Projection.LastYear}"
-            : $"{csd.GetFriendlyTitleShort()} | {period} trend";
-    }
-
-    private static string BuildTrendTooltipLabel(ChartSeriesDefinition csd, ChartSeriesTrend trend, bool hasMultipleTrends, UnitOfMeasure unitOfMeasure)
-    {
-        var period = TrendWindowLabel.Get(trend.Projection!.Window);
-
-        return hasMultipleTrends
-            ? $"{csd.GetTooltipLabel(unitOfMeasure)} | {trend.RegressionType} {period} trend"
-            : $"{csd.GetTooltipLabel(unitOfMeasure)} | {period} trend";
     }
 
     private ChartState CreateCurrentChartState()
@@ -401,19 +393,6 @@ public partial class ChartView : IDisposable
         Logger!.LogInformation("Applied chart data. ChartSeriesWithData now has " + ChartSeriesWithData.Count + " entries.");
     }
 
-    private Dictionary<Guid, Location>? GetChartTitleLocations()
-    {
-        var locations = ChartSeriesWithData?
-            .Select(x => x.SourceDataSet?.GeographicalEntity)
-            .OfType<Location>()
-            .GroupBy(x => x.Id)
-            .ToDictionary(x => x.Key, x => x.First());
-
-        return locations is { Count: > 0 }
-            ? locations
-            : null;
-    }
-
     private void LogChartSeriesList()
     {
         Logger!.LogInformation("ChartSeriesList: (SelectedBinGranularity is " + SelectedBinGranularity + ")");
@@ -435,106 +414,6 @@ public partial class ChartView : IDisposable
         return chartOptionsInfoPanel!.ShowAsync();
     }
 
-    private (List<ChartJsDataset> Datasets, List<ChartTooltipSeriesInfo> TooltipMetadata) BuildChartDatasets()
-    {
-        Colours = new ColourServer();
-
-        var datasets = new List<ChartJsDataset>();
-
-        // Built in the same order as the datasets (real series first, then - once every real series is
-        // in - the derived trend overlays below), so its indexes stay aligned with chart.js's dataset
-        // indexes. That alignment is what lets the external tooltip look up a hovered trend point's
-        // underlying series and show it against that series' own averages.
-        var tooltipMetadata = new List<ChartTooltipSeriesInfo>();
-
-        var requestedColours = ChartSeriesWithData!
-            .Where(x => x.ChartSeries!.RequestedColour != UiLogic.Colours.AutoAssigned)
-            .Select(x => x.ChartSeries!.RequestedColour)
-            .ToList();
-
-        foreach (var chartSeries in ChartSeriesWithData!)
-        {
-            var dataSet = chartSeries.ProcessedDataSet!;
-            var htmlColourCode = Colours.GetNextColour(chartSeries.ChartSeries!.RequestedColour, (List<Colours>)requestedColours);
-            var renderSmallPoints = (bool)IsMobileDevice! || dataSet.DataRecords.Count() > 400;
-            var defaultLabel = (bool)IsMobileDevice!
-                ? chartSeries.ChartSeries.GetFriendlyTitleShort()
-                : $"{chartSeries.ChartSeries.FriendlyTitle} | {UnitOfMeasureLabelShort(dataSet.MeasurementDefinition!.UnitOfMeasure)}";
-
-            datasets.Add(ChartLogic.GetSeriesChartDataset(
-                chartSeries,
-                dataSet,
-                GetChartLabel(chartSeries.ChartSeries, defaultLabel),
-                htmlColourCode,
-                renderSmallPoints: renderSmallPoints));
-
-            tooltipMetadata.Add(ChartTooltipMetadataBuilder.BuildForSeries(chartSeries));
-        }
-
-        // Trend projections are appended only once every real series has been added, because
-        // OnLineChartClicked treats any dataset index past the real series as a trend overlay.
-        AddTrendDatasets(datasets, tooltipMetadata);
-
-        return (datasets, tooltipMetadata);
-    }
-
-    private void AddTrendDatasets(List<ChartJsDataset> datasets, List<ChartTooltipSeriesInfo> tooltipMetadata)
-    {
-        var binIndexesByYear = BuildBinIndexesByYear();
-
-        if (binIndexesByYear.Count == 0)
-        {
-            return;
-        }
-
-        foreach (var chartSeries in ChartSeriesWithData!)
-        {
-            var csd = chartSeries.ChartSeries!;
-            var hasMultipleTrends = chartSeries.Trends.Count > 1;
-
-            for (var tier = 0; tier < chartSeries.Trends.Count; tier++)
-            {
-                if (chartSeries.Trends[tier].Projection is not { } projection)
-                {
-                    continue;
-                }
-
-                var values = new List<double?>(new double?[ChartBins!.Length]);
-                var plotted = false;
-
-                foreach (var prediction in projection.Predictions)
-                {
-                    if (binIndexesByYear.TryGetValue((int)Math.Round(prediction.X), out var index))
-                    {
-                        values[index] = prediction.PredictedY;
-                        plotted = true;
-                    }
-                }
-
-                if (!plotted)
-                {
-                    continue;
-                }
-
-                var unitOfMeasure = chartSeries.ProcessedDataSet!.MeasurementDefinition!.UnitOfMeasure;
-                var trendColour = TrendSeriesColour.Derive(csd.Colour!, tier);
-                var trendLabel = BuildTrendLabel(csd, chartSeries.Trends[tier], hasMultipleTrends);
-
-                datasets.Add(
-                    ChartLogic.GetTrendChartDataset(
-                        trendLabel,
-                        values,
-                        trendColour,
-                        ChartLogic.GetYAxisId(csd.SeriesTransformation, csd.CustomTransformation, unitOfMeasure, csd.Aggregation)));
-
-                // The projection has no anomaly history of its own - it's compared against the real series
-                // it was fitted to, so hovering a predicted point shows how far above/below that series'
-                // last-30/full-period/early-period averages the prediction falls.
-                tooltipMetadata.Add(ChartTooltipMetadataBuilder.BuildForTrendSeries(chartSeries, BuildTrendTooltipLabel(csd, chartSeries.Trends[tier], hasMultipleTrends, unitOfMeasure)));
-            }
-        }
-    }
-
     /// <summary>
     /// The last year the chart holds real data for. This is <c>chartEndBin</c> rather than the last
     /// bin, because the bin array is deliberately extended past the data to make room for trend
@@ -543,26 +422,6 @@ public partial class ChartView : IDisposable
     private short LastYearWithData()
     {
         return chartEndBin is YearBinIdentifier yearBin ? yearBin.Year : short.MaxValue;
-    }
-
-    private Dictionary<int, int> BuildBinIndexesByYear()
-    {
-        var binIndexesByYear = new Dictionary<int, int>();
-
-        if (ChartBins is null)
-        {
-            return binIndexesByYear;
-        }
-
-        for (var i = 0; i < ChartBins.Length; i++)
-        {
-            if (ChartBins[i] is YearBinIdentifier yearBin)
-            {
-                binIndexesByYear[yearBin.Year] = i;
-            }
-        }
-
-        return binIndexesByYear;
     }
 
     private async Task OnSelectedBinGranularityChanged(BinGranularities value, bool rebuildDataSets = true)
@@ -638,7 +497,7 @@ public partial class ChartView : IDisposable
             .Where(x => x is not YearBinIdentifier yearBin || yearBin.Year <= LastYearWithData())
             .ToArray();
 
-        await DownloadRequested.InvokeAsync(new DataDownloadPackage { ChartSeriesWithData = ChartSeriesWithData!, Bins = binsWithData, BinGranularity = SelectedBinGranularity });
+        await DownloadRequested.InvokeAsync(new DataDownloadPackage { ChartSeriesWithData = ChartSeriesWithData!, Bins = binsWithData, BinGranularity = SelectedBinGranularity, Units = renderedUnits ?? UnitFormatter.Metric });
     }
 
     private async Task ShowAddDataSetModal()

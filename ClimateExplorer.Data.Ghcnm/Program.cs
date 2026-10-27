@@ -30,7 +30,8 @@ await DownloadAndExtract.DownloadAndExtractFile(httpClient, "https://www.ncei.no
 
 const string stationsFileCsv = @"MetaData\stations.csv";
 const string preExistingLocationsFile = @"MetaData\pre-existing-locations.json";
-const string stationsFileJson = @"Output\MetaData\stations.json";
+// Holds ISO country codes. Renamed from stations.json so a cache from before the FIPS to ISO mapping is never read.
+const string stationsFileJson = @"Output\MetaData\stations-iso.json";
 const string selectedStationsFileJson = @"Output\MetaData\selected-stations.json";
 
 var dataStations = await GetStationFromData("qcf");
@@ -72,7 +73,7 @@ logger.LogInformation($"{combinedStations.Count} stations after adjusting for co
 // Have changed the distance to be more favourable to selecting a good representation.
 var countryDistanceOverride = new Dictionary<string, int>
 {
-    { "GM", 45 },
+    { "DE", 45 },
     { "US", 70 },
 };
 var preExistingLocations = await GetPreExistingLocations();
@@ -307,8 +308,8 @@ async Task<List<Station>> GetStations(string version, List<Station> inputStation
         return GetStationsFromFile();
     }
 
-    var countries = await Country.GetCountries(@"MetaData\ghcnm-countries.txt");
-    var stations = await StationFile.Load(version, inputStations, countries, logger);
+    var fipsToIsoMapper = await FipsToIsoMapper.Load();
+    var stations = await StationFile.Load(version, inputStations, fipsToIsoMapper, logger);
 
     SaveStations(stations, stationsFileJson);
 
@@ -519,28 +520,28 @@ async Task<List<Location>> GetPreExistingLocations()
 
 async Task<List<Station>> EnsureCountryRepresentation(List<Station> stations, List<Station> selectedStations, short lastYearOfDataNoLaterThan)
 {
-    var countries = await Country.GetCountries(@"MetaData\ghcnm-countries.txt");
+    var fipsToIsoMapper = await FipsToIsoMapper.Load();
     var combinedStations = new List<Station>();
     combinedStations.AddRange(selectedStations);
-    foreach (var country in countries)
+    foreach (var countryCode in fipsToIsoMapper.IsoCodes)
     {
         var stationCount = selectedStations
-            .Count(x => x.CountryCode == country.Key);
+            .Count(x => x.CountryCode == countryCode);
 
         if (stationCount < minimumStationsInCountry)
         {
             var countryCount = stations
-                .Count(x => x.CountryCode == country.Key);
+                .Count(x => x.CountryCode == countryCode);
 
             if (countryCount == 0)
             {
-                logger.LogInformation($"{country.Value} has {stationCount} selected stations out of {countryCount} in GHCNm. Will skip this country");
+                logger.LogInformation($"{countryCode} has {stationCount} selected stations out of {countryCount} in GHCNm. Will skip this country");
                 continue;
             }
 
-            logger.LogInformation($"{country.Value} has {stationCount} selected stations out of {countryCount} in GHCNm. Will try to add more stations to bring the number to a minimum of {minimumStationsInCountry}");
+            logger.LogInformation($"{countryCode} has {stationCount} selected stations out of {countryCount} in GHCNm. Will try to add more stations to bring the number to a minimum of {minimumStationsInCountry}");
             var bestStations = stations
-                .Where(x => x.CountryCode == country.Key
+                .Where(x => x.CountryCode == countryCode
                             && x.Score >= 10
                             && x.LastYear >= lastYearOfDataNoLaterThan)
                 .OrderByDescending(x => x.Score).Take(minimumStationsInCountry);

@@ -6,10 +6,12 @@
   Verify with `dotnet build` and the unit test suite only.
 - When estimating effort, don't give time estimates (hours/days). Report how many files would
   change and by roughly how much (e.g. "3 files, ~40 lines; 1 new file").
+- Architecture, component and data-layer reference: [CONTEXT.md](CONTEXT.md)
 
 ## C#
 
 - Unit test names use `MethodName_StateUnderTest_ExpectedBehavior`
+- No `async void`; event handlers return `Task`
 
 ## Blazor
 
@@ -38,3 +40,28 @@ There are Blazorise components in use, with common styling in `app.css` such as:
 - Select
 - Table
 - Tabs
+
+Blazorise 2.x inputs bind with `Value`/`ValueChanged` (not `Checked`, `Text`, `SelectedValue`, etc.).
+Style Blazorise child elements with `::deep`; if a component's root is a Blazorise component,
+wrap it in a `<div>` with `display: contents` so the scoped CSS applies.
+
+### Colours
+
+Use the `--climate-*` variables in `app.css` where one exists.
+
+| Role | Hex |
+|---|---|
+| Primary green (text, modal headers, accents) | `#425f59` |
+| Hover (all interactive elements) | `#cfc` |
+| Info icons (`fa-circle-info`) | `#79c6f4` |
+| Danger (trash/delete) | `#a00000` |
+| Control background | `#f8f8f8` |
+| Secondary text | `#595959` |
+
+Border radius: controls 8px, cards 12px, modals/InfoPanel 16px. Minimum touch target height 44px.
+
+## Chart.js
+
+Chart.js is vendored in `ClimateExplorer.Web.Client/wwwroot/lib/chartjs` (4.6.1). The `seriesNote` plugin in
+`ChartJsChart.razor.js` wraps the private `Legend._fitRows`; when upgrading Chart.js, check it still exists and
+behaves the same.

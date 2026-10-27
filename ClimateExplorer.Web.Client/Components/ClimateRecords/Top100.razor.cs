@@ -1,17 +1,23 @@
 namespace ClimateExplorer.Web.Client.Components.Location;
 
 using System.Globalization;
+using System.Text.RegularExpressions;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.Client.UiModel;
+using ClimateExplorer.Web.Client.Units;
+using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
 using ClimateExplorer.WebApiClient.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using static ClimateExplorer.Core.Enums;
 
-public partial class Top100
+public partial class Top100 : IAsyncDisposable
 {
     private ElementReference svgRef;
+    private ElementReference spaceRef;
+    private IJSObjectReference? module;
+    private DotNetObjectReference<Top100>? dotNetRef;
 
     [Parameter]
     public Location? Location { get; set; }
@@ -27,6 +33,9 @@ public partial class Top100
 
     [Parameter]
     public int SelectedMonth { get; set; }
+
+    [CascadingParameter]
+    public IUnitFormatter Units { get; set; } = UnitFormatter.Metric;
 
     [Inject]
     private UiLogic.DateLabels DateLabels { get; set; } = default!;
@@ -44,8 +53,36 @@ public partial class Top100
     private int StartYear { get; set; }
     private int EndYear { get; set; }
     private bool IsLoading { get; set; }
+
+    // The chart is drawn at its container's pixel width, which is only known once rendered in the browser.
+    private int ChartWidth { get; set; }
     private Guid? InternalLocationId { get; set; }
     private List<Top100Model.RecordCount>? TooltipConfiguredFor { get; set; }
+    private IUnitFormatter? TooltipConfiguredUnits { get; set; }
+
+    [JSInvokable]
+    public Task OnWidthChanged(int width)
+    {
+        ChartWidth = width;
+        return InvokeAsync(StateHasChanged);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            if (module is not null)
+            {
+                await module.InvokeVoidAsync("unobserveWidth", spaceRef);
+                await module.DisposeAsync();
+            }
+        }
+        catch (JSDisconnectedException)
+        {
+        }
+
+        dotNetRef?.Dispose();
+    }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -59,9 +96,17 @@ public partial class Top100
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (YearCounts.Count > 0 && !ReferenceEquals(YearCounts, TooltipConfiguredFor))
+        if (firstRender)
+        {
+            module = await JsRuntime.InvokeAsync<IJSObjectReference>("import", "./Components/ClimateRecords/Top100.razor.js");
+            dotNetRef = DotNetObjectReference.Create(this);
+            await module.InvokeVoidAsync("observeWidth", spaceRef, dotNetRef);
+        }
+
+        if (YearCounts.Count > 0 && ChartWidth > 0 && (!ReferenceEquals(YearCounts, TooltipConfiguredFor) || !ReferenceEquals(Units, TooltipConfiguredUnits)))
         {
             TooltipConfiguredFor = YearCounts;
+            TooltipConfiguredUnits = Units;
             await JsRuntime.InvokeVoidAsync("configureTop100Tooltip", svgRef, BuildTooltipData());
         }
     }
@@ -102,7 +147,9 @@ public partial class Top100
         }
     }
 
-    private string BuildTitle()
+    private string BuildTitle() => Location?.DisplayTitle ?? string.Empty;
+
+    private string BuildSubtitle()
     {
         if (DataType is null)
         {
@@ -118,25 +165,25 @@ public partial class Top100
         };
 
         var recordType = ChartSeriesDefinition.MapDataTypeToFriendlyName(DataType.Value);
-        var monthSuffix = SelectedMonth == 0 ? string.Empty : " - " + CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(SelectedMonth);
+        var monthSuffix = SelectedMonth == 0 ? string.Empty : " | " + CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(SelectedMonth);
 
-        return $"{Location?.Name} - {prefix} 100 daily {recordType.ToLower()} records{monthSuffix}";
+        return $"{prefix} 100 daily {recordType.ToLower()}{monthSuffix} | {StartYear}-{EndYear}";
+    }
+
+    private string BuildFileName(string extension)
+    {
+        var name = Regex.Replace($"{BuildTitle()} {BuildSubtitle()}".ToLowerInvariant(), "[^a-z0-9]+", "-").Trim('-');
+        return $"{name}.{extension}";
     }
 
     private async Task CopyAsImage() =>
         await JsRuntime.InvokeVoidAsync("svgToImageCopy", svgRef);
 
-    private async Task DownloadImage()
-    {
-        var fileName = BuildTitle().Replace(" ", "-").Replace("/", "-").ToLowerInvariant() + ".png";
-        await JsRuntime.InvokeVoidAsync("svgToImageDownload", svgRef, fileName);
-    }
+    private async Task DownloadImage() =>
+        await JsRuntime.InvokeVoidAsync("svgToImageDownload", svgRef, BuildFileName("png"));
 
-    private async Task DownloadSvg()
-    {
-        var fileName = BuildTitle().Replace(" ", "-").Replace("/", "-").ToLowerInvariant() + ".svg";
-        await JsRuntime.InvokeVoidAsync("svgToSvgDownload", svgRef, fileName);
-    }
+    private async Task DownloadSvg() =>
+        await JsRuntime.InvokeVoidAsync("svgToSvgDownload", svgRef, BuildFileName("svg"));
 
     private Dictionary<string, TooltipYearInfo> BuildTooltipData()
     {
@@ -157,7 +204,7 @@ public partial class Top100
             : "?";
 
         var valueLabel = record.Value.HasValue && Unit.HasValue
-            ? record.Value.Value.ToString("F" + UnitOfMeasureRounding(Unit.Value), CultureInfo.InvariantCulture) + UnitOfMeasureLabelShort(Unit.Value)
+            ? Units.Format(ApiMeasures.ClimateRecordValue(record.Value.Value, Unit.Value))
             : "?";
 
         return new TooltipLine(position, dateLabel, valueLabel);

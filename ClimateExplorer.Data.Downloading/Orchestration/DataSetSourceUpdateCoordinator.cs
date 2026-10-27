@@ -37,9 +37,19 @@ public sealed class DataSetSourceUpdateCoordinator(
     /// <see cref="DefaultOnRequestRefreshTimeout"/>.
     /// </summary>
     public static readonly TimeSpan RefreshFailureBackoff = TimeSpan.FromMinutes(15);
+
+    /// <summary>
+    /// How long after publishing a source this instance trusts its own record of it without re-reading the file.
+    /// App Service's shared storage can return the replaced file for a few seconds after a publish, so the hash
+    /// check would fail and a request that waited on the refresh (e.g. the panel's TempMin behind its TempMax)
+    /// would download the same data again. Re-reading guards against the file being replaced behind the record -
+    /// a deploy restoring the committed copy - and a deploy restarts the app, which clears this.
+    /// </summary>
+    public static readonly TimeSpan RecentlyPublishedTrustWindow = TimeSpan.FromMinutes(1);
     private readonly IReadOnlyDictionary<string, IDataSetDownloader> downloaders = downloaders.ToDictionary(x => x.Key, StringComparer.Ordinal);
     private readonly TimeSpan onRequestRefreshTimeout = onRequestRefreshTimeout ?? DefaultOnRequestRefreshTimeout;
     private readonly ConcurrentDictionary<string, DateTimeOffset> refreshFailedUntil = new(StringComparer.Ordinal);
+    private readonly ConcurrentDictionary<string, (string Sha256, DateTimeOffset PublishedAt)> recentlyPublished = new(StringComparer.Ordinal);
 
     /// <summary>
     /// Whether a downloader is registered for the given key. Used by <see cref="DataSetBatchRefresher"/> to
@@ -90,7 +100,8 @@ public sealed class DataSetSourceUpdateCoordinator(
             logger.LogDebug("Cached response is fresh for assets [{AssetKeys}]; no download attempted", string.Join(", ", assets.Select(x => x.AssetKey)));
             return new DataSetSourcePreparationResult(
                 DataSetSourcePreparationOutcome.UseCached,
-                DataSetRetrievalDate.OldestFor(currentStates));
+                DataSetRetrievalDate.OldestFor(currentStates),
+                OldestLatestRecordDate(currentStates));
         }
 
         if (currentStates == null && permitSourceUpdate && IsBackingOff(assets))
@@ -141,7 +152,8 @@ public sealed class DataSetSourceUpdateCoordinator(
 
         return new DataSetSourcePreparationResult(
             DataSetSourcePreparationOutcome.Rebuild,
-            DataSetRetrievalDate.OldestFor(refreshedStates));
+            DataSetRetrievalDate.OldestFor(refreshedStates),
+            OldestLatestRecordDate(refreshedStates));
     }
 
     public async Task<IReadOnlyList<DataSetSourceState>?> EnsureCurrentAsync(
@@ -168,6 +180,20 @@ public sealed class DataSetSourceUpdateCoordinator(
         }
 
         return states;
+    }
+
+    private static DateOnly? OldestLatestRecordDate(IReadOnlyList<DataSetSourceState> states)
+    {
+        return states.Count == 0 || states.Any(x => x.LatestRecordDate == null)
+            ? null
+            : states.Min(x => x.LatestRecordDate);
+    }
+
+    private bool IsRecentlyPublished(DataSetSourceState state)
+    {
+        return recentlyPublished.TryGetValue(state.AssetKey, out var published) &&
+            string.Equals(published.Sha256, state.Sha256, StringComparison.Ordinal) &&
+            timeProvider.GetUtcNow() - published.PublishedAt < RecentlyPublishedTrustWindow;
     }
 
     private bool IsBackingOff(IReadOnlyList<DataSetDownloadRequest> assets)
@@ -208,6 +234,11 @@ public sealed class DataSetSourceUpdateCoordinator(
                 !asset.Measurements.All(x => freshnessPolicy.IsFresh(state, x.MeasurementDefinition.DataResolution, asset.DownloaderKey)))
             {
                 return null;
+            }
+
+            if (IsRecentlyPublished(state))
+            {
+                return state;
             }
 
             var fileInfo = await sourceFileStore.GetFileInfoAsync(asset.RelativePath, cancellationToken);
@@ -265,9 +296,12 @@ public sealed class DataSetSourceUpdateCoordinator(
             using var workspace = workspaceFactory.Create();
             var artifact = await downloader.DownloadAsync(asset, workspace.Path, cancellationToken);
             var latestRecordDate = await validator.ValidateAsync(asset, workspace.Path, cancellationToken);
+
+            // Hash the candidate rather than reading the published file back: on App Service's shared storage a
+            // read straight after the publish has returned the replaced file, recording its hash against this
+            // download's latest record date. A later deploy restoring that file then made it look current.
+            var fileInfo = await DataSetSourceFileStore.ComputeFileInfoAsync(artifact.CandidateFilePath, cancellationToken);
             await sourceFileStore.PublishAsync(artifact.CandidateFilePath, asset.RelativePath, cancellationToken);
-            var fileInfo = await sourceFileStore.GetFileInfoAsync(asset.RelativePath, cancellationToken)
-                ?? throw new FileNotFoundException("Published dataset source file was not found.");
             var state = new DataSetSourceState
             {
                 AssetKey = asset.AssetKey,
@@ -278,6 +312,7 @@ public sealed class DataSetSourceUpdateCoordinator(
                 LatestRecordDate = latestRecordDate,
             };
             await stateStore.PutAsync(state, cancellationToken);
+            recentlyPublished[asset.AssetKey] = (state.Sha256, timeProvider.GetUtcNow());
             logger.LogInformation(
                 "Refreshed dataset source {AssetKey} via {DownloaderKey} in {ElapsedMs}ms; published {Length} bytes, latest record date {LatestRecordDate}",
                 asset.AssetKey,
@@ -320,25 +355,35 @@ public sealed class DataSetSourceUpdateCoordinator(
 
         try
         {
-            var fileInfo = await sourceFileStore.GetFileInfoAsync(asset.RelativePath, cancellationToken);
-            if (fileInfo == null)
+            var publishedPath = sourceFileStore.ResolvePath(asset.RelativePath);
+            if (!File.Exists(publishedPath))
             {
                 return null;
             }
 
-            var latestRecordDate = await validator.ValidateAsync(asset, sourceFileStore.RootPath, cancellationToken);
+            // Check and hash one copy of the file, so the record date and the hash recorded together always describe
+            // the same content - separate reads of the published file can see different versions of it while another
+            // instance publishes over it, or while shared storage still returns the version it replaced.
+            using var workspace = workspaceFactory.Create();
+            var snapshotPath = DataSetDownloadPath.Resolve(workspace.Path, asset.RelativePath);
+            Directory.CreateDirectory(Path.GetDirectoryName(snapshotPath)!);
+            var publishedLastWriteTimeUtc = File.GetLastWriteTimeUtc(publishedPath);
+            File.Copy(publishedPath, snapshotPath);
+
+            var latestRecordDate = await validator.ValidateAsync(asset, workspace.Path, cancellationToken);
             if (!freshnessPolicy.HasYesterdaysRecord(latestRecordDate))
             {
                 return null;
             }
 
+            var fileInfo = await DataSetSourceFileStore.ComputeFileInfoAsync(snapshotPath, cancellationToken);
             var state = new DataSetSourceState
             {
                 AssetKey = asset.AssetKey,
                 RelativePath = asset.RelativePath,
                 Length = fileInfo.Length,
                 Sha256 = fileInfo.Sha256,
-                RetrievedDate = fileInfo.LastWriteTimeUtc,
+                RetrievedDate = publishedLastWriteTimeUtc,
                 LatestRecordDate = latestRecordDate,
             };
             await stateStore.PutAsync(state, cancellationToken);

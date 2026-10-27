@@ -2,9 +2,16 @@ namespace ClimateExplorer.Web.Client.Services.Trends;
 
 using System.Globalization;
 using ClimateExplorer.Core.Stats.Model;
+using ClimateExplorer.Web.Client.Units;
+using static ClimateExplorer.Core.Enums;
 
 // Shared between the Recent Observations tile's trend rows, the About-trends breakdown and the
 // chart's trend module, so every surface describes the same trend the same way.
+//
+// The overloads that take a metric unit label are metric only; the About-trends regression report
+// (TrendStatSectionBuilder) uses them. The overloads that take a UnitOfMeasure and an IUnitFormatter
+// format a rate in the reader's unit system: a rate is a difference per year, so it's always converted
+// as a Measure.Change and never offset.
 internal static class TrendFormatting
 {
     // Units the site has always formatted a particular way; anything else falls back to
@@ -30,6 +37,43 @@ internal static class TrendFormatting
     public static bool IsTrendPositive(PolynomialRegressionResult trend, double atX)
     {
         return trend.Significance.IsSlopeSignificant && trend.Curve.Derivative(atX) > 0;
+    }
+
+    public static string FormatPerDecade(PolynomialRegressionResult trend, double atX, UnitOfMeasure? unit, IUnitFormatter units)
+    {
+        return trend.Significance.IsSlopeSignificant
+            ? FormatPerDecadeValue(trend, atX, unit, units)
+            : "No significant trend";
+    }
+
+    public static string FormatPerDecadeValue(PolynomialRegressionResult trend, double atX, UnitOfMeasure? unit, IUnitFormatter units)
+    {
+        return FormatPerDecadeValue(trend.Curve.Derivative(atX), unit, units);
+    }
+
+    public static string FormatPerDecadeValue(double slopePerYear, UnitOfMeasure? unit, IUnitFormatter units)
+    {
+        return $"{FormatPerDecadeAmount(slopePerYear, unit, units)} /decade";
+    }
+
+    public static string FormatPerDecadeAmount(double slopePerYear, UnitOfMeasure? unit, IUnitFormatter units)
+    {
+        if (unit is not { } u)
+        {
+            return FormatPerDecadeAmount(slopePerYear, string.Empty);
+        }
+
+        if (!units.Converts(u))
+        {
+            return FormatPerDecadeAmount(slopePerYear, UnitFormatter.Metric.ShortLabel(u));
+        }
+
+        var perDecade = units.ToDisplay(Measure.Change(slopePerYear * 10, u));
+        var sign = perDecade >= 0 ? "+" : string.Empty;
+        var label = units.ShortLabel(u);
+        var suffix = units.IsTight(u) ? label : $" {label}";
+
+        return $"{sign}{perDecade.ToString(NumberFormat(ConvertedDecimalPlaces(u)), CultureInfo.InvariantCulture)}{suffix}";
     }
 
     public static string FormatPerDecade(PolynomialRegressionResult trend, double atX, string unit)
@@ -141,6 +185,17 @@ internal static class TrendFormatting
         }
 
         return UnitsWithoutLeadingSpace.Contains(unit) ? unit : $" {unit}";
+    }
+
+    /// <summary>
+    /// Decimal places for a converted rate. Inches need two, where millimetres use none (0.01 in is
+    /// 0.25 mm); every other converted unit keeps its metric unit's trend precision.
+    /// </summary>
+    private static int ConvertedDecimalPlaces(UnitOfMeasure unit)
+    {
+        return unit == UnitOfMeasure.Millimetres
+            ? 2
+            : DecimalPlaces(UnitFormatter.Metric.ShortLabel(unit));
     }
 
     private static string NumberFormat(int decimalPlaces)

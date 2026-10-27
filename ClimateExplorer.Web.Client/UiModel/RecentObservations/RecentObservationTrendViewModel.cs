@@ -1,11 +1,12 @@
 namespace ClimateExplorer.Web.Client.UiModel.RecentObservations;
 
 using ClimateExplorer.Core.Stats.Model;
+using static ClimateExplorer.Core.Enums;
 
 public sealed record RecentObservationTrendViewModel
 {
     public string Label { get; init; } = string.Empty;
-    public string Unit { get; init; } = string.Empty;
+    public UnitOfMeasure? Unit { get; init; }
     public int CompleteYearCount { get; init; }
     public int MinimumRequiredYears { get; init; }
     public string? HeadlineText { get; init; }

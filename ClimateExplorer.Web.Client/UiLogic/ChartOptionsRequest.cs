@@ -1,6 +1,7 @@
 namespace ClimateExplorer.Web.UiLogic;
 
 using ClimateExplorer.Core.DataPreparation;
+using ClimateExplorer.Web.Client.Units;
 using ClimateExplorer.Web.UiModel;
 
 /// <summary>
@@ -11,6 +12,15 @@ public sealed record ChartOptionsRequest
     public required string Title { get; init; }
 
     public required string Subtitle { get; init; }
+
+    /// <summary>Gets the aggregation settings text, drawn in the top-right corner of the chart.</summary>
+    public required string AggregationText { get; init; }
+
+    /// <summary>
+    /// Gets the label parts every series shares, drawn after "All series:" at the bottom left beside the legend.
+    /// Null on mobile.
+    /// </summary>
+    public string? SeriesNote { get; init; }
 
     public required BinGranularities BinGranularity { get; init; }
 
@@ -23,4 +33,7 @@ public sealed record ChartOptionsRequest
     public required IReadOnlyList<ChartSeriesDefinition> Series { get; init; }
 
     public required IReadOnlyDictionary<string, bool> AxesScaleToZero { get; init; }
+
+    /// <summary>The reader's unit system, which the axis ranges and titles are given in.</summary>
+    public IUnitFormatter Units { get; init; } = UnitFormatter.Metric;
 }

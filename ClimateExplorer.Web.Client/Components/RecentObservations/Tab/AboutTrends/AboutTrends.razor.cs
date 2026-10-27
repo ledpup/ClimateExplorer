@@ -88,6 +88,7 @@ public partial class AboutTrends
             DataTypeLabel = metric.Label,
             WindowLabel = windowLabel,
             Points = points,
+            Unit = metric.Unit,
         });
     }
 }

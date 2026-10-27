@@ -48,6 +48,12 @@ public sealed class DataSetSourceFileStore(string datasetsRoot)
             return null;
         }
 
+        return await ComputeFileInfoAsync(fullPath, cancellationToken);
+    }
+
+    /// <summary>Hashes any file, such as a candidate in a download workspace before it is published.</summary>
+    public static async Task<SourceFileInfo> ComputeFileInfoAsync(string fullPath, CancellationToken cancellationToken)
+    {
         await using var stream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read, 81920, FileOptions.Asynchronous | FileOptions.SequentialScan);
         var hash = await SHA256.HashDataAsync(stream, cancellationToken);
         return new SourceFileInfo(stream.Length, Convert.ToHexString(hash), File.GetLastWriteTimeUtc(fullPath));

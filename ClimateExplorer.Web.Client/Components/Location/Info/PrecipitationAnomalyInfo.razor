@@ -7,13 +7,13 @@
     <p>For example:</p>
     <ul>
         <li>
-            In the last 30 years of records at <strong>@Location?.Name</strong> (the years @CalculatedAnomaly.FirstYearInLast30Years-@CalculatedAnomaly.LastYearInLast30Years) the average precipitation was <strong>@string.Format("{0:0}", CalculatedAnomaly.AverageOfLast30Years)mm</strong>.
+            In the last 30 years of records at <strong>@Location?.Name</strong> (the years @CalculatedAnomaly.FirstYearInLast30Years-@CalculatedAnomaly.LastYearInLast30Years) the average precipitation was <strong>@FormatAverage(CalculatedAnomaly.AverageOfLast30Years)</strong>.
         </li>
         <li>
-            The first half of the records at <strong>@Location?.Name</strong> (the years @CalculatedAnomaly.FirstYearInFirstHalf-@CalculatedAnomaly.LastYearInFirstHalf, @CalculatedAnomaly.CountOfFirstHalf years in total) the average precipitation was <strong>@string.Format("{0:0}", CalculatedAnomaly.AverageOfFirstHalf)mm</strong>.
+            The first half of the records at <strong>@Location?.Name</strong> (the years @CalculatedAnomaly.FirstYearInFirstHalf-@CalculatedAnomaly.LastYearInFirstHalf, @CalculatedAnomaly.CountOfFirstHalf years in total) the average precipitation was <strong>@FormatAverage(CalculatedAnomaly.AverageOfFirstHalf)</strong>.
         </li>
         <li>
-            The difference is <strong>@AnomalyAsString</strong> (after rounding to 0 decimal place).
+            The difference is <strong>@AnomalyAsString</strong> (after rounding to @AnomalyDecimals decimal place@(AnomalyDecimals == 1 ? string.Empty : "s")).
         </li>
     </ul>
 }

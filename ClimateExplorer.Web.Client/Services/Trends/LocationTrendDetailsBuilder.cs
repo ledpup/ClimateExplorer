@@ -1,7 +1,6 @@
 namespace ClimateExplorer.Web.Client.Services.Trends;
 
 using ClimateExplorer.Core.Calculators;
-using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.Stats.Model;
 using ClimateExplorer.Web.Client.UiModel.Trends;

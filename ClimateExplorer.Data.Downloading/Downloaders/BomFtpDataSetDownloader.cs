@@ -193,6 +193,13 @@ public sealed class BomFtpDataSetDownloader(
             var content = await tableSource.DownloadAsync($"{TablesPath}/{folder}/{name}-{month:yyyyMM}.csv", cancellationToken);
             if (content == null)
             {
+                // The newest month's table may not be published yet. Any earlier month missing would leave a silent
+                // gap in the top-up, so fail the refresh instead and keep the previous source.
+                if (month < lastMonth)
+                {
+                    throw new InvalidDataException($"BOM daily table '{folder}' for {month:yyyy-MM} is missing; refusing to leave a gap.");
+                }
+
                 continue;
             }
 

@@ -3,6 +3,8 @@ namespace ClimateExplorer.Web.Client.Services;
 
 using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Web.Client.UiModel.RecentObservations;
+using ClimateExplorer.Web.Client.Units;
+using static ClimateExplorer.Core.Enums;
 
 // The metric model: a Metric picks a value off a DailyObservation and says how to aggregate
 // and format it; a MetricDomain groups the metrics that make up one tab (temperature,
@@ -50,16 +52,24 @@ public sealed partial class RecentObservationsCalculator
         Min,
     }
 
+    /// <param name="Unit">The metric unit the observations are in. All of the calculator's arithmetic is in
+    /// this unit; it's converted only when formatted, through <see cref="FormatLevel"/> or <see cref="FormatChange"/>.</param>
     private sealed record Metric(
         string Key,
         string SingularLabel,
         string PluralLabel,
         Func<DailyObservation, double?> Select,
         MetricAggregation Aggregation,
-        Func<double, string> Format,
+        UnitOfMeasure Unit,
         string DetailLabel,
-        string VariationLabel,
-        string Unit);
+        string VariationLabel)
+    {
+        /// <summary>An observation, record, range end or average of observations.</summary>
+        public string FormatLevel(double value, IUnitFormatter units) => units.Format(Measure.Level(value, Unit));
+
+        /// <summary>A difference from a level: an anomaly or a spread.</summary>
+        public string FormatChange(double value, IUnitFormatter units, bool signed = false) => units.Format(Measure.Change(value, Unit), signed);
+    }
 
     private sealed record MetricGroup(MetricGroupKey Key, string Title, IReadOnlyList<Metric> Metrics);
 

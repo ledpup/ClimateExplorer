@@ -4,12 +4,12 @@ using ClimateExplorer.Core;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Infrastructure;
 using ClimateExplorer.Core.Model;
-using ClimateExplorer.Core.Stats;
 using ClimateExplorer.Core.Stats.Model;
 using ClimateExplorer.Core.Stats.Smoothing;
 using ClimateExplorer.Web.Client.Services.Trends;
 using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.Client.UiModel.Trends;
+using ClimateExplorer.Web.Client.Units;
 using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
 using ClimateExplorer.WebApiClient.Services;
@@ -39,7 +39,7 @@ public sealed class ChartDataBuilder : IChartDataBuilder
         this.logger = logger;
     }
 
-    public async Task<ChartDataBuildResult> BuildAsync(ChartState state, CancellationToken cancellationToken = default)
+    public async Task<ChartDataBuildResult> BuildAsync(ChartState state, IUnitFormatter? units = null, CancellationToken cancellationToken = default)
     {
         var usableSeries = state.Series.Where(x => x.DataAvailable).ToArray();
 
@@ -54,7 +54,7 @@ public sealed class ChartDataBuilder : IChartDataBuilder
         var seriesWithData = await RetrieveDataSets(usableSeries, binGranularity, state, internalGroupingThreshold);
 
         var messages = new List<UserNotification>();
-        var processed = BuildProcessedDataSets(seriesWithData, binGranularity, state, messages);
+        var processed = BuildProcessedDataSets(seriesWithData, binGranularity, state, messages, units ?? UnitFormatter.Metric);
 
         return processed with
         {
@@ -144,7 +144,8 @@ public sealed class ChartDataBuilder : IChartDataBuilder
         BinIdentifier[] chartBins,
         BinGranularities binGranularity,
         ChartState state,
-        List<UserNotification> messages)
+        List<UserNotification> messages,
+        IUnitFormatter units)
     {
         var seriesWantingTrends = renderableChartSeries.Where(x => x.ChartSeries!.Trends.Count > 0).ToList();
 
@@ -172,7 +173,8 @@ public sealed class ChartDataBuilder : IChartDataBuilder
         foreach (var cs in seriesWantingTrends)
         {
             var csd = cs.ChartSeries!;
-            var subject = new TrendStatSubject(csd.GetFriendlyTitleShort(), ResolveTrendUnit(csd));
+            var trendUnit = ResolveTrendUnit(csd);
+            var subject = new TrendStatSubject(csd.GetFriendlyTitleShort(), trendUnit, trendUnit is { } unit && SeriesDisplayUnits.IsConvertible(csd, unit));
             var points = BuildTrendPoints(cs.PreProcessedDataSet!, binIdsToPlot);
             var lastMeasuredYear = GetLastMeasuredYear(cs.SourceDataSet, state);
 
@@ -220,7 +222,8 @@ public sealed class ChartDataBuilder : IChartDataBuilder
                     trend,
                     cs.SourceDataSet.GeographicalEntity?.Name,
                     locationId: null,
-                    trendOrdinal: csd.Trends.Count > 1 ? i + 1 : null);
+                    trendOrdinal: csd.Trends.Count > 1 ? i + 1 : null,
+                    units: units);
 
                 if (notification is not null)
                 {
@@ -308,14 +311,14 @@ public sealed class ChartDataBuilder : IChartDataBuilder
     /// A transformed series is no longer in its source unit - "day of year if frost" is a day
     /// number, a custom expression is a count - so no unit is claimed rather than the wrong one.
     /// </summary>
-    private static string ResolveTrendUnit(ChartSeriesDefinition csd)
+    private static UnitOfMeasure? ResolveTrendUnit(ChartSeriesDefinition csd)
     {
         if (csd.SeriesTransformation is not (SeriesTransformations.Identity or SeriesTransformations.Negate))
         {
-            return string.Empty;
+            return null;
         }
 
-        return UnitOfMeasureLabelShort(csd.SourceSeriesSpecifications!.First().MeasurementDefinition!.UnitOfMeasure);
+        return csd.SourceSeriesSpecifications!.First().MeasurementDefinition!.UnitOfMeasure;
     }
 
     private static Dictionary<string, int> GetShrunkSmoothingWindows(IEnumerable<BinnedRecord> records, SmoothedSeries smoothed, int requestedWindowSize)
@@ -417,7 +420,8 @@ public sealed class ChartDataBuilder : IChartDataBuilder
         List<SeriesWithData> chartSeriesWithData,
         BinGranularities selectedBinGranularity,
         ChartState state,
-        List<UserNotification> messages)
+        List<UserNotification> messages,
+        IUnitFormatter units)
     {
         var l = new LogAugmenter(logger, "BuildProcessedDataSets");
 
@@ -581,7 +585,7 @@ public sealed class ChartDataBuilder : IChartDataBuilder
                 // bin range is known. It also has to happen before gap filling, because a trend
                 // projection extends the bin array past the end of the data and the gap-filling
                 // pass below is what gives every other series null records for those extra bins.
-                chartBins = ApplyTrends(renderableChartSeries, chartBins, binGranularity, state, messages);
+                chartBins = ApplyTrends(renderableChartSeries, chartBins, binGranularity, state, messages, units);
 
                 break;
 

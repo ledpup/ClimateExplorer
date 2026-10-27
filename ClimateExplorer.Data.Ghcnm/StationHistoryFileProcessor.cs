@@ -6,7 +6,7 @@ namespace ClimateExplorer.Data.Ghcnm;
 
 public class StationFile
 {
-    internal static async Task<List<Station>> Load(string version, List<Station> stations, Dictionary<string, Country> countries, ILogger<Program> logger)
+    internal static async Task<List<Station>> Load(string version, List<Station> stations, FipsToIsoMapper fipsToIsoMapper, ILogger<Program> logger)
     {
         var dir = new DirectoryInfo(@$"SourceData\{version}\");
         var stationFileName = dir.GetFiles("*.inv").Single().FullName;
@@ -29,7 +29,6 @@ public class StationFile
 
             var id = groups["id"].Value;
             var stationName = groups["name"].Value;
-            var countryCode = groups["id"].Value.Substring(0, 2);
             var lat = groups["lat"].Value;
             var lng = groups["lng"].Value;
             var elevation = groups["ele"].Value;
@@ -42,15 +41,14 @@ public class StationFile
                 continue;
             }
 
-            countries.TryGetValue(countryCode, out Country? country);
-
-            if (country == null)
+            // The station ID's first two characters are a FIPS country code. Map it to ISO here; FIPS codes don't leave this project.
+            if (!fipsToIsoMapper.TryMap(id, out var isoCountryCode))
             {
-                logger.LogError($"Station {id} has a country code of {countryCode}. This code is not found in the country list file. Will skip this station.");
+                logger.LogError($"Station {id} has a country code of {id[..2]}. This code has no ISO mapping in {FipsToIsoMapper.MappingFile} or {FipsToIsoMapper.StationOverridesFile}. Will skip this station.");
                 continue;
             }
 
-            station.CountryCode = country!.Code;
+            station.CountryCode = isoCountryCode;
             station.Name = stationName;
 
             if (!string.IsNullOrWhiteSpace(lat) && !string.IsNullOrWhiteSpace(lng))

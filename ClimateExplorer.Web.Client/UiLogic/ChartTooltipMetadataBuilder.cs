@@ -5,8 +5,8 @@ using System.Linq;
 using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
+using ClimateExplorer.Web.Client.Units;
 using ClimateExplorer.Web.UiModel;
-using static ClimateExplorer.Core.Enums;
 
 /// <summary>
 /// Builds the per-series data the chart's external tooltip needs: a trimmed "Location | Data type | Unit"
@@ -17,12 +17,14 @@ using static ClimateExplorer.Core.Enums;
 /// AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly, the last-30-years, full-period, and
 /// early-period averages used to show how far the hovered value is from each. Series that don't qualify
 /// for the anomaly figures still get a label; the tooltip just falls back to showing their plain value.
+/// The label, rounding and averages are in the series' display units (<see cref="SeriesDisplayUnits"/>),
+/// matching the plotted values the tooltip compares them with.
 /// </summary>
 public static class ChartTooltipMetadataBuilder
 {
-    public static List<ChartTooltipSeriesInfo> Build(IReadOnlyList<SeriesWithData> seriesWithData)
+    public static List<ChartTooltipSeriesInfo> Build(IReadOnlyList<SeriesWithData> seriesWithData, IUnitFormatter? units = null)
     {
-        return [.. seriesWithData.Select(x => BuildForSeries(x))];
+        return [.. seriesWithData.Select(x => BuildForSeries(x, units))];
     }
 
     /// <summary>
@@ -32,10 +34,11 @@ public static class ChartTooltipMetadataBuilder
     /// the point it's added, keeping it aligned with chart.js's dataset order.
     /// </summary>
     /// <param name="series">The series to build tooltip metadata for.</param>
+    /// <param name="units">The reader's unit system. Defaults to metric.</param>
     /// <returns>Tooltip metadata for <paramref name="series"/>, using its own tooltip label.</returns>
-    public static ChartTooltipSeriesInfo BuildForSeries(SeriesWithData series)
+    public static ChartTooltipSeriesInfo BuildForSeries(SeriesWithData series, IUnitFormatter? units = null)
     {
-        return BuildForSeries(series, null) with
+        return Build(series, null, units) with
         {
             ShrunkWindows = MapBinsToChartIndexes(series, series.ShrunkSmoothingWindows),
             SmoothingWindow = series.SmoothingWindow,
@@ -51,22 +54,23 @@ public static class ChartTooltipMetadataBuilder
     /// </summary>
     /// <param name="series">The real series the trend/regression was fitted to.</param>
     /// <param name="label">The tooltip row label for the trend dataset.</param>
+    /// <param name="units">The reader's unit system. Defaults to metric.</param>
     /// <returns>Tooltip metadata whose anomaly reference periods come from <paramref name="series"/>.</returns>
-    public static ChartTooltipSeriesInfo BuildForTrendSeries(SeriesWithData series, string label)
+    public static ChartTooltipSeriesInfo BuildForTrendSeries(SeriesWithData series, string label, IUnitFormatter? units = null)
     {
-        return BuildForSeries(series, label);
+        return Build(series, label, units);
     }
 
-    private static ChartTooltipSeriesInfo BuildForSeries(SeriesWithData series, string? labelOverride = null)
+    private static ChartTooltipSeriesInfo Build(SeriesWithData series, string? labelOverride, IUnitFormatter? units)
     {
         var dataSet = series.PreProcessedDataSet ?? series.SourceDataSet;
-        var unitOfMeasure = dataSet.MeasurementDefinition!.UnitOfMeasure;
+        var displayUnits = SeriesDisplayUnits.Resolve(series.ChartSeries!, dataSet.MeasurementDefinition!.UnitOfMeasure, units ?? UnitFormatter.Metric);
 
         return new ChartTooltipSeriesInfo
         {
-            Label = labelOverride ?? series.ChartSeries!.GetTooltipLabel(unitOfMeasure),
-            Rounding = UnitOfMeasureRounding(unitOfMeasure),
-            Anomaly = BuildAnomaly(series, dataSet),
+            Label = labelOverride ?? series.ChartSeries!.GetTooltipLabel(displayUnits.ShortLabel),
+            Rounding = displayUnits.Decimals,
+            Anomaly = BuildAnomaly(series, dataSet, displayUnits),
         };
     }
 
@@ -98,7 +102,7 @@ public static class ChartTooltipMetadataBuilder
         return byChartIndex.Count == 0 ? null : byChartIndex;
     }
 
-    private static ChartSeriesTooltipMetadata? BuildAnomaly(SeriesWithData series, DataSet dataSet)
+    private static ChartSeriesTooltipMetadata? BuildAnomaly(SeriesWithData series, DataSet dataSet, SeriesDisplayUnits displayUnits)
     {
         var chartSeries = series.ChartSeries;
 
@@ -116,7 +120,8 @@ public static class ChartTooltipMetadataBuilder
         }
 
         // Use the series' full available history (not the chart's currently zoomed/filtered range), so the
-        // reference periods don't shift as the user pans or zooms the chart.
+        // reference periods don't shift as the user pans or zooms the chart. The averages are calculated
+        // in metric and converted afterwards, like the plotted values the tooltip subtracts them from.
         var anomaly = AnomalyCalculator.CalculateAnomaly(dataSet.DataRecords);
 
         if (anomaly == null)
@@ -126,9 +131,9 @@ public static class ChartTooltipMetadataBuilder
 
         return new ChartSeriesTooltipMetadata
         {
-            Last30 = new ChartTooltipPeriod(anomaly.FirstYearInLast30Years, anomaly.LastYearInLast30Years, anomaly.MissingYearsInLast30Years, anomaly.AverageOfLast30Years),
-            FullPeriod = new ChartTooltipPeriod(anomaly.FirstYearOverall, anomaly.LastYearOverall, anomaly.MissingYearsInFullPeriod, anomaly.AverageOfFullPeriod),
-            Early = new ChartTooltipPeriod(anomaly.FirstYearInFirstHalf, anomaly.LastYearInFirstHalf, anomaly.MissingYearsInFirstHalf, anomaly.AverageOfFirstHalf),
+            Last30 = new ChartTooltipPeriod(anomaly.FirstYearInLast30Years, anomaly.LastYearInLast30Years, anomaly.MissingYearsInLast30Years, displayUnits.ToDisplay(anomaly.AverageOfLast30Years)),
+            FullPeriod = new ChartTooltipPeriod(anomaly.FirstYearOverall, anomaly.LastYearOverall, anomaly.MissingYearsInFullPeriod, displayUnits.ToDisplay(anomaly.AverageOfFullPeriod)),
+            Early = new ChartTooltipPeriod(anomaly.FirstYearInFirstHalf, anomaly.LastYearInFirstHalf, anomaly.MissingYearsInFirstHalf, displayUnits.ToDisplay(anomaly.AverageOfFirstHalf)),
         };
     }
 }

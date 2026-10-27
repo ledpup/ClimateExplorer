@@ -2,11 +2,11 @@
 
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
-using ClimateExplorer.Core;
 using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.Client.UiModel.Trends;
+using ClimateExplorer.Web.Client.Units;
 using ClimateExplorer.Web.UiLogic;
 using static ClimateExplorer.Core.Enums;
 
@@ -99,113 +99,11 @@ public class ChartSeriesDefinition
         SourceSeriesSpecifications is { Length: > 0 } specs
         && specs.All(x => Region.IsRegionId(x.LocationId));
 
-    public string FriendlyTitle
+    public string FriendlyTitle => SeriesLabelSegment.Join(GetFriendlyTitleSegments());
+
+    public static string BuildFriendlyTitleShortForSeries(SourceSeriesSpecification sss, BinGranularities binGranularity, SeriesAggregationOptions aggregation, short? year = null, bool includeLocation = true)
     {
-        get
-        {
-            var segments = new List<string>();
-
-            if (SourceSeriesSpecifications!.Length == 1)
-            {
-                var sss = SourceSeriesSpecifications.Single();
-
-                if (sss.LocationName != null)
-                {
-                    segments.Add(sss.LocationName);
-                }
-
-                if (Year != null)
-                {
-                    segments.Add(Year.ToString()!);
-                }
-
-                segments.Add(MapDataTypeToFriendlyName(sss.MeasurementDefinition!.DataType));
-
-                if (sss.MeasurementDefinition.DataAdjustment != null)
-                {
-                    segments.Add(sss.MeasurementDefinition.DataAdjustment.ToString()!);
-                }
-            }
-            else
-            {
-                return GetFriendlyTitleShort();
-            }
-
-            if (SeriesTransformation != SeriesTransformations.Identity)
-            {
-                segments.Add("Transformation: " + GetFriendlySeriesTransformationLabel(SeriesTransformation));
-            }
-
-            if (Aggregation != SeriesAggregationOptions.Mean || (Year == null && BinGranularity == BinGranularities.ByMonthOnly))
-            {
-                segments.Add("Aggregation: " + Aggregation);
-            }
-
-            if (TemporalCalculation == TemporalCalculationOptions.AnnualChange)
-            {
-                segments.Add("annual change");
-            }
-
-            if (TemporalCalculation == TemporalCalculationOptions.Cumulative)
-            {
-                segments.Add("cumulative");
-            }
-
-            if (Value != SeriesValueOptions.Value)
-            {
-                segments.Add("Value: " + Value);
-            }
-
-            // Smoothing only happens when the x-axis is linear
-            if (BinGranularity.IsLinear())
-            {
-                switch (Smoothing)
-                {
-                    case SeriesSmoothingOptions.ShrinkingCentredMovingAverage:
-                        segments.Add($"{SmoothingWindow} {(BinGranularity == BinGranularities.ByYear ? "year" : "month")} moving average");
-                        break;
-                    case SeriesSmoothingOptions.CentredMovingAverage:
-                        segments.Add($"{SmoothingWindow} {(BinGranularity == BinGranularities.ByYear ? "year" : "month")} centred moving average");
-                        break;
-                    case SeriesSmoothingOptions.Trendline:
-                        segments.Add("Trendline");
-                        break;
-                }
-            }
-
-            return string.Join(" | ", segments);
-        }
-    }
-
-    public static string BuildFriendlyTitleShortForSeries(SourceSeriesSpecification sss, BinGranularities binGranularity, SeriesAggregationOptions aggregation, short? year = null)
-    {
-        var segments = new List<string>();
-
-        if (sss.LocationName != null)
-        {
-            segments.Add(sss.LocationName);
-        }
-
-        if (year != null)
-        {
-            segments.Add(year.ToString()!);
-        }
-
-        if (sss.MeasurementDefinition != null)
-        {
-            segments.Add(MapDataTypeToFriendlyName(sss.MeasurementDefinition.DataType));
-        }
-        else
-        {
-            segments.Add("[Missing MeasurementDefinition]");
-        }
-
-        if (year == null && binGranularity == BinGranularities.ByMonthOnly)
-        {
-            segments.Add(aggregation.ToString());
-        }
-
-        return string.Join(" | ", segments);
+        return SeriesLabelSegment.Join(BuildFriendlyTitleShortSegmentsForSeries(sss, binGranularity, aggregation, year, includeLocation));
     }
 
     public static string MapDataTypeToFriendlyName(DataType dataType) => dataType.ToFriendlyName();
@@ -225,6 +123,87 @@ public class ChartSeriesDefinition
         };
     }
 
+    /// <summary>
+    /// The parts of the friendly title, used by the chart legend. A series with more than one source is
+    /// one <see cref="SeriesLabelPart.Whole"/> segment.
+    /// </summary>
+    /// <param name="includeLocation">False to leave the location out, when the chart title already names it.</param>
+    public List<SeriesLabelSegment> GetFriendlyTitleSegments(bool includeLocation = true)
+    {
+        var segments = new List<SeriesLabelSegment>();
+
+        if (SourceSeriesSpecifications!.Length == 1)
+        {
+            var sss = SourceSeriesSpecifications.Single();
+
+            if (includeLocation && sss.LocationName != null)
+            {
+                segments.Add(new(SeriesLabelPart.Location, sss.LocationName));
+            }
+
+            if (Year != null)
+            {
+                segments.Add(new(SeriesLabelPart.Year, Year.ToString()!));
+            }
+
+            segments.Add(new(SeriesLabelPart.DataType, MapDataTypeToFriendlyName(sss.MeasurementDefinition!.DataType)));
+
+            if (sss.MeasurementDefinition.DataAdjustment != null)
+            {
+                segments.Add(new(SeriesLabelPart.Adjustment, sss.MeasurementDefinition.DataAdjustment.ToString()!));
+            }
+        }
+        else
+        {
+            return [new(SeriesLabelPart.Whole, GetFriendlyTitleShort(includeLocation))];
+        }
+
+        if (SeriesTransformation != SeriesTransformations.Identity)
+        {
+            segments.Add(new(SeriesLabelPart.Transformation, "Transformation: " + GetFriendlySeriesTransformationLabel(SeriesTransformation)));
+        }
+
+        // "Statistic" rather than "Aggregation", which is the chart-level grouping shown in the chart's corner.
+        if (Aggregation != SeriesAggregationOptions.Mean || (Year == null && BinGranularity == BinGranularities.ByMonthOnly))
+        {
+            segments.Add(new(SeriesLabelPart.Aggregation, "Statistic: " + Aggregation));
+        }
+
+        if (TemporalCalculation == TemporalCalculationOptions.AnnualChange)
+        {
+            segments.Add(new(SeriesLabelPart.TemporalCalculation, "annual change"));
+        }
+
+        if (TemporalCalculation == TemporalCalculationOptions.Cumulative)
+        {
+            segments.Add(new(SeriesLabelPart.TemporalCalculation, "cumulative"));
+        }
+
+        if (Value != SeriesValueOptions.Value)
+        {
+            segments.Add(new(SeriesLabelPart.Value, "Value: " + Value));
+        }
+
+        // Smoothing only happens when the x-axis is linear
+        if (BinGranularity.IsLinear())
+        {
+            switch (Smoothing)
+            {
+                case SeriesSmoothingOptions.ShrinkingCentredMovingAverage:
+                    segments.Add(new(SeriesLabelPart.Smoothing, $"{SmoothingWindow} {(BinGranularity == BinGranularities.ByYear ? "year" : "month")} moving average"));
+                    break;
+                case SeriesSmoothingOptions.CentredMovingAverage:
+                    segments.Add(new(SeriesLabelPart.Smoothing, $"{SmoothingWindow} {(BinGranularity == BinGranularities.ByYear ? "year" : "month")} centred moving average"));
+                    break;
+                case SeriesSmoothingOptions.Trendline:
+                    segments.Add(new(SeriesLabelPart.Smoothing, "Trendline"));
+                    break;
+            }
+        }
+
+        return segments;
+    }
+
     public override string ToString()
     {
         return $"CSD: {BinGranularity} | {Smoothing} | {Aggregation} | {Value} | {DisplayStyle}";
@@ -239,7 +218,7 @@ public class ChartSeriesDefinition
     /// transformations (including Identity) that don't need this treatment.
     /// </summary>
     /// <remarks>
-    /// Single source of truth for this override, shared by the chart legend (ChartView.GetChartLabel)
+    /// Single source of truth for this override, shared by the chart legend (<see cref="SeriesLabeller"/>)
     /// and the tooltip (<see cref="GetTooltipLabel"/>) so the two can't drift out of sync.
     /// </remarks>
     public string? GetTransformationOverrideLabel()
@@ -259,7 +238,8 @@ public class ChartSeriesDefinition
     /// reading values off the tooltip. Transformations covered by <see cref="GetTransformationOverrideLabel"/>
     /// bypass this trimming and use their override label instead, matching the chart legend.
     /// </summary>
-    public string GetTooltipLabel(UnitOfMeasure unitOfMeasure)
+    /// <param name="unitLabel">The series' unit as displayed, from <see cref="UiLogic.SeriesDisplayUnits"/>.</param>
+    public string GetTooltipLabel(string unitLabel)
     {
         var overrideLabel = GetTransformationOverrideLabel();
 
@@ -273,30 +253,40 @@ public class ChartSeriesDefinition
             ? BuildTooltipDescriptorForSeries(SourceSeriesSpecifications.Single())
             : GetFriendlyTitleShort();
 
-        var unitLabel = Enums.UnitOfMeasureLabelShort(unitOfMeasure);
-
         return string.IsNullOrWhiteSpace(descriptor) ? unitLabel : $"{descriptor} | {unitLabel}";
     }
 
-    public string GetFriendlyTitleShort()
+    /// <param name="includeLocation">False to leave the location out, when the chart title already names it.</param>
+    public string GetFriendlyTitleShort(bool includeLocation = true)
+    {
+        return SeriesLabelSegment.Join(GetFriendlyTitleShortSegments(includeLocation));
+    }
+
+    /// <summary>
+    /// The parts of the short title. A derived series (a difference or an average of several) is one
+    /// <see cref="SeriesLabelPart.Whole"/> segment.
+    /// </summary>
+    /// <param name="includeLocation">False to leave the location out, when the chart title already names it.</param>
+    public List<SeriesLabelSegment> GetFriendlyTitleShortSegments(bool includeLocation = true)
     {
         switch (SeriesDerivationType)
         {
             case SeriesDerivationTypes.ReturnSingleSeries:
             case SeriesDerivationTypes.AverageOfAnomaliesInRegion:
-                return BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications!.Single(), BinGranularity, Aggregation, Year);
+                return BuildFriendlyTitleShortSegmentsForSeries(SourceSeriesSpecifications!.Single(), BinGranularity, Aggregation, Year, includeLocation);
 
             case SeriesDerivationTypes.DifferenceBetweenTwoSeries:
-                return $"[{BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications![0], BinGranularity, Aggregation, Year)}] minus [{BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications[1], BinGranularity, Aggregation, Year)}]";
+                return [new(SeriesLabelPart.Whole, $"[{BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications![0], BinGranularity, Aggregation, Year, includeLocation)}] minus [{BuildFriendlyTitleShortForSeries(SourceSeriesSpecifications[1], BinGranularity, Aggregation, Year, includeLocation)}]")];
 
             case SeriesDerivationTypes.AverageOfMultipleSeries:
-                return BuildAverageMultipleSeriesTitle(SourceSeriesSpecifications!);
+                return [new(SeriesLabelPart.Whole, BuildAverageMultipleSeriesTitle(SourceSeriesSpecifications!, includeLocation))];
 
             default: throw new NotImplementedException($"SeriesDerivationType {SeriesDerivationType}");
         }
     }
 
-    public string GetFriendlyDescription()
+    /// <param name="units">The reader's unit system. Defaults to metric.</param>
+    public string GetFriendlyDescription(IUnitFormatter? units = null)
     {
         var segments = new List<string>();
 
@@ -313,7 +303,7 @@ public class ChartSeriesDefinition
 
             if (sss.MeasurementDefinition != null)
             {
-                uomLabel = Enums.UnitOfMeasureLabelShort(sss.MeasurementDefinition.UnitOfMeasure);
+                uomLabel = SeriesDisplayUnits.Resolve(this, sss.MeasurementDefinition.UnitOfMeasure, units ?? UnitFormatter.Metric).ShortLabel;
             }
         }
 
@@ -379,6 +369,37 @@ public class ChartSeriesDefinition
         };
     }
 
+    private static List<SeriesLabelSegment> BuildFriendlyTitleShortSegmentsForSeries(SourceSeriesSpecification sss, BinGranularities binGranularity, SeriesAggregationOptions aggregation, short? year, bool includeLocation)
+    {
+        var segments = new List<SeriesLabelSegment>();
+
+        if (includeLocation && sss.LocationName != null)
+        {
+            segments.Add(new(SeriesLabelPart.Location, sss.LocationName));
+        }
+
+        if (year != null)
+        {
+            segments.Add(new(SeriesLabelPart.Year, year.ToString()!));
+        }
+
+        if (sss.MeasurementDefinition != null)
+        {
+            segments.Add(new(SeriesLabelPart.DataType, MapDataTypeToFriendlyName(sss.MeasurementDefinition.DataType)));
+        }
+        else
+        {
+            segments.Add(new(SeriesLabelPart.DataType, "[Missing MeasurementDefinition]"));
+        }
+
+        if (year == null && binGranularity == BinGranularities.ByMonthOnly)
+        {
+            segments.Add(new(SeriesLabelPart.Aggregation, aggregation.ToString()));
+        }
+
+        return segments;
+    }
+
     private static string BuildTooltipDescriptorForSeries(SourceSeriesSpecification sss)
     {
         var segments = new List<string>();
@@ -396,13 +417,16 @@ public class ChartSeriesDefinition
         return string.Join(" | ", segments);
     }
 
-    private static string BuildAverageMultipleSeriesTitle(SourceSeriesSpecification[] sss)
+    private static string BuildAverageMultipleSeriesTitle(SourceSeriesSpecification[] sss, bool includeLocation)
     {
         var segments = new List<string>();
 
         if (sss.All(o => o.LocationName == sss[0].LocationName))
         {
-            segments.Add(sss[0].LocationName!);
+            if (includeLocation)
+            {
+                segments.Add(sss[0].LocationName!);
+            }
         }
         else
         {

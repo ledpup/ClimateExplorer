@@ -4,17 +4,16 @@
 @using ClimateExplorer.Web.Client.UiModel
 
 <DelayedLoadingIndicator @bind-Visible="@IsLoading">
-    <div class="top100-space">
-    @if (YearCounts.Count > 0)
+    <div @ref="spaceRef" class="top100-space">
+    @if (YearCounts.Count > 0 && ChartWidth > 0)
     {
         <div class="mt-3">
             <div class="top100-svg-container">
-                <svg @ref="svgRef" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 @Top100Model.ChartWidth @Top100Model.ChartHeight" preserveAspectRatio="xMidYMid meet" class="top100-svg">
-                    <rect width="@Top100Model.ChartWidth" height="@Top100Model.ChartHeight" fill="#ffffff" />
-                    <text x="@(Top100Model.ChartWidth / 2)" y="22" text-anchor="middle" font-size="12" font-weight="bold" fill="#000">@BuildTitle()</text>
-                    <g transform="translate(0,30)">
-                        @((MarkupString)Top100Model.Generate(YearCounts, StartYear, EndYear))
-                    </g>
+                <svg @ref="svgRef" xmlns="http://www.w3.org/2000/svg" width="@ChartWidth" height="@Top100Model.ChartHeight" viewBox="0 0 @ChartWidth @Top100Model.ChartHeight" font-family="@Top100Model.FontFamily" class="top100-svg">
+                    <rect width="@ChartWidth" height="@Top100Model.ChartHeight" fill="#ffffff" />
+                    <text x="@(ChartWidth / 2)" y="@Top100Model.TitleY" text-anchor="middle" font-size="@Top100Model.FontSize" font-weight="bold" fill="#000">@BuildTitle()</text>
+                    <text x="@(ChartWidth / 2)" y="@Top100Model.SubtitleY" text-anchor="middle" font-size="@Top100Model.FontSize" fill="#000">@BuildSubtitle()</text>
+                    @((MarkupString)Top100Model.Generate(YearCounts, StartYear, EndYear, ChartWidth))
                 </svg>
             </div>
             <div class="top100-actions">

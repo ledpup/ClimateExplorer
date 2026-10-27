@@ -1,30 +1,15 @@
 namespace ClimateExplorer.Web.Client.Services;
 
 using System.Globalization;
-using ClimateExplorer.Web.UiLogic;
+using ClimateExplorer.Web.Client.Units;
 
 // Shared string/number formatting used across the other RecentObservationsCalculator.*.cs
 // files: value formatting per unit, date/month formatting, and small text helpers.
 public sealed partial class RecentObservationsCalculator
 {
-    private static string FormatTemperature(double value)
+    private static string FormatAnomaly(double value, Metric metric, IUnitFormatter units)
     {
-        return $"{value.ToString("0.0", CultureInfo.InvariantCulture)}°C";
-    }
-
-    private static string FormatPrecipitation(double value)
-    {
-        return $"{value.ToString("0", CultureInfo.InvariantCulture)}mm";
-    }
-
-    private static string FormatCo2(double value)
-    {
-        return $"{value.ToString("0.0", CultureInfo.InvariantCulture)} ppm";
-    }
-
-    private static string FormatAnomaly(double value, Metric metric)
-    {
-        return $"{(value >= 0 ? "+" : string.Empty)}{metric.Format(value)}";
+        return metric.FormatChange(value, units, signed: true);
     }
 
     private static string FormatStandardScore(double value)

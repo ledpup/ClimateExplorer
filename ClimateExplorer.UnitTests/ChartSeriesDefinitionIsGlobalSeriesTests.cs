@@ -6,7 +6,6 @@ using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.UiModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static ClimateExplorer.Core.Enums;
 
 /// <summary>
 /// Covers <see cref="ChartSeriesDefinition.IsGlobalSeries"/> - the local/global data set browsers'

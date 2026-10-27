@@ -14,8 +14,8 @@
             Note:
             <ul>
                 <li>The value in step 2 is called the anomaly</li>
-                <li>If the anomaly is above 0@(uomString), it is an above average year</li>
-                <li>If the anomaly is below 0@(uomString), it is a below average year</li>
+                <li>If the anomaly is above 0@(UnitLabel), it is an above average year</li>
+                <li>If the anomaly is below 0@(UnitLabel), it is a below average year</li>
             </ul>
         </li>
         <li>
@@ -30,16 +30,16 @@
     <p>For example, <strong>@LocationName</strong>:</p>
     <ul>
         <li>
-             Mean is @Math.Round(LocationMean.Value, uomRounding)@uomString for years @DataRecords!.First().Year-@DataRecords!.Last().Year
+             Mean is @FormatMean(LocationMean.Value) for years @DataRecords!.First().Year-@DataRecords!.Last().Year
         </li>
         <li>
-            The coldest temperature anomaly is @(Math.Round(min, uomRounding) >= 0 ? "+" : string.Empty)@Math.Round(min, uomRounding)@uomString
+            The coldest temperature anomaly is @FormatAnomaly(min)
         </li>
         <li>
-            The warmest temperature anomaly is @(Math.Round(max, uomRounding) >= 0 ? "+" : string.Empty)@Math.Round(max, uomRounding)@uomString
+            The warmest temperature anomaly is @FormatAnomaly(max)
         </li>
         <li>
-            If a yearly average were @Math.Round(LocationMean.Value - 1.3, uomRounding)@(uomString), the anomaly would be -1.3@(uomString)<br /> — a below average year, shown as blue on the climate stripe @(-1.3 < min ? "(and set as the new lowest anomaly)" : string.Empty)
+            If a yearly average were @FormatMean(LocationMean.Value + ExampleAnomaly), the anomaly would be @FormatAnomaly(ExampleAnomaly, signed: false)<br /> — a below average year, shown as blue on the climate stripe @(ExampleAnomaly < min ? "(and set as the new lowest anomaly)" : string.Empty)
         </li>
     </ul>
     

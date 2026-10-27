@@ -10,6 +10,8 @@
     --climate-color-link-hover: #0a58ca;
     --climate-color-muted-text: #595959;
     --climate-color-info-icon: #79c6f4;
+    --climate-color-tab-surface: #eef5f2;
+    --climate-color-tab-border: #6b8e89;
     --climate-radius-control: 8px;
     --climate-shadow-control: rgb(0 0 0 / 20%) 0 0 4px;
     --climate-shadow-panel: rgb(0 0 0 / 15%) 1px 1px 12px;
@@ -273,33 +275,43 @@ th {
     margin: 0;
 }
 
+/* Folder-style tabs. The active tab is filled with the brand green and sits on a baseline of the
+   same colour so it reads as attached to the content below. Inactive tabs are pale green with a
+   border that meets WCAG 1.4.11 (3:1 against white); all text/background pairs meet AA (4.5:1). */
 .climate-tabs .nav-tabs {
-    border-bottom: 2px solid #c4d4d1;
+    border-bottom: 2px solid var(--climate-color-control-text);
+    gap: 0.25rem;
 }
 
 .climate-tabs .nav-tabs .nav-link {
-    background: none;
-    border: none;
-    border-bottom: 2px solid transparent;
-    border-radius: 0;
-    color: #6b8e89;
+    background-color: var(--climate-color-tab-surface);
+    border: 1px solid var(--climate-color-tab-border);
+    border-bottom: none;
+    border-radius: var(--climate-radius-control) var(--climate-radius-control) 0 0;
+    color: var(--climate-color-control-text);
     font-size: 1rem;
     font-weight: 700;
-    margin-bottom: -2px;
-    padding: 0.35rem 0.75rem;
+    margin-bottom: 0;
+    padding: 0.35rem 0.85rem;
+    transition: var(--climate-transition-control);
 }
 
 .climate-tabs .nav-tabs .nav-link:hover {
-    background: none;
-    border-bottom-color: #7a9e9a;
-    color: #425f59;
+    background-color: var(--climate-color-control-hover);
+    border-color: var(--climate-color-control-text);
+    color: var(--climate-color-control-text);
+}
+
+.climate-tabs .nav-tabs .nav-link:focus-visible {
+    outline: 2px solid var(--climate-color-control-text);
+    outline-offset: 2px;
+    box-shadow: none;
 }
 
 .climate-tabs .nav-tabs .nav-link.active {
-    background: none;
-    border-bottom: 2px solid #425f59;
-    color: #2a3d39;
-    font-weight: 700;
+    background-color: var(--climate-color-control-text);
+    border-color: var(--climate-color-control-text);
+    color: #ffffff;
 }
 
 .tippy-box[data-theme~=blazorise] {
@@ -312,6 +324,10 @@ th {
 .trend-stats .trends-overview p {
     line-height: 1.45;
     margin: 0 0 0.9rem;
+}
+
+.trend-stats .trends-about-tabs {
+    margin-bottom: 1rem;
 }
 
 .trend-stats .trends-about-unavailable {

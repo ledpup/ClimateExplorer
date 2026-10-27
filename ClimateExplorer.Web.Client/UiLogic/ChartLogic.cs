@@ -4,53 +4,62 @@ using ClimateExplorer.Core;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.Client.UiModel;
+using ClimateExplorer.Web.Client.Units;
 using ClimateExplorer.Web.UiModel;
 using static ClimateExplorer.Core.Enums;
 
 public static class ChartLogic
 {
     private const int MaxDropoutYears = 5;
+    private const int MaxTitleLocationsWithCountry = 4;
+    private const string TitleGroupSeparator = " — ";
 
+    /// <summary>
+    /// The chart title names only places. Locations are grouped by country (<c>Canberra, Hobart | Australia</c>),
+    /// unrelated groups and regions are separated by <see cref="TitleGroupSeparator"/>, and locations come before regions.
+    /// </summary>
     public static string BuildChartTitle(List<SeriesWithData> chartSeriesWithData, Dictionary<Guid, Location>? locationDictionary)
     {
-        if (chartSeriesWithData.Count == 1)
+        var specs = GetPlaces(chartSeriesWithData.Select(x => x.ChartSeries!));
+
+        if (specs.Length == 0)
         {
-            return chartSeriesWithData.Single().ChartSeries!.FriendlyTitle;
+            return "Climate data";
         }
 
-        var specs = chartSeriesWithData
-            .SelectMany(x => x.ChartSeries!.SourceSeriesSpecifications!);
+        var locationSpecs = specs.Where(x => !Region.IsRegionId(x.LocationId)).ToArray();
+        var regionNames = specs.Where(x => Region.IsRegionId(x.LocationId)).Select(x => Region.GetRegion(x.LocationId).Name);
 
-        var ids = specs.Select(x => x.LocationId).Distinct().ToArray();
-        var names = specs.Select(x => x.LocationName).Distinct().ToArray();
-
-        if (ids.Length == 1 && locationDictionary is not null)
-        {
-            return locationDictionary![ids.Single()].FullTitle;
-        }
-        else if (ids.Length > 0)
-        {
-            return string.Join(", ", names);
-        }
-
-        return "Climate data";
+        return string.Join(TitleGroupSeparator, BuildLocationTitleGroups(locationSpecs, locationDictionary).Concat(regionNames));
     }
 
-    public static string BuildChartSubtitle(BinIdentifier? chartStartBin, BinIdentifier? chartEndBin, BinGranularities binGranularity, bool isMobileDevice, short groupingDays, string groupingThresholdText)
+    /// <summary>
+    /// One source series spec for each distinct place (location or region) on the chart, in the order the
+    /// series were added. The title names these places, so the series labels can leave out a single place.
+    /// </summary>
+    public static SourceSeriesSpecification[] GetPlaces(IEnumerable<ChartSeriesDefinition> series)
     {
-        var subtitle =
-                        (chartStartBin != null && chartEndBin != null)
-                        ? chartStartBin is YearBinIdentifier
-                            ? $"{chartStartBin.Label}-{chartEndBin.Label}, {Convert.ToInt16(chartEndBin.Label) - Convert.ToInt16(chartStartBin.Label)} years"
-                            : $"{chartStartBin.Label}-{chartEndBin.Label}"
-                        : binGranularity.ToFriendlyString();
+        return series
+            .SelectMany(x => x.SourceSeriesSpecifications!)
+            .DistinctBy(x => x.LocationId)
+            .ToArray();
+    }
 
-        if (!isMobileDevice)
-        {
-            subtitle += $" | Aggregation: {AggregationSettings.GroupingDaysText(groupingDays)} at {groupingThresholdText}";
-        }
+    public static string BuildChartSubtitle(BinIdentifier? chartStartBin, BinIdentifier? chartEndBin, BinGranularities binGranularity)
+    {
+        return (chartStartBin != null && chartEndBin != null)
+            ? chartStartBin is YearBinIdentifier
+                ? $"{chartStartBin.Label}-{chartEndBin.Label}, {Convert.ToInt16(chartEndBin.Label) - Convert.ToInt16(chartStartBin.Label)} years"
+                : $"{chartStartBin.Label}-{chartEndBin.Label}"
+            : binGranularity.ToFriendlyString();
+    }
 
-        return subtitle;
+    /// <summary>
+    /// The aggregation settings, shown in the chart's top-right corner rather than in the subtitle.
+    /// </summary>
+    public static string BuildAggregationText(short groupingDays, string groupingThresholdText)
+    {
+        return $"Aggregation: {AggregationSettings.GroupingDaysText(groupingDays)} at {groupingThresholdText}";
     }
 
     public static ChartJsDataset GetLineChartDataset(
@@ -61,7 +70,8 @@ public static class ChartLogic
         SeriesTransformations seriesTransformations,
         string? customTransformation,
         bool renderSmallPoints,
-        SeriesAggregationOptions seriesAggregationOptions)
+        SeriesAggregationOptions seriesAggregationOptions,
+        string? yAxisId = null)
     {
         var colour = Enumerable.Repeat<string?>(chartColour, values.Count).ToList();
 
@@ -83,7 +93,7 @@ public static class ChartLogic
                 BorderDash = [],
                 BorderWidth = 4,
 
-                YAxisId = GetYAxisId(seriesTransformations, customTransformation, unitOfMeasure, seriesAggregationOptions),
+                YAxisId = yAxisId ?? GetYAxisId(seriesTransformations, customTransformation, unitOfMeasure, seriesAggregationOptions),
             };
 
         return lineChartDataset;
@@ -96,7 +106,8 @@ public static class ChartLogic
         UnitOfMeasure unitOfMeasure,
         SeriesTransformations seriesTransformations,
         string? customTransformation,
-        SeriesAggregationOptions seriesAggregationOptions)
+        SeriesAggregationOptions seriesAggregationOptions,
+        string? yAxisId = null)
     {
         var colour = Enumerable.Repeat<string?>(chartColour, values.Count).ToList();
 
@@ -116,10 +127,15 @@ public static class ChartLogic
                 PointHoverBackgroundColor = colour,
                 BorderWidth = 0,
 
-                YAxisId = GetYAxisId(seriesTransformations, customTransformation, unitOfMeasure, seriesAggregationOptions),
+                YAxisId = yAxisId ?? GetYAxisId(seriesTransformations, customTransformation, unitOfMeasure, seriesAggregationOptions),
             };
     }
 
+    /// <param name="colourValues">
+    /// The values to choose each bar's colour from by sign, when they differ from the plotted
+    /// <paramref name="values"/>: the metric values of a converted series, so a bar is coloured the same
+    /// whichever unit system it's shown in. Defaults to <paramref name="values"/>.
+    /// </param>
     public static ChartJsDataset GetBarChartDataset(
         string label,
         List<double?> values,
@@ -130,9 +146,11 @@ public static class ChartLogic
         Colours? negativeValueColour,
         SeriesTransformations seriesTransformations,
         string? customTransformation,
-        SeriesAggregationOptions seriesAggregationOptions)
+        SeriesAggregationOptions seriesAggregationOptions,
+        string? yAxisId = null,
+        List<double?>? colourValues = null)
     {
-        var colour = GetBarChartColourSet(values, chartColour, positiveValueColour, negativeValueColour);
+        var colour = GetBarChartColourSet(colourValues ?? values, chartColour, positiveValueColour, negativeValueColour);
 
         return
             new ChartJsDataset
@@ -142,7 +160,7 @@ public static class ChartLogic
                 Data = values.Select(x => absoluteValues.GetValueOrDefault() && x.HasValue ? Math.Abs(x.Value) : x).ToList(),
                 BorderColor = colour,
                 BackgroundColor = colour,
-                YAxisId = GetYAxisId(seriesTransformations, customTransformation, unitOfMeasure, seriesAggregationOptions),
+                YAxisId = yAxisId ?? GetYAxisId(seriesTransformations, customTransformation, unitOfMeasure, seriesAggregationOptions),
             };
     }
 
@@ -158,13 +176,15 @@ public static class ChartLogic
         SeriesTransformations seriesTransformations = SeriesTransformations.Identity,
         string? customTransformation = null,
         SeriesAggregationOptions seriesAggregationOptions = SeriesAggregationOptions.Mean,
-        bool renderSmallPoints = false)
+        bool renderSmallPoints = false,
+        string? yAxisId = null,
+        List<double?>? colourValues = null)
     {
         return displayStyle switch
         {
-            SeriesDisplayStyle.Line => GetLineChartDataset(label, values, chartColour, unitOfMeasure, seriesTransformations, customTransformation, renderSmallPoints, seriesAggregationOptions),
-            SeriesDisplayStyle.Bar => GetBarChartDataset(label, values, chartColour, unitOfMeasure, absoluteValues, positiveValueColour, negativeValueColour, seriesTransformations, customTransformation, seriesAggregationOptions),
-            SeriesDisplayStyle.Scatter => GetScatterChartDataset(label, values, chartColour, unitOfMeasure, seriesTransformations, customTransformation, seriesAggregationOptions),
+            SeriesDisplayStyle.Line => GetLineChartDataset(label, values, chartColour, unitOfMeasure, seriesTransformations, customTransformation, renderSmallPoints, seriesAggregationOptions, yAxisId),
+            SeriesDisplayStyle.Bar => GetBarChartDataset(label, values, chartColour, unitOfMeasure, absoluteValues, positiveValueColour, negativeValueColour, seriesTransformations, customTransformation, seriesAggregationOptions, yAxisId, colourValues),
+            SeriesDisplayStyle.Scatter => GetScatterChartDataset(label, values, chartColour, unitOfMeasure, seriesTransformations, customTransformation, seriesAggregationOptions, yAxisId),
             _ => throw new NotImplementedException($"SeriesDisplayStyle {displayStyle}"),
         };
     }
@@ -225,22 +245,34 @@ public static class ChartLogic
         };
     }
 
+    /// <param name="displayUnits">
+    /// The units to plot the series in. Defaults to metric. The data set's values are metric and are
+    /// converted here, as the last step before Chart.js; bar colours are still chosen from the metric
+    /// values.
+    /// </param>
     public static ChartJsDataset GetSeriesChartDataset(
         SeriesWithData chartSeries,
         DataSet dataSet,
         string label,
         string htmlColourCode,
         bool absoluteValues = false,
-        bool renderSmallPoints = false)
+        bool renderSmallPoints = false,
+        SeriesDisplayUnits? displayUnits = null)
     {
-        var values =
+        var unitOfMeasure = dataSet.MeasurementDefinition!.UnitOfMeasure;
+
+        displayUnits ??= SeriesDisplayUnits.Resolve(chartSeries.ChartSeries!, unitOfMeasure, UnitFormatter.Metric);
+
+        var metricValues =
             dataSet.DataRecords
             .Select(x => x.Value)
             .ToList();
 
+        var values = metricValues.Select(displayUnits.ToDisplay).ToList();
+
         chartSeries.ChartSeries!.Colour = htmlColourCode;
 
-        var chartDataset = GetChartDataset(label, values, dataSet.MeasurementDefinition!.UnitOfMeasure, chartSeries.ChartSeries.DisplayStyle, htmlColourCode, absoluteValues, chartSeries.ChartSeries.PositiveValueColour, chartSeries.ChartSeries.NegativeValueColour, chartSeries.ChartSeries.SeriesTransformation, chartSeries.ChartSeries.CustomTransformation, chartSeries.ChartSeries.Aggregation, renderSmallPoints);
+        var chartDataset = GetChartDataset(label, values, unitOfMeasure, chartSeries.ChartSeries.DisplayStyle, htmlColourCode, absoluteValues, chartSeries.ChartSeries.PositiveValueColour, chartSeries.ChartSeries.NegativeValueColour, chartSeries.ChartSeries.SeriesTransformation, chartSeries.ChartSeries.CustomTransformation, chartSeries.ChartSeries.Aggregation, renderSmallPoints, displayUnits.AxisId, metricValues);
 
         return chartSeries.ChartSeries.ShowTrendline
             ? chartDataset with { TrendlineLinear = CreateTrendline(htmlColourCode) }
@@ -427,5 +459,47 @@ public static class ChartLogic
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// One title group per country, in the order the locations were added. A single location uses its
+    /// <see cref="Location.DisplayTitle"/>; more than <see cref="MaxTitleLocationsWithCountry"/> locations are
+    /// listed by name only. A location missing from the dictionary is shown by name, as its own group.
+    /// </summary>
+    private static IEnumerable<string> BuildLocationTitleGroups(SourceSeriesSpecification[] specs, Dictionary<Guid, Location>? locationDictionary)
+    {
+        if (specs.Length > MaxTitleLocationsWithCountry)
+        {
+            return [string.Join(", ", specs.Select(x => x.LocationName))];
+        }
+
+        var locations = specs
+            .Select(x => (x.LocationName, Location: locationDictionary?.GetValueOrDefault(x.LocationId), x.LocationId))
+            .ToArray();
+
+        if (locations is [{ Location: { } singleLocation }])
+        {
+            return [singleLocation.DisplayTitle];
+        }
+
+        var groups = locations
+            .GroupBy(x => x.Location?.CountryCode ?? x.LocationId.ToString())
+            .ToArray();
+
+        var useCountryCode = groups.Count(x => x.First().Location is not null) > 2;
+
+        return groups.Select(group =>
+        {
+            var names = string.Join(", ", group.Select(x => x.LocationName));
+            var location = group.First().Location;
+            var country = useCountryCode ? location?.CountryCode : location?.CountryWithoutOwner;
+
+            if (string.IsNullOrWhiteSpace(country))
+            {
+                return names;
+            }
+
+            return group.Count() == 1 ? $"{names}, {country}" : $"{names} | {country}";
+        });
     }
 }

@@ -1,0 +1,73 @@
+/* Sits on the dark green nav bar (#425f59). Every part that shows the state has at least 3:1 contrast
+   with what's next to it (WCAG 1.4.11): the white "off" outline is 6.97:1 against the bar, and the
+   info-icon blue "on" track is 3.72:1 against the bar and against its green knob. The knob's position
+   shows the state too, so it doesn't rely on colour alone. */
+.unit-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding: 0 8px;
+    border: 0;
+    border-radius: var(--climate-radius-control);
+    background: none;
+    color: white;
+    font-size: 0.875rem;
+    font-weight: bold;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: var(--climate-transition-control);
+}
+
+.unit-switch:focus-visible {
+    outline: 2px solid white;
+    outline-offset: 2px;
+}
+
+.unit-switch-track {
+    position: relative;
+    display: inline-block;
+    flex: 0 0 auto;
+    width: 36px;
+    height: 20px;
+    border: 2px solid white;
+    border-radius: 10px;
+    background-color: transparent;
+    transition: var(--climate-transition-control);
+}
+
+.unit-switch-knob {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: white;
+    transition: left 0.15s, background-color 0.25s;
+}
+
+.unit-switch[aria-checked="true"] .unit-switch-track {
+    border-color: var(--climate-color-info-icon);
+    background-color: var(--climate-color-info-icon);
+}
+
+.unit-switch[aria-checked="true"] .unit-switch-knob {
+    left: 18px;
+    background-color: var(--climate-color-control-text);
+}
+
+.unit-switch:hover {
+    color: var(--climate-color-control-hover);
+}
+
+.unit-switch:hover .unit-switch-track {
+    border-color: var(--climate-color-control-hover);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .unit-switch-track,
+    .unit-switch-knob {
+        transition: none;
+    }
+}

@@ -4,9 +4,7 @@
 
 .top100-svg-container {
     position: relative;
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
+    overflow: hidden;
     background-color: #ffffff;
 }
 
@@ -65,66 +63,6 @@
 
 .top100-svg {
     display: block;
-    height: auto;
-}
-
-@media (min-width: 1025px) {
-    .top100-svg {
-        width: 100%;
-    }
-}
-
-@media (max-width: 1024px) {
-    .top100-svg {
-        width: min(1024px, 140vw);
-        min-width: min(1024px, 140vw);
-    }
-
-    .top100-svg-container {
-        border-radius: 12px;
-        box-shadow: inset -8px 0 8px -8px rgba(0, 0, 0, 0.15);
-    }
-
-    .top100-svg-container::after {
-        content: '→';
-        position: absolute;
-        right: 8px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 24px;
-        color: rgba(0, 0, 0, 0.3);
-        pointer-events: none;
-        animation: scroll-hint 2s ease-in-out infinite;
-    }
-
-    .top100-svg-container::-webkit-scrollbar {
-        height: 8px;
-    }
-
-    .top100-svg-container::-webkit-scrollbar-track {
-        background: #f8f8f8;
-        border-radius: 8px;
-    }
-
-    .top100-svg-container::-webkit-scrollbar-thumb {
-        background: #425f59;
-        border-radius: 8px;
-    }
-
-    .top100-svg-container::-webkit-scrollbar-thumb:hover {
-        background: #2a3d39;
-    }
-}
-
-@keyframes scroll-hint {
-    0%, 100% {
-        opacity: 0.3;
-        transform: translateY(-50%) translateX(0);
-    }
-    50% {
-        opacity: 0.6;
-        transform: translateY(-50%) translateX(4px);
-    }
 }
 
 .top100-actions {

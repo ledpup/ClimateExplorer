@@ -3,6 +3,7 @@ namespace ClimateExplorer.Web.Client.Services;
 
 using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Web.Client.UiModel.RecentObservations;
+using static ClimateExplorer.Core.Enums;
 
 // The concrete Metric/MetricDomain instances for each observation domain. Kept apart from
 // the Metric/MetricDomain type definitions (RecentObservationsCalculator.Metrics.cs) since
@@ -15,10 +16,9 @@ public sealed partial class RecentObservationsCalculator
         "Average mean",
         x => x.Mean,
         MetricAggregation.Mean,
-        FormatTemperature,
+        UnitOfMeasure.DegreesCelsius,
         "Average mean",
-        "Mean",
-        "°C");
+        "Mean");
 
     private static readonly Metric AverageMaxTemperatureMetric = new(
         "temp.max",
@@ -26,10 +26,9 @@ public sealed partial class RecentObservationsCalculator
         "Average maximum",
         x => x.Max,
         MetricAggregation.Mean,
-        FormatTemperature,
+        UnitOfMeasure.DegreesCelsius,
         "Average maximum",
-        "Maximum",
-        "°C");
+        "Maximum");
 
     private static readonly Metric AverageMinTemperatureMetric = new(
         "temp.min",
@@ -37,10 +36,9 @@ public sealed partial class RecentObservationsCalculator
         "Average minimum",
         x => x.Min,
         MetricAggregation.Mean,
-        FormatTemperature,
+        UnitOfMeasure.DegreesCelsius,
         "Average minimum",
-        "Minimum",
-        "°C");
+        "Minimum");
 
     private static readonly Metric HighestDailyMaxTemperatureMetric = new(
         "temp.daily-max-high",
@@ -48,10 +46,9 @@ public sealed partial class RecentObservationsCalculator
         "Highest daily max",
         x => x.Max,
         MetricAggregation.Max,
-        FormatTemperature,
+        UnitOfMeasure.DegreesCelsius,
         "Highest daily maximum",
-        "Highest daily maximum",
-        "°C");
+        "Highest daily maximum");
 
     private static readonly Metric LowestDailyMaxTemperatureMetric = new(
         "temp.daily-max-low",
@@ -59,10 +56,9 @@ public sealed partial class RecentObservationsCalculator
         "Lowest daily max",
         x => x.Max,
         MetricAggregation.Min,
-        FormatTemperature,
+        UnitOfMeasure.DegreesCelsius,
         "Lowest daily maximum",
-        "Lowest daily maximum",
-        "°C");
+        "Lowest daily maximum");
 
     private static readonly Metric HighestDailyMinTemperatureMetric = new(
         "temp.daily-min-high",
@@ -70,10 +66,9 @@ public sealed partial class RecentObservationsCalculator
         "Highest daily min",
         x => x.Min,
         MetricAggregation.Max,
-        FormatTemperature,
+        UnitOfMeasure.DegreesCelsius,
         "Highest daily minimum",
-        "Highest daily minimum",
-        "°C");
+        "Highest daily minimum");
 
     private static readonly Metric LowestDailyMinTemperatureMetric = new(
         "temp.daily-min-low",
@@ -81,10 +76,9 @@ public sealed partial class RecentObservationsCalculator
         "Lowest daily min",
         x => x.Min,
         MetricAggregation.Min,
-        FormatTemperature,
+        UnitOfMeasure.DegreesCelsius,
         "Lowest daily minimum",
-        "Lowest daily minimum",
-        "°C");
+        "Lowest daily minimum");
 
     // Daily tiles describe a single day, which has a maximum, a minimum and a mean
     // — not aggregates across days. These reuse the period-metric keys (so their
@@ -96,10 +90,9 @@ public sealed partial class RecentObservationsCalculator
         "Maximum",
         x => x.Max,
         MetricAggregation.Max,
-        FormatTemperature,
+        UnitOfMeasure.DegreesCelsius,
         "Maximum",
-        "Maximum",
-        "°C");
+        "Maximum");
 
     private static readonly Metric DailyMinTemperatureMetric = new(
         "temp.daily-min-low",
@@ -107,10 +100,9 @@ public sealed partial class RecentObservationsCalculator
         "Minimum",
         x => x.Min,
         MetricAggregation.Min,
-        FormatTemperature,
+        UnitOfMeasure.DegreesCelsius,
         "Minimum",
-        "Minimum",
-        "°C");
+        "Minimum");
 
     private static readonly Metric DailyMeanTemperatureMetric = new(
         "temp.mean",
@@ -118,10 +110,9 @@ public sealed partial class RecentObservationsCalculator
         "Mean",
         x => x.Mean,
         MetricAggregation.Mean,
-        FormatTemperature,
+        UnitOfMeasure.DegreesCelsius,
         "Mean",
-        "Mean",
-        "°C");
+        "Mean");
 
     private static readonly Metric PrecipitationMetric = new(
         "precip.total",
@@ -129,10 +120,9 @@ public sealed partial class RecentObservationsCalculator
         "Precipitation total",
         x => x.Precipitation,
         MetricAggregation.Sum,
-        FormatPrecipitation,
+        UnitOfMeasure.Millimetres,
         "Total precipitation",
-        "Precipitation",
-        "mm");
+        "Precipitation");
 
     private static readonly Metric HighestDailyPrecipitationMetric = new(
         "precip.daily-high",
@@ -140,10 +130,9 @@ public sealed partial class RecentObservationsCalculator
         "Highest daily precipitation",
         x => x.Precipitation,
         MetricAggregation.Max,
-        FormatPrecipitation,
+        UnitOfMeasure.Millimetres,
         "Highest daily precipitation",
-        "Highest daily precipitation",
-        "mm");
+        "Highest daily precipitation");
 
     private static readonly Metric DailyPrecipitationMetric = new(
         "precip.total",
@@ -151,10 +140,9 @@ public sealed partial class RecentObservationsCalculator
         "Precipitation",
         x => x.Precipitation,
         MetricAggregation.Sum,
-        FormatPrecipitation,
+        UnitOfMeasure.Millimetres,
         "Precipitation",
-        "Precipitation",
-        "mm");
+        "Precipitation");
 
     private static readonly Metric Co2Metric = new(
         "co2.value",
@@ -162,10 +150,9 @@ public sealed partial class RecentObservationsCalculator
         "Mean CO₂",
         x => x.Co2,
         MetricAggregation.Mean,
-        FormatCo2,
+        UnitOfMeasure.PartsPerMillion,
         "Mean CO₂",
-        "CO₂",
-        "ppm");
+        "CO₂");
 
     private static readonly Metric DailyCo2Metric = new(
         "co2.value",
@@ -173,10 +160,9 @@ public sealed partial class RecentObservationsCalculator
         "CO₂",
         x => x.Co2,
         MetricAggregation.Mean,
-        FormatCo2,
+        UnitOfMeasure.PartsPerMillion,
         "CO₂",
-        "CO₂",
-        "ppm");
+        "CO₂");
 
     private static readonly MetricDomain TemperatureDomain = new(
         MeanTemperatureMetric,

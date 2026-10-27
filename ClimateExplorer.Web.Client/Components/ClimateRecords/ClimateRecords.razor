@@ -5,7 +5,7 @@
 @using System.Globalization
 @using static ClimateExplorer.Core.Enums
 
-<div class="climate-tabs d-flex align-items-center justify-content-between mb-4">
+<div class="climate-tabs mb-4">
     <Tabs SelectedTab="@ActiveView.ToString()" SelectedTabChanged="@OnViewChanged">
         <Items>
             <Tab Name="Top100">Top 100</Tab>
@@ -126,7 +126,7 @@
                                     {
                                         <td>@record.Year</td>
                                         <td class="text-end">@(record.Anomaly.HasValue ? FormatAnomaly(record.Anomaly.Value, unitOfMeasure) : "N/A")</td>
-                                        <td class="text-end">@(record.Average.HasValue ? FormatValue(record.Average.Value, unitOfMeasure) : "N/A")</td>
+                                        <td class="text-end">@(record.Average.HasValue ? FormatAverage(record.Average.Value, unitOfMeasure) : "N/A")</td>
                                     }
                                     else
                                     {

@@ -5,6 +5,8 @@ using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.Stats.Model;
 using ClimateExplorer.Web.Client.UiModel;
+using ClimateExplorer.Web.Client.Units;
+using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
 using static ClimateExplorer.Core.Enums;
 
@@ -36,15 +38,22 @@ public class Exporter : IExporter
 
         data.Add(string.Empty);
 
-        var header = "Year," + string.Join(",", dataDownloadPackage.ChartSeriesWithData!.Select(x => BuildColumnHeader(relevantLocations, x.ChartSeries!)));
+        // Each column is in its series' display units, the same as the chart it was downloaded from, and
+        // its header names that unit so the numbers can't be mistaken for another system's.
+        var displayUnits = dataDownloadPackage.ChartSeriesWithData!
+            .Select(x => SeriesDisplayUnits.Resolve(x.ChartSeries!, x.ProcessedDataSet!.MeasurementDefinition!.UnitOfMeasure, dataDownloadPackage.Units))
+            .ToArray();
+
+        var header = "Year," + string.Join(",", dataDownloadPackage.ChartSeriesWithData!.Select((x, i) => $"{BuildColumnHeader(relevantLocations, x.ChartSeries!)} ({displayUnits[i].ShortLabel})"));
         data.Add(header);
 
         foreach (var bin in dataDownloadPackage.Bins)
         {
             var dataRow = bin.Label + ",";
-            foreach (var cswd in dataDownloadPackage.ChartSeriesWithData!)
+            for (var i = 0; i < dataDownloadPackage.ChartSeriesWithData!.Count; i++)
             {
-                var val = cswd.ProcessedDataSet!.DataRecords.SingleOrDefault(x => x.BinId == bin.Id)?.Value;
+                var cswd = dataDownloadPackage.ChartSeriesWithData[i];
+                var val = displayUnits[i].ToDisplay(cswd.ProcessedDataSet!.DataRecords.SingleOrDefault(x => x.BinId == bin.Id)?.Value);
                 dataRow += (val == null ? string.Empty : val.Value.ToString("0.00")) + ",";
             }
 
@@ -59,8 +68,10 @@ public class Exporter : IExporter
         return fileStream;
     }
 
-    public Stream ExportClimateRecords(ILogger logger, Location location, ClimateRecordViewModel[] records, string sourceUri, DataResolution dataResolution, UnitOfMeasure unitOfMeasure)
+    public Stream ExportClimateRecords(ILogger logger, Location location, ClimateRecordViewModel[] records, string sourceUri, DataResolution dataResolution, UnitOfMeasure unitOfMeasure, IUnitFormatter? units = null)
     {
+        units ??= UnitFormatter.Metric;
+
         logger.LogInformation("ExportClimateRecords for {Location} with {Count} records", location.FullTitle, records.Length);
 
         var baseUri = new Uri(sourceUri);
@@ -75,7 +86,7 @@ public class Exporter : IExporter
 
         if (records.Length > 0)
         {
-            var unitLabel = UnitOfMeasureLabelShort(unitOfMeasure);
+            var unitLabel = units.ShortLabel(unitOfMeasure);
 
             data.Add(dataResolution switch
             {
@@ -90,11 +101,11 @@ public class Exporter : IExporter
                 data.Add(dataResolution switch
                 {
                     DataResolution.Yearly =>
-                        $"{rank},{record.Year},{(record.Anomaly.HasValue ? FormatCsvValue(record.Anomaly.Value) : string.Empty)},{(record.Average.HasValue ? FormatCsvValue(record.Average.Value) : string.Empty)}",
+                        $"{rank},{record.Year},{(record.Anomaly.HasValue ? FormatCsvValue(ApiMeasures.ClimateRecordAnomaly(record.Anomaly.Value, unitOfMeasure), units) : string.Empty)},{(record.Average.HasValue ? FormatCsvValue(ApiMeasures.ClimateRecordAverage(record.Average.Value, unitOfMeasure), units) : string.Empty)}",
                     DataResolution.Monthly =>
-                        $"{rank},{CultureInfo.InvariantCulture.DateTimeFormat.GetMonthName(record.Month)},{record.Year},{FormatCsvValue(record.Value)}",
+                        $"{rank},{CultureInfo.InvariantCulture.DateTimeFormat.GetMonthName(record.Month)},{record.Year},{FormatCsvValue(ApiMeasures.ClimateRecordValue(record.Value, unitOfMeasure), units)}",
                     _ =>
-                        $"{rank},{(record.Day.HasValue ? $"{record.Day} {CultureInfo.InvariantCulture.DateTimeFormat.GetAbbreviatedMonthName(record.Month)}" : CultureInfo.InvariantCulture.DateTimeFormat.GetMonthName(record.Month))},{record.Year},{FormatCsvValue(record.Value)}",
+                        $"{rank},{(record.Day.HasValue ? $"{record.Day} {CultureInfo.InvariantCulture.DateTimeFormat.GetAbbreviatedMonthName(record.Month)}" : CultureInfo.InvariantCulture.DateTimeFormat.GetMonthName(record.Month))},{record.Year},{FormatCsvValue(ApiMeasures.ClimateRecordValue(record.Value, unitOfMeasure), units)}",
                 });
                 rank++;
             }
@@ -104,7 +115,11 @@ public class Exporter : IExporter
         return new MemoryStream(bytes);
     }
 
-    public Stream ExportTrendData(ILogger logger, Location location, string dataTypeLabel, string windowLabel, IReadOnlyList<DataPoint> points, string sourceUri)
+    /// <summary>
+    /// The points a trend was fitted to, in metric: the download goes with the About-trends regression
+    /// report, which is always metric. The header names the unit so the values can't be read as another.
+    /// </summary>
+    public Stream ExportTrendData(ILogger logger, Location location, string dataTypeLabel, string windowLabel, IReadOnlyList<DataPoint> points, string sourceUri, UnitOfMeasure? unit = null)
     {
         logger.LogInformation("ExportTrendData for {Location} {DataType} {Window} with {Count} points", location.FullTitle, dataTypeLabel, windowLabel, points.Count);
 
@@ -117,7 +132,7 @@ public class Exporter : IExporter
             $"{location.FullTitle},{location.Coordinates.ToFriendlyString(true)}",
             $"{dataTypeLabel} - {windowLabel}",
             string.Empty,
-            "Year,Value",
+            unit is { } u ? $"Year,Value ({UnitFormatter.Metric.ShortLabel(u)})" : "Year,Value",
         };
 
         foreach (var point in points.OrderBy(x => x.X))
@@ -129,7 +144,8 @@ public class Exporter : IExporter
         return new MemoryStream(bytes);
     }
 
-    private static string FormatCsvValue(double value) => value.ToString("0.0", CultureInfo.InvariantCulture);
+    // At least one decimal place, as on screen; inches get the two they need.
+    private static string FormatCsvValue(Measure measure, IUnitFormatter units) => units.FormatNumber(measure, minimumDecimals: 1);
 
     private string BuildColumnHeader(GeographicalEntity[] relevantLocations, ChartSeriesDefinition csd)
     {

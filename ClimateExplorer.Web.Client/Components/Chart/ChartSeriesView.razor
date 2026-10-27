@@ -16,9 +16,14 @@
          style="@StyleForTitleBar">
         <div class="main">
             <div class="title">@ChartSeries!.GetFriendlyTitleShort()</div>
-            <div class="description">@ChartSeries!.GetFriendlyDescription()</div>
+            <div class="description">@ChartSeries!.GetFriendlyDescription(Units)</div>
         </div>
         <div class="title-bar-actions">
+            <DelayedTooltip Text="About this data">
+                <button type="button" class="info" aria-label="About this data" @onclick="@OnAboutThisDataClicked" @onclick:stopPropagation="true">
+                    <i class="fas fa-circle-info fa-lg"></i>
+                </button>
+            </DelayedTooltip>
             <DelayedTooltip Text="Remove this series">
                 <button type="button" class="trash" aria-label="Remove this series" @onclick="@OnRemoveSeriesClicked" @onclick:stopPropagation="true">
                     <i class="fas fa-trash fa-lg"></i>
@@ -45,7 +50,7 @@
                         }
                         <DelayedTooltip Text="@AggregationTooltipText" Style="display: block">
                             <div class="form-row">
-                                <span class="form-label">Aggregation</span>
+                                <span class="form-label">Statistic</span>
                                 <span class="form-control-wrap">
                                     <Select TValue="SeriesAggregationOptions"
                                             Size="Size.Small"

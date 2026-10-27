@@ -74,6 +74,10 @@ builder.Services.Configure<GzipCompressionProviderOptions>(options => options.Le
 
 builder.Logging.AddConsole();
 
+// Console output isn't captured on Windows App Service; this feeds App Service logs (filesystem/log stream)
+// instead, and does nothing when not running there.
+builder.Logging.AddAzureWebAppDiagnostics();
+
 var everydayCache = new FileBackedTwoLayerCache("cache");
 var yearLongCache = new FileBackedTwoLayerCache("cache-longterm");
 

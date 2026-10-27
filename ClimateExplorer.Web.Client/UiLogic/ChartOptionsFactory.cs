@@ -1,7 +1,9 @@
 namespace ClimateExplorer.Web.UiLogic;
 
 using System.Dynamic;
+using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Web.Client.UiModel;
+using ClimateExplorer.Web.Client.Units;
 using ClimateExplorer.Web.UiModel;
 using static ClimateExplorer.Core.Enums;
 
@@ -22,9 +24,11 @@ public static class ChartOptionsFactory
     /// <summary>
     /// Builds a global min/max per axis from the full source datasets, before any display range filtering.
     /// This ensures the y-axis range reflects the complete dataset even when "chart all data" is off.
+    /// The range is in display units, so axis padding and scale-to-zero apply to what the reader sees.
     /// </summary>
     public static (Dictionary<string, (double Min, double Max)> AxisMinMax, HashSet<string> AxisHasBarSeries) CalculateAxisMinMax(
-        IReadOnlyList<SeriesWithData> seriesWithData)
+        IReadOnlyList<SeriesWithData> seriesWithData,
+        IUnitFormatter? units = null)
     {
         Dictionary<string, (double Min, double Max)> axisMinMax = [];
         HashSet<string> axisHasBarSeries = [];
@@ -32,7 +36,8 @@ public static class ChartOptionsFactory
         {
             var cs = swd.ChartSeries!;
             var uom = cs.SourceSeriesSpecifications!.First().MeasurementDefinition!.UnitOfMeasure;
-            var axisId = ChartLogic.GetYAxisId(cs.SeriesTransformation, cs.CustomTransformation, uom, cs.Aggregation);
+            var displayUnits = SeriesDisplayUnits.Resolve(cs, uom, units ?? UnitFormatter.Metric);
+            var axisId = displayUnits.AxisId;
 
             if (cs.DisplayStyle == SeriesDisplayStyle.Bar)
             {
@@ -42,7 +47,7 @@ public static class ChartOptionsFactory
             var values = swd.PreProcessedDataSet!.DataRecords!
                 .Select(x => x.Value)
                 .Where(v => v.HasValue)
-                .Select(v => v!.Value)
+                .Select(v => displayUnits.ToDisplay(v!.Value))
                 .ToList();
 
             // A projection can rise above (or fall below) everything in the record, and these
@@ -52,7 +57,7 @@ public static class ChartOptionsFactory
             {
                 if (trend.Projection is { } projection)
                 {
-                    values.AddRange(projection.Predictions.Select(x => x.PredictedY));
+                    values.AddRange(projection.Predictions.Select(x => displayUnits.ToDisplay(x.PredictedY)));
                 }
             }
 
@@ -106,44 +111,108 @@ public static class ChartOptionsFactory
 
     private static IReadOnlyList<AxisInfo> CreateYAxes(dynamic scales, ChartOptionsRequest request)
     {
-        var (axisMinMax, axisHasBarSeries) = CalculateAxisMinMax(request.SeriesWithData);
+        var (axisMinMax, axisHasBarSeries) = CalculateAxisMinMax(request.SeriesWithData, request.Units);
+
+        var seriesWithAxis = request.Series
+            .Where(x => x.DataAvailable)
+            .Select(s =>
+            {
+                var uom = s.SourceSeriesSpecifications!.First().MeasurementDefinition!.UnitOfMeasure;
+                var displayUnits = SeriesDisplayUnits.Resolve(s, uom, request.Units);
+                return (Series: s, Uom: uom, DisplayUnits: displayUnits, AxisId: displayUnits.AxisId);
+            })
+            .ToList();
+
+        var coloursByAxis = seriesWithAxis
+            .GroupBy(x => x.AxisId)
+            .ToDictionary(g => g.Key, g => g.Select(x => x.Series.Colour).Distinct().ToArray());
 
         var axes = new List<string>();
         var currentAxes = new List<AxisInfo>();
-        foreach (var s in request.Series.Where(x => x.DataAvailable))
+        foreach (var (s, uom, displayUnits, axisId) in seriesWithAxis)
         {
-            var uom = s.SourceSeriesSpecifications!.First().MeasurementDefinition!.UnitOfMeasure;
-            var axisId = ChartLogic.GetYAxisId(s.SeriesTransformation, s.CustomTransformation, uom, s.Aggregation);
             if (!axes.Contains(axisId))
             {
                 axisMinMax.TryGetValue(axisId, out var globalMinMax);
                 var axisRange = globalMinMax.Max - globalMinMax.Min;
                 var axisPadding = !axisHasBarSeries.Contains(axisId) ? axisRange * 0.02 : 0.0;
                 var scaleToZero = request.AxesScaleToZero.TryGetValue(axisId, out var s2z) && s2z;
-                var label = UnitOfMeasureLabel(s.SeriesTransformation, s.CustomTransformation, uom, s.Aggregation, s.Value, s.Hemisphere);
+                var label = GetYAxisLabel(s, uom, displayUnits, request.IsMobileDevice);
                 currentAxes.Add(new AxisInfo(axisId, label));
-                ((IDictionary<string, object>)scales).Add(
-                    axisId,
-                    new
-                    {
-                        Display = true,
-                        Axis = "y",
-                        Position = axes.Count % 2 == 0 ? "left" : "right",
-                        Grid = new { DrawOnChartArea = axes.Count == 0 },
-                        Title = new
-                        {
-                            Text = label,
-                            Display = true,
-                            Color = s.Colour,
-                        },
-                        Min = scaleToZero && globalMinMax.Min > 0 ? 0.0 : globalMinMax.Min == 0 ? globalMinMax.Min : globalMinMax.Min - axisPadding,
-                        Max = globalMinMax.Max == 0 ? globalMinMax.Max : globalMinMax.Max + axisPadding,
-                    });
+
+                // Hard Min/Max make Chart.js label the exact bounds (e.g. 11.7, 12.0, 12.5), which looks wrong.
+                // Where a bound is padded, suggest it instead: with the default bounds: 'ticks', Chart.js then
+                // rounds the axis out to the next tick label once it has chosen the label step.
+
+                // ExpandoObject keys are not run through the camelCase naming policy, so they are written camelCased here.
+                var axisScale = new Dictionary<string, object>();
+                axisScale["display"] = true;
+                axisScale["axis"] = "y";
+                axisScale["position"] = axes.Count % 2 == 0 ? "left" : "right";
+                axisScale["grid"] = new { DrawOnChartArea = axes.Count == 0 };
+                axisScale["title"] = new
+                {
+                    Text = label,
+                    Display = true,
+                    Color = "black",
+                    SwatchColours = coloursByAxis[axisId],
+                };
+
+                if (scaleToZero && globalMinMax.Min > 0)
+                {
+                    axisScale["min"] = 0.0;
+                }
+                else if (globalMinMax.Min == 0)
+                {
+                    axisScale["min"] = 0.0;
+                }
+                else
+                {
+                    axisScale["suggestedMin"] = globalMinMax.Min - axisPadding;
+                }
+
+                if (globalMinMax.Max == 0)
+                {
+                    axisScale["max"] = 0.0;
+                }
+                else
+                {
+                    axisScale["suggestedMax"] = globalMinMax.Max + axisPadding;
+                }
+
+                ((IDictionary<string, object>)scales).Add(axisId, axisScale);
                 axes.Add(axisId);
             }
         }
 
         return currentAxes;
+    }
+
+    /// <summary>
+    /// The axis title. Frost days and custom transformations are titled by what they count, from Core.
+    /// Every other title names the display unit with the same anomaly wording Core uses. On mobile, the
+    /// rotated title has little room, so an anomaly - the longest title - uses the short unit label.
+    /// </summary>
+    private static string GetYAxisLabel(ChartSeriesDefinition s, UnitOfMeasure uom, SeriesDisplayUnits displayUnits, bool isMobileDevice)
+    {
+        if (s.SeriesTransformation is SeriesTransformations.DayOfYearIfFrost or SeriesTransformations.Custom)
+        {
+            return UnitOfMeasureLabel(s.SeriesTransformation, s.CustomTransformation, uom, s.Aggregation, s.Value, s.Hemisphere);
+        }
+
+        var titleUnit = AxisTitleUnit(uom, s.Value);
+        var needsSuffix = NeedsAnomalySuffix(titleUnit, s.Value);
+
+        if (isMobileDevice && (needsSuffix || titleUnit == UnitOfMeasure.DegreesCelsiusAnomaly))
+        {
+            var shortLabel = displayUnits.Formatter.ShortLabel(titleUnit);
+
+            return needsSuffix ? $"{shortLabel} anomaly" : shortLabel;
+        }
+
+        var label = displayUnits.Formatter.Label(titleUnit);
+
+        return needsSuffix ? $"{label} - Anomaly" : label;
     }
 
     private static object CreateChartOptions(ChartOptionsRequest request, dynamic scales)
@@ -175,6 +244,23 @@ public static class ChartOptionsFactory
                     Text = request.Subtitle,
                     Display = true,
                     Color = "black",
+
+                    // More than the default bottom padding, so the corner text clears the top tick label of a right-hand axis.
+                    Padding = new { Top = 0, Bottom = 15 },
+                },
+
+                // Drawn by the cornerNote plugin in ChartJsChart.razor.js. Left off on mobile, where there isn't room.
+                CornerNote = new
+                {
+                    Text = request.IsMobileDevice ? null : request.AggregationText,
+                    Color = "#595959",
+                },
+
+                // Drawn by the seriesNote plugin in ChartJsChart.razor.js, at the bottom left beside the legend.
+                SeriesNote = new
+                {
+                    Text = request.SeriesNote is null ? null : $"All series: {request.SeriesNote}",
+                    Color = "#595959",
                 },
                 Tooltip = new
                 {

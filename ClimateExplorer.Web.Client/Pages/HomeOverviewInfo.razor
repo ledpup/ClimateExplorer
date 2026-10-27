@@ -1,6 +1,24 @@
 @namespace ClimateExplorer.Web.Client.Components
 @using ClimateExplorer.Web.Client.Components.Common
 
+@if (ShowLocationPrompt && !string.IsNullOrWhiteSpace(LocationName))
+{
+    <div class="location-prompt">
+        <p class="location-prompt-text">
+            You're viewing <strong>@LocationName</strong>. See how the climate is changing where you are:
+        </p>
+        <ClimateButton Text="@(NearMeLoading ? "Finding your location…" : "Show near me")"
+                       Icon="fas fa-location-crosshairs"
+                       Disabled="@NearMeLoading"
+                       OnClick="OnNearMe" />
+        @if (NearMeErrorMessage is not null)
+        {
+            <p class="location-prompt-error" role="alert">@NearMeErrorMessage</p>
+        }
+        <p class="location-prompt-note">Your browser will ask permission. Your position is only used on this device to find the nearest station.</p>
+    </div>
+}
+
 <p>
     ClimateExplorer helps you explore how the climate is changing in your region and around the world. There are two main sections: this page and the global section. Try clicking elements such as <ClimateButton Variant="ButtonVariant.Link" Text="record high" Class="action-link" OnClick="OnShowRecordHigh" />. <ClimateButton Variant="ButtonVariant.Link" Text="Recent observations" Class="action-link" OnClick="OnShowRecentObservations" /> downloads the latest data and displays tiles comparing with the historical record.
 </p>

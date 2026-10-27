@@ -58,6 +58,56 @@ public sealed class DataSetSourceUpdateCoordinatorTests
     }
 
     [TestMethod]
+    public async Task PrepareAsync_ColdManagedSource_RecordsHashOfPublishedContent()
+    {
+        var stateStore = new MemoryStateStore();
+        var coordinator = CreateCoordinator(new StubDownloader(ValidNinoContent), stateStore: stateStore);
+
+        await coordinator.PrepareAsync(await CreateNinoRequest(), null, permitSourceUpdate: true, CancellationToken.None);
+
+        var published = await DataSetSourceFileStore.ComputeFileInfoAsync(Path.Combine(temporaryRoot, "Nino34", "nino34.long.anom.data.txt"), CancellationToken.None);
+        var state = await stateStore.GetAsync("NINO34/NINO34.LONG.ANOM.DATA.TXT", CancellationToken.None);
+        Assert.AreEqual(published.Sha256, state!.Sha256);
+        Assert.AreEqual(published.Length, state.Length);
+    }
+
+    [TestMethod]
+    public async Task PrepareAsync_PublishedFileReadsDifferentlyJustAfterRefresh_TrustsOwnRecordWithoutDownloadingAgain()
+    {
+        var downloader = new StubDownloader(ValidNinoContent);
+        var timeProvider = new FixedTimeProvider(Now);
+        var coordinator = CreateCoordinator(downloader, timeProvider: timeProvider);
+        var request = await CreateNinoRequest();
+        await coordinator.PrepareAsync(request, null, permitSourceUpdate: true, CancellationToken.None);
+
+        // Stands in for shared storage still returning the replaced file just after the publish.
+        await File.WriteAllTextAsync(Path.Combine(temporaryRoot, "Nino34", "nino34.long.anom.data.txt"), ValidNinoContent + "\n");
+        timeProvider.Now = Now.Add(DataSetSourceUpdateCoordinator.RecentlyPublishedTrustWindow / 2);
+        var result = await coordinator.PrepareAsync(request, null, permitSourceUpdate: true, CancellationToken.None);
+
+        Assert.AreEqual(DataSetSourcePreparationOutcome.Rebuild, result.Outcome);
+        Assert.AreEqual(Now, result.RetrievedDate);
+        Assert.AreEqual(1, downloader.CallCount);
+    }
+
+    [TestMethod]
+    public async Task PrepareAsync_PublishedFileReplacedAfterTrustWindow_DownloadsAgain()
+    {
+        var downloader = new StubDownloader(ValidNinoContent);
+        var timeProvider = new FixedTimeProvider(Now);
+        var coordinator = CreateCoordinator(downloader, timeProvider: timeProvider);
+        var request = await CreateNinoRequest();
+        await coordinator.PrepareAsync(request, null, permitSourceUpdate: true, CancellationToken.None);
+
+        // Stands in for a deploy restoring a different copy of the file behind the record.
+        await File.WriteAllTextAsync(Path.Combine(temporaryRoot, "Nino34", "nino34.long.anom.data.txt"), ValidNinoContent + "\n");
+        timeProvider.Now = Now.Add(DataSetSourceUpdateCoordinator.RecentlyPublishedTrustWindow);
+        await coordinator.PrepareAsync(request, null, permitSourceUpdate: true, CancellationToken.None);
+
+        Assert.AreEqual(2, downloader.CallCount);
+    }
+
+    [TestMethod]
     public async Task PrepareAsync_ColdManagedSourceWithoutPermitSourceUpdate_DoesNotDownloadAndReturnsRefreshFailed()
     {
         var downloader = new StubDownloader(ValidNinoContent);
@@ -169,6 +219,40 @@ public sealed class DataSetSourceUpdateCoordinatorTests
     }
 
     [TestMethod]
+    public async Task PrepareAsync_PublishedBomSourceAdopted_RecordsHashAndDateOfPublishedFile()
+    {
+        var yesterday = DateOnly.FromDateTime(Now.UtcDateTime).AddDays(-1);
+        var stateStore = new MemoryStateStore();
+        var coordinator = CreateCoordinator(new StubDownloader(string.Empty, key: "bom-station"), stateStore: stateStore);
+        var (request, stationId) = await CreateBomRequest();
+        WriteBomArchive(stationId, lastDate: yesterday);
+
+        await coordinator.PrepareAsync(request, null, permitSourceUpdate: true, CancellationToken.None);
+
+        var published = await DataSetSourceFileStore.ComputeFileInfoAsync(Path.Combine(temporaryRoot, "BOM", $"{stationId}.zip"), CancellationToken.None);
+        var state = await stateStore.GetAsync($"BOM/{stationId}.ZIP", CancellationToken.None);
+        Assert.AreEqual(published.Sha256, state!.Sha256);
+        Assert.AreEqual(yesterday, state.LatestRecordDate);
+        Assert.AreEqual(published.LastWriteTimeUtc, state.RetrievedDate);
+    }
+
+    [TestMethod]
+    public async Task PrepareAsync_FreshResponseAndCurrentBomSource_ReturnsSourceLatestRecordDate()
+    {
+        var yesterday = DateOnly.FromDateTime(Now.UtcDateTime).AddDays(-1);
+        var coordinator = CreateCoordinator(new StubDownloader(string.Empty, key: "bom-station"));
+        var (request, stationId) = await CreateBomRequest();
+        WriteBomArchive(stationId, lastDate: yesterday);
+        var rebuild = await coordinator.PrepareAsync(request, null, permitSourceUpdate: true, CancellationToken.None);
+
+        var result = await coordinator.PrepareAsync(request, new DataSet { RetrievedDate = Now }, permitSourceUpdate: true, CancellationToken.None);
+
+        Assert.AreEqual(yesterday, rebuild.LatestRecordDate);
+        Assert.AreEqual(DataSetSourcePreparationOutcome.UseCached, result.Outcome);
+        Assert.AreEqual(yesterday, result.LatestRecordDate);
+    }
+
+    [TestMethod]
     public async Task PrepareAsync_PublishedBomSourceLacksYesterdaysRecordAndNoState_Downloads()
     {
         var downloader = new StubDownloader(string.Empty, key: "bom-station");
@@ -229,7 +313,8 @@ public sealed class DataSetSourceUpdateCoordinatorTests
         IDataSetDownloader downloader,
         DataSetAssetLockProvider? lockProvider = null,
         TimeSpan? onRequestRefreshTimeout = null,
-        TimeProvider? timeProvider = null)
+        TimeProvider? timeProvider = null,
+        IDataSetSourceStateStore? stateStore = null)
     {
         timeProvider ??= new FixedTimeProvider(Now);
         return new DataSetSourceUpdateCoordinator(
@@ -238,7 +323,7 @@ public sealed class DataSetSourceUpdateCoordinatorTests
             lockProvider ?? new DataSetAssetLockProvider(),
             new DataSetDownloadWorkspaceFactory(),
             new DataSetSourceFileStore(temporaryRoot),
-            new MemoryStateStore(),
+            stateStore ?? new MemoryStateStore(),
             new DataSetDownloadValidator(),
             [downloader],
             timeProvider,

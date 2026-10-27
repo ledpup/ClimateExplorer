@@ -5,6 +5,7 @@ using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.Client.Components;
 using ClimateExplorer.Web.Client.UiModel.Trends;
+using ClimateExplorer.Web.Client.Units;
 using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
 using Microsoft.AspNetCore.Components;
@@ -24,6 +25,9 @@ public partial class ChartSeriesView
 
     [Parameter]
     public ChartSeriesDefinition? ChartSeries { get; set; }
+
+    [CascadingParameter]
+    public IUnitFormatter Units { get; set; } = UnitFormatter.Metric;
 
     [Parameter]
     public IReadOnlyList<DataSetMetadata>? SourceMetadata { get; set; }
@@ -77,7 +81,7 @@ public partial class ChartSeriesView
     /// <summary>Explains why the "Aggregation" control is disabled, when it is.</summary>
     private string AggregationTooltipText =>
         AggregationApplied == false
-        ? "This data has one reading per period already, so there's nothing to combine - every aggregation option would produce the same chart"
+        ? "This data has one reading per period already, so there's nothing to combine - every statistic would produce the same chart"
         : ChartSeries!.SeriesDerivationType == SeriesDerivationTypes.AverageOfAnomaliesInRegion
         ? "Averaging happens across locations for this series, so there's nothing left to combine within a period"
         : "How data values within each time period are combined into a single point";

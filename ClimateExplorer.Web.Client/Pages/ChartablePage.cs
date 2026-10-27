@@ -1,7 +1,5 @@
 namespace ClimateExplorer.Web.Client.Pages;
 
-using Blazorise;
-using ClimateExplorer.Core;
 using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
@@ -11,6 +9,7 @@ using ClimateExplorer.Web.Client.Services;
 using ClimateExplorer.Web.Client.Services.Chart;
 using ClimateExplorer.Web.Client.Services.Notifications;
 using ClimateExplorer.Web.Client.UiModel;
+using ClimateExplorer.Web.Client.Units;
 using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.Web.UiModel;
 using ClimateExplorer.WebApiClient.Services;
@@ -53,11 +52,20 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
     protected IChartDataBuilder? ChartDataBuilder { get; set; }
 
     [Inject]
+    protected UnitPreference? UnitPreference { get; set; }
+
+    [Inject]
     protected IUserNotificationService? NotificationService { get; set; }
 
     protected IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
 
     protected Dictionary<Guid, Location>? LocationDictionary { get; set; }
+
+    /// <summary>
+    /// Full <see cref="Location"/> details for the chart title. <see cref="LocationDictionary"/> loads
+    /// lazily on Index, so this falls back to the page's current location until it does.
+    /// </summary>
+    protected Dictionary<Guid, Location>? KnownLocations => GetKnownLocationDictionary(GetCurrentLocationForChartUrlContext());
 
     protected IEnumerable<Region>? Regions { get; set; }
 
@@ -179,7 +187,9 @@ public abstract partial class ChartablePage : ComponentBase, IDisposable
 
         try
         {
-            var buildResult = await ChartDataBuilder!.BuildAsync(state);
+            // Only the notification text uses the unit system; the data itself is built in metric.
+            await UnitPreference!.LoadAsync();
+            var buildResult = await ChartDataBuilder!.BuildAsync(state, UnitPreference.Formatter);
 
             if (buildVersion != chartBuildVersion)
             {

@@ -1,6 +1,5 @@
 namespace ClimateExplorer.Web.Client.Services.Chart;
 
-using ClimateExplorer.Core;
 using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;

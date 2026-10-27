@@ -1,242 +1,249 @@
-AC Antigua and Barbuda
+AD Andorra
 AE United Arab Emirates
 AF Afghanistan
-AG Algeria
-AJ Azerbaijan
+AG Antigua and Barbuda
+AI Anguilla [United Kingdom]
 AL Albania
 AM Armenia
 AO Angola
-AQ American Samoa [United States of America]
+AQ Antarctica
 AR Argentina
-AS Australia
-AU Austria
-AY Antarctica
-BA Bahrain
+AS American Samoa [United States of America]
+AT Austria
+AU Australia
+AW Aruba [Netherlands]
+AX Aland Islands [Finland]
+AZ Azerbaijan
+BA Bosnia and Herzegovina
 BB Barbados
-BC Botswana
-BD Bermuda [United Kingdom]
+BD Bangladesh
 BE Belgium
-BF Bahamas, The
-BG Bangladesh
-BH Belize
-BK Bosnia and Herzegovina
-BL Bolivia
-BM Burma
-BN Benin
-BO Belarus
-BP Solomon Islands
+BF Burkina Faso
+BG Bulgaria
+BH Bahrain
+BI Burundi
+BJ Benin
+BL Saint Barthelemy [France]
+BM Bermuda [United Kingdom]
+BN Brunei
+BO Bolivia
+BQ Bonaire, Sint Eustatius and Saba [Netherlands]
 BR Brazil
-BU Bulgaria
-BX Brunei
-BY Burundi
+BS Bahamas, The
+BT Bhutan
+BV Bouvet Island [Norway]
+BW Botswana
+BY Belarus
+BZ Belize
 CA Canada
-CB Cambodia
-CD Chad
-CE Sri Lanka
-CF Congo (Brazzaville)
-CG Congo (Kinshasa)
-CH China 
-CI Chile
-CJ Cayman Islands [United Kingdom]
-CK Cocos (Keeling) Islands [Australia]
+CC Cocos (Keeling) Islands [Australia]
+CD Congo (Kinshasa)
+CF Central African Republic
+CG Congo (Brazzaville)
+CH Switzerland
+CI Cote D'Ivoire
+CK Cook Islands [New Zealand]
+CL Chile
 CM Cameroon
-CN Comoros
+CN China
 CO Colombia
-CQ Northern Mariana Islands [United States of America]
-CS Costa Rica
-CT Central African Republic
+CR Costa Rica
 CU Cuba
 CV Cape Verde
-CW Cook Islands [New Zealand]
+CW Curacao [Netherlands]
+CX Christmas Island [Australia]
 CY Cyprus
-DA Denmark
-DJ Dijibouti
-DO Dominica
-DR Dominican Republic
+CZ Czech Republic
+DE Germany
+DJ Djibouti
+DK Denmark
+DM Dominica
+DO Dominican Republic
+DZ Algeria
 EC Ecuador
+EE Estonia
 EG Egypt
-EI Ireland
-EK Equatorial Guinea
-EN Estonia
+EH Western Sahara
 ER Eritrea
-ES El Salvador
+ES Spain
 ET Ethiopia
-EU Europa Island [France]
-EZ Czech Republic
-FG French Guiana [France]
 FI Finland
 FJ Fiji
 FK Falkland Islands (Islas Malvinas) [United Kingdom]
 FM Federated States of Micronesia
-FP French Polynesia
+FO Faroe Islands [Denmark]
 FR France
-FS French Southern and Antarctic Lands [France]
-GA Gambia, The
-GB Gabon
-GG Georgia
+GA Gabon
+GB United Kingdom
+GD Grenada
+GE Georgia
+GF French Guiana [France]
+GG Guernsey
 GH Ghana
 GI Gibraltar [United Kingdom]
-GJ Grenada
-GK Guernsey
 GL Greenland [Denmark]
-GM Germany
+GM Gambia, The
+GN Guinea
 GP Guadeloupe [France]
-GQ Guam [United States of America]
+GQ Equatorial Guinea
 GR Greece
+GS South Georgia and the South Sandwich Islands [United Kingdom]
 GT Guatemala
-GV Guinea
+GU Guam [United States of America]
+GW Guinea-Bissau
 GY Guyana
-HA Haiti
 HK Hong Kong
-HO Honduras
+HM Heard Island and McDonald Islands [Australia]
+HN Honduras
 HR Croatia
+HT Haiti
 HU Hungary
-IC Iceland
 ID Indonesia
+IE Ireland
+IL Israel
 IM Isle of Man
 IN India
 IO British Indian Ocean Territory [United Kingdom]
+IQ Iraq
 IR Iran
-IS Israel
+IS Iceland
 IT Italy
-IV Cote D'Ivoire
-IZ Iraq
-JA Japan
 JE Jersey
 JM Jamaica
-JN Jan Mayen [Norway]
 JO Jordan
-JQ Johnston Atoll [United States of America]
-JU Juan De Nova Island [France]
+JP Japan
 KE Kenya
 KG Kyrgyzstan
-KN Korea, North
-KR Kiribati
-KS Korea, South
-KT Christmas Island [Australia]
-KU Kuwait
+KH Cambodia
+KI Kiribati
+KM Comoros
+KN Saint Kitts and Nevis
+KP Korea, North
+KR Korea, South
+KW Kuwait
+KY Cayman Islands [United Kingdom]
 KZ Kazakhstan
 LA Laos
-LE Lebanon
-LG Latvia
-LH Lithuania
-LI Liberia
-LO Slovakia
-LQ Palmyra Atoll [United States of America]
-LS Liechtenstein
-LT Lesotho
+LB Lebanon
+LC Saint Lucia
+LI Liechtenstein
+LK Sri Lanka
+LR Liberia
+LS Lesotho
+LT Lithuania
 LU Luxembourg
+LV Latvia
 LY Libya
-MA Madagascar
-MB Martinique [France]
-MC Macau S.A.R
+MA Morocco
+MC Monaco
 MD Moldova
-MF Mayotte [France]
-MG Mongolia
-MH Montserrat
-MI Malawi
-MJ Montenegro
+ME Montenegro
+MF Saint Martin [France]
+MG Madagascar
+MH Marshall Islands
 MK Macedonia
 ML Mali
-MN Monaco
-MO Morocco
-MP Mauritius
-MQ Midway Islands [United States of America}
+MM Burma
+MN Mongolia
+MO Macau S.A.R
+MP Northern Mariana Islands [United States of America]
+MQ Martinique [France]
 MR Mauritania
+MS Montserrat [United Kingdom]
 MT Malta
-MU Oman
+MU Mauritius
 MV Maldives
+MW Malawi
 MX Mexico
 MY Malaysia
 MZ Mozambique
+NA Namibia
 NC New Caledonia [France]
-NE Niue [New Zealand]
+NE Niger
 NF Norfolk Island [Australia]
-NG Niger
-NH Vanuatu
-NI Nigeria
+NG Nigeria
+NI Nicaragua
 NL Netherlands
-NN Saint Maarten
 NO Norway
 NP Nepal
 NR Nauru
-NS Suriname
-NT Netherlands Antilles [Netherlands]
-NU Nicaragua
+NU Niue [New Zealand]
 NZ New Zealand
-PA Paraguay
-PC Pitcairn Islands [United Kingdom]
+OM Oman
+PA Panama
 PE Peru
+PF French Polynesia
+PG Papua New Guinea
+PH Philippines
 PK Pakistan
 PL Poland
-PM Panama
-PO Portugal
-PP Papua New Guinea
-PS Palau
-PU Guinea-Bissau
+PM Saint Pierre and Miquelon [France]
+PN Pitcairn Islands [United Kingdom]
+PR Puerto Rico [United States of America]
+PS Palestine
+PT Portugal
+PW Palau
+PY Paraguay
 QA Qatar
 RE Reunion [France]
-RI Serbia
-RM Marshall Islands
 RO Romania
-RP Philippines
-RQ Puerto Rico [United States of America]
-RS Russia
+RS Serbia
+RU Russia
 RW Rwanda
 SA Saudi Arabia
-SB Saint Pierre and Miquelon [France]
-SC Saint Kitts and Nevis
-SE Seychelles
-SF South Africa
-SG Senegal
+SB Solomon Islands
+SC Seychelles
+SD Sudan
+SE Sweden
+SG Singapore
 SH Saint Helena [United Kingdom]
 SI Slovenia
+SJ Svalbard and Jan Mayen [Norway]
+SK Slovakia
 SL Sierra Leone
-SN Singapore
+SM San Marino
+SN Senegal
 SO Somalia
-SP Spain
-ST Saint Lucia
-SU Sudan
-SV Svalbard [Norway]
-SW Sweden
-SX South Georgia and the South Sandwich Islands [United Kingdom]
+SR Suriname
+SS South Sudan
+ST Sao Tome and Principe
+SV El Salvador
+SX Sint Maarten [Netherlands]
 SY Syria
-SZ Switzerland
-TD Trinidad and Tobago
-TE Tromelin Island [France]
+SZ Swaziland
+TC Turks and Caicos Islands [United Kingdom]
+TD Chad
+TF French Southern Territories [France]
+TG Togo
 TH Thailand
-TI Tajikistan
-TL Tokelau [New Zealand]
-TN Tonga
-TO Togo
-TP Sao Tome and Principe
-TS Tunisia
-TT Timor-Leste
-TU Turkey
+TJ Tajikistan
+TK Tokelau [New Zealand]
+TL Timor-Leste
+TM Turkmenistan
+TN Tunisia
+TO Tonga
+TR Turkey
+TT Trinidad and Tobago
 TV Tuvalu
 TW Taiwan
-TX Turkmenistan
 TZ Tanzania
-UC Curacao
+UA Ukraine
 UG Uganda
-UK United Kingdom
-UP Ukraine
+UM United States Minor Outlying Islands [United States of America]
 US United States of America
-UV Burkina Faso
 UY Uruguay
 UZ Uzbekistan
+VA Vatican City
 VC Saint Vincent and the Grenadines
 VE Venezuela
-VI Virgin Islands [United Kingdom]
-VM Vietnam
-VQ Virgin Islands [United States of America]
-WA Namibia
+VG Virgin Islands [United Kingdom]
+VI Virgin Islands [United States of America]
+VN Vietnam
+VU Vanuatu
 WF Wallis and Futuna [France]
-WI Western Sahara
-WQ Wake Island [United States of America]
 WS Samoa
-WZ Swaziland
-XX Unknown
-YM Yemen
-ZA Zambia
-ZI Zimbabwe
+YE Yemen
+YT Mayotte [France]
+ZA South Africa
+ZM Zambia
+ZW Zimbabwe

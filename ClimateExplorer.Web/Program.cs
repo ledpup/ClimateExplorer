@@ -11,6 +11,7 @@ using ClimateExplorer.Web.Client.Services.Chart;
 using ClimateExplorer.Web.Client.Services.InfoPanelDismissal;
 using ClimateExplorer.Web.Client.Services.Notifications;
 using ClimateExplorer.Web.Client.Services.RecentObservations;
+using ClimateExplorer.Web.Client.Units;
 using ClimateExplorer.WebApiClient.Services;
 using CurrentDevice;
 using DPBlazorMapLibrary;
@@ -18,6 +19,10 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 #pragma warning restore SA1200 // Using directives should be placed correctly
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Console output isn't captured on Windows App Service; this feeds App Service logs (filesystem/log stream)
+// instead, and does nothing when not running there.
+builder.Logging.AddAzureWebAppDiagnostics();
 
 builder.Services.AddHttpContextAccessor();
 
@@ -47,6 +52,7 @@ builder.Services
     .AddScoped<IRecentObservationsService, RecentObservationsService>()
     .AddScoped<ISiteOverviewService, SiteOverviewService>()
     .AddScoped(DateLabelsFactory.Create)
+    .AddScoped<UnitPreference>()
     .AddCurrentDeviceService()
     .AddBlazoredLocalStorage()
     .AddHttpClient<IDataService, DataService>(client =>

@@ -1,6 +1,5 @@
 namespace ClimateExplorer.Web.Client.Pages;
 
-using System.Globalization;
 using ClimateExplorer.Core.Infrastructure;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Core.ViewModel;
@@ -8,6 +7,8 @@ using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.Components.Location;
 using ClimateExplorer.Web.Client.Services.Trends;
 using ClimateExplorer.Web.Client.UiModel.Trends;
+using ClimateExplorer.Web.Client.Units;
+using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.WebApiClient.Services;
 using Microsoft.AspNetCore.Components;
 using static ClimateExplorer.Core.Enums;
@@ -42,6 +43,11 @@ public partial class Locations
 
     [Inject]
     private ILogger<Locations>? Logger { get; set; }
+
+    // Formatting only: sorting stays on the metric values, and every conversion is increasing, so the
+    // order is the same in every unit system.
+    [CascadingParameter]
+    private IUnitFormatter Units { get; set; } = UnitFormatter.Metric;
 
     private int StartRecord => filteredCount > 0 ? ((currentPage - 1) * pageSize) + 1 : 0;
 
@@ -166,17 +172,6 @@ public partial class Locations
         log.LogInformation("Done");
     }
 
-    private static string FormatAnomaly(double? anomaly)
-    {
-        if (!anomaly.HasValue)
-        {
-            return "—";
-        }
-
-        var sign = anomaly.Value >= 0 ? "+" : string.Empty;
-        return $"{sign}{anomaly.Value.ToString("0.0", CultureInfo.InvariantCulture)}°C";
-    }
-
     private static string DataTypeToShortName(DataType dt) => dt switch
     {
         DataType.TempMax => "TMax",
@@ -193,9 +188,6 @@ public partial class Locations
         DataType.CO2Deseasoned => "CO₂ deseasoned",
         _ => dt.ToString(),
     };
-
-    private static string FormatRecordHigh(DataRecord record) =>
-        $"{record.Value!.Value.ToString("0.0", CultureInfo.InvariantCulture)}°C ({record.Year})";
 
     private static string GetHeatingScoreBadgeStyle(short score)
     {
@@ -283,8 +275,16 @@ public partial class Locations
         return sortAscending ? "fa-sort-up" : "fa-sort-down";
     }
 
+    private string FormatAnomaly(Location location)
+    {
+        return ApiMeasures.WarmingAnomaly(location) is { } anomaly ? Units.Format(anomaly, signed: true) : "—";
+    }
+
+    private string FormatRecordHigh(Location location) =>
+        $"{Units.Format(ApiMeasures.RecordHigh(location)!.Value)} ({location.RecordHigh!.Year})";
+
     private string GetTrendDisplay(Guid locationId) =>
-        locationTrends.TryGetValue(locationId, out var trend) ? LocationTrendFieldBuilder.FormatAmountPerDecade(trend.Slope) : "—";
+        locationTrends.TryGetValue(locationId, out var trend) ? LocationTrendFieldBuilder.FormatAmountPerDecade(trend.Slope, Units) : "—";
 
     private double GetTrendSlope(Guid locationId) =>
         locationTrends.TryGetValue(locationId, out var trend) ? trend.Slope : double.MinValue;

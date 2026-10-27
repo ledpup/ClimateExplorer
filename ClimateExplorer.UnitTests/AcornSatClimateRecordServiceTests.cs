@@ -70,6 +70,71 @@ public sealed class AcornSatClimateRecordServiceTests
     }
 
     [TestMethod]
+    public async Task ResolveAsync_UseCachedWithEntryBehindSource_RebuildsAndRecordsSourceDate()
+    {
+        var cache = new MemoryCache();
+        var extensionCache = new AcornSatExtensionCache(cache);
+        var cachedEntry = CreateConclusiveCachedEntry(latestCdoSourceRecordDate: new DateOnly(2026, 1, 1));
+        await extensionCache.PutAsync(cachedEntry);
+
+        var coordinator = new StubCoordinator(new DataSetSourcePreparationResult(
+            DataSetSourcePreparationOutcome.UseCached,
+            cachedEntry.RetrievedDate,
+            LatestRecordDate: new DateOnly(2026, 4, 1)));
+        var service = CreateService(coordinator, cache);
+
+        var outcome = await service.ResolveAsync(AdelaideLocationId, DataType.TempMax, CancellationToken.None);
+
+        // Only a rebuild reads the ACORN-SAT series; a reused cache entry never carries it.
+        Assert.IsNotNull(outcome.AcornSatSeries);
+        Assert.AreNotEqual("cached-signature", outcome.Extension.ComparisonSignature);
+        if (outcome.Extension.Decision is AcornSatExtensionDecision.Eligible or AcornSatExtensionDecision.AdjustmentsDetected)
+        {
+            // The packaged BOM/023000.zip's TempMax runs to 2026-04-13.
+            var stored = await extensionCache.GetAsync(AdelaideLocationId, DataType.TempMax);
+            Assert.AreEqual(new DateOnly(2026, 4, 13), stored!.LatestCdoSourceRecordDate);
+        }
+    }
+
+    [TestMethod]
+    public async Task ResolveAsync_UseCachedWithEntryWithoutSourceDate_Rebuilds()
+    {
+        var cache = new MemoryCache();
+        var extensionCache = new AcornSatExtensionCache(cache);
+        await extensionCache.PutAsync(CreateConclusiveCachedEntry(latestCdoSourceRecordDate: null));
+
+        var coordinator = new StubCoordinator(new DataSetSourcePreparationResult(
+            DataSetSourcePreparationOutcome.UseCached,
+            new DateTimeOffset(2026, 7, 9, 0, 0, 0, TimeSpan.Zero),
+            LatestRecordDate: new DateOnly(2026, 7, 1)));
+        var service = CreateService(coordinator, cache);
+
+        var outcome = await service.ResolveAsync(AdelaideLocationId, DataType.TempMax, CancellationToken.None);
+
+        Assert.IsNotNull(outcome.AcornSatSeries);
+        Assert.AreNotEqual("cached-signature", outcome.Extension.ComparisonSignature);
+    }
+
+    [TestMethod]
+    public async Task ResolveAsync_UseCachedWithEntryCoveringSource_ReturnsCachedOverlay()
+    {
+        var cache = new MemoryCache();
+        var extensionCache = new AcornSatExtensionCache(cache);
+        await extensionCache.PutAsync(CreateConclusiveCachedEntry(latestCdoSourceRecordDate: new DateOnly(2026, 7, 9)));
+
+        var coordinator = new StubCoordinator(new DataSetSourcePreparationResult(
+            DataSetSourcePreparationOutcome.UseCached,
+            new DateTimeOffset(2026, 7, 9, 0, 0, 0, TimeSpan.Zero),
+            LatestRecordDate: new DateOnly(2026, 7, 9)));
+        var service = CreateService(coordinator, cache);
+
+        var outcome = await service.ResolveAsync(AdelaideLocationId, DataType.TempMax, CancellationToken.None);
+
+        Assert.IsNull(outcome.AcornSatSeries);
+        Assert.AreEqual("cached-signature", outcome.Extension.ComparisonSignature);
+    }
+
+    [TestMethod]
     public async Task ResolveAsync_RefreshFailedWithConclusiveCachedEntry_ReturnsCachedOverlayWithoutRereading()
     {
         var cache = new MemoryCache();
@@ -152,6 +217,24 @@ public sealed class AcornSatClimateRecordServiceTests
         catch (OperationCanceledException)
         {
         }
+    }
+
+    private static AcornSatExtensionCacheEntry CreateConclusiveCachedEntry(DateOnly? latestCdoSourceRecordDate)
+    {
+        return new AcornSatExtensionCacheEntry
+        {
+            LocationId = AdelaideLocationId,
+            DataType = DataType.TempMax,
+            AdjustedStationId = "023000",
+            OpenCdoStationId = "023000",
+            ComparisonYear = 2025,
+            Decision = AcornSatExtensionDecision.Eligible,
+            LatestAcornSatDate = new DateOnly(2025, 12, 31),
+            ComparisonSignature = "cached-signature",
+            OverlayRecords = [new Core.Model.DataRecord(new DateOnly(2026, 1, 1), 21.3)],
+            RetrievedDate = new DateTimeOffset(2026, 7, 9, 0, 0, 0, TimeSpan.Zero),
+            LatestCdoSourceRecordDate = latestCdoSourceRecordDate,
+        };
     }
 
     private static AcornSatClimateRecordService CreateService(IDataSetSourceUpdateCoordinator coordinator, ICache cache)
