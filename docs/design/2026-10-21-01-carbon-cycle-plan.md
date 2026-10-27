@@ -1,16 +1,16 @@
 # Carbon Cycle page — Overview
 
 - **Date:** 2026-10-21
-- **Status:** Proposed (draft v0.9; Tab 8 simulation added 2026-10-24)
+- **Status:** Proposed (draft v1.1; simulation added 2026-10-24; 2026-10-27: modelled-vs-measured tab dropped, and the output tabs became views of the simulation)
 - **Author:** Patrick Lea (with Claude)
-- **Scope:** the Carbon Cycle page as a whole: purpose, tab layout, design principle, the input-tab contract, the parameter system and data. Each tab has its own plan (§1.2).
+- **Scope:** the Carbon Cycle page as a whole: purpose, tab layout, design principle, the input-tab contract, the parameter system and data. The input tabs and the simulation have their own plans (§1.2).
 - **Branch context:** `issues/carbon-cycle`
 
 ---
 
 ## 1. Purpose
 
-**The goal is a good understanding of radiative forcing: where each part of it comes from.** The page is a simplified, explorable model that traces human activities through emissions, chemical reactions, concentrations and radiative forcing to temperature. The reactions and the numbers flow visibly through the model. The chemistry, physics and Earth science are first-class content, not footnotes. The emphasis shifts across the page: the input tabs (1–3) are mostly chemistry and biology, Tab 4 is Earth science (reservoirs, fluxes and lifetimes), and Tab 5 is mostly physics (molecular absorption, emission height, energy balance).
+**The goal is a good understanding of radiative forcing: where each part of it comes from.** The page is a simplified, explorable model that traces human activities through emissions, chemical reactions, concentrations and radiative forcing to temperature. The reactions and the numbers flow visibly through the model. The chemistry, physics and Earth science are first-class content, not footnotes. The emphasis shifts across the page: the input tabs (1–3) are mostly chemistry and biology, Tab 5 is Earth science (reservoirs, fluxes and lifetimes), and Tabs 6 and 7 are mostly physics (molecular absorption, emission height, energy balance).
 
 **Three ways to slice forcing.** The page connects all three:
 1. **By agent**, as in the chart: what is in the atmosphere now (CO₂, CH₄, ozone, aerosols, …).
@@ -25,20 +25,25 @@ The interaction intent is closer to a software toy than a climate model. For exa
 
 ### 1.2 Tabs
 
-The page reads left to right. Tabs 1–3 are optional input tabs: the user needs at least one and can use all three (§2.1).
+The page reads left to right, in two parts:
+1. **Input tabs (1–3).** The reader builds activities, and each tab turns them into emissions. The tabs are optional: the reader needs at least one and can use all three (§2.1).
+2. **Output tabs (4–7).** When the inputs are ready, the reader presses play and the [simulation](2026-10-24-01-carbon-cycle-simulation-plan.md) runs them through time. The output tabs are different aspects of that one run, on one clock: play, pause, fast-forward (real time, a minute per second, an hour per second, a day per second, … up to 1,000 years per second), rewind and restart. There is no separate simulation tab.
 
-| Tab | Topic | Takes | Produces | Plan |
+| Tab | Topic | Takes | Shows | Plan |
 |---|---|---|---|---|
 | 1 | Fossil fuels and limestone | User inputs (optional) | Emissions: CO₂, CH₄, CO, NOx, VOC, SO₂, BC, contrails | [Tab 1](2026-10-21-04-carbon-cycle-tab1-fossil-fuels-plan.md); [combustors sub-plan](2026-10-23-01-carbon-cycle-tab1-combustors-plan.md) |
 | 2 | Land and agriculture | User inputs (optional) | Emissions: CO₂ (land clearing), CH₄, N₂O, NH₃, BC/OC; albedo change | [Tab 2](2026-10-21-05-carbon-cycle-tab2-land-agriculture-plan.md) (stub) |
 | 3 | Waste and industrial gases | User inputs (optional) | Emissions: CH₄ (landfill, wastewater), halogenated gases, industrial N₂O | [Tab 3](2026-10-21-06-carbon-cycle-tab3-waste-industrial-gases-plan.md) (stub) |
-| 4 | Circulation and lifetimes | Emissions from the included input tabs | Carbon in atmosphere / land / ocean / crust over time; CH₄, N₂O and halocarbon decay | §7 (stub) |
-| 5 | Radiative forcing | Tab 4 concentrations + short-lived emissions | W/m² by agent, attributable to species and activities | §7 (stub) |
-| 6 | Temperature | Tab 5 forcing | °C response | §7 (stub) |
-| 7 | Modelled vs measured | Tabs 1–6 run on historical emissions | Model output overlaid on observed records and the §1.1 chart | [Tab 7](2026-10-21-07-carbon-cycle-tab7-modelled-vs-measured-plan.md) (stub) |
-| 8 | Simulation | Its own initial condition (a fuel, a rate and a duration) | A time-stepped box model run live in six scenarios side by side (sealed house, glass and ideal greenhouses, Earth with and without volcanoes) | [Tab 8](2026-10-24-01-carbon-cycle-tab8-simulation-plan.md) |
+| 4 | Overview | The run | Part of each of Tabs 5–7 for every scenario: key readouts (O₂, CO₂, temperature, flame state), a small chart from each tab, the event log | [Simulation §7.5](2026-10-24-01-carbon-cycle-simulation-plan.md) |
+| 5 | Carbon, gases and rocks | The run | Gases over time; where the carbon is (air, plants, rock, ocean); CH₄, N₂O and halocarbon decay | §7; [simulation](2026-10-24-01-carbon-cycle-simulation-plan.md) |
+| 6 | Radiative forcing | The run | W/m² by agent over time, attributable to species and activities | §7; [simulation](2026-10-24-01-carbon-cycle-simulation-plan.md) |
+| 7 | Temperature | The run | °C response; ice | §7; [simulation](2026-10-24-01-carbon-cycle-simulation-plan.md) |
+
+**Scenarios.** A run holds one or more scenarios side by side. A scenario is a list of events at time 0: its setting (a sealed house, a greenhouse, the Earth, …) and the input tabs' emissions. The reader can add events as it runs, such as a volcanic eruption, and every event is recorded so the run can be saved or sent to someone ([simulation §2, §5.5](2026-10-24-01-carbon-cycle-simulation-plan.md)). The six scenarios in the simulation plan are examples to start from; more will be added later.
 
 Not a personal carbon-footprint calculator and not a consumer tool. It must work equally for "one truck driving 1,000 km" and "a nation's annual coal burn".
+
+**Educational, not predictive.** The model uses real chemistry and physics, but rough, incomplete information about the world and a simplified Earth system. It is for understanding where forcing comes from, not for reproducing the observed record, so the page does not compare its output with measured CO₂ or temperature.
 
 **Global scope.** Defaults, examples and presets are not tied to any one country. Where a "typical" vehicle or plant is needed, pick what is most common worldwide by count or by emissions. That usually means what is used in China, India and the rest of Asia and Africa, not the Western fleet (e.g. a 100–125 cc motorcycle and a diesel bus, not a large petrol sedan).
 
@@ -72,41 +77,41 @@ Rules:
 
 ## 2. Input tabs
 
-Tabs 1–3 are the input tabs. Each one turns activities into emissions; the downstream tabs (4–6) turn emissions into concentrations, forcing and temperature.
+Tabs 1–3 are the input tabs. Each one turns activities into emissions; the simulation runs those emissions through time, and the output tabs (4–7) show concentrations, forcing and temperature.
 
 ### 2.1 Each input tab is optional
 
-- The user can use any one, two or all three input tabs. Tabs 4–6 need at least one.
+- The user can use any one, two or all three input tabs. The simulation needs at least one.
 - An input tab is **in use** once it holds at least one activity (an entered input or a preset). Clearing its inputs takes it out of use.
 - Each in-use tab has an **"Include in model"** toggle beside its result, on by default. It switches the tab's contribution off without losing its inputs, so the reader can compare, for example, fossil fuels alone against fossil fuels plus land clearing.
 - The tab strip marks which input tabs are in use and included (a badge with an accessible name such as "In use, included").
-- Tabs 4–6 sum the included tabs. Each chart and table says which input tabs it draws on ("From: Fossil fuels and limestone; Land and agriculture"), and attribution (§1.1, view 3) lists only those tabs.
-- With no input tab in use, Tabs 4–6 show an empty state rather than blank charts or zeros: a short explanation, a link to each input tab, and one starter preset per tab.
+- Each activity on an included tab becomes an emission event at time 0 in the simulation ([simulation §2.1](2026-10-24-01-carbon-cycle-simulation-plan.md)). Each output chart and table says which input tabs it draws on ("From: Fossil fuels and limestone; Land and agriculture"), and attribution (§1.1, view 3) lists only those tabs.
+- With no input tab in use, the output tabs show an empty state rather than blank charts or zeros: a short explanation, a link to each input tab, and one starter preset per tab.
 - No input tab depends on another. Links between them (fertiliser production in Tab 1, its N₂O in Tab 2; plastics incineration in Tab 1, landfill in Tab 3) are explanatory text, not data dependencies.
-- Tabs can use different emission profiles (one a single pulse, another a constant rate over N years). Tab 4 sums pulses, so mixing them works.
-- Which tabs are in use and included is part of the shared URL state, alongside the inputs and edited parameters (§3.3).
+- Tabs can use different emission profiles (one a single pulse, another a constant rate for a duration). Each is its own emission event, so mixing them works.
+- Changing an input tab or its include toggle changes the starting events, so the run goes back to time 0 and pauses ([simulation §5.1](2026-10-24-01-carbon-cycle-simulation-plan.md)).
+- Which tabs are in use and included is part of the shared URL state, alongside the inputs, edited parameters and the run's event record (§3.3).
 - Later: page-level presets that fill several input tabs at once, e.g. "the world's emissions in 2022" across all three.
-- Tab 7 is separate. It runs every source path on historical emissions, whatever the user has entered in the input tabs ([Tab 7 plan](2026-10-21-07-carbon-cycle-tab7-modelled-vs-measured-plan.md)).
-- Tab 8 is separate too. It has its own initial condition and does not feed Tabs 4–6. It reuses the Tab 1 chemistry engine and fuel table ([Tab 8 plan](2026-10-24-01-carbon-cycle-tab8-simulation-plan.md)).
 
-### 2.2 Output contract to Tabs 4 and 5
+### 2.2 Output contract to the simulation
 
-All input tabs produce the same shape. Tab 4 and Tab 5 sum the results across the included tabs and keep track of which tab and activity each part came from, so forcing can be attributed back to activities (§1.1).
+All input tabs produce the same shape. The simulation turns each result into an emission event and keeps track of which tab and activity each part came from, so forcing can be attributed back to activities (§1.1).
 
 ```
 EmissionResult
   CarbonMassKg          // net C added to the atmosphere + ocean + land system from geological stores or land clearing (kg C)
   Co2MassKg             // derived, for display
-  Profile               // Pulse (default) | ConstantRate(years); masses are per pulse / per year
+  Profile               // Pulse (default) | ConstantRate(period, duration); masses are per pulse, or per period
+                        //   (e.g. per year for 30 years, per second for 2 hours)
   Breakdown             // combustion, calcination (rock), land clearing, upstream, incomplete-combustion products
-  NonCo2                // masses for Tab 5: CH₄ (fossil | biogenic), N₂O, CO, NMVOC, NOx (as NO₂), SO₂, NH₃,
+  NonCo2                // masses for the gases and forcing: CH₄ (fossil | biogenic), N₂O, CO, NMVOC, NOx (as NO₂), SO₂, NH₃,
                         //   black carbon, organic carbon, halogenated gases (by species)
   Other                 // aircraft-km (contrails), land area converted (albedo)
   Source                // tab + activity, for attribution
   ParameterSnapshot     // which parameter values produced this
 ```
 
-Tab 4 consumes carbon mass, the long-lived gases and the profile. Tab 5 additionally consumes the short-lived species for ozone, aerosol, contrail and albedo forcing. Changing any input tab, or its include toggle, re-runs the downstream tabs in order.
+The simulation's carbon and gas processes take the carbon mass, the long-lived gases and the profile. A fuel burned in an enclosure also draws its O₂ from the enclosure's air, through the Tab 1 chemistry engine. The forcing additionally takes the short-lived species for ozone, aerosol, contrail and albedo forcing.
 
 ### 2.3 Carbon accounting rules
 
@@ -198,8 +203,7 @@ Notes:
 ### 4.2 ClimateExplorer data
 
 Likely needs (to confirm):
-- Tab 7: Mauna Loa CO₂ (from 1958) and global surface temperature, plus optional observed CH₄ and ocean pH (see the [Tab 7 plan](2026-10-21-07-carbon-cycle-tab7-modelled-vs-measured-plan.md)).
-- Tab 8: daily total solar irradiance (NOAA NCEI TSI CDR, already in ClimateExplorer) as the sunlight for the greenhouse and Earth scenarios; latest CO₂, CH₄ and N₂O and the global temperature anomaly as starting values; Global Carbon Budget CO₂ emissions for a preset ([Tab 8 §6](2026-10-24-01-carbon-cycle-tab8-simulation-plan.md)).
+- The simulation: daily total solar irradiance (NOAA NCEI TSI CDR, already in ClimateExplorer) as the sunlight for the greenhouse and Earth scenarios; latest CO₂, CH₄ and N₂O and the global temperature anomaly as starting values; Global Carbon Budget CO₂ emissions for a preset ([simulation §6](2026-10-24-01-carbon-cycle-simulation-plan.md)).
 
 ---
 
@@ -207,11 +211,11 @@ Likely needs (to confirm):
 
 ## 5. Work breakdown (cross-cutting)
 
-Per-tab work is in each tab's plan (§1.2).
+Per-tab work is in each input tab's plan, and the output tabs' work is in the [simulation plan §11](2026-10-24-01-carbon-cycle-simulation-plan.md) (§1.2).
 
 1. Parameter system: record type, registry, constants set, edit popover, assumptions panel, URL state (incl. expansion state, §1.3)
-2. Page shell: the seven tabs, input-tab in-use state and "Include in model" toggles, tab-strip badges, the empty state for Tabs 4–6, and URL state for all of these (§2.1)
-3. `EmissionResult` type, summing across included input tabs, and attribution back to tab and activity (§2.2, §2.3)
+2. Page shell: the seven tabs (three input, four output), input-tab in-use state and "Include in model" toggles, tab-strip badges, the empty state for the output tabs, and URL state for all of these (§2.1)
+3. `EmissionResult` type, one emission event per activity on the included input tabs, and attribution back to tab and activity (§2.2, §2.3)
 4. Shared results display (§2.4)
 5. OWID CO₂ dataset ingestion (§4.1)
 
@@ -219,40 +223,44 @@ Per-tab work is in each tab's plan (§1.2).
 
 ## 6. Open questions
 
-Question numbers are shared across the Carbon Cycle plans. Tab-specific questions are in each tab's plan (Q9, Q10 in [Tab 7](2026-10-21-07-carbon-cycle-tab7-modelled-vs-measured-plan.md); Q16–Q21 in [Tab 8](2026-10-24-01-carbon-cycle-tab8-simulation-plan.md)). Q21 touches Tabs 4–6: whether they share Tab 8's Earth model.
+Question numbers are shared across the Carbon Cycle plans. Tab-specific questions are in each tab's plan, and the simulation's (which cover the output tabs) are Q16–Q23 in the [simulation plan](2026-10-24-01-carbon-cycle-simulation-plan.md).
 
 - ~~Q6~~ Resolved: latest IPCC first, then sector bodies, then literature; no country-specific defaults (§3.5).
-- **Q8** Ozone and sulfate in Tab 5: a simple editable yield factor per precursor, or published per-precursor forcing coefficients (e.g. AR6 emissions-based ERF)? The second is more defensible, but it attributes forcing to global emissions rather than computing ozone or aerosol. Now that the page's purpose is attribution (§1.1), leaning towards the published coefficients (AR6 Ch 6; Thornhill et al. 2021) for the short-lived agents, with the reactions shown as the explanation of where each coefficient comes from.
+- **Q8** Ozone and sulfate in the forcing (Tab 6): a simple editable yield factor per precursor, or published per-precursor forcing coefficients (e.g. AR6 emissions-based ERF)? The second is more defensible, but it attributes forcing to global emissions rather than computing ozone or aerosol. Now that the page's purpose is attribution (§1.1), leaning towards the published coefficients (AR6 Ch 6; Thornhill et al. 2021) for the short-lived agents, with the reactions shown as the explanation of where each coefficient comes from.
+- ~~Q9, Q10~~ Dropped with the modelled-vs-measured tab, which is out of scope (§1.2).
 - ~~Q13~~ Resolved: "Waste and industrial gases" is a third input tab ([Tab 3 plan](2026-10-21-06-carbon-cycle-tab3-waste-industrial-gases-plan.md)).
-- **Q14** Natural sources that respond to warming, such as wetland methane and permafrost: leave out (the page models human forcing only), or add as a Level 2 feedback in Tab 4? Wetlands are the largest single methane source, and their emissions are rising.
+- **Q14** Natural sources that respond to warming, such as wetland methane and permafrost: leave out (the page models human forcing only), or add as a Level 2 feedback process in the simulation, shown on Tab 5? Wetlands are the largest single methane source, and their emissions are rising.
 - ~~Q15~~ Resolved: every input tab is optional; the user needs at least one and can use all three (§2.1).
 
 ---
 
-## 7. Downstream tabs (stubs until planned)
+## 7. Output tabs
 
-Tabs 4–6 get their own plans when they are designed in detail. Level 1 examples (§1.3):
-- Tab 4: "of each tonne of CO₂ released, roughly 40% is still in the air after a century, and about a fifth after a thousand years".
-- Tab 5: the §1.1 forcing chart, where each bar can be clicked to show its sources. "More CO₂ traps more heat"; the logarithmic relation is at Level 2.
+Tabs 4–7 are views of the one [simulation](2026-10-24-01-carbon-cycle-simulation-plan.md) run, on its shared clock. Each shows its aspect of every scenario in the run, and the simulation plan (§4, §7.5) holds their detail. This section sets what each must explain. Level 1 examples (§1.3):
+- Tab 5: "of each tonne of CO₂ released, roughly 40% is still in the air after a century, and about a fifth after a thousand years". On an Earth scenario the reader watches this happen.
+- Tab 6: the §8 forcing chart at the current simulated time, where each bar can be clicked to show its sources. "More CO₂ traps more heat"; the logarithmic relation is at Level 2.
 
 Scope:
-- **Tab 4 — Circulation and lifetimes:**
-  - CO₂: reservoirs (atmosphere, land biosphere and soil, ocean surface and deep, crust as limestone and kerogen); the impulse-response curve for the airborne fraction over time; a summary table at years, centuries and millennia.
+- **Tab 4 — Overview:** part of each of Tabs 5–7 for every scenario: the key readouts, one small chart from each, and the event log.
+- **Tab 5 — Carbon, gases and rocks:**
+  - CO₂: reservoirs (atmosphere, land biosphere and soil, ocean surface and deep, crust as limestone and kerogen), the simulation's boxes. The airborne fraction over time; a summary table at years, centuries and millennia.
   - Other long-lived gases: single-lifetime decay. CH₄ ~12 yr (perturbation lifetime), N₂O ~110 yr, halogenated gases per species (to verify against AR6).
   - Shows where fossil and biogenic CH₄ end up: both become CO₂, but only fossil CH₄ adds net carbon.
-- **Tab 5 — Radiative forcing:** concentration → forcing by agent, then attribution back to species and activities (§1.1):
+  - In enclosures: O₂, CO₂ and the other gases, the flame, pressure, plants and rock.
+- **Tab 6 — Radiative forcing:** concentration → forcing by agent, then attribution back to species and activities (§1.1):
   - CO₂: logarithmic relation.
   - CH₄ and N₂O: square-root relations, with their spectral overlap.
   - Halogenated gases: linear (radiative efficiency × concentration).
   - Short-lived agents (ozone, aerosol–radiation, aerosol–cloud, stratospheric water vapour, contrails, black carbon on snow): from emission rates via per-species coefficients (Q8). Their forcing tracks the emission rate, not a cumulative total.
   - Land-use albedo: from area converted.
-  - Solar and volcanic: footnote only.
-- **Tab 6 — Temperature:** forcing → transient and equilibrium response.
+  - Solar and volcanic: not human forcing (§1.2, "What counts"), so not attributed to activities. The simulation's sunlight and the reader's eruptions still show their effect on the Earth scenarios.
+  - In enclosures: sunlight absorbed, and the gas's own infrared in the ideal greenhouses.
+- **Tab 7 — Temperature:** forcing → transient response through the simulation's planet energy balance, and the equilibrium it heads for. A two-layer response (mixed layer and deep ocean) is planned to replace the single layer. In enclosures: the gas and floor temperatures, water and ice.
 
 
 ### 8. The target: explain every bar of the forcing chart
 
-The reference is the effective radiative forcing (ERF) chart from *Indicators of Global Climate Change 2022* (Forster et al., ESSD 15, 2295–2327, 2023; [figure](https://en.wikipedia.org/wiki/Radiative_forcing#/media/File:ESSD_Radiative_Forcing_1750_to_2022.png)). The page should let a reader point at any bar and follow it back to the activities and reactions behind it. Tab 7 checks whether the page's own model gets close to these numbers.
+The reference is the effective radiative forcing (ERF) chart from *Indicators of Global Climate Change 2022* (Forster et al., ESSD 15, 2295–2327, 2023; [figure](https://en.wikipedia.org/wiki/Radiative_forcing#/media/File:ESSD_Radiative_Forcing_1750_to_2022.png)). The page should let a reader point at any bar and follow it back to the activities and reactions behind it. The column "Input tab" names the input tabs whose activities make each agent.
 
 | Agent | ERF 1750–2022 (W/m²) | Where it comes from (approx. shares, to verify) | Input tab |
 |---|---|---|---|

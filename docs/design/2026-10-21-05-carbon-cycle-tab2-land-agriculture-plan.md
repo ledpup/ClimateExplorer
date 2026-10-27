@@ -41,6 +41,6 @@ Thought experiments, not an inventory ([overview §1.2](2026-10-21-01-carbon-cyc
 - Presets, e.g. "every cow on Earth for a year" (~1.5 billion head; to verify), "clear 1 million ha of tropical forest", "a year of India's rice".
 - Fertiliser *production* (Haber–Bosch hydrogen from methane) belongs in [Tab 1 §2.1](2026-10-21-04-carbon-cycle-tab1-fossil-fuels-plan.md); its N₂O after it reaches the field is here.
 
-## 5. Output to Tabs 4 and 5
+## 5. Output to the simulation
 
 Fills the shared `EmissionResult` ([overview §2.2](2026-10-21-01-carbon-cycle-plan.md)): CO₂ from land clearing in `CarbonMassKg`; biogenic CH₄ (not added to `CarbonMassKg`, [overview §2.3](2026-10-21-01-carbon-cycle-plan.md)), N₂O, NH₃, BC / OC and NOx in `NonCo2`; land area converted in `Other`, for albedo.

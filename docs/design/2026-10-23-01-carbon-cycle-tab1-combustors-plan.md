@@ -78,7 +78,7 @@ Representative vehicles are chosen by global count, not Western fleets. Transpor
 | Oil tanker | VLCC | Bunker fuel | to source (IMO) | ~300,000 t | Returns in ballast |
 | Air freighter | 777F / 747-8F class | Jet fuel | ~9–11 L/km | ~100 t | ~60–70% |
 
-Aviation shows CO₂ only here. Contrails and NOx at altitude add a substantial non-CO₂ effect. That is a Tab 5 topic; the comparison view should carry a footnote saying so.
+Aviation shows CO₂ only here. Contrails and NOx at altitude add a substantial non-CO₂ effect. That is a Tab 6 (Radiative forcing) topic; the comparison view should carry a footnote saying so.
 
 ### 2.3 Stationary combustors
 
@@ -160,7 +160,7 @@ Stage 1 gives each fuel a carbon split (default all CO₂) and one generic NOx d
 ## 4. Upstream overheads
 
 - Per-fuel editable factors: extraction, refining, transport, each as % of combustion CO₂ (or kg CO₂ per unit fuel). This adds an upstream-overhead column to the Tab 1 fuel table.
-- **Fugitive methane** (leaks from gas and coal) is a large upstream effect but is CH₄, not CO₂. It is in v1 as a separate line, never merged into CO₂. Its mass is carried to Tab 5 twice over: as a greenhouse gas in its own right, and as an ozone precursor ([Tab 1 §3](2026-10-21-04-carbon-cycle-tab1-fossil-fuels-plan.md)). Editable leak rate per fuel (% of throughput for gas; m³ CH₄ per tonne for coal).
+- **Fugitive methane** (leaks from gas and coal) is a large upstream effect but is CH₄, not CO₂. It is in v1 as a separate line, never merged into CO₂. Its mass is carried to the simulation twice over: as a greenhouse gas in its own right, and as an ozone precursor ([Tab 1 §3](2026-10-21-04-carbon-cycle-tab1-fossil-fuels-plan.md)). Editable leak rate per fuel (% of throughput for gas; m³ CH₄ per tonne for coal).
 
 ## 5. Calculator additions
 
@@ -180,7 +180,7 @@ Stage 2 adds to Tab 1's `EmissionResult` ([Tab 1 §7](2026-10-21-04-carbon-cycle
 - `CarbonMassKg`: upstream carbon, including the carbon in fugitive CH₄ ([overview §2.3](2026-10-21-01-carbon-cycle-plan.md)).
 - `Breakdown`: upstream, vehicle fixed cost (§2.4).
 - `NonCo2`: fugitive CH₄ (§4).
-- `Other`: aircraft-km, for contrails in Tab 5.
+- `Other`: aircraft-km, for contrails in Tab 6.
 - `Source`: Tab 1 plus the combustor or activity preset.
 
 ---

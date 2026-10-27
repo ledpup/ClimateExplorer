@@ -33,6 +33,6 @@ UV breaks a CFC (`CFCl₃ + UV → CFCl₂ + Cl`), then `Cl + O₃ → ClO + O�
 
 Kg of gas emitted (or bank × annual leak rate) by species. Radiative efficiency and lifetime per species come from AR6 Ch 7 Supplementary Material.
 
-## 5. Output to Tabs 4 and 5
+## 5. Output to the simulation
 
 Fills the shared `EmissionResult` ([overview §2.2](2026-10-21-01-carbon-cycle-plan.md)): biogenic CH₄ (not added to `CarbonMassKg`, [overview §2.3](2026-10-21-01-carbon-cycle-plan.md)), N₂O and halogenated gases by species in `NonCo2`. Fossil carbon from waste incineration of plastics stays with the Tab 1 combustors ([Tab 1 combustor sub-plan §2.3](2026-10-23-01-carbon-cycle-tab1-combustors-plan.md)).

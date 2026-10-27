@@ -14,7 +14,7 @@ Tab 1 covers carbon released from geological stores: fossil fuels, and carbonate
 1. **Stage 1 (this plan): combustion in the abstract.** Fuel and oxygen go in; products and energy come out. No engine, power station or kiln. The reader sees combustion and calcination as chemistry: the balanced equations, the mass of each product, the heat released or absorbed, and what changes when combustion is incomplete or the fuel contains sulfur.
 2. **Stage 2: [combustors and upstream](2026-10-23-01-carbon-cycle-tab1-combustors-plan.md).** Where the fuel is burned (transport, power, industry, buildings), the per-passenger and per-tonne transport comparison, per-combustor emission factors, and the upstream overheads of extraction, refining and transport.
 
-Stage 1 stands on its own. Its inputs are quantities of fuel, energy or rock, and its result goes to Tab 4 like any other input tab's. Stage 2 adds activities on top of the same chemistry engine and replaces some stage 1 defaults with per-combustor values (§3, §4).
+Stage 1 stands on its own. Its inputs are quantities of fuel, energy or rock, and its result goes to the simulation like any other input tab's. Stage 2 adds activities on top of the same chemistry engine and replaces some stage 1 defaults with per-combustor values (§3, §4).
 
 ---
 
@@ -24,7 +24,7 @@ Stage 1 stands on its own. Its inputs are quantities of fuel, energy or rock, an
 2. **Incomplete combustion and tropospheric ozone** (sub-section: CO, unburnt hydrocarbons, soot, and NOx as ozone precursors)
 3. **Sulfur and sulfate aerosols** (sub-section: the cooling by-product)
 4. **Fuel table**
-5. **Calculator** (fuel, energy or rock quantity → products and energy → "send to Tab 4")
+5. **Calculator** (fuel, energy or rock quantity → products and energy → an emission event for the simulation)
 
 Every sub-section follows [overview §1.3](2026-10-21-01-carbon-cycle-plan.md). Each one opens with its Level 1 overview, a sentence or two and at most one picture or table, and the rest sits behind an expand.
 
@@ -69,7 +69,7 @@ The rock gives off CO₂ without burning. The heat has to come from somewhere, u
   - steam methane reforming for hydrogen and ammonia, `CH₄ + 2 H₂O → CO₂ + 4 H₂`
   - iron-ore reduction, `Fe₂O₃ + 3 CO → 2 Fe + 3 CO₂`, where the CO comes from coke; the blast furnace itself is in the [combustor sub-plan](2026-10-23-01-carbon-cycle-tab1-combustors-plan.md)
 
-**Tie to later tabs:** this is carbon from the crust reservoir. Tab 4 should compare the rates. People move carbon from geological stores to the air at ~38 Gt CO₂/yr (fossil fuels plus limestone). Volcanoes move ~0.3–0.4 Gt CO₂/yr. That's about 100 times faster (to verify).
+**Tie to later tabs:** this is carbon from the crust reservoir. The simulation's carbon tab (Tab 5) should compare the rates. People move carbon from geological stores to the air at ~38 Gt CO₂/yr (fossil fuels plus limestone). Volcanoes move ~0.3–0.4 Gt CO₂/yr. That's about 100 times faster (to verify).
 
 **Model inputs (editable):** CaO content of clinker, clinker ratio of cement, lime type, and the fuel that supplies the heat (any fuel from §5). Stage 1 supplies only the reaction's own heat (§2.2), with no losses. Defaults per [overview §3.5](2026-10-21-01-carbon-cycle-plan.md).
 
@@ -92,11 +92,11 @@ The rock gives off CO₂ without burning. The heat has to come from somewhere, u
 - **Gross vs net heating value:** if the water vapour condenses, it gives back its latent heat (methane: −890 kJ/mol instead of −802). Fuel data uses the net value; condensing boilers recover some of the difference. One line of text.
 - **Heat for calcination:** 1 kg of rock CO₂ needs ~4.0 MJ (178 kJ per 44 g). Supplying that from carbon at ~112 g CO₂/MJ adds at least ~0.45 kg of fuel CO₂. This is the floor with no heat lost. A real kiln also heats the material to ~1,450 °C to form clinker, and loses heat. Its real fuel use is in the [combustor sub-plan](2026-10-23-01-carbon-cycle-tab1-combustors-plan.md).
 - **Incomplete combustion releases less heat** (§3): carbon burned only to CO gives out about 28% of the heat of burning it to CO₂.
-- **Water vapour product:** combustion also makes water (methane: 2.25 kg H₂O per kg). Show it as a product. Emitted at ground level it has no lasting climate effect, because the water cycle removes it within days. The page says so in one line. (Water vapour at cruise altitude, as contrails, is in the combustor sub-plan and Tab 5.)
+- **Water vapour product:** combustion also makes water (methane: 2.25 kg H₂O per kg). Show it as a product. Emitted at ground level it has no lasting climate effect, because the water cycle removes it within days. The page says so in one line. (Water vapour at cruise altitude, as contrails, is in the combustor sub-plan and Tab 6.)
 
 ### 2.3 Ideal and real fuels
 
-**Main point (Level 1):** the equations above burn *ideal* fuels, one pure molecule each: coal as pure carbon, natural gas as methane, petrol as octane. Fuels in the real world are mixtures, and the page uses the real fuel for every number it sends to Tab 4.
+**Main point (Level 1):** the equations above burn *ideal* fuels, one pure molecule each: coal as pure carbon, natural gas as methane, petrol as octane. Fuels in the real world are mixtures, and the page uses the real fuel for every number it sends to the simulation.
 
 - **Ideal fuel:** one molecule. Its equation is clean, and its products and heat follow from the chemistry with nothing to look up. Fixed, not editable. The worked examples (§2) and the incomplete-combustion series (§3) use ideal fuels.
 - **Real fuel:** a mixture of parts, each with a mass fraction. Petrol is alkanes centred on octane, plus aromatics (such as toluene), sometimes ethanol, and a trace of sulfur. Diesel and jet fuel are similar, centred on cetane and dodecane. Natural gas is mostly methane, with some ethane, CO₂ and N₂. Coal, coke and heavy fuel oil have no molecules to list, so they are written as their elements (carbon, hydrogen, oxygen, nitrogen, sulfur) plus moisture and ash, as received. Real fuels fill the fuel table (§5) and the calculator (§6). The composition and heating value are editable assumptions.
@@ -131,7 +131,7 @@ CO + ½ O₂ → CO₂      −283.0 kJ
 ```
 
 - The carbon has to end up somewhere: as CO₂, CO, soot (black carbon), or unburnt fuel. The page balances each equation and shows the split.
-- **Black carbon (soot)** is an aerosol. It is the carbon that never reacted, formed in fuel-rich parts of a flame. It absorbs sunlight (warming) and darkens snow and ice where it lands. Its chemistry is shown here; its forcing is in Tab 5. It falls out of the air within days to weeks rather than oxidising to CO₂, so its carbon is not added to the carbon total sent to Tab 4 (to confirm against [overview §2.3](2026-10-21-01-carbon-cycle-plan.md)).
+- **Black carbon (soot)** is an aerosol. It is the carbon that never reacted, formed in fuel-rich parts of a flame. It absorbs sunlight (warming) and darkens snow and ice where it lands. Its chemistry is shown here; its forcing is in Tab 6. It falls out of the air within days to weeks rather than oxidising to CO₂, so its carbon is not added to the carbon total sent to the simulation (to confirm against [overview §2.3](2026-10-21-01-carbon-cycle-plan.md)).
 - Example equation `2 CH₄ + 3 O₂ → 2 CO + 4 H₂O`.
 
 **Precursors and where they come from:**
@@ -177,7 +177,7 @@ The same pattern with CH₄ and the NMVOCs produces more O₃ per molecule. Teac
 - **Carbon split:** the fraction of the fuel's carbon leaving as CO₂, CO, soot and unburnt fuel. Default 100% CO₂, which matches IPCC's oxidation factor of 1 (§5). The reader moves it to see the products change, the equation rebalance and the heat fall. Presets illustrate it: a clean gas flame, a smouldering coal fire, a smoky diesel flame.
 - The masses of CO, soot and unburnt hydrocarbon follow from the split by stoichiometry, with no emission factors: CO is 28/12 of its carbon, soot is its carbon, and unburnt hydrocarbon has the fuel's own composition.
 - **NOx formed**, g per kg of fuel, with one generic default per fuel, sourced per [overview §3.5](2026-10-21-01-carbon-cycle-plan.md) (IPCC first; the EMEP/EEA Guidebook where IPCC has no Tier 1 factor). NOx depends mostly on flame temperature, which belongs to the combustor, so the page labels this default as a rough average. The combustor sub-plan replaces the split and the NOx default with per-combustor values.
-- Precursor masses are carried to Tab 5 for ozone forcing. CO's carbon is still counted in the carbon total sent to Tab 4.
+- Precursor masses are carried to the simulation for ozone forcing (Tab 6). CO's carbon is still counted in the carbon total sent to the simulation.
 
 ## 4. Sulfur and sulfate aerosols (sub-section)
 
@@ -207,7 +207,7 @@ SO₂ + H₂O₂ (in cloud)   → H₂SO₄                   (aqueous phase, us
 **Model inputs (editable):**
 - Sulfur content per real fuel (mass fraction; one of its parts, §2.3). Ideal fuels contain none. This is a fuel-table column (§5).
 - All of the fuel's sulfur leaves as SO₂ in stage 1. Removing SO₂ before it leaves the stack (scrubbers) is equipment, so it is in the [combustor sub-plan](2026-10-23-01-carbon-cycle-tab1-combustors-plan.md).
-- SO₂ mass is carried to Tab 5 as a negative forcing that tracks the emission rate, the same short-lived treatment as ozone.
+- SO₂ mass is carried to the simulation as a negative forcing (Tab 6) that tracks the emission rate, the same short-lived treatment as ozone.
 
 Provisional sulfur contents (to verify):
 
@@ -340,8 +340,8 @@ Input modes:
 The [combustor sub-plan](2026-10-23-01-carbon-cycle-tab1-combustors-plan.md) adds the activity and transport-task modes and activity presets ("a heavy truck driving 1,000 km").
 
 Emission profile:
-- **Single pulse (default)**: the whole amount is released at t = 0. Tab 1 deals only in quantity; time first appears in Tab 4.
-- **Constant rate (option)**: the same amount repeated each year for N years, e.g. "this nation's coal burn, every year for 30 years". This is a small Tab 1 control (on/off and N). Tab 4 handles it by summing pulses, so it costs little to support.
+- **Single pulse (default)**: the whole amount is released at t = 0. Tab 1 deals only in quantity; time first appears in the simulation, where the pulse is an emission event at time 0.
+- **Constant rate (option)**: the same amount every period for a duration, e.g. "this nation's coal burn, every year for 30 years" or "a gas hob, per second for 2 hours". This is a small Tab 1 control (on/off, period and duration). The simulation runs it as one emission event at that rate, so it costs little to support.
 
 Output display:
 - kg → t → kt → Mt → Gt with SI prefixes; scientific notation toggle
@@ -352,7 +352,7 @@ Output display:
 
 Numeric type: `double` is sufficient (range and precision are far beyond need); keep calculation in SI base units (kg, J, m) internally, convert only at the UI edge.
 
-## 7. Output to Tabs 4 and 5
+## 7. Output to the simulation
 
 Tab 1 fills the shared `EmissionResult` ([overview §2.2](2026-10-21-01-carbon-cycle-plan.md)):
 
@@ -376,4 +376,4 @@ The parameter system and page shell are cross-cutting ([overview §5](2026-10-21
 5. Calculator UI: input modes (fuel, energy, rock or product), unit scaling, presets, results breakdown
 6. Chemistry content: equations (coal → methane → octane), mass-gain and energy explainers, calcination, incomplete combustion and ozone formation, sulfur and sulfate aerosols, plus Level 1 plain-language text and term definitions for every section
 7. Fuel illustration set and chemical diagrams — single style
-8. Hand-off to Tab 4 (placeholder Tab 4 that displays the received result)
+8. Hand-off to the simulation (a placeholder output tab that shows the received result as an emission event)
