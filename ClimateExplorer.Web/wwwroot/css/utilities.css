@@ -1,0 +1,66 @@
+/* Utility classes used in our markup, with Bootstrap 5.3.3's names and values (including !important).
+   Limited to the classes in use; prefer component-scoped CSS over adding new ones. */
+
+/* Display / flex */
+.d-block { display: block !important; }
+.d-flex { display: flex !important; }
+
+.flex-column { flex-direction: column !important; }
+.flex-wrap { flex-wrap: wrap !important; }
+
+.justify-content-end { justify-content: flex-end !important; }
+.justify-content-center { justify-content: center !important; }
+.justify-content-between { justify-content: space-between !important; }
+
+.align-items-center { align-items: center !important; }
+
+/* Gap */
+.gap-1 { gap: 0.25rem !important; }
+.gap-2 { gap: 0.5rem !important; }
+.gap-4 { gap: 1.5rem !important; }
+
+/* Spacing */
+.mt-1 { margin-top: 0.25rem !important; }
+.mt-2 { margin-top: 0.5rem !important; }
+.mt-3 { margin-top: 1rem !important; }
+
+.mb-0 { margin-bottom: 0 !important; }
+.mb-2 { margin-bottom: 0.5rem !important; }
+.mb-3 { margin-bottom: 1rem !important; }
+.mb-4 { margin-bottom: 1.5rem !important; }
+
+.px-4 {
+    padding-right: 1.5rem !important;
+    padding-left: 1.5rem !important;
+}
+
+@media (max-width: 767px) {
+    .px-4 {
+        padding-right: 1rem !important;
+        padding-left: 1rem !important;
+    }
+}
+
+/* Text */
+.text-end { text-align: right !important; }
+.text-center { text-align: center !important; }
+
+.text-muted { color: rgba(33, 37, 41, 0.75) !important; }
+
+/* Accessibility */
+.visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+/* Tablet and up */
+@media (min-width: 768px) {
+    .flex-md-row { flex-direction: row !important; }
+}

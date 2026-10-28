@@ -1,7 +1,8 @@
 # Bootstrap Removal
 
 - **Date:** 2026-10-28
-- **Status:** Proposed
+- **Status:** Steps 1–2 implemented 2026-10-28 (see addendum). Build and unit tests are clean; the UI is
+  unverified. Steps 3–4 wait for overall step 17.
 - **Author:** Claude
 - **Scope:** `ClimateExplorer.Web/App.razor`, `ClimateExplorer.Web/wwwroot/css/` (new `base.css`,
   `utilities.css`; `app.css`), remaining Bootstrap class references in Razor/CSS
@@ -167,3 +168,53 @@ stylesheet, after the last Blazorise component is gone, changes almost nothing.
 | **Total** | **2 files, +105** | **~8 files, ~42** | **~30 lines** |
 
 Risk: low per step. The main risk (reboot drift) is surfaced early by step 2.
+
+## Addendum — implementation notes (steps 1–2, 2026-10-28)
+
+### What shipped
+
+- **Step 1.** The `bootstrap.bundle.min.js` `<script>` is gone from `App.razor`, and the comment above the
+  deferred scripts now only mentions Leaflet. A repo-wide grep found no `data-bs-*` attributes or
+  `bootstrap.*` calls. The `cdn.jsdelivr.net` preconnect stays because the Bootstrap CSS still comes from there.
+- **Step 2.** `ClimateExplorer.Web/wwwroot/css/base.css` (~215 lines) and `utilities.css` (~65 lines) are
+  linked in `App.razor` after Bootstrap and before `app.css`. Every value is copied from Bootstrap 5.3.3, so
+  with Bootstrap still loaded the rendered result should be the same. The `.px-4` mobile override moved
+  from `app.css` into `utilities.css`. AGENTS.md has the utility-class rule. `.github/copilot-instructions.md`
+  now says the load-order note also covers the two new files.
+
+### Deviations from the plan
+
+- **`base.css` is larger than the sketch (~215 lines instead of ~60).** A check of the elements we render
+  turned up reboot rules the sketch didn't have, so they were added:
+  - Nested-list `margin-bottom: 0`. Without it, removing Bootstrap later would add space under nested lists.
+  - `dl`/`dt`/`dd` (trend stats).
+  - `blockquote` and `pre`/`code` (blog posts use quotes and fenced code; Bootstrap's monospace stack
+    and `#d63384` code colour are kept).
+  - `figure`.
+  - `thead, tbody, tfoot, tr, td, th { border-style: solid; border-width: 0 }`. Table CSS that sets only a
+    border width depends on this.
+  - `button { border-radius: 0 }` and `button:focus:not(:focus-visible) { outline: 0 }`.
+  - The number-input spin button, the search input, `[role="button"]` cursor, `summary`,
+    `a:not([href]):not([class])`, body `font-weight`/`-webkit-tap-highlight-color`, and the
+    reduced-motion-aware `scroll-behavior: smooth`.
+  - Skipped as unused: `abbr`, `address`, `mark`, `sub`/`sup`, `kbd` styling, `caption`, `fieldset`/`legend`,
+    `iframe`, `progress`, `output`, `::file-selector-button`, and the Bootstrap heading sizes and weights
+    (which `app.css` overrides).
+- **`utilities.css` has 24 classes.** That is all of them in the plan's table. A grep of Razor, C# and blog
+  Markdown found no others: `flex-grow` in `Global.razor` is an inline style, and the other matches were prose.
+- **`.text-muted` keeps Bootstrap's value** (`rgba(33, 37, 41, 0.75)`) rather than switching to
+  `--climate-color-muted-text` (`#595959`), so this step changes nothing visually. It has two uses.
+
+### Verification
+
+- `dotnet build` of `ClimateExplorer.Web` is clean. The two files are registered as static web assets, so
+  `@Assets` fingerprints them. The local `bin` was locked by a running instance, so the build went to a
+  separate artifacts path.
+- `ClimateExplorer.UnitTests`: 939 passed, 0 failed.
+- Manual checks for the developer are still to do: the step 1 overlays (dropdowns, modals, tooltips) and
+  "no visual change" for step 2.
+
+### Follow-ups
+
+- Steps 3–4 (cleanup and removing the Bootstrap CSS) stay with overall step 17.
+- Optional: point `.text-muted` at `--climate-color-muted-text`, or replace its two uses with scoped CSS.

@@ -179,27 +179,28 @@ An order is required: a few plans depend on code or markup introduced by others,
 steps can only run once nothing renders Blazorise or Bootstrap markup. The plan numbers (02–17)
 group plans by topic. They aren't the build order. **Follow the step numbers below.** Each step
 builds, passes the unit tests and can ship on its own. The site keeps working between steps.
+**Implemented** is the date a step landed; the plan's addendum records what shipped.
 
-| Step | Plan | Hard dependencies (must be done first) | Why it sits here |
-|---|---|---|---|
-| 1 | [02 Icons](2026-10-28-02-icons-plan.md) | — | Removes the Font Awesome dependency on a Blazorise package. Independent. |
-| 2 | [16 Bootstrap removal](2026-10-28-16-bootstrap-removal-plan.md), step 1 (JS bundle) | — | Independent quick win |
-| 3 | [16 Bootstrap removal](2026-10-28-16-bootstrap-removal-plan.md), step 2 (`base.css`, `utilities.css`) | — | Must land long before step 17, so reboot drift surfaces while Bootstrap can still be compared |
-| 4 | [15 Simple markup](2026-10-28-15-simple-markup-replacements-plan.md) | — | No JS, tiny |
-| 5 | [12 Pagination](2026-10-28-12-pagination-plan.md) | — | Internal to one component |
-| 6 | [11 Tables](2026-10-28-11-tables-plan.md) | — | Mechanical. No name collisions. |
-| 7 | [08 Checkbox](2026-10-28-08-checkbox-plan.md) | — | Settles the `Value`/`ValueChanged` convention before the other inputs |
-| 8 | [03 Loading indicator](2026-10-28-03-loading-indicator-plan.md) | — | Self-contained |
-| 9 | [07 Select](2026-10-28-07-select-plan.md) | (step 7 recommended) | Introduces the shared `climate-control` look and the `<label for>` pattern |
-| 10 | [09 Text input](2026-10-28-09-text-input-validation-plan.md) | step 9 (reuses `climate-control`; same files) | Do straight after Select so the `Blazorise.*` qualifiers in the chart forms are short-lived |
-| 11 | [10 Tabs](2026-10-28-10-tabs-plan.md) | — | Mechanical |
-| 12 | [04 Tooltip](2026-10-28-04-tooltip-plan.md) | — | **Introduces `wwwroot/js/floating.js`** |
-| 13 | [05 Dropdown](2026-10-28-05-dropdown-plan.md) | step 12 (`floating.js`) | Converts NavMenu's two dropdowns too |
-| 14 | [06 Modal](2026-10-28-06-modal-plan.md) | — (after 13 recommended: tooltips/menus inside modals can then be checked together) | |
-| 15 | [13 Autocomplete](2026-10-28-13-autocomplete-plan.md) | step 14 recommended (same file; enables the `autofocus` simplification), step 12 if the list needs the popover fallback | |
-| 16 | [14 Layout and navbar](2026-10-28-14-layout-navbar-plan.md) | step 13 (NavMenu's dropdowns must already be `DropdownButton`) | |
-| 17 | [16 Bootstrap removal](2026-10-28-16-bootstrap-removal-plan.md), steps 3–4 (cleanup, remove CSS) | steps 3–16 | Only once nothing renders Bootstrap markup |
-| 18 | [17 Package removal and renames](2026-10-28-17-blazorise-package-removal-and-renames-plan.md) | all previous steps | Packages can't go while anything references them. Renames can't happen while the Blazorise namespace is imported. |
+| Step | Plan | Hard dependencies (must be done first) | Why it sits here | Implemented |
+|---|---|---|---|---|
+| 1 | [02 Icons](2026-10-28-02-icons-plan.md) | — | Removes the Font Awesome dependency on a Blazorise package. Independent. | 2026-10-28 |
+| 2 | [16 Bootstrap removal](2026-10-28-16-bootstrap-removal-plan.md), step 1 (JS bundle) | — | Independent quick win | 2026-10-28 |
+| 3 | [16 Bootstrap removal](2026-10-28-16-bootstrap-removal-plan.md), step 2 (`base.css`, `utilities.css`) | — | Must land long before step 17, so reboot drift surfaces while Bootstrap can still be compared | 2026-10-28 |
+| 4 | [15 Simple markup](2026-10-28-15-simple-markup-replacements-plan.md) | — | No JS, tiny | — |
+| 5 | [12 Pagination](2026-10-28-12-pagination-plan.md) | — | Internal to one component | — |
+| 6 | [11 Tables](2026-10-28-11-tables-plan.md) | — | Mechanical. No name collisions. | — |
+| 7 | [08 Checkbox](2026-10-28-08-checkbox-plan.md) | — | Settles the `Value`/`ValueChanged` convention before the other inputs | — |
+| 8 | [03 Loading indicator](2026-10-28-03-loading-indicator-plan.md) | — | Self-contained | — |
+| 9 | [07 Select](2026-10-28-07-select-plan.md) | (step 7 recommended) | Introduces the shared `climate-control` look and the `<label for>` pattern | — |
+| 10 | [09 Text input](2026-10-28-09-text-input-validation-plan.md) | step 9 (reuses `climate-control`; same files) | Do straight after Select so the `Blazorise.*` qualifiers in the chart forms are short-lived | — |
+| 11 | [10 Tabs](2026-10-28-10-tabs-plan.md) | — | Mechanical | — |
+| 12 | [04 Tooltip](2026-10-28-04-tooltip-plan.md) | — | **Introduces `wwwroot/js/floating.js`** | — |
+| 13 | [05 Dropdown](2026-10-28-05-dropdown-plan.md) | step 12 (`floating.js`) | Converts NavMenu's two dropdowns too | — |
+| 14 | [06 Modal](2026-10-28-06-modal-plan.md) | — (after 13 recommended: tooltips/menus inside modals can then be checked together) | | — |
+| 15 | [13 Autocomplete](2026-10-28-13-autocomplete-plan.md) | step 14 recommended (same file; enables the `autofocus` simplification), step 12 if the list needs the popover fallback | | — |
+| 16 | [14 Layout and navbar](2026-10-28-14-layout-navbar-plan.md) | step 13 (NavMenu's dropdowns must already be `DropdownButton`) | | — |
+| 17 | [16 Bootstrap removal](2026-10-28-16-bootstrap-removal-plan.md), steps 3–4 (cleanup, remove CSS) | steps 3–16 | Only once nothing renders Bootstrap markup | — |
+| 18 | [17 Package removal and renames](2026-10-28-17-blazorise-package-removal-and-renames-plan.md) | all previous steps | Packages can't go while anything references them. Renames can't happen while the Blazorise namespace is imported. | — |
 
 Flexibility: steps 4–11 have no dependencies on each other (apart from 9 → 10). They can be
 reordered or done in parallel branches. Steps 12 → 13 → 16 and 3 → 17 → 18 are fixed chains.
