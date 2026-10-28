@@ -1,8 +1,8 @@
 namespace ClimateExplorer.Web.Client.Components.Location;
 
-using Blazorise;
 using Blazorise.Components;
 using ClimateExplorer.Core.Model;
+using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.WebApiClient.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -63,12 +63,12 @@ public partial class ChangeLocation
             _ = LoadNearbyLocationsAsync(SelectedLocation.Id);
         }
 
-        await modal!.Show();
+        await modal!.ShowAsync();
     }
 
     public Task Hide()
     {
-        return modal!.Hide();
+        return modal!.HideAsync();
     }
 
     protected override async Task OnParametersSetAsync()

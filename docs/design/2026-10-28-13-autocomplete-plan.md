@@ -61,13 +61,14 @@ Filtering is always case-insensitive *contains*, the only mode in use. There's n
            aria-activedescendant="@ActiveOptionId" aria-label="@AriaLabel" placeholder="@Placeholder"
            autocomplete="off" autofocus="@AutoFocus" value="@SelectedText"
            @oninput="OnInputAsync" @onkeydown="OnKeyDownAsync" @onblur="OnBlur" @ref="input" />
-    <ul id="@listId" role="listbox" class="climate-autocomplete-list" hidden="@(!IsOpen)" style="max-height: @MaxMenuHeight">
+    <ul id="@listId" role="listbox" class="climate-autocomplete-list" hidden="@(!IsOpen)" style="max-height: @MaxMenuHeight"
+        @onmousedown:preventDefault="true">
         @for (var i = 0; i < results.Count; i++)
         {
             var index = i;
             <li id="@OptionId(index)" role="option" aria-selected="@(index == activeIndex ? "true" : "false")"
                 class="climate-autocomplete-option @(index == activeIndex ? "is-active" : null)"
-                @onpointerdown="() => ChooseAsync(index)" @onpointerdown:preventDefault="true">@TextField(results[index])</li>
+                @onclick="() => ChooseAsync(index)">@TextField(results[index])</li>
         }
         @if (capped) { <li class="climate-autocomplete-more" aria-hidden="true">Keep typing to narrow results</li> }
     </ul>
@@ -75,8 +76,14 @@ Filtering is always case-insensitive *contains*, the only mode in use. There's n
 </div>
 ```
 
-- **Choosing with the pointer** uses `pointerdown` + `preventDefault`, so the input doesn't blur
-  (and close the list) before the choice registers. That's the classic autocomplete bug.
+- **The input keeps focus while the list is used with the pointer.** `mousedown` is prevented on the whole
+  `<ul>`, not just the options, so the input doesn't blur (and close the list) when an option is pressed
+  *or when the list's scrollbar is dragged*. The Blazorise Autocomplete has that second bug: pressing its
+  scrollbar moves focus off the input and the menu closes. It's `mousedown`, not `pointerdown`, because
+  preventing `pointerdown` doesn't reliably stop the focus change. Touch taps fire a compatibility
+  `mousedown` too, so they're covered.
+- **Choosing** happens on `click`, which fires after the prevented `mousedown` with the input still
+  focused. Choosing on `pointerdown` would pick an option when a touch drag that scrolls the list starts on it.
 - **Keyboard:** ArrowDown/ArrowUp move `activeIndex` (opening the list if closed); Enter chooses the
   active option; Escape closes the list, or clears the text if already closed; Tab closes. Only
   Enter, Escape and the arrows need handling. `@onkeydown:preventDefault` can't be per-key, so
@@ -84,9 +91,10 @@ Filtering is always case-insensitive *contains*, the only mode in use. There's n
 - The active option is scrolled into view (`element.scrollIntoView({ block: "nearest" })`) via a tiny
   collocated `Autocomplete.razor.js`, run after the render that changes `activeIndex`.
 - **Positioning:** the list is `position: absolute` under the input inside a `position: relative`
-  wrapper. Inside the change-location `<dialog>` it overlays the table below, as today. If it turns
-  out to be clipped by the dialog's scrolling body, switch the list to `popover="manual"` placed with
-  `floating.js` (plan 04). That's a contained change.
+  wrapper. Inside the change-location `<dialog>` it overlays the table below, as today. On tablet and
+  desktop the modal body doesn't scroll (the whole dialog does), so nothing clips it. On mobile the body
+  scrolls, but the table below is taller than the list. If it turns out to be clipped anyway, switch the
+  list to `popover="manual"` placed with `floating.js` (plan 04). That's a contained change.
 - **Debounce:** filtering ~2,000 strings per keystroke is cheap in WASM. Debounce the filter by
   ~120 ms anyway, to avoid re-rendering the list on every keystroke while typing fast (and to keep
   Server-mode round trips down before the WASM handoff).
@@ -127,6 +135,8 @@ Filtering is always case-insensitive *contains*, the only mode in use. There's n
 - Opening Change location focuses the search box. Typing "syd" shows Sydney first. Arrow keys move
   the highlight, Enter picks it, and the modal closes and the location changes.
 - Mouse/touch selection works first time (no blur race).
+- Dragging the list's scrollbar with the mouse scrolls it and leaves it open. Touch-scrolling the list
+  doesn't choose an option.
 - Escape closes the list without closing the modal on the first press. A second Escape closes the
   modal. (The input handles the first Escape and should stop the dialog `cancel`; verify, and if the
   dialog closes on the first press, call `preventDefault` on the dialog's `cancel` while the list is open.)

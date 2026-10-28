@@ -154,7 +154,7 @@ Flex-wrap card grid of preset chart configurations. Each card: title, descriptio
 ---
 
 ### `OverviewField` (`.razor` + `.razor.css`)
-Inline-block data field: small grey label above bold large value. Optional `PopupContent` renders a Blazorise `Modal` (with `custom-modal-header`) on click.
+Inline-block data field: small grey label above bold large value. Optional `PopupContent` opens in a `Modal` on click.
 
 ---
 
@@ -211,10 +211,11 @@ Flexbox row, `flex-wrap: wrap`, `margin: 20px 0 -16px 0` (negative bottom compen
 - **Download button** — `chart-control chart-control-download`: `margin-left: auto`, `margin-right: 0` → always flush to right edge. Rule must appear **after** `.chart-control` in the stylesheet to win the cascade.
 - **Info icon** — `color: #79c6f4`, `font-size: larger`, `display: flex`, `align-items: center`.
 
-### Modal Headers
-All modals use `Class="custom-modal-header"` on `<ModalHeader>`:
-- Background: `#425f59`, text: white
-- Close button: `filter: invert(1) grayscale(100%) brightness(200%)`
+### Modals
+All modals use the common `Modal` component (a native `<dialog>` opened with `showModal()`), which draws the header:
+- Background: `#425f59`, title (`<h2>`, `1.25rem`) and close button white; the close button's hover is `#cfc`
+- Tablet and desktop: the whole modal scrolls in the overlay. Mobile: the modal fits the screen and only its body scrolls
+- The page behind doesn't scroll (`html:has(dialog.climate-modal[open])` in `app.css`)
 
 ### CSS Isolation (Blazor)
 - Every component has a co-located `.razor.css` file.

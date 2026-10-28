@@ -1,4 +1,3 @@
-@using Blazorise
 @using System.Text.RegularExpressions
 @using ClimateExplorer.Web.Client.Components.Common
 
@@ -21,21 +20,8 @@
 
 @if (PopupContent != null)
 {
-    <Modal @ref="popup" Closing="@OnModalClosing" Size="ModalSize.Large">
-        <ModalContent>
-            <ModalHeader Class="custom-modal-header">
-                <ModalTitle>
-                    @(string.IsNullOrWhiteSpace(PopupTitle) ? Label : PopupTitle)
-                </ModalTitle>
-                <CloseButton />
-            </ModalHeader>
-            <ModalBody>
-                @if (popupContentVisible)
-                {
-                    @PopupContent
-                }
-            </ModalBody>
-        </ModalContent>
+    <Modal @ref="popup" Title="@(string.IsNullOrWhiteSpace(PopupTitle) ? Label : PopupTitle)" Size="ModalSize.Large">
+        @PopupContent
     </Modal>
 }
 

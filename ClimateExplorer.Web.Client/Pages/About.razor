@@ -1,6 +1,5 @@
 @using ClimateExplorer.Web.Client.Components.Common
 @page "/about"
-@using Blazorise
 @using ClimateExplorer.Core.Model
 @using ClimateExplorer.WebApiClient.Services
 
@@ -150,14 +149,8 @@
     <DelayedTooltip Text="Click to enlarge"><img src="/images/pipeline.png" style="width: 100%" alt="Data Pipeline Diagram" /></DelayedTooltip>
 </div>
 
-<Modal @bind-Visible="pipelineModalVisible" Size="ModalSize.ExtraLarge">
-    <ModalHeader Class="custom-modal-header">
-        <ModalTitle>Data Pipeline</ModalTitle>
-        <CloseButton />
-    </ModalHeader>
-    <ModalBody>
-        <img src="/images/pipeline.png" style="width: 100%; height: auto;" alt="Data Pipeline Diagram" />
-    </ModalBody>
+<Modal @bind-Visible="pipelineModalVisible" Title="Data Pipeline" Size="ModalSize.ExtraLarge">
+    <img src="/images/pipeline.png" style="width: 100%; height: auto;" alt="Data Pipeline Diagram" />
 </Modal>
 
 <h2>Notes</h2>

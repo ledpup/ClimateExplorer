@@ -1,7 +1,7 @@
 namespace ClimateExplorer.Web.Client.Components;
 
-using Blazorise;
 using ClimateExplorer.Core.Model;
+using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.UiModel;
 using Microsoft.AspNetCore.Components;
 
@@ -15,9 +15,14 @@ public partial class AboutData
     [Parameter]
     public IReadOnlyList<DataSetMetadata>? SourceMetadata { get; set; }
 
+    private string ModalTitle =>
+        ChartSeries?.SourceSeriesSpecifications is { Length: 1 } specifications
+            ? ChartSeriesDefinition.BuildFriendlyTitleShortForSeries(specifications[0], ChartSeries.BinGranularity, ChartSeries.Aggregation)
+            : "About this data";
+
     public Task Show()
     {
-        return modal!.Show();
+        return modal!.ShowAsync();
     }
 
     private DataSetMetadata? FindSourceMetadata(SourceSeriesSpecification sourceSeriesSpecification)

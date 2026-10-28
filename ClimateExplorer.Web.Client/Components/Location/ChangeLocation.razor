@@ -1,109 +1,98 @@
-@using Blazorise
 @using Blazorise.Components
 @using ClimateExplorer.Core.Model;
 @using ClimateExplorer.Web.Client.Components.Common
 @using ClimateExplorer.WebApiClient.Services
 @using GeoCoordinatePortable
 
-<div style="display: contents">
-    <Modal @ref="modal" Size="ModalSize.Large" Opened="@OnModalOpened" Closed="@OnModalClosed">
-        <ModalContent>
-            <ModalHeader Class="custom-modal-header">
-                <ModalTitle>Change location</ModalTitle>
-                <CloseButton />
-            </ModalHeader>
-            <ModalBody>           
-                <div class="mt-1 d-flex gap-4">
-                    <ClimateButton Text="Near me" Icon="fas fa-location-crosshairs" OnClick="NearMeClicked" />
-                    <ClimateButton Text="Random location" Icon="fas fa-shuffle" OnClick="RandomLocationClicked" />
-                </div>
+<Modal @ref="modal" Title="Change location" Size="ModalSize.Large" Opened="@OnModalOpened" Closed="@OnModalClosed">
+    <div class="mt-1 d-flex gap-4">
+        <ClimateButton Text="Near me" Icon="fas fa-location-crosshairs" OnClick="NearMeClicked" />
+        <ClimateButton Text="Random location" Icon="fas fa-shuffle" OnClick="RandomLocationClicked" />
+    </div>
 
-                @if (BrowserLocationErrorMessage != null)
-                {
-                    <div class="error-message">
-                        @BrowserLocationErrorMessage
-                    </div>
-                }
-            
-                @if (LocationDictionary is not null)
-                {
-                    <div class="mt-3 mb-3">
-                        <Autocomplete TItem="Location"
-                            TValue="Guid"
-                            @ref="locationAutocomplete"
-                            Data="@LocationDictionary.Values"
-                            TextField="@((item) => item.FullTitle)"
-                            ValueField="@((item) => item.Id)"
-                            Placeholder="Location search..."
-                            Filter="AutocompleteFilter.Contains"
-                            FreeTyping
-                            MinSearchLength="2"
-                            SelectedValueChanged="@FireOnLocationChange"
-                            MaxMenuHeight="350px"
-                            @bind-SelectedText="@selectedText" />
-                    </div>
+    @if (BrowserLocationErrorMessage != null)
+    {
+        <div class="error-message">
+            @BrowserLocationErrorMessage
+        </div>
+    }
 
-                    <div class="table-card">
-                        <div class="table-header">
-                            <span>Nearby locations</span>
-                        </div>
-                        <LoadingIndicator Visible="@NearbyLocationsLoading">
-                            <table class="climate-table climate-table--striped">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Location</th>
-                                        <th scope="col" class="text-center">Country</th>
-                                        <th scope="col" class="text-center">Distance</th>
-                                        <th scope="col" class="direction-col text-center">Direction</th>
-                                        <th scope="col" class="bearing-col text-center">Bearing</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if (NearbyLocations is not null)
-                                    {
-                                        foreach (var row in NearbyLocations)
-                                        {
-                                            var location = LocationDictionary[row.LocationId];
-                                            <tr>
-                                                <td>
-                                                    <ClimateButton Variant="ButtonVariant.Link"
-                                                                   Text="@location.Name"
-                                                                   title="@location.FullTitle"
-                                                                   OnClick="@(() => FireOnLocationChange(row.LocationId))" />
-                                                </td>
-                                                <td>@location.Country</td>
-                                                <td>@(row.Distance) km</td>
-                                                <td class="direction-col">
-                                                    <span>
-                                                        @row.CompassRoseDirection
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <span style="display: inline-block; transform: rotate(@($"{row.BearingDegrees}deg")); transform-origin: center;">↑</span>
-                                                </td>
-                                            </tr>
-                                        }
-                                    }
-                                    else
-                                    {
-                                        for (var i = 0; i < 10; i++)
-                                        {
-                                            <tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>
-                                        }
-                                    }
-                                </tbody>
-                            </table>
-                        </LoadingIndicator>
+    @if (LocationDictionary is not null)
+    {
+        <div class="mt-3 mb-3">
+            <Autocomplete TItem="Location"
+                TValue="Guid"
+                @ref="locationAutocomplete"
+                Data="@LocationDictionary.Values"
+                TextField="@((item) => item.FullTitle)"
+                ValueField="@((item) => item.Id)"
+                Placeholder="Location search..."
+                Filter="AutocompleteFilter.Contains"
+                FreeTyping
+                MinSearchLength="2"
+                SelectedValueChanged="@FireOnLocationChange"
+                MaxMenuHeight="350px"
+                @bind-SelectedText="@selectedText" />
+        </div>
+
+        <div class="table-card">
+            <div class="table-header">
+                <span>Nearby locations</span>
+            </div>
+            <LoadingIndicator Visible="@NearbyLocationsLoading">
+                <table class="climate-table climate-table--striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Location</th>
+                            <th scope="col" class="text-center">Country</th>
+                            <th scope="col" class="text-center">Distance</th>
+                            <th scope="col" class="direction-col text-center">Direction</th>
+                            <th scope="col" class="bearing-col text-center">Bearing</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                         @if (NearbyLocations is not null)
                         {
-                            <div class="table-footer">
-                                <PaginationControl TotalPages="@TotalPages" CurrentPage="@CurrentPage" PageChanged="@OnNearbyLocationsPageChanged" AriaLabel="Nearby locations pages" />
-                            </div>
+                            foreach (var row in NearbyLocations)
+                            {
+                                var location = LocationDictionary[row.LocationId];
+                                <tr>
+                                    <td>
+                                        <ClimateButton Variant="ButtonVariant.Link"
+                                                       Text="@location.Name"
+                                                       title="@location.FullTitle"
+                                                       OnClick="@(() => FireOnLocationChange(row.LocationId))" />
+                                    </td>
+                                    <td>@location.Country</td>
+                                    <td>@(row.Distance) km</td>
+                                    <td class="direction-col">
+                                        <span>
+                                            @row.CompassRoseDirection
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span style="display: inline-block; transform: rotate(@($"{row.BearingDegrees}deg")); transform-origin: center;">↑</span>
+                                    </td>
+                                </tr>
+                            }
                         }
-                    </div>
-                }
-            </ModalBody>
-        </ModalContent>
-    </Modal>
-</div>
+                        else
+                        {
+                            for (var i = 0; i < 10; i++)
+                            {
+                                <tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </LoadingIndicator>
+            @if (NearbyLocations is not null)
+            {
+                <div class="table-footer">
+                    <PaginationControl TotalPages="@TotalPages" CurrentPage="@CurrentPage" PageChanged="@OnNearbyLocationsPageChanged" AriaLabel="Nearby locations pages" />
+                </div>
+            }
+        </div>
+    }
+</Modal>
 

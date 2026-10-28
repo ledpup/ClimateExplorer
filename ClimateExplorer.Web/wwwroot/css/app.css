@@ -21,15 +21,6 @@
     --climate-transition-control: background-color 0.25s, color 0.25s, border-color 0.25s;
 }
 
-.custom-modal-header {
-    background-color: var(--climate-color-control-text);
-    color: white;
-}
-
-.custom-modal-header .btn-close {
-    filter: invert(1) grayscale(100%) brightness(200%);
-}
-
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
@@ -127,8 +118,11 @@ a, .btn-link {
     padding-left: 24px;
 }
 
-.modal-open {
+/* Stop the page scrolling behind an open Modal. Modal.razor.js measures the scrollbar this hides, and the padding
+   takes its place so the page doesn't shift sideways. */
+html:has(dialog.climate-modal[open]) {
     overflow: hidden;
+    padding-right: var(--climate-modal-scrollbar-width, 0px);
 }
 
 .secondary-text {

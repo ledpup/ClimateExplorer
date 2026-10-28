@@ -38,6 +38,7 @@ Use the following existing common components, when appriopriate:
     dashboard fields).
   - Inline (`Variant="LoadingIndicatorVariant.Inline"`): sits where content will go when there's nothing to show yet
     (first load of a panel or list).
+- Modal (`Title` or `TitleContent`; open with `ShowAsync()` or `@bind-Visible`; the body only renders while open)
 - OverviewField
 - PaginationControl
 - Select / SelectItem (needs a `<label for>` pointing at its `Id`, or an `aria-label`)
