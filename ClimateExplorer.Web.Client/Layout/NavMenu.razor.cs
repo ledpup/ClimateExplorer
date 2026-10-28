@@ -53,6 +53,8 @@ public partial class NavMenu : IDisposable
         return path == $"/{route}" || path.StartsWith($"/{route}/");
     }
 
+    public string? AriaCurrent(string route) => IsCurrentPage(route) ? "page" : null;
+
     public bool IsHamburgerCurrentPage() => VisibleSecondaryItems.Any(item => item.Route is not null && IsCurrentPage(item.Route));
 
     public void Dispose()

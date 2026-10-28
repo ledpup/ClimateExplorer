@@ -1,7 +1,7 @@
 # Layout and Navbar — Native `MainLayout` and `NavMenu`
 
 - **Date:** 2026-10-28
-- **Status:** Proposed
+- **Status:** Implemented 2026-10-28 (see addendum). Build and unit tests are clean; the UI is unverified.
 - **Author:** Claude
 - **Scope:** `Layout/MainLayout.razor` / `.razor.css`, `Layout/NavMenu.razor` / `.razor.cs` / `.razor.css`, `app.css`
 - **Builds on:** [Blazorise Removal — Overview](2026-10-28-01-blazorise-removal-overview-plan.md),
@@ -133,3 +133,54 @@ workaround. The current link gets `aria-current="page"`.
 | **Total** | — | **6 files, ~345** | **~190 lines** |
 
 Risk: medium. The nav is on every page, and the three breakpoints each need a visual check.
+
+## Addendum — implementation notes
+
+Shipped as designed: `MainLayout` is `div.app-layout > header.layout-header + main.layout-content`, `NavMenu`
+is `nav.site-nav` with two `ul.site-nav-list`s, links carry `aria-current="page"` via `AriaCurrent(route)`,
+and neither file imports Blazorise. `DropdownItem` is no longer written fully qualified. The CSS went from 366
+to 270 lines. Its margins and paddings were worked out from the old cascade (the Bootstrap rules, the
+`.nav-item:last-child` specificity wins, the 0.5rem link padding that `.navbar-expand-lg` added), so the spacing
+should come out the same.
+
+Where the plan's "Current state" description didn't match the code, the code was followed:
+
+- **Bar colour.** `.bg-dark` was overridden to `#425f59`, not Bootstrap's `#212529`. The new
+  `--climate-color-nav-surface` token is `#425f59`. The bar, the logo's borders and the two dark menus all use it.
+- **Link colours.** Links were plain white, hover was `#aaa`, and the current page was dimmed to 55% white, not
+  "85% normal, 100% current". Checked against `#425f59` for WCAG AA, `#aaa` comes out at 3.0:1 and 55% white
+  at 3.4:1, so both fail for 16px bold text. Hover is now the shared `#cfc` (6.2:1), which the
+  `UnitSwitch` on the bar and the menu items already used. The current page is now 75% white (4.77:1), and the
+  same goes for the current item in the hamburger menu and the hamburger toggle's current state. So the current
+  link looks slightly less dimmed than before.
+- **Breakpoints.** The secondary links move into the hamburger below 768px, not 1025px. Tablets show them
+  inline and put the unit switch behind the cog, as before.
+- **The logo keeps its `div.logo`** inside the brand link, since the white tab styling is on it.
+
+Other changes:
+
+- `header.layout-header { overflow: visible }` was deleted rather than moved. A plain `header` doesn't clip,
+  and the menus render in the top layer anyway ([05](2026-10-28-05-dropdown-plan.md) addendum).
+- `.navbar { padding-left: 24px }` was removed from `app.css`. The scoped `padding: 0` always beat it.
+  This takes one item off [16 Bootstrap removal](2026-10-28-16-bootstrap-removal-plan.md)'s cleanup list.
+- The hamburger's current item uses `[aria-current="page"]` instead of the `hamburger-current` class.
+  `nav-current` stays on the toggle only.
+- The site-overview button got `type="button"` and `font: inherit`, so it doesn't depend on Bootstrap's reboot.
+  It was already `aria-hidden` from plan 05. The `info-nav-link` class was dropped, because its colour never
+  reached the icon, which sets its own.
+- `!important` stays only on the two dropdown toggles, which still have to beat `DropdownButton`'s
+  `:has(...:popover-open)` state rule and its `!important` box-shadow. The menu-item `!important`s were only
+  needed against Bootstrap's `.dropdown-item` and are gone.
+- Dead rules dropped: `.info-icon` (matched nothing), and some mobile margins that were always overridden
+  (`.mobile-menu-nav-item { margin-right: 6px }` lost to `:last-child`'s 16px, so the 16px stays).
+- `.app-layout` uses `min-height: 100dvh`. Blazorise's non-root `.b-layout` had no min-height, so short pages
+  now stretch `main` to the viewport. This is new behaviour, so watch for a double scrollbar.
+
+Follow-up:
+
+- `unit-switch-nav-item` is hidden at every whole-pixel width (`max-width: 767px` and `min-width: 768px` both
+  hide it). It only appears in the fractional gap between them, e.g. 767.5px at some zoom levels, where the cog
+  and the hamburger are hidden too. Either delete it, or switch the breakpoint pair to
+  `width < 768px` / `width >= 768px` range syntax and delete it. Left in place, to keep the item set unchanged.
+- The current item in the hamburger menu still has no focus style (hover/focus are deliberately blanked), which
+  was the case before too.

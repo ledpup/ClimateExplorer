@@ -12,6 +12,7 @@
     --climate-color-tab-surface: #eef5f2;
     --climate-color-tab-border: #6b8e89;
     --climate-color-control-border: #c4d4d1;
+    --climate-color-nav-surface: #425f59;
     --climate-color-danger: #a00000;
     --climate-radius-control: 8px;
     --climate-shadow-control: rgb(0 0 0 / 20%) 0 0 4px;
@@ -23,11 +24,6 @@
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-}
-
-/* Allow the hamburger dropdown to overflow the fixed-height header */
-header.layout-header {
-    overflow: visible;
 }
 
 h1:focus {
@@ -113,10 +109,6 @@ a, .btn-link {
     .large-link.right-margin {
         margin-right: 3em;
     }
-
-.navbar {
-    padding-left: 24px;
-}
 
 /* Stop the page scrolling behind an open Modal. Modal.razor.js measures the scrollbar this hides, and the padding
    takes its place so the page doesn't shift sideways. */

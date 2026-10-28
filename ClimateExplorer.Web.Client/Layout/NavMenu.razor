@@ -1,88 +1,77 @@
-@using Blazorise
 @using ClimateExplorer.Web.Client.Components.Co2
 @using ClimateExplorer.Web.Client.Components.Notifications
 @using ClimateExplorer.Web.Client.Components.RecentObservations
 @using ClimateExplorer.Web.Client.UiModel.RecentObservations
 
-<!-- this div is necessary to get Blazor to apply a randomly-generated attribute to a DOM element so that CSS isolation will work & we can 
-     style the navbar's inner elements https://github.com/Megabit/Blazorise/issues/1599 -->
-<div>
-    <Bar Breakpoint="Breakpoint.Desktop"
-         Background="Background.Dark"
-         ThemeContrast="ThemeContrast.Dark">
-        <BarBrand>
-            <BarLink To="">
-                <div class="logo">
-                    <img src="/logo-50.png" width="42" height="42" alt="ClimateExplorer" />
-                </div>
-            </BarLink>
-        </BarBrand>
-        <BarMenu>
-            <BarStart>
-                @foreach (var item in primaryItems)
+<nav class="site-nav" aria-label="Main">
+    <a class="site-nav-brand" href="">
+        <div class="logo">
+            <img src="/logo-50.png" width="42" height="42" alt="ClimateExplorer home" />
+        </div>
+    </a>
+    <ul class="site-nav-list site-nav-start">
+        @foreach (var item in primaryItems)
+        {
+            <li class="site-nav-item">
+                <a class="site-nav-link" href="@item.Route" aria-current="@AriaCurrent(item.Route)">@item.Text</a>
+            </li>
+        }
+        @foreach (var item in VisibleSecondaryItems)
+        {
+            <li class="site-nav-item desktop-secondary-nav-item">
+                @if (item.OpensSiteOverview)
                 {
-                    <BarItem>
-                        <BarLink To="@item.Route" Class="@(IsCurrentPage(item.Route) ? "nav-current" : string.Empty)">@item.Text</BarLink>
-                    </BarItem>
+                    <button type="button" class="site-nav-link" aria-label="Site overview" @onclick="() => SiteOverviewService!.RequestShow()">
+                        <i class="fas fa-circle-info" aria-hidden="true"></i>
+                    </button>
                 }
-                @foreach (var item in VisibleSecondaryItems)
+                else
                 {
-                    <BarItem Class="desktop-secondary-nav-item">
-                        @if (item.OpensSiteOverview)
+                    <a class="site-nav-link" href="@item.Route" aria-current="@AriaCurrent(item.Route!)">@item.Text</a>
+                }
+            </li>
+        }
+        <li class="site-nav-item notification-nav-item">
+            <NotificationBell />
+        </li>
+        <li class="site-nav-item mobile-menu-nav-item">
+            <DropdownButton Icon="fas fa-bars" AriaLabel="More navigation options" Class="@HamburgerClass" AlignEnd="true">
+                <MenuContent>
+                    @foreach (var item in VisibleSecondaryItems)
+                    {
+                        if (item.OpensSiteOverview)
                         {
-                            <button class="nav-link nav-button info-nav-link" aria-label="Site overview" @onclick="() => SiteOverviewService!.RequestShow()">
-                                <i class="fas fa-circle-info"></i>
-                            </button>
+                            <DropdownItem Class="info-menu-item" aria-label="Site overview" OnClick="() => SiteOverviewService!.RequestShow()">
+                                <i class="fas fa-circle-info" aria-hidden="true"></i> @item.Text
+                            </DropdownItem>
                         }
                         else
                         {
-                            <BarLink To="@item.Route" Class="@(IsCurrentPage(item.Route!) ? "nav-current" : string.Empty)">@item.Text</BarLink>
+                            <a class="climate-dropdown-item" href="@item.Route" aria-current="@AriaCurrent(item.Route!)">@item.Text</a>
                         }
-                    </BarItem>
-                }
-                <BarItem Class="notification-nav-item">
-                    <NotificationBell />
-                </BarItem>
-                <BarItem Class="mobile-menu-nav-item">
-                    <DropdownButton Icon="fas fa-bars" AriaLabel="More navigation options" Class="@HamburgerClass" AlignEnd="true">
-                        <MenuContent>
-                            @foreach (var item in VisibleSecondaryItems)
-                            {
-                                if (item.OpensSiteOverview)
-                                {
-                                    <ClimateExplorer.Web.Client.Components.Common.DropdownItem Class="info-menu-item" aria-label="Site overview" OnClick="() => SiteOverviewService!.RequestShow()">
-                                        <i class="fas fa-circle-info" aria-hidden="true"></i> @item.Text
-                                    </ClimateExplorer.Web.Client.Components.Common.DropdownItem>
-                                }
-                                else
-                                {
-                                    <a class="@("climate-dropdown-item" + (IsCurrentPage(item.Route!) ? " hamburger-current" : string.Empty))" href="@item.Route">@item.Text</a>
-                                }
-                            }
-                            <hr class="climate-dropdown-divider" />
-                            <UnitSwitch Class="unit-switch-menu-item" />
-                        </MenuContent>
-                    </DropdownButton>
-                </BarItem>
-            </BarStart>
-            <BarEnd>
-                <BarItem Class="unit-switch-nav-item">
-                    <UnitSwitch />
-                </BarItem>
-                <BarItem Class="options-nav-item">
-                    <DropdownButton Icon="fas fa-cog" AriaLabel="Options" Class="options-toggle" AlignEnd="true">
-                        <MenuContent>
-                            <UnitSwitch Class="unit-switch-menu-item" />
-                        </MenuContent>
-                    </DropdownButton>
-                </BarItem>
-                <BarItem Class="co2-nav-item">
-                    <Co2NavTile OnClick="ShowCo2PanelAsync" />
-                </BarItem>
-            </BarEnd>
-        </BarMenu>
-    </Bar>
-</div>
+                    }
+                    <hr class="climate-dropdown-divider" />
+                    <UnitSwitch Class="unit-switch-menu-item" />
+                </MenuContent>
+            </DropdownButton>
+        </li>
+    </ul>
+    <ul class="site-nav-list site-nav-end">
+        <li class="site-nav-item unit-switch-nav-item">
+            <UnitSwitch />
+        </li>
+        <li class="site-nav-item options-nav-item">
+            <DropdownButton Icon="fas fa-cog" AriaLabel="Options" Class="options-toggle" AlignEnd="true">
+                <MenuContent>
+                    <UnitSwitch Class="unit-switch-menu-item" />
+                </MenuContent>
+            </DropdownButton>
+        </li>
+        <li class="site-nav-item co2-nav-item">
+            <Co2NavTile OnClick="ShowCo2PanelAsync" />
+        </li>
+    </ul>
+</nav>
 
 <SidePanel @ref="co2SidePanel" Title="Atmospheric CO₂" Width="85%">
     <RecentObservationsPanel Context="@RecentObservationsContext.ForAtmosphere()" DataSetDefinitions="@dataSetDefinitions" />

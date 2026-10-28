@@ -1,15 +1,14 @@
-@using Blazorise
 @using ClimateExplorer.Web.Client.Components.Notifications
 @inherits LayoutComponentBase
 
-<Layout>
-    <LayoutHeader>
+<div class="app-layout">
+    <header class="layout-header">
         <NavMenu />
-    </LayoutHeader>
-    <LayoutContent>
+    </header>
+    <main class="layout-content">
         <article class="content px-4">
             @Body
         </article>
         <NotificationHost />
-    </LayoutContent>
-</Layout>
+    </main>
+</div>

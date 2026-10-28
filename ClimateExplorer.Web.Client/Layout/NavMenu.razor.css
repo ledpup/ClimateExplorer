@@ -1,94 +1,82 @@
-::deep .navbar-dark .navbar-brand {
-    height: 65px;
-    margin: 0px;
-    padding: 0px;
-    align-content: initial;
+/* Below 768px the secondary links and the unit switch move into the hamburger menu. From 768px the unit switch
+   sits behind the options cog. The current page is white at 75% (4.77:1 on the bar, WCAG AA), and hover is the
+   shared #cfc (6.2:1). */
+.site-nav {
+    display: flex;
+    align-items: center;
+    background-color: var(--climate-color-nav-surface);
 }
 
-::deep .navbar {
-    padding: 0px;
+.site-nav-brand {
+    flex: 0 0 auto;
+    height: 65px;
 }
 
 .logo {
-    padding: 0px 0px 0px 10px;
-    margin: 0px;
+    padding: 0 0 0 10px;
+    margin: 0;
     width: 75px;
     height: 62px;
-    border-radius: 0px 30px 30px 0px;
-    border-top: solid 6px #425f59;
-    border-right: solid 8px #425f59;
-    border-bottom: solid 4px #425f59;
+    border-radius: 0 30px 30px 0;
+    border-top: solid 6px var(--climate-color-nav-surface);
+    border-right: solid 8px var(--climate-color-nav-surface);
+    border-bottom: solid 4px var(--climate-color-nav-surface);
     align-content: center;
-    background-color: #fff !important;
+    background-color: #fff;
 }
 
-::deep .navbar-nav {
-    flex-direction: row;
+.site-nav-list {
     display: flex;
+    flex: 1;
     align-items: center;
-    padding-left: 20px;
+    margin: 0;
+    padding: 0 0 0 20px;
+    list-style: none;
 }
 
-::deep .nav-item {
-    display: inline;
+.site-nav-end {
+    flex: 0 0 auto;
+    margin-left: auto;
+    padding-left: 0;
+}
+
+.site-nav-item {
     margin-right: 8px;
     color: white;
     font-weight: bold;
 }
 
-::deep .nav-item:last-child {
+.site-nav-item:last-child {
     margin-left: 2rem;
 }
 
-::deep .nav-item .climate-dropdown {
+.site-nav-item ::deep .climate-dropdown {
     vertical-align: middle;
 }
 
-::deep .nav-link {
-    display: inline;
-    color: white;
-    padding: 0px;
-    white-space: nowrap;
-}
-
-::deep .nav-button {
-    background: none;
+.site-nav-link {
+    padding: 0 0.5rem;
     border: 0;
-    font-weight: bold;
+    background: none;
+    color: white;
+    font: inherit;
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
 }
 
-::deep a.nav-link {
-    color: white !important;
+.site-nav-link:hover {
+    color: var(--climate-color-control-hover);
 }
 
-::deep button.nav-link {
-    color: white !important;
-}
-
-    ::deep a.nav-link:hover {
-        color: #aaa !important;
-    }
-
-    ::deep button.nav-link:hover {
-        color: #aaa !important;
-    }
-
-::deep a.nav-link.nav-current {
-    color: rgba(255, 255, 255, 0.55) !important;
+.site-nav-link[aria-current="page"] {
+    color: rgb(255 255 255 / 75%);
     cursor: default;
     pointer-events: none;
 }
 
-    ::deep a.nav-link.nav-current:hover {
-        color: rgba(255, 255, 255, 0.55) !important;
-    }
-
-::deep .bg-dark {
-    background-color: #425f59 !important;
-}
-
 .fa-circle-info {
-    color: #79c6f4;
+    color: var(--climate-color-info-icon);
     font-size: larger;
     cursor: pointer;
     padding: 0;
@@ -99,51 +87,36 @@
     overflow: hidden;
 }
 
-::deep .info-nav-link {
-    color: #79c6f4 !important;
-}
-
-    ::deep .info-nav-link:hover {
-        color: #9bd6f7 !important;
-    }
-
-::deep .mobile-menu-nav-item {
+.mobile-menu-nav-item {
     display: none;
 }
 
-::deep .co2-nav-item {
-    display: flex !important;
+.co2-nav-item {
+    display: flex;
     align-items: center;
     height: 65px;
     margin-right: 0;
-    margin-left: auto;
     font-weight: normal;
 }
 
-::deep .navbar-nav.ms-auto {
-    padding-left: 0;
-    flex: 0 0 auto;
-    width: auto;
-}
-
-::deep .notification-nav-item {
+.notification-nav-item {
     display: inline-flex;
     align-items: center;
 }
 
-/* The unit switch sits beside the CO₂ tile on tablets; on mobile it moves into the hamburger menu instead,
-   and at full-screen size it moves behind the options cog. */
-::deep .unit-switch-nav-item {
+.unit-switch-nav-item {
     display: inline-flex;
     align-items: center;
     margin-right: 0;
 }
 
-::deep .options-nav-item {
+.options-nav-item {
     display: none;
     align-items: center;
     margin-right: 0;
 }
+
+/* The toggles override DropdownButton's light control styles, including its own !important box-shadow */
 
 /* Cog and drop-down arrow only, in the style of the hamburger toggle */
 ::deep .options-toggle {
@@ -159,15 +132,15 @@
 }
 
     ::deep .options-toggle:hover {
-        color: #aaa !important;
+        color: var(--climate-color-control-hover) !important;
     }
 
 @media (min-width: 768px) {
-    ::deep .unit-switch-nav-item {
+    .unit-switch-nav-item {
         display: none;
     }
 
-    ::deep .options-nav-item {
+    .options-nav-item {
         display: inline-flex;
     }
 }
@@ -182,7 +155,7 @@
     background: none !important;
     border: none !important;
     color: white !important;
-    padding: 0 8px 0 8px !important;
+    padding: 0 8px !important;
     font-weight: bold;
     font-size: 1.5rem;
     box-shadow: none !important;
@@ -191,7 +164,7 @@
 }
 
     ::deep .hamburger-toggle:hover {
-        color: #aaa !important;
+        color: var(--climate-color-control-hover) !important;
     }
 
     ::deep .hamburger-toggle::after {
@@ -200,142 +173,86 @@
 
 /* ── Hamburger and options menus ─────────────────────────────────────────── */
 ::deep .climate-dropdown-menu {
-    background-color: #425f59;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: var(--climate-color-nav-surface);
+    border: 1px solid rgb(255 255 255 / 20%);
     min-width: 8rem;
     box-shadow: none;
 }
 
     ::deep .climate-dropdown-menu .climate-dropdown-item {
-        color: white !important;
+        color: white;
         font-weight: bold;
         padding: 0.4rem 0.75rem;
     }
 
     ::deep .climate-dropdown-menu .climate-dropdown-item:hover,
     ::deep .climate-dropdown-menu .climate-dropdown-item:focus {
-        background-color: rgba(255, 255, 255, 0.12) !important;
-        color: #cfc !important;
+        background-color: rgb(255 255 255 / 12%);
+        color: var(--climate-color-control-hover);
         outline: none;
     }
 
-    ::deep .climate-dropdown-menu .hamburger-current {
-        color: rgba(255, 255, 255, 0.55) !important;
+    ::deep .climate-dropdown-menu .climate-dropdown-item[aria-current="page"],
+    ::deep .climate-dropdown-menu .climate-dropdown-item[aria-current="page"]:hover,
+    ::deep .climate-dropdown-menu .climate-dropdown-item[aria-current="page"]:focus {
+        background-color: transparent;
+        color: rgb(255 255 255 / 75%);
         cursor: default;
         pointer-events: none;
     }
 
-    ::deep .climate-dropdown-menu .hamburger-current:hover,
-    ::deep .climate-dropdown-menu .hamburger-current:focus {
-        background-color: transparent !important;
-        color: rgba(255, 255, 255, 0.55) !important;
-        outline: none;
-    }
-
-    ::deep .climate-dropdown-menu .info-menu-item {
-        color: #79c6f4 !important;
-    }
-
+    ::deep .climate-dropdown-menu .info-menu-item,
     ::deep .climate-dropdown-menu .info-menu-item:hover,
     ::deep .climate-dropdown-menu .info-menu-item:focus {
-        background-color: rgba(255, 255, 255, 0.12) !important;
-        color: #79c6f4 !important;
+        color: var(--climate-color-info-icon);
     }
 
     ::deep .climate-dropdown-menu .climate-dropdown-divider {
-        border-color: rgba(255, 255, 255, 0.2);
+        border-color: rgb(255 255 255 / 20%);
     }
 
 @media (max-width: 1024px) {
-    ::deep .navbar {
-        flex-wrap: nowrap;
-        justify-content: flex-start;
-        overflow: visible;
-    }
-
-    ::deep .navbar-collapse {
-        display: flex !important;
-        flex-basis: auto;
-        overflow: visible;
-    }
-
-    ::deep .navbar-nav {
-        flex-direction: row;
-        display: flex;
-        align-items: center;
-        flex: 1;
-        padding-left: 20px;
-        overflow: visible;
-    }
-
-    ::deep .navbar-nav .nav-link {
-        padding-right: 0.5rem;
-        padding-left: 0.5rem;
-    }
-
-    ::deep .nav-item:last-child {
+    .site-nav-item:last-child {
         margin-left: auto;
         margin-right: 16px;
     }
 
-    ::deep .notification-nav-item {
+    .notification-nav-item {
         margin-left: auto;
         margin-right: 4px;
     }
 
-    ::deep .notification-nav-item + .mobile-menu-nav-item {
+    .notification-nav-item + .mobile-menu-nav-item {
         margin-left: 0;
-    }
-
-    .info-icon {
-        padding: 0 4px;
     }
 }
 
 @media (max-width: 767px) {
-    ::deep .navbar-dark .navbar-brand {
-        flex: 0 0 auto;
-    }
-
-    ::deep .navbar-collapse {
-        min-width: 0;
-    }
-
-    ::deep .navbar-nav {
-        flex-wrap: nowrap;
+    .site-nav-start {
         min-width: 0;
         padding-left: 8px;
     }
 
-    ::deep .navbar-nav.ms-auto {
-        padding-left: 0;
-    }
-
-    ::deep .nav-item {
+    .site-nav-item {
         flex: 0 0 auto;
         margin-right: 4px;
     }
 
-    ::deep .nav-item.co2-nav-item:last-child {
+    .co2-nav-item:last-child {
         margin-right: 0;
     }
 
-    ::deep .navbar-nav .nav-link {
-        padding-right: 0.2rem;
-        padding-left: 0.2rem;
+    .site-nav-link {
+        padding: 0 0.2rem;
     }
 
-    ::deep .notification-nav-item {
-        margin-left: auto;
-        margin-right: 4px;
+    .desktop-secondary-nav-item,
+    .unit-switch-nav-item {
+        display: none;
     }
 
-    ::deep .notification-nav-item + .mobile-menu-nav-item {
-        margin-left: 0;
-    }
-
-    ::deep .mobile-menu-nav-item {
-        margin-right: 6px;
+    .mobile-menu-nav-item {
+        display: block;
     }
 
     ::deep .hamburger-toggle {
@@ -343,23 +260,11 @@
         padding-left: 4px !important;
     }
 
-    ::deep .desktop-secondary-nav-item {
-        display: none;
-    }
-
-    ::deep .unit-switch-nav-item {
-        display: none;
-    }
-
-    ::deep .mobile-menu-nav-item {
-        display: inline;
-    }
-
     ::deep .hamburger-toggle.nav-current {
-        color: rgba(255, 255, 255, 0.55) !important;
+        color: rgb(255 255 255 / 75%) !important;
     }
 
     ::deep .hamburger-toggle.nav-current:hover {
-        color: #aaa !important;
+        color: var(--climate-color-control-hover) !important;
     }
 }
