@@ -107,7 +107,7 @@
             @if (CurrentState.IsLoading)
             {
                 <div class="recent-observations-state mb-4">
-                    <span><i class="fas fa-spinner fa-spin"></i> Loading recent observations...</span>
+                    <LoadingIndicator Variant="LoadingIndicatorVariant.Inline" Visible="@CurrentState.IsLoading" Text="Loading recent observations…" />
                 </div>
             }
             else if (CurrentTiles.Count > 0)

@@ -17,9 +17,9 @@
 <div class="locations-container">
     @if (allLocations.Count == 0)
     {
-        <DelayedLoadingIndicator Visible="true">
+        <LoadingIndicator Visible="true">
             <div class="loading-placeholder"></div>
-        </DelayedLoadingIndicator>
+        </LoadingIndicator>
     }
     else
     {

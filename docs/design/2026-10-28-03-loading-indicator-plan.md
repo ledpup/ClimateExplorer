@@ -1,7 +1,7 @@
 # Loading Indicator — Standardised `LoadingIndicator`
 
 - **Date:** 2026-10-28
-- **Status:** Proposed
+- **Status:** Implemented 2026-10-28 (see addendum)
 - **Author:** Claude
 - **Scope:** `Components/Common/DelayedLoadingIndicator.*` (replaced), new `Components/Common/LoadingIndicator.*`,
   7 overlay call sites, 2 inline spinner call sites, `App.razor` (Blazorise LoadingIndicator CSS link)
@@ -173,3 +173,15 @@ announcements, which removes the `Blazorise.LoadingIndicator` package dependency
 | **Total** | **4 files, +190** | **~12 files, ~34** | **2 files, −90** |
 
 About 70 of the added lines are timer logic moved from `DelayedLoadingIndicator`. Risk: low.
+
+## Addendum — implementation notes (2026-10-28)
+
+- The `Blazorise.LoadingIndicator` `PackageReference` stays in `ClimateExplorer.Web.Client.csproj`; it is removed
+  with the other Blazorise packages in [plan 17](2026-10-28-17-blazorise-package-removal-and-renames-plan.md).
+  Nothing references it any more.
+- Timer logic moved as planned, with two small changes: `OnParametersSetAsync` became `OnParametersSet` (it never
+  awaited), and a new delay isn't started while the indicator is already showing. `Delay <= TimeSpan.Zero` shows
+  immediately.
+- `LocationDataSetMetadataSidePanel`: the loading branch sits outside the panel's `aria-live="polite"` region.
+  The error/empty/result branches stay inside it, in a persistent `div`, so they're still announced.
+- Reduced motion: the ring becomes solid primary green and pulses its opacity.

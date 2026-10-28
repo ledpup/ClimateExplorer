@@ -30,10 +30,14 @@
 Use the following existing common components, when appriopriate:
 - ClimateButton
 - Collapsible
-- DelayedLoadingIndicator
 - DelayedTooltip
 - DropdownButton
 - InfoPanel
+- LoadingIndicator
+  - Overlay (default): wraps existing content that stays visible underneath while it refreshes (chart, tables,
+    dashboard fields).
+  - Inline (`Variant="LoadingIndicatorVariant.Inline"`): sits where content will go when there's nothing to show yet
+    (first load of a panel or list).
 - OverviewField
 - PaginationControl
 - SidePanel

@@ -1,6 +1,5 @@
 @using Blazorise
 @using Blazorise.Components
-@using Blazorise.LoadingIndicator
 @using ClimateExplorer.Core.Model;
 @using ClimateExplorer.Web.Client.Components.Common
 @using ClimateExplorer.WebApiClient.Services
@@ -48,7 +47,7 @@
                         <div class="table-header">
                             <span>Nearby locations</span>
                         </div>
-                        <DelayedLoadingIndicator @bind-Visible="@NearbyLocationsLoading">
+                        <LoadingIndicator Visible="@NearbyLocationsLoading">
                             <table class="climate-table climate-table--striped">
                                 <thead>
                                     <tr>
@@ -94,7 +93,7 @@
                                     }
                                 </tbody>
                             </table>
-                        </DelayedLoadingIndicator>
+                        </LoadingIndicator>
                         @if (NearbyLocations is not null)
                         {
                             <div class="table-footer">

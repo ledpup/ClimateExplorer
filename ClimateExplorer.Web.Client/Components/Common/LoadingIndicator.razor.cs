@@ -1,9 +1,11 @@
-﻿namespace ClimateExplorer.Web.Client.Components.Common;
+namespace ClimateExplorer.Web.Client.Components.Common;
 
 using Microsoft.AspNetCore.Components;
 
-public partial class DelayedLoadingIndicator : IDisposable
+public partial class LoadingIndicator : IDisposable
 {
+    private const string DefaultText = "Loading…";
+
     private bool showIndicator = false;
 
     private bool delaying = false;
@@ -16,13 +18,40 @@ public partial class DelayedLoadingIndicator : IDisposable
     public bool Visible { get; set; }
 
     [Parameter]
-    public EventCallback<bool> VisibleChanged { get; set; }
+    public LoadingIndicatorVariant Variant { get; set; } = LoadingIndicatorVariant.Overlay;
 
+    /// <summary>
+    /// Visible text next to the spinner. When null, "Loading…" is still rendered for screen readers.
+    /// </summary>
+    [Parameter]
+    public string? Text { get; set; }
+
+    /// <summary>
+    /// How long <see cref="Visible"/> must stay true before the indicator shows, to avoid flicker on fast loads.
+    /// </summary>
+    [Parameter]
+    public TimeSpan Delay { get; set; } = TimeSpan.FromSeconds(1);
+
+    /// <summary>
+    /// Overlay only.
+    /// </summary>
+    [Parameter]
+    public int? ZIndex { get; set; }
+
+    /// <summary>
+    /// Overlay: the content being covered. Inline: rendered in place of the indicator when not visible.
+    /// </summary>
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
 
     [Parameter]
-    public int ZIndex { get; set; }
+    public string? Class { get; set; }
+
+    private string EffectiveText => Text ?? DefaultText;
+
+    private string? TextClass => Text is null ? "visually-hidden" : "loading-text";
+
+    private string? ZIndexStyle => ZIndex is null ? null : $"z-index: {ZIndex}";
 
     public void Dispose()
     {
@@ -31,11 +60,15 @@ public partial class DelayedLoadingIndicator : IDisposable
         cts.Dispose();
     }
 
-    protected override async Task OnParametersSetAsync()
+    protected override void OnParametersSet()
     {
         if (Visible)
         {
-            if (!delaying)
+            if (Delay <= TimeSpan.Zero)
+            {
+                showIndicator = true;
+            }
+            else if (!delaying && !showIndicator)
             {
                 delaying = true;
                 _ = DelayIndicatorAsync();
@@ -51,8 +84,7 @@ public partial class DelayedLoadingIndicator : IDisposable
     {
         try
         {
-            // One second delay before showing the indicator to avoid flickering for fast operations
-            await Task.Delay(1000, cts.Token);
+            await Task.Delay(Delay, cts.Token);
         }
         catch (OperationCanceledException)
         {

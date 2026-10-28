@@ -3,7 +3,7 @@
 @using ClimateExplorer.Web.Client.Components.Common
 @using ClimateExplorer.Web.Client.Components.Info
 
-<DelayedLoadingIndicator @bind-Visible="@ChartLoadingIndicatorVisible">
+<LoadingIndicator Visible="@ChartLoadingIndicatorVisible">
     <div class="chart-collapsible-parent">
         <Collapsible Title="Chart" AllowCollapse="false" ContentLayoutType="Collapsible.CollapserContentLayoutTypes.FlexboxColumns" NoBottomMargin="true">
             <Content>
@@ -68,7 +68,7 @@
             </Content>
         </Collapsible>
     </div>
-</DelayedLoadingIndicator>
+</LoadingIndicator>
 
 <InfoPanel @ref="chartOptionsInfoPanel" Title="Chart options information" Height="52vh" MobileHeight="60vh">
     <ChartOptionsInfo />

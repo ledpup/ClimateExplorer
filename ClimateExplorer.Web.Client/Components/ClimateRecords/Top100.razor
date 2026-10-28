@@ -3,7 +3,7 @@
 @using ClimateExplorer.Web.Client.Components.Common
 @using ClimateExplorer.Web.Client.UiModel
 
-<DelayedLoadingIndicator @bind-Visible="@IsLoading">
+<LoadingIndicator Visible="@IsLoading">
     <div @ref="spaceRef" class="top100-space">
     @if (YearCounts.Count > 0 && ChartWidth > 0)
     {
@@ -34,7 +34,7 @@
         </div>
     }
     </div>
-</DelayedLoadingIndicator>
+</LoadingIndicator>
 
 <h3>Top 100</h3>
 <p>A barcode-like chart that shows how the top 100 daily records are distributed across years.</p>

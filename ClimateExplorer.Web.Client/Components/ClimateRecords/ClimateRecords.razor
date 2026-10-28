@@ -81,7 +81,7 @@
 </div>
 @if (ActiveView != RecordView.Top100)
 {
-    <DelayedLoadingIndicator @bind-Visible="@LoadingIndicatorVisible">
+    <LoadingIndicator Visible="@LoadingIndicatorVisible">
         <div class="table-card">
             <div class="table-header">
                 <span>@Location?.Name - @RecordsTitle@(SelectedMonth == 0 ? string.Empty : " - " + CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(SelectedMonth))@(ActiveView == RecordView.Daily && SelectedDay != 0 ? " " + SelectedDay : string.Empty)</span>
@@ -217,7 +217,7 @@
                 <ClimateButton Text="Download" Icon="fas fa-download" Class="download-button" OnClick="DownloadAllRecords" />
             </div>
         }
-        </DelayedLoadingIndicator>
+        </LoadingIndicator>
 }
 
 @if (ActiveView == RecordView.Top100)

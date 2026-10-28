@@ -33,7 +33,7 @@
         </span>
     </CollapsedContent>
     <Content>
-        <DelayedLoadingIndicator @bind-Visible="@LocationLoadingIndicatorVisible" ZIndex="5">
+        <LoadingIndicator Visible="@LocationLoadingIndicatorVisible" ZIndex="5">
             <div class="@(LocationLoadingIndicatorVisible ? "dashboard-overview-fields--loading" : null)">
                 @if (Location is not null)
                 {
@@ -61,8 +61,8 @@
                     <OverviewField Label="Precipitation anomaly" Tooltip="Click for information on anomalies" PopupContent="@PrecipitationAnomalyContent"><Value>@(PrecipitationAnomalyAsString == null ? "NA" : PrecipitationAnomalyAsString)</Value></OverviewField>
                 }
             </div>
-        </DelayedLoadingIndicator>
-        <DelayedLoadingIndicator @bind-Visible="@StripeLoadingIndicatorVisible" ZIndex="5">
+        </LoadingIndicator>
+        <LoadingIndicator Visible="@StripeLoadingIndicatorVisible" ZIndex="5">
             <ClimateStripe UnitOfMeasure="UnitOfMeasure.DegreesCelsius" LocationName=@Location?.Name LocationMean=@TemperatureLocationMean DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange="HandleOnYearFilterChange" ShowInfo="true" />
             <ExtremeYears HighLabel="Warmest years" LowLabel="Coolest years" UnitOfMeasure="UnitOfMeasure.DegreesCelsius" DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange="HandleOnYearFilterChange" />
             @if (DisplayPrecipitation && PrecipitationLocationMean != null)
@@ -72,7 +72,7 @@
                     <ExtremeYears HighLabel="Wettest years" LowLabel="Driest years" HighFirst="false" UnitOfMeasure="UnitOfMeasure.Millimetres" DataRecords="@PrecipitationAnomalyRecords" OnYearFilterChange="HandleOnPrecipitationYearFilterChange" />
                 </div>
             }
-        </DelayedLoadingIndicator>
+        </LoadingIndicator>
     </Content>
 </Collapsible>
 
