@@ -1,31 +1,56 @@
+/* Joined button group: neighbouring borders overlap by 1px, outer corners rounded. */
 .climate-pagination ul {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.25rem;
     list-style: none;
     margin: 0;
     padding: 0;
 }
 
+.climate-pagination li + li {
+    margin-left: -1px;
+}
+
 .climate-pagination-page,
 .climate-pagination-gap {
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 44px;
-    min-height: 44px;
+    min-width: 32px;
+    height: 32px;
     padding: 0 0.45rem;
     box-sizing: border-box;
+    border: 1px solid #cdd8d6;
+    background-color: #fff;
+}
+
+.climate-pagination li:first-child > * {
+    border-radius: var(--climate-radius-control) 0 0 var(--climate-radius-control);
+}
+
+.climate-pagination li:last-child > * {
+    border-radius: 0 var(--climate-radius-control) var(--climate-radius-control) 0;
+}
+
+.climate-pagination li:only-child > * {
+    border-radius: var(--climate-radius-control);
 }
 
 .climate-pagination-page {
     font: inherit;
     color: var(--climate-color-control-text);
-    background-color: var(--climate-color-control-surface);
-    border: 1px solid #cdd8d6;
-    border-radius: var(--climate-radius-control);
+    border-radius: 0;
     cursor: pointer;
     transition: var(--climate-transition-control);
+}
+
+/* Extends the tap area to 44px high without changing how big the button looks. Only
+   vertical, so it never overlaps the neighbouring page. */
+.climate-pagination-page::before {
+    content: "";
+    position: absolute;
+    inset: -6px 0;
 }
 
 .climate-pagination-page:hover:not([aria-current="page"]) {
@@ -33,11 +58,13 @@
 }
 
 .climate-pagination-page:focus-visible {
+    z-index: 2;
     outline: 2px solid var(--climate-color-control-text);
     outline-offset: 2px;
 }
 
 .climate-pagination-page[aria-current="page"] {
+    z-index: 1;
     color: #fff;
     background-color: var(--climate-color-control-text);
     border-color: var(--climate-color-control-text);
@@ -46,13 +73,4 @@
 
 .climate-pagination-gap {
     color: var(--climate-color-muted-text);
-}
-
-/* 9 mobile slots at 44px don't fit a 375px screen; narrow them but keep the 44px height. */
-@media (max-width: 767px) {
-    .climate-pagination-page,
-    .climate-pagination-gap {
-        min-width: 36px;
-        padding: 0 0.25rem;
-    }
 }

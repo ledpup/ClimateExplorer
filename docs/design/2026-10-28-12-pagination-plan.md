@@ -114,9 +114,13 @@ Risk: low.
   raise `PageChanged`.
 - `GetVisiblePages(int totalPages, int currentPage, int maxPages)` is `public static`. The windowing
   logic is unchanged, and the instance overload passes 9 or 15.
-- Scoped CSS as planned: 44px boxes, a 0.25rem gap, `flex-wrap`, the `--climate-*` control tokens, a
-  `#cdd8d6` border (kept from the old `.page-link` override), and the current page in solid `#425f59`.
-  Below 768px, `min-width` drops to 36px and the height stays 44px.
+- Scoped CSS: a joined button group, like the old Bootstrap look. Neighbouring borders overlap by 1px
+  and only the outer corners are rounded (8px). The `#cdd8d6` border and white background are kept
+  from the old `.page-link` override. Each button looks 32px high (31px before) and is at least 32px
+  wide. A `::before` that sticks out 6px above and below makes the tap area 44px high. It doesn't
+  extend sideways, so it never overlaps the next page. Hover is `#cfc`, the current page is solid
+  `#425f59`, and a focused button is raised so its outline isn't covered. `flex-wrap` stays as a
+  fallback for very narrow screens.
 - `PaginationControlTests.cs` has the five planned tests, plus `GetVisiblePages_NoPages_ReturnsEmpty`.
   The `NeverExceedsMaxPages` test checks every total from 1 to 60 and every current page, for both 9
   and 15 slots. For each case it also checks that the first, last and current pages are present and in
@@ -130,14 +134,18 @@ Risk: low.
   `Enumerable.Range`.
 - **The `.page-link` / `.page-item` rules were removed from `table.css`.** Nothing renders those classes
   any more. Plan 16 expects each family to remove its own overrides.
+- **Joined group, not separate 44px buttons.** The first version followed the plan: separate 44px
+  buttons with a gap. It looked too big, and the developer preferred the joined group. The 44px
+  minimum from AGENTS.md now comes from the invisible tap area, not the visible size.
 
 ### Visible changes to expect
 
-- Page buttons are 44px high instead of 31px, which makes the table footers taller. They are now separate
-  rounded buttons with a gap, not Bootstrap's joined button group. Hover is `#cfc`.
+- Close to the old look. The differences: a minimum width of 32px, so single-digit pages are a bit
+  wider; hover is `#cfc` instead of `#e8efee`; and the ellipsis is `#595959` instead of `#adb5bd`.
 
 ### Verification
 
 - `dotnet build`: 0 errors, 0 warnings (separate artifacts path, as in plan 15).
 - `ClimateExplorer.UnitTests`: 945 passed, 0 failed (939 before, plus 6 new).
-- The manual checks above are still to do, mainly wrapping on a 375px screen in the change-location modal.
+- The manual checks above are still to do. Mainly: the tap area on a phone, and how wide the group
+  gets when page numbers have three digits.
