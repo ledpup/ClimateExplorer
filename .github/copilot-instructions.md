@@ -2,7 +2,8 @@
 
 ## Don'ts
 
-- **Never build `ClimateExplorer.DataPipeline`** — its build step creates large zip files.
+- **Don't run `ClimateExplorer.DataPipeline` unless asked.** Running it rebuilds `ClimateExplorer.WebApi/Datasets` from
+  `ClimateExplorer.SourceData`. Building it is fine (`ClimateExplorer.WebApi.UnitTests` references it).
 - **No `async void`** — event handlers and lifecycle methods must return `Task`.
 - **No `new List<T>()`** — use C# 14 collection expressions: `[]`, `[a, b, c]`, `[.. existing, item]`.
 - **No `out` parameters** — prefer tuple returns for multiple values.

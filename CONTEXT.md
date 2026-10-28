@@ -16,14 +16,13 @@
 | `ClimateExplorer.WebApiClient` | `IDataService` / `DataService` (caches responses via injected `IMemoryCache`) — typed HTTP client used by the WASM app |
 | `ClimateExplorer.Core` | All shared domain models, enums, data-prep pipeline, math helpers (no UI dependencies) |
 | `ClimateExplorer.SourceData` | Raw data file infrastructure |
-| `ClimateExplorer.DataPipeline` | Orchestrates data ingestion tools |
+| `ClimateExplorer.DataPipeline` | Console app that packages `ClimateExplorer.SourceData` into the zips and files the API serves, and replaces `ClimateExplorer.WebApi/Datasets` with them. It copies the BOM and GHCNd zips, builds the ACORN-SAT and GHCNm archives, and validates the layout in a staging folder before swapping it in |
 | `ClimateExplorer.Data.*` (6 projects) | Data importers: BOM, GHCND, GHCNM, ISD, CO2/misc |
 | `ClimateExplorer.CachingTool` | CLI tool to pre-warm the API cache |
 | `ClimateExplorer.Core.UnitTests` | MSTest tests for Core: maths, bin identifiers, data reading, smoothing, trends |
 | `ClimateExplorer.WebApi.UnitTests` | MSTest tests for WebApi and the data projects (downloaders, AcornSat, endpoints) |
 | `ClimateExplorer.Web.UnitTests` | MSTest tests for Web.Client, plus source-scanning checks (unit text, CSS class usage) |
 | `ClimateExplorer.Web.UiTests` | UI / integration tests |
-| ~~Archived/*~~ | **Excluded** — two deprecated projects, not in active use |
 
 ---
 

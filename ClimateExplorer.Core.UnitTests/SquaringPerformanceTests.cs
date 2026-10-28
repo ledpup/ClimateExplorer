@@ -12,6 +12,7 @@ namespace ClimateExplorer.Core.UnitTests;
 /// of 2 used throughout the regression sum-of-squares calculations.
 /// </summary>
 [TestClass]
+[DoNotParallelize] // Runs after the parallel tests, so they don't compete with the timings.
 public class SquaringPerformanceTests
 {
     private const int WarmupIterations = 200_000;

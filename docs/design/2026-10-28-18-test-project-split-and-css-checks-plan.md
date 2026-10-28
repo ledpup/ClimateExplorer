@@ -328,11 +328,19 @@ Most of the "changed" files are the 98 moved test files, each with one namespace
   test above surfaced. Every file touched in this change was converted back to CRLF. Git normalises to LF on commit
   either way (`* text=auto`), so commits aren't affected.
 
-### Follow-ups
+### Follow-ups (done 2026-10-28)
 
-- The `ServerGarbageCollection` comment in all three csproj files describes "packaged-source validation tests",
-  which no longer seem to exist. Measure whether the setting still helps, then drop it or rewrite the comment.
-- CONTEXT.md says to avoid building `ClimateExplorer.DataPipeline` because "its build step creates zip files". Its
-  csproj has no build-time step (the packaging happens when it runs), and `WebApi.UnitTests` builds it, as the old
-  test project did. Check the note and correct it.
-- Consider `[assembly: Parallelize]` or `[assembly: DoNotParallelize]` in each test project, to clear `MSTEST0001`.
+- **`ServerGarbageCollection`.** The test the comment describes does exist:
+  `ValidateAsync_StageOnePackagedSources_AllMatchTheirConfiguredReaders`, now in `WebApi.UnitTests`. With server GC it
+  ran in 3–4 s, and in 6 s without, so the setting stays in `WebApi.UnitTests` and its comment names the test. It's
+  removed from Core and Web, which parse nothing at that scale.
+- **DataPipeline notes.** The developer removed CONTEXT.md's "avoid building" warning, and its project row now
+  says what the tool does when it runs: it packages `ClimateExplorer.SourceData` into `ClimateExplorer.WebApi/Datasets`.
+  `.github/copilot-instructions.md` said "Never build"; it now says not to *run* it unless asked, and that building is
+  fine. The CONTEXT.md row for the `Archived/*` projects is gone too, since that folder no longer exists.
+- **Parallelization.** Each test project has an `AssemblyInfo.cs` with `[assembly: Parallelize(Scope = ExecutionScope.ClassLevel)]`.
+  Before choosing it, I checked for shared mutable state: the only culture change is on `Thread.CurrentThread`, and
+  the temp paths in `DataPackageRegistryTests` are only path strings, never files. Then I ran all three projects in
+  parallel five times, and every run passed. `SquaringPerformanceTests` is `[DoNotParallelize]`, so it runs alone and
+  contention can't skew its timings. Run times: Core 0.6 s → 0.4 s, WebApi 11 s → 6 s, Web 2 s → 1 s. `MSTEST0001` is
+  cleared, leaving the 10 `MSTEST0037` warnings.

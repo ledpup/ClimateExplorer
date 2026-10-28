@@ -6,8 +6,9 @@
 
     <IsPackable>false</IsPackable>
 
-    <!-- The packaged-source validation tests parse millions of rows across parallel threads; workstation GC
-         serialises them on collections (~2.5x slower than server GC). -->
+    <!-- DataSetDownloadMetadataTests.ValidateAsync_StageOnePackagedSources_AllMatchTheirConfiguredReaders parses
+         millions of rows across parallel threads; workstation GC serialises them on collections (~1.7x slower,
+         measured 2026-10-28). -->
     <ServerGarbageCollection>true</ServerGarbageCollection>
   </PropertyGroup>
 
