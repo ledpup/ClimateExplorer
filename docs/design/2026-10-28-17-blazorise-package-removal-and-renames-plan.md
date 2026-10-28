@@ -1,7 +1,7 @@
 # Blazorise Package Removal and Component Renames
 
 - **Date:** 2026-10-28
-- **Status:** Parts A and B implemented 2026-10-28 (see addenda); Part C proposed. Build and unit tests are clean; the UI is unverified.
+- **Status:** Implemented 2026-10-28 (Parts A–C; see addenda). Build and unit tests are clean; the UI is unverified.
 - **Author:** Claude
 - **Scope:** `ClimateExplorer.Web.Client.csproj`, both `Program.cs` files, `ClimateExplorer.Web/App.razor`,
   `app.css`, remaining `@using Blazorise` lines, `ClimateButton`/`ClimateCheckbox`/`DelayedTooltip`
@@ -190,3 +190,39 @@ Without the optional tooltip rename: ~35 files, ~136 lines changed. Risk: low. I
   name, so the tag and the property don't clash, and the build confirms it. Nothing else in the solution is called
   `Button`, `Checkbox` or `Tooltip`.
 - Historical design docs still say `ClimateButton`/`ClimateCheckbox`/`DelayedTooltip`, as planned.
+
+## Addendum — implementation notes (Part C, 2026-10-28)
+
+### What shipped
+
+- **AGENTS.md.** Most of the components list had already been updated by the family plans and Part B. Part C added
+  `DropdownItem` (as `DropdownButton / DropdownItem`, noting the menu is a native `popover`). The Blazorise paragraph is
+  replaced: tables are plain `<table class="table">` styled in `table.css`; the `Value`/`ValueChanged` line stays;
+  the `::deep`/`display: contents` guidance now covers any component whose root is another component. The Font Awesome
+  note and the utility-class rule were already there.
+- **CONTEXT.md.**
+  - Stack line: "Blazorise (Bootstrap 5)" is gone. It now lists Chart.js 4 (vendored), Font Awesome 6 (vendored, solid)
+    and "no UI component library".
+  - The component tree shows `ChartJsChart` in place of `Chart<double?> + ChartTrendline<double?> (Blazorise.Charts)`.
+    The chart-controls entries are `Button`s and a `DropdownButton`, and `AggregationOptions` is a button that opens a panel.
+  - The `chart-controls` bar section describes the current CSS (flex with `gap: 16px`; the Download button's
+    `.chart-download-control` wrapper with `margin-left: auto`, `0` on mobile). The Blazorise `<Dropdown>` and
+    `chart-control-download` cascade notes are removed.
+  - The CSS isolation section and the two conventions-table rows describe the root-element problem for any child
+    component. The examples are now `AggregationOptions` and `Top100`, since Part A removed `ChartAxisListView`'s wrapper.
+  - "Blazorise 2.x Component API Notes" is replaced by a "Common Components" section with a table of the native
+    primitives (`<dialog>`, `popover`, `floating.js`, `tooltip.js`) and which components use each.
+  - The `OverviewField` description already said "a `Modal`", so it needed no change.
+- **`.github/copilot-instructions.md`** (deferred from Part A) is deleted, along with its entry in the solution's
+  Solution Items. AGENTS.md and CONTEXT.md are the agent instructions.
+- **README.md** (deferred from Part A). The charting credit is Chart.js, and Font Awesome is added.
+- **Verify.** Documentation only, so no build or test run. `git grep -i blazorise` outside `docs/design` now finds
+  only the `ChartLogicDatasetTests.cs` comment kept by Part A step 5.
+
+### Deviations from the plan
+
+- **Other stale CONTEXT.md lines fixed along the way:** `ChartablePage` no longer listed a `Snackbar` (Blazorise's,
+  now gone); `Collapsible` said "Open Iconic chevron" (it's Font Awesome); `ChartAxisListView` still described the
+  `display: contents` wrapper Part A removed; the dropdown section-label typography described Blazorise's style rather
+  than `.dropdown-header`.
+- **`copilot-instructions.md` removed** rather than updated (the plan only covered its Blazorise sections).

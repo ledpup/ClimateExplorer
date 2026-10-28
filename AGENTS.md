@@ -7,6 +7,8 @@
   `ClimateExplorer.WebApi.UnitTests`, `ClimateExplorer.Web.UnitTests`).
 - If a build fails because IIS Express (or another dev server the user started) has locked files in a `bin`
   folder, you may stop that process and rebuild.
+- Don't run `ClimateExplorer.DataPipeline` unless asked. It rebuilds `ClimateExplorer.WebApi/Datasets` from
+  `ClimateExplorer.SourceData`. Building it is fine (`ClimateExplorer.WebApi.UnitTests` references it).
 - When estimating effort, don't give time estimates (hours/days). Report how many files would
   change and by roughly how much (e.g. "3 files, ~40 lines; 1 new file").
 - Architecture, component and data-layer reference: [CONTEXT.md](CONTEXT.md)
@@ -39,7 +41,7 @@ Use the following existing common components, when appriopriate:
   don't "fix" one into the other)
 - Checkbox
 - Collapsible
-- DropdownButton
+- DropdownButton / DropdownItem (the menu is a native `popover`)
 - InfoPanel
 - LoadingIndicator
   - Overlay (default): wraps existing content that stays visible underneath while it refreshes (chart, tables,
@@ -55,12 +57,12 @@ Use the following existing common components, when appriopriate:
 - TextInput (fires on change, not per keystroke; the parent validates and passes `Invalid`/`ErrorMessage`)
 - Tooltip
 
-There are Blazorise components in use, with common styling in `app.css` such as:
-- Table
+Tables are plain `<table class="table">`, styled globally in `table.css` (modifiers `table--striped`, `table--compact`).
 
 Common inputs (`Select`, `TextInput`, `Checkbox`) bind with `Value`/`ValueChanged` (not `Checked`, `Text`, `SelectedValue`, etc.).
-Style Blazorise child elements with `::deep`; if a component's root is a Blazorise component,
-wrap it in a `<div>` with `display: contents` so the scoped CSS applies.
+Style a child component's markup with `::deep`. Blazor only stamps the scope attribute on elements in the component's
+own markup, so if a component's root is another component, wrap it in a `<div>` with `display: contents` for the
+`::deep` rule to anchor to.
 
 ### Colours
 

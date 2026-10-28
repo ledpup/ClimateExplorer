@@ -2,7 +2,7 @@
 
 **Purpose:** New chat session handoff and developer documentation
 **Repo:** https://github.com/ledpup/ClimateExplorer · branch `development`
-**Stack:** Blazor Server · Blazor WebAssembly · .NET 10 · C# 14 · Blazorise (Bootstrap 5) · Font Awesome 6
+**Stack:** Blazor Server · Blazor WebAssembly · .NET 10 · C# 14 · Chart.js 4 (vendored) · Font Awesome 6 (vendored, solid) · no UI component library
 
 ---
 
@@ -42,7 +42,7 @@ Both pages inherit `ChartablePage` (abstract `ComponentBase`).
 - `SuggestedCharts` (full, in a `Collapsible`) + `ChartView`
 
 ### `ChartablePage` (abstract base)
-Provides: `DataService`, `NavManager`, `Exporter`, `JsRuntime`, `Logger`, `DataSetDefinitions`, `LocationDictionary`, `Regions`, `ChartView` ref, `AddDataSetModal`, `Snackbar`, `PageName`, navigation-changed event handling, and the shared `OnInitializedAsync` data-loading sequence.
+Provides: `DataService`, `NavManager`, `Exporter`, `JsRuntime`, `Logger`, `DataSetDefinitions`, `LocationDictionary`, `Regions`, `ChartView` ref, `AddDataSetModal`, `PageName`, navigation-changed event handling, and the shared `OnInitializedAsync` data-loading sequence.
 
 ---
 
@@ -61,15 +61,15 @@ ChartablePage (Index / Global)
     ├── Collapsible ("Chart", AllowCollapse=false)
     ├── ChartSeriesListView
     │   └── ChartSeriesView (×n)
-    ├── Chart<double?> + ChartTrendline<double?>  (Blazorise.Charts)
+    ├── ChartJsChart                (Chart.js; interop in ChartJsChart.razor.js)
     ├── chart-controls bar
-    │   ├── "Chart all data" anchor
-    │   ├── "Clear filter" anchor (conditional)
-    │   ├── Dropdown ("Grouping")  — Yearly / Monthly / Daily
+    │   ├── "Chart all data" Button
+    │   ├── "Clear filter" Button (conditional)
+    │   ├── DropdownButton ("Grouping") — Year / Year and month / Month / Day
     │   ├── ChartAxisListView      — per-axis "Scale from 0" toggles
-    │   ├── AggregationOptions     — Dropdown: grouping days, threshold %, override, reset
+    │   ├── AggregationOptions     — Button opening a panel: grouping days, threshold %, override, reset
     │   ├── info-icon (fa-circle-info)
-    │   └── "Download" anchor     — margin-left:auto, flush right
+    │   └── "Download" Button      — margin-left:auto, flush right (not on mobile)
     ├── InfoPanel (chartOptionsInfoPanel)
     └── InfoPanel (aggregationOptionsInfoPanel)
 ```
@@ -128,7 +128,7 @@ Collapsible "lozenge" card per series. Title bar shows short title + description
 ---
 
 ### `Collapsible` (`.razor` + `.razor.css`)
-Custom collapsible panel with Open Iconic chevron. Parameters:
+Custom collapsible panel with a Font Awesome chevron. Parameters:
 
 | Parameter | Type | Notes |
 |---|---|---|
@@ -162,7 +162,7 @@ Inline-block data field: small grey label above bold large value. Optional `Popu
 ### `ChartAxisListView` (`.razor` + `.razor.css`)
 Dropdown in `chart-controls` for per-axis "Scale from 0" toggles.
 Parameters: `List<AxisInfo>? Axes`, `Dictionary<string, bool>? ScaleToZero`, `EventCallback OnChanged`.
-Uses `display: contents` wrapper pattern for CSS isolation (see CSS Standards below).
+A `DropdownButton` whose menu holds one `Checkbox` per axis.
 
 ---
 
@@ -188,7 +188,7 @@ Uses `display: contents` wrapper pattern for CSS isolation (see CSS Standards be
 - Body: browser default
 - Small / secondary: `0.75rem`, `0.8rem`, `0.85rem`
 - Overview values: `1.25rem`, bold
-- Dropdown section labels: `0.75rem`, `font-weight: 600`, uppercase, `letter-spacing: 0.04em`, `color: #6c757d`
+- Dropdown section labels (`.dropdown-header`): `0.875rem`, `#595959`
 
 ### Spacing & Shape
 
@@ -205,11 +205,12 @@ Uses `display: contents` wrapper pattern for CSS isolation (see CSS Standards be
 
 ### `chart-controls` Bar
 
-Flexbox row, `flex-wrap: wrap`, `margin: 20px 0 -16px 0` (negative bottom compensates for last-row child margin).
+Flexbox row, `flex-wrap: wrap`, `gap: 16px`, `margin: 20px 0 4px`.
 
-- **`<a class="chart-control">`** — `padding: 8px`, `#f8f8f8` bg, `#425f59` text, `8px` radius, `margin-right: 16px`, `margin-bottom: 16px`, light shadow. Icons inside get `margin-right: 8px`.
-- **Blazorise `<Dropdown>`** — styled via `::deep .chart-controls .dropdown` to match `chart-control` exactly: same padding, bg, colour, radius, shadow. Icon inside `.btn` gets `margin-right: 8px`.
-- **Download button** — `chart-control chart-control-download`: `margin-left: auto`, `margin-right: 0` → always flush to right edge. Rule must appear **after** `.chart-control` in the stylesheet to win the cascade.
+- **Controls** — `Button` and `DropdownButton` common components in their default look (`#f8f8f8` bg, `#425f59` text,
+  `8px` radius, light shadow); the bar adds no styling of its own beyond layout.
+- **Download button** — wrapped in `<span class="chart-download-control">` with `margin-left: auto`, so it sits flush
+  right. On mobile the margin is `0` and it wraps with the rest.
 - **Info icon** — `color: #79c6f4`, `font-size: larger`, `display: flex`, `align-items: center`.
 
 ### Modals
@@ -220,9 +221,13 @@ All modals use the common `Modal` component (a native `<dialog>` opened with `sh
 
 ### CSS Isolation (Blazor)
 - Every component has a co-located `.razor.css` file.
-- Use `::deep` to reach into Blazorise child component DOM.
-- **Root-element isolation problem:** If a component's root is a Blazorise component (not a plain HTML element), Blazor cannot stamp the CSS scope attribute, so `::deep` rules silently do nothing.
-- **Fix:** Wrap in a plain `<div>` with `display: contents` as the new outer root. This is layout-transparent (invisible to flexbox/grid) but gives Blazor a native element to stamp. Example: `ChartAxisListView` uses `<div class="axes-dropdown-wrapper">` with `display: contents`.
+- Use `::deep` to style a child component's markup, including a class passed through its `Class` parameter
+  (`CssClassUsageTests` enforces this).
+- **Root-element problem:** Blazor stamps the scope attribute only on elements in the component's own markup. If the
+  root is another component, there's no stamped ancestor, so `::deep` rules silently do nothing.
+- **Fix:** Wrap in a plain `<div>` with `display: contents` as the new outer root. It's layout-transparent but gives
+  Blazor an element to stamp. Examples: `AggregationOptions` (`aggregation-options-wrapper`) and `Top100`
+  (`top100-download-dropdown-wrapper`).
 
 ### Responsive Layout
 Screen-size breakpoints are defined in [AGENTS.md](AGENTS.md).
@@ -290,20 +295,22 @@ Screen-size breakpoints are defined in [AGENTS.md](AGENTS.md).
 | **`SeriesWithData` pipeline** | Three dataset stages: `SourceDataSet` (raw from API) → `PreProcessedDataSet` (after smoothing) → `ProcessedDataSet` (gap-filled, display-range filtered) |
 | **C# 14 collection expressions** | Used throughout: `List<T> x = []`, `T[] arr = [a, b, c]` |
 | **Tuple returns over `out` params** | Preferred for methods returning multiple values |
-| **`::deep` always required** | For styling Blazorise child elements from a parent component's `.razor.css` |
-| **`display: contents` isolation wrapper** | Required when a component's root is a Blazorise component — see CSS Isolation section |
+| **`::deep` always required** | For styling a child component's markup from a parent component's `.razor.css` |
+| **`display: contents` isolation wrapper** | Required when a component's root is another component — see CSS Isolation section |
 
 ---
 
-## Blazorise 2.x Component API Notes
+## Common Components
 
-**General rule:** All input components use `Value` / `ValueChanged` as their primary binding properties. Component-specific names from older Blazorise versions no longer exist.
+The UI uses no component library. The shared components live in `Components/Common` (listed in
+[AGENTS.md](AGENTS.md)) and are built on native browser features:
 
-| Component | Correct | ~~Old / wrong~~ |
+| Primitive | Used by | Notes |
 |---|---|---|
-| `Check<TValue>` | `Value` / `ValueChanged` | ~~`Checked` / `CheckedChanged`~~ |
-| `TextInput` | `Value` / `ValueChanged` | ~~`Text` / `TextChanged`~~ |
-| `Select<TValue>` | `Value` / `ValueChanged` | ~~`SelectedValue` / `SelectedValueChanged`~~ |
-| `NumericEdit<TValue>` | `Value` / `ValueChanged` | ~~`Number` / `NumberChanged`~~ |
-| `Switch<TValue>` | `Value` / `ValueChanged` | ~~`Checked` / `CheckedChanged`~~ |
-| `DateEdit<TValue>` | `Value` / `ValueChanged` | ~~`Date` / `DateChanged`~~ |
+| `<dialog>` + `showModal()` | `Modal` | Top layer, inert page behind, Escape to close. `Modal.razor.js` opens and closes it |
+| `popover` | `DropdownButton` (`popover="auto"`), `Tooltip` (manual) | Top layer, so never clipped by `overflow: hidden` and shown above an open `<dialog>` |
+| `wwwroot/js/floating.js` | `DropdownButton`, `Autocomplete`, `tooltip.js` | Positions a floating element next to its anchor and flips it when there's no room |
+| `wwwroot/js/tooltip.js` | `Tooltip` | One shared tooltip for every `[data-tooltip]` element, by event delegation. Loaded once from `App.razor`, so it works during prerender |
+
+Inputs (`Select`, `TextInput`, `Checkbox`) bind with `Value` / `ValueChanged`, not `Checked`, `Text` or
+`SelectedValue`.

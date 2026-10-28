@@ -1,7 +1,8 @@
 # Blazorise Removal — Overview Plan
 
 - **Date:** 2026-10-28
-- **Status:** In progress. Steps 1–17 and step 18 Parts A–B implemented 2026-10-28; see [Implementation order](#implementation-order).
+- **Status:** Implemented 2026-10-28 (all 18 steps); see [Implementation order](#implementation-order). Build and unit
+  tests are clean; the UI is unverified.
 - **Author:** Claude
 - **Scope:** All remaining Blazorise components in `ClimateExplorer.Web.Client`, Bootstrap 5 (CSS and JS),
   Font Awesome and Open Iconic sourcing, `ClimateExplorer.Web/App.razor`, both `Program.cs` files
@@ -200,7 +201,7 @@ builds, passes the unit tests and can ship on its own. The site keeps working be
 | 15 | [13 Autocomplete](2026-10-28-13-autocomplete-plan.md) | step 14 recommended (same file; enables the `autofocus` simplification), step 12 if the list needs the popover fallback | | 2026-10-28 |
 | 16 | [14 Layout and navbar](2026-10-28-14-layout-navbar-plan.md) | step 13 (NavMenu's dropdowns must already be `DropdownButton`) | | 2026-10-28 |
 | 17 | [16 Bootstrap removal](2026-10-28-16-bootstrap-removal-plan.md), steps 3–4 (cleanup, remove CSS) | steps 3–16 | Only once nothing renders Bootstrap markup | 2026-10-28 |
-| 18 | [17 Package removal and renames](2026-10-28-17-blazorise-package-removal-and-renames-plan.md) | all previous steps | Packages can't go while anything references them. Renames can't happen while the Blazorise namespace is imported. | Parts A–B 2026-10-28 |
+| 18 | [17 Package removal and renames](2026-10-28-17-blazorise-package-removal-and-renames-plan.md) | all previous steps | Packages can't go while anything references them. Renames can't happen while the Blazorise namespace is imported. | 2026-10-28 |
 
 Flexibility: steps 4–11 have no dependencies on each other (apart from 9 → 10). They can be
 reordered or done in parallel branches. Steps 12 → 13 → 16 and 3 → 17 → 18 are fixed chains.

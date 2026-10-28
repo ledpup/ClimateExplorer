@@ -22,7 +22,8 @@ This github site is the digital repository for everything used to bring [the web
   - **Core.UnitTests**, **WebApi.UnitTests**, **Web.UnitTests**: unit tests for Core, for the API and data
     projects, and for the website; the deployment workflows run them before publishing
 - Additional libraries used
-  - Charting: https://blazorise.com/ ([source](https://github.com/Megabit/Blazorise))
+  - Charting: https://www.chartjs.org/ ([source](https://github.com/chartjs/Chart.js))
+  - Icons: https://fontawesome.com/ (Font Awesome Free)
   - Mapping: https://github.com/ledpup/DPBlazorMap
   - Clustering tool: https://www.nuget.org/packages/DBSCAN/ ([source](https://github.com/viceroypenguin/Dbscan))
 
