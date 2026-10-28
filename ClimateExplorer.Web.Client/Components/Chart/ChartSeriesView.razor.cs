@@ -14,6 +14,7 @@ using static ClimateExplorer.Core.Enums;
 
 public partial class ChartSeriesView
 {
+    private readonly string idPrefix = $"series-{Guid.NewGuid():N}";
     private Validation? validation;
     private AboutData? aboutData;
 
@@ -59,6 +60,10 @@ public partial class ChartSeriesView
 
     [Parameter]
     public ChartSeriesTitleStyle TitleStyle { get; set; }
+
+    private string ShowTrendlineId => $"{idPrefix}-show-trendline";
+
+    private string IsLockedId => $"{idPrefix}-is-locked";
 
     private string StyleForTitleBar => GenerateStyleForTitleBar();
 

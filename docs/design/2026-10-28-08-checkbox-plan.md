@@ -1,7 +1,7 @@
 # Checkbox — Replace Blazorise `Check` with `ClimateCheckbox`
 
 - **Date:** 2026-10-28
-- **Status:** Proposed
+- **Status:** Implemented 2026-10-28 (see addendum). Build and unit tests are clean; the UI is unverified.
 - **Author:** Claude
 - **Scope:** `Components/Common/ClimateCheckbox.*`; Blazorise `Check` consumers `AggregationOptions`,
   `ChartAxisListView`, `ChartSeriesView`, `LocationDashboard`; existing `ClimateCheckbox` consumers
@@ -87,3 +87,20 @@ gets one through a proper `<label for>`.
 | **Total** | — | **13 files, ~59** | **~10 lines** |
 
 Risk: low.
+
+## Addendum — implementation (2026-10-28)
+
+- `ClimateCheckbox` takes `Value`/`ValueChanged` and a new `Id`, which goes on the `<input>`. The 4 existing call
+  sites now use the new names.
+- `ChartSeriesView` makes per-instance ids (`series-{guid}-show-trendline`, `-is-locked`), because several series
+  views can be on the page at once. The two rows now use `<label class="form-label" for=…>`. `aria-label="Show
+  fitted line"` was dropped because the visible label says the same thing.
+- Menu rows: a new `climate-checkbox--menu-row` modifier in `app.css` (min-height 44px, `0 1rem` padding to match
+  Bootstrap's `.dropdown-item`, inherited font size, `#cfc` hover). `ChartAxisListView` drops the `.axis-row`
+  wrapper and its rule. `LocationDashboard` drops the `8px` menu margin and the `padding-left: 0` override on
+  `.dropdown-item`, gives the item `min-height: 44px`, and sizes the icon `0.8rem` + `0.4rem` gap so it lines up
+  under the checkbox.
+- The `ChartSeriesView` `.form-check { top: 3px }` nudge is now `.climate-checkbox { top: 2px }`, to sit the
+  checkbox on the label's baseline. This value is a guess; check it by eye.
+- Bootstrap CSS is still loaded, so the Blazorise dropdown items keep their Bootstrap padding. This step doesn't
+  change that.

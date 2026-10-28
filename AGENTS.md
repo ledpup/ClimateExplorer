@@ -43,7 +43,7 @@ There are Blazorise components in use, with common styling in `app.css` such as:
 - Table
 - Tabs
 
-Blazorise 2.x inputs bind with `Value`/`ValueChanged` (not `Checked`, `Text`, `SelectedValue`, etc.).
+Common inputs (`Select`, `TextInput`, `ClimateCheckbox`) bind with `Value`/`ValueChanged` (not `Checked`, `Text`, `SelectedValue`, etc.).
 Style Blazorise child elements with `::deep`; if a component's root is a Blazorise component,
 wrap it in a `<div>` with `display: contents` so the scoped CSS applies.
 

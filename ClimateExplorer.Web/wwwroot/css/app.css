@@ -258,6 +258,18 @@ a, .btn-link {
     margin: 0;
 }
 
+/* A checkbox that is a whole row of a dropdown menu: fills the row, matches the dropdown item
+   padding and font, and meets the 44px touch target */
+.climate-checkbox--menu-row {
+    min-height: 44px;
+    padding: 0 1rem;
+    font-size: inherit;
+}
+
+.climate-checkbox--menu-row:hover {
+    background-color: var(--climate-color-control-hover);
+}
+
 /* Folder-style tabs. The active tab is filled with the brand green and sits on a baseline of the
    same colour so it reads as attached to the content below. Inactive tabs are pale green with a
    border that meets WCAG 1.4.11 (3:1 against white); all text/background pairs meet AA (4.5:1). */

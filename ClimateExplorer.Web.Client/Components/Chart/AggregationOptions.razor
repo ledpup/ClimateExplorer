@@ -42,7 +42,7 @@
                     <DelayedTooltip Text="When checked, your custom threshold is used instead of the dataset's recommended preset" Style="display: block">
                         <div class="form-row">
                             <span class="form-control-wrap">
-                                <Check TValue="bool" Value="@overridePresetThreshold" ValueChanged="@((bool v) => OnOverrideChanged(v))">Override preset threshold</Check>
+                                <ClimateCheckbox Value="@overridePresetThreshold" ValueChanged="@((bool v) => OnOverrideChanged(v))">Override preset threshold</ClimateCheckbox>
                             </span>
                         </div>
                     </DelayedTooltip>

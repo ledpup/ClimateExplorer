@@ -205,9 +205,9 @@
         width: 100%;
     }
 
-    .chart-series-config .form-control-wrap ::deep .form-check {
+    .chart-series-config .form-control-wrap ::deep .climate-checkbox {
         position: relative;
-        top: 3px;
+        top: 2px;
     }
 
 .series-action {

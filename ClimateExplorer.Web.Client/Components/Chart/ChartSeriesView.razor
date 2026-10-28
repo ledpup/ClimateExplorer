@@ -216,9 +216,9 @@
                         </DelayedTooltip>
                         <DelayedTooltip Text="Overlay a straight line fitted across the plotted data" Style="display: block">
                             <div class="form-row">
-                                <span class="form-label">Show fitted line</span>
+                                <label class="form-label" for="@ShowTrendlineId">Show fitted line</label>
                                 <span class="form-control-wrap">
-                                    <Check TValue="bool" Value="@ChartSeries.ShowTrendline" ValueChanged="@OnShowTrendlineChanged" aria-label="Show fitted line"></Check>
+                                    <ClimateCheckbox Id="@ShowTrendlineId" Value="@ChartSeries.ShowTrendline" ValueChanged="@OnShowTrendlineChanged" />
                                 </span>
                             </div>
                         </DelayedTooltip>
@@ -244,9 +244,9 @@
                         }
                         <DelayedTooltip Text="Prevent this series from being replaced when a new chart preset is selected" Style="display: block">
                             <div class="form-row">
-                                <span class="form-label">Lock?</span>
+                                <label class="form-label" for="@IsLockedId">Lock?</label>
                                 <span class="form-control-wrap">
-                                    <Check TValue="bool" Value="@ChartSeries.IsLocked" ValueChanged="@OnIsLockedChanged"></Check>
+                                    <ClimateCheckbox Id="@IsLockedId" Value="@ChartSeries.IsLocked" ValueChanged="@OnIsLockedChanged" />
                                 </span>
                             </div>
                         </DelayedTooltip>

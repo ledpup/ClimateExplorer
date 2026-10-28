@@ -16,11 +16,11 @@
                 <DropdownButton Icon="fas fa-cog" AriaLabel="Location dashboard options">
                     <MenuContent>
                         <div class="dropdown-menu-content">
-                            <Check TValue="bool"
-                                    Value="@DisplayPrecipitation"
-                                    ValueChanged="@(async (bool v) => await TogglePrecipitation())">
+                            <ClimateCheckbox Class="climate-checkbox--menu-row"
+                                             Value="@DisplayPrecipitation"
+                                             ValueChanged="@(async (bool v) => await TogglePrecipitation())">
                                 Precipitation stripe
-                            </Check>
+                            </ClimateCheckbox>
                             <DropdownItem Disabled="@(Location is null)"
                                           aria-label="@DataSourcesButtonLabel"
                                           Clicked="ShowDataSetMetadataAsync">

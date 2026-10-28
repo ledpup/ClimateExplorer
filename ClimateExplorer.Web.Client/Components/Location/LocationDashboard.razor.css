@@ -49,21 +49,17 @@
     z-index: 30;
 }
 
-.dropdown-menu-content {
-    margin: 8px 8px;
-}
-
-/* Match the Bootstrap .form-check geometry (1em box, label at 1.5em) so the icon sits under the checkbox */
+/* Match the .climate-checkbox geometry (0.8rem box, 0.4rem gap) so the icon sits under the checkbox */
 .dropdown-menu-content ::deep .dropdown-item {
     display: flex;
     align-items: center;
-    padding-left: 0;
+    min-height: 44px;
 }
 
 .dropdown-menu-content ::deep .dropdown-item-icon {
     display: inline-block;
-    width: 1em;
-    margin-right: 0.5em;
+    width: 0.8rem;
+    margin-right: 0.4rem;
     text-align: center;
 }
 

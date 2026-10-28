@@ -219,8 +219,8 @@
                     {
                         <DelayedTooltip Text="<p>By using data from nearby stations, adjusted temperatures are corrected for non-climatic influences such as station relocations and instrument changes.</p><p>Uncheck to see raw, unmodified measurements.</p><p>If disabled, there is only adjusted or raw data available, not both.</p>" Multiline="true">
                             <ClimateCheckbox Text="Use adjusted data"
-                                                Checked="@(SelectedDataAdjustment == DataAdjustment.Adjusted)"
-                                                CheckedChanged="OnAdjustedChanged"
+                                                Value="@(SelectedDataAdjustment == DataAdjustment.Adjusted)"
+                                                ValueChanged="OnAdjustedChanged"
                                                 Disabled="@(AvailableDataAdjustments.Count == 1)" />
                         </DelayedTooltip>
                     }
@@ -228,8 +228,8 @@
                         <h4 class="mt-3">User interface</h4>
                         <DelayedTooltip Text="When on, selecting a statistics tab (e.g. Trend) on one tile applies it to all expanded tiles.">
                             <ClimateCheckbox Text="Synchronise tabs"
-                                                Checked="@synchroniseTabs"
-                                                CheckedChanged="@(value => synchroniseTabs = value)" />
+                                                Value="@synchroniseTabs"
+                                                ValueChanged="@(value => synchroniseTabs = value)" />
                         </DelayedTooltip>
                     </div>
                 </Content>

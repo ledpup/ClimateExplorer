@@ -8,7 +8,7 @@ public partial class ClimateCheckbox
     public string? Text { get; set; }
 
     [Parameter]
-    public bool Checked { get; set; }
+    public bool Value { get; set; }
 
     [Parameter]
     public bool Disabled { get; set; }
@@ -16,8 +16,14 @@ public partial class ClimateCheckbox
     [Parameter]
     public string? Class { get; set; }
 
+    /// <summary>
+    /// The id of the <c>&lt;input&gt;</c>, so a <c>&lt;label for&gt;</c> elsewhere can name it.
+    /// </summary>
     [Parameter]
-    public EventCallback<bool> CheckedChanged { get; set; }
+    public string? Id { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> ValueChanged { get; set; }
 
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
@@ -32,6 +38,6 @@ public partial class ClimateCheckbox
 
     private async Task OnChanged(ChangeEventArgs e)
     {
-        await CheckedChanged.InvokeAsync((bool)e.Value!);
+        await ValueChanged.InvokeAsync((bool)e.Value!);
     }
 }

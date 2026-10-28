@@ -10,13 +10,11 @@
                     <DropdownHeader>Scale from 0</DropdownHeader>
                     @foreach (var axis in Axes)
                     {
-                        <div class="axis-row">
-                            <Check TValue="bool"
-                                   Value="@GetScaleToZero(axis.Id)"
-                                   ValueChanged="@((bool v) => OnScaleToZeroChanged(axis.Id, v))">
-                                @axis.Label
-                            </Check>
-                        </div>
+                        <ClimateCheckbox Class="climate-checkbox--menu-row"
+                                         Value="@GetScaleToZero(axis.Id)"
+                                         ValueChanged="@((bool v) => OnScaleToZeroChanged(axis.Id, v))">
+                            @axis.Label
+                        </ClimateCheckbox>
                     }
                 </div>
             }
