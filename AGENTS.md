@@ -3,7 +3,8 @@
 - A plan or analysis document goes in docs/design. See [readme](docs/design/README.md)
 - Do not run the website, Playwright, Lighthouse, or browser tests. This includes starting
   `dotnet run`/dev servers for the Web or WebApi projects for manual or automated UI verification.
-  Verify with `dotnet build` and the unit test suite only.
+  Verify with `dotnet build` and the unit test projects only (`ClimateExplorer.Core.UnitTests`,
+  `ClimateExplorer.WebApi.UnitTests`, `ClimateExplorer.Web.UnitTests`).
 - If a build fails because IIS Express (or another dev server the user started) has locked files in a `bin`
   folder, you may stop that process and rebuild.
 - When estimating effort, don't give time estimates (hours/days). Report how many files would
@@ -28,6 +29,9 @@
   `x-small`/`smaller`/`xx-small`, or px/rem/em values below that, even for secondary/caption text.
 - Utility classes are limited to those in `utilities.css`; prefer component-scoped CSS, and don't add new
   utilities without a reason.
+- `CssClassUsageTests` fails on a CSS class selector that no markup or code uses, and on a scoped `.razor.css`
+  selector that styles a child component's markup (including a class passed through its `Class` parameter)
+  without `::deep`. Delete the rule or fix the selector; a class built at runtime goes in its allow-list.
 
 Use the following existing common components, when appriopriate:
 - Autocomplete (text box with suggestions; needs an `AriaLabel`, or a `<label for>` pointing at its `Id`)

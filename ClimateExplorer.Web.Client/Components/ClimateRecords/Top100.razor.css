@@ -73,10 +73,6 @@
     background-color: #ffffff;
 }
 
-.top100-btn {
-    gap: 0.25rem;
-}
-
 /* Dropdown wrapper: display:contents keeps it inline with other buttons */
 .top100-download-dropdown-wrapper {
     display: contents;

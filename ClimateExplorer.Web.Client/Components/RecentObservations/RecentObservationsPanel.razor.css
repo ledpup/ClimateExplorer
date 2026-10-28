@@ -91,14 +91,6 @@
     transform: rotate(90deg);
 }
 
-.recent-observation-control-row {
-    animation: recent-observation-slot-in 180ms ease-out;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    grid-column: 1 / -1;
-}
-
 .recent-observations-config-grid {
     display: grid;
     gap: 0.75rem 1.5rem;
@@ -135,14 +127,6 @@
 .recent-observations-reference-date-control input,
 .recent-observations-config-control ::deep .select {
     width: 10.25rem;
-}
-
-.recent-observations-reference-date-reset {
-    flex: 0 0 auto;
-    height: 1.9375rem;
-    justify-content: center;
-    padding: 0;
-    width: 1.9375rem;
 }
 
 /* Border, radius, colours, hover, focus and the touch sizing come from .control in app.css */
@@ -185,19 +169,6 @@
     font-weight: 700;
 }
 
-.recent-observations-notes {
-    overflow-wrap: anywhere;
-}
-
-.recent-observations-source-link {
-    overflow-wrap: anywhere;
-    word-break: break-word;
-}
-
-.recent-observations-retrieval-entry {
-    display: inline;
-}
-
 .recent-observations-state {
     align-items: center;
     background: #f5f8f7;
@@ -224,19 +195,6 @@
 
 .recent-observations-state i {
     flex-shrink: 0;
-}
-
-.recent-observations-retry {
-    border: 1px solid currentColor;
-    border-radius: 6px;
-    color: inherit;
-    margin-left: auto;
-    padding: 0.35rem 0.55rem;
-    box-shadow: none;
-}
-
-.recent-observations-retry:hover {
-    background: rgb(255 255 255 / 70%);
 }
 
 .recent-observations-state-actions {
@@ -271,8 +229,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .recent-observation-tile-slot,
-    .recent-observation-control-row {
+    .recent-observation-tile-slot {
         animation: none;
         transition: none;
     }
@@ -292,15 +249,6 @@
     .recent-observations-state {
         align-items: flex-start;
         flex-direction: column;
-    }
-
-    .recent-observations-retrieval-entry {
-        display: block;
-        margin-top: 0.25rem;
-    }
-
-    .recent-observations-retry {
-        margin-left: 0;
     }
 
     .recent-observations-state-actions {

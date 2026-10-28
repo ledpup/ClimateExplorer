@@ -63,4 +63,6 @@ All modals: use `Class="custom-modal-header"` on `<ModalHeader>` (dark green bg,
 ## Testing
 
 - Use **MSTest** (`[TestClass]` / `[TestMethod]`) and **Moq**.
-- Test files live flat in the `ClimateExplorer.UnitTests` project root (no subdirectories).
+- Test files go in the project for what they cover: `ClimateExplorer.Core.UnitTests`, `ClimateExplorer.WebApi.UnitTests`
+  (WebApi and the data projects) or `ClimateExplorer.Web.UnitTests` (Web.Client). Keep them flat in the project
+  root, apart from feature subfolders that already exist (`Smoothing/`) and fixture/test-data folders.

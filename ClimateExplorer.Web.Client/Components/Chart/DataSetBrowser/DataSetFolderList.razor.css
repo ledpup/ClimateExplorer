@@ -17,16 +17,6 @@
     margin-left: 12px;
 }
 
-.add-dataset {
-    color: #09C2FC;
-    font-weight: bold;
-    text-decoration: none;
-}
-
-.add-dataset:hover {
-    color: #0a58ca
-}
-
 .dataset-name {
     top: -3px;
     left: 4px;

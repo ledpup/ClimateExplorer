@@ -12,6 +12,8 @@ on:
       - ClimateExplorer.WebApi/**
       - ClimateExplorer.Data.Downloading/**
       - ClimateExplorer.Data.Ghcnd/**
+      - ClimateExplorer.Core.UnitTests/**
+      - ClimateExplorer.WebApi.UnitTests/**
       - .globalconfig
       - .github/workflows/master_api-climateexplorer.yml
 
@@ -32,6 +34,13 @@ jobs:
 
       - name: Build with dotnet
         run: dotnet build ClimateExplorer.WebApi/ClimateExplorer.WebApi.csproj --configuration Release
+
+      # One step per project: pwsh only fails a step on its last command's exit code.
+      - name: Test Core
+        run: dotnet test ClimateExplorer.Core.UnitTests/ClimateExplorer.Core.UnitTests.csproj --configuration Release --filter "TestCategory!=Performance"
+
+      - name: Test WebApi
+        run: dotnet test ClimateExplorer.WebApi.UnitTests/ClimateExplorer.WebApi.UnitTests.csproj --configuration Release
 
       - name: dotnet publish
         run: dotnet publish ClimateExplorer.WebApi/ClimateExplorer.WebApi.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp

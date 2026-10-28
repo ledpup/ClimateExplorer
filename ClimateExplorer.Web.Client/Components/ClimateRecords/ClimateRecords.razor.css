@@ -1,25 +1,3 @@
-.subtle-link {
-    color: inherit;
-    text-decoration: none;
-    cursor: pointer;
-    background: none;
-    border: none;
-    font: inherit;
-    padding: 0;
-}
-
-    .subtle-link:hover {
-        color: #2a3d39;
-        text-decoration: underline;
-    }
-
-.info-icon {
-    cursor: pointer;
-    color: #79c6f4;
-    font-size: 19.2px;
-    margin-left: 8px;
-}
-
 /* ── Filter row ──────────────────────────────────────────────────────────── */
 .filter-row {
     display: flex;
@@ -28,21 +6,6 @@
     gap: 0.5rem;
     margin-bottom: 1rem;
     padding: 0.5rem 0.5rem 0.75rem 0rem;
-}
-
-.today-btn,
-.sort-toggle-btn {
-    font-size: 0.875rem;
-    font-weight: 500;
-}
-
-.today-btn:active:not(:disabled),
-.sort-toggle-btn:active {
-    transform: scale(0.98);
-}
-
-.sort-toggle-btn i {
-    font-size: 0.875rem;
 }
 
 table.table thead th:first-child,

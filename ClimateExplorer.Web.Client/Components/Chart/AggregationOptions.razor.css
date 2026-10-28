@@ -11,10 +11,6 @@
     vertical-align: top;
 }
 
-.aggregation-options-container .chart-control {
-    margin: 0;
-}
-
 .aggregation-options-backdrop {
     position: fixed;
     inset: 0;

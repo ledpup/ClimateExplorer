@@ -2,7 +2,6 @@
    Limited to the classes in use; prefer component-scoped CSS over adding new ones. */
 
 /* Display / flex */
-.d-block { display: block !important; }
 .d-flex { display: flex !important; }
 
 .flex-column { flex-direction: column !important; }
@@ -24,7 +23,6 @@
 .mt-2 { margin-top: 0.5rem !important; }
 .mt-3 { margin-top: 1rem !important; }
 
-.mb-0 { margin-bottom: 0 !important; }
 .mb-2 { margin-bottom: 0.5rem !important; }
 .mb-3 { margin-bottom: 1rem !important; }
 .mb-4 { margin-bottom: 1.5rem !important; }
