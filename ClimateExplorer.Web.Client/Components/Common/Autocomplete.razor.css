@@ -1,0 +1,68 @@
+/* Border, radius, colours, hover, focus, disabled and the touch sizing of the input come from .climate-control in
+   app.css */
+.climate-autocomplete {
+    position: relative;
+}
+
+.climate-autocomplete-input {
+    width: 100%;
+    padding: 0.25rem 0.5rem;
+}
+
+.climate-autocomplete-input::placeholder {
+    color: var(--climate-color-muted-text);
+}
+
+/* Overlays whatever is below the input. Its max-height comes from the MaxMenuHeight parameter. */
+.climate-autocomplete-list {
+    position: absolute;
+    z-index: 10;
+    top: calc(100% + 2px);
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 0.25rem 0;
+    list-style: none;
+    overflow-y: auto;
+    border: 1px solid var(--climate-color-control-border);
+    border-radius: var(--climate-radius-control);
+    background-color: var(--climate-color-surface);
+    color: #212529;
+    font-size: 0.875rem;
+    box-shadow: var(--climate-shadow-panel);
+}
+
+.climate-autocomplete-option {
+    display: flex;
+    align-items: center;
+    min-height: 2rem;
+    padding: 0.25rem 0.75rem;
+    cursor: pointer;
+}
+
+.climate-autocomplete-option:hover,
+.climate-autocomplete-option.is-active {
+    background-color: var(--climate-color-control-hover);
+}
+
+/* The input keeps focus, so the active option gets the focus ring instead */
+.climate-autocomplete-option.is-active {
+    outline: 2px solid var(--climate-color-control-text);
+    outline-offset: -2px;
+}
+
+.climate-autocomplete-more {
+    padding: 0.25rem 0.75rem;
+    color: var(--climate-color-muted-text);
+    font-style: italic;
+}
+
+@media (pointer: coarse) {
+    .climate-autocomplete-list {
+        font-size: 1rem;
+    }
+
+    .climate-autocomplete-option {
+        min-height: 44px;
+    }
+}

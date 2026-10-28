@@ -1,7 +1,7 @@
 # Autocomplete — Native Combobox for Location Search
 
 - **Date:** 2026-10-28
-- **Status:** Proposed
+- **Status:** Implemented 2026-10-28 (see addendum). Build and unit tests are clean; the UI is unverified.
 - **Author:** Claude
 - **Scope:** new `Components/Common/Autocomplete.*`, `AutocompleteFilter.cs`;
   `Components/Location/ChangeLocation.*`; `ClimateExplorer.UnitTests`
@@ -162,3 +162,51 @@ the `Blazorise.Components` package dependency.
 | **Total** | **6 files, +390** | **3 files, ~25** | **~25 lines** |
 
 Risk: medium. Combobox keyboard and blur timing are easy to get subtly wrong, so the manual checks matter.
+
+## Addendum — implementation notes
+
+Shipped as planned, with these deviations:
+
+- **Escape is cancelled in `Autocomplete.razor.js`.** A collocated module adds a `keydown` listener on the
+  input that calls `preventDefault` for ArrowUp/ArrowDown (always), Escape while `aria-expanded="true"`, and
+  Enter while an option is active. Cancelling the Escape `keydown` stops the browser treating it as a close
+  request, so the first Escape closes the list and leaves the `<dialog>` open. No `cancel` handler on the
+  dialog was needed (and Chrome only lets a page cancel `cancel` once per user activation anyway). The same
+  module does the `scrollIntoView({ block: "nearest" })` for the active option. It's imported on first
+  render, once interactive.
+- **Escape with the list closed** clears the text, as planned. In Change location that Escape isn't cancelled,
+  so it also closes the modal.
+- **`AriaLabel` isn't `[EditorRequired]`**, as it can't be required only when there's no `<label for>`. The
+  doc comment says one or the other is needed. `TextField` and `ValueField` are `[EditorRequired]`.
+- **Typing clears the active option at once**, before the 120 ms debounce runs, so Enter can't pick an option
+  from the previous text's list. A blur cancels a pending filter, so the list can't open after focus has gone.
+  ArrowDown/ArrowUp with the list closed re-filters immediately and opens it on the first/last option. Arrows
+  wrap at the ends.
+- **`SelectedText` acts on parent changes only.** The binding echoing back the typed text leaves the list
+  alone; a different value from the parent (such as `Show()` resetting it to null) replaces the text and
+  closes the list.
+- **The input is disabled until interactive**, per the overview's prerender rule. In Change location it's
+  only rendered while the modal is open, so this never shows there.
+- **The active option** has the hover colour plus a 2px inset outline, since the input keeps focus.
+- **Status text:** "No results", "1 result", "N results", or "More than 50 results. Keep typing to narrow
+  them." when capped. Nothing while the query is shorter than `MinSearchLength`.
+- **`ChangeLocation`** dropped the `@ref`, `OnModalOpened`/`OnModalClosed`, `OnAfterRenderAsync`,
+  `isModalOpen`, `shouldFocusLocationSearch` and `FocusLocationSearch`. `autofocus` plus `showModal()` does the
+  focusing. It no longer passes `Opened`/`Closed` to `Modal`.
+- **The `Blazorise.Components` package reference stays** until [17 Package removal](2026-10-28-17-blazorise-package-removal-and-renames-plan.md).
+  Nothing imports its namespace any more.
+- Added two tests beyond the plan: `Filter_ExactlyMaxMatches_IsNotCapped` and
+  `Filter_WhitespaceOnlyQuery_ReturnsEmpty`.
+- `AGENTS.md` lists `Autocomplete` with the common components.
+
+### Files
+
+- New: `Autocomplete.razor`, `Autocomplete.razor.cs`, `Autocomplete.razor.css`, `Autocomplete.razor.js`,
+  `AutocompleteFilter.cs`, `AutocompleteFilterTests.cs`.
+- Changed: `ChangeLocation.razor` (+ `.razor.cs`), `SuggestedChartsMini.razor`, `AGENTS.md`.
+
+### Follow-ups
+
+- Run the manual checks above. The JS couldn't be run here. Pay most attention to the first Escape (list
+  closes, modal stays open), and to dragging the list's scrollbar.
+- If the list is clipped by the modal body on mobile, switch it to `popover="manual"` placed with `floating.js`.

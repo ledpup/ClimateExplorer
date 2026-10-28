@@ -1,10 +1,9 @@
-@using Blazorise.Components
 @using ClimateExplorer.Core.Model;
 @using ClimateExplorer.Web.Client.Components.Common
 @using ClimateExplorer.WebApiClient.Services
 @using GeoCoordinatePortable
 
-<Modal @ref="modal" Title="Change location" Size="ModalSize.Large" Opened="@OnModalOpened" Closed="@OnModalClosed">
+<Modal @ref="modal" Title="Change location" Size="ModalSize.Large">
     <div class="mt-1 d-flex gap-4">
         <ClimateButton Text="Near me" Icon="fas fa-location-crosshairs" OnClick="NearMeClicked" />
         <ClimateButton Text="Random location" Icon="fas fa-shuffle" OnClick="RandomLocationClicked" />
@@ -22,13 +21,12 @@
         <div class="mt-3 mb-3">
             <Autocomplete TItem="Location"
                 TValue="Guid"
-                @ref="locationAutocomplete"
                 Data="@LocationDictionary.Values"
                 TextField="@((item) => item.FullTitle)"
                 ValueField="@((item) => item.Id)"
                 Placeholder="Location search..."
-                Filter="AutocompleteFilter.Contains"
-                FreeTyping
+                AriaLabel="Search locations"
+                AutoFocus
                 MinSearchLength="2"
                 SelectedValueChanged="@FireOnLocationChange"
                 MaxMenuHeight="350px"

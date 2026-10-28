@@ -1,0 +1,46 @@
+@typeparam TItem
+@typeparam TValue
+
+<div class="@WrapCssClass">
+    <input id="@Id"
+           type="text"
+           role="combobox"
+           class="climate-control climate-autocomplete-input"
+           aria-autocomplete="list"
+           aria-expanded="@(IsOpen ? "true" : "false")"
+           aria-controls="@listId"
+           aria-activedescendant="@ActiveOptionId"
+           aria-label="@AriaLabel"
+           placeholder="@Placeholder"
+           autocomplete="off"
+           autofocus="@AutoFocus"
+           disabled="@(!RendererInfo.IsInteractive)"
+           value="@text"
+           @oninput="OnInputAsync"
+           @onkeydown="OnKeyDownAsync"
+           @onblur="OnBlur"
+           @ref="input" />
+    @* mousedown is prevented on the whole list, scrollbar included, so pressing it doesn't take focus from the input *@
+    <ul id="@listId"
+        role="listbox"
+        class="climate-autocomplete-list"
+        hidden="@(!IsOpen)"
+        style="max-height: @MaxMenuHeight"
+        @onmousedown:preventDefault="true"
+        @ref="list">
+        @for (var i = 0; i < results.Count; i++)
+        {
+            var index = i;
+            <li id="@OptionId(index)"
+                role="option"
+                aria-selected="@(index == activeIndex ? "true" : "false")"
+                class="@(index == activeIndex ? "climate-autocomplete-option is-active" : "climate-autocomplete-option")"
+                @onclick="() => ChooseAsync(index)">@TextField(results[index])</li>
+        }
+        @if (capped)
+        {
+            <li class="climate-autocomplete-more" aria-hidden="true">Keep typing to narrow results</li>
+        }
+    </ul>
+    <span class="visually-hidden" role="status">@statusText</span>
+</div>

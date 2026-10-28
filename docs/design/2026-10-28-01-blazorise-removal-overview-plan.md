@@ -1,7 +1,7 @@
 # Blazorise Removal — Overview Plan
 
 - **Date:** 2026-10-28
-- **Status:** In progress. Steps 1–14 implemented 2026-10-28; see [Implementation order](#implementation-order).
+- **Status:** In progress. Steps 1–15 implemented 2026-10-28; see [Implementation order](#implementation-order).
 - **Author:** Claude
 - **Scope:** All remaining Blazorise components in `ClimateExplorer.Web.Client`, Bootstrap 5 (CSS and JS),
   Font Awesome and Open Iconic sourcing, `ClimateExplorer.Web/App.razor`, both `Program.cs` files
@@ -197,7 +197,7 @@ builds, passes the unit tests and can ship on its own. The site keeps working be
 | 12 | [04 Tooltip](2026-10-28-04-tooltip-plan.md) | — | **Introduces `wwwroot/js/floating.js`** | 2026-10-28 |
 | 13 | [05 Dropdown](2026-10-28-05-dropdown-plan.md) | step 12 (`floating.js`) | Converts NavMenu's two dropdowns too | 2026-10-28 |
 | 14 | [06 Modal](2026-10-28-06-modal-plan.md) | — (after 13 recommended: tooltips/menus inside modals can then be checked together) | | 2026-10-28 |
-| 15 | [13 Autocomplete](2026-10-28-13-autocomplete-plan.md) | step 14 recommended (same file; enables the `autofocus` simplification), step 12 if the list needs the popover fallback | | — |
+| 15 | [13 Autocomplete](2026-10-28-13-autocomplete-plan.md) | step 14 recommended (same file; enables the `autofocus` simplification), step 12 if the list needs the popover fallback | | 2026-10-28 |
 | 16 | [14 Layout and navbar](2026-10-28-14-layout-navbar-plan.md) | step 13 (NavMenu's dropdowns must already be `DropdownButton`) | | — |
 | 17 | [16 Bootstrap removal](2026-10-28-16-bootstrap-removal-plan.md), steps 3–4 (cleanup, remove CSS) | steps 3–16 | Only once nothing renders Bootstrap markup | — |
 | 18 | [17 Package removal and renames](2026-10-28-17-blazorise-package-removal-and-renames-plan.md) | all previous steps | Packages can't go while anything references them. Renames can't happen while the Blazorise namespace is imported. | — |

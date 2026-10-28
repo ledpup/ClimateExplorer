@@ -4,6 +4,8 @@
 - Do not run the website, Playwright, Lighthouse, or browser tests. This includes starting
   `dotnet run`/dev servers for the Web or WebApi projects for manual or automated UI verification.
   Verify with `dotnet build` and the unit test suite only.
+- If a build fails because IIS Express (or another dev server the user started) has locked files in a `bin`
+  folder, you may stop that process and rebuild.
 - When estimating effort, don't give time estimates (hours/days). Report how many files would
   change and by roughly how much (e.g. "3 files, ~40 lines; 1 new file").
 - Architecture, component and data-layer reference: [CONTEXT.md](CONTEXT.md)
@@ -28,6 +30,7 @@
   utilities without a reason.
 
 Use the following existing common components, when appriopriate:
+- Autocomplete (text box with suggestions; needs an `AriaLabel`, or a `<label for>` pointing at its `Id`)
 - ClimateButton
 - Collapsible
 - DelayedTooltip
