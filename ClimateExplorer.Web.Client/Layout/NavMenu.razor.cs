@@ -35,6 +35,8 @@ public partial class NavMenu : IDisposable
     [Inject]
     private IDataService? DataService { get; set; }
 
+    private string HamburgerClass => IsHamburgerCurrentPage() ? "hamburger-toggle nav-current" : "hamburger-toggle";
+
     private IEnumerable<SecondaryNavItem> VisibleSecondaryItems => secondaryItems.Where(item => !item.LocalOnly || IsLocalPage());
 
     public bool IsCurrentPage(string route)

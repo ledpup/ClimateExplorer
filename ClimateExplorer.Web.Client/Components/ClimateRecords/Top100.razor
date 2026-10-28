@@ -1,5 +1,4 @@
 @namespace ClimateExplorer.Web.Client.Components.Location
-@using Blazorise
 @using ClimateExplorer.Web.Client.Components.Common
 @using ClimateExplorer.Web.Client.UiModel
 
@@ -24,8 +23,8 @@
                     <div class="top100-download-dropdown-wrapper">
                         <DropdownButton Text="Download" Icon="fas fa-download">
                             <MenuContent>
-                                <DropdownItem Clicked="DownloadImage">PNG</DropdownItem>
-                                <DropdownItem Clicked="DownloadSvg">SVG</DropdownItem>
+                                <DropdownItem OnClick="DownloadImage">PNG</DropdownItem>
+                                <DropdownItem OnClick="DownloadSvg">SVG</DropdownItem>
                             </MenuContent>
                         </DropdownButton>
                     </div>

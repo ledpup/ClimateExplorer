@@ -1,4 +1,3 @@
-@using Blazorise
 @using ClimateExplorer.Core.Model
 @using ClimateExplorer.Web.Client.Components.ClimateRecords
 @using ClimateExplorer.Web.Client.Components.Common
@@ -15,7 +14,7 @@
             <span class="dropdown-wrapper">
                 <DropdownButton Icon="fas fa-cog" AriaLabel="Location dashboard options">
                     <MenuContent>
-                        <div class="dropdown-menu-content">
+                        <div class="dashboard-options-menu">
                             <ClimateCheckbox Class="climate-checkbox--menu-row"
                                              Value="@DisplayPrecipitation"
                                              ValueChanged="@(async (bool v) => await TogglePrecipitation())">
@@ -23,8 +22,8 @@
                             </ClimateCheckbox>
                             <DropdownItem Disabled="@(Location is null)"
                                           aria-label="@DataSourcesButtonLabel"
-                                          Clicked="ShowDataSetMetadataAsync">
-                                <i class="fas fa-database dropdown-item-icon" aria-hidden="true"></i><span>Data sources</span>
+                                          OnClick="ShowDataSetMetadataAsync">
+                                <i class="fas fa-database dashboard-options-icon" aria-hidden="true"></i><span>Data sources</span>
                             </DropdownItem>
                         </div>
                     </MenuContent>

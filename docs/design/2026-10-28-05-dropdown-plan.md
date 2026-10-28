@@ -1,7 +1,7 @@
 # Dropdown — Native `DropdownButton` with Popover
 
 - **Date:** 2026-10-28
-- **Status:** Proposed
+- **Status:** Implemented 2026-10-28 (see addendum). Build and unit tests are clean; the UI is unverified.
 - **Author:** Claude
 - **Scope:** `Components/Common/DropdownButton.*` (rewritten), new `Components/Common/DropdownItem.*`,
   new `DropdownButton.razor.js`, consumers `ChartView`, `ChartAxisListView`, `Top100`,
@@ -160,3 +160,46 @@ with the shared `floating.js` and closes it on navigation. A new `DropdownItem` 
 | **Total** | **4 files, +155** | **12 files, ~245** | — |
 
 Risk: medium. NavMenu's mobile menu and the top-layer stacking need the manual checks above.
+
+## Addendum — implementation notes
+
+Shipped as planned, with these deviations:
+
+- **No `LocationChanged` subscription.** The chart page rewrites its URL when chart state changes, so
+  ticking an axis checkbox in the Axes menu would have closed the menu. Instead,
+  `DropdownButton.razor.js` closes the menu when a link inside it (`a[href]`) is clicked, which covers
+  NavMenu's hamburger. `CloseAsync()` is still public.
+- **Styles are global, in `app.css`, not in `DropdownButton.razor.css`.** NavMenu restyles the menu
+  (dark green) with `::deep .climate-dropdown-menu`. Against a scoped `.climate-dropdown-menu[b-…]` rule
+  that's a specificity tie decided by the scoped-bundle order. A single global class keeps every consumer
+  override winning. No scoped CSS file was added.
+- **The caret is drawn by `.climate-dropdown-toggle::after`.** It used to come from Bootstrap's
+  `.dropdown-toggle::after` (Blazorise's toggle carried that class). `app.css` only set its margin.
+- **`AlignEnd` parameter** (`bottom-end` placement) for the two NavMenu toggles at the end of the bar.
+  It replaces the `right: 0` and `position: fixed; top: 65px` rules on their menus.
+- **No flash at the UA position.** The `toggle` event fires after the popover is shown, so
+  `.climate-dropdown-menu:popover-open:not([data-placement])` is `visibility: hidden` until `place()` runs.
+  `data-placement` is removed on close.
+- **Item height** is `min-height: 2rem` with a mouse and 44px for `pointer: coarse`, per AGENTS.md, rather
+  than 44px always. LocationDashboard keeps 44px items so they match its menu-row checkbox.
+- **Top100's item hover** is now the shared `#cfc`, replacing its own `#f8f8f8`.
+- **NavMenu still imports Blazorise** (for `Bar*`, until [14](2026-10-28-14-layout-navbar-plan.md)), so its one
+  `DropdownItem` is written fully qualified. The site-overview icon gained `aria-hidden="true"`.
+- `.options-toggle` gets `gap: 0.255em` so the cog-to-caret spacing matches Bootstrap's old caret margin.
+- `header.layout-header { overflow: visible }` in `app.css` (for the old hamburger menu) is no longer needed
+  by the dropdowns, since they render in the top layer. It's left in place for
+  [14 Layout and navbar](2026-10-28-14-layout-navbar-plan.md) to remove.
+
+### Files
+
+- New: `DropdownButton.razor.js`, `DropdownItem.razor`, `DropdownItem.razor.cs`.
+- Changed: `DropdownButton.razor`, `DropdownButton.razor.cs`, `ChartView.razor` (+ `.razor.css`),
+  `ChartAxisListView.razor`, `Top100.razor` (+ `.razor.css`), `LocationDashboard.razor` (+ `.razor.css`),
+  `NavMenu.razor` (+ `.razor.cs`, `.razor.css`), `app.css`.
+- `ChartView`, `ChartAxisListView`, `Top100` and `LocationDashboard` no longer import Blazorise.
+
+### Follow-ups
+
+- Run the manual checks above. The JS couldn't be run here.
+- `AggregationOptions`' toggle still uses Bootstrap's `dropdown-toggle` class for its caret. It isn't a
+  dropdown (it opens a panel), so it's left for [16 Bootstrap removal](2026-10-28-16-bootstrap-removal-plan.md).

@@ -182,7 +182,14 @@ a, .btn-link {
     margin-top: 2px;
 }
 
-.btn.climate-dropdown-toggle,
+/* DropdownButton. The styles are global, not scoped to the component, because items are rendered by the
+   component that fills the menu, and consumers (e.g. NavMenu's dark menus) restyle the menu with one-class
+   ::deep selectors that need to win without depending on the order of the scoped CSS bundle. */
+.climate-dropdown {
+    display: inline-flex;
+    align-items: center;
+}
+
 .climate-dropdown-toggle {
     padding: var(--climate-space-control-padding);
     background-color: var(--climate-color-control-surface);
@@ -196,26 +203,109 @@ a, .btn-link {
     gap: var(--climate-space-control-gap);
     position: relative;
     user-select: none;
+    white-space: nowrap;
     font: inherit;
     box-shadow: var(--climate-shadow-control) !important;
     transition: var(--climate-transition-control);
 }
 
-.btn.climate-dropdown-toggle:hover,
-.btn.climate-dropdown-toggle:focus,
-.btn.climate-dropdown-toggle:active,
-.btn.climate-dropdown-toggle.show,
+/* Disabled only while prerendered, so it looks the same */
+.climate-dropdown-toggle:disabled {
+    cursor: default;
+}
+
 .climate-dropdown-toggle:hover,
 .climate-dropdown-toggle:focus,
 .climate-dropdown-toggle:active,
-.climate-dropdown-toggle.show {
+.climate-dropdown:has(> .climate-dropdown-menu:popover-open) > .climate-dropdown-toggle {
     background-color: var(--climate-color-control-hover);
     color: var(--climate-color-control-text);
 }
 
-.btn.climate-dropdown-toggle::after,
+/* The caret */
 .climate-dropdown-toggle::after {
-    margin-left: 0;
+    content: "";
+    display: inline-block;
+    vertical-align: 0.255em;
+    border-top: 0.3em solid;
+    border-right: 0.3em solid transparent;
+    border-bottom: 0;
+    border-left: 0.3em solid transparent;
+}
+
+/* A top-layer popover; DropdownButton.razor.js sets its position and data-placement */
+.climate-dropdown-menu {
+    /* Reset the UA popover styles (centred in the viewport, with padding and a border) */
+    margin: 0;
+    inset: auto;
+    padding: 0.25rem 0;
+    min-width: 10rem;
+    max-height: calc(100dvh - 16px);
+    overflow: auto;
+    border: 1px solid var(--climate-color-control-border);
+    border-radius: var(--climate-radius-control);
+    background-color: var(--climate-color-surface);
+    color: #212529;
+    font-size: 1rem;
+    font-weight: normal;
+    text-align: left;
+    box-shadow: var(--climate-shadow-panel);
+}
+
+/* Hidden, but still measurable, until it's been positioned */
+.climate-dropdown-menu:popover-open:not([data-placement]) {
+    visibility: hidden;
+}
+
+.climate-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    min-height: 2rem;
+    padding: 0.25rem 1rem;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+@media (pointer: coarse) {
+    .climate-dropdown-item {
+        min-height: 44px;
+    }
+}
+
+.climate-dropdown-item:hover:not(:disabled) {
+    background-color: var(--climate-color-control-hover);
+}
+
+.climate-dropdown-item:focus-visible {
+    outline: 2px solid var(--climate-color-control-text);
+    outline-offset: -2px;
+}
+
+.climate-dropdown-item:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.climate-dropdown-header {
+    padding: 0.5rem 1rem;
+    color: var(--climate-color-muted-text);
+    font-size: 0.875rem;
+    white-space: nowrap;
+}
+
+.climate-dropdown-divider {
+    margin: 0.25rem 0;
+    border: 0;
+    border-top: 1px solid rgb(0 0 0 / 15%);
+    opacity: 1;
 }
 
 .climate-link-button {

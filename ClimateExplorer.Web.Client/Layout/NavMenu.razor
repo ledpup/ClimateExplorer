@@ -44,28 +44,25 @@
                     <NotificationBell />
                 </BarItem>
                 <BarItem Class="mobile-menu-nav-item">
-                    <Dropdown>
-                        <DropdownToggle Class="@("hamburger-toggle" + (IsHamburgerCurrentPage() ? " nav-current" : string.Empty))" aria-label="More navigation options">
-                            <i class="fas fa-bars" aria-hidden="true"></i>
-                        </DropdownToggle>
-                        <DropdownMenu>
+                    <DropdownButton Icon="fas fa-bars" AriaLabel="More navigation options" Class="@HamburgerClass" AlignEnd="true">
+                        <MenuContent>
                             @foreach (var item in VisibleSecondaryItems)
                             {
                                 if (item.OpensSiteOverview)
                                 {
-                                    <button class="dropdown-item info-menu-item" aria-label="Site overview" @onclick="() => SiteOverviewService!.RequestShow()">
-                                        <i class="fas fa-circle-info"></i> @item.Text
-                                    </button>
+                                    <ClimateExplorer.Web.Client.Components.Common.DropdownItem Class="info-menu-item" aria-label="Site overview" OnClick="() => SiteOverviewService!.RequestShow()">
+                                        <i class="fas fa-circle-info" aria-hidden="true"></i> @item.Text
+                                    </ClimateExplorer.Web.Client.Components.Common.DropdownItem>
                                 }
                                 else
                                 {
-                                    <a class="@("dropdown-item" + (IsCurrentPage(item.Route!) ? " hamburger-current" : string.Empty))" href="@item.Route">@item.Text</a>
+                                    <a class="@("climate-dropdown-item" + (IsCurrentPage(item.Route!) ? " hamburger-current" : string.Empty))" href="@item.Route">@item.Text</a>
                                 }
                             }
-                            <DropdownDivider />
+                            <hr class="climate-dropdown-divider" />
                             <UnitSwitch Class="unit-switch-menu-item" />
-                        </DropdownMenu>
-                    </Dropdown>
+                        </MenuContent>
+                    </DropdownButton>
                 </BarItem>
             </BarStart>
             <BarEnd>
@@ -73,14 +70,11 @@
                     <UnitSwitch />
                 </BarItem>
                 <BarItem Class="options-nav-item">
-                    <Dropdown>
-                        <DropdownToggle Class="options-toggle" aria-label="Options">
-                            <i class="fas fa-cog" aria-hidden="true"></i>
-                        </DropdownToggle>
-                        <DropdownMenu>
+                    <DropdownButton Icon="fas fa-cog" AriaLabel="Options" Class="options-toggle" AlignEnd="true">
+                        <MenuContent>
                             <UnitSwitch Class="unit-switch-menu-item" />
-                        </DropdownMenu>
-                    </Dropdown>
+                        </MenuContent>
+                    </DropdownButton>
                 </BarItem>
                 <BarItem Class="co2-nav-item">
                     <Co2NavTile OnClick="ShowCo2PanelAsync" />

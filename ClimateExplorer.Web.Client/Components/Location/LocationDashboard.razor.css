@@ -33,11 +33,6 @@
     gap: 16px;
 }
 
-.dropdown-wrapper ::deep .dropdown {
-    display: inline-flex;
-    align-items: center;
-}
-
 .dropdown-wrapper ::deep .climate-dropdown-toggle {
     justify-content: center;
     min-height: 40px;
@@ -45,21 +40,16 @@
     line-height: 1;
 }
 
-.dropdown-wrapper ::deep .dropdown-menu {
-    z-index: 30;
-}
-
-/* Match the .climate-checkbox geometry (0.8rem box, 0.4rem gap) so the icon sits under the checkbox */
-.dropdown-menu-content ::deep .dropdown-item {
-    display: flex;
-    align-items: center;
+/* Match the menu-row checkbox above it: 44px rows, and the .climate-checkbox geometry (0.8rem box, 0.4rem gap)
+   so the icon sits under the checkbox */
+.dashboard-options-menu ::deep .climate-dropdown-item {
     min-height: 44px;
+    gap: 0.4rem;
 }
 
-.dropdown-menu-content ::deep .dropdown-item-icon {
+.dashboard-options-icon {
     display: inline-block;
     width: 0.8rem;
-    margin-right: 0.4rem;
     text-align: center;
 }
 

@@ -53,15 +53,8 @@
     gap: 16px;
 }
 
-::deep .chart-controls .dropdown {
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
+::deep .chart-controls .climate-dropdown {
     vertical-align: baseline;
-}
-
-::deep .chart-controls .dropdown .climate-dropdown-toggle {
-    margin: 0;
 }
 
 .chart-controls .chart-control {

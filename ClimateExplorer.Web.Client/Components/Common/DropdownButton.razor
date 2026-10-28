@@ -1,7 +1,7 @@
-@using Blazorise
-
-<Dropdown>
-    <DropdownToggle Class="@CssClass" aria-label="@EffectiveAriaLabel" @attributes="AdditionalAttributes">
+<div class="climate-dropdown">
+    <button type="button" class="@CssClass" @ref="toggle"
+            popovertarget="@(IsInteractive ? menuId : null)" disabled="@(!IsInteractive)"
+            aria-label="@EffectiveAriaLabel" @attributes="AdditionalAttributes">
         @if (!string.IsNullOrWhiteSpace(Icon))
         {
             <i class="@Icon" aria-hidden="true"></i>
@@ -14,8 +14,10 @@
         {
             @Text
         }
-    </DropdownToggle>
-    <DropdownMenu>
-        @MenuContent
-    </DropdownMenu>
-</Dropdown>
+    </button>
+    <div id="@menuId" popover="auto" class="climate-dropdown-menu" data-align="@(AlignEnd ? "end" : null)" @ref="menu">
+        <CascadingValue Value="this" IsFixed="true">
+            @MenuContent
+        </CascadingValue>
+    </div>
+</div>
