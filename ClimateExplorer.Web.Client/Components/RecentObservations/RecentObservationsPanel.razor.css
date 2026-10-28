@@ -145,8 +145,22 @@
     width: 1.9375rem;
 }
 
-.recent-observations-config-field .form-text,
-.recent-observations-config-field .invalid-feedback {
+/* Border, radius, colours, hover, focus and the touch sizing come from .climate-control in app.css */
+.recent-observations-input {
+    padding: 0.25rem 0.5rem;
+}
+
+.recent-observations-input::placeholder {
+    color: var(--climate-color-muted-text);
+}
+
+.recent-observations-input--invalid {
+    border-color: var(--climate-color-danger);
+}
+
+.recent-observations-reference-date-error {
+    margin-top: 0.25rem;
+    color: var(--climate-color-danger);
     font-size: 0.8rem;
     line-height: 1.25;
 }

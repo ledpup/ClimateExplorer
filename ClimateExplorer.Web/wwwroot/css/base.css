@@ -1,6 +1,5 @@
-/* Base element styles: the subset of Bootstrap 5.3.3's reboot the site depends on, with the same values.
-   Loaded after Bootstrap so the eventual Bootstrap removal changes nothing.
-   Heading sizes/weights and the font stack live in app.css. */
+/* Base element styles: the subset of Bootstrap 5.3.3's reboot the site depends on, with the same values
+   (Bootstrap itself is no longer loaded). Heading sizes/weights and the font stack live in app.css. */
 
 *, *::before, *::after {
     box-sizing: border-box;

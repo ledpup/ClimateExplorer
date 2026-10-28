@@ -158,11 +158,11 @@
                                         <label for="@ReferenceDateInputId">View as of</label>
                                         <input id="@ReferenceDateInputId"
                                             type="text"
-                                            class="form-control form-control-sm @ReferenceDateInputValidationClass"
+                                            class="climate-control recent-observations-input @ReferenceDateInputValidationClass"
                                             placeholder="YYYY-MM-DD"
                                             value="@referenceDateInputValue"
-                                            aria-describedby="@ReferenceDateHelpId"
-                                            aria-invalid="@(!string.IsNullOrWhiteSpace(referenceDateValidationMessage))"
+                                            aria-describedby="@(HasReferenceDateError ? ReferenceDateErrorId : null)"
+                                            aria-invalid="@(HasReferenceDateError ? "true" : null)"
                                             @oninput="OnReferenceDateInput"
                                             @onchange="OnReferenceDateChanged" />
                                         <ClimateButton Icon="fas fa-rotate-left"
@@ -173,9 +173,9 @@
                                                         OnClick="ResetReferenceDate" />
                                     </div>
                                 </DelayedTooltip>
-                                @if (!string.IsNullOrWhiteSpace(referenceDateValidationMessage))
+                                @if (HasReferenceDateError)
                                 {
-                                    <div class="invalid-feedback d-block">@referenceDateValidationMessage</div>
+                                    <div id="@ReferenceDateErrorId" class="recent-observations-reference-date-error">@referenceDateValidationMessage</div>
                                 }
                                 @if (!string.IsNullOrWhiteSpace(CurrentState.Result.ReferenceDateNote))
                                 {
@@ -203,7 +203,7 @@
                                     <label for="recent-observations-completeness-threshold">Completeness threshold %</label>
                                     <input id="recent-observations-completeness-threshold"
                                         type="number"
-                                        class="form-control form-control-sm"
+                                        class="climate-control recent-observations-input"
                                         min="@RecentObservationCompletenessThreshold.MinimumPercentage"
                                         max="@RecentObservationCompletenessThreshold.MaximumPercentage"
                                         step="1"

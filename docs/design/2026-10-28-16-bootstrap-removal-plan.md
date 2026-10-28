@@ -1,8 +1,7 @@
 # Bootstrap Removal
 
 - **Date:** 2026-10-28
-- **Status:** Steps 1–2 implemented 2026-10-28 (see addendum). Build and unit tests are clean; the UI is
-  unverified. Steps 3–4 wait for overall step 17.
+- **Status:** Implemented 2026-10-28 (see addenda). Build and unit tests are clean; the UI is unverified.
 - **Author:** Claude
 - **Scope:** `ClimateExplorer.Web/App.razor`, `ClimateExplorer.Web/wwwroot/css/` (new `base.css`,
   `utilities.css`; `app.css`), remaining Bootstrap class references in Razor/CSS
@@ -218,3 +217,45 @@ Risk: low per step. The main risk (reboot drift) is surfaced early by step 2.
 
 - Steps 3–4 (cleanup and removing the Bootstrap CSS) stay with overall step 17.
 - Optional: point `.text-muted` at `--climate-color-muted-text`, or replace its two uses with scoped CSS.
+
+## Addendum — implementation notes (steps 3–4, 2026-10-28)
+
+### What shipped
+
+- **Step 4.** The Bootstrap `<link>` and the `cdn.jsdelivr.net` preconnect are gone from `App.razor`. Nothing else
+  used jsdelivr. The unpkg preconnect stays for Leaflet, and its comment now says so. The load-order comment now
+  describes `base.css` → `utilities.css` → `app.css`. `blazorise.css` and `blazorise.bootstrap5.css` stay for
+  [17](2026-10-28-17-blazorise-package-removal-and-renames-plan.md).
+- **Step 3.** The grep found no Blazorise components left, and none of the selectors the plan listed for `app.css`
+  except `.btn-primary` and the `.btn-link` half of `a, .btn-link`, which are removed. `.navbar`, `.modal-open` and
+  the Tippy block had already gone with plans 14, 06 and 04. Markup that still relied on Bootstrap classes:
+  - **Four raw `<input>`s with `form-control form-control-sm`** (aggregation threshold, Locations search, Recent
+    observations reference date and completeness threshold). They now use `climate-control` plus a scoped class for
+    padding (and `width: 100%` where Bootstrap's block width mattered). They stay raw inputs rather than `TextInput`
+    because they're numeric or update per keystroke, and `TextInput` is text-only and fires on change.
+  - **Reference date validation.** `is-invalid` → `recent-observations-input--invalid` (danger border), and
+    `invalid-feedback d-block` → `recent-observations-reference-date-error`, matching `TextInput`'s error look.
+    Two accessibility fixes came with it: `aria-describedby` pointed at a `-help` id that no element had, and now
+    points at the error message only while it shows; `aria-invalid` rendered as an empty attribute (which means
+    false) and now renders `"true"`, as in `TextInput`.
+  - **`btn-close`** on the Recent observations tile is now a plain button with `fa-xmark`, 24px with a mouse and 44px
+    on touch. The old `transform: scale(0.72)` made its target about 22px, below WCAG 2.5.8.
+  - **`dropdown-toggle`** on the aggregation button (dropdown plan follow-up) is replaced by the same caret,
+    drawn in `AggregationOptions.razor.css`.
+- `base.css`'s header and `.github/copilot-instructions.md`'s load-order note no longer refer to Bootstrap as loaded.
+
+### Deviations from the plan
+
+- No `a:hover` rule was added to replace Bootstrap's. `app.css`'s `a { color: … }` already overrode the property
+  Bootstrap's hover changed through `--bs-link-color-rgb`, so links never changed colour on hover before either.
+- `CONTEXT.md` still lists "Blazorise (Bootstrap 5)" in the stack. The `Blazorise.Bootstrap5` package is still
+  referenced until 17, which updates that line.
+
+### Verification
+
+- `dotnet build` of `ClimateExplorer.Web` is clean.
+- `ClimateExplorer.UnitTests`: 980 passed, 0 failed.
+- A grep of Razor, C#, CSS and the UI tests finds no `form-control`, `is-invalid`, `invalid-feedback`, `btn-*` or
+  `dropdown-toggle` outside our own `form-control-wrap`, and no jsdelivr references.
+- Manual checks for the developer: the step 4 page comparison (see "Manual checks" above), plus the four inputs,
+  the reference-date error, the tile remove button and the aggregation caret.

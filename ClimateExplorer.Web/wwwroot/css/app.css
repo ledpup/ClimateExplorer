@@ -42,14 +42,8 @@ h4 { font-size: 1rem; }
 h5 { font-size: 0.9rem; }
 h6 { font-size: 0.85rem; }
 
-a, .btn-link {
+a {
     color: var(--climate-color-link);
-}
-
-.btn-primary {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
 }
 
 .content {

@@ -2,7 +2,9 @@
 
 @if (IsRemovable)
 {
-    <button type="button" class="btn-close recent-observation-remove" aria-label="@RemoveButtonLabel" @onclick="OnRemove"></button>
+    <button type="button" class="recent-observation-remove" aria-label="@RemoveButtonLabel" @onclick="OnRemove">
+        <i class="fas fa-xmark" aria-hidden="true"></i>
+    </button>
 }
 
 <div class="recent-observation-period">@Tile.PeriodTitle</div>

@@ -199,7 +199,7 @@ builds, passes the unit tests and can ship on its own. The site keeps working be
 | 14 | [06 Modal](2026-10-28-06-modal-plan.md) | — (after 13 recommended: tooltips/menus inside modals can then be checked together) | | 2026-10-28 |
 | 15 | [13 Autocomplete](2026-10-28-13-autocomplete-plan.md) | step 14 recommended (same file; enables the `autofocus` simplification), step 12 if the list needs the popover fallback | | 2026-10-28 |
 | 16 | [14 Layout and navbar](2026-10-28-14-layout-navbar-plan.md) | step 13 (NavMenu's dropdowns must already be `DropdownButton`) | | 2026-10-28 |
-| 17 | [16 Bootstrap removal](2026-10-28-16-bootstrap-removal-plan.md), steps 3–4 (cleanup, remove CSS) | steps 3–16 | Only once nothing renders Bootstrap markup | — |
+| 17 | [16 Bootstrap removal](2026-10-28-16-bootstrap-removal-plan.md), steps 3–4 (cleanup, remove CSS) | steps 3–16 | Only once nothing renders Bootstrap markup | 2026-10-28 |
 | 18 | [17 Package removal and renames](2026-10-28-17-blazorise-package-removal-and-renames-plan.md) | all previous steps | Packages can't go while anything references them. Renames can't happen while the Blazorise namespace is imported. | — |
 
 Flexibility: steps 4–11 have no dependencies on each other (apart from 9 → 10). They can be
