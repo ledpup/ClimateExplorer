@@ -120,7 +120,7 @@ public partial class ChartTests : TestBase
         await LoadHobartCanonicalChartAsync();
 
         await OpenChangeLocationModalAsync();
-        await page.Locator(".modal-body .table-card a").First.ClickAsync();
+        await page.Locator(".modal-body .table-card button.climate-link-button").First.ClickAsync();
 
         await Assertions.Expect(page.Locator("span.title")).Not.ToContainTextAsync("Hobart");
         var locationName = await GetDashboardLocationNameAsync();

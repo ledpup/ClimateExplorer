@@ -14,21 +14,21 @@
                 <CloseButton />
             </ModalHeader>
             <ModalBody>           
-                <Div Class="mt-1 d-flex gap-4">
+                <div class="mt-1 d-flex gap-4">
                     <ClimateButton Text="Near me" Icon="fas fa-location-crosshairs" OnClick="NearMeClicked" />
                     <ClimateButton Text="Random location" Icon="fas fa-shuffle" OnClick="RandomLocationClicked" />
-                </Div>
+                </div>
 
                 @if (BrowserLocationErrorMessage != null)
                 {
-                    <Div class="error-message">
+                    <div class="error-message">
                         @BrowserLocationErrorMessage
-                    </Div>
+                    </div>
                 }
             
                 @if (LocationDictionary is not null)
                 {
-                    <Field Class="mt-3">
+                    <div class="mt-3 mb-3">
                         <Autocomplete TItem="Location"
                             TValue="Guid"
                             @ref="locationAutocomplete"
@@ -42,7 +42,7 @@
                             SelectedValueChanged="@FireOnLocationChange"
                             MaxMenuHeight="350px"
                             @bind-SelectedText="@selectedText" />
-                    </Field>
+                    </div>
 
                     <div class="table-card">
                         <div class="table-header">
@@ -67,11 +67,10 @@
                                             var location = LocationDictionary[row.LocationId];
                                             <TableRow>
                                                 <TableRowCell>
-                                                    <Blazorise.Link Title="@location.FullTitle"
-                                                    To="#"
-                                                    Clicked="@(() => FireOnLocationChange(row.LocationId))">
-                                                        @location.Name
-                                                    </Blazorise.Link>
+                                                    <ClimateButton Variant="ButtonVariant.Link"
+                                                                   Text="@location.Name"
+                                                                   title="@location.FullTitle"
+                                                                   OnClick="@(() => FireOnLocationChange(row.LocationId))" />
                                                 </TableRowCell>
                                                 <TableRowCell>@location.Country</TableRowCell>
                                                 <TableRowCell>@(row.Distance) km</TableRowCell>
@@ -99,7 +98,7 @@
                         @if (NearbyLocations is not null)
                         {
                             <div class="table-footer">
-                                <PaginationControl TotalPages="@TotalPages" CurrentPage="@CurrentPage" PageChanged="@OnNearbyLocationsPageChanged" />
+                                <PaginationControl TotalPages="@TotalPages" CurrentPage="@CurrentPage" PageChanged="@OnNearbyLocationsPageChanged" AriaLabel="Nearby locations pages" />
                             </div>
                         }
                     </div>

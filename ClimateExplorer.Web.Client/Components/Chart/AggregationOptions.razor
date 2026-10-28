@@ -48,9 +48,9 @@
                     </DelayedTooltip>
                     <div class="form-row form-row-actions">
                         <DelayedTooltip Text="Reset aggregation options to their defaults">
-                            <Button Color="Color.Primary" Size="Size.Small" Clicked="@ResetThreshold" Disabled="@(!HaveOptionsChanged)">Reset</Button>
+                            <ClimateButton Compact Text="Reset" Disabled="@(!HaveOptionsChanged)" OnClick="ResetThreshold" />
                         </DelayedTooltip>
-                        <i class="fas fa-circle-info info-icon" @onclick="ShowAggregationOptionsInfo"></i>
+                        <ClimateButton Variant="ButtonVariant.Link" Icon="fas fa-circle-info" AriaLabel="About aggregation options" Class="info-icon" OnClick="ShowAggregationOptionsInfo" />
                     </div>
                 </div>
             </div>

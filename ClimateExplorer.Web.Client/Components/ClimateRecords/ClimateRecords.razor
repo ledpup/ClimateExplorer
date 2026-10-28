@@ -191,7 +191,8 @@
                         <div class="d-flex flex-wrap align-items-center justify-content-center gap-4">
                             <PaginationControl TotalPages="@TotalPages"
                             CurrentPage="@CurrentPage"
-                            PageChanged="@OnPageChanged" />
+                            PageChanged="@OnPageChanged"
+                            AriaLabel="Climate records pages" />
                             <div class="d-flex align-items-center gap-1">
                                 <DelayedTooltip Text="Number of records per page">
                                     <Select TValue="int"

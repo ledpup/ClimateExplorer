@@ -1,7 +1,7 @@
 # Pagination — Native `PaginationControl` Internals
 
 - **Date:** 2026-10-28
-- **Status:** Proposed
+- **Status:** Implemented 2026-10-28 (see addendum). Build and unit tests are clean; the UI is unverified.
 - **Author:** Claude
 - **Scope:** `Components/Common/PaginationControl.razor`, `.razor.cs`, `.razor.css`; `ClimateExplorer.UnitTests`
 - **Builds on:** [Blazorise Removal — Overview](2026-10-28-01-blazorise-removal-overview-plan.md)
@@ -102,3 +102,42 @@ logic becomes static and gets unit tests.
 | **Total** | **1 file, +80** | **3 files, ~70** | — |
 
 Risk: low.
+
+## Addendum — implementation notes
+
+### What shipped
+
+- `PaginationControl.razor` renders the planned `<nav class="climate-pagination">` / `<ul>` / `<button>`
+  markup, with `aria-current="page"`, an `aria-label` of "Page N" on each button, and `&hellip;` gaps
+  marked `aria-hidden`. The `@using Blazorise` is gone.
+- New parameters: `AriaLabel` (default "Pagination") and `Class`. Clicking the current page doesn't
+  raise `PageChanged`.
+- `GetVisiblePages(int totalPages, int currentPage, int maxPages)` is `public static`. The windowing
+  logic is unchanged, and the instance overload passes 9 or 15.
+- Scoped CSS as planned: 44px boxes, a 0.25rem gap, `flex-wrap`, the `--climate-*` control tokens, a
+  `#cdd8d6` border (kept from the old `.page-link` override), and the current page in solid `#425f59`.
+  Below 768px, `min-width` drops to 36px and the height stays 44px.
+- `PaginationControlTests.cs` has the five planned tests, plus `GetVisiblePages_NoPages_ReturnsEmpty`.
+  The `NeverExceedsMaxPages` test checks every total from 1 to 60 and every current page, for both 9
+  and 15 slots. For each case it also checks that the first, last and current pages are present and in
+  ascending order.
+
+### Deviations from the plan
+
+- **Consumers do change a little.** Each of the three passes its own `AriaLabel` ("Nearby locations
+  pages", "Climate records pages", "Locations pages"), so the landmarks have different names.
+- **`totalPages <= 0` returns an empty list.** Before, a negative count would have thrown in
+  `Enumerable.Range`.
+- **The `.page-link` / `.page-item` rules were removed from `table.css`.** Nothing renders those classes
+  any more. Plan 16 expects each family to remove its own overrides.
+
+### Visible changes to expect
+
+- Page buttons are 44px high instead of 31px, which makes the table footers taller. They are now separate
+  rounded buttons with a gap, not Bootstrap's joined button group. Hover is `#cfc`.
+
+### Verification
+
+- `dotnet build`: 0 errors, 0 warnings (separate artifacts path, as in plan 15).
+- `ClimateExplorer.UnitTests`: 945 passed, 0 failed (939 before, plus 6 new).
+- The manual checks above are still to do, mainly wrapping on a 375px screen in the change-location modal.

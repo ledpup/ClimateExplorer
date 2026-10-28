@@ -1,7 +1,7 @@
 # Simple Markup Replacements — `Accordion`, `Div`, `Field`, `Link`, `Button`
 
 - **Date:** 2026-10-28
-- **Status:** Proposed
+- **Status:** Implemented 2026-10-28 (see addendum). Build and unit tests are clean; the UI is unverified.
 - **Author:** Claude
 - **Scope:** `Pages/About.razor`, `Components/Location/ChangeLocation.razor`, `Components/Chart/AggregationOptions.razor`
   (+ scoped CSS), `ClimateExplorer.Web.UiTests/ChartTests.cs`
@@ -71,3 +71,38 @@ becomes a labelled `nav`, and the clickable info icon gets an accessible name.
 | **Total** | — | **5 files, ~27** | — |
 
 Risk: low.
+
+## Addendum — implementation notes
+
+### What shipped
+
+- **About.** `<Accordion>` is now `<nav class="toc-nav" aria-label="About this site contents">`. No CSS
+  targeted `.accordion`. `@using Blazorise` stays because the pipeline `Modal` still needs it.
+- **ChangeLocation.** Both `Div`s are plain `div`s. The nearby-location `Blazorise.Link` is a
+  `ClimateButton Variant="ButtonVariant.Link"` with `title="@location.FullTitle"` passed through.
+  `climate-link-button` has `padding: 0` and no min-height, so no table-cell override was needed.
+- **AggregationOptions.** Reset is `<ClimateButton Compact Text="Reset" … />`. The info icon is a
+  link-variant `ClimateButton` with `AriaLabel="About aggregation options"` and `Class="info-icon"`. The
+  existing `::deep .info-icon` rule (colour `#79c6f4`, `font-size: larger`) still applies and outranks
+  the link colour.
+- **UI test.** `ChartTests.cs` now clicks `.modal-body .table-card button.climate-link-button`. Plan 06
+  still has to rename `.modal-body` to `.climate-modal-body` when it lands.
+
+### Deviations from the plan
+
+- **`Field` became `<div class="mt-3 mb-3">`, not `<div class="mt-3">`.** Blazorise's `Field` renders
+  `mb-3`, so keeping it leaves the gap above the nearby-locations table unchanged. Plan 13 can
+  fold the wrapper into `Autocomplete` later.
+- `.btn-primary` stays in `app.css`. Nothing renders it now, and plan 16 removes it as planned.
+
+### Visible changes to expect
+
+- Reset is now `ClimateButton`-styled: control background, green text, `#cfc` hover, and 44px high instead of
+  Bootstrap's ~31px `btn-sm`.
+
+### Verification
+
+- `dotnet build` of `ClimateExplorer.Web`: 0 errors, 0 warnings. A running instance had the local `bin`
+  locked, so the build went to a separate artifacts path.
+- `ClimateExplorer.UnitTests`: 945 passed, 0 failed.
+- The manual checks above are still to do.

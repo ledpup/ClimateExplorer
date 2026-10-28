@@ -72,27 +72,3 @@ table.table tbody tr:last-child td {
     border-top: 1px solid #c4d4d1;
 }
 
-/* ── Pagination ──────────────────────────────────────────────────────────── */
-.page-link {
-    color: #425f59;
-    border-color: #cdd8d6;
-    padding: 0.1rem 0.45rem;
-    height: 31px;
-}
-
-.page-link:hover {
-    color: #2a3d39;
-    background-color: #e8efee;
-    border-color: #b5c9c6;
-}
-
-.page-item.active .page-link {
-    background-color: #425f59;
-    border-color: #425f59;
-    color: #fff;
-}
-
-.page-item.disabled .page-link {
-    color: #adb5bd;
-    border-color: #dee2e0;
-}

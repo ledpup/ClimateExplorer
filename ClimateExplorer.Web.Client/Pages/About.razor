@@ -15,7 +15,7 @@
     <h3>Contents</h3>
     @if (tocItems.Any())
     {
-        <Accordion>
+        <nav class="toc-nav" aria-label="About this site contents">
             @foreach (var group in tocItems.GroupBy(x => x.ParentSection))
             {
                 <div class="toc-items">
@@ -25,7 +25,7 @@
                     }
                 </div>
             }
-        </Accordion>
+        </nav>
     }
 </div>
 

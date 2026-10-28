@@ -153,7 +153,8 @@
                         <div class="d-flex flex-wrap align-items-center justify-content-center gap-4">
                             <PaginationControl TotalPages="@totalPages"
                                                CurrentPage="@currentPage"
-                                               PageChanged="@OnPageChanged" />
+                                               PageChanged="@OnPageChanged"
+                                               AriaLabel="Locations pages" />
                             <div class="d-flex align-items-center gap-1">
                                 <Select TValue="int"
                                         Value="@pageSize"
