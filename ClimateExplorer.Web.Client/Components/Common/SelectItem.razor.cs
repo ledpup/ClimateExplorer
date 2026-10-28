@@ -28,6 +28,15 @@ public partial class SelectItem<TValue> : IDisposable
 
     protected override void OnParametersSet()
     {
+        // Razor infers TValue from Value before the cascaded type, so <SelectItem Value="7"> inside a Select<short> is
+        // a SelectItem<int> that never registers, and choosing it is silently ignored
+        if (Parent is null)
+        {
+            throw new InvalidOperationException(
+                $"{nameof(SelectItem<TValue>)}<{typeof(TValue).Name}> must be inside a {nameof(Select<TValue>)}<{typeof(TValue).Name}>. " +
+                $"If the Select has a different TValue, set TValue on the item.");
+        }
+
         // In a @foreach, Blazor may reuse this item for a different value, so re-register when it changes
         if (registered && EqualityComparer<TValue>.Default.Equals(registeredValue, Value))
         {
@@ -36,9 +45,9 @@ public partial class SelectItem<TValue> : IDisposable
 
         Unregister();
 
-        key = Parent?.Register(Value) ?? SelectValueMap<TValue>.KeyFor(Value);
+        key = Parent.Register(Value);
         registeredValue = Value;
-        registered = Parent is not null;
+        registered = true;
     }
 
     private void Unregister()

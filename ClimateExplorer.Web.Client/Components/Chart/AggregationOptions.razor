@@ -20,11 +20,11 @@
                             <label class="form-label" for="@GroupingDaysId">Grouping days</label>
                             <span class="form-control-wrap">
                                 <Select TValue="short" Id="@GroupingDaysId" Value="@currentGroupingDays" ValueChanged="@OnSelectedGroupingDaysChanged">
-                                    <SelectItem Value="182">@AggregationSettings.GroupingDaysText(182)</SelectItem>
-                                    <SelectItem Value="91">@AggregationSettings.GroupingDaysText(91)</SelectItem>
-                                    <SelectItem Value="28">@AggregationSettings.GroupingDaysText(28)</SelectItem>
-                                    <SelectItem Value="14">@AggregationSettings.GroupingDaysText(14)</SelectItem>
-                                    <SelectItem Value="7">@AggregationSettings.GroupingDaysText(7)</SelectItem>
+                                    <SelectItem TValue="short" Value="182">@AggregationSettings.GroupingDaysText(182)</SelectItem>
+                                    <SelectItem TValue="short" Value="91">@AggregationSettings.GroupingDaysText(91)</SelectItem>
+                                    <SelectItem TValue="short" Value="28">@AggregationSettings.GroupingDaysText(28)</SelectItem>
+                                    <SelectItem TValue="short" Value="14">@AggregationSettings.GroupingDaysText(14)</SelectItem>
+                                    <SelectItem TValue="short" Value="7">@AggregationSettings.GroupingDaysText(7)</SelectItem>
                                 </Select>
                             </span>
                         </div>
