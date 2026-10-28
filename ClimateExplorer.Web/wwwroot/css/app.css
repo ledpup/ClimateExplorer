@@ -19,14 +19,6 @@
     --climate-space-control-padding: 8px;
     --climate-space-control-gap: 0.5rem;
     --climate-transition-control: background-color 0.25s, color 0.25s, border-color 0.25s;
-
-    /* Blazorise uses Tippy.js -- override via CSS custom properties.
-       Colours taken from the original SuggestedChartsMini custom tooltip. */
-    --b-tooltip-background-color-r: 255;
-    --b-tooltip-background-color-g: 255;
-    --b-tooltip-background-color-b: 255;
-    --b-tooltip-background-opacity: 1;
-    --b-tooltip-color: var(--climate-color-control-text);
 }
 
 .custom-modal-header {
@@ -309,8 +301,48 @@ a, .btn-link {
     background-color: var(--climate-color-control-hover);
 }
 
-.tippy-box[data-theme~=blazorise] {
+/* The shared tooltip shown by js/tooltip.js for DelayedTooltip. A top-layer popover outside every
+   component, so it's styled here. js/floating.js sets its position. */
+.climate-tooltip {
+    /* Reset the UA popover styles (centred in the viewport, with padding and a border) */
+    margin: 0;
+    inset: auto;
+    overflow: visible;
+    border: 1px solid var(--climate-color-control-border);
+    border-radius: var(--climate-radius-control);
+    padding: 0.375rem 0.625rem;
+    background: var(--climate-color-surface);
+    color: var(--climate-color-control-text);
+    font-size: 0.875rem;
+    line-height: 1.35;
+    text-align: left;
     box-shadow: var(--climate-shadow-panel);
+    max-width: calc(100vw - 16px);
+    pointer-events: none;
+}
+
+.climate-tooltip.is-multiline {
+    max-width: 15rem;
+}
+
+.climate-tooltip p {
+    margin: 0 0 0.5rem;
+}
+
+.climate-tooltip p:last-child {
+    margin-bottom: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .climate-tooltip:popover-open {
+        transition: opacity 0.15s;
+    }
+
+    @starting-style {
+        .climate-tooltip:popover-open {
+            opacity: 0;
+        }
+    }
 }
 
 /* Trend statistics breakdown. Global rather than component-scoped because the same markup

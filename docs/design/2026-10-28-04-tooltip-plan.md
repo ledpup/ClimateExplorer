@@ -1,7 +1,7 @@
 # Tooltip — Native `DelayedTooltip` and Shared Positioning Module
 
 - **Date:** 2026-10-28
-- **Status:** Proposed
+- **Status:** Implemented 2026-10-28 (see addendum)
 - **Author:** Claude
 - **Scope:** `Components/Common/DelayedTooltip.razor` (rewritten, gains `.razor.cs`/`.razor.css`), new
   `TooltipPlacement.cs`, new `ClimateExplorer.Web.Client/wwwroot/js/floating.js` and `tooltip.js`,
@@ -193,3 +193,45 @@ location dashboard, and replaces the misleading `aria-label` with `aria-describe
 | **Total** | **5 files, +250** | **6 files, ~81** | **~12 lines** |
 
 Risk: medium. It changes the hover behaviour on every page. The API is unchanged, so call sites don't move.
+
+## Addendum — implementation notes
+
+Shipped as planned, with these deviations:
+
+- **Tooltip text is HTML, not plain text.** The plan said to set `textContent`. But Tippy ran with
+  `allowHTML: true`, and many tooltips depend on it: `<br>` (`YearlyValuesHelper`, `AggregationOptions`,
+  `Locations`, `LocationDashboard`), `<p>`/`<b>` (`Co2NavTile`, the recent-observations trend tooltips,
+  the adjusted-data checkboxes), and a `<table>` with inline styles (`LocationTrendFieldBuilder`).
+  `tooltip.js` therefore parses the text into an inert `<template>` and sanitises it before inserting it.
+  It keeps an allow-list of tags (`p`, `br`, `b`, `strong`, `i`, `em`, `span`, `div`, lists, table
+  parts) and drops every attribute except `style`. Any other element is replaced by its text, and
+  comments are removed.
+- **No `white-space: nowrap` for single-line tooltips.** Tippy didn't apply it, and several
+  non-multiline texts are long sentences. The popover is `fit-content`, capped at
+  `calc(100vw - 16px)`, so short text stays on one line and long text wraps instead of overflowing.
+  `.climate-tooltip p` gets a 0.5rem bottom margin (none on the last paragraph). Previously Bootstrap's
+  1rem margin applied.
+- **`ClimateStripe` keeps `@using Blazorise`.** It still uses `Modal`, so it names the enum as
+  `Common.TooltipPlacement.Bottom` to avoid the clash with `Blazorise.TooltipPlacement`.
+  `ExtremeYears` drops the using.
+- **`aria-describedby` is skipped when the focused control's `aria-label` equals the tooltip text**,
+  which is common for icon buttons. Otherwise a screen reader would read the name twice. The audit
+  found no control relying on the old wrapper `aria-label` for its name.
+- **Escape and pointer-down** keep the tooltip hidden until the pointer leaves that anchor. This
+  replaces the old 700 ms suppression, and moving between children of the same anchor doesn't
+  re-show it.
+- `floating.js`'s `place` measures the element at the top-left before positioning it, so the
+  viewport's right edge doesn't shrink its `fit-content` width. `autoUpdate` is unused for now and
+  is ready for Dropdown/Autocomplete.
+
+### Files
+
+- New: `wwwroot/js/floating.js`, `wwwroot/js/tooltip.js`, `DelayedTooltip.razor.cs`,
+  `DelayedTooltip.razor.css`, `TooltipPlacement.cs`.
+- Changed: `DelayedTooltip.razor`, `ClimateStripe.razor`, `ExtremeYears.razor` (+ `.razor.css`),
+  `App.razor`, `app.css`.
+
+### Follow-ups
+
+- Run the manual checks above. The JS couldn't be run or syntax-checked here: there's no browser
+  testing, and Node isn't installed.

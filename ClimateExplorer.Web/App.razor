@@ -551,6 +551,10 @@
         }
     </script>
 
+    <!-- Shows the tooltip for every DelayedTooltip, by event delegation. Global so tooltips work before
+         interactivity starts. Modules are deferred. -->
+    <script type="module" src="@Assets["js/tooltip.js"]"></script>
+
     <Routes @rendermode="@InteractiveAuto" />
     <script src="@Assets["_framework/blazor.web.js"]"></script>
 </body>

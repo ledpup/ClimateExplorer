@@ -1,0 +1,10 @@
+/*
+    Left inline or block, the wrapper forms an inline formatting context around its (inline-level)
+    child - e.g. a <button> - and reserves a few pixels below it for the font's descender ("strut").
+    That makes the wrapper taller than the child, throwing off consumers (e.g. PillButton) that
+    position siblings against the wrapped element's real edges. Flex items have no baseline strut,
+    so the wrapper hugs the child. A caller's Style (e.g. "display: block") still overrides this.
+*/
+.tooltip-anchor {
+    display: inline-flex;
+}
