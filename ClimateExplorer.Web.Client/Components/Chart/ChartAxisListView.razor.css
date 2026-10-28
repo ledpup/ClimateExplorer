@@ -1,13 +1,5 @@
-/* display:contents makes the wrapper transparent to layout so the Dropdown
-   continues to sit inline with the other chart controls, while still giving
-   Blazor's CSS isolation a plain HTML element to stamp the scope attribute on. */
-.axes-dropdown-wrapper {
-    display: contents;
-}
-
-.axes-dropdown-wrapper ::deep .axes-menu-content {
+.axes-menu-content {
     min-width: 220px;
     padding: 0;
     white-space: nowrap;
 }
-

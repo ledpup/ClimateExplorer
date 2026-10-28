@@ -1,7 +1,7 @@
 # Blazorise Package Removal and Component Renames
 
 - **Date:** 2026-10-28
-- **Status:** Proposed
+- **Status:** Part A implemented 2026-10-28 (see addendum); Parts B and C proposed. Build and unit tests are clean; the UI is unverified.
 - **Author:** Claude
 - **Scope:** `ClimateExplorer.Web.Client.csproj`, both `Program.cs` files, `ClimateExplorer.Web/App.razor`,
   `app.css`, remaining `@using Blazorise` lines, `ClimateButton`/`ClimateCheckbox`/`DelayedTooltip`
@@ -115,3 +115,34 @@ updated to describe the native components instead of Blazorise.
 | **Total** (with optional rename) | **8 files renamed** | **~54 files, ~281** | **~73 lines + 5 packages** |
 
 Without the optional tooltip rename: ~35 files, ~136 lines changed. Risk: low. It's mechanical, and the build catches misses.
+
+## Addendum — implementation notes (Part A, 2026-10-28)
+
+### What shipped
+
+- **Step 1.** The five `Blazorise*` package references are gone from `ClimateExplorer.Web.Client.csproj`.
+  Neither project's `project.assets.json` mentions Blazorise after restore.
+- **Step 2.** Both `Program.cs` files lost the three `using Blazorise…;` lines and the `.AddBlazorise(…)`,
+  `.AddBootstrap5Providers()`, `.AddFontAwesomeIcons()` calls, product token included. The chain starts at
+  `.AddMapService()`.
+- **Step 3.** The `blazorise.css` and `blazorise.bootstrap5.css` links are gone from `App.razor`. The
+  "Layout-critical CSS" comment above them still applies to `base.css`/`utilities.css`/`app.css`.
+- **Step 4.** No `--b-*` variables or `.b-*`/`.tippy-*` selectors were left. Of the three `display: contents`
+  wrappers:
+  - `ChartAxisListView`'s `axes-dropdown-wrapper` is removed. It only anchored `::deep .axes-menu-content`, and
+    that element is in the component's own markup (the `MenuContent` fragment), so it gets the scope attribute
+    directly. The rule is now plain `.axes-menu-content`.
+  - `AggregationOptions`' `aggregation-options-wrapper` and `Top100`'s `top100-download-dropdown-wrapper` stay.
+    They anchor `::deep` rules that reach into child components' markup (`.climate-select`, `.aggregation-toggle`
+    on `ClimateButton`, `.climate-dropdown-menu`), which is a general CSS-isolation need, not a Blazorise one.
+  - `app.css`'s `.trends-stat-row { display: contents }` is a grid layout rule, unrelated.
+- **Step 5.** The `ChartLogicDatasetTests.cs` comment is left as planned.
+- **Step 6.** `dotnet build -c Release` has 0 errors (the 11 warnings are existing MSTest analyzer warnings in
+  the test project). `ClimateExplorer.UnitTests`: 980 passed.
+
+### Deviations from the plan
+
+- **An extra `@using Blazorise`** was in `SuggestedChartsMini.razor`, so the precondition grep wasn't empty.
+  It was unused and is removed.
+- **Not touched:** `README.md` still credits Blazorise for charting, and `.github/copilot-instructions.md` still
+  has the Blazorise 2.x and CSS-isolation sections. Both are documentation, so they belong with Part C.
