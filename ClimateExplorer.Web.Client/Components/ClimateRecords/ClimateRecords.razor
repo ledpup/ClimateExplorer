@@ -22,7 +22,6 @@
         <Select TValue="DataType"
                 Value="@SelectedDataType.Value"
                 ValueChanged="@OnDataTypeChanged"
-                Compact
                 aria-label="Data type">
             @foreach (var dt in AvailableDataTypes.OrderBy(x => x))
             {
@@ -42,7 +41,6 @@
             <Select TValue="int"
                     Value="@SelectedMonth"
                     ValueChanged="@OnMonthChanged"
-                    Compact
                     aria-label="Month">
                 <SelectItem Value="0">All months</SelectItem>
                 @for (int m = 1; m <= 12; m++)
@@ -58,7 +56,6 @@
                 <Select TValue="int"
                         Value="@SelectedDay"
                         ValueChanged="@OnDayChanged"
-                        Compact
                         aria-label="Day">
                     <SelectItem Value="0">All days</SelectItem>
                     @for (int d = 1; d <= DaysInSelectedMonth; d++)
@@ -200,7 +197,6 @@
                                     <Select TValue="int"
                                     Value="@Count"
                                     ValueChanged="@OnCountChanged"
-                                    Compact
                                     aria-label="Records per page">
                                         <SelectItem Value="10">10</SelectItem>
                                         <SelectItem Value="20">20</SelectItem>

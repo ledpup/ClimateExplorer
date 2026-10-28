@@ -30,7 +30,6 @@
             <span class="form-control-wrap">
                 <Select TValue="TrendRegressionType"
                         Id="@RegressionTypeId"
-                        Compact
                         Value="@Request!.RegressionType"
                         ValueChanged="@OnRegressionTypeChanged">
                     <SelectItem Value="@TrendRegressionType.Linear">Linear</SelectItem>
@@ -48,7 +47,6 @@
                 {
                     <Select TValue="string"
                             Id="@TrendPeriodId"
-                            Compact
                             Value="@UnavailableTrendPeriodValue"
                             Disabled="true">
                         <SelectItem Value="@UnavailableTrendPeriodValue">@UnavailableTrendPeriodValue</SelectItem>
@@ -58,7 +56,6 @@
                 {
                     <Select TValue="TrendWindow"
                             Id="@TrendPeriodId"
-                            Compact
                             Value="@SelectedTrendPeriod"
                             ValueChanged="@OnTrendPeriodChanged">
                         @foreach (var period in SelectableTrendPeriods)
@@ -75,7 +72,6 @@
             <label class="form-label" for="@PredictUntilId">Predict until</label>
             <span class="form-control-wrap">
                 <TextInput Id="@PredictUntilId"
-                           Compact
                            Value="@predictionYearsText"
                            ValueChanged="@OnPredictionYearsChanged"
                            Disabled="@(SelectableTrendPeriods.Count == 0)"

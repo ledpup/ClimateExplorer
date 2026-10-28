@@ -1,17 +1,10 @@
-/* Border, radius, colours, hover, focus and disabled come from .climate-control in app.css */
+/* Border, radius, colours, hover, focus, disabled and the touch sizing come from .climate-control in app.css */
 .climate-text-input-wrap {
     display: block;
 }
 
 .climate-text-input {
-    min-height: 44px;
-    padding: 0.375rem 0.75rem;
-}
-
-.climate-text-input--compact {
-    min-height: 2rem;
     padding: 0.25rem 0.5rem;
-    font-size: 0.875rem;
 }
 
 .climate-text-input::placeholder {

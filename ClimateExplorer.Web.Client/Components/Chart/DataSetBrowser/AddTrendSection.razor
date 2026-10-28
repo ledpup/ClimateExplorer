@@ -12,7 +12,7 @@
             <div class="form-row">
                 <label class="form-label" for="@seriesSelectId">Series</label>
                 <span class="form-control-wrap">
-                    <Select TValue="Guid" Id="@seriesSelectId" Compact Value="@SelectedSeries!.Id" ValueChanged="@OnSeriesSelected" aria-label="Series to add a trend to">
+                    <Select TValue="Guid" Id="@seriesSelectId" Value="@SelectedSeries!.Id" ValueChanged="@OnSeriesSelected" aria-label="Series to add a trend to">
                         @foreach (var series in EligibleSeries)
                         {
                             <SelectItem Value="@series.Id">@series.GetFriendlyTitleShort()</SelectItem>

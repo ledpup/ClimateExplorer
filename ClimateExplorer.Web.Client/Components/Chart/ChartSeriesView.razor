@@ -53,7 +53,6 @@
                                 <span class="form-control-wrap">
                                     <Select TValue="SeriesAggregationOptions"
                                             Id="@AggregationId"
-                                            Compact
                                             Value="@ChartSeries.Aggregation"
                                             ValueChanged="@OnAggregationChanged"
                                             Disabled="@ShouldDisableAggregationOptions(ChartSeries)">
@@ -83,7 +82,6 @@
                                 <span class="form-control-wrap">
                                     <Select TValue="TemporalCalculationOptions"
                                             Id="@TemporalCalculationId"
-                                            Compact
                                             Value="@ChartSeries.TemporalCalculation"
                                             ValueChanged="@OnTemporalCalculationChanged">
                                         <SelectItem Value="TemporalCalculationOptions.None">None</SelectItem>
@@ -99,7 +97,6 @@
                                 <span class="form-control-wrap">
                                     <Select TValue="SeriesSmoothingOptions"
                                             Id="@SmoothingId"
-                                            Compact
                                             Value="@ChartSeries.Smoothing"
                                             ValueChanged="@OnSmoothingChanged">
                                         <SelectItem Value="SeriesSmoothingOptions.None">None</SelectItem>
@@ -115,7 +112,6 @@
                                 <span class="form-control-wrap">
                                     <Select TValue="int"
                                             Id="@SmoothingWindowId"
-                                            Compact
                                             Value="@ChartSeries.SmoothingWindow"
                                             ValueChanged="@OnSmoothingWindowChanged"
                                             Disabled="@ShouldDisableSmoothingWindow(ChartSeries)">
@@ -139,7 +135,6 @@
                                 <span class="form-control-wrap">
                                     <Select TValue="SeriesValueOptions"
                                             Id="@DisplayId"
-                                            Compact
                                             Value="@ChartSeries.Value"
                                             ValueChanged="@OnValueChanged"
                                             Disabled="@ShouldDisableDisplay(ChartSeries)">
@@ -155,7 +150,6 @@
                                 <span class="form-control-wrap">
                                     <Select TValue="SeriesTransformations"
                                             Id="@TransformationId"
-                                            Compact
                                             Value="@ChartSeries.SeriesTransformation"
                                             ValueChanged="@OnTransformationChanged"
                                             Disabled="@ShouldDisableTransformation(ChartSeries)">
@@ -174,7 +168,6 @@
                                     <label class="form-label" for="@CustomTransformationId">Custom expression</label>
                                     <span class="form-control-wrap">
                                         <TextInput Id="@CustomTransformationId"
-                                                   Compact
                                                    Value="@ChartSeries.CustomTransformation"
                                                    ValueChanged="@OnCustomTransformationChanged"
                                                    Placeholder="e.g. x == 0 or x >= 1 AND x < 10"
@@ -190,7 +183,6 @@
                                 <span class="form-control-wrap">
                                     <Select TValue="SeriesDisplayStyle"
                                             Id="@DisplayStyleId"
-                                            Compact
                                             Value="@ChartSeries.DisplayStyle"
                                             ValueChanged="@OnDisplayStyleChanged">
                                         <SelectItem Value="SeriesDisplayStyle.Bar">Bar</SelectItem>
@@ -206,7 +198,6 @@
                                 <span class="form-control-wrap">
                                     <Select TValue="Colours"
                                             Id="@ColourId"
-                                            Compact
                                             Value="@ChartSeries.RequestedColour"
                                             ValueChanged="@OnColourChanged">
                                             @foreach (var colour in (Colours[])Enum.GetValues(typeof(Colours)))

@@ -65,7 +65,11 @@ Use the `--climate-*` variables in `app.css` where one exists.
 | Control background | `#f8f8f8` |
 | Secondary text | `#595959` |
 
-Border radius: controls 8px, cards 12px, modals/InfoPanel 16px. Minimum touch target height 44px.
+Border radius: controls 8px, cards 12px, modals/InfoPanel 16px.
+
+Target size: 44px minimum height for touch (`@media (pointer: coarse)`, WCAG 2.5.5 AAA). With a mouse/trackpad,
+controls may be compact, but never below 24px (WCAG 2.5.8 AA). `Select` and `TextInput` already do this via
+`.climate-control` in `app.css`.
 
 ## Chart.js
 

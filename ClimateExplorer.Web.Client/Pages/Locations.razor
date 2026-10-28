@@ -37,7 +37,6 @@
                         <Select TValue="string"
                                 Value="@(countryFilter ?? string.Empty)"
                                 ValueChanged="@OnCountryFilterChanged"
-                                Compact
                                 aria-label="Country">
                             <SelectItem Value="@string.Empty">All countries</SelectItem>
                             @foreach (var country in availableCountries)
@@ -50,7 +49,6 @@
                         <Select TValue="string"
                                 Value="@(heatingScoreFilter ?? string.Empty)"
                                 ValueChanged="@OnHeatingScoreFilterChanged"
-                                Compact
                                 aria-label="Heating score">
                             <SelectItem Value="@string.Empty">Any heating score</SelectItem>                       
                             @for (var i = 9; i >= 0; i--)
@@ -163,7 +161,6 @@
                                 <Select TValue="int"
                                         Value="@pageSize"
                                         ValueChanged="@OnPageSizeChanged"
-                                        Compact
                                         aria-label="Locations per page">
                                     <SelectItem Value="10">10</SelectItem>
                                     <SelectItem Value="15">15</SelectItem>

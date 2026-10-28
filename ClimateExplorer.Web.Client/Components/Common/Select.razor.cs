@@ -17,9 +17,6 @@ public partial class Select<TValue>
     public EventCallback<TValue> ValueChanged { get; set; }
 
     [Parameter]
-    public bool Compact { get; set; }
-
-    [Parameter]
     public bool Disabled { get; set; }
 
     /// <summary>
@@ -39,17 +36,10 @@ public partial class Select<TValue>
 
     private string CurrentKey => SelectValueMap<TValue>.KeyFor(Value);
 
-    private string CssClass
-    {
-        get
-        {
-            var classes = Compact ? "climate-control climate-select climate-select--compact" : "climate-control climate-select";
-
-            return string.IsNullOrWhiteSpace(Class)
-                ? classes
-                : $"{classes} {Class}";
-        }
-    }
+    private string CssClass =>
+        string.IsNullOrWhiteSpace(Class)
+            ? "climate-control climate-select"
+            : $"climate-control climate-select {Class}";
 
     internal string Register(TValue value) => values.Register(value);
 

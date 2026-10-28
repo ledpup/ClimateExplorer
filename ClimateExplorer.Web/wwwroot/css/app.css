@@ -241,16 +241,27 @@ a, .btn-link {
 }
 
 /* Shared box for the Select and TextInput form controls, so the two can't drift. Each component's scoped
-   CSS adds its own padding, height and extras (chevron, invalid state). */
+   CSS adds its own padding and extras (chevron, invalid state). */
 .climate-control {
+    min-height: 2rem;
     background-color: var(--climate-color-control-surface);
     border: 1px solid var(--climate-color-control-border);
     border-radius: var(--climate-radius-control);
     color: var(--climate-color-control-text);
     font: inherit;
+    font-size: 0.875rem;
     line-height: 1.5;
     max-width: 100%;
     transition: var(--climate-transition-control);
+}
+
+/* Compact for a mouse or trackpad (well above WCAG 2.5.8's 24px), a full 44px target for a finger. 1rem text
+   also stops iOS Safari zooming the page when the control takes focus. */
+@media (pointer: coarse) {
+    .climate-control {
+        min-height: 44px;
+        font-size: 1rem;
+    }
 }
 
 .climate-control:hover:not(:disabled) {

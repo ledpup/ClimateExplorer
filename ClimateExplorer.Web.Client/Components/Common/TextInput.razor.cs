@@ -22,9 +22,6 @@ public partial class TextInput
     [Parameter]
     public bool Disabled { get; set; }
 
-    [Parameter]
-    public bool Compact { get; set; }
-
     /// <summary>
     /// The id of the <c>&lt;input&gt;</c>, so a <c>&lt;label for&gt;</c> elsewhere can name it.
     /// </summary>
@@ -52,17 +49,10 @@ public partial class TextInput
             ? "climate-text-input-wrap"
             : $"climate-text-input-wrap {Class}";
 
-    private string CssClass
-    {
-        get
-        {
-            var classes = Compact ? "climate-control climate-text-input climate-text-input--compact" : "climate-control climate-text-input";
-
-            return Invalid
-                ? $"{classes} climate-text-input--invalid"
-                : classes;
-        }
-    }
+    private string CssClass =>
+        Invalid
+            ? "climate-control climate-text-input climate-text-input--invalid"
+            : "climate-control climate-text-input";
 
     private async Task OnChangeAsync(ChangeEventArgs e)
     {

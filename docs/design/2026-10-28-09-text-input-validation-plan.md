@@ -129,8 +129,9 @@ Risk: low.
 
 - `Immediate` was left out. Nothing uses it, and switching between `@onchange` and `@oninput` means either two copies
   of the `<input>` markup or a nullable delegate, which `TreatWarningsAsErrors` rejects. Add it when something needs it.
+- No `Compact` parameter: sizing is per pointer type, as in [07's addendum](2026-10-28-07-select-plan.md#addendum--implementation-2026-10-28).
 - `.climate-control` in `app.css` holds the shared box (control background, 8px radius, primary-green text, border,
-  `#cfc` hover, `:focus-visible` outline, 60% opacity when disabled). `TextInput.razor.css` adds padding and height,
+  `#cfc` hover, `:focus-visible` outline, 60% opacity when disabled, sizing). `TextInput.razor.css` adds padding,
   the `#a00000` invalid border and the `0.75rem` error text. The wrapper is `display: block` so the message sits under
   the input. The error id is generated per instance (`text-input-error-{guid}`).
 - `CustomTransformationParser.IsValid` catches `FormatException` as well as `ArgumentException`. `x > 1.2.3` matches
