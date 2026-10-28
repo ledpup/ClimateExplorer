@@ -42,11 +42,11 @@ Use the following existing common components, when appriopriate:
 - PaginationControl
 - Select / SelectItem (needs a `<label for>` pointing at its `Id`, or an `aria-label`)
 - SidePanel
+- Tabs / Tab (needs an `AriaLabel`; it renders the tab strip only, and the parent renders the selected content)
 - TextInput (fires on change, not per keystroke; the parent validates and passes `Invalid`/`ErrorMessage`)
 
 There are Blazorise components in use, with common styling in `app.css` such as:
 - Table
-- Tabs
 
 Common inputs (`Select`, `TextInput`, `ClimateCheckbox`) bind with `Value`/`ValueChanged` (not `Checked`, `Text`, `SelectedValue`, etc.).
 Style Blazorise child elements with `::deep`; if a component's root is a Blazorise component,

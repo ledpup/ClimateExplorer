@@ -1,4 +1,3 @@
-@using Blazorise
 @using ClimateExplorer.Web.Client.Components.Common
 
 <SidePanel @ref="sidePanel" Title="@Title" Width="@Width">
@@ -31,17 +30,13 @@
             }
             else if (metadata is not null && ActiveMetadata is not null)
             {
-                <div class="climate-tabs location-dataset-metadata-tabs">
-                    <Tabs SelectedTab="@activeTabKey" SelectedTabChanged="@OnTabChanged">
-                        <Items>
-                            @for (var i = 0; i < metadata.Count; i++)
-                            {
-                                var row = metadata[i];
-                                <Tab Name="@BuildTabKey(row, i)">@GetTabLabel(row, i)</Tab>
-                            }
-                        </Items>
-                    </Tabs>
-                </div>
+                <Tabs SelectedTab="@activeTabKey" SelectedTabChanged="@OnTabChanged" AriaLabel="Data source" Class="mb-3">
+                    @for (var i = 0; i < metadata.Count; i++)
+                    {
+                        var row = metadata[i];
+                        <Tab Name="@BuildTabKey(row, i)">@GetTabLabel(row, i)</Tab>
+                    }
+                </Tabs>
 
                 <div class="location-dataset-metadata-details">
                     <AboutDataDetails DataSetDefinition="@ActiveDataSetDefinition" Metadata="@ActiveMetadata" />

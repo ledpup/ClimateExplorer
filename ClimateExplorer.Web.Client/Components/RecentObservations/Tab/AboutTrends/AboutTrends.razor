@@ -1,5 +1,4 @@
 @namespace ClimateExplorer.Web.Client.Components.RecentObservations
-@using Blazorise
 @using ClimateExplorer.Core.Model
 @using ClimateExplorer.Web.Client.Components.Common
 @using ClimateExplorer.Web.Client.Components.Common.Trends
@@ -9,17 +8,13 @@
 
 <SidePanel @ref="sidePanel" Title="About trends" Width="min(60%, 1024px)">
     <div class="trend-stats">
-    <div class="climate-tabs trends-about-tabs">
-        <Tabs SelectedTab="@selectedMetricKey" SelectedTabChanged="@OnMetricTabChanged">
-            <Items>
-                <Tab Name="@OverviewTabName">Overview</Tab>
-                @foreach (var metric in Metrics)
-                {
-                    <Tab Name="@metric.Label">@metric.Label</Tab>
-                }
-            </Items>
-        </Tabs>
-    </div>
+    <Tabs SelectedTab="@selectedMetricKey" SelectedTabChanged="@OnMetricTabChanged" AriaLabel="Trend explanation" Class="trends-about-tabs">
+        <Tab Name="@OverviewTabName">Overview</Tab>
+        @foreach (var metric in Metrics)
+        {
+            <Tab Name="@metric.Label">@metric.Label</Tab>
+        }
+    </Tabs>
 
     @if (selectedMetricKey == OverviewTabName)
     {

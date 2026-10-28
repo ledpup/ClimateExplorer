@@ -16,6 +16,8 @@ using static ClimateExplorer.Core.Enums;
 
 public partial class ClimateRecords
 {
+    private readonly string tabsId = $"climate-records-tabs-{Guid.NewGuid():N}";
+
     private enum RecordView
     {
         Daily,
