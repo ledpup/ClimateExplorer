@@ -11,16 +11,58 @@
   `ClimateExplorer.SourceData`. Building it is fine (`ClimateExplorer.WebApi.UnitTests` references it).
 - When estimating effort, don't give time estimates (hours/days). Report how many files would
   change and by roughly how much (e.g. "3 files, ~40 lines; 1 new file").
-- Architecture, component and data-layer reference: [CONTEXT.md](CONTEXT.md)
+
+## Solution
+
+| Project | Role |
+|---|---|
+| `ClimateExplorer.Web.Client` | Blazor WebAssembly app: pages, components, UI services, scoped CSS |
+| `ClimateExplorer.Web` | Blazor Server host. Global CSS in `wwwroot/css` (`base.css`, `app.css`, `table.css`, `utilities.css`); blog content |
+| `ClimateExplorer.WebApi` | Minimal API serving datasets, locations, regions and climate records from `Datasets`; file-backed cache |
+| `ClimateExplorer.WebApiClient` | `IDataService`/`DataService`, the typed HTTP client; caches responses in `IMemoryCache` |
+| `ClimateExplorer.Core` | Domain models, enums, data preparation (binning, aggregation), stats. No UI dependencies |
+| `ClimateExplorer.SourceData` | Raw source data files |
+| `ClimateExplorer.DataPipeline` | Packages `SourceData` into `WebApi/Datasets` (see above) |
+| `ClimateExplorer.Data.*` | Downloaders and importers (BOM, GHCNd, GHCNm, misc global series) |
+| `ClimateExplorer.CachingTool` | Pre-warms the API cache |
+| `ClimateExplorer.*.UnitTests` | MSTest. `Web.UnitTests` also scans source (unit text, CSS class usage) |
+| `ClimateExplorer.Web.UiTests` | Playwright tests (don't run) |
+
+## Front end
+
+Pages: `Index` (`/`, `/location/{locationString}`: map, `LocationDashboard`, chart) and `Global` (`/global`: chart
+only) both inherit `ChartablePage`. Also `Locations`, `About` and `Blog`. Components are grouped by feature under
+`Components/` (`Chart`, `Location`, `RecentObservations`, `ClimateRecords`, `Common`, ...).
+
+Chart:
+- `ChartablePage` owns the current `ChartState` and the built data. `ChartView` only renders what it's given and raises
+  `ChartStateChanged`; it doesn't fetch.
+- `ApplyChartStateAsync` writes the state to the URL, then builds it with `ChartDataBuilder.BuildAsync`. A build-version
+  counter drops results from superseded builds. Navigating to the URL doesn't trigger the render (same-path `replace`
+  navigation is unreliable when deployed).
+- The query string holds the whole chart: `chartAllData`, `startYear`, `endYear`, `groupingDays`, `groupingThreshold`,
+  `axisScaleToZero` and `csd` (the series list, via `ChartSeriesListSerializer`). `ChartStateUrlService` parses and
+  builds it; back/forward re-applies it (`SyncChartStateFromUrlAsync`).
+- `SeriesWithData` holds three stages: `SourceDataSet` (from the API) → `PreProcessedDataSet` (smoothed) →
+  `ProcessedDataSet` (gap-filled, cut to the display range).
+- Data is built in metric. `ChartView` converts for display through `UnitPreference`.
+- Bin granularities are linear (`IsLinear()`: by year, year and month, ...; smoothing applies) or modular (month only,
+  day only, seasons; a wrapped x-axis, no smoothing).
+- On a location change, `ChartSeriesLocationSubstitutionService` moves unlocked series to the new location and adds
+  an unlocked copy of each locked series. Call `CreateNewListWithoutDuplicates()` after changing a series list.
+- `DataSubstitute.StandardTemperatureDataMatches()` is the temperature fallback: TempMean adjusted → TempMax adjusted →
+  TempMax unadjusted.
 
 ## C#
 
 - Unit test names use `MethodName_StateUnderTest_ExpectedBehavior`
 - No `async void`; event handlers return `Task`
+- Use collection expressions (`List<T> x = []`), and return tuples rather than use `out` parameters
 
 ## Blazor
 
 - Dependency injection for Blazor components go in Blazor Server `ClimateExplorer.Web` and Blazor WebAssembly `ClimateExplorer.Web.Client` projects
+  (both `Program.cs` files register the same list)
 - Razor components keep C# in `.razor.cs` code-behind files
 - Supported screen sizes:
   - Mobile: max-width = 767px
@@ -58,6 +100,16 @@ Use the following existing common components, when appriopriate:
 - Tooltip
 
 Tables are plain `<table class="table">`, styled globally in `table.css` (modifiers `table--striped`, `table--compact`).
+
+The common components are built on native browser features, not a component library:
+- `Modal` is a `<dialog>` opened with `showModal()` (`Modal.razor.js`). The page behind doesn't scroll
+  (`html:has(dialog.modal[open])` in `app.css`).
+- `DropdownButton` (`popover="auto"`) and `Tooltip` (manual) are popovers, so they sit in the top layer: never clipped
+  by `overflow: hidden`, and shown above an open `<dialog>`.
+- `wwwroot/js/floating.js` positions `DropdownButton`, `Autocomplete` and tooltip popups next to their anchor, flipping
+  when there's no room.
+- `wwwroot/js/tooltip.js` is one shared tooltip for every `[data-tooltip]` element, by event delegation. It's loaded
+  once from `App.razor`, so it works during prerender.
 
 Common inputs (`Select`, `TextInput`, `Checkbox`) bind with `Value`/`ValueChanged` (not `Checked`, `Text`, `SelectedValue`, etc.).
 Style a child component's markup with `::deep`. Blazor only stamps the scope attribute on elements in the component's
