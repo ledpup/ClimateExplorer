@@ -3,17 +3,9 @@
 @using ClimateExplorer.Web.Client.UiModel
 
 <div class="aggregation-options-wrapper">
-    @if (panelOpen)
-    {
-        <div class="aggregation-options-backdrop" @onclick="ClosePanel"></div>
-    }
-    <div class="aggregation-options-container">
-        <Tooltip Text="Change how data is grouped for aggregation.<br>Group fortnightly at a 70% threshold by default">
-            <Button Text="Aggregation" Icon="fas fa-cog" Class="chart-control aggregation-toggle" OnClick="TogglePanel" />
-        </Tooltip>
-        @if (panelOpen)
-        {
-            <div class="aggregation-options-panel">
+    <Tooltip Text="Change how data is grouped for aggregation.<br>Group fortnightly at a 70% threshold by default">
+        <DropdownButton @ref="dropdown" Text="Aggregation" Icon="fas fa-cog">
+            <MenuContent>
                 <div class="aggregation-options-content">
                     <Tooltip Text="Number of days used to group data points into a single bin" Style="display: block">
                         <div class="form-row">
@@ -52,9 +44,9 @@
                         <Button Variant="ButtonVariant.Link" Icon="fas fa-circle-info" AriaLabel="About aggregation options" Class="info-icon" OnClick="ShowAggregationOptionsInfo" />
                     </div>
                 </div>
-            </div>
-        }
-    </div>
+            </MenuContent>
+        </DropdownButton>
+    </Tooltip>
 </div>
 
 <InfoPanel @ref="aggregationOptionsInfoPanel" Title="Aggregation options" Height="50vh" MobileHeight="60vh">

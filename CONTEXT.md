@@ -67,7 +67,7 @@ ChartablePage (Index / Global)
     │   ├── "Clear filter" Button (conditional)
     │   ├── DropdownButton ("Grouping") — Year / Year and month / Month / Day
     │   ├── ChartAxisListView      — per-axis "Scale from 0" toggles
-    │   ├── AggregationOptions     — Button opening a panel: grouping days, threshold %, override, reset
+    │   ├── AggregationOptions     — DropdownButton opening a panel: grouping days, threshold %, override, reset
     │   ├── info-icon (fa-circle-info)
     │   └── "Download" Button      — margin-left:auto, flush right (not on mobile)
     ├── InfoPanel (chartOptionsInfoPanel)
