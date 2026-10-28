@@ -88,27 +88,27 @@
             </div>
             @if (ClimateRecordRows.Count > 0)
             {
-                <Table Striped>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>#</Strong></TableHeaderCell>
-                            <TableHeaderCell Class="colour-col"></TableHeaderCell>
-                            <TableHeaderCell TextAlignment="TextAlignment.Center" Class="top-percent-col"><Strong>Top %</Strong></TableHeaderCell>
+                <table class="climate-table climate-table--striped">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-center"><strong>#</strong></th>
+                            <th scope="col" class="colour-col"></th>
+                            <th scope="col" class="top-percent-col text-center"><strong>Top %</strong></th>
                             @if (ActiveView == RecordView.Yearly)
                             {
-                                <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Year</Strong></TableHeaderCell>
-                                <TableHeaderCell TextAlignment="TextAlignment.End"><Strong>Anomaly</Strong></TableHeaderCell>
-                                <TableHeaderCell TextAlignment="TextAlignment.End" @onclick="OnSortToggled" Style="cursor: pointer; user-select: none;"><Strong>Average <i class="fas @SortIcon"></i></Strong></TableHeaderCell>
+                                <th scope="col" class="text-center"><strong>Year</strong></th>
+                                <th scope="col" class="text-end"><strong>Anomaly</strong></th>
+                                <th scope="col" class="text-end" aria-sort="@AriaSort"><button type="button" class="sort-button" @onclick="OnSortToggled"><strong>Average <i class="fas @SortIcon" aria-hidden="true"></i></strong></button></th>
                             }
                             else
                             {
-                                <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>@(ActiveView == RecordView.Monthly ? "Month" : "Day month")</Strong></TableHeaderCell>
-                                <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Year</Strong></TableHeaderCell>
-                                <TableHeaderCell TextAlignment="TextAlignment.End" @onclick="OnSortToggled" Style="cursor: pointer; user-select: none;"><Strong>@(ActiveView == RecordView.Monthly ? "Average" : "Value") <i class="fas @SortIcon"></i></Strong></TableHeaderCell>
+                                <th scope="col" class="text-center"><strong>@(ActiveView == RecordView.Monthly ? "Month" : "Day month")</strong></th>
+                                <th scope="col" class="text-center"><strong>Year</strong></th>
+                                <th scope="col" class="text-end" aria-sort="@AriaSort"><button type="button" class="sort-button" @onclick="OnSortToggled"><strong>@(ActiveView == RecordView.Monthly ? "Average" : "Value") <i class="fas @SortIcon" aria-hidden="true"></i></strong></button></th>
                             }
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
+                        </tr>
+                    </thead>
+                    <tbody>
                         @{
                             var rank = ((CurrentPage - 1) * Count) + 1;
                             var unitOfMeasure = ClimateRecordsResult!.UnitOfMeasure ?? SelectedUnitOfMeasure;
@@ -147,38 +147,38 @@
                                 rank++;
                             }
                         }
-                    </TableBody>
-                </Table>
+                    </tbody>
+                </table>
             }
             else if (ClimateRecordsResult is null && LoadingIndicatorVisible)
             {
-                <Table Striped>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>#</Strong></TableHeaderCell>
-                            <TableHeaderCell Class="colour-col"></TableHeaderCell>
-                            <TableHeaderCell TextAlignment="TextAlignment.Center" Class="top-percent-col"></TableHeaderCell>
+                <table class="climate-table climate-table--striped">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-center"><strong>#</strong></th>
+                            <th scope="col" class="colour-col"></th>
+                            <th scope="col" class="top-percent-col text-center"></th>
                             @if (ActiveView == RecordView.Yearly)
                             {
-                                <TableHeaderCell TextAlignment="TextAlignment.Center">Year</TableHeaderCell>
-                                <TableHeaderCell TextAlignment="TextAlignment.End">Anomaly</TableHeaderCell>
-                                <TableHeaderCell TextAlignment="TextAlignment.End" @onclick="OnSortToggled" Style="cursor: pointer; user-select: none;"><Strong>Average <i class="fas @SortIcon"></i></Strong></TableHeaderCell>
+                                <th scope="col" class="text-center">Year</th>
+                                <th scope="col" class="text-end">Anomaly</th>
+                                <th scope="col" class="text-end" aria-sort="@AriaSort"><button type="button" class="sort-button" @onclick="OnSortToggled"><strong>Average <i class="fas @SortIcon" aria-hidden="true"></i></strong></button></th>
                             }
                             else
                             {
-                                <TableHeaderCell TextAlignment="TextAlignment.Center">@(ActiveView == RecordView.Monthly ? "Month" : "Day month")</TableHeaderCell>
-                                <TableHeaderCell TextAlignment="TextAlignment.Center">Year</TableHeaderCell>
-                                <TableHeaderCell TextAlignment="TextAlignment.End" @onclick="OnSortToggled" Style="cursor: pointer; user-select: none;">@(ActiveView == RecordView.Monthly ? "Average" : "Value") <i class="fas @SortIcon"></i></TableHeaderCell>
+                                <th scope="col" class="text-center">@(ActiveView == RecordView.Monthly ? "Month" : "Day month")</th>
+                                <th scope="col" class="text-center">Year</th>
+                                <th scope="col" class="text-end" aria-sort="@AriaSort"><button type="button" class="sort-button" @onclick="OnSortToggled">@(ActiveView == RecordView.Monthly ? "Average" : "Value") <i class="fas @SortIcon" aria-hidden="true"></i></button></th>
                             }
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
+                        </tr>
+                    </thead>
+                    <tbody>
                         @for (int i = 0; i < Count; i++)
                         {
                             <tr><td>&nbsp;</td><td></td><td></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
                         }
-                    </TableBody>
-                </Table>
+                    </tbody>
+                </table>
             }
             else
             {

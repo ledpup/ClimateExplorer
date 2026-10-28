@@ -49,51 +49,51 @@
                             <span>Nearby locations</span>
                         </div>
                         <DelayedLoadingIndicator @bind-Visible="@NearbyLocationsLoading">
-                            <Table Striped>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHeaderCell>Location</TableHeaderCell>
-                                        <TableHeaderCell TextAlignment="TextAlignment.Center">Country</TableHeaderCell>
-                                        <TableHeaderCell TextAlignment="TextAlignment.Center">Distance</TableHeaderCell>
-                                        <TableHeaderCell TextAlignment="TextAlignment.Center" Class="direction-col">Direction</TableHeaderCell>
-                                        <TableHeaderCell TextAlignment="TextAlignment.Center" Class="bearing-col">Bearing</TableHeaderCell>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
+                            <table class="climate-table climate-table--striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Location</th>
+                                        <th scope="col" class="text-center">Country</th>
+                                        <th scope="col" class="text-center">Distance</th>
+                                        <th scope="col" class="direction-col text-center">Direction</th>
+                                        <th scope="col" class="bearing-col text-center">Bearing</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
                                     @if (NearbyLocations is not null)
                                     {
                                         foreach (var row in NearbyLocations)
                                         {
                                             var location = LocationDictionary[row.LocationId];
-                                            <TableRow>
-                                                <TableRowCell>
+                                            <tr>
+                                                <td>
                                                     <ClimateButton Variant="ButtonVariant.Link"
                                                                    Text="@location.Name"
                                                                    title="@location.FullTitle"
                                                                    OnClick="@(() => FireOnLocationChange(row.LocationId))" />
-                                                </TableRowCell>
-                                                <TableRowCell>@location.Country</TableRowCell>
-                                                <TableRowCell>@(row.Distance) km</TableRowCell>
-                                                <TableRowCell Class="direction-col">
+                                                </td>
+                                                <td>@location.Country</td>
+                                                <td>@(row.Distance) km</td>
+                                                <td class="direction-col">
                                                     <span>
                                                         @row.CompassRoseDirection
                                                     </span>
-                                                </TableRowCell>
-                                                <TableRowCell>
+                                                </td>
+                                                <td>
                                                     <span style="display: inline-block; transform: rotate(@($"{row.BearingDegrees}deg")); transform-origin: center;">↑</span>
-                                                </TableRowCell>
-                                            </TableRow>
+                                                </td>
+                                            </tr>
                                         }
                                     }
                                     else
                                     {
                                         for (var i = 0; i < 10; i++)
                                         {
-                                            <TableRow><TableRowCell>&nbsp;</TableRowCell><TableRowCell></TableRowCell><TableRowCell></TableRowCell><TableRowCell></TableRowCell><TableRowCell></TableRowCell></TableRow>
+                                            <tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>
                                         }
                                     }
-                                </TableBody>
-                            </Table>
+                                </tbody>
+                            </table>
                         </DelayedLoadingIndicator>
                         @if (NearbyLocations is not null)
                         {

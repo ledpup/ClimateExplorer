@@ -188,7 +188,7 @@ builds, passes the unit tests and can ship on its own. The site keeps working be
 | 3 | [16 Bootstrap removal](2026-10-28-16-bootstrap-removal-plan.md), step 2 (`base.css`, `utilities.css`) | — | Must land long before step 17, so reboot drift surfaces while Bootstrap can still be compared | 2026-10-28 |
 | 4 | [15 Simple markup](2026-10-28-15-simple-markup-replacements-plan.md) | — | No JS, tiny | 2026-10-28 |
 | 5 | [12 Pagination](2026-10-28-12-pagination-plan.md) | — | Internal to one component | 2026-10-28 |
-| 6 | [11 Tables](2026-10-28-11-tables-plan.md) | — | Mechanical. No name collisions. | — |
+| 6 | [11 Tables](2026-10-28-11-tables-plan.md) | — | Mechanical. No name collisions. | 2026-10-28 |
 | 7 | [08 Checkbox](2026-10-28-08-checkbox-plan.md) | — | Settles the `Value`/`ValueChanged` convention before the other inputs | — |
 | 8 | [03 Loading indicator](2026-10-28-03-loading-indicator-plan.md) | — | Self-contained | — |
 | 9 | [07 Select](2026-10-28-07-select-plan.md) | (step 7 recommended) | Introduces the shared `climate-control` look and the `<label for>` pattern | — |

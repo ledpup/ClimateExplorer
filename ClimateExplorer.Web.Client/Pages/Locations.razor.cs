@@ -275,6 +275,17 @@ public partial class Locations
         return sortAscending ? "fa-sort-up" : "fa-sort-down";
     }
 
+    // Null leaves aria-sort off the unsorted columns.
+    private string? GetAriaSort(string column)
+    {
+        if (sortColumn != column)
+        {
+            return null;
+        }
+
+        return sortAscending ? "ascending" : "descending";
+    }
+
     private string FormatAnomaly(Location location)
     {
         return ApiMeasures.WarmingAnomaly(location) is { } anomaly ? Units.Format(anomaly, signed: true) : "—";

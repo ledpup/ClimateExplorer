@@ -63,40 +63,42 @@
                 </div>
                 <span class="location-count">@filteredCount location@(filteredCount == 1 ? string.Empty : "s")</span>
             </div>
-            <Table Striped Class="locations-table">
-                <TableHeader>
-                    <TableRow>
-                        <TableHeaderCell Class="name-col" @onclick='() => OnSortChanged("name")' Style="cursor: pointer; user-select: none;">
-                            <Strong>Name <i class="fas @GetSortIconClass("name")"></i></Strong>
-                        </TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.Center" Class="country-col" @onclick='() => OnSortChanged("country")' Style="cursor: pointer; user-select: none;">
-                            <Strong>Country <i class="fas @GetSortIconClass("country")"></i></Strong>
-                        </TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.Center" Class="anomaly-col" @onclick='() => OnSortChanged("anomaly")' Style="cursor: pointer; user-select: none; white-space: normal;">
-                            <Strong>Warming anomaly <i class="fas @GetSortIconClass("anomaly")"></i></Strong>
-                        </TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.Center" Class="heating-col" @onclick='() => OnSortChanged("heatingscore")' Style="cursor: pointer; user-select: none; white-space: normal;">
-                            <Strong>Heating score <i class="fas @GetSortIconClass("heatingscore")"></i></Strong>
-                        </TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.Center" Class="trend-col" @onclick='() => OnSortChanged("trend")' Style="cursor: pointer; user-select: none; white-space: normal;">
-                            <Strong>Temperature trend <i class="fas @GetSortIconClass("trend")"></i></Strong>
-                            <span class="trend-subheader">per decade</span>
-                        </TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.Center" Class="data-types-col">
-                            <Strong>Data types</Strong>
-                        </TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.Center" Class="data-sources-col">
-                            <Strong>Data sources</Strong>
-                        </TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.Center" Class="recent-observations-col" Style="white-space: normal;">
-                            <Strong>Recent observations</Strong>
-                        </TableHeaderCell>
-                        <TableHeaderCell TextAlignment="TextAlignment.End" Class="record-high-col" @onclick='() => OnSortChanged("recordhigh")' Style="cursor: pointer; user-select: none;">
-                            <Strong>Record high <i class="fas @GetSortIconClass("recordhigh")"></i></Strong>
-                        </TableHeaderCell>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
+            <table class="climate-table climate-table--striped locations-table">
+                <thead>
+                    <tr>
+                        <th scope="col" class="name-col" aria-sort="@GetAriaSort("name")">
+                            <button type="button" class="sort-button" @onclick='() => OnSortChanged("name")'><strong>Name <i class="fas @GetSortIconClass("name")" aria-hidden="true"></i></strong></button>
+                        </th>
+                        <th scope="col" class="country-col text-center" aria-sort="@GetAriaSort("country")">
+                            <button type="button" class="sort-button" @onclick='() => OnSortChanged("country")'><strong>Country <i class="fas @GetSortIconClass("country")" aria-hidden="true"></i></strong></button>
+                        </th>
+                        <th scope="col" class="anomaly-col text-center" aria-sort="@GetAriaSort("anomaly")">
+                            <button type="button" class="sort-button" @onclick='() => OnSortChanged("anomaly")'><strong>Warming anomaly <i class="fas @GetSortIconClass("anomaly")" aria-hidden="true"></i></strong></button>
+                        </th>
+                        <th scope="col" class="heating-col text-center" aria-sort="@GetAriaSort("heatingscore")">
+                            <button type="button" class="sort-button" @onclick='() => OnSortChanged("heatingscore")'><strong>Heating score <i class="fas @GetSortIconClass("heatingscore")" aria-hidden="true"></i></strong></button>
+                        </th>
+                        <th scope="col" class="trend-col text-center" aria-sort="@GetAriaSort("trend")">
+                            <button type="button" class="sort-button" @onclick='() => OnSortChanged("trend")'>
+                                <strong>Temperature trend <i class="fas @GetSortIconClass("trend")" aria-hidden="true"></i></strong>
+                                <span class="trend-subheader">per decade</span>
+                            </button>
+                        </th>
+                        <th scope="col" class="data-types-col text-center">
+                            <strong>Data types</strong>
+                        </th>
+                        <th scope="col" class="data-sources-col text-center">
+                            <strong>Data sources</strong>
+                        </th>
+                        <th scope="col" class="recent-observations-col text-center">
+                            <strong>Recent observations</strong>
+                        </th>
+                        <th scope="col" class="record-high-col text-end" aria-sort="@GetAriaSort("recordhigh")">
+                            <button type="button" class="sort-button" @onclick='() => OnSortChanged("recordhigh")'><strong>Record high <i class="fas @GetSortIconClass("recordhigh")" aria-hidden="true"></i></strong></button>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
                     @foreach (var location in PagedLocations)
                     {
                         <tr>
@@ -144,8 +146,8 @@
                             </td>
                         </tr>
                     }
-                </TableBody>
-            </Table>
+                </tbody>
+            </table>
             @if (filteredCount > 0)
             {
                 <div class="table-footer">

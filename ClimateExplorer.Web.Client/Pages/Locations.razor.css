@@ -39,8 +39,16 @@
 /* ── Fixed-width columns (stop re-sorting from resizing the table) ──────── */
 /* Column widths come from the header row only, so page content can't shift them.
    Columns without a width (name, country, data types, data sources) share what's left. */
-::deep .locations-table {
+.locations-table {
     table-layout: fixed;
+}
+
+/* These headers are long enough to wrap onto two lines. */
+.anomaly-col,
+.heating-col,
+.trend-col,
+.recent-observations-col {
+    white-space: normal;
 }
 
 ::deep .country-col {

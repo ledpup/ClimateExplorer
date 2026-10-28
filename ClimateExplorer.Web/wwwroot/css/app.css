@@ -141,15 +141,6 @@ a, .btn-link {
     color: var(--climate-color-muted-text);
 }
 
-td:nth-child(n+2) {
-    text-align: center;
-    vertical-align: middle;
-}
-
-th {
-    font-weight: normal;
-}
-
 .climate-button {
     padding: var(--climate-space-control-padding);
     background-color: var(--climate-color-control-surface);
