@@ -16,10 +16,10 @@
                 </svg>
             </div>
             <div class="top100-actions">
-                <DelayedTooltip Text="Copy the chart as an image to the clipboard">
-                    <ClimateButton Text="Copy" Icon="fas fa-copy" Class="top100-btn" OnClick="CopyAsImage" />
-                </DelayedTooltip>
-                <DelayedTooltip Text="Download the chart as a PNG or SVG file">
+                <Tooltip Text="Copy the chart as an image to the clipboard">
+                    <Button Text="Copy" Icon="fas fa-copy" Class="top100-btn" OnClick="CopyAsImage" />
+                </Tooltip>
+                <Tooltip Text="Download the chart as a PNG or SVG file">
                     <div class="top100-download-dropdown-wrapper">
                         <DropdownButton Text="Download" Icon="fas fa-download">
                             <MenuContent>
@@ -28,7 +28,7 @@
                             </MenuContent>
                         </DropdownButton>
                     </div>
-                </DelayedTooltip>
+                </Tooltip>
             </div>
         </div>
     }

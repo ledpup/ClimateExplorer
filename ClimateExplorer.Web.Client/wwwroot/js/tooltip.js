@@ -1,4 +1,4 @@
-// Shows one shared tooltip for every [data-tooltip] element (rendered by DelayedTooltip), using
+// Shows one shared tooltip for every [data-tooltip] element (rendered by the Tooltip component), using
 // event delegation on the document. Loaded once from App.razor, so it works during prerender and
 // needs no per-component interop. The tooltip is a manual popover, so it renders in the top layer:
 // never clipped by overflow: hidden ancestors, and above an open <dialog>.

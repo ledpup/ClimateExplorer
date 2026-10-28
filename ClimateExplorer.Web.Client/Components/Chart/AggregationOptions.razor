@@ -8,14 +8,14 @@
         <div class="aggregation-options-backdrop" @onclick="ClosePanel"></div>
     }
     <div class="aggregation-options-container">
-        <DelayedTooltip Text="Change how data is grouped for aggregation.<br>Group fortnightly at a 70% threshold by default">
-            <ClimateButton Text="Aggregation" Icon="fas fa-cog" Class="chart-control aggregation-toggle" OnClick="TogglePanel" />
-        </DelayedTooltip>
+        <Tooltip Text="Change how data is grouped for aggregation.<br>Group fortnightly at a 70% threshold by default">
+            <Button Text="Aggregation" Icon="fas fa-cog" Class="chart-control aggregation-toggle" OnClick="TogglePanel" />
+        </Tooltip>
         @if (panelOpen)
         {
             <div class="aggregation-options-panel">
                 <div class="aggregation-options-content">
-                    <DelayedTooltip Text="Number of days used to group data points into a single bin" Style="display: block">
+                    <Tooltip Text="Number of days used to group data points into a single bin" Style="display: block">
                         <div class="form-row">
                             <label class="form-label" for="@GroupingDaysId">Grouping days</label>
                             <span class="form-control-wrap">
@@ -28,8 +28,8 @@
                                 </Select>
                             </span>
                         </div>
-                    </DelayedTooltip>
-                    <DelayedTooltip Text="Minimum percentage of days with valid data required for a bin to be included in the chart" Style="display: block">
+                    </Tooltip>
+                    <Tooltip Text="Minimum percentage of days with valid data required for a bin to be included in the chart" Style="display: block">
                         <div class="form-row">
                             <label class="form-label" for="@ThresholdId">Threshold (%)</label>
                             <span class="form-control-wrap">
@@ -37,19 +37,19 @@
                                        value="@thresholdValue" @oninput="OnThresholdChanged" />
                             </span>
                         </div>
-                    </DelayedTooltip>
-                    <DelayedTooltip Text="When checked, your custom threshold is used instead of the dataset's recommended preset" Style="display: block">
+                    </Tooltip>
+                    <Tooltip Text="When checked, your custom threshold is used instead of the dataset's recommended preset" Style="display: block">
                         <div class="form-row">
                             <span class="form-control-wrap">
-                                <ClimateCheckbox Value="@overridePresetThreshold" ValueChanged="@((bool v) => OnOverrideChanged(v))">Override preset threshold</ClimateCheckbox>
+                                <Checkbox Value="@overridePresetThreshold" ValueChanged="@((bool v) => OnOverrideChanged(v))">Override preset threshold</Checkbox>
                             </span>
                         </div>
-                    </DelayedTooltip>
+                    </Tooltip>
                     <div class="form-row form-row-actions">
-                        <DelayedTooltip Text="Reset aggregation options to their defaults">
-                            <ClimateButton Compact Text="Reset" Disabled="@(!HaveOptionsChanged)" OnClick="ResetThreshold" />
-                        </DelayedTooltip>
-                        <ClimateButton Variant="ButtonVariant.Link" Icon="fas fa-circle-info" AriaLabel="About aggregation options" Class="info-icon" OnClick="ShowAggregationOptionsInfo" />
+                        <Tooltip Text="Reset aggregation options to their defaults">
+                            <Button Compact Text="Reset" Disabled="@(!HaveOptionsChanged)" OnClick="ResetThreshold" />
+                        </Tooltip>
+                        <Button Variant="ButtonVariant.Link" Icon="fas fa-circle-info" AriaLabel="About aggregation options" Class="info-icon" OnClick="ShowAggregationOptionsInfo" />
                     </div>
                 </div>
             </div>

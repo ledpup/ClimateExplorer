@@ -7,7 +7,7 @@
         <p class="location-prompt-text">
             You're viewing <strong>@LocationName</strong>. See how the climate is changing where you are:
         </p>
-        <ClimateButton Text="@(NearMeLoading ? "Finding your location…" : "Show near me")"
+        <Button Text="@(NearMeLoading ? "Finding your location…" : "Show near me")"
                        Icon="fas fa-location-crosshairs"
                        Disabled="@NearMeLoading"
                        OnClick="OnNearMe" />
@@ -20,10 +20,10 @@
 }
 
 <p>
-    ClimateExplorer helps you explore how the climate is changing in your region and around the world. There are two main sections: this page and the global section. Try clicking elements such as <ClimateButton Variant="ButtonVariant.Link" Text="record high" Class="action-link" OnClick="OnShowRecordHigh" />. <ClimateButton Variant="ButtonVariant.Link" Text="Recent observations" Class="action-link" OnClick="OnShowRecentObservations" /> downloads the latest data and displays tiles comparing with the historical record.
+    ClimateExplorer helps you explore how the climate is changing in your region and around the world. There are two main sections: this page and the global section. Try clicking elements such as <Button Variant="ButtonVariant.Link" Text="record high" Class="action-link" OnClick="OnShowRecordHigh" />. <Button Variant="ButtonVariant.Link" Text="Recent observations" Class="action-link" OnClick="OnShowRecentObservations" /> downloads the latest data and displays tiles comparing with the historical record.
 </p>
 <p>
-    The suggested charts are a quick way to get started. Use the chevron at the top to <ClimateButton Variant="ButtonVariant.Link" Text="see more chart presets" Class="action-link" OnClick="OnToggleSuggestedCharts" />, or <ClimateButton Variant="ButtonVariant.Link" Text="add data sets" Class="action-link" OnClick="OnAddDataSet" /> to build custom views.
+    The suggested charts are a quick way to get started. Use the chevron at the top to <Button Variant="ButtonVariant.Link" Text="see more chart presets" Class="action-link" OnClick="OnToggleSuggestedCharts" />, or <Button Variant="ButtonVariant.Link" Text="add data sets" Class="action-link" OnClick="OnAddDataSet" /> to build custom views.
 </p>
 <p>
     The <a href="global">global</a> section has charts for broader indicators: greenhouse gases, sea ice, sea level rise, and temperature anomalies.

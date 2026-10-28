@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Components;
 /// disabled, separately labelled - only the visual nesting is shared here.
 ///
 /// This is a pure layout wrapper: it takes no Text/Icon/Disabled/OnClick etc. of its own.
-/// The caller supplies both buttons (typically a <see cref="ClimateButton"/> each) via
+/// The caller supplies both buttons (typically a <see cref="Button"/> each) via
 /// <see cref="PrimaryContent"/> and <see cref="PillContent"/>, tagging each with the
 /// "pill-button-primary" / "pill-button-pill" CSS class so this component's stylesheet can find
 /// and position them.

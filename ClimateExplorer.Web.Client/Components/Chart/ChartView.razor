@@ -10,7 +10,7 @@
                     <div class="chart-series-list-wrapper">
                         <ChartSeriesListView ChartSeriesList="ChartSeriesList" SeriesWithData="AllChartSeriesWithData" OnSeriesChanged="@RaiseChartStateChanged" IsLoading="ChartLoadingIndicatorVisible"></ChartSeriesListView>
 
-                        <ClimateButton Text="Add" Icon="fas fa-plus" Compact="true" Class="add-series-button" OnClick="ShowAddDataSetModal" />
+                        <Button Text="Add" Icon="fas fa-plus" Compact="true" Class="add-series-button" OnClick="ShowAddDataSetModal" />
                     </div>
 
                     <div class="chart-wrapper @(NoChartDataAvailable ? "chart-no-data" : "")" @ref="chartWrapper">
@@ -25,18 +25,18 @@
                     </div>
 
                     <div class="chart-controls">
-                        <DelayedTooltip Text="Toggle between showing all available years and the filtered date range">
-                            <ClimateButton Text="Chart all data" Icon="@(ChartAllData ? "fas fa-check-square" : "fas fa-square")" Class="chart-control" OnClick="ChartAllDataToggle" />
-                        </DelayedTooltip>
+                        <Tooltip Text="Toggle between showing all available years and the filtered date range">
+                            <Button Text="Chart all data" Icon="@(ChartAllData ? "fas fa-check-square" : "fas fa-square")" Class="chart-control" OnClick="ChartAllDataToggle" />
+                        </Tooltip>
 
                         @if (!string.IsNullOrWhiteSpace(SelectedStartYear) || !string.IsNullOrWhiteSpace(SelectedEndYear))
                         {
-                            <DelayedTooltip Text="Remove the active year filter">
-                                <ClimateButton Text="Clear filter" Icon="fa-solid fa-filter-circle-xmark" Class="chart-control" OnClick="OnClearFilter" />
-                            </DelayedTooltip>
+                            <Tooltip Text="Remove the active year filter">
+                                <Button Text="Clear filter" Icon="fa-solid fa-filter-circle-xmark" Class="chart-control" OnClick="OnClearFilter" />
+                            </Tooltip>
                         }
 
-                        <DelayedTooltip Text="Change how data is grouped on the x-axis: year, year and month, month, day">
+                        <Tooltip Text="Change how data is grouped on the x-axis: year, year and month, month, day">
                             <DropdownButton Text="Grouping" Icon="fas fa-calendar">
                                 <MenuContent>
                                     <DropdownItem OnClick="() => OnSelectedBinGranularityChanged(BinGranularities.ByYear)">Year</DropdownItem>
@@ -45,11 +45,11 @@
                                     <DropdownItem OnClick="() => OnSelectedBinGranularityChanged(BinGranularities.ByDayOnly)">Day</DropdownItem>
                                 </MenuContent>
                             </DropdownButton>
-                        </DelayedTooltip>
+                        </Tooltip>
 
-                        <DelayedTooltip Text="Change the scale of the chart axes to scale from zero or the minimum value">
+                        <Tooltip Text="Change the scale of the chart axes to scale from zero or the minimum value">
                             <ChartAxisListView Axes="CurrentAxes" ScaleToZero="AxesScaleToZero" OnChanged="@RaiseChartStateChanged" />
-                        </DelayedTooltip>
+                        </Tooltip>
 
                         <AggregationOptions CurrentThreshold="@InternalGroupingThreshold" CurrentGroupingDays="@SelectedGroupingDays" UserOverride="@UserOverridePresetAggregationSettings" OnChanged="@((s) => OnAggregationSettingsChanged(s))" />
 
@@ -58,9 +58,9 @@
                         </div>
 
                         <span class="chart-download-control">
-                            <DelayedTooltip Text="Download the chart data as a CSV file" Style="display: inline-block">
-                                <ClimateButton Text="Download" Icon="fas fa-download" Class="chart-control chart-control-download" OnClick="OnDownloadDataClicked" />
-                            </DelayedTooltip>
+                            <Tooltip Text="Download the chart data as a CSV file" Style="display: inline-block">
+                                <Button Text="Download" Icon="fas fa-download" Class="chart-control chart-control-download" OnClick="OnDownloadDataClicked" />
+                            </Tooltip>
                         </span>
                     </div>
                 </div>

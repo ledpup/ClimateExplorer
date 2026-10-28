@@ -33,7 +33,7 @@
                                value="@(nameFilter ?? string.Empty)"
                                @oninput="@(e => OnNameFilterChanged(e.Value?.ToString()))" />
                     </div>
-                    <DelayedTooltip Text="Filter locations by country">
+                    <Tooltip Text="Filter locations by country">
                         <Select TValue="string"
                                 Value="@(countryFilter ?? string.Empty)"
                                 ValueChanged="@OnCountryFilterChanged"
@@ -44,8 +44,8 @@
                                 <SelectItem Value="@country">@(country.Length > 20 ? country[..20] + "…" : country)</SelectItem>
                             }
                         </Select>
-                    </DelayedTooltip>
-                    <DelayedTooltip Text="Filter locations by heating score, a measure of how much a location has warmed relative to all other locations.<br>The score is created by ordering all anomalies and grouping into deciles." Multiline="true">
+                    </Tooltip>
+                    <Tooltip Text="Filter locations by heating score, a measure of how much a location has warmed relative to all other locations.<br>The score is created by ordering all anomalies and grouping into deciles." Multiline="true">
                         <Select TValue="string"
                                 Value="@(heatingScoreFilter ?? string.Empty)"
                                 ValueChanged="@OnHeatingScoreFilterChanged"
@@ -59,7 +59,7 @@
                             <SelectItem Value="@HeatingScoreFilterNegative">Negative (&lt; 0)</SelectItem>
                             <SelectItem Value="@HeatingScoreFilterNullScore">No heating score</SelectItem>
                         </Select>
-                    </DelayedTooltip>
+                    </Tooltip>
                 </div>
                 <span class="location-count">@filteredCount location@(filteredCount == 1 ? string.Empty : "s")</span>
             </div>
@@ -120,7 +120,7 @@
                             <td class="data-sources-cell">
                                 @if (HasDataSources(location.Id))
                                 {
-                                    <ClimateButton Variant="ButtonVariant.Link"
+                                    <Button Variant="ButtonVariant.Link"
                                                    Text="@GetDataSourcesDisplay(location.Id)"
                                                    AriaLabel="@($"View data sources for {location.Name}")"
                                                    Class="data-sources-link"
@@ -132,12 +132,12 @@
                                 }
                             </td>
                             <td class="recent-observations-cell text-center">
-                                <ClimateButton Variant="ButtonVariant.Link" Text="View" Class="record-link" OnClick="@(() => ShowRecentObservationsAsync(location))" />
+                                <Button Variant="ButtonVariant.Link" Text="View" Class="record-link" OnClick="@(() => ShowRecentObservationsAsync(location))" />
                             </td>
                             <td class="@(location.RecordHigh is null ? null : "text-end")">
                                 @if (location.RecordHigh is not null)
                                 {
-                                    <ClimateButton Variant="ButtonVariant.Link" Text="@FormatRecordHigh(location)" Class="record-link" OnClick="@(() => ShowClimateRecordsAsync(location))" />
+                                    <Button Variant="ButtonVariant.Link" Text="@FormatRecordHigh(location)" Class="record-link" OnClick="@(() => ShowClimateRecordsAsync(location))" />
                                 }
                                 else
                                 {

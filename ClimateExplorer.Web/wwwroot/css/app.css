@@ -371,7 +371,7 @@ html:has(dialog.climate-modal[open]) {
     background-color: var(--climate-color-control-hover);
 }
 
-/* The shared tooltip shown by js/tooltip.js for DelayedTooltip. A top-layer popover outside every
+/* The shared tooltip shown by js/tooltip.js for the Tooltip component. A top-layer popover outside every
    component, so it's styled here. js/floating.js sets its position. */
 .climate-tooltip {
     /* Reset the UA popover styles (centred in the viewport, with padding and a border) */

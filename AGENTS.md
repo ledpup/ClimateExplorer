@@ -31,9 +31,10 @@
 
 Use the following existing common components, when appriopriate:
 - Autocomplete (text box with suggestions; needs an `AriaLabel`, or a `<label for>` pointing at its `Id`)
-- ClimateButton
+- Button (`<Button>` is the component and `<button>` the HTML element; Razor matches tags case-sensitively, so
+  don't "fix" one into the other)
+- Checkbox
 - Collapsible
-- DelayedTooltip
 - DropdownButton
 - InfoPanel
 - LoadingIndicator
@@ -48,11 +49,12 @@ Use the following existing common components, when appriopriate:
 - SidePanel
 - Tabs / Tab (needs an `AriaLabel`; it renders the tab strip only, and the parent renders the selected content)
 - TextInput (fires on change, not per keystroke; the parent validates and passes `Invalid`/`ErrorMessage`)
+- Tooltip
 
 There are Blazorise components in use, with common styling in `app.css` such as:
 - Table
 
-Common inputs (`Select`, `TextInput`, `ClimateCheckbox`) bind with `Value`/`ValueChanged` (not `Checked`, `Text`, `SelectedValue`, etc.).
+Common inputs (`Select`, `TextInput`, `Checkbox`) bind with `Value`/`ValueChanged` (not `Checked`, `Text`, `SelectedValue`, etc.).
 Style Blazorise child elements with `::deep`; if a component's root is a Blazorise component,
 wrap it in a `<div>` with `display: contents` so the scoped CSS applies.
 

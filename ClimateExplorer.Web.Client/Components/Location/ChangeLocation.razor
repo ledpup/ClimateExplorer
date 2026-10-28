@@ -5,8 +5,8 @@
 
 <Modal @ref="modal" Title="Change location" Size="ModalSize.Large">
     <div class="mt-1 d-flex gap-4">
-        <ClimateButton Text="Near me" Icon="fas fa-location-crosshairs" OnClick="NearMeClicked" />
-        <ClimateButton Text="Random location" Icon="fas fa-shuffle" OnClick="RandomLocationClicked" />
+        <Button Text="Near me" Icon="fas fa-location-crosshairs" OnClick="NearMeClicked" />
+        <Button Text="Random location" Icon="fas fa-shuffle" OnClick="RandomLocationClicked" />
     </div>
 
     @if (BrowserLocationErrorMessage != null)
@@ -56,7 +56,7 @@
                                 var location = LocationDictionary[row.LocationId];
                                 <tr>
                                     <td>
-                                        <ClimateButton Variant="ButtonVariant.Link"
+                                        <Button Variant="ButtonVariant.Link"
                                                        Text="@location.Name"
                                                        title="@location.FullTitle"
                                                        OnClick="@(() => FireOnLocationChange(row.LocationId))" />

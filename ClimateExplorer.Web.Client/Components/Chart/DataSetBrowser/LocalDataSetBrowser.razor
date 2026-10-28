@@ -10,11 +10,11 @@
 </Collapsible>
 
 <div class="dataset-filter-row">
-    <DelayedTooltip Text="<p>Show adjusted temperature data sets, homogenised to correct for non-climatic influences such as station relocations and instrument changes.</p><p>Uncheck to show raw, unadjusted data sets instead.</p>" Multiline="true">
-        <ClimateCheckbox Text="Adjusted"
+    <Tooltip Text="<p>Show adjusted temperature data sets, homogenised to correct for non-climatic influences such as station relocations and instrument changes.</p><p>Uncheck to show raw, unadjusted data sets instead.</p>" Multiline="true">
+        <Checkbox Text="Adjusted"
                          Value="@ShowAdjustedDataSets"
                          ValueChanged="OnAdjustedChanged" />
-    </DelayedTooltip>
+    </Tooltip>
 </div>
 
 <DataSetFolderList RootFolders="@RootFolders" OnAddDataSet="@OnAddDataSet" />

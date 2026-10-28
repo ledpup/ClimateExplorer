@@ -7,7 +7,7 @@
             <Value>
                 @foreach (var year in FirstList)
                 {
-                    <DelayedTooltip Text="@GetTooltip(year)" Multiline="true" Style="display: inline"><button type="button" class="year-link" @onclick="() => FilterToYear(year)">@year</button></DelayedTooltip><span>@(FirstList.IndexOf(year) < FirstList.Count - 1 ? ", " : string.Empty)</span>
+                    <Tooltip Text="@GetTooltip(year)" Multiline="true" Style="display: inline"><button type="button" class="year-link" @onclick="() => FilterToYear(year)">@year</button></Tooltip><span>@(FirstList.IndexOf(year) < FirstList.Count - 1 ? ", " : string.Empty)</span>
                 }
             </Value>
         </OverviewField>
@@ -15,7 +15,7 @@
             <Value>
                 @foreach (var year in SecondList)
                 {
-                    <DelayedTooltip Text="@GetTooltip(year)" Multiline="true" Style="display: inline"><button type="button" class="year-link" @onclick="() => FilterToYear(year)">@year</button></DelayedTooltip><span>@(SecondList.IndexOf(year) < SecondList.Count - 1 ? ", " : string.Empty)</span>
+                    <Tooltip Text="@GetTooltip(year)" Multiline="true" Style="display: inline"><button type="button" class="year-link" @onclick="() => FilterToYear(year)">@year</button></Tooltip><span>@(SecondList.IndexOf(year) < SecondList.Count - 1 ? ", " : string.Empty)</span>
                 }
             </Value>
         </OverviewField>

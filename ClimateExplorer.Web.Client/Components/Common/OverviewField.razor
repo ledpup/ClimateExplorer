@@ -1,7 +1,7 @@
 @using System.Text.RegularExpressions
 @using ClimateExplorer.Web.Client.Components.Common
 
-<DelayedTooltip Text="@(Tooltip == null ? Title : Tooltip)" Style="display: inline-block" Multiline="@TooltipMultiline">
+<Tooltip Text="@(Tooltip == null ? Title : Tooltip)" Style="display: inline-block" Multiline="@TooltipMultiline">
     <div class="overview-field @(PopupContent != null || OnClick.HasDelegate ? "is-clickable" : "")" @onclick="HandleClick">
         <div class="label">@Label</div>
         <div class="value">
@@ -16,7 +16,7 @@
         </div>
         <div class="additional-info">@AdditionalInfo</div>
     </div>
-</DelayedTooltip>
+</Tooltip>
 
 @if (PopupContent != null)
 {

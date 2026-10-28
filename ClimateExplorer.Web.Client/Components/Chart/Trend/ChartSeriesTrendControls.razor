@@ -10,21 +10,21 @@
         {
             <span class="trend-block-label">@SlotLabel</span>
         }
-        <DelayedTooltip Text="About this trend" Style="display: inline-block">
+        <Tooltip Text="About this trend" Style="display: inline-block">
             <button type="button" class="trend-icon-button" aria-label="@AboutButtonLabel" @onclick="@OnAboutTrendClicked">
                 <i class="fas fa-info"></i>
             </button>
-        </DelayedTooltip>
+        </Tooltip>
         @if (CanRemove)
         {
-            <DelayedTooltip Text="Remove this trend" Style="display: inline-block">
+            <Tooltip Text="Remove this trend" Style="display: inline-block">
                 <button type="button" class="trend-icon-button trend-remove" aria-label="@RemoveButtonLabel" @onclick="@OnRemoveClicked">
                     <i class="fas fa-times"></i>
                 </button>
-            </DelayedTooltip>
+            </Tooltip>
         }
     </div>
-    <DelayedTooltip Text="The shape fitted to the data: a straight line, or a curve that can bend (quadratic) or bend and inflect (cubic). Changing this can change which periods have a statistically significant trend" Style="display: block">
+    <Tooltip Text="The shape fitted to the data: a straight line, or a curve that can bend (quadratic) or bend and inflect (cubic). Changing this can change which periods have a statistically significant trend" Style="display: block">
         <div class="form-row">
             <label class="form-label" for="@RegressionTypeId">Regression type</label>
             <span class="form-control-wrap">
@@ -38,8 +38,8 @@
                 </Select>
             </span>
         </div>
-    </DelayedTooltip>
-    <DelayedTooltip Text="Which period the trend is fitted over. Only periods with a statistically significant trend can be shown" Style="display: block">
+    </Tooltip>
+    <Tooltip Text="Which period the trend is fitted over. Only periods with a statistically significant trend can be shown" Style="display: block">
         <div class="form-row">
             <label class="form-label" for="@TrendPeriodId">Trend period</label>
             <span class="form-control-wrap">
@@ -66,8 +66,8 @@
                 }
             </span>
         </div>
-    </DelayedTooltip>
-    <DelayedTooltip Text="@PredictUntilTooltip" Style="display: block">
+    </Tooltip>
+    <Tooltip Text="@PredictUntilTooltip" Style="display: block">
         <div class="form-row">
             <label class="form-label" for="@PredictUntilId">Predict until</label>
             <span class="form-control-wrap">
@@ -79,7 +79,7 @@
                            ErrorMessage="@PredictUntilValidationMessage" />
             </span>
         </div>
-    </DelayedTooltip>
+    </Tooltip>
 </div>
 
 <ChartTrendPanel @ref="trendPanel" Trend="@Trend" SlotLabel="@SlotLabel" />

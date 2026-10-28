@@ -1,7 +1,7 @@
 # Blazorise Package Removal and Component Renames
 
 - **Date:** 2026-10-28
-- **Status:** Part A implemented 2026-10-28 (see addendum); Parts B and C proposed. Build and unit tests are clean; the UI is unverified.
+- **Status:** Parts A and B implemented 2026-10-28 (see addenda); Part C proposed. Build and unit tests are clean; the UI is unverified.
 - **Author:** Claude
 - **Scope:** `ClimateExplorer.Web.Client.csproj`, both `Program.cs` files, `ClimateExplorer.Web/App.razor`,
   `app.css`, remaining `@using Blazorise` lines, `ClimateButton`/`ClimateCheckbox`/`DelayedTooltip`
@@ -146,3 +146,29 @@ Without the optional tooltip rename: ~35 files, ~136 lines changed. Risk: low. I
   It was unused and is removed.
 - **Not touched:** `README.md` still credits Blazorise for charting, and `.github/copilot-instructions.md` still
   has the Blazorise 2.x and CSS-isolation sections. Both are documentation, so they belong with Part C.
+
+## Addendum — implementation notes (Part B, 2026-10-28)
+
+### What shipped
+
+- **All three renames, including the optional `DelayedTooltip` → `Tooltip`.** `git mv` moved `ClimateButton.razor`/`.razor.cs`/
+  `.razor.css` to `Button.*`, `ClimateCheckbox.razor`/`.razor.cs` to `Checkbox.*` (it has no `.razor.css`), and
+  `DelayedTooltip.razor`/`.razor.cs`/`.razor.css` to `Tooltip.*`. The partial classes are renamed to match.
+- **References.** A whole-word replace across `.razor`, `.cs`, `.css` and `.js` in `ClimateExplorer.Web.Client` and
+  `ClimateExplorer.Web` updated tags, `<see cref>`s and comments. That's 35 files, including the comments in
+  `PillButton.razor.cs`/`.razor.css`, `tooltip.js`, `App.razor` and `app.css`. Comments where the bare name read
+  ambiguously ("the tooltip for every Tooltip") now say "the Tooltip component".
+- **CSS class names kept** (`climate-button`, `climate-checkbox`, `tooltip-anchor`), as planned.
+- **AGENTS.md.** The components list has `Button` (with the `<Button>` vs `<button>` note from step 4), `Checkbox` and
+  `Tooltip` in place of `ClimateButton`/`DelayedTooltip`, and the bind-with-`Value` line says `Checkbox`. The rest of
+  AGENTS.md is left for Part C.
+- **Verify.** `dotnet build -c Release` has 0 errors and the same 11 MSTest analyzer warnings. `ClimateExplorer.UnitTests`:
+  980 passed.
+
+### Deviations from the plan
+
+- **`Tooltip` vs `OverviewField.Tooltip`.** `OverviewField` has a `Tooltip` string parameter and now renders
+  `<Tooltip Text="@(Tooltip == null ? Title : Tooltip)">`. Razor emits the component by its fully qualified type
+  name, so the tag and the property don't clash, and the build confirms it. Nothing else in the solution is called
+  `Button`, `Checkbox` or `Tooltip`.
+- Historical design docs still say `ClimateButton`/`ClimateCheckbox`/`DelayedTooltip`, as planned.

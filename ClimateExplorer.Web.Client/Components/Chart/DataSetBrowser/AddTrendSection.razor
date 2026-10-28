@@ -8,7 +8,7 @@
     }
     else
     {
-        <DelayedTooltip Text="Fit and project a trend for a series that's already on the chart" Style="display: block">
+        <Tooltip Text="Fit and project a trend for a series that's already on the chart" Style="display: block">
             <div class="form-row">
                 <label class="form-label" for="@seriesSelectId">Series</label>
                 <span class="form-control-wrap">
@@ -20,7 +20,7 @@
                     </Select>
                 </span>
             </div>
-        </DelayedTooltip>
+        </Tooltip>
 
         @for (var i = 0; i < SelectedSeries!.Trends.Count; i++)
         {
@@ -34,11 +34,11 @@
 
         @if (SelectedSeries.Trends.Count < ChartSeriesDefinition.MaxTrends)
         {
-            <DelayedTooltip Text="Fit a trend and project it past the end of the data" Style="display: block">
+            <Tooltip Text="Fit a trend and project it past the end of the data" Style="display: block">
                 <button type="button" class="trend-add-button" @onclick="@OnAddTrendClicked">
                     <i class="fas fa-plus"></i> Add trend
                 </button>
-            </DelayedTooltip>
+            </Tooltip>
         }
     }
 </div>

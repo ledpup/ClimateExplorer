@@ -8,18 +8,18 @@
 <Collapsible @ref="LocationCollapsible" Title="@Location?.DisplayTitle" CompactTitle="@Location?.CodeTitle" MinimalTitle="@Location?.Name" OnShowOrHide="OverviewShowOrHideHandler" CollapserSize="Collapsible.CollapserSizes.ExtraLarge">
     <CollapsedContent>
         <span class="chart-controls">
-            <DelayedTooltip Multiline="true" Style="display: inline-block" Text="Change the current location. Four ways to choose:<br>• Near me — use browser location<br>• Random — a surprise location<br>• Search — type a location name<br>• Nearby — closest stations">
-                <ClimateButton Text="@(ChangeLocationLoading ? "Loading locations..." : "Change location")" Icon="fas fa-map" Class="chart-control" Disabled="@ChangeLocationLoading" OnClick="() => ChangeLocationClicked(new EventArgs())" />
-            </DelayedTooltip>
+            <Tooltip Multiline="true" Style="display: inline-block" Text="Change the current location. Four ways to choose:<br>• Near me — use browser location<br>• Random — a surprise location<br>• Search — type a location name<br>• Nearby — closest stations">
+                <Button Text="@(ChangeLocationLoading ? "Loading locations..." : "Change location")" Icon="fas fa-map" Class="chart-control" Disabled="@ChangeLocationLoading" OnClick="() => ChangeLocationClicked(new EventArgs())" />
+            </Tooltip>
             <span class="dropdown-wrapper">
                 <DropdownButton Icon="fas fa-cog" AriaLabel="Location dashboard options">
                     <MenuContent>
                         <div class="dashboard-options-menu">
-                            <ClimateCheckbox Class="climate-checkbox--menu-row"
+                            <Checkbox Class="climate-checkbox--menu-row"
                                              Value="@DisplayPrecipitation"
                                              ValueChanged="@(async (bool v) => await TogglePrecipitation())">
                                 Precipitation stripe
-                            </ClimateCheckbox>
+                            </Checkbox>
                             <DropdownItem Disabled="@(Location is null)"
                                           aria-label="@DataSourcesButtonLabel"
                                           OnClick="ShowDataSetMetadataAsync">

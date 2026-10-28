@@ -6,7 +6,7 @@
         foreach (var s in SuggestedPresets)
         {
             <div class="@CalculateClassForSuggestedDataSetElement(s)">
-                <DelayedTooltip Text="@s.Description" Style="display: block">
+                <Tooltip Text="@s.Description" Style="display: block">
                     <div class="main" @onclick="() => OnChartPresetSelected.InvokeAsync(s)">
                         <div class="title">@s.Title</div>
                         @if (s.MissingChartSeries)
@@ -14,7 +14,7 @@
                             <div class="missing-chart-series"><i class="fas fa-info-circle"></i> Some data not available</div>
                         }
                     </div>
-                </DelayedTooltip>
+                </Tooltip>
             </div>
         }
         <div class="suggested-data-set">

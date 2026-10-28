@@ -15,7 +15,7 @@
     <div class="filter-row">
     @if (AvailableDataTypes.Count > 0 && SelectedDataType is not null)
     {
-        <DelayedTooltip Text="Select the type of climate data to view records for">
+        <Tooltip Text="Select the type of climate data to view records for">
             <Select TValue="DataType"
                     Value="@SelectedDataType.Value"
                     ValueChanged="@OnDataTypeChanged"
@@ -25,16 +25,16 @@
                     <SelectItem Value="@dt">@ChartSeriesDefinition.MapDataTypeToFriendlyName(dt)</SelectItem>
                 }
             </Select>
-        </DelayedTooltip>
+        </Tooltip>
         @if (ActiveView == RecordView.Daily || ActiveView == RecordView.Monthly || ActiveView == RecordView.Top100)
         {
             @if (ActiveView == RecordView.Daily)
             {
-                <DelayedTooltip Text="Set filter to today's date">
-                    <ClimateButton Text="Today" Class="today-btn" Disabled="@IsTodaySelected" OnClick="OnTodayClicked" />
-                </DelayedTooltip>
+                <Tooltip Text="Set filter to today's date">
+                    <Button Text="Today" Class="today-btn" Disabled="@IsTodaySelected" OnClick="OnTodayClicked" />
+                </Tooltip>
             }
-            <DelayedTooltip Text="Filter records to a specific month, or view all months">
+            <Tooltip Text="Filter records to a specific month, or view all months">
                 <Select TValue="int"
                         Value="@SelectedMonth"
                         ValueChanged="@OnMonthChanged"
@@ -46,10 +46,10 @@
                         <SelectItem Value="@monthNum">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(monthNum)</SelectItem>
                     }
                 </Select>
-            </DelayedTooltip>
+            </Tooltip>
             @if (ActiveView == RecordView.Daily && SelectedMonth != 0)
             {
-                <DelayedTooltip Text="Filter records to a specific day, or view all days">
+                <Tooltip Text="Filter records to a specific day, or view all days">
                     <Select TValue="int"
                             Value="@SelectedDay"
                             ValueChanged="@OnDayChanged"
@@ -61,18 +61,18 @@
                             <SelectItem Value="@dayNum">@dayNum</SelectItem>
                         }
                     </Select>
-                </DelayedTooltip>
+                </Tooltip>
             }
         }
-        <DelayedTooltip Text="<p>By using data from nearby stations, adjusted temperatures are corrected for non-climatic influences such as station relocations and instrument changes.</p><p>Uncheck to see raw, unmodified measurements.</p><p>If disabled, there is only adjusted or raw data available, not both.</p>" Multiline="true">
-            <ClimateCheckbox Text="Adjusted"
+        <Tooltip Text="<p>By using data from nearby stations, adjusted temperatures are corrected for non-climatic influences such as station relocations and instrument changes.</p><p>Uncheck to see raw, unmodified measurements.</p><p>If disabled, there is only adjusted or raw data available, not both.</p>" Multiline="true">
+            <Checkbox Text="Adjusted"
                                 Value="@(SelectedDataAdjustment == DataAdjustment.Adjusted)"
                                 ValueChanged="OnAdjustedChanged"
                                 Disabled="@(AvailableDataAdjustments.Count == 1)" />
-        </DelayedTooltip>
-        <DelayedTooltip Text="Toggle sort order">
-            <ClimateButton Text="@SortLabel" Icon="@SortToggleIcon" Class="sort-toggle-btn" OnClick="OnSortToggled" />
-        </DelayedTooltip>
+        </Tooltip>
+        <Tooltip Text="Toggle sort order">
+            <Button Text="@SortLabel" Icon="@SortToggleIcon" Class="sort-toggle-btn" OnClick="OnSortToggled" />
+        </Tooltip>
     }
     </div>
     @if (ActiveView != RecordView.Top100)
@@ -190,7 +190,7 @@
                                 PageChanged="@OnPageChanged"
                                 AriaLabel="Climate records pages" />
                                 <div class="d-flex align-items-center gap-1">
-                                    <DelayedTooltip Text="Number of records per page">
+                                    <Tooltip Text="Number of records per page">
                                         <Select TValue="int"
                                         Value="@Count"
                                         ValueChanged="@OnCountChanged"
@@ -199,7 +199,7 @@
                                             <SelectItem Value="20">20</SelectItem>
                                             <SelectItem Value="50">50</SelectItem>
                                         </Select>
-                                    </DelayedTooltip>
+                                    </Tooltip>
                                 </div>
                             </div>
                             <span class="text-muted">@StartRecord-@EndRecord of @(ClimateRecordsResult!.TotalCount)</span>
@@ -210,7 +210,7 @@
             @if (ClimateRecordRows.Count > 0)
             {
                 <div class="d-flex justify-content-end mt-2">
-                    <ClimateButton Text="Download" Icon="fas fa-download" Class="download-button" OnClick="DownloadAllRecords" />
+                    <Button Text="Download" Icon="fas fa-download" Class="download-button" OnClick="DownloadAllRecords" />
                 </div>
             }
             </LoadingIndicator>

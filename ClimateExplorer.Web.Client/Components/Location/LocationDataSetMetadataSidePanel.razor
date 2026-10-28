@@ -19,7 +19,7 @@
             {
                 <div class="location-dataset-metadata-state error">
                     <span><i class="fas fa-triangle-exclamation" aria-hidden="true"></i> @errorMessage</span>
-                    <ClimateButton Text="Retry" Icon="fas fa-rotate-right" Class="location-dataset-metadata-retry" OnClick="RetryAsync" />
+                    <Button Text="Retry" Icon="fas fa-rotate-right" Class="location-dataset-metadata-retry" OnClick="RetryAsync" />
                 </div>
             }
             else if (metadata is { Count: 0 })

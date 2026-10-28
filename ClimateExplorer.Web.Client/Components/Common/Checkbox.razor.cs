@@ -2,7 +2,7 @@ namespace ClimateExplorer.Web.Client.Components.Common;
 
 using Microsoft.AspNetCore.Components;
 
-public partial class ClimateCheckbox
+public partial class Checkbox
 {
     [Parameter]
     public string? Text { get; set; }

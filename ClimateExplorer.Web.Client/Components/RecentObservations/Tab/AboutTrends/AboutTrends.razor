@@ -36,11 +36,11 @@
 
             <TrendStatTable Sections="@BuildSections(metric, selectedWindow)" />
 
-            <DelayedTooltip Text="Download the yearly data behind this trend">
+            <Tooltip Text="Download the yearly data behind this trend">
                 <button type="button" class="trends-download" aria-label="Download the yearly data behind this trend" @onclick="@(() => OnDownloadClicked(metric, selectedWindow))">
                     <i class="fas fa-download" aria-hidden="true"></i> Download data
                 </button>
-            </DelayedTooltip>
+            </Tooltip>
         }
     }
     </div>

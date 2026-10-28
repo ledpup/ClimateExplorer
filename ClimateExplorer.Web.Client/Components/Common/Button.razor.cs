@@ -3,7 +3,7 @@ namespace ClimateExplorer.Web.Client.Components.Common;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
-public partial class ClimateButton
+public partial class Button
 {
     [Parameter]
     public string? Text { get; set; }
@@ -63,6 +63,6 @@ public partial class ClimateButton
 
     // No label to size against (just an icon glyph) - Font Awesome forces line-height: 1 on its
     // icons, which otherwise leaves this button shorter than its text-labelled siblings. See
-    // ClimateButton.razor.css.
+    // Button.razor.css.
     private bool IsIconOnly => !string.IsNullOrWhiteSpace(Icon) && string.IsNullOrWhiteSpace(Text) && ChildContent is null;
 }

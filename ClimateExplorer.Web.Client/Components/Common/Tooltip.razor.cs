@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Components;
 /// Shows <see cref="Text"/> in a tooltip when <see cref="ChildContent"/> is hovered or gets keyboard focus.
 /// Renders only data-tooltip attributes; wwwroot/js/tooltip.js (loaded from App.razor) shows the tooltip.
 /// </summary>
-public partial class DelayedTooltip
+public partial class Tooltip
 {
     [Parameter]
     public RenderFragment? ChildContent { get; set; }

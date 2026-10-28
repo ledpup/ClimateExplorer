@@ -9,7 +9,7 @@
             @foreach (var ds in f.DataSets)
             {
                 <div class="entry-list">
-                    <ClimateButton Variant="ButtonVariant.Link" Icon="fas fa-plus" AriaLabel="@($"Add {ds.Name}")" Class="add-dataset" OnClick="() => AddDataSet(ds)" /> <span class="dataset-name">@ds.Name</span>
+                    <Button Variant="ButtonVariant.Link" Icon="fas fa-plus" AriaLabel="@($"Add {ds.Name}")" Class="add-dataset" OnClick="() => AddDataSet(ds)" /> <span class="dataset-name">@ds.Name</span>
                 </div>
             }
         </div>
