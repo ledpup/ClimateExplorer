@@ -1,17 +1,17 @@
-<nav class="climate-pagination @Class" aria-label="@AriaLabel">
+<nav class="pagination @Class" aria-label="@AriaLabel">
     <ul>
         @foreach (var pageNum in GetVisiblePages())
         {
             @if (pageNum == -1)
             {
-                <li class="climate-pagination-gap" aria-hidden="true">&hellip;</li>
+                <li class="pagination-gap" aria-hidden="true">&hellip;</li>
             }
             else
             {
                 var pageNumber = pageNum;
                 <li>
                     <button type="button"
-                            class="climate-pagination-page"
+                            class="pagination-page"
                             aria-current="@(CurrentPage == pageNumber ? "page" : null)"
                             aria-label="@($"Page {pageNumber}")"
                             @onclick="() => OnPageClicked(pageNumber)">@pageNumber</button>

@@ -28,6 +28,6 @@ public partial class DropdownItem
     public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
 
     private string CssClass => string.IsNullOrWhiteSpace(Class)
-        ? "climate-dropdown-item"
-        : $"climate-dropdown-item {Class}";
+        ? "dropdown-item"
+        : $"dropdown-item {Class}";
 }

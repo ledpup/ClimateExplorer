@@ -45,8 +45,8 @@
     font-size: 0.875rem;
 }
 
-table.climate-table thead th:first-child,
-table.climate-table td:first-child {
+table.table thead th:first-child,
+table.table td:first-child {
     width: 5rem;
     min-width: 5rem;
     max-width: 5rem;

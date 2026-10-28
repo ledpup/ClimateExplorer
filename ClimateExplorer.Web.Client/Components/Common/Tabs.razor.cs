@@ -44,8 +44,8 @@ public partial class Tabs : IAsyncDisposable
 
     private string CssClass =>
         string.IsNullOrWhiteSpace(Class)
-            ? "climate-tabs"
-            : $"climate-tabs {Class}";
+            ? "tabs"
+            : $"tabs {Class}";
 
     /// <summary>
     /// The id of the tab called <paramref name="name"/> in the strip whose <see cref="Id"/> is

@@ -44,13 +44,13 @@ public partial class Button
         {
             var classes = Variant switch
             {
-                ButtonVariant.Link => "climate-link-button",
-                _ => Compact ? "climate-button climate-button--compact" : "climate-button",
+                ButtonVariant.Link => "link-button",
+                _ => Compact ? "button button--compact" : "button",
             };
 
             if (IsIconOnly)
             {
-                classes += " climate-button--icon-only";
+                classes += " button--icon-only";
             }
 
             return string.IsNullOrWhiteSpace(Class)

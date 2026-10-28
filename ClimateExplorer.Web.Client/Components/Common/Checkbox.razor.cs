@@ -33,8 +33,8 @@ public partial class Checkbox
 
     private string CssClass =>
         string.IsNullOrWhiteSpace(Class)
-            ? "climate-checkbox"
-            : $"climate-checkbox {Class}";
+            ? "checkbox"
+            : $"checkbox {Class}";
 
     private async Task OnChanged(ChangeEventArgs e)
     {

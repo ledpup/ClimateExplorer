@@ -1,7 +1,7 @@
 /* ── Table ───────────────────────────────────────────────────────────────── */
-/* Plain <table class="climate-table">. Modifiers: climate-table--striped, climate-table--compact;
+/* Plain <table class="table">. Modifiers: table--striped, table--compact;
    rows: is-highlighted; sortable headers: <th aria-sort><button class="sort-button">. */
-table.climate-table {
+table.table {
     width: 100%;
     border-collapse: collapse;
     caption-side: bottom;
@@ -10,17 +10,17 @@ table.climate-table {
 }
 
 /* Low specificity (:where) so component-scoped alignment rules still win. */
-:where(table.climate-table) th {
+:where(table.table) th {
     font-weight: normal;
     text-align: start;
 }
 
-:where(table.climate-table) td:nth-child(n+2) {
+:where(table.table) td:nth-child(n+2) {
     text-align: center;
     vertical-align: middle;
 }
 
-table.climate-table thead th {
+table.table thead th {
     background-color: #f2f2f2;
     color: #2a3d39;
     border-top: none;
@@ -32,7 +32,7 @@ table.climate-table thead th {
     padding: 0.5rem 0.75rem;
 }
 
-table.climate-table .colour-col {
+table.table .colour-col {
     width: 75px;
     min-width: 10px;
     max-width: 75px;
@@ -40,53 +40,53 @@ table.climate-table .colour-col {
     border-right: 1px solid #eef1f0;
 }
 
-    table.climate-table thead th.colour-col {
+    table.table thead th.colour-col {
         border-right: 1px solid #c4d4d1;
     }
 
-table.climate-table thead th:last-child {
+table.table thead th:last-child {
     border-right: none;
 }
 
-table.climate-table td {
+table.table td {
     vertical-align: middle;
     padding: 0.4rem 0.75rem;
     border-bottom: 1px solid #eef1f0;
     border-right: 1px solid #eef1f0;
 }
 
-table.climate-table td:last-child {
+table.table td:last-child {
     border-right: none;
 }
 
-table.climate-table tbody tr:last-child td {
+table.table tbody tr:last-child td {
     border-bottom: none;
 }
 
-table.climate-table--striped tbody tr:nth-child(odd) td {
+table.table--striped tbody tr:nth-child(odd) td {
     background-color: #f2f2f2;
 }
 
-table.climate-table tbody tr.is-highlighted td {
+table.table tbody tr.is-highlighted td {
     background-color: #cff4fc;
 }
 
-table.climate-table tbody tr:hover td:not(.colour-col) {
+table.table tbody tr:hover td:not(.colour-col) {
     background-color: #e0edeb;
 }
 
-table.climate-table--compact thead th,
-table.climate-table--compact td {
+table.table--compact thead th,
+table.table--compact td {
     padding: 0.25rem 0.5rem;
 }
 
 /* ── Sortable header ─────────────────────────────────────────────────────── */
 /* The button fills the header cell, so the whole cell stays clickable. */
-table.climate-table th:has(> .sort-button) {
+table.table th:has(> .sort-button) {
     padding: 0;
 }
 
-table.climate-table .sort-button {
+table.table .sort-button {
     display: block;
     width: 100%;
     min-height: 44px;
@@ -102,11 +102,11 @@ table.climate-table .sort-button {
     user-select: none;
 }
 
-    table.climate-table .sort-button:hover {
+    table.table .sort-button:hover {
         background-color: var(--climate-color-control-hover);
     }
 
-    table.climate-table .sort-button:focus-visible {
+    table.table .sort-button:focus-visible {
         outline: 2px solid var(--climate-color-control-text);
         outline-offset: -2px;
     }

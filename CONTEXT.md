@@ -215,7 +215,7 @@ Flexbox row, `flex-wrap: wrap`, `margin: 20px 0 -16px 0` (negative bottom compen
 All modals use the common `Modal` component (a native `<dialog>` opened with `showModal()`), which draws the header:
 - Background: `#425f59`, title (`<h2>`, `1.25rem`) and close button white; the close button's hover is `#cfc`
 - Tablet and desktop: the whole modal scrolls in the overlay. Mobile: the modal fits the screen and only its body scrolls
-- The page behind doesn't scroll (`html:has(dialog.climate-modal[open])` in `app.css`)
+- The page behind doesn't scroll (`html:has(dialog.modal[open])` in `app.css`)
 
 ### CSS Isolation (Blazor)
 - Every component has a co-located `.razor.css` file.

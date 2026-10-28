@@ -27,7 +27,7 @@
                 <div class="toolbar-filters">
                     <div class="name-filter-wrapper">
                         <input type="text"
-                               class="climate-control name-filter-input"
+                               class="control name-filter-input"
                                placeholder="Search locations..."
                                aria-label="Search locations"
                                value="@(nameFilter ?? string.Empty)"
@@ -63,7 +63,7 @@
                 </div>
                 <span class="location-count">@filteredCount location@(filteredCount == 1 ? string.Empty : "s")</span>
             </div>
-            <table class="climate-table climate-table--striped locations-table">
+            <table class="table table--striped locations-table">
                 <thead>
                     <tr>
                         <th scope="col" class="name-col" aria-sort="@GetAriaSort("name")">

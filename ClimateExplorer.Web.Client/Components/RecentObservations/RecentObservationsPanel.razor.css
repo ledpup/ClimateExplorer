@@ -128,12 +128,12 @@
 }
 
 .recent-observations-config-control input,
-.recent-observations-config-control ::deep .climate-select {
+.recent-observations-config-control ::deep .select {
     flex: 0 0 auto;
 }
 
 .recent-observations-reference-date-control input,
-.recent-observations-config-control ::deep .climate-select {
+.recent-observations-config-control ::deep .select {
     width: 10.25rem;
 }
 
@@ -145,7 +145,7 @@
     width: 1.9375rem;
 }
 
-/* Border, radius, colours, hover, focus and the touch sizing come from .climate-control in app.css */
+/* Border, radius, colours, hover, focus and the touch sizing come from .control in app.css */
 .recent-observations-input {
     padding: 0.25rem 0.5rem;
 }

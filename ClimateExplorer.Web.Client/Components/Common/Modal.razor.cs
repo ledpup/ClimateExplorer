@@ -76,9 +76,9 @@ public partial class Modal : IAsyncDisposable
         {
             var classes = Size switch
             {
-                ModalSize.Large => "climate-modal climate-modal--large",
-                ModalSize.ExtraLarge => "climate-modal climate-modal--extra-large",
-                _ => "climate-modal",
+                ModalSize.Large => "modal modal--large",
+                ModalSize.ExtraLarge => "modal modal--extra-large",
+                _ => "modal",
             };
 
             return string.IsNullOrWhiteSpace(Class)

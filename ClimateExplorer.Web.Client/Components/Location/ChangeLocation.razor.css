@@ -3,8 +3,8 @@
     margin-top: 4px;
 }
 
-::deep table.climate-table thead th:not(:nth-child(-n+2)),
-::deep table.climate-table tbody td:not(:nth-child(-n+2)) {
+::deep table.table thead th:not(:nth-child(-n+2)),
+::deep table.table tbody td:not(:nth-child(-n+2)) {
     width: 0;
     white-space: nowrap;
 }

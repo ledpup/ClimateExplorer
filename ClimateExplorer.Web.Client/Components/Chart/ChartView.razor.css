@@ -53,7 +53,7 @@
     gap: 16px;
 }
 
-::deep .chart-controls .climate-dropdown {
+::deep .chart-controls .dropdown {
     vertical-align: baseline;
 }
 

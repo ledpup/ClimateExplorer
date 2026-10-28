@@ -1,8 +1,8 @@
-/* The dialog covers the viewport and is transparent; .climate-modal-content is the visible box. So a click on the
+/* The dialog covers the viewport and is transparent; .modal-content is the visible box. So a click on the
    dialog itself is a click on the backdrop, and on tablet and desktop the dialog scrolls the whole modal, as
    Bootstrap's did. On mobile the box fits the screen and only the body scrolls, which keeps the close button in
    view. The box sits near the top, so it doesn't move when content rendered after opening changes its height. */
-.climate-modal {
+.modal {
     --modal-width: 500px;
     --modal-gutter: 1.75rem;
     width: 100%;
@@ -18,19 +18,19 @@
     overscroll-behavior: contain;
 }
 
-.climate-modal--large {
+.modal--large {
     --modal-width: 800px;
 }
 
-.climate-modal--extra-large {
+.modal--extra-large {
     --modal-width: 1140px;
 }
 
-.climate-modal::backdrop {
+.modal::backdrop {
     background-color: rgb(0 0 0 / 50%);
 }
 
-.climate-modal-content {
+.modal-content {
     display: flex;
     flex-direction: column;
     width: min(var(--modal-width), calc(100% - 2 * var(--modal-gutter)));
@@ -41,7 +41,7 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-    .climate-modal[open] .climate-modal-content {
+    .modal[open] .modal-content {
         animation: modal-in 0.15s ease-out;
     }
 }
@@ -53,7 +53,7 @@
     }
 }
 
-.climate-modal-header {
+.modal-header {
     display: flex;
     flex-shrink: 0;
     align-items: center;
@@ -65,13 +65,13 @@
     color: #fff;
 }
 
-.climate-modal-title {
+.modal-title {
     margin: 0;
     font-size: 1.25rem;
     line-height: 1.5;
 }
 
-.climate-modal-close {
+.modal-close {
     display: inline-flex;
     flex-shrink: 0;
     align-items: center;
@@ -88,37 +88,37 @@
     transition: var(--climate-transition-control);
 }
 
-.climate-modal-close:hover {
+.modal-close:hover {
     color: var(--climate-color-control-hover);
 }
 
-.climate-modal-close:focus-visible {
+.modal-close:focus-visible {
     outline: 2px solid #fff;
     outline-offset: 2px;
 }
 
 @media (pointer: coarse) {
-    .climate-modal-close {
+    .modal-close {
         width: 44px;
         height: 44px;
     }
 }
 
-.climate-modal-body {
+.modal-body {
     padding: 1rem;
 }
 
 @media (max-width: 767px) {
-    .climate-modal {
+    .modal {
         --modal-gutter: 0.5rem;
         overflow: hidden;
     }
 
-    .climate-modal-content {
+    .modal-content {
         max-height: calc(100% - 2 * var(--modal-gutter));
     }
 
-    .climate-modal-body {
+    .modal-body {
         min-height: 0;
         overflow: auto;
         overscroll-behavior: contain;

@@ -50,8 +50,8 @@ public partial class DropdownButton : IAsyncDisposable
     private IJSRuntime? JsRuntime { get; set; }
 
     private string CssClass => string.IsNullOrWhiteSpace(Class)
-        ? "climate-dropdown-toggle"
-        : $"climate-dropdown-toggle {Class}";
+        ? "dropdown-toggle"
+        : $"dropdown-toggle {Class}";
 
     private string? EffectiveAriaLabel => AriaLabel ?? Text;
 

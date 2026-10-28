@@ -5,7 +5,7 @@
     <input id="@Id"
            type="text"
            role="combobox"
-           class="climate-control climate-autocomplete-input"
+           class="control autocomplete-input"
            aria-autocomplete="list"
            aria-expanded="@(IsOpen ? "true" : "false")"
            aria-controls="@listId"
@@ -23,7 +23,7 @@
     @* mousedown is prevented on the whole list, scrollbar included, so pressing it doesn't take focus from the input *@
     <ul id="@listId"
         role="listbox"
-        class="climate-autocomplete-list"
+        class="autocomplete-list"
         hidden="@(!IsOpen)"
         style="max-height: @MaxMenuHeight"
         @onmousedown:preventDefault="true"
@@ -34,12 +34,12 @@
             <li id="@OptionId(index)"
                 role="option"
                 aria-selected="@(index == activeIndex ? "true" : "false")"
-                class="@(index == activeIndex ? "climate-autocomplete-option is-active" : "climate-autocomplete-option")"
+                class="@(index == activeIndex ? "autocomplete-option is-active" : "autocomplete-option")"
                 @onclick="() => ChooseAsync(index)">@TextField(results[index])</li>
         }
         @if (capped)
         {
-            <li class="climate-autocomplete-more" aria-hidden="true">Keep typing to narrow results</li>
+            <li class="autocomplete-more" aria-hidden="true">Keep typing to narrow results</li>
         }
     </ul>
     <span class="visually-hidden" role="status">@statusText</span>

@@ -5,10 +5,10 @@
         @if (Axes != null && Axes.Count > 0)
         {
             <div class="axes-menu-content">
-                <div class="climate-dropdown-header">Scale from 0</div>
+                <div class="dropdown-header">Scale from 0</div>
                 @foreach (var axis in Axes)
                 {
-                    <Checkbox Class="climate-checkbox--menu-row"
+                    <Checkbox Class="checkbox--menu-row"
                                      Value="@GetScaleToZero(axis.Id)"
                                      ValueChanged="@((bool v) => OnScaleToZeroChanged(axis.Id, v))">
                         @axis.Label

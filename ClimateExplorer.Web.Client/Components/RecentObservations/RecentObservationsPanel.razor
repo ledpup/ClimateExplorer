@@ -158,7 +158,7 @@
                                         <label for="@ReferenceDateInputId">View as of</label>
                                         <input id="@ReferenceDateInputId"
                                             type="text"
-                                            class="climate-control recent-observations-input @ReferenceDateInputValidationClass"
+                                            class="control recent-observations-input @ReferenceDateInputValidationClass"
                                             placeholder="YYYY-MM-DD"
                                             value="@referenceDateInputValue"
                                             aria-describedby="@(HasReferenceDateError ? ReferenceDateErrorId : null)"
@@ -203,7 +203,7 @@
                                     <label for="recent-observations-completeness-threshold">Completeness threshold %</label>
                                     <input id="recent-observations-completeness-threshold"
                                         type="number"
-                                        class="climate-control recent-observations-input"
+                                        class="control recent-observations-input"
                                         min="@RecentObservationCompletenessThreshold.MinimumPercentage"
                                         max="@RecentObservationCompletenessThreshold.MaximumPercentage"
                                         step="1"

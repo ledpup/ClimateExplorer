@@ -69,17 +69,17 @@
     font-size: 0.875rem;
 }
 
-.aggregation-options-wrapper ::deep .climate-select {
+.aggregation-options-wrapper ::deep .select {
     width: 100%;
 }
 
-/* Border, radius, colours, hover, focus and the touch sizing come from .climate-control in app.css */
+/* Border, radius, colours, hover, focus and the touch sizing come from .control in app.css */
 .aggregation-threshold-input {
     width: 100%;
     padding: 0.25rem 0.5rem;
 }
 
-/* Same caret as .climate-dropdown-toggle, as the button opens a panel below it */
+/* Same caret as .dropdown-toggle, as the button opens a panel below it */
 .aggregation-options-wrapper ::deep .aggregation-toggle::after {
     content: "";
     display: inline-block;

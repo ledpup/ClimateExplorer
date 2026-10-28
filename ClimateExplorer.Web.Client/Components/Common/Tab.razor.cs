@@ -29,7 +29,7 @@ public partial class Tab : IDisposable
 
     private bool IsTabStop => Parent?.IsTabStop(this) ?? false;
 
-    private string CssClass => IsSelected ? "climate-tab is-active" : "climate-tab";
+    private string CssClass => IsSelected ? "tab is-active" : "tab";
 
     public void Dispose()
     {

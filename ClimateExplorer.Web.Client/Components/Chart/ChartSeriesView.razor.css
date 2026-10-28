@@ -200,12 +200,12 @@
                 background-color: #cfc;
             }
 
-    .chart-series-config .form-control-wrap ::deep .climate-select,
-    .chart-series-config .form-control-wrap ::deep .climate-text-input {
+    .chart-series-config .form-control-wrap ::deep .select,
+    .chart-series-config .form-control-wrap ::deep .text-input {
         width: 100%;
     }
 
-    .chart-series-config .form-control-wrap ::deep .climate-checkbox {
+    .chart-series-config .form-control-wrap ::deep .checkbox {
         position: relative;
         top: 2px;
     }

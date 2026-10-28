@@ -4,7 +4,7 @@
 // The page can't scroll behind an open modal (see app.css), so its scrollbar goes. Measure it first, so app.css can
 // pad the page by the same width.
 function measureScrollbar() {
-    if (!document.querySelector("dialog.climate-modal[open]")) {
+    if (!document.querySelector("dialog.modal[open]")) {
         const root = document.documentElement;
         root.style.setProperty("--climate-modal-scrollbar-width", `${window.innerWidth - root.clientWidth}px`);
     }

@@ -5,7 +5,7 @@
 
 import { place } from "./floating.js";
 
-const tooltipId = "climate-tooltip";
+const tooltipId = "tooltip";
 const showDelay = 500;
 const hideDelay = 500;
 
@@ -27,7 +27,7 @@ function getTip() {
     if (!tip?.isConnected) {
         tip = document.getElementById(tooltipId) ?? document.createElement("div");
         tip.id = tooltipId;
-        tip.className = "climate-tooltip";
+        tip.className = "tooltip";
         tip.setAttribute("role", "tooltip");
         tip.setAttribute("popover", "manual");
         document.body.appendChild(tip);

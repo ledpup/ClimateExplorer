@@ -27,7 +27,7 @@
     max-width: 18em;
 }
 
-/* Border, radius, colours, hover, focus and the touch sizing come from .climate-control in app.css */
+/* Border, radius, colours, hover, focus and the touch sizing come from .control in app.css */
 .name-filter-input {
     width: 100%;
     padding: 0.25rem 0.5rem;

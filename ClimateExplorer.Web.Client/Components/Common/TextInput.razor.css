@@ -1,21 +1,21 @@
-/* Border, radius, colours, hover, focus, disabled and the touch sizing come from .climate-control in app.css */
-.climate-text-input-wrap {
+/* Border, radius, colours, hover, focus, disabled and the touch sizing come from .control in app.css */
+.text-input-wrap {
     display: block;
 }
 
-.climate-text-input {
+.text-input {
     padding: 0.25rem 0.5rem;
 }
 
-.climate-text-input::placeholder {
+.text-input::placeholder {
     color: var(--climate-color-muted-text);
 }
 
-.climate-text-input--invalid {
+.text-input--invalid {
     border-color: var(--climate-color-danger);
 }
 
-.climate-text-input-error {
+.text-input-error {
     display: block;
     margin-top: 0.25rem;
     color: var(--climate-color-danger);

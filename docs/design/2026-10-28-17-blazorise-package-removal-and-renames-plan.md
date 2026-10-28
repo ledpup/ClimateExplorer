@@ -54,9 +54,13 @@ Steps per rename:
 2. Replace tags across Razor files (`<ClimateButton` → `<Button`, `</ClimateButton>` → `</Button>`) and
    any C# references (`PillButton.razor.cs` mentions `ClimateButton` in a comment, and
    `PillButton.razor.css` references it).
-3. **Keep CSS class names** (`climate-button`, `climate-checkbox`, `tooltip-anchor`). Renaming them
-   adds churn across scoped CSS for no user-visible benefit, and the `climate-` prefix keeps global
-   classes from clashing with third-party CSS.
+3. **Drop the `climate-` prefix from every common component's CSS classes**, so each class matches
+   its component (`climate-button` → `button`, `climate-select` → `select`, `climate-modal` → `modal`, …).
+   *(Revised 2026-10-28. This step first said to keep the names, on the grounds that the prefix guards
+   against third-party CSS clashes. No such CSS is left: Font Awesome uses only `fa-*` and Leaflet only
+   `leaflet-*`, and nothing in our CSS used the bare names. The component renames are for
+   source readability, and the same reasoning applies to the classes.)* Keep the `--climate-*` custom
+   properties (design tokens, a separate namespace) and the `climate-…-{guid}` element-id prefixes.
 4. `<Button>` vs the HTML `<button>`: Razor resolves components case-sensitively, so `<Button>` is
    the component and `<button>` the element. Mention it in AGENTS.md, so nobody "fixes" one into the other.
 
@@ -111,6 +115,7 @@ updated to describe the native components instead of Blazorise.
 | Rename `ClimateButton` → `Button` | 3 files renamed | ~16 files, ~45 | — |
 | Rename `ClimateCheckbox` → `Checkbox` | 2 files renamed | ~8 files, ~12 | — |
 | Rename `DelayedTooltip` → `Tooltip` (optional) | 3 files renamed | ~19 files, ~145 | — |
+| Drop `climate-` class prefix (step 3, revised) | — | 55 files, ~220 | — |
 | AGENTS.md, CONTEXT.md | — | 2 files, ~60 | ~40 lines |
 | **Total** (with optional rename) | **8 files renamed** | **~54 files, ~281** | **~73 lines + 5 packages** |
 
@@ -158,7 +163,20 @@ Without the optional tooltip rename: ~35 files, ~136 lines changed. Risk: low. I
   `ClimateExplorer.Web` updated tags, `<see cref>`s and comments. That's 35 files, including the comments in
   `PillButton.razor.cs`/`.razor.css`, `tooltip.js`, `App.razor` and `app.css`. Comments where the bare name read
   ambiguously ("the tooltip for every Tooltip") now say "the Tooltip component".
-- **CSS class names kept** (`climate-button`, `climate-checkbox`, `tooltip-anchor`), as planned.
+- **CSS class prefix dropped** (step 3 as revised). After the component renames, the `climate-` prefix came off
+  43 component class names in 55 files (~220 lines): `autocomplete*`, `button*`, `link-button`, `checkbox*`, `control`,
+  `dropdown*`, `modal*`, `pagination*`, `select`, `tab`/`tabs`/`tablist`, `table*`, `text-input*` and `tooltip`.
+  It was a whole-token replace (`(?<![-\w])climate-<name>(?![-\w])`) over `.razor`, `.cs`, `.css` and `.js` in
+  `ClimateExplorer.Web.Client`, `ClimateExplorer.Web` and `ClimateExplorer.Web.UiTests` (one Playwright locator in
+  `ChartTests.cs`), plus `AGENTS.md` (`.control`) and `CONTEXT.md` (`dialog.modal[open]`). Before the change, no
+  CSS selector, class attribute or JS class string used any of the bare names.
+  - **Not renamed:** the `--climate-*` custom properties; the `climate-…-{guid}` id prefixes in `Modal`, `Tabs`,
+    `Autocomplete`, `DropdownButton` and `ClimateRecords`; `climate-stripe`, which already matches its `ClimateStripe`
+    component.
+  - **The shared tooltip's element id** in `tooltip.js` was also `climate-tooltip`, the same string as its class, so it
+    is now `tooltip` too. Its `aria-describedby` handling uses the same constant, so it stays consistent.
+  - **Static check in place of a UI run:** every renamed class still has at least one CSS selector and at least one
+    use in markup or code. The exception is `tabs`, which had no CSS rule before the rename either (it's a root hook).
 - **AGENTS.md.** The components list has `Button` (with the `<Button>` vs `<button>` note from step 4), `Checkbox` and
   `Tooltip` in place of `ClimateButton`/`DelayedTooltip`, and the bind-with-`Value` line says `Checkbox`. The rest of
   AGENTS.md is left for Part C.

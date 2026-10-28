@@ -93,8 +93,8 @@ public partial class Autocomplete<TItem, TValue> : IAsyncDisposable
     private string? ActiveOptionId => IsOpen && activeIndex >= 0 ? OptionId(activeIndex) : null;
 
     private string WrapCssClass => string.IsNullOrWhiteSpace(Class)
-        ? "climate-autocomplete"
-        : $"climate-autocomplete {Class}";
+        ? "autocomplete"
+        : $"autocomplete {Class}";
 
     public ValueTask FocusAsync() => input.FocusAsync();
 

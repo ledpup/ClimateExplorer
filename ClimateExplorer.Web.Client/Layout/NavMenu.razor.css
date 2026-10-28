@@ -50,7 +50,7 @@
     margin-left: 2rem;
 }
 
-.site-nav-item ::deep .climate-dropdown {
+.site-nav-item ::deep .dropdown {
     vertical-align: middle;
 }
 
@@ -145,7 +145,7 @@
     }
 }
 
-::deep .climate-dropdown-menu .unit-switch-menu-item {
+::deep .dropdown-menu .unit-switch-menu-item {
     width: 100%;
     padding: 0 0.75rem;
 }
@@ -172,42 +172,42 @@
     }
 
 /* ── Hamburger and options menus ─────────────────────────────────────────── */
-::deep .climate-dropdown-menu {
+::deep .dropdown-menu {
     background-color: var(--climate-color-nav-surface);
     border: 1px solid rgb(255 255 255 / 20%);
     min-width: 8rem;
     box-shadow: none;
 }
 
-    ::deep .climate-dropdown-menu .climate-dropdown-item {
+    ::deep .dropdown-menu .dropdown-item {
         color: white;
         font-weight: bold;
         padding: 0.4rem 0.75rem;
     }
 
-    ::deep .climate-dropdown-menu .climate-dropdown-item:hover,
-    ::deep .climate-dropdown-menu .climate-dropdown-item:focus {
+    ::deep .dropdown-menu .dropdown-item:hover,
+    ::deep .dropdown-menu .dropdown-item:focus {
         background-color: rgb(255 255 255 / 12%);
         color: var(--climate-color-control-hover);
         outline: none;
     }
 
-    ::deep .climate-dropdown-menu .climate-dropdown-item[aria-current="page"],
-    ::deep .climate-dropdown-menu .climate-dropdown-item[aria-current="page"]:hover,
-    ::deep .climate-dropdown-menu .climate-dropdown-item[aria-current="page"]:focus {
+    ::deep .dropdown-menu .dropdown-item[aria-current="page"],
+    ::deep .dropdown-menu .dropdown-item[aria-current="page"]:hover,
+    ::deep .dropdown-menu .dropdown-item[aria-current="page"]:focus {
         background-color: transparent;
         color: rgb(255 255 255 / 75%);
         cursor: default;
         pointer-events: none;
     }
 
-    ::deep .climate-dropdown-menu .info-menu-item,
-    ::deep .climate-dropdown-menu .info-menu-item:hover,
-    ::deep .climate-dropdown-menu .info-menu-item:focus {
+    ::deep .dropdown-menu .info-menu-item,
+    ::deep .dropdown-menu .info-menu-item:hover,
+    ::deep .dropdown-menu .info-menu-item:focus {
         color: var(--climate-color-info-icon);
     }
 
-    ::deep .climate-dropdown-menu .climate-dropdown-divider {
+    ::deep .dropdown-menu .dropdown-divider {
         border-color: rgb(255 255 255 / 20%);
     }
 

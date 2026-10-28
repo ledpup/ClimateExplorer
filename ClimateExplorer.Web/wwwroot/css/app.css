@@ -106,7 +106,7 @@ a {
 
 /* Stop the page scrolling behind an open Modal. Modal.razor.js measures the scrollbar this hides, and the padding
    takes its place so the page doesn't shift sideways. */
-html:has(dialog.climate-modal[open]) {
+html:has(dialog.modal[open]) {
     overflow: hidden;
     padding-right: var(--climate-modal-scrollbar-width, 0px);
 }
@@ -115,7 +115,7 @@ html:has(dialog.climate-modal[open]) {
     color: var(--climate-color-muted-text);
 }
 
-.climate-button {
+.button {
     padding: var(--climate-space-control-padding);
     background-color: var(--climate-color-control-surface);
     border: none;
@@ -134,28 +134,28 @@ html:has(dialog.climate-modal[open]) {
     transition: var(--climate-transition-control);
 }
 
-.climate-button:hover:not(:disabled) {
+.button:hover:not(:disabled) {
     background-color: var(--climate-color-control-hover);
 }
 
-.climate-button:disabled {
+.button:disabled {
     opacity: 0.45;
     cursor: default;
 }
 
-.climate-button--compact {
+.button--compact {
     min-height: 44px;
     padding-top: 10px;
     padding-bottom: 6px;
 }
 
-.climate-button--stacked {
+.button--stacked {
     flex-direction: column;
     align-items: center;
     text-align: center;
 }
 
-.climate-button--stacked .label {
+.button--stacked .label {
     display: block;
     font-size: 11px;
     opacity: 0.85;
@@ -165,12 +165,12 @@ html:has(dialog.climate-modal[open]) {
 /* DropdownButton. The styles are global, not scoped to the component, because items are rendered by the
    component that fills the menu, and consumers (e.g. NavMenu's dark menus) restyle the menu with one-class
    ::deep selectors that need to win without depending on the order of the scoped CSS bundle. */
-.climate-dropdown {
+.dropdown {
     display: inline-flex;
     align-items: center;
 }
 
-.climate-dropdown-toggle {
+.dropdown-toggle {
     padding: var(--climate-space-control-padding);
     background-color: var(--climate-color-control-surface);
     border: none;
@@ -190,20 +190,20 @@ html:has(dialog.climate-modal[open]) {
 }
 
 /* Disabled only while prerendered, so it looks the same */
-.climate-dropdown-toggle:disabled {
+.dropdown-toggle:disabled {
     cursor: default;
 }
 
-.climate-dropdown-toggle:hover,
-.climate-dropdown-toggle:focus,
-.climate-dropdown-toggle:active,
-.climate-dropdown:has(> .climate-dropdown-menu:popover-open) > .climate-dropdown-toggle {
+.dropdown-toggle:hover,
+.dropdown-toggle:focus,
+.dropdown-toggle:active,
+.dropdown:has(> .dropdown-menu:popover-open) > .dropdown-toggle {
     background-color: var(--climate-color-control-hover);
     color: var(--climate-color-control-text);
 }
 
 /* The caret */
-.climate-dropdown-toggle::after {
+.dropdown-toggle::after {
     content: "";
     display: inline-block;
     vertical-align: 0.255em;
@@ -214,7 +214,7 @@ html:has(dialog.climate-modal[open]) {
 }
 
 /* A top-layer popover; DropdownButton.razor.js sets its position and data-placement */
-.climate-dropdown-menu {
+.dropdown-menu {
     /* Reset the UA popover styles (centred in the viewport, with padding and a border) */
     margin: 0;
     inset: auto;
@@ -233,11 +233,11 @@ html:has(dialog.climate-modal[open]) {
 }
 
 /* Hidden, but still measurable, until it's been positioned */
-.climate-dropdown-menu:popover-open:not([data-placement]) {
+.dropdown-menu:popover-open:not([data-placement]) {
     visibility: hidden;
 }
 
-.climate-dropdown-item {
+.dropdown-item {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -255,40 +255,40 @@ html:has(dialog.climate-modal[open]) {
 }
 
 @media (pointer: coarse) {
-    .climate-dropdown-item {
+    .dropdown-item {
         min-height: 44px;
     }
 }
 
-.climate-dropdown-item:hover:not(:disabled) {
+.dropdown-item:hover:not(:disabled) {
     background-color: var(--climate-color-control-hover);
 }
 
-.climate-dropdown-item:focus-visible {
+.dropdown-item:focus-visible {
     outline: 2px solid var(--climate-color-control-text);
     outline-offset: -2px;
 }
 
-.climate-dropdown-item:disabled {
+.dropdown-item:disabled {
     opacity: 0.5;
     cursor: default;
 }
 
-.climate-dropdown-header {
+.dropdown-header {
     padding: 0.5rem 1rem;
     color: var(--climate-color-muted-text);
     font-size: 0.875rem;
     white-space: nowrap;
 }
 
-.climate-dropdown-divider {
+.dropdown-divider {
     margin: 0.25rem 0;
     border: 0;
     border-top: 1px solid rgb(0 0 0 / 15%);
     opacity: 1;
 }
 
-.climate-link-button {
+.link-button {
     color: var(--climate-color-link);
     text-decoration: underline;
     cursor: pointer;
@@ -298,13 +298,13 @@ html:has(dialog.climate-modal[open]) {
     padding: 0;
 }
 
-.climate-link-button:hover {
+.link-button:hover {
     color: var(--climate-color-link-hover);
 }
 
 /* Shared box for the Select and TextInput form controls, so the two can't drift. Each component's scoped
    CSS adds its own padding and extras (chevron, invalid state). */
-.climate-control {
+.control {
     min-height: 2rem;
     background-color: var(--climate-color-control-surface);
     border: 1px solid var(--climate-color-control-border);
@@ -320,26 +320,26 @@ html:has(dialog.climate-modal[open]) {
 /* Compact for a mouse or trackpad (well above WCAG 2.5.8's 24px), a full 44px target for a finger. 1rem text
    also stops iOS Safari zooming the page when the control takes focus. */
 @media (pointer: coarse) {
-    .climate-control {
+    .control {
         min-height: 44px;
         font-size: 1rem;
     }
 }
 
-.climate-control:hover:not(:disabled) {
+.control:hover:not(:disabled) {
     background-color: var(--climate-color-control-hover);
 }
 
-.climate-control:focus-visible {
+.control:focus-visible {
     outline: 2px solid var(--climate-color-control-text);
     outline-offset: 1px;
 }
 
-.climate-control:disabled {
+.control:disabled {
     opacity: 0.6;
 }
 
-.climate-checkbox {
+.checkbox {
     display: flex;
     align-items: center;
     gap: 0.4rem;
@@ -350,7 +350,7 @@ html:has(dialog.climate-modal[open]) {
     margin: 0;
 }
 
-.climate-checkbox-input {
+.checkbox-input {
     accent-color: var(--climate-color-control-text);
     width: 0.8rem;
     height: 0.8rem;
@@ -361,19 +361,19 @@ html:has(dialog.climate-modal[open]) {
 
 /* A checkbox that is a whole row of a dropdown menu: fills the row, matches the dropdown item
    padding and font, and meets the 44px touch target */
-.climate-checkbox--menu-row {
+.checkbox--menu-row {
     min-height: 44px;
     padding: 0 1rem;
     font-size: inherit;
 }
 
-.climate-checkbox--menu-row:hover {
+.checkbox--menu-row:hover {
     background-color: var(--climate-color-control-hover);
 }
 
 /* The shared tooltip shown by js/tooltip.js for the Tooltip component. A top-layer popover outside every
    component, so it's styled here. js/floating.js sets its position. */
-.climate-tooltip {
+.tooltip {
     /* Reset the UA popover styles (centred in the viewport, with padding and a border) */
     margin: 0;
     inset: auto;
@@ -391,25 +391,25 @@ html:has(dialog.climate-modal[open]) {
     pointer-events: none;
 }
 
-.climate-tooltip.is-multiline {
+.tooltip.is-multiline {
     max-width: 15rem;
 }
 
-.climate-tooltip p {
+.tooltip p {
     margin: 0 0 0.5rem;
 }
 
-.climate-tooltip p:last-child {
+.tooltip p:last-child {
     margin-bottom: 0;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-    .climate-tooltip:popover-open {
+    .tooltip:popover-open {
         transition: opacity 0.15s;
     }
 
     @starting-style {
-        .climate-tooltip:popover-open {
+        .tooltip:popover-open {
             opacity: 0;
         }
     }

@@ -46,13 +46,13 @@ public partial class TextInput
 
     private string WrapCssClass =>
         string.IsNullOrWhiteSpace(Class)
-            ? "climate-text-input-wrap"
-            : $"climate-text-input-wrap {Class}";
+            ? "text-input-wrap"
+            : $"text-input-wrap {Class}";
 
     private string CssClass =>
         Invalid
-            ? "climate-control climate-text-input climate-text-input--invalid"
-            : "climate-control climate-text-input";
+            ? "control text-input text-input--invalid"
+            : "control text-input";
 
     private async Task OnChangeAsync(ChangeEventArgs e)
     {

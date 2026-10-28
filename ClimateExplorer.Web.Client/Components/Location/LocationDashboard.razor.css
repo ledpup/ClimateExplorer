@@ -33,16 +33,16 @@
     gap: 16px;
 }
 
-.dropdown-wrapper ::deep .climate-dropdown-toggle {
+.dropdown-wrapper ::deep .dropdown-toggle {
     justify-content: center;
     min-height: 40px;
     min-width: 40px;
     line-height: 1;
 }
 
-/* Match the menu-row checkbox above it: 44px rows, and the .climate-checkbox geometry (0.8rem box, 0.4rem gap)
+/* Match the menu-row checkbox above it: 44px rows, and the .checkbox geometry (0.8rem box, 0.4rem gap)
    so the icon sits under the checkbox */
-.dashboard-options-menu ::deep .climate-dropdown-item {
+.dashboard-options-menu ::deep .dropdown-item {
     min-height: 44px;
     gap: 0.4rem;
 }

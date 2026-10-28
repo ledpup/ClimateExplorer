@@ -1,7 +1,7 @@
 <dialog @ref="dialog" class="@CssClass" aria-labelledby="@titleId" @onclose="OnDialogClosedAsync" @attributes="AdditionalAttributes">
-    <div class="climate-modal-content">
-        <header class="climate-modal-header">
-            <h2 id="@titleId" class="climate-modal-title">
+    <div class="modal-content">
+        <header class="modal-header">
+            <h2 id="@titleId" class="modal-title">
                 @if (TitleContent is not null)
                 {
                     @TitleContent
@@ -11,11 +11,11 @@
                     @Title
                 }
             </h2>
-            <button type="button" class="climate-modal-close" aria-label="Close" @onclick="HideAsync">
+            <button type="button" class="modal-close" aria-label="Close" @onclick="HideAsync">
                 <i class="fas fa-xmark" aria-hidden="true"></i>
             </button>
         </header>
-        <div class="climate-modal-body">
+        <div class="modal-body">
             @if (isOpen || RenderContentWhenClosed)
             {
                 @ChildContent

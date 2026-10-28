@@ -38,8 +38,8 @@ public partial class Select<TValue>
 
     private string CssClass =>
         string.IsNullOrWhiteSpace(Class)
-            ? "climate-control climate-select"
-            : $"climate-control climate-select {Class}";
+            ? "control select"
+            : $"control select {Class}";
 
     internal string Register(TValue value) => values.Register(value);
 
