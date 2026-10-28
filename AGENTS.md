@@ -65,3 +65,9 @@ Border radius: controls 8px, cards 12px, modals/InfoPanel 16px. Minimum touch ta
 Chart.js is vendored in `ClimateExplorer.Web.Client/wwwroot/lib/chartjs` (4.6.1). The `seriesNote` plugin in
 `ChartJsChart.razor.js` wraps the private `Legend._fitRows`; when upgrading Chart.js, check it still exists and
 behaves the same.
+
+## Font Awesome
+
+Font Awesome Free 6.7.2 is vendored in `ClimateExplorer.Web.Client/wwwroot/lib/fontawesome`, solid style only
+(`fas`/`fa-solid`). Using a `far`/`fab` icon means vendoring that style's CSS and font too. It is the only icon font;
+don't add Open Iconic or other icon sets.

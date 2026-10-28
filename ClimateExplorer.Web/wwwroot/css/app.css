@@ -1,4 +1,3 @@
-@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 @import url('table.css');
 
 :root {
@@ -409,23 +408,23 @@ th {
     font-weight: 700;
 }
 
-.trend-stats .trends-stat-chevron.oi {
+.trend-stats .trends-stat-chevron {
     color: #595959;
     display: inline-block;
     flex-shrink: 0;
-    font-size: 1.2rem;
+    font-size: 0.9rem;
     margin-left: auto;
     transform: rotate(0deg);
     transform-origin: center;
     transition: transform 0.15s ease-in-out;
 }
 
-.trend-stats .trends-stat-chevron.oi.expanded {
+.trend-stats .trends-stat-chevron.expanded {
     transform: rotate(90deg);
 }
 
-.trend-stats .trends-stat-row.expandable:hover .trends-stat-chevron.oi,
-.trend-stats .trends-stat-row.expandable:focus-visible .trends-stat-chevron.oi {
+.trend-stats .trends-stat-row.expandable:hover .trends-stat-chevron,
+.trend-stats .trends-stat-row.expandable:focus-visible .trends-stat-chevron {
     color: #0071c1;
 }
 

@@ -67,6 +67,10 @@
             color: #222;
         }
 
+        .chart-series-config .title-bar .expander-chevron {
+            font-size: 0.75rem;
+        }
+
     .chart-series-config .colour-indicator {
         border: solid 2px white;
         border-radius: 12px;

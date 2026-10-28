@@ -106,7 +106,8 @@ conventions. We already have our own design tokens. Detail and staging are in
 ### 2. Font Awesome: keep the classes, change where the files come from
 
 Vendor Font Awesome Free 6.x into `ClimateExplorer.Web.Client/wwwroot/lib/fontawesome`, next to the
-vendored Chart.js. Ship only the solid style (the app only uses `fas`/`fa-solid`), and keep the
+vendored Chart.js, so it is served same-origin with `@Assets` fingerprinting (a CDN was considered
+and is about equal, not faster; see the icons plan). Ship only the solid style (the app only uses `fas`/`fa-solid`), and keep the
 existing async-preload `<link>`. That changes no call sites. Open Iconic's 8 uses move to the
 equivalent Font Awesome icons, and the Open Iconic font is deleted. An inline-SVG `Icon` component is
 an optional later phase. See [02 Icons](2026-10-28-02-icons-plan.md).

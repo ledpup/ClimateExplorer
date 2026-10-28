@@ -52,8 +52,16 @@
     <link rel="stylesheet" href="@Assets["css/app.css"]" />
 
     <!-- Non-critical CSS: deferred via preload/onload to unblock initial render -->
-    <link rel="preload" href="@Assets["_content/Blazorise.Icons.FontAwesome/v6/css/all.min.css"]" as="style" onload="this.onload=null;this.rel='stylesheet'" />
-    <noscript><link rel="stylesheet" href="@Assets["_content/Blazorise.Icons.FontAwesome/v6/css/all.min.css"]" /></noscript>
+    <!-- Font Awesome is vendored, solid style only (see AGENTS.md) -->
+    <link rel="preload" href="@Assets["lib/fontawesome/css/fontawesome.min.css"]" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <link rel="preload" href="@Assets["lib/fontawesome/css/solid.min.css"]" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript>
+        <link rel="stylesheet" href="@Assets["lib/fontawesome/css/fontawesome.min.css"]" />
+        <link rel="stylesheet" href="@Assets["lib/fontawesome/css/solid.min.css"]" />
+    </noscript>
+    <!-- Icons are in the nav and first-viewport buttons, so fetch the font early. Not @Assets: the URL has to
+         match the one solid.min.css asks for, or the font downloads twice. -->
+    <link rel="preload" href="lib/fontawesome/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" as="style" onload="this.onload=null;this.rel='stylesheet'" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <noscript><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" /></noscript>
 

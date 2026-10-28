@@ -10,11 +10,11 @@
                 <span class="collapser-clickable" @onclick="CollapserOnClick">
                     @if (ShowContent)
                     {
-                        <span class="oi oi-chevron-bottom @(CollapserSize.ToString().ToLower())" aria-hidden="true"></span>
+                        <span class="fas fa-chevron-down collapser-chevron @(CollapserSize.ToString().ToLower())" aria-hidden="true"></span>
                     }
                     else
                     {
-                        <span class="oi oi-chevron-right @(CollapserSize.ToString().ToLower())" aria-hidden="true"></span>
+                        <span class="fas fa-chevron-right collapser-chevron @(CollapserSize.ToString().ToLower())" aria-hidden="true"></span>
                     }
 
                     @if (ShowTitleWhenExpanded || !ShowContent)

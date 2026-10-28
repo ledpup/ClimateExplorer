@@ -237,15 +237,15 @@
     color: #0071c1;
 }
 
-.recent-observation-tile ::deep .recent-observation-chevron.oi {
+.recent-observation-tile ::deep .recent-observation-chevron {
     display: inline-block;
-    font-size: 1.2rem;
+    font-size: 0.9rem;
     transform: rotate(0deg);
     transform-origin: center;
     transition: transform 0.15s ease-in-out;
 }
 
-.recent-observation-tile ::deep .recent-observation-chevron.oi.expanded {
+.recent-observation-tile ::deep .recent-observation-chevron.expanded {
     transform: rotate(90deg);
 }
 

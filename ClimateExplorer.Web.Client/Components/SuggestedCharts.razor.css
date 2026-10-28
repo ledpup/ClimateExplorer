@@ -86,6 +86,10 @@
             transition: 0.25s;
         }
 
+    .suggested-data-set .expander-chevron {
+        font-size: 0.75rem;
+    }
+
     .suggested-data-set .menu {
         position: absolute;
         top: 100%;

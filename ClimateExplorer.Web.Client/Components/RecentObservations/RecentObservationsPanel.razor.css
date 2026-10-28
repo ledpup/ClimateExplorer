@@ -77,17 +77,17 @@
     margin-left: auto;
 }
 
-.recent-observations-toggle-all-chevron.oi {
+.recent-observations-toggle-all-chevron {
     color: inherit;
     display: inline-block;
-    font-size: 1rem;
+    font-size: 0.75rem;
     margin-right: 8px;
     transform: rotate(0deg);
     transform-origin: center;
     transition: transform 0.15s ease-in-out;
 }
 
-.recent-observations-toggle-all-chevron.oi.expanded {
+.recent-observations-toggle-all-chevron.expanded {
     transform: rotate(90deg);
 }
 
