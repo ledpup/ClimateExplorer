@@ -69,6 +69,10 @@
     font-size: 0.875rem;
 }
 
+.aggregation-options-wrapper ::deep .climate-select {
+    width: 100%;
+}
+
 .aggregation-options-wrapper ::deep .form-row-actions {
     display: flex;
     justify-content: space-between;

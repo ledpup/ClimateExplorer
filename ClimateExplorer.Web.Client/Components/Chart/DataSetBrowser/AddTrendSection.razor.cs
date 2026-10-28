@@ -24,6 +24,7 @@ using Microsoft.AspNetCore.Components;
 /// </remarks>
 public partial class AddTrendSection
 {
+    private readonly string seriesSelectId = $"add-trend-series-{Guid.NewGuid():N}";
     private Guid selectedSeriesId;
 
     [Parameter]

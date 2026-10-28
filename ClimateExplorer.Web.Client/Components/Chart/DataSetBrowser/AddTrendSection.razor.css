@@ -29,8 +29,7 @@
     min-width: 0;
 }
 
-    .form-control-wrap ::deep select,
-    .form-control-wrap ::deep .form-control {
+    .form-control-wrap ::deep .climate-select {
         width: 100%;
     }
 

@@ -200,8 +200,8 @@
                 background-color: #cfc;
             }
 
-    .chart-series-config .form-control-wrap ::deep select,
-    .chart-series-config .form-control-wrap ::deep .form-control {
+    .chart-series-config .form-control-wrap ::deep .climate-select,
+    .chart-series-config .form-control-wrap ::deep .climate-text-input {
         width: 100%;
     }
 

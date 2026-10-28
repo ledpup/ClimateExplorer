@@ -1,7 +1,7 @@
 # Text Input and Validation — Native `TextInput`
 
 - **Date:** 2026-10-28
-- **Status:** Proposed
+- **Status:** Implemented 2026-10-28, together with [07](2026-10-28-07-select-plan.md) (see addendum). Build and unit tests are clean; the UI is unverified.
 - **Author:** Claude
 - **Scope:** new `Components/Common/TextInput.*`; `Components/Chart/ChartSeriesView.*`,
   `Components/Chart/Trend/ChartSeriesTrendControls.*`; their scoped CSS; `ClimateExplorer.UnitTests`
@@ -124,3 +124,21 @@ unit-tested helpers, and the inputs get associated labels and `aria-invalid`/`ar
 | **Total** | **4–5 files, +190** | **9 files, ~100** | **~40 lines** |
 
 Risk: low.
+
+## Addendum — implementation (2026-10-28)
+
+- `Immediate` was left out. Nothing uses it, and switching between `@onchange` and `@oninput` means either two copies
+  of the `<input>` markup or a nullable delegate, which `TreatWarningsAsErrors` rejects. Add it when something needs it.
+- `.climate-control` in `app.css` holds the shared box (control background, 8px radius, primary-green text, border,
+  `#cfc` hover, `:focus-visible` outline, 60% opacity when disabled). `TextInput.razor.css` adds padding and height,
+  the `#a00000` invalid border and the `0.75rem` error text. The wrapper is `display: block` so the message sits under
+  the input. The error id is generated per instance (`text-input-error-{guid}`).
+- `CustomTransformationParser.IsValid` catches `FormatException` as well as `ArgumentException`. `x > 1.2.3` matches
+  the regex but fails `double.Parse`.
+- Behaviour change: clearing the custom expression shows no error. Blazorise sent `""` rather than `null`, so before this
+  change an empty field failed validation. As the plan says, an empty or whitespace-only field now means "nothing entered
+  yet": no error and no chart rebuild.
+- `ChartSeriesTrendControls.OnParametersSet` already resets the text when it's out of step with the request. It now
+  clears `predictionYearsInvalid` at the same time, so an error can't stay next to a value that has been reset.
+- Extra tests beyond the plan: `IsValid_MalformedNumber_ReturnsFalse`, `IsValid_UnsupportedOperator_ReturnsFalse`,
+  `TryParsePredictUntilYear_AnchorYear_ReturnsFalse`.

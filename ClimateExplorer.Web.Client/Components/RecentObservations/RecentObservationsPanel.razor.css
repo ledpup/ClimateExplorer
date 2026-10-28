@@ -128,12 +128,12 @@
 }
 
 .recent-observations-config-control input,
-.recent-observations-config-control select {
+.recent-observations-config-control ::deep .climate-select {
     flex: 0 0 auto;
 }
 
 .recent-observations-reference-date-control input,
-.recent-observations-config-control select {
+.recent-observations-config-control ::deep .climate-select {
     width: 10.25rem;
 }
 

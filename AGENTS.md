@@ -40,10 +40,11 @@ Use the following existing common components, when appriopriate:
     (first load of a panel or list).
 - OverviewField
 - PaginationControl
+- Select / SelectItem (needs a `<label for>` pointing at its `Id`, or an `aria-label`)
 - SidePanel
+- TextInput (fires on change, not per keystroke; the parent validates and passes `Invalid`/`ErrorMessage`)
 
 There are Blazorise components in use, with common styling in `app.css` such as:
-- Select
 - Table
 - Tabs
 

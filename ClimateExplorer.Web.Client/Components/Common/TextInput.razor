@@ -1,0 +1,16 @@
+<span class="@WrapCssClass">
+    <input id="@Id"
+           type="text"
+           class="@CssClass"
+           value="@Value"
+           placeholder="@Placeholder"
+           disabled="@Disabled"
+           aria-invalid="@(Invalid ? "true" : null)"
+           aria-describedby="@(ShowError ? errorId : null)"
+           @onchange="OnChangeAsync"
+           @attributes="AdditionalAttributes" />
+    @if (ShowError)
+    {
+        <span id="@errorId" class="climate-text-input-error">@ErrorMessage</span>
+    }
+</span>

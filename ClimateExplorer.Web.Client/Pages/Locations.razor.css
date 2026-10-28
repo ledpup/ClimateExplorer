@@ -21,10 +21,6 @@
     min-width: 0;
 }
 
-.toolbar-filters ::deep .form-select {
-    width: auto;
-}
-
 .name-filter-wrapper {
     flex: 1;
     min-width: 10em;

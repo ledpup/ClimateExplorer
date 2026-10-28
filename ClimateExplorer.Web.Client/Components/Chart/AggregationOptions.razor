@@ -1,5 +1,4 @@
-﻿@using Blazorise
-@using ClimateExplorer.Web.Client.Components.Common
+﻿@using ClimateExplorer.Web.Client.Components.Common
 @using ClimateExplorer.Web.Client.Components.Info
 @using ClimateExplorer.Web.Client.UiModel
 
@@ -18,9 +17,9 @@
                 <div class="aggregation-options-content">
                     <DelayedTooltip Text="Number of days used to group data points into a single bin" Style="display: block">
                         <div class="form-row">
-                            <span class="form-label">Grouping days</span>
+                            <label class="form-label" for="@GroupingDaysId">Grouping days</label>
                             <span class="form-control-wrap">
-                                <Select TValue="short" Value="@currentGroupingDays" ValueChanged="@OnSelectedGroupingDaysChanged">
+                                <Select TValue="short" Id="@GroupingDaysId" Compact Value="@currentGroupingDays" ValueChanged="@OnSelectedGroupingDaysChanged">
                                     <SelectItem Value="182">@AggregationSettings.GroupingDaysText(182)</SelectItem>
                                     <SelectItem Value="91">@AggregationSettings.GroupingDaysText(91)</SelectItem>
                                     <SelectItem Value="28">@AggregationSettings.GroupingDaysText(28)</SelectItem>
@@ -32,9 +31,9 @@
                     </DelayedTooltip>
                     <DelayedTooltip Text="Minimum percentage of days with valid data required for a bin to be included in the chart" Style="display: block">
                         <div class="form-row">
-                            <span class="form-label">Threshold (%)</span>
+                            <label class="form-label" for="@ThresholdId">Threshold (%)</label>
                             <span class="form-control-wrap">
-                                <input type="number" class="form-control form-control-sm" min="0" max="100" step="10"
+                                <input id="@ThresholdId" type="number" class="form-control form-control-sm" min="0" max="100" step="10"
                                        value="@thresholdValue" @oninput="OnThresholdChanged" />
                             </span>
                         </div>

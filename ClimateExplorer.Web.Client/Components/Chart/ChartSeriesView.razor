@@ -2,7 +2,6 @@
 @using ClimateExplorer.Web.Client.Components.Common
 @using ClimateExplorer.Web.UiLogic
 @using ClimateExplorer.Web.UiModel
-@using Blazorise
 @using ClimateExplorer.Core.DataPreparation
 @using static ClimateExplorer.Core.Enums;
 
@@ -50,10 +49,11 @@
                         }
                         <DelayedTooltip Text="@AggregationTooltipText" Style="display: block">
                             <div class="form-row">
-                                <span class="form-label">Statistic</span>
+                                <label class="form-label" for="@AggregationId">Statistic</label>
                                 <span class="form-control-wrap">
                                     <Select TValue="SeriesAggregationOptions"
-                                            Size="Size.Small"
+                                            Id="@AggregationId"
+                                            Compact
                                             Value="@ChartSeries.Aggregation"
                                             ValueChanged="@OnAggregationChanged"
                                             Disabled="@ShouldDisableAggregationOptions(ChartSeries)">
@@ -79,10 +79,11 @@
                         }
                         <DelayedTooltip Text="Recasts the series in terms of change over time, e.g. year-over-year change or a running total" Style="display: block">
                             <div class="form-row">
-                                <span class="form-label">Calculation</span>
+                                <label class="form-label" for="@TemporalCalculationId">Calculation</label>
                                 <span class="form-control-wrap">
                                     <Select TValue="TemporalCalculationOptions"
-                                            Size="Size.Small"
+                                            Id="@TemporalCalculationId"
+                                            Compact
                                             Value="@ChartSeries.TemporalCalculation"
                                             ValueChanged="@OnTemporalCalculationChanged">
                                         <SelectItem Value="TemporalCalculationOptions.None">None</SelectItem>
@@ -94,10 +95,11 @@
                         </DelayedTooltip>
                         <DelayedTooltip Text="Reduces noise by smoothing values across a rolling window of periods" Style="display: block">
                             <div class="form-row">
-                                <span class="form-label">Smoothing</span>
+                                <label class="form-label" for="@SmoothingId">Smoothing</label>
                                 <span class="form-control-wrap">
                                     <Select TValue="SeriesSmoothingOptions"
-                                            Size="Size.Small"
+                                            Id="@SmoothingId"
+                                            Compact
                                             Value="@ChartSeries.Smoothing"
                                             ValueChanged="@OnSmoothingChanged">
                                         <SelectItem Value="SeriesSmoothingOptions.None">None</SelectItem>
@@ -109,10 +111,11 @@
                         </DelayedTooltip>
                         <DelayedTooltip Text="Number of periods to include in the rolling window" Style="display: block">
                             <div class="form-row">
-                                <span class="form-label">Smoothing window</span>
+                                <label class="form-label" for="@SmoothingWindowId">Smoothing window</label>
                                 <span class="form-control-wrap">
                                     <Select TValue="int"
-                                            Size="Size.Small"
+                                            Id="@SmoothingWindowId"
+                                            Compact
                                             Value="@ChartSeries.SmoothingWindow"
                                             ValueChanged="@OnSmoothingWindowChanged"
                                             Disabled="@ShouldDisableSmoothingWindow(ChartSeries)">
@@ -132,10 +135,11 @@
                     <div class="edit-col">
                         <DelayedTooltip Text="Whether to plot actual values or the departure from the historical mean (anomaly)" Style="display: block">
                             <div class="form-row">
-                                <span class="form-label">Display</span>
+                                <label class="form-label" for="@DisplayId">Display</label>
                                 <span class="form-control-wrap">
                                     <Select TValue="SeriesValueOptions"
-                                            Size="Size.Small"
+                                            Id="@DisplayId"
+                                            Compact
                                             Value="@ChartSeries.Value"
                                             ValueChanged="@OnValueChanged"
                                             Disabled="@ShouldDisableDisplay(ChartSeries)">
@@ -147,10 +151,11 @@
                         </DelayedTooltip>
                         <DelayedTooltip Text="A mathematical transformation applied to each data value before plotting" Style="display: block">
                             <div class="form-row">
-                                <span class="form-label">Transformation</span>
+                                <label class="form-label" for="@TransformationId">Transformation</label>
                                 <span class="form-control-wrap">
                                     <Select TValue="SeriesTransformations"
-                                            Size="Size.Small"
+                                            Id="@TransformationId"
+                                            Compact
                                             Value="@ChartSeries.SeriesTransformation"
                                             ValueChanged="@OnTransformationChanged"
                                             Disabled="@ShouldDisableTransformation(ChartSeries)">
@@ -166,29 +171,26 @@
                         {
                             <DelayedTooltip Text="A logical expression applied to each value (use x as the data value)" Style="display: block">
                                 <div class="form-row">
-                                    <span class="form-label">Custom expression</span>
+                                    <label class="form-label" for="@CustomTransformationId">Custom expression</label>
                                     <span class="form-control-wrap">
-                                        <Validation @ref="validation" Validator="ValidateCustomTransformation">
-                                            <TextInput Size="Size.Small"
-                                                       Value="@ChartSeries.CustomTransformation"
-                                                       ValueChanged="@OnCustomTransformationChanged"
-                                                       Placeholder="e.g. x == 0 or x >= 1 AND x < 10"
-                                                       Immediate="false">
-                                                <Feedback>
-                                                    <ValidationError>Expected input like: 'x &gt; 25' or 'x &gt;= 1 AND x &lt; 10'</ValidationError>
-                                                </Feedback>
-                                            </TextInput>
-                                        </Validation>
+                                        <TextInput Id="@CustomTransformationId"
+                                                   Compact
+                                                   Value="@ChartSeries.CustomTransformation"
+                                                   ValueChanged="@OnCustomTransformationChanged"
+                                                   Placeholder="e.g. x == 0 or x >= 1 AND x < 10"
+                                                   Invalid="@customTransformationInvalid"
+                                                   ErrorMessage="Expected input like: 'x > 25' or 'x >= 1 AND x < 10'" />
                                     </span>
                                 </div>
                             </DelayedTooltip>
                         }
                         <DelayedTooltip Text="Whether to draw this series as a line, a bar chart, or scattered points" Style="display: block">
                             <div class="form-row">
-                                <span class="form-label">Display style</span>
+                                <label class="form-label" for="@DisplayStyleId">Display style</label>
                                 <span class="form-control-wrap">
                                     <Select TValue="SeriesDisplayStyle"
-                                            Size="Size.Small"
+                                            Id="@DisplayStyleId"
+                                            Compact
                                             Value="@ChartSeries.DisplayStyle"
                                             ValueChanged="@OnDisplayStyleChanged">
                                         <SelectItem Value="SeriesDisplayStyle.Bar">Bar</SelectItem>
@@ -200,10 +202,11 @@
                         </DelayedTooltip>
                         <DelayedTooltip Text="The colour used to draw this series on the chart" Style="display: block">
                             <div class="form-row">
-                                <span class="form-label">Colour</span>
+                                <label class="form-label" for="@ColourId">Colour</label>
                                 <span class="form-control-wrap">
                                     <Select TValue="Colours"
-                                            Size="Size.Small"
+                                            Id="@ColourId"
+                                            Compact
                                             Value="@ChartSeries.RequestedColour"
                                             ValueChanged="@OnColourChanged">
                                             @foreach (var colour in (Colours[])Enum.GetValues(typeof(Colours)))

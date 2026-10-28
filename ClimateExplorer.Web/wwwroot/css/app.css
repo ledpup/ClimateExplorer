@@ -11,6 +11,8 @@
     --climate-color-info-icon: #79c6f4;
     --climate-color-tab-surface: #eef5f2;
     --climate-color-tab-border: #6b8e89;
+    --climate-color-control-border: #c4d4d1;
+    --climate-color-danger: #a00000;
     --climate-radius-control: 8px;
     --climate-shadow-control: rgb(0 0 0 / 20%) 0 0 4px;
     --climate-shadow-panel: rgb(0 0 0 / 15%) 1px 1px 12px;
@@ -236,6 +238,32 @@ a, .btn-link {
 
 .climate-link-button:hover {
     color: var(--climate-color-link-hover);
+}
+
+/* Shared box for the Select and TextInput form controls, so the two can't drift. Each component's scoped
+   CSS adds its own padding, height and extras (chevron, invalid state). */
+.climate-control {
+    background-color: var(--climate-color-control-surface);
+    border: 1px solid var(--climate-color-control-border);
+    border-radius: var(--climate-radius-control);
+    color: var(--climate-color-control-text);
+    font: inherit;
+    line-height: 1.5;
+    max-width: 100%;
+    transition: var(--climate-transition-control);
+}
+
+.climate-control:hover:not(:disabled) {
+    background-color: var(--climate-color-control-hover);
+}
+
+.climate-control:focus-visible {
+    outline: 2px solid var(--climate-color-control-text);
+    outline-offset: 1px;
+}
+
+.climate-control:disabled {
+    opacity: 0.6;
 }
 
 .climate-checkbox {

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Components;
 
 public partial class AggregationOptions
 {
+    private readonly string idPrefix = $"aggregation-{Guid.NewGuid():N}";
     private InfoPanel? aggregationOptionsInfoPanel;
 
     private int thresholdValue;
@@ -24,6 +25,10 @@ public partial class AggregationOptions
 
     [Parameter]
     public EventCallback<AggregationSettings> OnChanged { get; set; }
+
+    private string GroupingDaysId => $"{idPrefix}-grouping-days";
+
+    private string ThresholdId => $"{idPrefix}-threshold";
 
     private bool HaveOptionsChanged => overridePresetThreshold || thresholdValue != 70 || currentGroupingDays != 14;
 

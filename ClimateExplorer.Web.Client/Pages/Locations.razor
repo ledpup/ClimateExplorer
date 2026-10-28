@@ -1,5 +1,4 @@
 @page "/locations"
-@using Blazorise
 @using ClimateExplorer.Web.Client.Components.ClimateRecords
 @using ClimateExplorer.Web.Client.Components.Common
 @using ClimateExplorer.Web.Client.Components.Location
@@ -30,6 +29,7 @@
                         <input type="text"
                                class="form-control form-control-sm"
                                placeholder="Search locations..."
+                               aria-label="Search locations"
                                value="@(nameFilter ?? string.Empty)"
                                @oninput="@(e => OnNameFilterChanged(e.Value?.ToString()))" />
                     </div>
@@ -37,7 +37,8 @@
                         <Select TValue="string"
                                 Value="@(countryFilter ?? string.Empty)"
                                 ValueChanged="@OnCountryFilterChanged"
-                                Size="Size.Small">
+                                Compact
+                                aria-label="Country">
                             <SelectItem Value="@string.Empty">All countries</SelectItem>
                             @foreach (var country in availableCountries)
                             {
@@ -49,7 +50,8 @@
                         <Select TValue="string"
                                 Value="@(heatingScoreFilter ?? string.Empty)"
                                 ValueChanged="@OnHeatingScoreFilterChanged"
-                                Size="Size.Small">
+                                Compact
+                                aria-label="Heating score">
                             <SelectItem Value="@string.Empty">Any heating score</SelectItem>                       
                             @for (var i = 9; i >= 0; i--)
                             {
@@ -161,7 +163,8 @@
                                 <Select TValue="int"
                                         Value="@pageSize"
                                         ValueChanged="@OnPageSizeChanged"
-                                        Size="Size.Small">
+                                        Compact
+                                        aria-label="Locations per page">
                                     <SelectItem Value="10">10</SelectItem>
                                     <SelectItem Value="15">15</SelectItem>
                                     <SelectItem Value="20">20</SelectItem>

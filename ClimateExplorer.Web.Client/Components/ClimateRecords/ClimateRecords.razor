@@ -1,4 +1,3 @@
-@using Blazorise
 @using ClimateExplorer.Web.Client.Components.Common
 @using ClimateExplorer.Web.Client.Components.Location
 @using ClimateExplorer.Web.UiModel
@@ -6,14 +5,14 @@
 @using static ClimateExplorer.Core.Enums
 
 <div class="climate-tabs mb-4">
-    <Tabs SelectedTab="@ActiveView.ToString()" SelectedTabChanged="@OnViewChanged">
+    <Blazorise.Tabs SelectedTab="@ActiveView.ToString()" SelectedTabChanged="@OnViewChanged">
         <Items>
-            <Tab Name="Top100">Top 100</Tab>
-            <Tab Name="Daily">Daily</Tab>
-            <Tab Name="Monthly">Monthly</Tab>
-            <Tab Name="Yearly">Yearly</Tab>
+            <Blazorise.Tab Name="Top100">Top 100</Blazorise.Tab>
+            <Blazorise.Tab Name="Daily">Daily</Blazorise.Tab>
+            <Blazorise.Tab Name="Monthly">Monthly</Blazorise.Tab>
+            <Blazorise.Tab Name="Yearly">Yearly</Blazorise.Tab>
         </Items>
-    </Tabs>
+    </Blazorise.Tabs>
 </div>
 
 <div class="filter-row">
@@ -23,7 +22,8 @@
         <Select TValue="DataType"
                 Value="@SelectedDataType.Value"
                 ValueChanged="@OnDataTypeChanged"
-                Size="Size.Small">
+                Compact
+                aria-label="Data type">
             @foreach (var dt in AvailableDataTypes.OrderBy(x => x))
             {
                 <SelectItem Value="@dt">@ChartSeriesDefinition.MapDataTypeToFriendlyName(dt)</SelectItem>
@@ -42,7 +42,8 @@
             <Select TValue="int"
                     Value="@SelectedMonth"
                     ValueChanged="@OnMonthChanged"
-                    Size="Size.Small">
+                    Compact
+                    aria-label="Month">
                 <SelectItem Value="0">All months</SelectItem>
                 @for (int m = 1; m <= 12; m++)
                 {
@@ -57,7 +58,8 @@
                 <Select TValue="int"
                         Value="@SelectedDay"
                         ValueChanged="@OnDayChanged"
-                        Size="Size.Small">
+                        Compact
+                        aria-label="Day">
                     <SelectItem Value="0">All days</SelectItem>
                     @for (int d = 1; d <= DaysInSelectedMonth; d++)
                     {
@@ -198,7 +200,8 @@
                                     <Select TValue="int"
                                     Value="@Count"
                                     ValueChanged="@OnCountChanged"
-                                    Size="Size.Small">
+                                    Compact
+                                    aria-label="Records per page">
                                         <SelectItem Value="10">10</SelectItem>
                                         <SelectItem Value="20">20</SelectItem>
                                         <SelectItem Value="50">50</SelectItem>

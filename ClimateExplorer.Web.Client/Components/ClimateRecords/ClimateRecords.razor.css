@@ -30,10 +30,6 @@
     padding: 0.5rem 0.5rem 0.75rem 0rem;
 }
 
-.filter-row ::deep .form-select {
-    width: auto;
-}
-
 .today-btn,
 .sort-toggle-btn {
     font-size: 0.875rem;

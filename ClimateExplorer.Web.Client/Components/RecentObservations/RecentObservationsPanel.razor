@@ -1,5 +1,4 @@
 @namespace ClimateExplorer.Web.Client.Components.RecentObservations
-@using Blazorise
 @using ClimateExplorer.Web.Client.Components.Common
 @using ClimateExplorer.Web.Client.Components.RecentObservations
 @using ClimateExplorer.Web.Client.UiModel.RecentObservations
@@ -188,10 +187,10 @@
                                     <div class="recent-observations-config-control">
                                         <label for="@ComparisonRangeInputId">Comparison range</label>
                                         <Select TValue="ComparisonEndMode"
-                                                ElementId="@ComparisonRangeInputId"
+                                                Id="@ComparisonRangeInputId"
                                                 Value="@selectedComparisonEndMode"
                                                 ValueChanged="@OnComparisonEndModeChanged"
-                                                Size="Size.Small">
+                                                Compact>
                                             <SelectItem Value="@ComparisonEndMode.FullDataset">Entire dataset</SelectItem>
                                             <SelectItem Value="@ComparisonEndMode.ReferenceDate">Up to view date</SelectItem>
                                         </Select>
