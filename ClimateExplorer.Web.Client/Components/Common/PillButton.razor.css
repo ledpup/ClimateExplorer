@@ -5,13 +5,13 @@
 
 /*
     Consumers supply the two buttons via the PrimaryContent/PillContent render fragments (each
-    typically a ClimateButton), so ::deep is required to reach past that component boundary into
+    typically a Button), so ::deep is required to reach past that component boundary into
     their rendered <button> output.
 
     The pill button is a second, independently-clickable <button>. It is positioned absolutely
     against this container - inset into the primary button's reserved right-hand padding - rather
     than pulled into place with a negative margin, so the nested look survives even when a
-    tooltip wrapper (e.g. DelayedTooltip) sits between this container and the pill button in the
+    tooltip wrapper (e.g. Tooltip) sits between this container and the pill button in the
     DOM: a negative margin on the pill would be absorbed by that wrapper's own shrink-wrapped box
     instead of shifting the pill's position in this flex row.
 */

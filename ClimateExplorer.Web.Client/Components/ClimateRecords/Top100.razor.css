@@ -73,28 +73,11 @@
     background-color: #ffffff;
 }
 
-.top100-btn {
-    gap: 0.25rem;
-}
-
 /* Dropdown wrapper: display:contents keeps it inline with other buttons */
 .top100-download-dropdown-wrapper {
     display: contents;
 }
 
-.top100-download-dropdown-wrapper ::deep .dropdown {
-    display: inline-flex;
-}
-
 .top100-download-dropdown-wrapper ::deep .dropdown-menu {
     min-width: 100px;
-}
-
-.top100-download-dropdown-wrapper ::deep .dropdown-item {
-    cursor: pointer;
-    padding: 0.5rem 1rem;
-}
-
-.top100-download-dropdown-wrapper ::deep .dropdown-item:hover {
-    background-color: #f8f8f8;
 }

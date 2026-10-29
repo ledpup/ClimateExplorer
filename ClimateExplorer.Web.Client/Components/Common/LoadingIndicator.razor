@@ -1,0 +1,29 @@
+@implements IDisposable
+
+@if (Variant == LoadingIndicatorVariant.Inline)
+{
+    <span class="loading-inline @Class" role="status">
+        @if (showIndicator)
+        {
+            <span class="loading-spinner loading-spinner--small" aria-hidden="true"></span>
+            <span class="@TextClass">@EffectiveText</span>
+        }
+    </span>
+    @if (!Visible)
+    {
+        @ChildContent
+    }
+}
+else
+{
+    <div class="loading-host @Class" aria-busy="@(showIndicator ? "true" : null)">
+        @ChildContent
+        <div class="loading-overlay @(showIndicator ? "is-visible" : null)" style="@ZIndexStyle" role="status">
+            @if (showIndicator)
+            {
+                <span class="loading-spinner" aria-hidden="true"></span>
+                <span class="@TextClass">@EffectiveText</span>
+            }
+        </div>
+    </div>
+}

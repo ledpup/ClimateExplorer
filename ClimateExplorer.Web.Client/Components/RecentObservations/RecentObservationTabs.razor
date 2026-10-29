@@ -1,17 +1,12 @@
 @namespace ClimateExplorer.Web.Client.Components.RecentObservations
-@using Blazorise
 @using ClimateExplorer.Web.Client.UiModel.RecentObservations
 
-<div class="climate-tabs recent-observation-tabs">
-    <Tabs SelectedTab="@SelectedTab" SelectedTabChanged="@OnSelectedTabChanged">
-        <Items>
-            @foreach (var domain in Domains)
-            {
-                <Tab Name="@domain.Key">@domain.TabLabel</Tab>
-            }
-        </Items>
-    </Tabs>
-</div>
+<Tabs SelectedTab="@SelectedTab" SelectedTabChanged="@OnSelectedTabChanged" AriaLabel="Observation domain" Class="mb-3">
+    @foreach (var domain in Domains)
+    {
+        <Tab Name="@domain.Key">@domain.TabLabel</Tab>
+    }
+</Tabs>
 
 @code {
     [Parameter]

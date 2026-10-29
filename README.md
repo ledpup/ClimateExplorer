@@ -19,9 +19,11 @@ This github site is the digital repository for everything used to bring [the web
   - **Web.Client**: Blazor Web Assembly version of the website. This will download to the browser and the browser will switch to using this after its downloaded.
   - **WebApi**: Web API that gets and processes the data that the website uses
   - **Core**: code shared between Web, WebApi and other projects
-  - **UnitTests**: tests for various sub-systems
+  - **Core.UnitTests**, **WebApi.UnitTests**, **Web.UnitTests**: unit tests for Core, for the API and data
+    projects, and for the website; the deployment workflows run them before publishing
 - Additional libraries used
-  - Charting: https://blazorise.com/ ([source](https://github.com/Megabit/Blazorise))
+  - Charting: https://www.chartjs.org/ ([source](https://github.com/chartjs/Chart.js))
+  - Icons: https://fontawesome.com/ (Font Awesome Free)
   - Mapping: https://github.com/ledpup/DPBlazorMap
   - Clustering tool: https://www.nuget.org/packages/DBSCAN/ ([source](https://github.com/viceroypenguin/Dbscan))
 

@@ -1,4 +1,3 @@
-@using Blazorise
 @using ClimateExplorer.Web.Client.Components.Location.Info
 
 <div class="climate-stripe">
@@ -6,7 +5,7 @@
     {
         foreach (var record in DataRecords)
         {
-            <Tooltip Text="@GetTooltip(record)" Placement="TooltipPlacement.Bottom" Style="flex: 1; display: block; height: inherit">
+            <Tooltip Text="@GetTooltip(record)" Placement="Common.TooltipPlacement.Bottom" Style="flex: 1; display: block; height: inherit">
                 <div class="single-stripe" role="button" aria-label="@GetTooltip(record)" style="background-color: @GetColour(record.Relative); cursor: pointer; --label-colour: @GetLabelColour(record.Relative);" @onclick="() => FilterToYear(record.Year)">
                     <div class="label" style="border-color: @GetLabelColour(record.Relative)">
                         <div class="year">@record.Year</div>
@@ -26,16 +25,8 @@
 
     @if (ShowInfo)
     {
-        <Modal @ref="popup" Size="ModalSize.Large">
-            <ModalContent>
-                <ModalHeader Class="custom-modal-header">
-                    <ModalTitle>Climate stripe</ModalTitle>
-                    <CloseButton />
-                </ModalHeader>
-                <ModalBody>
-                    <ClimateStripeInfo LocationName="@LocationName" LocationMean="@LocationMean" UnitOfMeasure="@UnitOfMeasure" DataRecords="@DataRecords" />
-                </ModalBody>
-            </ModalContent>
+        <Modal @ref="popup" Title="Climate stripe" Size="ModalSize.Large">
+            <ClimateStripeInfo LocationName="@LocationName" LocationMean="@LocationMean" UnitOfMeasure="@UnitOfMeasure" DataRecords="@DataRecords" />
         </Modal>
     }
 </div>

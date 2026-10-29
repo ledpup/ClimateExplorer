@@ -1,8 +1,5 @@
 #pragma warning disable SA1200 // Using directives should be placed correctly
 using Blazored.LocalStorage;
-using Blazorise;
-using Blazorise.Bootstrap5;
-using Blazorise.Icons.FontAwesome;
 using ClimateExplorer.Core.Blog;
 using ClimateExplorer.Web;
 using ClimateExplorer.Web.Client.Pages;
@@ -32,12 +29,6 @@ builder.Services
     .AddInteractiveWebAssemblyComponents();
 
 builder.Services
-    .AddBlazorise(options =>
-    {
-        options.ProductToken = "CjxRBnF9NAo9UwNzfDA1BlEAc3g0Cj5QAHF+NQg8bjoNJ2ZdYhBVCCo/Cj9bCUxERldhE1EvN0xcNm46FD1gSkUHCkxESVFvBl4yK1FBfAYKEytiTWACQkxEWmdIImQACVdxSDxvDA9dZ1MxfxYdWmc2LX8eAkx1RTdjTERaZ002ZA4NSnVcL3UVC1pnQSJoHhFXd1swbx50S3dTL3kMB1FrAWlvHg1NeV43Yx4RSHlUPG8TAVJrUzwKDwFadEUueRUdCDJTPHwIHVFuRSZnHhFIeVQ8bxMBUmtTPAoPAVp0RS55FR0IMlM8ZBMLQG5FJmceEUh5VDxvEwFSa1M8Cg8BWnRFLnkVHQgyRzNbbitMemBbZDUXalUnMHwzP0JJeVUDCnhoTyciAAkkdAtNKGBuG38NbQ1YD3dnTFsyWyADaHJ+NFMjNDRXTgZ8BT02E0s5XiUcM1ojKmAMCFFbeFN0cWFTaWEmeDkpYmJmSH00P39bIyplKz5tE00ncy0WKldKM1QXPE0NYQ5/CRxXWVYqdxt3S1lDBkFqNkYPR0xXDWFLAFZbfzgrN0x7B395B3RpNDYAfA==";
-    })
-    .AddBootstrap5Providers()
-    .AddFontAwesomeIcons()
     .AddMapService()
     .AddScoped(sp => new HttpClient())
     .AddMemoryCache(options => options.SizeLimit = DataService.CacheSizeLimit)

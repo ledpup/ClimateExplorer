@@ -1,4 +1,3 @@
-@using Blazorise
 @using ClimateExplorer.Web.Client.Components.Common
 
 <div class="extreme-years @(DataRecords is null ? "extreme-years--loading" : string.Empty)">
@@ -8,7 +7,7 @@
             <Value>
                 @foreach (var year in FirstList)
                 {
-                    <Tooltip Text="@GetTooltip(year)" Multiline="true" Style="display: inline"><span class="year-link" @onclick="() => FilterToYear(year)">@year</span></Tooltip><span>@(FirstList.IndexOf(year) < FirstList.Count - 1 ? ", " : string.Empty)</span>
+                    <Tooltip Text="@GetTooltip(year)" Multiline="true" Style="display: inline"><button type="button" class="year-link" @onclick="() => FilterToYear(year)">@year</button></Tooltip><span>@(FirstList.IndexOf(year) < FirstList.Count - 1 ? ", " : string.Empty)</span>
                 }
             </Value>
         </OverviewField>
@@ -16,7 +15,7 @@
             <Value>
                 @foreach (var year in SecondList)
                 {
-                    <Tooltip Text="@GetTooltip(year)" Multiline="true" Style="display: inline"><span class="year-link" @onclick="() => FilterToYear(year)">@year</span></Tooltip><span>@(SecondList.IndexOf(year) < SecondList.Count - 1 ? ", " : string.Empty)</span>
+                    <Tooltip Text="@GetTooltip(year)" Multiline="true" Style="display: inline"><button type="button" class="year-link" @onclick="() => FilterToYear(year)">@year</button></Tooltip><span>@(SecondList.IndexOf(year) < SecondList.Count - 1 ? ", " : string.Empty)</span>
                 }
             </Value>
         </OverviewField>

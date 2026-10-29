@@ -1,24 +1,22 @@
-@using Blazorise
-
-<Pagination Class="mb-0">
-    @foreach (var pageNum in GetVisiblePages())
-    {
-        @if (pageNum == -1)
+<nav class="pagination @Class" aria-label="@AriaLabel">
+    <ul>
+        @foreach (var pageNum in GetVisiblePages())
         {
-            <PaginationItem Disabled="true">
-                <PaginationLink>
-                    <span>...</span>
-                </PaginationLink>
-            </PaginationItem>
+            @if (pageNum == -1)
+            {
+                <li class="pagination-gap" aria-hidden="true">&hellip;</li>
+            }
+            else
+            {
+                var pageNumber = pageNum;
+                <li>
+                    <button type="button"
+                            class="pagination-page"
+                            aria-current="@(CurrentPage == pageNumber ? "page" : null)"
+                            aria-label="@($"Page {pageNumber}")"
+                            @onclick="() => OnPageClicked(pageNumber)">@pageNumber</button>
+                </li>
+            }
         }
-        else
-        {
-            var pageNumber = pageNum;
-            <PaginationItem Active="@(CurrentPage == pageNumber)">
-                <PaginationLink Clicked="@(() => PageChanged.InvokeAsync(pageNumber))">
-                    @pageNumber
-                </PaginationLink>
-            </PaginationItem>
-        }
-    }
-</Pagination>
+    </ul>
+</nav>

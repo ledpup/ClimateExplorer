@@ -55,6 +55,28 @@ public static class CustomTransformationParser
         throw new ArgumentException($"Cannot parse custom transformation: '{expression}'. Expected: 'x > 25', 'x >= 1 AND x < 10', '-x', or 'negate'.");
     }
 
+    /// <summary>
+    /// Whether <see cref="Parse"/> would accept <paramref name="expression"/>. Null isn't an expression, so it's
+    /// not valid; callers that treat an empty field as "nothing entered yet" check for that first.
+    /// </summary>
+    public static bool IsValid(string? expression)
+    {
+        if (expression is null)
+        {
+            return false;
+        }
+
+        try
+        {
+            Parse(expression);
+            return true;
+        }
+        catch (Exception ex) when (ex is ArgumentException or FormatException)
+        {
+            return false;
+        }
+    }
+
     private static Func<double, bool> BuildPredicate(string op, double val)
     {
         return op switch

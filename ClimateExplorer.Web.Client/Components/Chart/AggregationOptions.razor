@@ -1,61 +1,52 @@
-﻿@using Blazorise
-@using ClimateExplorer.Web.Client.Components.Common
+﻿@using ClimateExplorer.Web.Client.Components.Common
 @using ClimateExplorer.Web.Client.Components.Info
 @using ClimateExplorer.Web.Client.UiModel
 
 <div class="aggregation-options-wrapper">
-    @if (panelOpen)
-    {
-        <div class="aggregation-options-backdrop" @onclick="ClosePanel"></div>
-    }
-    <div class="aggregation-options-container">
-        <DelayedTooltip Text="Change how data is grouped for aggregation.<br>Group fortnightly at a 70% threshold by default">
-            <ClimateButton Text="Aggregation" Icon="fas fa-cog" Class="chart-control aggregation-toggle dropdown-toggle" OnClick="TogglePanel" />
-        </DelayedTooltip>
-        @if (panelOpen)
-        {
-            <div class="aggregation-options-panel">
+    <Tooltip Text="Change how data is grouped for aggregation.<br>Group fortnightly at a 70% threshold by default">
+        <DropdownButton @ref="dropdown" Text="Aggregation" Icon="fas fa-cog">
+            <MenuContent>
                 <div class="aggregation-options-content">
-                    <DelayedTooltip Text="Number of days used to group data points into a single bin" Style="display: block">
+                    <Tooltip Text="Number of days used to group data points into a single bin" Style="display: block">
                         <div class="form-row">
-                            <span class="form-label">Grouping days</span>
+                            <label class="form-label" for="@GroupingDaysId">Grouping days</label>
                             <span class="form-control-wrap">
-                                <Select TValue="short" Value="@currentGroupingDays" ValueChanged="@OnSelectedGroupingDaysChanged">
-                                    <SelectItem Value="182">@AggregationSettings.GroupingDaysText(182)</SelectItem>
-                                    <SelectItem Value="91">@AggregationSettings.GroupingDaysText(91)</SelectItem>
-                                    <SelectItem Value="28">@AggregationSettings.GroupingDaysText(28)</SelectItem>
-                                    <SelectItem Value="14">@AggregationSettings.GroupingDaysText(14)</SelectItem>
-                                    <SelectItem Value="7">@AggregationSettings.GroupingDaysText(7)</SelectItem>
+                                <Select TValue="short" Id="@GroupingDaysId" Value="@currentGroupingDays" ValueChanged="@OnSelectedGroupingDaysChanged">
+                                    <SelectItem TValue="short" Value="182">@AggregationSettings.GroupingDaysText(182)</SelectItem>
+                                    <SelectItem TValue="short" Value="91">@AggregationSettings.GroupingDaysText(91)</SelectItem>
+                                    <SelectItem TValue="short" Value="28">@AggregationSettings.GroupingDaysText(28)</SelectItem>
+                                    <SelectItem TValue="short" Value="14">@AggregationSettings.GroupingDaysText(14)</SelectItem>
+                                    <SelectItem TValue="short" Value="7">@AggregationSettings.GroupingDaysText(7)</SelectItem>
                                 </Select>
                             </span>
                         </div>
-                    </DelayedTooltip>
-                    <DelayedTooltip Text="Minimum percentage of days with valid data required for a bin to be included in the chart" Style="display: block">
+                    </Tooltip>
+                    <Tooltip Text="Minimum percentage of days with valid data required for a bin to be included in the chart" Style="display: block">
                         <div class="form-row">
-                            <span class="form-label">Threshold (%)</span>
+                            <label class="form-label" for="@ThresholdId">Threshold (%)</label>
                             <span class="form-control-wrap">
-                                <input type="number" class="form-control form-control-sm" min="0" max="100" step="10"
+                                <input id="@ThresholdId" type="number" class="control aggregation-threshold-input" min="0" max="100" step="10"
                                        value="@thresholdValue" @oninput="OnThresholdChanged" />
                             </span>
                         </div>
-                    </DelayedTooltip>
-                    <DelayedTooltip Text="When checked, your custom threshold is used instead of the dataset's recommended preset" Style="display: block">
+                    </Tooltip>
+                    <Tooltip Text="When checked, your custom threshold is used instead of the dataset's recommended preset" Style="display: block">
                         <div class="form-row">
                             <span class="form-control-wrap">
-                                <Check TValue="bool" Value="@overridePresetThreshold" ValueChanged="@((bool v) => OnOverrideChanged(v))">Override preset threshold</Check>
+                                <Checkbox Value="@overridePresetThreshold" ValueChanged="@((bool v) => OnOverrideChanged(v))">Override preset threshold</Checkbox>
                             </span>
                         </div>
-                    </DelayedTooltip>
+                    </Tooltip>
                     <div class="form-row form-row-actions">
-                        <DelayedTooltip Text="Reset aggregation options to their defaults">
-                            <Button Color="Color.Primary" Size="Size.Small" Clicked="@ResetThreshold" Disabled="@(!HaveOptionsChanged)">Reset</Button>
-                        </DelayedTooltip>
-                        <i class="fas fa-circle-info info-icon" @onclick="ShowAggregationOptionsInfo"></i>
+                        <Tooltip Text="Reset aggregation options to their defaults">
+                            <Button Compact Text="Reset" Disabled="@(!HaveOptionsChanged)" OnClick="ResetThreshold" />
+                        </Tooltip>
+                        <Button Variant="ButtonVariant.Link" Icon="fas fa-circle-info" AriaLabel="About aggregation options" Class="info-icon" OnClick="ShowAggregationOptionsInfo" />
                     </div>
                 </div>
-            </div>
-        }
-    </div>
+            </MenuContent>
+        </DropdownButton>
+    </Tooltip>
 </div>
 
 <InfoPanel @ref="aggregationOptionsInfoPanel" Title="Aggregation options" Height="50vh" MobileHeight="60vh">

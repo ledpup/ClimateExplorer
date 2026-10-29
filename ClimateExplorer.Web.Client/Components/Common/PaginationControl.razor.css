@@ -1,1 +1,76 @@
+/* Joined button group: neighbouring borders overlap by 1px, outer corners rounded. */
+.pagination ul {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
 
+.pagination li + li {
+    margin-left: -1px;
+}
+
+.pagination-page,
+.pagination-gap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 0.45rem;
+    box-sizing: border-box;
+    border: 1px solid #cdd8d6;
+    background-color: #fff;
+}
+
+.pagination li:first-child > * {
+    border-radius: var(--climate-radius-control) 0 0 var(--climate-radius-control);
+}
+
+.pagination li:last-child > * {
+    border-radius: 0 var(--climate-radius-control) var(--climate-radius-control) 0;
+}
+
+.pagination li:only-child > * {
+    border-radius: var(--climate-radius-control);
+}
+
+.pagination-page {
+    font: inherit;
+    color: var(--climate-color-control-text);
+    border-radius: 0;
+    cursor: pointer;
+    transition: var(--climate-transition-control);
+}
+
+/* Extends the tap area to 44px high without changing how big the button looks. Only
+   vertical, so it never overlaps the neighbouring page. */
+.pagination-page::before {
+    content: "";
+    position: absolute;
+    inset: -6px 0;
+}
+
+.pagination-page:hover:not([aria-current="page"]) {
+    background-color: var(--climate-color-control-hover);
+}
+
+.pagination-page:focus-visible {
+    z-index: 2;
+    outline: 2px solid var(--climate-color-control-text);
+    outline-offset: 2px;
+}
+
+.pagination-page[aria-current="page"] {
+    z-index: 1;
+    color: #fff;
+    background-color: var(--climate-color-control-text);
+    border-color: var(--climate-color-control-text);
+    cursor: default;
+}
+
+.pagination-gap {
+    color: var(--climate-color-muted-text);
+}

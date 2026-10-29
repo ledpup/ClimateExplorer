@@ -1,0 +1,60 @@
+/* Folder-style tabs. The active tab is filled with the brand green and sits on a baseline of the
+   same colour so it reads as attached to the content below. Inactive tabs are pale green with a
+   border that meets WCAG 1.4.11 (3:1 against white); all text/background pairs meet AA (4.5:1).
+   The tabs are rendered by Tab, so they're styled through ::deep. */
+.tablist {
+    display: flex;
+    gap: 0.25rem;
+    overflow-x: auto;
+    border-bottom: 2px solid var(--climate-color-control-text);
+}
+
+.tablist ::deep .tab {
+    flex: none;
+    margin: 0;
+    padding: 0.35rem 0.85rem;
+    background-color: var(--climate-color-tab-surface);
+    border: 1px solid var(--climate-color-tab-border);
+    border-bottom: none;
+    border-radius: var(--climate-radius-control) var(--climate-radius-control) 0 0;
+    color: var(--climate-color-control-text);
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.5;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: var(--climate-transition-control);
+}
+
+.tablist ::deep .tab:hover {
+    background-color: var(--climate-color-control-hover);
+    border-color: var(--climate-color-control-text);
+    color: var(--climate-color-control-text);
+}
+
+/* Inset, because the scrolling tablist clips anything drawn outside the tab */
+.tablist ::deep .tab:focus-visible {
+    outline: 2px solid var(--climate-color-control-text);
+    outline-offset: -4px;
+}
+
+.tablist ::deep .tab.is-active {
+    background-color: var(--climate-color-control-text);
+    border-color: var(--climate-color-control-text);
+    color: #ffffff;
+    outline-color: #ffffff;
+}
+
+.tablist ::deep .tab:disabled {
+    background-color: var(--climate-color-tab-surface);
+    border-color: var(--climate-color-tab-border);
+    color: var(--climate-color-muted-text);
+    cursor: default;
+}
+
+@media (pointer: coarse) {
+    .tablist ::deep .tab {
+        min-height: 44px;
+    }
+}

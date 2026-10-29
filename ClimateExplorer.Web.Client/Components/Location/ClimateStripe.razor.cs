@@ -1,7 +1,7 @@
 namespace ClimateExplorer.Web.Client.Components.Location;
 
-using Blazorise;
 using ClimateExplorer.Core;
+using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.Client.Units;
 using ClimateExplorer.Web.UiModel;
@@ -62,7 +62,7 @@ public partial class ClimateStripe
 
     private Task ShowClimateStripeInfo()
     {
-        return popup!.Show();
+        return popup!.ShowAsync();
     }
 
     private Colour GetColourObject(double value)

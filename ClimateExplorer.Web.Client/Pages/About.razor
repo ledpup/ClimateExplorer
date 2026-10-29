@@ -1,6 +1,5 @@
 @using ClimateExplorer.Web.Client.Components.Common
 @page "/about"
-@using Blazorise
 @using ClimateExplorer.Core.Model
 @using ClimateExplorer.WebApiClient.Services
 
@@ -15,7 +14,7 @@
     <h3>Contents</h3>
     @if (tocItems.Any())
     {
-        <Accordion>
+        <nav class="toc-nav" aria-label="About this site contents">
             @foreach (var group in tocItems.GroupBy(x => x.ParentSection))
             {
                 <div class="toc-items">
@@ -25,7 +24,7 @@
                     }
                 </div>
             }
-        </Accordion>
+        </nav>
     }
 </div>
 
@@ -147,17 +146,11 @@
 <h2>Data pipeline</h2>
 
 <div style="cursor: pointer;" @onclick="ShowPipelineModal">
-    <DelayedTooltip Text="Click to enlarge"><img src="/images/pipeline.png" style="width: 100%" alt="Data Pipeline Diagram" /></DelayedTooltip>
+    <Tooltip Text="Click to enlarge"><img src="/images/pipeline.png" style="width: 100%" alt="Data Pipeline Diagram" /></Tooltip>
 </div>
 
-<Modal @bind-Visible="pipelineModalVisible" Size="ModalSize.ExtraLarge">
-    <ModalHeader Class="custom-modal-header">
-        <ModalTitle>Data Pipeline</ModalTitle>
-        <CloseButton />
-    </ModalHeader>
-    <ModalBody>
-        <img src="/images/pipeline.png" style="width: 100%; height: auto;" alt="Data Pipeline Diagram" />
-    </ModalBody>
+<Modal @bind-Visible="pipelineModalVisible" Title="Data Pipeline" Size="ModalSize.ExtraLarge">
+    <img src="/images/pipeline.png" style="width: 100%; height: auto;" alt="Data Pipeline Diagram" />
 </Modal>
 
 <h2>Notes</h2>

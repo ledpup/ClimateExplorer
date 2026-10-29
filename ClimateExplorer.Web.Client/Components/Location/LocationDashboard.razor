@@ -1,4 +1,3 @@
-@using Blazorise
 @using ClimateExplorer.Core.Model
 @using ClimateExplorer.Web.Client.Components.ClimateRecords
 @using ClimateExplorer.Web.Client.Components.Common
@@ -9,22 +8,22 @@
 <Collapsible @ref="LocationCollapsible" Title="@Location?.DisplayTitle" CompactTitle="@Location?.CodeTitle" MinimalTitle="@Location?.Name" OnShowOrHide="OverviewShowOrHideHandler" CollapserSize="Collapsible.CollapserSizes.ExtraLarge">
     <CollapsedContent>
         <span class="chart-controls">
-            <DelayedTooltip Multiline="true" Style="display: inline-block" Text="Change the current location. Four ways to choose:<br>• Near me — use browser location<br>• Random — a surprise location<br>• Search — type a location name<br>• Nearby — closest stations">
-                <ClimateButton Text="@(ChangeLocationLoading ? "Loading locations..." : "Change location")" Icon="fas fa-map" Class="chart-control" Disabled="@ChangeLocationLoading" OnClick="() => ChangeLocationClicked(new EventArgs())" />
-            </DelayedTooltip>
+            <Tooltip Multiline="true" Style="display: inline-block" Text="Change the current location. Four ways to choose:<br>• Near me — use browser location<br>• Random — a surprise location<br>• Search — type a location name<br>• Nearby — closest stations">
+                <Button Text="@(ChangeLocationLoading ? "Loading locations..." : "Change location")" Icon="fas fa-map" Class="chart-control" Disabled="@ChangeLocationLoading" OnClick="() => ChangeLocationClicked(new EventArgs())" />
+            </Tooltip>
             <span class="dropdown-wrapper">
                 <DropdownButton Icon="fas fa-cog" AriaLabel="Location dashboard options">
                     <MenuContent>
-                        <div class="dropdown-menu-content">
-                            <Check TValue="bool"
-                                    Value="@DisplayPrecipitation"
-                                    ValueChanged="@(async (bool v) => await TogglePrecipitation())">
+                        <div class="dashboard-options-menu">
+                            <Checkbox Class="checkbox--menu-row"
+                                             Value="@DisplayPrecipitation"
+                                             ValueChanged="@(async (bool v) => await TogglePrecipitation())">
                                 Precipitation stripe
-                            </Check>
+                            </Checkbox>
                             <DropdownItem Disabled="@(Location is null)"
                                           aria-label="@DataSourcesButtonLabel"
-                                          Clicked="ShowDataSetMetadataAsync">
-                                <i class="fas fa-database dropdown-item-icon" aria-hidden="true"></i><span>Data sources</span>
+                                          OnClick="ShowDataSetMetadataAsync">
+                                <i class="fas fa-database dashboard-options-icon" aria-hidden="true"></i><span>Data sources</span>
                             </DropdownItem>
                         </div>
                     </MenuContent>
@@ -33,7 +32,7 @@
         </span>
     </CollapsedContent>
     <Content>
-        <DelayedLoadingIndicator @bind-Visible="@LocationLoadingIndicatorVisible" ZIndex="5">
+        <LoadingIndicator Visible="@LocationLoadingIndicatorVisible" ZIndex="5">
             <div class="@(LocationLoadingIndicatorVisible ? "dashboard-overview-fields--loading" : null)">
                 @if (Location is not null)
                 {
@@ -61,8 +60,8 @@
                     <OverviewField Label="Precipitation anomaly" Tooltip="Click for information on anomalies" PopupContent="@PrecipitationAnomalyContent"><Value>@(PrecipitationAnomalyAsString == null ? "NA" : PrecipitationAnomalyAsString)</Value></OverviewField>
                 }
             </div>
-        </DelayedLoadingIndicator>
-        <DelayedLoadingIndicator @bind-Visible="@StripeLoadingIndicatorVisible" ZIndex="5">
+        </LoadingIndicator>
+        <LoadingIndicator Visible="@StripeLoadingIndicatorVisible" ZIndex="5">
             <ClimateStripe UnitOfMeasure="UnitOfMeasure.DegreesCelsius" LocationName=@Location?.Name LocationMean=@TemperatureLocationMean DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange="HandleOnYearFilterChange" ShowInfo="true" />
             <ExtremeYears HighLabel="Warmest years" LowLabel="Coolest years" UnitOfMeasure="UnitOfMeasure.DegreesCelsius" DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange="HandleOnYearFilterChange" />
             @if (DisplayPrecipitation && PrecipitationLocationMean != null)
@@ -72,7 +71,7 @@
                     <ExtremeYears HighLabel="Wettest years" LowLabel="Driest years" HighFirst="false" UnitOfMeasure="UnitOfMeasure.Millimetres" DataRecords="@PrecipitationAnomalyRecords" OnYearFilterChange="HandleOnPrecipitationYearFilterChange" />
                 </div>
             }
-        </DelayedLoadingIndicator>
+        </LoadingIndicator>
     </Content>
 </Collapsible>
 

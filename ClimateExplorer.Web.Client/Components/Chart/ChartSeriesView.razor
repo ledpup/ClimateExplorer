@@ -2,7 +2,6 @@
 @using ClimateExplorer.Web.Client.Components.Common
 @using ClimateExplorer.Web.UiLogic
 @using ClimateExplorer.Web.UiModel
-@using Blazorise
 @using ClimateExplorer.Core.DataPreparation
 @using static ClimateExplorer.Core.Enums;
 
@@ -19,18 +18,18 @@
             <div class="description">@ChartSeries!.GetFriendlyDescription(Units)</div>
         </div>
         <div class="title-bar-actions">
-            <DelayedTooltip Text="About this data">
+            <Tooltip Text="About this data">
                 <button type="button" class="info" aria-label="About this data" @onclick="@OnAboutThisDataClicked" @onclick:stopPropagation="true">
                     <i class="fas fa-circle-info fa-lg"></i>
                 </button>
-            </DelayedTooltip>
-            <DelayedTooltip Text="Remove this series">
+            </Tooltip>
+            <Tooltip Text="Remove this series">
                 <button type="button" class="trash" aria-label="Remove this series" @onclick="@OnRemoveSeriesClicked" @onclick:stopPropagation="true">
                     <i class="fas fa-trash fa-lg"></i>
                 </button>
-            </DelayedTooltip>
+            </Tooltip>
             <div class="expander">
-                <span class="@(ChartSeries!.IsExpanded ? "oi oi-chevron-top" : "oi oi-chevron-bottom")" aria-hidden="true"></span>
+                <span class="fas @(ChartSeries!.IsExpanded ? "fa-chevron-up" : "fa-chevron-down") expander-chevron" aria-hidden="true"></span>
             </div>
         </div>
     </div>
@@ -48,12 +47,12 @@
                                 <span class="form-control-wrap">@ChartSeries.Year</span>
                             </div>
                         }
-                        <DelayedTooltip Text="@AggregationTooltipText" Style="display: block">
+                        <Tooltip Text="@AggregationTooltipText" Style="display: block">
                             <div class="form-row">
-                                <span class="form-label">Statistic</span>
+                                <label class="form-label" for="@AggregationId">Statistic</label>
                                 <span class="form-control-wrap">
                                     <Select TValue="SeriesAggregationOptions"
-                                            Size="Size.Small"
+                                            Id="@AggregationId"
                                             Value="@ChartSeries.Aggregation"
                                             ValueChanged="@OnAggregationChanged"
                                             Disabled="@ShouldDisableAggregationOptions(ChartSeries)">
@@ -72,17 +71,17 @@
                                     </Select>
                                 </span>
                             </div>
-                        </DelayedTooltip>
+                        </Tooltip>
                         @if (ChartSeries.Smoothing != SeriesSmoothingOptions.None && !ChartSeries.BinGranularity.IsLinear())
                         {
                             <div class="form-row-info info-message">Note that smoothing is not currently being applied because the x-axis is not linear.</div>
                         }
-                        <DelayedTooltip Text="Recasts the series in terms of change over time, e.g. year-over-year change or a running total" Style="display: block">
+                        <Tooltip Text="Recasts the series in terms of change over time, e.g. year-over-year change or a running total" Style="display: block">
                             <div class="form-row">
-                                <span class="form-label">Calculation</span>
+                                <label class="form-label" for="@TemporalCalculationId">Calculation</label>
                                 <span class="form-control-wrap">
                                     <Select TValue="TemporalCalculationOptions"
-                                            Size="Size.Small"
+                                            Id="@TemporalCalculationId"
                                             Value="@ChartSeries.TemporalCalculation"
                                             ValueChanged="@OnTemporalCalculationChanged">
                                         <SelectItem Value="TemporalCalculationOptions.None">None</SelectItem>
@@ -91,13 +90,13 @@
                                     </Select>
                                 </span>
                             </div>
-                        </DelayedTooltip>
-                        <DelayedTooltip Text="Reduces noise by smoothing values across a rolling window of periods" Style="display: block">
+                        </Tooltip>
+                        <Tooltip Text="Reduces noise by smoothing values across a rolling window of periods" Style="display: block">
                             <div class="form-row">
-                                <span class="form-label">Smoothing</span>
+                                <label class="form-label" for="@SmoothingId">Smoothing</label>
                                 <span class="form-control-wrap">
                                     <Select TValue="SeriesSmoothingOptions"
-                                            Size="Size.Small"
+                                            Id="@SmoothingId"
                                             Value="@ChartSeries.Smoothing"
                                             ValueChanged="@OnSmoothingChanged">
                                         <SelectItem Value="SeriesSmoothingOptions.None">None</SelectItem>
@@ -106,13 +105,13 @@
                                     </Select>
                                 </span>
                             </div>
-                        </DelayedTooltip>
-                        <DelayedTooltip Text="Number of periods to include in the rolling window" Style="display: block">
+                        </Tooltip>
+                        <Tooltip Text="Number of periods to include in the rolling window" Style="display: block">
                             <div class="form-row">
-                                <span class="form-label">Smoothing window</span>
+                                <label class="form-label" for="@SmoothingWindowId">Smoothing window</label>
                                 <span class="form-control-wrap">
                                     <Select TValue="int"
-                                            Size="Size.Small"
+                                            Id="@SmoothingWindowId"
                                             Value="@ChartSeries.SmoothingWindow"
                                             ValueChanged="@OnSmoothingWindowChanged"
                                             Disabled="@ShouldDisableSmoothingWindow(ChartSeries)">
@@ -127,15 +126,15 @@
                                     </Select>
                                 </span>
                             </div>
-                        </DelayedTooltip>
+                        </Tooltip>
                     </div>
                     <div class="edit-col">
-                        <DelayedTooltip Text="Whether to plot actual values or the departure from the historical mean (anomaly)" Style="display: block">
+                        <Tooltip Text="Whether to plot actual values or the departure from the historical mean (anomaly)" Style="display: block">
                             <div class="form-row">
-                                <span class="form-label">Display</span>
+                                <label class="form-label" for="@DisplayId">Display</label>
                                 <span class="form-control-wrap">
                                     <Select TValue="SeriesValueOptions"
-                                            Size="Size.Small"
+                                            Id="@DisplayId"
                                             Value="@ChartSeries.Value"
                                             ValueChanged="@OnValueChanged"
                                             Disabled="@ShouldDisableDisplay(ChartSeries)">
@@ -144,13 +143,13 @@
                                     </Select>
                                 </span>
                             </div>
-                        </DelayedTooltip>
-                        <DelayedTooltip Text="A mathematical transformation applied to each data value before plotting" Style="display: block">
+                        </Tooltip>
+                        <Tooltip Text="A mathematical transformation applied to each data value before plotting" Style="display: block">
                             <div class="form-row">
-                                <span class="form-label">Transformation</span>
+                                <label class="form-label" for="@TransformationId">Transformation</label>
                                 <span class="form-control-wrap">
                                     <Select TValue="SeriesTransformations"
-                                            Size="Size.Small"
+                                            Id="@TransformationId"
                                             Value="@ChartSeries.SeriesTransformation"
                                             ValueChanged="@OnTransformationChanged"
                                             Disabled="@ShouldDisableTransformation(ChartSeries)">
@@ -161,34 +160,29 @@
                                     </Select>
                                 </span>
                             </div>
-                        </DelayedTooltip>
+                        </Tooltip>
                         @if (ChartSeries.SeriesTransformation == SeriesTransformations.Custom)
                         {
-                            <DelayedTooltip Text="A logical expression applied to each value (use x as the data value)" Style="display: block">
+                            <Tooltip Text="A logical expression applied to each value (use x as the data value)" Style="display: block">
                                 <div class="form-row">
-                                    <span class="form-label">Custom expression</span>
+                                    <label class="form-label" for="@CustomTransformationId">Custom expression</label>
                                     <span class="form-control-wrap">
-                                        <Validation @ref="validation" Validator="ValidateCustomTransformation">
-                                            <TextInput Size="Size.Small"
-                                                       Value="@ChartSeries.CustomTransformation"
-                                                       ValueChanged="@OnCustomTransformationChanged"
-                                                       Placeholder="e.g. x == 0 or x >= 1 AND x < 10"
-                                                       Immediate="false">
-                                                <Feedback>
-                                                    <ValidationError>Expected input like: 'x &gt; 25' or 'x &gt;= 1 AND x &lt; 10'</ValidationError>
-                                                </Feedback>
-                                            </TextInput>
-                                        </Validation>
+                                        <TextInput Id="@CustomTransformationId"
+                                                   Value="@ChartSeries.CustomTransformation"
+                                                   ValueChanged="@OnCustomTransformationChanged"
+                                                   Placeholder="e.g. x == 0 or x >= 1 AND x < 10"
+                                                   Invalid="@customTransformationInvalid"
+                                                   ErrorMessage="Expected input like: 'x > 25' or 'x >= 1 AND x < 10'" />
                                     </span>
                                 </div>
-                            </DelayedTooltip>
+                            </Tooltip>
                         }
-                        <DelayedTooltip Text="Whether to draw this series as a line, a bar chart, or scattered points" Style="display: block">
+                        <Tooltip Text="Whether to draw this series as a line, a bar chart, or scattered points" Style="display: block">
                             <div class="form-row">
-                                <span class="form-label">Display style</span>
+                                <label class="form-label" for="@DisplayStyleId">Display style</label>
                                 <span class="form-control-wrap">
                                     <Select TValue="SeriesDisplayStyle"
-                                            Size="Size.Small"
+                                            Id="@DisplayStyleId"
                                             Value="@ChartSeries.DisplayStyle"
                                             ValueChanged="@OnDisplayStyleChanged">
                                         <SelectItem Value="SeriesDisplayStyle.Bar">Bar</SelectItem>
@@ -197,13 +191,13 @@
                                     </Select>
                                 </span>
                             </div>
-                        </DelayedTooltip>
-                        <DelayedTooltip Text="The colour used to draw this series on the chart" Style="display: block">
+                        </Tooltip>
+                        <Tooltip Text="The colour used to draw this series on the chart" Style="display: block">
                             <div class="form-row">
-                                <span class="form-label">Colour</span>
+                                <label class="form-label" for="@ColourId">Colour</label>
                                 <span class="form-control-wrap">
                                     <Select TValue="Colours"
-                                            Size="Size.Small"
+                                            Id="@ColourId"
                                             Value="@ChartSeries.RequestedColour"
                                             ValueChanged="@OnColourChanged">
                                             @foreach (var colour in (Colours[])Enum.GetValues(typeof(Colours)))
@@ -213,15 +207,15 @@
                                     </Select>
                                 </span>
                             </div>
-                        </DelayedTooltip>
-                        <DelayedTooltip Text="Overlay a straight line fitted across the plotted data" Style="display: block">
+                        </Tooltip>
+                        <Tooltip Text="Overlay a straight line fitted across the plotted data" Style="display: block">
                             <div class="form-row">
-                                <span class="form-label">Show fitted line</span>
+                                <label class="form-label" for="@ShowTrendlineId">Show fitted line</label>
                                 <span class="form-control-wrap">
-                                    <Check TValue="bool" Value="@ChartSeries.ShowTrendline" ValueChanged="@OnShowTrendlineChanged" aria-label="Show fitted line"></Check>
+                                    <Checkbox Id="@ShowTrendlineId" Value="@ChartSeries.ShowTrendline" ValueChanged="@OnShowTrendlineChanged" />
                                 </span>
                             </div>
-                        </DelayedTooltip>
+                        </Tooltip>
                         @if (IsTrendModuleAvailable)
                         {
                             @for (var i = 0; i < ChartSeries.Trends.Count; i++)
@@ -235,41 +229,41 @@
                             }
                             @if (ChartSeries.Trends.Count < ChartSeriesDefinition.MaxTrends)
                             {
-                                <DelayedTooltip Text="@AddTrendTooltip" Style="display: block">
+                                <Tooltip Text="@AddTrendTooltip" Style="display: block">
                                     <button type="button" class="trend-add-button" @onclick="@OnAddTrendClicked">
                                         <i class="fas fa-plus"></i> Add trend
                                     </button>
-                                </DelayedTooltip>
+                                </Tooltip>
                             }
                         }
-                        <DelayedTooltip Text="Prevent this series from being replaced when a new chart preset is selected" Style="display: block">
+                        <Tooltip Text="Prevent this series from being replaced when a new chart preset is selected" Style="display: block">
                             <div class="form-row">
-                                <span class="form-label">Lock?</span>
+                                <label class="form-label" for="@IsLockedId">Lock?</label>
                                 <span class="form-control-wrap">
-                                    <Check TValue="bool" Value="@ChartSeries.IsLocked" ValueChanged="@OnIsLockedChanged"></Check>
+                                    <Checkbox Id="@IsLockedId" Value="@ChartSeries.IsLocked" ValueChanged="@OnIsLockedChanged" />
                                 </span>
                             </div>
-                        </DelayedTooltip>
+                        </Tooltip>
                     </div>
                     <div class="series-controls">
-                        <DelayedTooltip Text="About this data" Style="display: inline-block">
+                        <Tooltip Text="About this data" Style="display: inline-block">
                             <button type="button" class="series-control" aria-label="About this data" @onclick="@OnAboutThisDataClicked">
                                 <i class="fas fa-info"></i>
                                 <div class="label">About</div>
                             </button>
-                        </DelayedTooltip>
-                        <DelayedTooltip Text="Duplicate this series" Style="display: inline-block">
+                        </Tooltip>
+                        <Tooltip Text="Duplicate this series" Style="display: inline-block">
                             <button type="button" class="series-control" aria-label="Duplicate this series" @onclick="@OnDuplicateSeriesClicked">
                                 <i class="fas fa-clone"></i>
                                 <div class="label">Clone</div>
                             </button>
-                        </DelayedTooltip>
-                        <DelayedTooltip Text="Remove this series" Style="display: inline-block">
+                        </Tooltip>
+                        <Tooltip Text="Remove this series" Style="display: inline-block">
                             <button type="button" class="series-control danger" aria-label="Remove this series" @onclick="@OnRemoveSeriesClicked">
                                 <i class="fas fa-trash"></i>
                                 <div class="label">Remove</div>
                             </button>
-                        </DelayedTooltip>
+                        </Tooltip>
                     </div>
                 </div>
             </div>

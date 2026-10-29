@@ -6,12 +6,13 @@ using Microsoft.AspNetCore.Components;
 
 public partial class AggregationOptions
 {
+    private readonly string idPrefix = $"aggregation-{Guid.NewGuid():N}";
     private InfoPanel? aggregationOptionsInfoPanel;
+    private DropdownButton? dropdown;
 
     private int thresholdValue;
     private short currentGroupingDays;
     private bool overridePresetThreshold;
-    private bool panelOpen;
 
     [Parameter]
     public float CurrentThreshold { get; set; }
@@ -24,6 +25,10 @@ public partial class AggregationOptions
 
     [Parameter]
     public EventCallback<AggregationSettings> OnChanged { get; set; }
+
+    private string GroupingDaysId => $"{idPrefix}-grouping-days";
+
+    private string ThresholdId => $"{idPrefix}-threshold";
 
     private bool HaveOptionsChanged => overridePresetThreshold || thresholdValue != 70 || currentGroupingDays != 14;
 
@@ -45,10 +50,6 @@ public partial class AggregationOptions
             overridePresetThreshold = UserOverride;
         }
     }
-
-    private void TogglePanel() => panelOpen = !panelOpen;
-
-    private void ClosePanel() => panelOpen = false;
 
     private async Task OnSelectedGroupingDaysChanged(short value)
     {
@@ -81,8 +82,10 @@ public partial class AggregationOptions
         await OnChanged.InvokeAsync(new AggregationSettings(currentGroupingDays, thresholdValue.ToString(), overridePresetThreshold));
     }
 
-    private Task ShowAggregationOptionsInfo()
+    // The panel is in the top layer, above the InfoPanel, so close it first
+    private async Task ShowAggregationOptionsInfo()
     {
-        return aggregationOptionsInfoPanel!.ShowAsync();
+        await dropdown!.CloseAsync();
+        await aggregationOptionsInfoPanel!.ShowAsync();
     }
 }

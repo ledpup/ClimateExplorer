@@ -14,24 +14,24 @@
                 {
                     @if (!string.IsNullOrWhiteSpace(metric.HeadlineText))
                     {
-                        <DelayedTooltip Text="@metric.FullPeriodTooltip" Multiline="true">
+                        <Tooltip Text="@metric.FullPeriodTooltip" Multiline="true">
                             <div class="recent-observation-detail-headline">
                                 <span class="recent-observation-detail-current @ValueClassifier.GetValueClass(metric.HeadlineText, metric.IsHeadlinePositive)">@metric.HeadlineText</span>
                                 <span class="recent-observation-detail-rank">full period</span>
                             </div>
-                        </DelayedTooltip>
+                        </Tooltip>
                     }
                     @if (!string.IsNullOrWhiteSpace(metric.RecentTrendValueText))
                     {
-                        <DelayedTooltip Text="@metric.RecentTrendTooltip" Multiline="true">
+                        <Tooltip Text="@metric.RecentTrendTooltip" Multiline="true">
                             <span class="recent-observation-detail-record">Last 30 years: <span class="@ValueClassifier.GetValueClass(metric.RecentTrendValueText, metric.IsRecentTrendPositive)">@metric.RecentTrendValueText</span></span>
-                        </DelayedTooltip>
+                        </Tooltip>
                     }
                     @if (!string.IsNullOrWhiteSpace(metric.FirstHalfTrendValueText))
                     {
-                        <DelayedTooltip Text="@metric.FirstHalfTrendTooltip" Multiline="true">
+                        <Tooltip Text="@metric.FirstHalfTrendTooltip" Multiline="true">
                             <span class="recent-observation-detail-record">Early period: <span class="@ValueClassifier.GetValueClass(metric.FirstHalfTrendValueText, metric.IsFirstHalfTrendPositive)">@metric.FirstHalfTrendValueText</span></span>
-                        </DelayedTooltip>
+                        </Tooltip>
                     }
                 }
             </dd>
