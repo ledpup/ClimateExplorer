@@ -32,35 +32,37 @@
         </span>
     </CollapsedContent>
     <Content>
-        <LoadingIndicator Visible="@LocationLoadingIndicatorVisible" ZIndex="5">
-            <div class="@(LocationLoadingIndicatorVisible ? "dashboard-overview-fields--loading" : null)">
-                @if (Location is not null)
-                {
-                    <OverviewField Label="Location" Tooltip="Click to locate on Google Maps" OnClick="OpenLocationMapAsync"><Value>@GeoLocationAsString</Value></OverviewField>
-                }
-                @if (WarmingAnomalyAsString != null && WarmingAnomalyAsString != "NA")
-                {
-                    <OverviewField Label="Warming anomaly" Tooltip="Click for information on anomalies" PopupContent="@WarmingAnomalyContent"><Value>@(WarmingAnomalyAsString == null ? "NA" : WarmingAnomalyAsString)</Value></OverviewField>
-                    <OverviewField Label="Heating score" Tooltip="Click for information on heating scores" PopupContent="@HeatingScoreContent"><Value>@(Location!.HeatingScore == null ? "NA" : Location.HeatingScore)</Value></OverviewField>
-                }
-                @if (Location?.RecordHigh != null)
-                {
-                    <OverviewField Label="Record high" OnClick="@ShowRecordHighAsync" ToolTip="@RecordHighToolTip"><Value>@(Location?.RecordHigh == null ? "NA" : Location?.RecordHigh.Year)</Value></OverviewField>
-                }
-                @if (Location is not null)
-                {
-                    <OverviewField Label="Recent observations" OnClick="@ShowRecentObservationsAsync" ToolTip="Compare daily observations with historical climate records"><Value>View</Value></OverviewField>
-                }
-                @if (TemperatureTrendField is not null)
-                {
-                    <OverviewField Label="@TemperatureTrendField.Label" Tooltip="@TemperatureTrendField.Tooltip" TooltipMultiline="false" PopupTitle="Temperature trend" PopupContent="@TemperatureTrendContent"><Value>@TemperatureTrendField.Value</Value></OverviewField>
-                }
-                @if (DisplayPrecipitation && PrecipitationAnomalyAsString != null && PrecipitationAnomalyAsString != "NA")
-                {
-                    <OverviewField Label="Precipitation anomaly" Tooltip="Click for information on anomalies" PopupContent="@PrecipitationAnomalyContent"><Value>@(PrecipitationAnomalyAsString == null ? "NA" : PrecipitationAnomalyAsString)</Value></OverviewField>
-                }
-            </div>
-        </LoadingIndicator>
+        <div class="dashboard-overview">
+            <LoadingIndicator Visible="@LocationLoadingIndicatorVisible" ZIndex="5">
+                <div class="@(LocationLoadingIndicatorVisible ? "dashboard-overview-fields--loading" : null)">
+                    @if (Location is not null)
+                    {
+                        <OverviewField Label="Location" Tooltip="Click to locate on Google Maps" OnClick="OpenLocationMapAsync"><Value>@GeoLocationAsString</Value></OverviewField>
+                    }
+                    @if (WarmingAnomalyAsString != null && WarmingAnomalyAsString != "NA")
+                    {
+                        <OverviewField Label="Warming anomaly" Tooltip="Click for information on anomalies" PopupContent="@WarmingAnomalyContent"><Value>@(WarmingAnomalyAsString == null ? "NA" : WarmingAnomalyAsString)</Value></OverviewField>
+                        <OverviewField Label="Heating score" Tooltip="Click for information on heating scores" PopupContent="@HeatingScoreContent"><Value>@(Location!.HeatingScore == null ? "NA" : Location.HeatingScore)</Value></OverviewField>
+                    }
+                    @if (Location?.RecordHigh != null)
+                    {
+                        <OverviewField Label="Record high" OnClick="@ShowRecordHighAsync" ToolTip="@RecordHighToolTip"><Value>@(Location?.RecordHigh == null ? "NA" : Location?.RecordHigh.Year)</Value></OverviewField>
+                    }
+                    @if (Location is not null)
+                    {
+                        <OverviewField Label="Recent observations" OnClick="@ShowRecentObservationsAsync" ToolTip="Compare daily observations with historical climate records"><Value>View</Value></OverviewField>
+                    }
+                    @if (TemperatureTrendField is not null)
+                    {
+                        <OverviewField Label="@TemperatureTrendField.Label" Tooltip="@TemperatureTrendField.Tooltip" TooltipMultiline="false" PopupTitle="Temperature trend" PopupContent="@TemperatureTrendContent"><Value>@TemperatureTrendField.Value</Value></OverviewField>
+                    }
+                    @if (DisplayPrecipitation && PrecipitationAnomalyAsString != null && PrecipitationAnomalyAsString != "NA")
+                    {
+                        <OverviewField Label="Precipitation anomaly" Tooltip="Click for information on anomalies" PopupContent="@PrecipitationAnomalyContent"><Value>@(PrecipitationAnomalyAsString == null ? "NA" : PrecipitationAnomalyAsString)</Value></OverviewField>
+                    }
+                </div>
+            </LoadingIndicator>
+        </div>
         <LoadingIndicator Visible="@StripeLoadingIndicatorVisible" ZIndex="5">
             <ClimateStripe UnitOfMeasure="UnitOfMeasure.DegreesCelsius" LocationName=@Location?.Name LocationMean=@TemperatureLocationMean DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange="HandleOnYearFilterChange" ShowInfo="true" />
             <ExtremeYears HighLabel="Warmest years" LowLabel="Coolest years" UnitOfMeasure="UnitOfMeasure.DegreesCelsius" DataRecords="@TemperatureAnomalyRecords" OnYearFilterChange="HandleOnYearFilterChange" />
