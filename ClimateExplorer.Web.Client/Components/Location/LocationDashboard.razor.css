@@ -34,11 +34,23 @@
     text-align: center;
 }
 
+/* Reserve the overview fields' rows (53px each) until they load. The six fields are ~155px wide each and wrap, so the
+   rows they need follow the dashboard's width, not the screen's: on desktop the map beside it takes about a third. */
+.dashboard-overview {
+    container-type: inline-size;
+}
+
 .dashboard-overview-fields--loading {
     min-height: 53px;
 }
 
-@media (max-width: 767px) {
+@container (max-width: 979px) {
+    .dashboard-overview-fields--loading {
+        min-height: 106px;
+    }
+}
+
+@container (max-width: 499px) {
     .dashboard-overview-fields--loading {
         min-height: 159px;
     }
