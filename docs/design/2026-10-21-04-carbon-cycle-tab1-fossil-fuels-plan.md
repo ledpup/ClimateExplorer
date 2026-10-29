@@ -63,7 +63,7 @@ The rock gives off CO₂ without burning. The heat has to come from somewhere, u
 **Level 2 content:**
 - **Mass:** CaCO₃ (100.09 g/mol) → CO₂ (44.01), so 1 kg of pure limestone releases 0.44 kg CO₂. That's a fixed constant. The editable assumption is how much CaO ends up in the product.
 - **Clinker:** ~65% CaO, so ~0.51–0.52 t CO₂ per t clinker from the rock. That's IPCC's Tier 1 default; to verify. Cement is clinker ground with gypsum and fillers, at a clinker ratio of ~0.65–0.75. Lowering that ratio is a real-world lever, so make it editable.
-- **Lime** (CaO for steelmaking, construction, water treatment): the same reaction. ~0.75 t CO₂ per t high-calcium lime (IPCC default; to verify). Dolomitic lime also releases CO₂ from MgCO₃ → MgO + CO₂.
+- **Lime** (CaO for steelmaking, construction, water treatment): the same reaction. ~0.75 t CO₂ per t high-calcium lime (IPCC default; to verify). Dolomitic lime also releases CO₂ from MgCO₃ → MgO + CO₂. That is out of scope for now ([engine plan §1](2026-10-23-02-carbon-cycle-tab1-chemistry-engine-plan.md)): it adds only a few per cent to clinker's rock CO₂.
 - **Recarbonation:** over decades, concrete slowly reabsorbs some CO₂ from the air (CaO + CO₂ → CaCO₃ at the surface). The Global Carbon Budget now counts this as a sink. v1 mentions it in text only, with no model.
 - **Related non-combustion releases of fossil carbon** (same scope rule, [overview §1](2026-10-21-01-carbon-cycle-plan.md); Level 2 text, rows later):
   - steam methane reforming for hydrogen and ammonia, `CH₄ + 2 H₂O → CO₂ + 4 H₂`

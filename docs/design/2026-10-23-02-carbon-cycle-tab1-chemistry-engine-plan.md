@@ -1,7 +1,7 @@
 # Carbon Cycle page — Tab 1 step 1: chemistry calculation engine
 
 - **Date:** 2026-10-23
-- **Status:** Proposed (ideal and real fuels added 2026-10-23)
+- **Status:** Proposed (ideal and real fuels added 2026-10-23; MgCO₃ taken out of scope 2026-10-29)
 - **Author:** Patrick Lea (with Claude)
 - **Scope:** Technical plan for [Tab 1 §8](2026-10-21-04-carbon-cycle-tab1-fossil-fuels-plan.md) step 1: the calculation engine and its unit tests (stoichiometry, product masses, heat released or absorbed, carbon split, calcination). A new UI-free model project and a new unit test project.
 - **Builds on:** [Tab 1: Fossil fuels and limestone](2026-10-21-04-carbon-cycle-tab1-fossil-fuels-plan.md); [Carbon Cycle page — Overview](2026-10-21-01-carbon-cycle-plan.md) (§3.1 constants vs assumptions, §3.4 engine design)
@@ -25,6 +25,7 @@ The engine is written in C#, but this plan is deliberately language-neutral: it 
 - The parameter system (overview §5 step 1). The engine takes its assumptions as plain inputs and gives every constant a stable id and a source, so the parameter system can expose them later without changing the engine (§4.6).
 - `EmissionResult` (overview §5 step 3). Mapping the Tab 1 result onto it is Tab 1 step 8.
 - Presets, population scaling and the emission profile. These are inputs to the engine (a preset is a parameter set; population scaling multiplies a quantity), so they belong to the calculator UI step.
+- MgCO₃ calcination and dolomitic lime, for now. Clinker carries ~1–3% MgO (capped at ~5–6% by cement standards), so `MgCO₃ → MgO + CO₂` adds only ~2–4% to clinker's ~0.51 t of rock CO₂ per tonne, and less in practice, since some of that MgO comes from silicates rather than carbonate. IPCC Tier 1 likewise counts CaO only. Calcination is CaCO₃ alone, which costs the MgO's enthalpy, a product field and a second reaction path. Adding it later is a new species pair, one reaction and an MgO fraction on the product (§5.4).
 - Stage 2 combustors and upstream. A combustor takes a real fuel and sets how completely it burns, its NOx and its SO₂ removal ([combustor sub-plan §3](2026-10-23-01-carbon-cycle-tab1-combustors-plan.md)). It never changes the fuel's composition.
 
 ## 2. Design decisions
@@ -123,7 +124,7 @@ The test checks that the steps, added with the right multiples, give the net rea
 
 Only what the plans use. Enthalpies are the provisional values that reproduce the Tab 1 plan's tables; Tab 1 step 2 verifies them (e.g. against NIST-JANAF / CODATA).
 
-**Elements:** H, C, N, O, Mg, S, Ca, Fe.
+**Elements:** H, C, N, O, S, Ca, Fe.
 
 **Species:**
 
@@ -149,7 +150,6 @@ Only what the plans use. Enthalpies are the provisional values that reproduce th
 | C₁₉H₃₆O₂ (methyl oleate) | l | to source | Fast-cycle component of B7 diesel (biodiesel) |
 | CaCO₃ (calcite) | s | −1207.6 | |
 | CaO | s | −634.9 | |
-| MgCO₃, MgO | s | to source, −601.6 | Dolomitic lime |
 | Fe₂O₃ | s | −824.2 | |
 | NO, NO₂ | g | +90.3, +33.2 | |
 | SO₂, SO₃ | g | −296.8, −395.7 | |
@@ -175,7 +175,6 @@ The component molecules of real fuels (toluene, methylnaphthalene, methyl oleate
 | `CxHyOz + (x + y/4 − z/2) O₂ → x CO₂ + (y/2) H₂O` | generated | Each molecular component of a real fuel (§5.2) |
 | `S + O₂ → SO₂` | −296.8 | Calculation |
 | `CaCO₃ → CaO + CO₂` | +178 | Calculation |
-| `MgCO₃ → MgO + CO₂` | to source | Calculation (dolomitic lime) |
 | `N₂ + O₂ → 2 NO` | +180.6 | Display (NOx is a factor, §2 item 10) |
 | `2 NO + O₂ → 2 NO₂` | −114 | Display |
 | `CH₄ + 2 H₂O → CO₂ + 4 H₂` | +165 | Display (steam methane reforming) |
@@ -236,13 +235,12 @@ One ideal fuel per representative molecule (carbon, methane, propane, octane, do
 
 ```
 CalcinationProduct
-  Id                     // "product.clinker", "product.lime.highCalcium", "product.lime.dolomitic"
+  Id                     // "product.clinker", "product.lime.highCalcium"
   CaOMassFraction        // e.g. clinker ~0.65 (editable)
-  MgOMassFraction        // dolomitic lime only; 0 otherwise (editable)
 CementClinkerRatio       // ~0.65–0.75 (editable)
 ```
 
-Limestone itself is taken as pure CaCO₃, as in Tab 1 §2.1.
+Limestone itself is taken as pure CaCO₃, as in Tab 1 §2.1. The rest of clinker's mass (about a third) is mostly SiO₂, Al₂O₃ and Fe₂O₃ from clay, shale and sand. These are silicates and oxides, not carbonates, so they release no CO₂. MgO is out of scope (§1).
 
 ## 6. Calculation
 
@@ -265,11 +263,11 @@ Inputs: a fuel (ideal or real), a fuel mass, and a carbon split (fractions of th
 - **Real fuel, complete combustion:** burnt fuel mass × net calorific value (the Assumption).
 - **Incomplete combustion, either kind:** subtract the heat not released by carbon that stopped at CO or soot, using catalog reactions: 283.0 kJ per mole of carbon left as CO (`CO + ½ O₂ → CO₂`) and 393.5 kJ per mole left as soot (`C + O₂ → CO₂`). For ideal methane this reproduces the Tab 1 §3 series exactly: −802, −519, −408 and 0 kJ.
 - **Derived check for real fuels:** where every component is a molecule with an enthalpy of formation, the engine also derives the blend's heating value from its parts. The page shows it at Level 2 beside the sourced value, as a check on the composition. It is never used for the result.
-- **Calcination:** heat absorbed comes from scaling `CaCO₃ → CaO + CO₂` (and `MgCO₃ → MgO + CO₂`).
+- **Calcination:** heat absorbed comes from scaling `CaCO₃ → CaO + CO₂`.
 
 ### 6.3 Calcination and its heating fuel
 
-- **Rock CO₂:** scale the calcination reaction from the known quantity: CaCO₃ mass (limestone input) or CaO mass (product input, = product mass × CaO fraction; cement first × clinker ratio). Dolomitic lime adds the MgCO₃ reaction from its MgO fraction.
+- **Rock CO₂:** scale the calcination reaction from the known quantity: CaCO₃ mass (limestone input) or CaO mass (product input, = product mass × CaO fraction; cement first × clinker ratio).
 - **Heating fuel:** stage 1 supplies exactly the reaction's own heat with no losses (Tab 1 §2.1). Fuel mass = heat absorbed ÷ the fuel's heat released per kg at its carbon split. That fuel then goes through §6.1 as a second stream.
 - The result keeps the two streams separate: combustion and calcination (rock).
 
@@ -351,7 +349,7 @@ The overview §3.4 known-answer tests against the IPCC 95% ranges need the sourc
 - **Soot as graphite.** Real soot is not pure graphite, but it is the standard simplification and gives the plan's −408 kJ.
 - **NOx formation heat** (+180.6 kJ per 2 mol NO) is ignored in the heat total; it is far below the rounding of any fuel's calorific value.
 - **Enthalpy sources differ in the last digit** (e.g. CH₄ −74.6 or −74.9). Pick one source for all species in step 2, so derived reactions stay consistent with each other.
-- **Missing enthalpies:** MgCO₃, methylnaphthalene and methyl oleate vary between tables or are not yet sourced.
+- **Missing enthalpies:** methylnaphthalene and methyl oleate vary between tables or are not yet sourced.
 
 ## 10. Work breakdown
 
