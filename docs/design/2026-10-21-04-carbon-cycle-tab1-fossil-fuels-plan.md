@@ -369,7 +369,7 @@ The combustor sub-plan adds upstream, vehicle fixed cost, fugitive CH₄ and air
 
 The parameter system and page shell are cross-cutting ([overview §5](2026-10-21-01-carbon-cycle-plan.md)). Combustor and upstream work is in the [combustor sub-plan](2026-10-23-01-carbon-cycle-tab1-combustors-plan.md).
 
-1. Calculation engine + unit tests: stoichiometry, product masses, heat released or absorbed, carbon split, calcination ([technical plan](2026-10-23-02-carbon-cycle-tab1-chemistry-engine-plan.md))
+1. Calculation engine + unit tests: stoichiometry, product masses, heat released or absorbed, carbon split, calcination ([technical plan](2026-10-23-02-carbon-cycle-tab1-chemistry-engine-plan.md)). **Implemented 2026-10-29** (`ClimateExplorer.CarbonCycle`)
 2. Source and verify all fuel defaults and reaction enthalpies; record citations
 3. Fuel table UI (sortable, default sort CO₂ per unit energy; units toggle; Level 1 short list and columns, "show all" for Level 2; per-column visibility controls later)
 4. Reaction display: balanced equation, products and energy for the chosen fuel and carbon split

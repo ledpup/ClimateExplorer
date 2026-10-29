@@ -1,7 +1,7 @@
 # Carbon Cycle page — Tab 1 step 1: chemistry calculation engine
 
 - **Date:** 2026-10-23
-- **Status:** Proposed (ideal and real fuels added 2026-10-23; MgCO₃ taken out of scope 2026-10-29)
+- **Status:** Implemented 2026-10-29 (see addendum). Ideal and real fuels added 2026-10-23; MgCO₃ taken out of scope 2026-10-29.
 - **Author:** Patrick Lea (with Claude)
 - **Scope:** Technical plan for [Tab 1 §8](2026-10-21-04-carbon-cycle-tab1-fossil-fuels-plan.md) step 1: the calculation engine and its unit tests (stoichiometry, product masses, heat released or absorbed, carbon split, calcination). A new UI-free model project and a new unit test project.
 - **Builds on:** [Tab 1: Fossil fuels and limestone](2026-10-21-04-carbon-cycle-tab1-fossil-fuels-plan.md); [Carbon Cycle page — Overview](2026-10-21-01-carbon-cycle-plan.md) (§3.1 constants vs assumptions, §3.4 engine design)
@@ -362,3 +362,55 @@ The overview §3.4 known-answer tests against the IPCC 95% ranges need the sourc
 7. Calcination, products and heating fuel (§5.4, §6.3).
 8. Input modes, validation and the result (§6.4, §6.5, §7).
 9. Tests for each of the above (§8).
+
+## Addendum — implementation notes (2026-10-29)
+
+**What shipped.** `ClimateExplorer.CarbonCycle` (net10.0, no package dependencies at run time; StyleCop and warnings as errors, as in Core) and `ClimateExplorer.CarbonCycle.UnitTests` (MSTest), both in the solution. The web client doesn't reference them yet (§3).
+
+| Area | Namespace | Main types |
+|---|---|---|
+| Catalog | `Chemistry` | `Element`/`Elements`, `ChemicalFormula`, `Species`, `Reaction`, `ScaledReaction`, `Mechanism`; `SpeciesCatalog`, `ReactionCatalog`, `MechanismCatalog` |
+| Fuels | `Fuels` | `Fuel`, `FuelComponent`, `DefaultFuels`, `CombustionReactions` (generated reactions) |
+| Calcination | `Calcination` | `CalcinationProduct`, `CalcinationAssumptions`, `RockMaterial`, `CalcinationCalculator` |
+| Calculation | `Calculation` | `Tab1ChemistryEngine` (the three input modes), `CombustionCalculator`, `CarbonSplit`, `Tab1ChemistryResult`/`Tab1Stream`, `CarbonByFate` |
+| Validation | root | `InputValidationException` carrying `ValidationError(Field, Message)` |
+
+**Deviations and decisions:**
+- **Units.** The catalog keeps chemists' units: atomic and molar mass in g/mol, enthalpies in kJ/mol, as sourced and shown. Everything the engine calculates is SI: kg, mol, J. Fuel properties are SI too: NCV in J/kg, density in kg/m³, NOx factor in kg NO₂ per kg.
+- **Formula counts are `double`.** Catalog formulas still parse whole numbers only. Fractional counts are allowed so that a real fuel's per-carbon formula can be a generated (non-catalog) `Species` and go through the same `Reaction` code.
+- **Display coefficients** always use the smallest whole numbers where they exist, so `C + ½ O₂ → CO` displays as `2 C + O₂ → 2 CO`. The Tab 1 plan writes the halves by hand.
+- **Generated reactions with unburnt fuel** list the fuel as a product too (`CH₄ + … → … + 0.1 CH₄`), so the equation balances with the split applied. `Reaction.Add` cancels it if wanted.
+- **Fuels are immutable and always valid.** `Fuel.CreateIdeal`/`CreateReal` and the `With…` methods throw `InputValidationException` naming the field. An added rule: a fuel must contain carbon.
+- **Editing a component** (§5.1): the largest other component takes up the difference. If it can't, the others are rescaled in proportion.
+- **Density is optional.** It is absent for solids, which are entered by mass.
+- **Ideal fuels** default to a NOx factor of 0, which `WithNoxFactor` can change. Heavy fuel oil has no ideal counterpart.
+- **Derived heating value** (§6.2): present when every component is a molecule with an enthalpy, element sulfur (S + O₂ → SO₂), moisture (charged its latent heat) or ash. Molecules with nothing to burn, such as the CO₂ and N₂ in natural gas, add nothing. Any C/H/O/N element component makes it absent (coal, HFO), and so does a molecule without an enthalpy (diesel's methylnaphthalene).
+- **Unburnt fuel** (§6.1): the unburnt slice's moisture and ash leave as water and ash. Every other component of the slice is CH₄ or NMVOC, as the plan says. That includes natural gas's trace CO₂ and N₂ (2.5% of the slip mass).
+- **Excess fuel oxygen.** A split with more fuel oxygen than it can use (only reachable with extreme soot splits) is rejected on `carbonSplit`.
+- **Defaults** (all provisional, step 2 sources them):
+  - Clinker is 65% CaO and high-calcium lime 95% CaO.
+  - The cement clinker ratio is 0.7.
+  - The real-fuel compositions are in `DefaultFuels`, with coals as an as-received ultimate analysis matched to IPCC carbon content × NCV.
+- **Petrol's carbon is 2.6% above IPCC's.** The plan's real-blend H:C (1.8–2.0, met at 1.96) and IPCC's gasoline carbon content (83.7%) can't both hold with octane + toluene, so the default meets the H:C. It gives 0.859 C, which is ~2.33 kg CO₂ per litre. Step 2 should resolve this, for instance with a lighter-alkane or oxygenate component.
+- **Parameter ids** (§4.6): every element, species, reaction, fuel and fuel component has a stable id and a `Source`. Building the `element.C.atomicWeight`-style parameter ids from them is left to the parameter system.
+
+**Tests:** 516, all passing. Every §8 test is in, plus reaction scaling, normalising and adding, display formatting, component editing, the unburnt-fuel breakdown, NOx, and one test per validation rule. Carbon conservation, mass conservation and balanced display reactions run for every default fuel × 7 carbon splits.
+
+**Follow-ups:**
+- Add `dotnet test ClimateExplorer.CarbonCycle.UnitTests/...` to the GitHub workflows. They currently run only Core, WebApi and Web tests.
+- Source the enthalpies of methylnaphthalene and methyl oleate (step 2).
+- The §9 open question on unburnt solid fuel (NMVOC vs carbon in ash) is still open.
+
+### Change size
+
+- **Projects:** `ClimateExplorer.CarbonCycle` (new), `ClimateExplorer.CarbonCycle.UnitTests` (new); `ClimateExplorer.sln`.
+
+| Area | Added | Changed |
+|---|---|---|
+| Model: catalog (`Chemistry`) | 16 files, +840 | |
+| Model: fuels | 7 files, +653 | |
+| Model: calcination and calculation | 14 files, +416 | |
+| Model: root (validation, tolerances, sources) and csproj | 6 files, +119 | |
+| Tests | 11 files, +1,192 | |
+| Solution, AGENTS.md, plans | | 4 files, ~70 |
+| **Total** | **54 files, +3,220** | **4 files, ~70** |
