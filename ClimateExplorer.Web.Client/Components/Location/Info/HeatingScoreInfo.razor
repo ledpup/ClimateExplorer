@@ -1,5 +1,4 @@
 @namespace ClimateExplorer.Web.Client.Components.Info
-@using Blazorise
 @using ClimateExplorer.Core.Model
 @using ClimateExplorer.WebApiClient.Services
 @using System
@@ -21,7 +20,7 @@
     @if (Location.WarmingAnomaly.HasValue)
     {
         <p>
-            The warming anomaly for <strong>@Location.Name</strong> is <strong>@FormatLocationAnomaly(Location)</strong>. Its heating score is <Strong>@Location.HeatingScore</Strong>, highlighted below.
+            The warming anomaly for <strong>@Location.Name</strong> is <strong>@FormatLocationAnomaly(Location)</strong>. Its heating score is <strong>@Location.HeatingScore</strong>, highlighted below.
         </p>
     }
     
@@ -29,22 +28,22 @@
         <div class="table-header">
             <span>Heating score table</span>
         </div>
-        <Table Narrow Striped>
-            <TableHeader>
-                <TableRow>
-                    <TableHeaderCell TextAlignment="TextAlignment.Start"><Strong>Heating score</Strong></TableHeaderCell>
-                    <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Warming anomaly range (@AnomalyUnitLabel)</Strong></TableHeaderCell>
-                </TableRow>
-            </TableHeader>
-            <TableBody>
+        <table class="table table--striped table--compact">
+            <thead>
+                <tr>
+                    <th scope="col"><strong>Heating score</strong></th>
+                    <th scope="col" class="text-center"><strong>Warming anomaly range (@AnomalyUnitLabel)</strong></th>
+                </tr>
+            </thead>
+            <tbody>
                 @foreach (var heatingScoreRow in HeatingScoreTable)
                 {
-                    <TableRow Color="@(Location.HeatingScore == heatingScoreRow.Score ? Color.Info : Color.Default)">
-                        <TableRowCell>@heatingScoreRow.Score</TableRowCell>
-                        <TableRowCell>@FormatBound(heatingScoreRow.MinimumWarmingAnomaly) - @FormatBound(heatingScoreRow.MaximumWarmingAnomaly)</TableRowCell>
-                    </TableRow>
+                    <tr class="@(Location.HeatingScore == heatingScoreRow.Score ? "is-highlighted" : null)">
+                        <td>@heatingScoreRow.Score</td>
+                        <td>@FormatBound(heatingScoreRow.MinimumWarmingAnomaly) - @FormatBound(heatingScoreRow.MaximumWarmingAnomaly)</td>
+                    </tr>
                 }
-            </TableBody>
-        </Table>
+            </tbody>
+        </table>
     </div>
 }

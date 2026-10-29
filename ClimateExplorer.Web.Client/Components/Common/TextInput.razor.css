@@ -1,0 +1,24 @@
+/* Border, radius, colours, hover, focus, disabled and the touch sizing come from .control in app.css */
+.text-input-wrap {
+    display: block;
+}
+
+.text-input {
+    padding: 0.25rem 0.5rem;
+}
+
+.text-input::placeholder {
+    color: var(--climate-color-muted-text);
+}
+
+.text-input--invalid {
+    border-color: var(--climate-color-danger);
+}
+
+.text-input-error {
+    display: block;
+    margin-top: 0.25rem;
+    color: var(--climate-color-danger);
+    font-size: 0.75rem;
+    line-height: 1.25;
+}

@@ -21,14 +21,20 @@
     min-width: 0;
 }
 
-.toolbar-filters ::deep .form-select {
-    width: auto;
-}
-
 .name-filter-wrapper {
     flex: 1;
     min-width: 10em;
     max-width: 18em;
+}
+
+/* Border, radius, colours, hover, focus and the touch sizing come from .control in app.css */
+.name-filter-input {
+    width: 100%;
+    padding: 0.25rem 0.5rem;
+}
+
+.name-filter-input::placeholder {
+    color: var(--climate-color-muted-text);
 }
 
 .location-count {
@@ -39,8 +45,16 @@
 /* ── Fixed-width columns (stop re-sorting from resizing the table) ──────── */
 /* Column widths come from the header row only, so page content can't shift them.
    Columns without a width (name, country, data types, data sources) share what's left. */
-::deep .locations-table {
+.locations-table {
     table-layout: fixed;
+}
+
+/* These headers are long enough to wrap onto two lines. */
+.anomaly-col,
+.heating-col,
+.trend-col,
+.recent-observations-col {
+    white-space: normal;
 }
 
 ::deep .country-col {
@@ -97,28 +111,6 @@
 .fa-sort {
     opacity: 0.35;
 }
-
-/* ── Climate record link button ──────────────────────────────────────────── */
-.record-link {
-    color: #425f59;
-    font-size: inherit;
-}
-
-.record-link:hover {
-    color: #2a3d39;
-}
-
-.data-sources-link {
-    color: #425f59;
-    font-size: inherit;
-    line-height: inherit;
-    text-align: start;
-}
-
-.data-sources-link:hover {
-    color: #2a3d39;
-}
-
 
 /* ── Responsive columns ──────────────────────────────────────────────────── */
 @media (max-width: 1024px) {

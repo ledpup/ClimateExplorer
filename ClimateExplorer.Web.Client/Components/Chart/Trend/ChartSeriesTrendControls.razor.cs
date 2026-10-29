@@ -1,7 +1,6 @@
 namespace ClimateExplorer.Web.Client.Components.Chart.Trend;
 
 using System.Globalization;
-using Blazorise;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.Client.UiModel.Trends;
 using Microsoft.AspNetCore.Components;
@@ -13,9 +12,10 @@ using Microsoft.AspNetCore.Components;
 /// </summary>
 public partial class ChartSeriesTrendControls
 {
-    private Validation? predictionYearsValidation;
+    private readonly string idPrefix = $"trend-{Guid.NewGuid():N}";
     private ChartTrendPanel? trendPanel;
     private string predictionYearsText = string.Empty;
+    private bool predictionYearsInvalid;
 
     /// <summary>The trend request this instance edits - one entry in a series' <c>Trends</c> list.</summary>
     [Parameter]
@@ -41,6 +41,12 @@ public partial class ChartSeriesTrendControls
 
     [Parameter]
     public EventCallback OnRemove { get; set; }
+
+    private string RegressionTypeId => $"{idPrefix}-regression-type";
+
+    private string TrendPeriodId => $"{idPrefix}-trend-period";
+
+    private string PredictUntilId => $"{idPrefix}-predict-until";
 
     private IReadOnlyList<TrendWindow> SelectableTrendPeriods => Trend?.SignificantWindows ?? [];
 
@@ -106,6 +112,7 @@ public partial class ChartSeriesTrendControls
             || current != PredictUntilYear)
         {
             predictionYearsText = PredictUntilYear.ToString(CultureInfo.InvariantCulture);
+            predictionYearsInvalid = false;
         }
     }
 
@@ -123,16 +130,16 @@ public partial class ChartSeriesTrendControls
         await OnChanged.InvokeAsync();
     }
 
-    private async Task OnPredictionYearsChanged(string value)
+    private async Task OnPredictionYearsChanged(string? value)
     {
-        predictionYearsText = value;
+        predictionYearsText = value ?? string.Empty;
+        predictionYearsInvalid = !TrendPredictionRange.TryParsePredictUntilYear(value, PredictUntilAnchorYear, out var targetYear);
 
-        if (predictionYearsValidation is null || predictionYearsValidation.Validate() != ValidationStatus.Success)
+        if (predictionYearsInvalid)
         {
             return;
         }
 
-        var targetYear = int.Parse(value, NumberStyles.Integer, CultureInfo.InvariantCulture);
         var years = targetYear - PredictUntilAnchorYear;
 
         if (years == Request!.TrendPredictionYears && Request.TrendPredictionTargetYear is null)
@@ -151,16 +158,6 @@ public partial class ChartSeriesTrendControls
         Request.TrendPredictionYears = years;
 
         await OnChanged.InvokeAsync();
-    }
-
-    private void ValidatePredictionYears(ValidatorEventArgs e)
-    {
-        var text = Convert.ToString(e.Value);
-
-        e.Status = int.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out var targetYear)
-            && TrendPredictionRange.IsValid(targetYear - PredictUntilAnchorYear)
-                ? ValidationStatus.Success
-                : ValidationStatus.Error;
     }
 
     private async Task OnAboutTrendClicked()

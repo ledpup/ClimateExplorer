@@ -1,0 +1,25 @@
+<dialog @ref="dialog" class="@CssClass" aria-labelledby="@titleId" @onclose="OnDialogClosedAsync" @attributes="AdditionalAttributes">
+    <div class="modal-content">
+        <header class="modal-header">
+            <h2 id="@titleId" class="modal-title">
+                @if (TitleContent is not null)
+                {
+                    @TitleContent
+                }
+                else
+                {
+                    @Title
+                }
+            </h2>
+            <button type="button" class="modal-close" aria-label="Close" @onclick="HideAsync">
+                <i class="fas fa-xmark" aria-hidden="true"></i>
+            </button>
+        </header>
+        <div class="modal-body">
+            @if (isOpen || RenderContentWhenClosed)
+            {
+                @ChildContent
+            }
+        </div>
+    </div>
+</dialog>

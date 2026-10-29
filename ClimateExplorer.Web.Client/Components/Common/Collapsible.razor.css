@@ -129,14 +129,14 @@
         color: #0071c1;
     }
 
-    .collapser .oi {
+    .collapser .collapser-chevron {
         flex-shrink: 0;
         margin-right: 0.6em;
-        font-size: 1.2rem;
+        font-size: 0.9rem;
         width: 16px;
     }
 
-        .collapser .oi.extralarge {
+        .collapser .collapser-chevron.extralarge {
             width: 16px;
         }
 

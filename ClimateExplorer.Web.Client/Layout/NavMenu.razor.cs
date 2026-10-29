@@ -35,6 +35,8 @@ public partial class NavMenu : IDisposable
     [Inject]
     private IDataService? DataService { get; set; }
 
+    private string HamburgerClass => IsHamburgerCurrentPage() ? "hamburger-toggle nav-current" : "hamburger-toggle";
+
     private IEnumerable<SecondaryNavItem> VisibleSecondaryItems => secondaryItems.Where(item => !item.LocalOnly || IsLocalPage());
 
     public bool IsCurrentPage(string route)
@@ -50,6 +52,8 @@ public partial class NavMenu : IDisposable
 
         return path == $"/{route}" || path.StartsWith($"/{route}/");
     }
+
+    public string? AriaCurrent(string route) => IsCurrentPage(route) ? "page" : null;
 
     public bool IsHamburgerCurrentPage() => VisibleSecondaryItems.Any(item => item.Route is not null && IsCurrentPage(item.Route));
 

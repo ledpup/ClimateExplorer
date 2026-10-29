@@ -1,0 +1,13 @@
+@typeparam TValue
+@attribute [CascadingTypeParameter(nameof(TValue))]
+
+<select id="@Id"
+        class="@CssClass"
+        value="@CurrentKey"
+        disabled="@Disabled"
+        @onchange="OnChangeAsync"
+        @attributes="AdditionalAttributes">
+    <CascadingValue Value="this" IsFixed="true">
+        @ChildContent
+    </CascadingValue>
+</select>

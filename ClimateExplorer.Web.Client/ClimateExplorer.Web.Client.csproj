@@ -22,11 +22,6 @@
 
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
-    <PackageReference Include="Blazorise" Version="2.0.3" />
-    <PackageReference Include="Blazorise.Bootstrap5" Version="2.0.3" />
-    <PackageReference Include="Blazorise.Components" Version="2.0.3" />
-    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="2.0.3" />
-    <PackageReference Include="Blazorise.LoadingIndicator" Version="2.0.3" />
     <PackageReference Include="CurrentDevice" Version="1.0.3" />
     <PackageReference Include="GeoCoordinate.NetStandard1" Version="1.0.1" />
     <PackageReference Include="LPBlazorMapLibrary" Version="1.2.3" />

@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Components;
 /// </summary>
 public partial class DataSetBrowser
 {
+    private readonly string tabsId = $"dataset-browser-tabs-{Guid.NewGuid():N}";
+
     [Parameter]
     public IEnumerable<DataSetDefinitionViewModel>? DataSetDefinitions { get; set; }
 

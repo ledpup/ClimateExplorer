@@ -1,25 +1,20 @@
-@using Blazorise
 @using ClimateExplorer.Web.Client.Components.Common
 
-<div class="axes-dropdown-wrapper">
-    <DropdownButton Text="Axes" Icon="fas fa-chart-line">
-        <MenuContent>
-            @if (Axes != null && Axes.Count > 0)
-            {
-                <div class="axes-menu-content">
-                    <DropdownHeader>Scale from 0</DropdownHeader>
-                    @foreach (var axis in Axes)
-                    {
-                        <div class="axis-row">
-                            <Check TValue="bool"
-                                   Value="@GetScaleToZero(axis.Id)"
-                                   ValueChanged="@((bool v) => OnScaleToZeroChanged(axis.Id, v))">
-                                @axis.Label
-                            </Check>
-                        </div>
-                    }
-                </div>
-            }
-        </MenuContent>
-    </DropdownButton>
-</div>
+<DropdownButton Text="Axes" Icon="fas fa-chart-line">
+    <MenuContent>
+        @if (Axes != null && Axes.Count > 0)
+        {
+            <div class="axes-menu-content">
+                <div class="dropdown-header">Scale from 0</div>
+                @foreach (var axis in Axes)
+                {
+                    <Checkbox Class="checkbox--menu-row"
+                                     Value="@GetScaleToZero(axis.Id)"
+                                     ValueChanged="@((bool v) => OnScaleToZeroChanged(axis.Id, v))">
+                        @axis.Label
+                    </Checkbox>
+                }
+            </div>
+        }
+    </MenuContent>
+</DropdownButton>

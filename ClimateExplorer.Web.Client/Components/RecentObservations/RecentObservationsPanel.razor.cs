@@ -87,8 +87,9 @@ public partial class RecentObservationsPanel
     private IEnumerable<RecentObservationTileExpansionTarget> CurrentExpansionTargets =>
         CurrentTiles.Select(tile => new RecentObservationTileExpansionTarget(GetTileKey(tile), IsExpandableTile(tile)));
     private string ReferenceDateInputId => $"recent-observations-reference-date-{ActiveDomain?.Key ?? "none"}";
-    private string ReferenceDateHelpId => $"{ReferenceDateInputId}-help";
-    private string ReferenceDateInputValidationClass => string.IsNullOrWhiteSpace(referenceDateValidationMessage) ? string.Empty : "is-invalid";
+    private string ReferenceDateErrorId => $"{ReferenceDateInputId}-error";
+    private bool HasReferenceDateError => !string.IsNullOrWhiteSpace(referenceDateValidationMessage);
+    private string ReferenceDateInputValidationClass => HasReferenceDateError ? "recent-observations-input--invalid" : string.Empty;
     private string ComparisonRangeInputId => $"recent-observations-comparison-range-{ActiveDomain?.Key ?? "none"}";
     private bool IsResetReferenceDateDisabled => CurrentState.Result?.ReferenceDate == CurrentState.Result?.MaximumReferenceDate;
     private bool IsAddEarlierDayDisabled => !periodSelection.CanAddEarlierDay(GetAvailableOffsets(RecentObservationPeriodKind.Daily));

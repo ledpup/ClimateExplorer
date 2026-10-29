@@ -1,0 +1,262 @@
+namespace ClimateExplorer.WebApi.UnitTests;
+
+using System;
+using System.Linq;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+using ClimateExplorer.Core.DataPreparation;
+using ClimateExplorer.Core.Interface;
+using ClimateExplorer.Core.Model;
+using ClimateExplorer.Data.Downloading.Models;
+using ClimateExplorer.Data.Downloading.Orchestration;
+using ClimateExplorer.WebApi;
+using ClimateExplorer.WebApi.Infrastructure;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static ClimateExplorer.Core.Enums;
+
+[TestClass]
+public sealed class ClimateRecordsEndpointsTests
+{
+    // Location cbb11150-ec74-4401-8357-fae6fef70768 was served by BOM station 001021 until 1998-09-15,
+    // then by station 001019 (still open, EndDate: null) from 1998-09-16 onward (see DataSetDownloadMetadataTests).
+    private static readonly Guid MultiStationBomLocationId = Guid.Parse("cbb11150-ec74-4401-8357-fae6fef70768");
+
+    [TestMethod]
+    public async Task GetClimateRecords_KnownLocation_ReturnsSourceMetadataFromDataSet()
+    {
+        var ghcndLocationId = await GetSingleStationGhcndLocationId("AE000041196");
+
+        var response = await ClimateRecordsEndpoints.GetClimateRecords(CreateServices(), ghcndLocationId, DataType.TempMax, DataAdjustment.Unadjusted);
+
+        Assert.IsTrue(response.DataResolution.HasValue);
+        Assert.IsNotNull(response.SourceMetadata);
+        Assert.HasCount(1, response.SourceMetadata);
+        Assert.AreEqual("AE000041196", response.SourceMetadata.Single().Stations.Single().StationId);
+    }
+
+    [TestMethod]
+    public async Task GetClimateRecords_MultiStationBomLocation_SourceMetadataStationsContainsExactlyOneOpenStation()
+    {
+        var response = await ClimateRecordsEndpoints.GetClimateRecords(CreateServices(), MultiStationBomLocationId, DataType.TempMax, DataAdjustment.Unadjusted);
+
+        Assert.IsNotNull(response.SourceMetadata);
+        var stations = response.SourceMetadata.Single().Stations;
+        Assert.IsGreaterThanOrEqualTo(2, stations.Count, "Expected the full historical station list, not just the open station.");
+        var openStation = stations.SingleOrDefault(x => x.StationEndDate is null);
+        Assert.IsNotNull(openStation);
+        Assert.AreEqual("001019", openStation.StationId);
+    }
+
+    [TestMethod]
+    public async Task GetClimateRecords_UnmatchedDataTypeForLocation_ReturnsNullDataResolutionAndNoSourceMetadata()
+    {
+        // SolarRadiation is not mapped for GHCNd locations, so this location/data-type pair has no matching dsd.
+        var ghcndLocationId = await GetSingleStationGhcndLocationId("AE000041196");
+
+        var response = await ClimateRecordsEndpoints.GetClimateRecords(CreateServices(), ghcndLocationId, DataType.SolarRadiation);
+
+        Assert.IsFalse(response.DataResolution.HasValue);
+        Assert.IsNull(response.SourceMetadata);
+        Assert.IsEmpty(response.Records);
+
+        // No dsd match means the source coordinator is never consulted, so this is not a refresh failure.
+        Assert.IsFalse(response.RefreshFailed);
+    }
+
+    [TestMethod]
+    public async Task GetClimateRecords_SourceRefreshFails_ReturnsRefreshFailedTrue()
+    {
+        // CreateServices() stubs a coordinator that always reports RefreshFailed.
+        var ghcndLocationId = await GetSingleStationGhcndLocationId("AE000041196");
+
+        var response = await ClimateRecordsEndpoints.GetClimateRecords(CreateServices(), ghcndLocationId, DataType.TempMax, DataAdjustment.Unadjusted);
+
+        Assert.IsTrue(response.RefreshFailed);
+    }
+
+    [TestMethod]
+    public async Task GetClimateRecords_SourceRefreshSucceeds_ReturnsRefreshFailedFalse()
+    {
+        var ghcndLocationId = await GetSingleStationGhcndLocationId("AE000041196");
+        var coordinator = new StubSourceUpdateCoordinator(
+            new DataSetSourcePreparationResult(DataSetSourcePreparationOutcome.Rebuild, DateTimeOffset.UtcNow));
+        var services = new ClimateExplorerApiServices(new MemoryCache(), new MemoryCache(), new HttpClient(), coordinator);
+
+        var response = await ClimateRecordsEndpoints.GetClimateRecords(services, ghcndLocationId, DataType.TempMax, DataAdjustment.Unadjusted);
+
+        Assert.IsFalse(response.RefreshFailed);
+    }
+
+    [TestMethod]
+    public async Task GetClimateRecords_Co2Daily_ResolvesDailyDefinitionDespiteMonthlyDefinitionSameTypeAndAdjustment()
+    {
+        // Regression test: the Mauna Loa CO2 dataset defines DataType.CO2 with DataAdjustment=null at
+        // both Daily and Monthly resolution. Before the DataResolution disambiguation fix, SeriesProvider
+        // could not tell these two MeasurementDefinitions apart and threw
+        // "Sequence contains more than one matching element".
+        var atmosphereLocationId = Region.RegionId(Region.Atmosphere);
+
+        var response = await ClimateRecordsEndpoints.GetClimateRecords(CreateServices(), atmosphereLocationId, DataType.CO2, monthly: false);
+
+        Assert.AreEqual(DataResolution.Daily, response.DataResolution);
+        Assert.IsNotEmpty(response.Records);
+    }
+
+    [TestMethod]
+    public async Task GetClimateRecords_Co2Monthly_ResolvesMonthlyDefinitionDespiteDailyDefinitionSameTypeAndAdjustment()
+    {
+        var atmosphereLocationId = Region.RegionId(Region.Atmosphere);
+
+        var response = await ClimateRecordsEndpoints.GetClimateRecords(CreateServices(), atmosphereLocationId, DataType.CO2, monthly: true);
+
+        Assert.AreEqual(DataResolution.Monthly, response.DataResolution);
+        Assert.IsNotEmpty(response.Records);
+    }
+
+    [TestMethod]
+    public async Task GetClimateRecords_SortByDateTrue_ReturnsChronologicallyLatestRecordNotHighestValue()
+    {
+        // Regression test: Co2NavTile asks for take:1/ascending:false to get "the latest reading". Without
+        // sortByDate, the endpoint orders by Value (correct for Top100-style "record" queries, e.g. hottest
+        // day ever), so a series that isn't strictly monotonic - like CO2's deseasonalised trend, which can
+        // dip slightly month to month - can return an earlier record with a higher value instead of the most
+        // recent one. sortByDate:true must order chronologically instead.
+        var atmosphereLocationId = Region.RegionId(Region.Atmosphere);
+        var services = CreateServices();
+
+        var all = await ClimateRecordsEndpoints.GetClimateRecords(services, atmosphereLocationId, DataType.CO2Deseasoned, monthly: true);
+        Assert.IsNotEmpty(all.Records);
+        var expectedLatest = all.Records.OrderByDescending(x => x.Year).ThenByDescending(x => x.Month).First();
+
+        var latest = await ClimateRecordsEndpoints.GetClimateRecords(
+            services,
+            atmosphereLocationId,
+            DataType.CO2Deseasoned,
+            ascending: false,
+            take: 1,
+            monthly: true,
+            sortByDate: true);
+
+        Assert.HasCount(1, latest.Records);
+        var onlyRecord = latest.Records.Single();
+        Assert.AreEqual(expectedLatest.Year, onlyRecord.Year);
+        Assert.AreEqual(expectedLatest.Month, onlyRecord.Month);
+    }
+
+    [TestMethod]
+    public async Task GetClimateRecords_CallerCancelsRequest_PropagatesOperationCanceledException()
+    {
+        var ghcndLocationId = await GetSingleStationGhcndLocationId("AE000041196");
+        var coordinator = new CancellingSourceUpdateCoordinator();
+        var services = new ClimateExplorerApiServices(new MemoryCache(), new MemoryCache(), new HttpClient(), coordinator);
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+
+        await Assert.ThrowsExactlyAsync<OperationCanceledException>(() =>
+            ClimateRecordsEndpoints.GetClimateRecords(services, ghcndLocationId, DataType.TempMax, DataAdjustment.Unadjusted, cancellationToken: cts.Token));
+    }
+
+    [TestMethod]
+    public async Task GetClimateRecords_DefaultArguments_PermitsSourceDownload()
+    {
+        var ghcndLocationId = await GetSingleStationGhcndLocationId("AE000041196");
+        var coordinator = new RecordingSourceUpdateCoordinator();
+        var services = new ClimateExplorerApiServices(new MemoryCache(), new MemoryCache(), new HttpClient(), coordinator);
+
+        await ClimateRecordsEndpoints.GetClimateRecords(services, ghcndLocationId, DataType.TempMax, DataAdjustment.Unadjusted, take: 1);
+
+        Assert.IsTrue(coordinator.PermitSourceUpdate);
+    }
+
+    [TestMethod]
+    public async Task GetClimateRecords_SourceDownloadNotPermitted_DoesNotPermitSourceUpdate()
+    {
+        // The location cache build calls GetClimateRecords this way for RecordHigh; it must never download.
+        var ghcndLocationId = await GetSingleStationGhcndLocationId("AE000041196");
+        var coordinator = new RecordingSourceUpdateCoordinator();
+        var services = new ClimateExplorerApiServices(new MemoryCache(), new MemoryCache(), new HttpClient(), coordinator);
+
+        var response = await ClimateRecordsEndpoints.GetClimateRecords(
+            services,
+            ghcndLocationId,
+            DataType.TempMax,
+            DataAdjustment.Unadjusted,
+            take: 1,
+            permitSourceDownload: false);
+
+        Assert.IsFalse(coordinator.PermitSourceUpdate);
+        Assert.HasCount(1, response.Records);
+    }
+
+    private static async Task<Guid> GetSingleStationGhcndLocationId(string stationId)
+    {
+        var definitions = await DataSetDefinition.GetDataSetDefinitions();
+        var definition = definitions.Single(x => x.ShortName == "GHCNd");
+        return definition.DataLocationMapping!.LocationIdToDataFileMappings
+            .First(x => x.Value.Any(y => y.Id == stationId)).Key;
+    }
+
+    private static ClimateExplorerApiServices CreateServices()
+    {
+        var coordinator = new StubSourceUpdateCoordinator(
+            new DataSetSourcePreparationResult(DataSetSourcePreparationOutcome.RefreshFailed));
+        return new ClimateExplorerApiServices(new MemoryCache(), new MemoryCache(), new HttpClient(), coordinator);
+    }
+
+    private sealed class StubSourceUpdateCoordinator(DataSetSourcePreparationResult result) : IDataSetSourceUpdateCoordinator
+    {
+        public Task<DataSetSourcePreparationResult> PrepareAsync(
+            PostDataSetsRequestBody request,
+            ICachedData? cachedData,
+            bool permitSourceUpdate,
+            CancellationToken cancellationToken)
+        {
+            return Task.FromResult(result);
+        }
+    }
+
+    private sealed class RecordingSourceUpdateCoordinator : IDataSetSourceUpdateCoordinator
+    {
+        public bool? PermitSourceUpdate { get; private set; }
+
+        public Task<DataSetSourcePreparationResult> PrepareAsync(
+            PostDataSetsRequestBody request,
+            ICachedData? cachedData,
+            bool permitSourceUpdate,
+            CancellationToken cancellationToken)
+        {
+            PermitSourceUpdate = permitSourceUpdate;
+            return Task.FromResult(new DataSetSourcePreparationResult(DataSetSourcePreparationOutcome.Rebuild));
+        }
+    }
+
+    private sealed class CancellingSourceUpdateCoordinator : IDataSetSourceUpdateCoordinator
+    {
+        public Task<DataSetSourcePreparationResult> PrepareAsync(
+            PostDataSetsRequestBody request,
+            ICachedData? cachedData,
+            bool permitSourceUpdate,
+            CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            throw new InvalidOperationException("Expected cancellation to be observed before this point.");
+        }
+    }
+
+    private sealed class MemoryCache : ICache
+    {
+        private readonly System.Collections.Generic.Dictionary<string, object> values = [];
+
+        public Task<T> Get<T>(string key)
+        {
+            return Task.FromResult(values.TryGetValue(key, out var value) ? (T)value : default!);
+        }
+
+        public Task Put<T>(string key, T obj)
+        {
+            values[key] = obj!;
+            return Task.CompletedTask;
+        }
+    }
+}

@@ -77,26 +77,18 @@
     margin-left: auto;
 }
 
-.recent-observations-toggle-all-chevron.oi {
+.recent-observations-toggle-all-chevron {
     color: inherit;
     display: inline-block;
-    font-size: 1rem;
+    font-size: 0.75rem;
     margin-right: 8px;
     transform: rotate(0deg);
     transform-origin: center;
     transition: transform 0.15s ease-in-out;
 }
 
-.recent-observations-toggle-all-chevron.oi.expanded {
+.recent-observations-toggle-all-chevron.expanded {
     transform: rotate(90deg);
-}
-
-.recent-observation-control-row {
-    animation: recent-observation-slot-in 180ms ease-out;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    grid-column: 1 / -1;
 }
 
 .recent-observations-config-grid {
@@ -128,25 +120,31 @@
 }
 
 .recent-observations-config-control input,
-.recent-observations-config-control select {
+.recent-observations-config-control ::deep .select {
     flex: 0 0 auto;
 }
 
 .recent-observations-reference-date-control input,
-.recent-observations-config-control select {
+.recent-observations-config-control ::deep .select {
     width: 10.25rem;
 }
 
-.recent-observations-reference-date-reset {
-    flex: 0 0 auto;
-    height: 1.9375rem;
-    justify-content: center;
-    padding: 0;
-    width: 1.9375rem;
+/* Border, radius, colours, hover, focus and the touch sizing come from .control in app.css */
+.recent-observations-input {
+    padding: 0.25rem 0.5rem;
 }
 
-.recent-observations-config-field .form-text,
-.recent-observations-config-field .invalid-feedback {
+.recent-observations-input::placeholder {
+    color: var(--climate-color-muted-text);
+}
+
+.recent-observations-input--invalid {
+    border-color: var(--climate-color-danger);
+}
+
+.recent-observations-reference-date-error {
+    margin-top: 0.25rem;
+    color: var(--climate-color-danger);
     font-size: 0.8rem;
     line-height: 1.25;
 }
@@ -169,19 +167,6 @@
 .recent-observations-threshold span {
     color: #596f6a;
     font-weight: 700;
-}
-
-.recent-observations-notes {
-    overflow-wrap: anywhere;
-}
-
-.recent-observations-source-link {
-    overflow-wrap: anywhere;
-    word-break: break-word;
-}
-
-.recent-observations-retrieval-entry {
-    display: inline;
 }
 
 .recent-observations-state {
@@ -210,19 +195,6 @@
 
 .recent-observations-state i {
     flex-shrink: 0;
-}
-
-.recent-observations-retry {
-    border: 1px solid currentColor;
-    border-radius: 6px;
-    color: inherit;
-    margin-left: auto;
-    padding: 0.35rem 0.55rem;
-    box-shadow: none;
-}
-
-.recent-observations-retry:hover {
-    background: rgb(255 255 255 / 70%);
 }
 
 .recent-observations-state-actions {
@@ -257,8 +229,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .recent-observation-tile-slot,
-    .recent-observation-control-row {
+    .recent-observation-tile-slot {
         animation: none;
         transition: none;
     }
@@ -278,15 +249,6 @@
     .recent-observations-state {
         align-items: flex-start;
         flex-direction: column;
-    }
-
-    .recent-observations-retrieval-entry {
-        display: block;
-        margin-top: 0.25rem;
-    }
-
-    .recent-observations-retry {
-        margin-left: 0;
     }
 
     .recent-observations-state-actions {

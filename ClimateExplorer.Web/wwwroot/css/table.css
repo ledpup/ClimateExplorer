@@ -1,7 +1,23 @@
 /* ── Table ───────────────────────────────────────────────────────────────── */
+/* Plain <table class="table">. Modifiers: table--striped, table--compact;
+   rows: is-highlighted; sortable headers: <th aria-sort><button class="sort-button">. */
 table.table {
+    width: 100%;
+    border-collapse: collapse;
+    caption-side: bottom;
+    background-color: var(--climate-color-surface);
     font-size: 0.875rem;
-    margin-bottom: 0;
+}
+
+/* Low specificity (:where) so component-scoped alignment rules still win. */
+:where(table.table) th {
+    font-weight: normal;
+    text-align: start;
+}
+
+:where(table.table) td:nth-child(n+2) {
+    text-align: center;
+    vertical-align: middle;
 }
 
 table.table thead th {
@@ -12,6 +28,7 @@ table.table thead th {
     border-right: 1px solid #c4d4d1;
     font-weight: normal;
     white-space: nowrap;
+    vertical-align: bottom;
     padding: 0.5rem 0.75rem;
 }
 
@@ -31,10 +48,6 @@ table.table thead th:last-child {
     border-right: none;
 }
 
-table.table tbody tr:hover td:not(.colour-col) {
-    background-color: #e0edeb;
-}
-
 table.table td {
     vertical-align: middle;
     padding: 0.4rem 0.75rem;
@@ -49,6 +62,54 @@ table.table td:last-child {
 table.table tbody tr:last-child td {
     border-bottom: none;
 }
+
+table.table--striped tbody tr:nth-child(odd) td {
+    background-color: #f2f2f2;
+}
+
+table.table tbody tr.is-highlighted td {
+    background-color: #cff4fc;
+}
+
+table.table tbody tr:hover td:not(.colour-col) {
+    background-color: #e0edeb;
+}
+
+table.table--compact thead th,
+table.table--compact td {
+    padding: 0.25rem 0.5rem;
+}
+
+/* ── Sortable header ─────────────────────────────────────────────────────── */
+/* The button fills the header cell, so the whole cell stays clickable. */
+table.table th:has(> .sort-button) {
+    padding: 0;
+}
+
+table.table .sort-button {
+    display: block;
+    width: 100%;
+    min-height: 44px;
+    padding: 0.5rem 0.75rem;
+    margin: 0;
+    border: none;
+    background: none;
+    font: inherit;
+    color: inherit;
+    text-align: inherit;
+    white-space: inherit;
+    cursor: pointer;
+    user-select: none;
+}
+
+    table.table .sort-button:hover {
+        background-color: var(--climate-color-control-hover);
+    }
+
+    table.table .sort-button:focus-visible {
+        outline: 2px solid var(--climate-color-control-text);
+        outline-offset: -2px;
+    }
 
 /* ── Table header / footer ───────────────────────────────────────────────── */
 .table-card {
@@ -70,29 +131,4 @@ table.table tbody tr:last-child td {
     padding: 0.6rem 0.75rem;
     background-color: #f8faf9;
     border-top: 1px solid #c4d4d1;
-}
-
-/* ── Pagination ──────────────────────────────────────────────────────────── */
-.page-link {
-    color: #425f59;
-    border-color: #cdd8d6;
-    padding: 0.1rem 0.45rem;
-    height: 31px;
-}
-
-.page-link:hover {
-    color: #2a3d39;
-    background-color: #e8efee;
-    border-color: #b5c9c6;
-}
-
-.page-item.active .page-link {
-    background-color: #425f59;
-    border-color: #425f59;
-    color: #fff;
-}
-
-.page-item.disabled .page-link {
-    color: #adb5bd;
-    border-color: #dee2e0;
 }

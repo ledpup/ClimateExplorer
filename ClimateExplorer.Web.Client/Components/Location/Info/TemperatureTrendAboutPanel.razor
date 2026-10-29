@@ -1,22 +1,17 @@
 @namespace ClimateExplorer.Web.Client.Components.Info
-@using Blazorise
 @using ClimateExplorer.Web.Client.Components.Common
 @using ClimateExplorer.Web.Client.Components.Common.Trends
 @using ClimateExplorer.Web.Client.Services.Trends
 
 <SidePanel @ref="sidePanel" Title="About trends" Width="min(60%, 1024px)">
     <div class="trend-stats">
-        <div class="climate-tabs trends-about-tabs">
-            <Tabs SelectedTab="@selectedTab" SelectedTabChanged="@OnTabChanged">
-                <Items>
-                    <Tab Name="@OverviewTabName">Overview</Tab>
-                    @foreach (var window in Windows)
-                    {
-                        <Tab Name="@TabName(window)">@TrendWindowLabel.Get(window.Window)</Tab>
-                    }
-                </Items>
-            </Tabs>
-        </div>
+        <Tabs SelectedTab="@selectedTab" SelectedTabChanged="@OnTabChanged" AriaLabel="Trend explanation" Class="trends-about-tabs">
+            <Tab Name="@OverviewTabName">Overview</Tab>
+            @foreach (var window in Windows)
+            {
+                <Tab Name="@TabName(window)">@TrendWindowLabel.Get(window.Window)</Tab>
+            }
+        </Tabs>
 
         @if (SelectedWindow is { } selected)
         {
@@ -26,11 +21,11 @@
 
             <TrendStatTable Sections="@BuildSections(selected)" />
 
-            <DelayedTooltip Text="Download the yearly data behind this trend">
+            <Tooltip Text="Download the yearly data behind this trend">
                 <button type="button" class="trends-download" aria-label="Download the yearly data behind this trend" @onclick="@(() => DownloadAsync(selected))">
                     <i class="fas fa-download" aria-hidden="true"></i> Download data
                 </button>
-            </DelayedTooltip>
+            </Tooltip>
         }
         else
         {

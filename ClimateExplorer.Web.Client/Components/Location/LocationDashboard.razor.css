@@ -1,23 +1,4 @@
-﻿.location-header {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #666666;
-    margin-bottom: 0.5rem;
-}
-
-.location-header-link {
-    color: #7DB0DF;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    display: block;
-}
-
-    .location-header-link:hover {
-        color: #0a58ca;
-    }
-
-.dropdown-wrapper {
+﻿.dropdown-wrapper {
     display: inline-flex;
     align-items: center;
     vertical-align: baseline;
@@ -33,37 +14,23 @@
     gap: 16px;
 }
 
-.dropdown-wrapper ::deep .dropdown {
-    display: inline-flex;
-    align-items: center;
-}
-
-.dropdown-wrapper ::deep .climate-dropdown-toggle {
+.dropdown-wrapper ::deep .dropdown-toggle {
     justify-content: center;
     min-height: 40px;
     min-width: 40px;
     line-height: 1;
 }
 
-.dropdown-wrapper ::deep .dropdown-menu {
-    z-index: 30;
+/* Match the menu-row checkbox above it: 44px rows, and the .checkbox geometry (0.8rem box, 0.4rem gap)
+   so the icon sits under the checkbox */
+.dashboard-options-menu ::deep .dropdown-item {
+    min-height: 44px;
+    gap: 0.4rem;
 }
 
-.dropdown-menu-content {
-    margin: 8px 8px;
-}
-
-/* Match the Bootstrap .form-check geometry (1em box, label at 1.5em) so the icon sits under the checkbox */
-.dropdown-menu-content ::deep .dropdown-item {
-    display: flex;
-    align-items: center;
-    padding-left: 0;
-}
-
-.dropdown-menu-content ::deep .dropdown-item-icon {
+.dashboard-options-icon {
     display: inline-block;
-    width: 1em;
-    margin-right: 0.5em;
+    width: 0.8rem;
     text-align: center;
 }
 

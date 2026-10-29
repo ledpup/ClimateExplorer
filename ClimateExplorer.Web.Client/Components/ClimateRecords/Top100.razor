@@ -1,9 +1,8 @@
 @namespace ClimateExplorer.Web.Client.Components.Location
-@using Blazorise
 @using ClimateExplorer.Web.Client.Components.Common
 @using ClimateExplorer.Web.Client.UiModel
 
-<DelayedLoadingIndicator @bind-Visible="@IsLoading">
+<LoadingIndicator Visible="@IsLoading">
     <div @ref="spaceRef" class="top100-space">
     @if (YearCounts.Count > 0 && ChartWidth > 0)
     {
@@ -17,24 +16,24 @@
                 </svg>
             </div>
             <div class="top100-actions">
-                <DelayedTooltip Text="Copy the chart as an image to the clipboard">
-                    <ClimateButton Text="Copy" Icon="fas fa-copy" Class="top100-btn" OnClick="CopyAsImage" />
-                </DelayedTooltip>
-                <DelayedTooltip Text="Download the chart as a PNG or SVG file">
+                <Tooltip Text="Copy the chart as an image to the clipboard">
+                    <Button Text="Copy" Icon="fas fa-copy" Class="top100-btn" OnClick="CopyAsImage" />
+                </Tooltip>
+                <Tooltip Text="Download the chart as a PNG or SVG file">
                     <div class="top100-download-dropdown-wrapper">
                         <DropdownButton Text="Download" Icon="fas fa-download">
                             <MenuContent>
-                                <DropdownItem Clicked="DownloadImage">PNG</DropdownItem>
-                                <DropdownItem Clicked="DownloadSvg">SVG</DropdownItem>
+                                <DropdownItem OnClick="DownloadImage">PNG</DropdownItem>
+                                <DropdownItem OnClick="DownloadSvg">SVG</DropdownItem>
                             </MenuContent>
                         </DropdownButton>
                     </div>
-                </DelayedTooltip>
+                </Tooltip>
             </div>
         </div>
     }
     </div>
-</DelayedLoadingIndicator>
+</LoadingIndicator>
 
 <h3>Top 100</h3>
 <p>A barcode-like chart that shows how the top 100 daily records are distributed across years.</p>

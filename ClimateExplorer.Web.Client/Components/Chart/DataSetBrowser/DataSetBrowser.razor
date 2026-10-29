@@ -1,24 +1,20 @@
-@using Blazorise
-
 @if (CurrentLocation is not null)
 {
-    <div class="climate-tabs dataset-browser-tabs mb-3">
-        <Tabs SelectedTab="@ActiveTab" SelectedTabChanged="@OnTabChanged">
-            <Items>
-                <Tab Name="Local">Local</Tab>
-                <Tab Name="Global">Global</Tab>
-            </Items>
-        </Tabs>
-    </div>
+    <Tabs Id="@tabsId" SelectedTab="@ActiveTab" SelectedTabChanged="@OnTabChanged" AriaLabel="Dataset source" Class="mb-3">
+        <Tab Name="Local">Local</Tab>
+        <Tab Name="Global">Global</Tab>
+    </Tabs>
 
-    @if (ActiveTab == "Global")
-    {
-        <GlobalDataSetBrowser DataSetDefinitions="@DataSetDefinitions" OnAddDataSet="@OnAddDataSet" ChartSeriesList="@ChartSeriesList" SeriesWithData="@SeriesWithData" OnTrendsChanged="@OnTrendsChanged" />
-    }
-    else
-    {
-        <LocalDataSetBrowser DataSetDefinitions="@DataSetDefinitions" OnAddDataSet="@OnAddDataSet" CurrentLocation="@CurrentLocation" PreviousLocation="@PreviousLocation" ChartSeriesList="@ChartSeriesList" SeriesWithData="@SeriesWithData" OnTrendsChanged="@OnTrendsChanged" />
-    }
+    <div role="tabpanel" aria-labelledby="@Tabs.IdFor(tabsId, ActiveTab)">
+        @if (ActiveTab == "Global")
+        {
+            <GlobalDataSetBrowser DataSetDefinitions="@DataSetDefinitions" OnAddDataSet="@OnAddDataSet" ChartSeriesList="@ChartSeriesList" SeriesWithData="@SeriesWithData" OnTrendsChanged="@OnTrendsChanged" />
+        }
+        else
+        {
+            <LocalDataSetBrowser DataSetDefinitions="@DataSetDefinitions" OnAddDataSet="@OnAddDataSet" CurrentLocation="@CurrentLocation" PreviousLocation="@PreviousLocation" ChartSeriesList="@ChartSeriesList" SeriesWithData="@SeriesWithData" OnTrendsChanged="@OnTrendsChanged" />
+        }
+    </div>
 }
 else
 {

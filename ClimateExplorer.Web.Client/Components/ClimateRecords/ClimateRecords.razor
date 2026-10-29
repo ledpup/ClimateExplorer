@@ -1,240 +1,238 @@
-@using Blazorise
 @using ClimateExplorer.Web.Client.Components.Common
 @using ClimateExplorer.Web.Client.Components.Location
 @using ClimateExplorer.Web.UiModel
 @using System.Globalization
 @using static ClimateExplorer.Core.Enums
 
-<div class="climate-tabs mb-4">
-    <Tabs SelectedTab="@ActiveView.ToString()" SelectedTabChanged="@OnViewChanged">
-        <Items>
-            <Tab Name="Top100">Top 100</Tab>
-            <Tab Name="Daily">Daily</Tab>
-            <Tab Name="Monthly">Monthly</Tab>
-            <Tab Name="Yearly">Yearly</Tab>
-        </Items>
-    </Tabs>
-</div>
+<Tabs Id="@tabsId" SelectedTab="@ActiveView.ToString()" SelectedTabChanged="@OnViewChanged" AriaLabel="Record period" Class="mb-4">
+    <Tab Name="Top100">Top 100</Tab>
+    <Tab Name="Daily">Daily</Tab>
+    <Tab Name="Monthly">Monthly</Tab>
+    <Tab Name="Yearly">Yearly</Tab>
+</Tabs>
 
-<div class="filter-row">
-@if (AvailableDataTypes.Count > 0 && SelectedDataType is not null)
-{
-    <DelayedTooltip Text="Select the type of climate data to view records for">
-        <Select TValue="DataType"
-                Value="@SelectedDataType.Value"
-                ValueChanged="@OnDataTypeChanged"
-                Size="Size.Small">
-            @foreach (var dt in AvailableDataTypes.OrderBy(x => x))
-            {
-                <SelectItem Value="@dt">@ChartSeriesDefinition.MapDataTypeToFriendlyName(dt)</SelectItem>
-            }
-        </Select>
-    </DelayedTooltip>
-    @if (ActiveView == RecordView.Daily || ActiveView == RecordView.Monthly || ActiveView == RecordView.Top100)
+<div role="tabpanel" aria-labelledby="@Tabs.IdFor(tabsId, ActiveView.ToString())">
+    <div class="filter-row">
+    @if (AvailableDataTypes.Count > 0 && SelectedDataType is not null)
     {
-        @if (ActiveView == RecordView.Daily)
-        {
-            <DelayedTooltip Text="Set filter to today's date">
-                <ClimateButton Text="Today" Class="today-btn" Disabled="@IsTodaySelected" OnClick="OnTodayClicked" />
-            </DelayedTooltip>
-        }
-        <DelayedTooltip Text="Filter records to a specific month, or view all months">
-            <Select TValue="int"
-                    Value="@SelectedMonth"
-                    ValueChanged="@OnMonthChanged"
-                    Size="Size.Small">
-                <SelectItem Value="0">All months</SelectItem>
-                @for (int m = 1; m <= 12; m++)
+        <Tooltip Text="Select the type of climate data to view records for">
+            <Select TValue="DataType"
+                    Value="@SelectedDataType.Value"
+                    ValueChanged="@OnDataTypeChanged"
+                    aria-label="Data type">
+                @foreach (var dt in AvailableDataTypes.OrderBy(x => x))
                 {
-                    var monthNum = m;
-                    <SelectItem Value="@monthNum">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(monthNum)</SelectItem>
+                    <SelectItem Value="@dt">@ChartSeriesDefinition.MapDataTypeToFriendlyName(dt)</SelectItem>
                 }
             </Select>
-        </DelayedTooltip>
-        @if (ActiveView == RecordView.Daily && SelectedMonth != 0)
+        </Tooltip>
+        @if (ActiveView == RecordView.Daily || ActiveView == RecordView.Monthly || ActiveView == RecordView.Top100)
         {
-            <DelayedTooltip Text="Filter records to a specific day, or view all days">
+            @if (ActiveView == RecordView.Daily)
+            {
+                <Tooltip Text="Set filter to today's date">
+                    <Button Text="Today" Class="today-btn" Disabled="@IsTodaySelected" OnClick="OnTodayClicked" />
+                </Tooltip>
+            }
+            <Tooltip Text="Filter records to a specific month, or view all months">
                 <Select TValue="int"
-                        Value="@SelectedDay"
-                        ValueChanged="@OnDayChanged"
-                        Size="Size.Small">
-                    <SelectItem Value="0">All days</SelectItem>
-                    @for (int d = 1; d <= DaysInSelectedMonth; d++)
+                        Value="@SelectedMonth"
+                        ValueChanged="@OnMonthChanged"
+                        aria-label="Month">
+                    <SelectItem Value="0">All months</SelectItem>
+                    @for (int m = 1; m <= 12; m++)
                     {
-                        var dayNum = d;
-                        <SelectItem Value="@dayNum">@dayNum</SelectItem>
+                        var monthNum = m;
+                        <SelectItem Value="@monthNum">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(monthNum)</SelectItem>
                     }
                 </Select>
-            </DelayedTooltip>
+            </Tooltip>
+            @if (ActiveView == RecordView.Daily && SelectedMonth != 0)
+            {
+                <Tooltip Text="Filter records to a specific day, or view all days">
+                    <Select TValue="int"
+                            Value="@SelectedDay"
+                            ValueChanged="@OnDayChanged"
+                            aria-label="Day">
+                        <SelectItem Value="0">All days</SelectItem>
+                        @for (int d = 1; d <= DaysInSelectedMonth; d++)
+                        {
+                            var dayNum = d;
+                            <SelectItem Value="@dayNum">@dayNum</SelectItem>
+                        }
+                    </Select>
+                </Tooltip>
+            }
         }
+        <Tooltip Text="<p>By using data from nearby stations, adjusted temperatures are corrected for non-climatic influences such as station relocations and instrument changes.</p><p>Uncheck to see raw, unmodified measurements.</p><p>If disabled, there is only adjusted or raw data available, not both.</p>" Multiline="true">
+            <Checkbox Text="Adjusted"
+                                Value="@(SelectedDataAdjustment == DataAdjustment.Adjusted)"
+                                ValueChanged="OnAdjustedChanged"
+                                Disabled="@(AvailableDataAdjustments.Count == 1)" />
+        </Tooltip>
+        <Tooltip Text="Toggle sort order">
+            <Button Text="@SortLabel" Icon="@SortToggleIcon" Class="sort-toggle-btn" OnClick="OnSortToggled" />
+        </Tooltip>
     }
-    <DelayedTooltip Text="<p>By using data from nearby stations, adjusted temperatures are corrected for non-climatic influences such as station relocations and instrument changes.</p><p>Uncheck to see raw, unmodified measurements.</p><p>If disabled, there is only adjusted or raw data available, not both.</p>" Multiline="true">
-        <ClimateCheckbox Text="Adjusted"
-                            Checked="@(SelectedDataAdjustment == DataAdjustment.Adjusted)"
-                            CheckedChanged="OnAdjustedChanged"
-                            Disabled="@(AvailableDataAdjustments.Count == 1)" />
-    </DelayedTooltip>
-    <DelayedTooltip Text="Toggle sort order">
-        <ClimateButton Text="@SortLabel" Icon="@SortToggleIcon" Class="sort-toggle-btn" OnClick="OnSortToggled" />
-    </DelayedTooltip>
-}
-</div>
-@if (ActiveView != RecordView.Top100)
-{
-    <DelayedLoadingIndicator @bind-Visible="@LoadingIndicatorVisible">
-        <div class="table-card">
-            <div class="table-header">
-                <span>@Location?.Name - @RecordsTitle@(SelectedMonth == 0 ? string.Empty : " - " + CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(SelectedMonth))@(ActiveView == RecordView.Daily && SelectedDay != 0 ? " " + SelectedDay : string.Empty)</span>
+    </div>
+    @if (ActiveView != RecordView.Top100)
+    {
+        <LoadingIndicator Visible="@LoadingIndicatorVisible">
+            <div class="table-card">
+                <div class="table-header">
+                    <span>@Location?.Name - @RecordsTitle@(SelectedMonth == 0 ? string.Empty : " - " + CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(SelectedMonth))@(ActiveView == RecordView.Daily && SelectedDay != 0 ? " " + SelectedDay : string.Empty)</span>
+                </div>
+                @if (ClimateRecordRows.Count > 0)
+                {
+                    <table class="table table--striped">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="text-center"><strong>#</strong></th>
+                                <th scope="col" class="colour-col"></th>
+                                <th scope="col" class="top-percent-col text-center"><strong>Top %</strong></th>
+                                @if (ActiveView == RecordView.Yearly)
+                                {
+                                    <th scope="col" class="text-center"><strong>Year</strong></th>
+                                    <th scope="col" class="text-end"><strong>Anomaly</strong></th>
+                                    <th scope="col" class="text-end" aria-sort="@AriaSort"><button type="button" class="sort-button" @onclick="OnSortToggled"><strong>Average <i class="fas @SortIcon" aria-hidden="true"></i></strong></button></th>
+                                }
+                                else
+                                {
+                                    <th scope="col" class="text-center"><strong>@(ActiveView == RecordView.Monthly ? "Month" : "Day month")</strong></th>
+                                    <th scope="col" class="text-center"><strong>Year</strong></th>
+                                    <th scope="col" class="text-end" aria-sort="@AriaSort"><button type="button" class="sort-button" @onclick="OnSortToggled"><strong>@(ActiveView == RecordView.Monthly ? "Average" : "Value") <i class="fas @SortIcon" aria-hidden="true"></i></strong></button></th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                var rank = ((CurrentPage - 1) * Count) + 1;
+                                var unitOfMeasure = ClimateRecordsResult!.UnitOfMeasure ?? SelectedUnitOfMeasure;
+                                for (var i = 0; i < ClimateRecordRows.Count; i++)
+                                {
+                                    var record = ClimateRecordRows[i];
+                                    var rowStyle = ComputedRowStyles.ElementAtOrDefault(i) ?? string.Empty;
+                                    var topLabel = ComputedTopPercentages.ElementAtOrDefault(i) ?? string.Empty;
+                                    var currentRank = rank;
+                                    <tr>
+                                        <td class="text-center">@currentRank</td>
+                                        <td class="colour-col" style="@rowStyle"></td>
+                                        <td class="top-percent-cell text-center">@topLabel</td>
+                                        @if (ActiveView == RecordView.Yearly)
+                                        {
+                                            <td>@record.Year</td>
+                                            <td class="text-end">@(record.Anomaly.HasValue ? FormatAnomaly(record.Anomaly.Value, unitOfMeasure) : "N/A")</td>
+                                            <td class="text-end">@(record.Average.HasValue ? FormatAverage(record.Average.Value, unitOfMeasure) : "N/A")</td>
+                                        }
+                                        else
+                                        {
+                                            <td>
+                                                @if (record.Day.HasValue)
+                                                {
+                                                    <span class="secondary-text">@DateLabels.ShortDayMonth(record.Day.Value, record.Month)</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="secondary-text">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(record.Month)</span>
+                                                }
+                                            </td>
+                                            <td>@record.Year</td>
+                                            <td class="text-end">@FormatValue(record.Value, unitOfMeasure)</td>
+                                        }
+                                    </tr>
+                                    rank++;
+                                }
+                            }
+                        </tbody>
+                    </table>
+                }
+                else if (ClimateRecordsResult is null && LoadingIndicatorVisible)
+                {
+                    <table class="table table--striped">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="text-center"><strong>#</strong></th>
+                                <th scope="col" class="colour-col"></th>
+                                <th scope="col" class="top-percent-col text-center"></th>
+                                @if (ActiveView == RecordView.Yearly)
+                                {
+                                    <th scope="col" class="text-center">Year</th>
+                                    <th scope="col" class="text-end">Anomaly</th>
+                                    <th scope="col" class="text-end" aria-sort="@AriaSort"><button type="button" class="sort-button" @onclick="OnSortToggled"><strong>Average <i class="fas @SortIcon" aria-hidden="true"></i></strong></button></th>
+                                }
+                                else
+                                {
+                                    <th scope="col" class="text-center">@(ActiveView == RecordView.Monthly ? "Month" : "Day month")</th>
+                                    <th scope="col" class="text-center">Year</th>
+                                    <th scope="col" class="text-end" aria-sort="@AriaSort"><button type="button" class="sort-button" @onclick="OnSortToggled">@(ActiveView == RecordView.Monthly ? "Average" : "Value") <i class="fas @SortIcon" aria-hidden="true"></i></button></th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Count; i++)
+                            {
+                                <tr><td>&nbsp;</td><td></td><td></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p>No records found for the selected filters.</p>
+                }
+                @if (ClimateRecordRows.Count > 0)
+                {
+                    <div class="table-footer">
+                        <div class="d-flex flex-column flex-md-row align-items-center justify-content-between gap-2">
+                            <div class="d-flex flex-wrap align-items-center justify-content-center gap-4">
+                                <PaginationControl TotalPages="@TotalPages"
+                                CurrentPage="@CurrentPage"
+                                PageChanged="@OnPageChanged"
+                                AriaLabel="Climate records pages" />
+                                <div class="d-flex align-items-center gap-1">
+                                    <Tooltip Text="Number of records per page">
+                                        <Select TValue="int"
+                                        Value="@Count"
+                                        ValueChanged="@OnCountChanged"
+                                        aria-label="Records per page">
+                                            <SelectItem Value="10">10</SelectItem>
+                                            <SelectItem Value="20">20</SelectItem>
+                                            <SelectItem Value="50">50</SelectItem>
+                                        </Select>
+                                    </Tooltip>
+                                </div>
+                            </div>
+                            <span class="text-muted">@StartRecord-@EndRecord of @(ClimateRecordsResult!.TotalCount)</span>
+                        </div>
+                    </div>
+                }
             </div>
             @if (ClimateRecordRows.Count > 0)
             {
-                <Table Striped>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>#</Strong></TableHeaderCell>
-                            <TableHeaderCell Class="colour-col"></TableHeaderCell>
-                            <TableHeaderCell TextAlignment="TextAlignment.Center" Class="top-percent-col"><Strong>Top %</Strong></TableHeaderCell>
-                            @if (ActiveView == RecordView.Yearly)
-                            {
-                                <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Year</Strong></TableHeaderCell>
-                                <TableHeaderCell TextAlignment="TextAlignment.End"><Strong>Anomaly</Strong></TableHeaderCell>
-                                <TableHeaderCell TextAlignment="TextAlignment.End" @onclick="OnSortToggled" Style="cursor: pointer; user-select: none;"><Strong>Average <i class="fas @SortIcon"></i></Strong></TableHeaderCell>
-                            }
-                            else
-                            {
-                                <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>@(ActiveView == RecordView.Monthly ? "Month" : "Day month")</Strong></TableHeaderCell>
-                                <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>Year</Strong></TableHeaderCell>
-                                <TableHeaderCell TextAlignment="TextAlignment.End" @onclick="OnSortToggled" Style="cursor: pointer; user-select: none;"><Strong>@(ActiveView == RecordView.Monthly ? "Average" : "Value") <i class="fas @SortIcon"></i></Strong></TableHeaderCell>
-                            }
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        @{
-                            var rank = ((CurrentPage - 1) * Count) + 1;
-                            var unitOfMeasure = ClimateRecordsResult!.UnitOfMeasure ?? SelectedUnitOfMeasure;
-                            for (var i = 0; i < ClimateRecordRows.Count; i++)
-                            {
-                                var record = ClimateRecordRows[i];
-                                var rowStyle = ComputedRowStyles.ElementAtOrDefault(i) ?? string.Empty;
-                                var topLabel = ComputedTopPercentages.ElementAtOrDefault(i) ?? string.Empty;
-                                var currentRank = rank;
-                                <tr>
-                                    <td class="text-center">@currentRank</td>
-                                    <td class="colour-col" style="@rowStyle"></td>
-                                    <td class="top-percent-cell text-center">@topLabel</td>
-                                    @if (ActiveView == RecordView.Yearly)
-                                    {
-                                        <td>@record.Year</td>
-                                        <td class="text-end">@(record.Anomaly.HasValue ? FormatAnomaly(record.Anomaly.Value, unitOfMeasure) : "N/A")</td>
-                                        <td class="text-end">@(record.Average.HasValue ? FormatAverage(record.Average.Value, unitOfMeasure) : "N/A")</td>
-                                    }
-                                    else
-                                    {
-                                        <td>
-                                            @if (record.Day.HasValue)
-                                            {
-                                                <span class="secondary-text">@DateLabels.ShortDayMonth(record.Day.Value, record.Month)</span>
-                                            }
-                                            else
-                                            {
-                                                <span class="secondary-text">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(record.Month)</span>
-                                            }
-                                        </td>
-                                        <td>@record.Year</td>
-                                        <td class="text-end">@FormatValue(record.Value, unitOfMeasure)</td>
-                                    }
-                                </tr>
-                                rank++;
-                            }
-                        }
-                    </TableBody>
-                </Table>
-            }
-            else if (ClimateRecordsResult is null && LoadingIndicatorVisible)
-            {
-                <Table Striped>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHeaderCell TextAlignment="TextAlignment.Center"><Strong>#</Strong></TableHeaderCell>
-                            <TableHeaderCell Class="colour-col"></TableHeaderCell>
-                            <TableHeaderCell TextAlignment="TextAlignment.Center" Class="top-percent-col"></TableHeaderCell>
-                            @if (ActiveView == RecordView.Yearly)
-                            {
-                                <TableHeaderCell TextAlignment="TextAlignment.Center">Year</TableHeaderCell>
-                                <TableHeaderCell TextAlignment="TextAlignment.End">Anomaly</TableHeaderCell>
-                                <TableHeaderCell TextAlignment="TextAlignment.End" @onclick="OnSortToggled" Style="cursor: pointer; user-select: none;"><Strong>Average <i class="fas @SortIcon"></i></Strong></TableHeaderCell>
-                            }
-                            else
-                            {
-                                <TableHeaderCell TextAlignment="TextAlignment.Center">@(ActiveView == RecordView.Monthly ? "Month" : "Day month")</TableHeaderCell>
-                                <TableHeaderCell TextAlignment="TextAlignment.Center">Year</TableHeaderCell>
-                                <TableHeaderCell TextAlignment="TextAlignment.End" @onclick="OnSortToggled" Style="cursor: pointer; user-select: none;">@(ActiveView == RecordView.Monthly ? "Average" : "Value") <i class="fas @SortIcon"></i></TableHeaderCell>
-                            }
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        @for (int i = 0; i < Count; i++)
-                        {
-                            <tr><td>&nbsp;</td><td></td><td></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-                        }
-                    </TableBody>
-                </Table>
-            }
-            else
-            {
-                <p>No records found for the selected filters.</p>
-            }
-            @if (ClimateRecordRows.Count > 0)
-            {
-                <div class="table-footer">
-                    <div class="d-flex flex-column flex-md-row align-items-center justify-content-between gap-2">
-                        <div class="d-flex flex-wrap align-items-center justify-content-center gap-4">
-                            <PaginationControl TotalPages="@TotalPages"
-                            CurrentPage="@CurrentPage"
-                            PageChanged="@OnPageChanged" />
-                            <div class="d-flex align-items-center gap-1">
-                                <DelayedTooltip Text="Number of records per page">
-                                    <Select TValue="int"
-                                    Value="@Count"
-                                    ValueChanged="@OnCountChanged"
-                                    Size="Size.Small">
-                                        <SelectItem Value="10">10</SelectItem>
-                                        <SelectItem Value="20">20</SelectItem>
-                                        <SelectItem Value="50">50</SelectItem>
-                                    </Select>
-                                </DelayedTooltip>
-                            </div>
-                        </div>
-                        <span class="text-muted">@StartRecord-@EndRecord of @(ClimateRecordsResult!.TotalCount)</span>
-                    </div>
+                <div class="d-flex justify-content-end mt-2">
+                    <Button Text="Download" Icon="fas fa-download" Class="download-button" OnClick="DownloadAllRecords" />
                 </div>
             }
-        </div>
-        @if (ClimateRecordRows.Count > 0)
-        {
-            <div class="d-flex justify-content-end mt-2">
-                <ClimateButton Text="Download" Icon="fas fa-download" Class="download-button" OnClick="DownloadAllRecords" />
-            </div>
-        }
-        </DelayedLoadingIndicator>
-}
+            </LoadingIndicator>
+    }
 
-@if (ActiveView == RecordView.Top100)
-{
-    <Top100 Location="@Location"
-    DataType="@SelectedDataType"
-    DataAdjustment="@SelectedDataAdjustment"
-    Ascending="@Ascending"
-    SelectedMonth="@SelectedMonth" />
-}
-else
-{
-    <h3>Cell colour</h3>
-    <p>The colour of each cell indicates the relative age of the record within the dataset.</p>
-    <ul>
-        <li><b>Green</b> marks a recent record.</li>
-        <li><b>Near-white</b> indicates records from the middle of the dataset.</li>
-        <li><b>Grey</b> highlights an early record.</li>
-    </ul>
-    <p>When a dataset shows no clear trend, we expect to see records from anywhere in the time series. If the table is dominated by green cells, that is an indication of a warming trend; a table dominated by grey cells suggests cooling.</p>
-}
+    @if (ActiveView == RecordView.Top100)
+    {
+        <Top100 Location="@Location"
+        DataType="@SelectedDataType"
+        DataAdjustment="@SelectedDataAdjustment"
+        Ascending="@Ascending"
+        SelectedMonth="@SelectedMonth" />
+    }
+    else
+    {
+        <h3>Cell colour</h3>
+        <p>The colour of each cell indicates the relative age of the record within the dataset.</p>
+        <ul>
+            <li><b>Green</b> marks a recent record.</li>
+            <li><b>Near-white</b> indicates records from the middle of the dataset.</li>
+            <li><b>Grey</b> highlights an early record.</li>
+        </ul>
+        <p>When a dataset shows no clear trend, we expect to see records from anywhere in the time series. If the table is dominated by green cells, that is an indication of a warming trend; a table dominated by grey cells suggests cooling.</p>
+    }
+</div>

@@ -1,6 +1,5 @@
 namespace ClimateExplorer.Web.Client.Components.Chart;
 
-using Blazorise;
 using ClimateExplorer.Core.DataPreparation;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Web.Client.Components;
@@ -14,8 +13,9 @@ using static ClimateExplorer.Core.Enums;
 
 public partial class ChartSeriesView
 {
-    private Validation? validation;
+    private readonly string idPrefix = $"series-{Guid.NewGuid():N}";
     private AboutData? aboutData;
+    private bool customTransformationInvalid;
 
     public enum ChartSeriesTitleStyle
     {
@@ -59,6 +59,28 @@ public partial class ChartSeriesView
 
     [Parameter]
     public ChartSeriesTitleStyle TitleStyle { get; set; }
+
+    private string AggregationId => $"{idPrefix}-aggregation";
+
+    private string TemporalCalculationId => $"{idPrefix}-temporal-calculation";
+
+    private string SmoothingId => $"{idPrefix}-smoothing";
+
+    private string SmoothingWindowId => $"{idPrefix}-smoothing-window";
+
+    private string DisplayId => $"{idPrefix}-display";
+
+    private string TransformationId => $"{idPrefix}-transformation";
+
+    private string CustomTransformationId => $"{idPrefix}-custom-transformation";
+
+    private string DisplayStyleId => $"{idPrefix}-display-style";
+
+    private string ColourId => $"{idPrefix}-colour";
+
+    private string ShowTrendlineId => $"{idPrefix}-show-trendline";
+
+    private string IsLockedId => $"{idPrefix}-is-locked";
 
     private string StyleForTitleBar => GenerateStyleForTitleBar();
 
@@ -256,35 +278,21 @@ public partial class ChartSeriesView
         };
     }
 
-    private async Task OnCustomTransformationChanged(string value)
+    private async Task OnCustomTransformationChanged(string? value)
     {
         ChartSeries!.CustomTransformation = value;
-        if (validation is not null)
-        {
-            var validationStatus = validation.Validate();
-            if (validationStatus == ValidationStatus.Success)
-            {
-                await OnSeriesChanged.InvokeAsync();
-            }
-        }
-    }
 
-    private void ValidateCustomTransformation(ValidatorEventArgs e)
-    {
-        try
+        // An empty field is "nothing entered yet": no error, and nothing to rebuild the chart with
+        if (string.IsNullOrWhiteSpace(value))
         {
-            if (e.Value is null)
-            {
-                e.Status = ValidationStatus.None;
-                return;
-            }
-
-            CustomTransformationParser.Parse(Convert.ToString(e.Value)!);
-            e.Status = ValidationStatus.Success;
+            customTransformationInvalid = false;
+            return;
         }
-        catch
+
+        customTransformationInvalid = !CustomTransformationParser.IsValid(value);
+        if (!customTransformationInvalid)
         {
-            e.Status = ValidationStatus.Error;
+            await OnSeriesChanged.InvokeAsync();
         }
     }
 

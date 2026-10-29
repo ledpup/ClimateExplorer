@@ -1,5 +1,7 @@
 namespace ClimateExplorer.Web.Client.UiModel.Trends;
 
+using System.Globalization;
+
 /// <summary>
 /// How far a trend may be projected past the end of the record.
 /// </summary>
@@ -19,4 +21,21 @@ public static class TrendPredictionRange
     public static int Clamp(int years) => Math.Clamp(years, Minimum, Maximum);
 
     public static bool IsValid(int years) => years >= Minimum && years <= Maximum;
+
+    /// <summary>
+    /// Parses a typed "predict until" calendar year, which is valid when it lies within
+    /// <see cref="Minimum"/>-<see cref="Maximum"/> years after <paramref name="anchorYear"/>.
+    /// </summary>
+    public static bool TryParsePredictUntilYear(string? text, int anchorYear, out int targetYear)
+    {
+        if (int.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out var year)
+            && IsValid(year - anchorYear))
+        {
+            targetYear = year;
+            return true;
+        }
+
+        targetYear = 0;
+        return false;
+    }
 }

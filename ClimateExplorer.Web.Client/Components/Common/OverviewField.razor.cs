@@ -1,12 +1,10 @@
 namespace ClimateExplorer.Web.Client.Components.Common;
 
-using Blazorise;
 using Microsoft.AspNetCore.Components;
 
 public partial class OverviewField
 {
     private Modal? popup;
-    private bool popupContentVisible = false;
 
     [Parameter]
     public string? Label { get; set; }
@@ -61,10 +59,8 @@ public partial class OverviewField
             return;
         }
 
-        // Ensure the popup content is instantiated only when user opens the modal
-        popupContentVisible = true;
-        StateHasChanged();
-        await popup.Show();
+        // The modal only instantiates the popup content while it's open
+        await popup.ShowAsync();
     }
 
     private async Task HandleClick()
@@ -76,12 +72,5 @@ public partial class OverviewField
         }
 
         await ShowPopup();
-    }
-
-    private Task OnModalClosing(ModalClosingEventArgs e)
-    {
-        popupContentVisible = false;
-
-        return Task.CompletedTask;
     }
 }

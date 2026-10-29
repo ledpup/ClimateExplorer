@@ -1,38 +1,20 @@
-﻿@using Blazorise
-@using ClimateExplorer.Web.UiModel
+﻿@using ClimateExplorer.Web.UiModel
 
 @if (ChartSeries != null)
 {
-    <Modal @ref="modal" Size="ModalSize.Large">
-        <ModalContent>
-            <ModalHeader Class="custom-modal-header">
-                <ModalTitle>
-                    @if (ChartSeries.SourceSeriesSpecifications!.Length == 1)
-                    {
-                        @ChartSeriesDefinition.BuildFriendlyTitleShortForSeries(ChartSeries.SourceSeriesSpecifications[0], ChartSeries.BinGranularity, ChartSeries.Aggregation)
-                    }
-                    else
-                    {
-                        <span>About this data</span>
-                    }
-                </ModalTitle>
-                <CloseButton />
-            </ModalHeader>
-            <ModalBody>
-                @if (ChartSeries.SourceSeriesSpecifications!.Length > 1)
-                {
-                    <div class="derived-series-note">This is a derived series, calculated by subtracting one series from another to show the difference between the two.</div>
-                }
+    <Modal @ref="modal" Title="@ModalTitle" Size="ModalSize.Large">
+        @if (ChartSeries.SourceSeriesSpecifications!.Length > 1)
+        {
+            <div class="derived-series-note">This is a derived series, calculated by subtracting one series from another to show the difference between the two.</div>
+        }
 
-                @foreach (var sss in ChartSeries.SourceSeriesSpecifications)
-                {
-                    @if (ChartSeries.SourceSeriesSpecifications.Length > 1)
-                    {
-                        <h4>@ChartSeriesDefinition.BuildFriendlyTitleShortForSeries(sss, ChartSeries.BinGranularity, ChartSeries.Aggregation)</h4>
-                    }
-                    <AboutDataDetails DataSetDefinition="@sss.DataSetDefinition" Metadata="@FindSourceMetadata(sss)" />
-                }
-            </ModalBody>
-        </ModalContent>
+        @foreach (var sss in ChartSeries.SourceSeriesSpecifications)
+        {
+            @if (ChartSeries.SourceSeriesSpecifications.Length > 1)
+            {
+                <h4>@ChartSeriesDefinition.BuildFriendlyTitleShortForSeries(sss, ChartSeries.BinGranularity, ChartSeries.Aggregation)</h4>
+            }
+            <AboutDataDetails DataSetDefinition="@sss.DataSetDefinition" Metadata="@FindSourceMetadata(sss)" />
+        }
     </Modal>
 }

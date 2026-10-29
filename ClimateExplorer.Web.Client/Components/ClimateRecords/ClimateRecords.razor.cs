@@ -16,6 +16,8 @@ using static ClimateExplorer.Core.Enums;
 
 public partial class ClimateRecords
 {
+    private readonly string tabsId = $"climate-records-tabs-{Guid.NewGuid():N}";
+
     private enum RecordView
     {
         Daily,
@@ -93,6 +95,8 @@ public partial class ClimateRecords
         ? DateTime.DaysInMonth(DateTime.Today.Year, SelectedMonth)
         : 31;
     private string SortIcon => Ascending ? "fa-up-long" : "fa-down-long";
+
+    private string AriaSort => Ascending ? "ascending" : "descending";
 
     private string SortToggleIcon => $"fa-solid fa-temperature-arrow-{(Ascending ? "up" : "down")}";
 

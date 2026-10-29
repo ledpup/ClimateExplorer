@@ -1,0 +1,10 @@
+<button type="button"
+        role="tab"
+        id="@TabId"
+        class="@CssClass"
+        aria-selected="@(IsSelected ? "true" : "false")"
+        tabindex="@(IsTabStop ? 0 : -1)"
+        disabled="@Disabled"
+        @ref="element"
+        @onclick="SelectAsync"
+        @onkeydown="OnKeyDownAsync">@ChildContent</button>

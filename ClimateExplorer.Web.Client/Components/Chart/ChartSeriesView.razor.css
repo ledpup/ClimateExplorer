@@ -67,17 +67,9 @@
             color: #222;
         }
 
-    .chart-series-config .colour-indicator {
-        border: solid 2px white;
-        border-radius: 12px;
-        height: 14px;
-        width: 14px;
-        margin-top: 4px;
-        margin-left: 6px;
-        display: inline-block;
-        position: relative;
-        top: 1px;
-    }
+        .chart-series-config .title-bar .expander-chevron {
+            font-size: 0.75rem;
+        }
 
     .chart-series-config .title {
         display: inline-block;
@@ -196,27 +188,15 @@
                 background-color: #cfc;
             }
 
-    .chart-series-config .form-control-wrap ::deep select,
-    .chart-series-config .form-control-wrap ::deep .form-control {
+    .chart-series-config .form-control-wrap ::deep .select,
+    .chart-series-config .form-control-wrap ::deep .text-input {
         width: 100%;
     }
 
-    .chart-series-config .form-control-wrap ::deep .form-check {
+    .chart-series-config .form-control-wrap ::deep .checkbox {
         position: relative;
-        top: 3px;
+        top: 2px;
     }
-
-.series-action {
-    cursor: pointer;
-}
-
-.remove-series {
-    float: right;
-}
-
-.duplicate-series {
-    min-height: 1px;
-}
 
 @media only screen and (max-width: 1024px) {
     .chart-series-config {
@@ -267,21 +247,4 @@
 
     .trend-add-button:hover {
         background-color: #cfc;
-    }
-
-.about-this-data-button {
-    position: absolute;
-    right: 8px;
-    top: 4px;
-    font-size: 1rem;
-    background: #ddd;
-    border-radius: 120px;
-    width: 30px;
-    text-align: center;
-    z-index: 5;
-    color: #ddd;
-}
-
-    .about-this-data-button:hover {
-        background-color: #afa;
     }
