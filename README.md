@@ -30,6 +30,6 @@ This github site is the digital repository for everything used to bring [the web
 ## How to use
 
 - Download the github repo. 
-- Open ClimateExplorer.sln in Visual Studio 2026. 
+- Open ClimateExplorer.slnx in Visual Studio 2026. 
 - Set your start-up projects to be **Web** and **WebApi** and run.
   - Two websites should start-up; the user interface and the web API.

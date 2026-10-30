@@ -1,6 +1,7 @@
 namespace ClimateExplorer.Web.Client.CarbonSim.Components;
 
 using System.Globalization;
+using ClimateExplorer.CarbonCycle.Chemistry;
 using ClimateExplorer.CarbonCycle.Simulation;
 using ClimateExplorer.Web.Client.Units;
 using Microsoft.AspNetCore.Components;
@@ -20,18 +21,21 @@ public partial class GasTable
     [CascadingParameter]
     public IUnitFormatter Units { get; set; } = UnitFormatter.Metric;
 
+    // Argon takes no part in the reaction, so it's left out of the rows; the note and the total cover it
     private IEnumerable<Row> Rows =>
         State.Gases.Zip(Start.Gases, (now, then) =>
         {
             var fraction = now.Moles / State.GasMoles;
 
             return new Row(
-                now.Species.ToDisplayString(),
-                now.Species.Name,
+                now.Species,
                 now.Moles,
                 fraction,
                 fraction - (then.Moles / Start.GasMoles));
-        });
+        })
+        .Where(row => row.Species != SpeciesCatalog.Argon);
+
+    private string ArgonShareText => CarbonSimFormat.Share(State.Argon / State.GasMoles);
 
     private string TemperatureText => Units.Format(Measure.Level(State.Temperature - 273.15, UnitOfMeasure.DegreesCelsius));
 
@@ -43,18 +47,5 @@ public partial class GasTable
             ? $"Out at {CarbonSimFormat.Duration(time)}"
             : "Not lit";
 
-    // Percentage points, signed
-    private static string ChangeText(double change)
-    {
-        var points = change * 100;
-
-        if (Math.Abs(points) < 5e-7)
-        {
-            return "0";
-        }
-
-        return (points > 0 ? "+" : string.Empty) + CarbonSimFormat.Number(points);
-    }
-
-    private sealed record Row(string Formula, string Name, double Moles, double Fraction, double Change);
+    private sealed record Row(Species Species, double Moles, double Fraction, double Change);
 }

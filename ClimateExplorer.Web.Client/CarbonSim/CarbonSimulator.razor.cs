@@ -171,7 +171,7 @@ public partial class CarbonSimulator : IAsyncDisposable
 
                 if (wasBurning && !state.FlameOn)
                 {
-                    announcement = $"Flame out at {CarbonSimFormat.Duration(state.FlameOutTime ?? state.Time)}: oxygen below {CarbonSimFormat.Percent(house.Settings.OxygenCutOff)}.";
+                    announcement = $"Flame out at {CarbonSimFormat.Duration(state.FlameOutTime ?? state.Time)}: oxygen below {CarbonSimFormat.Share(house.Settings.OxygenCutOff)}.";
                 }
 
                 await AppendChartPointAsync();

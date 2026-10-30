@@ -39,11 +39,11 @@
             {
                 <tr>
                     <th scope="row">
-                        <span class="formula">@row.Formula</span>
-                        <span class="gas-name">@row.Name</span>
+                        <span class="formula">@row.Species.ToDisplayString()</span>
+                        <span class="gas-name">@row.Species.Name</span>
                     </th>
-                    <td class="text-end">@CarbonSimFormat.Percent(row.Fraction)</td>
-                    <td class="text-end">@ChangeText(row.Change)</td>
+                    <td class="text-end">@CarbonSimFormat.Share(row.Fraction)</td>
+                    <td class="text-end">@CarbonSimFormat.ShareChange(row.Change)</td>
                     <td class="text-end">@CarbonSimFormat.Number(row.Moles)</td>
                 </tr>
             }
@@ -57,5 +57,9 @@
             </tr>
         </tfoot>
     </table>
-    <p class="note">Change is in percentage points. Water that condenses on the walls leaves the air.</p>
+    <p class="note">
+        Gases under 0.1% of the air are in parts per million (ppm). Change is in percentage points (pp) or ppm. Water
+        that condenses on the walls leaves the air.
+    </p>
+    <p class="note">Argon (Ar, @ArgonShareText of the air) isn't listed because it takes no part in the reaction. The total includes it.</p>
 </div>

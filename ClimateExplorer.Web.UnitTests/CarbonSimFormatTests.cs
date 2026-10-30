@@ -18,9 +18,32 @@ public class CarbonSimFormatTests
     }
 
     [TestMethod]
-    public void Percent_Fraction_ShownAsPercentage()
+    [DataRow(0.78084, "78.1%")]
+    [DataRow(0.15, "15.0%")]
+    [DataRow(0.0117, "1.2%")]
+    [DataRow(0.001, "0.1%")]
+    [DataRow(0.000999, "999 ppm")]
+    [DataRow(0.00042, "420 ppm")]
+    [DataRow(0.00004235, "42 ppm")]
+    [DataRow(0.00000999, "10 ppm")]
+    [DataRow(0.0000019, "1.9 ppm")]
+    [DataRow(0.00000001, "< 0.1 ppm")]
+    [DataRow(0.0, "0 ppm")]
+    public void Share_Fraction_PercentFromOneTenthOfAPercentElsePpm(double fraction, string expected)
     {
-        Assert.AreEqual("15.0%", CarbonSimFormat.Percent(0.15));
+        Assert.AreEqual(expected, CarbonSimFormat.Share(fraction));
+    }
+
+    [TestMethod]
+    [DataRow(-0.0043, "-0.4 pp")]
+    [DataRow(0.0012, "+0.1 pp")]
+    [DataRow(0.000035, "+35 ppm")]
+    [DataRow(-0.0000004, "-0.4 ppm")]
+    [DataRow(0.00000001, "0")]
+    [DataRow(0.0, "0")]
+    public void ShareChange_Change_SignedInPointsOrPpm(double change, string expected)
+    {
+        Assert.AreEqual(expected, CarbonSimFormat.ShareChange(change));
     }
 
     [TestMethod]
