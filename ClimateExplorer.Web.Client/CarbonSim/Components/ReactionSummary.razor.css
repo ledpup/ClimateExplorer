@@ -1,0 +1,46 @@
+.equation {
+    margin: 0 0 0.75rem;
+    color: var(--climate-color-control-text);
+    font-size: 1.35rem;
+    font-weight: 700;
+}
+
+.formula {
+    display: inline-block;
+    min-width: 2.75rem;
+    font-weight: 700;
+}
+
+.substance-name {
+    color: var(--climate-color-muted-text);
+    font-weight: 400;
+}
+
+th[scope="rowgroup"] {
+    color: var(--climate-color-muted-text);
+    font-weight: 400;
+    vertical-align: top;
+}
+
+td {
+    font-variant-numeric: tabular-nums;
+}
+
+.totals {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    margin: 0.75rem 0 0;
+}
+
+.totals dt {
+    color: var(--climate-color-muted-text);
+    font-size: 0.875rem;
+    font-weight: 400;
+}
+
+.totals dd {
+    margin: 0;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}

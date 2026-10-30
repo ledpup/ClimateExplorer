@@ -1,0 +1,47 @@
+<div class="reaction-summary">
+    <p class="equation" aria-label="@EquationAriaLabel">@Reaction.ToEquationString()</p>
+
+    <table class="table table--compact">
+        <caption class="visually-hidden">Reactants used and products made since the burner was lit</caption>
+        <thead>
+            <tr>
+                <th scope="col"><span class="visually-hidden">Side of the equation</span></th>
+                <th scope="col">Substance</th>
+                <th scope="col" class="text-end">Amount (mol)</th>
+                <th scope="col" class="text-end">Mass (kg)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in Rows)
+            {
+                <tr>
+                    @if (row.FirstOfGroup)
+                    {
+                        <th scope="rowgroup" rowspan="2">@row.Group</th>
+                    }
+                    <th scope="row">
+                        <span class="formula">@row.Formula</span>
+                        <span class="substance-name">@row.Name</span>
+                    </th>
+                    <td class="text-end">@CarbonSimFormat.Number(row.Moles)</td>
+                    <td class="text-end">@CarbonSimFormat.Number(row.MassKg)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <dl class="totals">
+        <div>
+            <dt>Heat released</dt>
+            <dd>@CarbonSimFormat.Number(State.HeatReleased / 1e6) MJ</dd>
+        </div>
+        <div>
+            <dt>Water condensed on the walls</dt>
+            <dd>@CarbonSimFormat.Number(CondensedKg) kg</dd>
+        </div>
+        <div>
+            <dt>N₂ vented to hold the pressure</dt>
+            <dd>@CarbonSimFormat.Number(State.NitrogenVented) mol</dd>
+        </div>
+    </dl>
+</div>

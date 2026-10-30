@@ -1,0 +1,61 @@
+<div class="gas-table">
+    <dl class="readouts">
+        <div class="readout">
+            <dt>Time</dt>
+            <dd>@CarbonSimFormat.Duration(State.Time)</dd>
+        </div>
+        <div class="readout">
+            <dt>Temperature</dt>
+            <dd>@TemperatureText</dd>
+        </div>
+        <div class="readout">
+            <dt>Pressure</dt>
+            <dd>@PressureText</dd>
+        </div>
+        <div class="readout">
+            <dt>Flame</dt>
+            <dd>
+                @if (State.FlameOn)
+                {
+                    <i class="fas fa-fire-flame-simple flame-icon" aria-hidden="true"></i>
+                }
+                @FlameText
+            </dd>
+        </div>
+    </dl>
+
+    <table class="table table--compact table--striped">
+        <caption class="visually-hidden">Gases in the house now, and the change since the burner was lit</caption>
+        <thead>
+            <tr>
+                <th scope="col">Gas</th>
+                <th scope="col" class="text-end">Share of the air</th>
+                <th scope="col" class="text-end">Change</th>
+                <th scope="col" class="text-end">Amount (mol)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in Rows)
+            {
+                <tr>
+                    <th scope="row">
+                        <span class="formula">@row.Formula</span>
+                        <span class="gas-name">@row.Name</span>
+                    </th>
+                    <td class="text-end">@CarbonSimFormat.Percent(row.Fraction)</td>
+                    <td class="text-end">@ChangeText(row.Change)</td>
+                    <td class="text-end">@CarbonSimFormat.Number(row.Moles)</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <th scope="row">Total</th>
+                <td class="text-end">100%</td>
+                <td></td>
+                <td class="text-end">@CarbonSimFormat.Number(State.GasMoles)</td>
+            </tr>
+        </tfoot>
+    </table>
+    <p class="note">Change is in percentage points. Water that condenses on the walls leaves the air.</p>
+</div>

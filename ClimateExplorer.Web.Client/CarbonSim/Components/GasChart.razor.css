@@ -1,0 +1,10 @@
+.gas-chart {
+    position: relative;
+    height: 22rem;
+}
+
+@media (max-width: 767px) {
+    .gas-chart {
+        height: 18rem;
+    }
+}
