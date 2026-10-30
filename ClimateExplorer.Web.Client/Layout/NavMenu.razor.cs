@@ -18,6 +18,7 @@ public partial class NavMenu : IDisposable
 
     private readonly SecondaryNavItem[] secondaryItems =
                 [
+                    SecondaryNavItem.Link("carbon-sim", "carbon-sim"),
                     SecondaryNavItem.Link("blog", "blog"),
                     SecondaryNavItem.Link("about", "about"),
                     SecondaryNavItem.SiteOverview("site overview"),

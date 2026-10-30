@@ -1,0 +1,92 @@
+.carbon-sim {
+    max-width: 120em;
+    margin: auto;
+    padding: 0 1rem 2rem;
+}
+
+h1 {
+    margin: 1rem 0;
+    color: var(--climate-color-control-text);
+}
+
+.tab-panel {
+    padding: 1rem 0 1.25rem;
+}
+
+.scenario {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 1.5rem 2.5rem;
+    align-items: start;
+}
+
+.scenario-text h2 {
+    margin: 0 0 0.5rem;
+    color: var(--climate-color-control-text);
+    font-size: 1.35rem;
+}
+
+.scenario-text p {
+    margin: 0 0 0.75rem;
+}
+
+.note,
+.hint {
+    color: var(--climate-color-muted-text);
+    font-size: 0.875rem;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    max-width: 22rem;
+}
+
+.field label {
+    font-weight: 700;
+}
+
+.clock {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--climate-space-control-gap);
+    padding: 0.75rem 0;
+    border-top: 1px solid var(--climate-color-control-border);
+}
+
+.speed-label {
+    margin-left: 0.5rem;
+    font-weight: 700;
+}
+
+.clock-time {
+    margin-left: auto;
+    color: var(--climate-color-control-text);
+    font-size: 1.25rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+/* The panels sit in the flow below the tabs, raised above the page; each can be dragged off its place. */
+.panels {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+    gap: 1.5rem;
+    align-items: start;
+}
+
+@media (max-width: 1024px) {
+    .scenario,
+    .panels {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+@media (max-width: 767px) {
+    .clock-time {
+        margin-left: 0;
+        flex-basis: 100%;
+    }
+}

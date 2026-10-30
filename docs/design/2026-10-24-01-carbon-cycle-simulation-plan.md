@@ -1,7 +1,7 @@
 # Carbon Cycle page — Simulation
 
 - **Date:** 2026-10-24
-- **Status:** Proposed (ideal greenhouse and volcano button added 2026-10-24; reworked 2026-10-27: the simulation runs the input tabs' emissions and is shown on output Tabs 4–7; a scenario is a list of events; rewind and the event record added)
+- **Status:** Proposed (ideal greenhouse and volcano button added 2026-10-24; reworked 2026-10-27: the simulation runs the input tabs' emissions and is shown on output Tabs 4–7; a scenario is a list of events; rewind and the event record added; first slice implemented 2026-10-31, see §11.1)
 - **Author:** Patrick Lea (with Claude)
 - **Scope:** The simulation behind the Carbon Cycle page's output tabs (4–7): a box model run forward through time from the input tabs' emissions, in one or more scenarios side by side. Scenarios as lists of events, the run clock (play, pause, fast-forward, rewind, restart) and the event record. The simulation engine (in the model project from the [chemistry engine plan §3](2026-10-23-02-carbon-cycle-tab1-chemistry-engine-plan.md)), its settings, the daily TSI driver, and the web client pieces: render mode routing, the run loop, uPlot charts through JS interop, readouts, units and layout.
 - **Builds on:** [Carbon Cycle page — Overview](2026-10-21-01-carbon-cycle-plan.md); [Tab 1 chemistry engine](2026-10-23-02-carbon-cycle-tab1-chemistry-engine-plan.md) (the burner uses its stoichiometry and heat); [US customary units toggle](2026-10-21-02-us-customary-units-plan.md) (readouts follow its setting)
@@ -631,3 +631,11 @@ Depends on the chemistry engine ([Tab 1 step 1](2026-10-23-02-carbon-cycle-tab1-
 13. UI: clock bar, volcano button, output Tabs 4–7 with their scenario panels, show/hide, event log, units, responsive layout, accessibility (§7.4, §7.5)
 14. URL state and parameters (§7.6)
 15. Content: Level 1 text for each scenario, the greenhouse, Foote and scale points, why a simulation can rewind when chemistry can't, Level 2 notes on every simplification
+
+### 11.1 First slice (implemented 2026-10-31)
+
+A basic working simulation of scenario 1 only: methane burning in the sealed house. It touches parts of steps 1, 2, 11, 12 and 13, and completes none of them.
+
+- **Engine** (`ClimateExplorer.CarbonCycle/Simulation`): `SealedHouse` with `Start()` and `Advance(state, dt)`. The burner goes through the Tab 1 engine (one mole of ideal natural gas). N₂ vent, instant condensation and evaporation with latent heat, the limiting-reagent clamp, adaptive substeps and the O₂ cut-off landed on by interpolation. Argon added to the catalog; dry air is `DryAir`, with argon as the remainder. Tests: `SealedHouseTests`.
+- **Simplified against the plan:** one lumped temperature for the air and contents (not the two-node balance), losing heat through the walls to an outside at the start temperature (20 °C); CO₂ and CH₄ start values are fixed, not from the records; no N₂ cut-off, emission duration, events, rewind or record.
+- **UI** (`ClimateExplorer.Web.Client/CarbonSim`, `/carbon-sim`): the three input-tab strip with Tabs 2 and 3 disabled; Tab 1 has the burner rate, the equation and the reactants and products so far. A clock bar (play/pause, restart, speed stops up to 1 day/s) with the loop in the page, not a `SimulationRunner` service. The output tabs are not built: their place is taken by two draggable `FloatingPanel`s, the gas table with readouts and a Chart.js gas chart (not uPlot). No per-route render mode.

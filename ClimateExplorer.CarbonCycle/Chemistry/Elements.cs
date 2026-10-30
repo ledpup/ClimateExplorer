@@ -17,7 +17,10 @@ public static class Elements
 
     public static Element Fe { get; } = new("Fe", "Iron", 26, 55.845, Sources.AtomicWeights);
 
-    public static IReadOnlyList<Element> All { get; } = [H, C, N, O, S, Ca, Fe];
+    // For the air in the simulation; it takes part in no reaction
+    public static Element Ar { get; } = new("Ar", "Argon", 18, 39.95, Sources.AtomicWeights);
+
+    public static IReadOnlyList<Element> All { get; } = [H, C, N, O, S, Ca, Fe, Ar];
 
     public static Element FromSymbol(string symbol) =>
         All.FirstOrDefault(element => element.Symbol == symbol)

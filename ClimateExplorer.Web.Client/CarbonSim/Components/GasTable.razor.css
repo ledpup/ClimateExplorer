@@ -1,0 +1,58 @@
+.readouts {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--climate-space-control-gap);
+    margin: 0 0 0.75rem;
+}
+
+.readout {
+    padding: 0.4rem 0.6rem;
+    background-color: var(--climate-color-control-surface);
+    border-radius: var(--climate-radius-control);
+}
+
+.readout dt {
+    color: var(--climate-color-muted-text);
+    font-size: 0.75rem;
+    font-weight: 400;
+}
+
+.readout dd {
+    margin: 0;
+    color: var(--climate-color-control-text);
+    font-size: 1.1rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.flame-icon {
+    margin-right: 0.3rem;
+    color: #c75000;
+}
+
+.formula {
+    display: inline-block;
+    min-width: 2.75rem;
+    font-weight: 700;
+}
+
+.gas-name {
+    color: var(--climate-color-muted-text);
+    font-weight: 400;
+}
+
+td {
+    font-variant-numeric: tabular-nums;
+}
+
+.note {
+    margin: 0.5rem 0 0;
+    color: var(--climate-color-muted-text);
+    font-size: 0.875rem;
+}
+
+@media (max-width: 1024px) {
+    .readouts {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}

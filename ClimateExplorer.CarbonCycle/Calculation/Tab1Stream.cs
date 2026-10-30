@@ -15,6 +15,8 @@ public sealed record Tab1Stream(
     // kg; zero if the material is not a reactant
     public double ReactantMass(Material material) => Reactants.Where(amount => amount.Material == material).Sum(amount => amount.MassKg);
 
+    public double ReactantMoles(Material material) => Reactants.Where(amount => amount.Material == material).Sum(amount => amount.Moles ?? 0);
+
     // kg; zero if the material is not a product
     public double ProductMass(Material material) => Products.Where(amount => amount.Material == material).Sum(amount => amount.MassKg);
 

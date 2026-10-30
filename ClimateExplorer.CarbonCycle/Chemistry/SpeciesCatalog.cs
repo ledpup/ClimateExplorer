@@ -15,6 +15,8 @@ public static class SpeciesCatalog
 
     public static Species Iron { get; } = new("Fe(s)", "Iron", "Fe", Phase.Solid, 0, Sources.ProvisionalEnthalpy);
 
+    public static Species Argon { get; } = new("Ar(g)", "Argon", "Ar", Phase.Gas, 0, Sources.ProvisionalEnthalpy);
+
     public static Species CarbonDioxide { get; } = new("CO2(g)", "Carbon dioxide", "CO2", Phase.Gas, -393.5, Sources.ProvisionalEnthalpy);
 
     public static Species CarbonMonoxide { get; } = new("CO(g)", "Carbon monoxide", "CO", Phase.Gas, -110.5, Sources.ProvisionalEnthalpy);
@@ -95,6 +97,7 @@ public static class SpeciesCatalog
         Nitrogen,
         Sulfur,
         Iron,
+        Argon,
         CarbonDioxide,
         CarbonMonoxide,
         WaterVapour,
