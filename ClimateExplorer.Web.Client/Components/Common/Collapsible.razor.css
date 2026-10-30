@@ -18,6 +18,12 @@
     flex: 0 0 auto;
 }
 
+    /* Index renders nothing here while expanded. Left in, the empty span wraps onto a second line in a narrow
+       header, which pushes the chevron into the top half of the panel. */
+    .collapsible-collapsed-content:empty {
+        display: none;
+    }
+
 .collapser-clickable {
     display: inline-flex;
     align-items: center;
