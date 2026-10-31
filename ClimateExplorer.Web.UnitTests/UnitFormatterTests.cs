@@ -20,6 +20,11 @@ public class UnitFormatterTests
         UnitOfMeasure.Millimetres,
         UnitOfMeasure.SqKm,
         UnitOfMeasure.MillionSqKm,
+        UnitOfMeasure.Kilograms,
+        UnitOfMeasure.CubicMetres,
+        UnitOfMeasure.Kilopascals,
+        UnitOfMeasure.GasLitresPerSecond,
+        UnitOfMeasure.LiquidLitresPerSecond,
     ];
 
     private static IUnitFormatter Us => UnitFormatter.UsCustomary;
@@ -72,6 +77,53 @@ public class UnitFormatterTests
     {
         Assert.AreEqual(1, Us.ToDisplay(Measure.Level(2.589988110336, UnitOfMeasure.SqKm)), Tolerance);
         Assert.AreEqual(1, Us.ToDisplay(Measure.Level(2.589988110336, UnitOfMeasure.MillionSqKm)), Tolerance);
+    }
+
+    [TestMethod]
+    public void ToDisplay_KilogramsUsCustomary_ReturnsPounds()
+    {
+        Assert.AreEqual(1, Us.ToDisplay(Measure.Level(0.45359237, UnitOfMeasure.Kilograms)), Tolerance);
+    }
+
+    [TestMethod]
+    public void ToDisplay_CubicMetresUsCustomary_ReturnsCubicFeet()
+    {
+        Assert.AreEqual(1, Us.ToDisplay(Measure.Level(0.3048 * 0.3048 * 0.3048, UnitOfMeasure.CubicMetres)), Tolerance);
+    }
+
+    [TestMethod]
+    public void ToDisplay_KilopascalsUsCustomary_ReturnsPsi()
+    {
+        // One standard atmosphere is 14.6959488 psi.
+        Assert.AreEqual(14.6959488, Us.ToDisplay(Measure.Level(101.325, UnitOfMeasure.Kilopascals)), 1e-7);
+    }
+
+    [TestMethod]
+    public void ToDisplay_GasLitresPerSecondUsCustomary_ReturnsCubicFeetPerHour()
+    {
+        // A cubic foot is 28.316846592 L, so one an hour is that many litres every 3,600 s.
+        Assert.AreEqual(1, Us.ToDisplay(Measure.Level(28.316846592 / 3600, UnitOfMeasure.GasLitresPerSecond)), Tolerance);
+    }
+
+    [TestMethod]
+    public void ToDisplay_LiquidLitresPerSecondUsCustomary_ReturnsUsGallonsPerHour()
+    {
+        // A US gallon, not an imperial one (4.54609 L).
+        Assert.AreEqual(1, Us.ToDisplay(Measure.Level(3.785411784 / 3600, UnitOfMeasure.LiquidLitresPerSecond)), Tolerance);
+    }
+
+    [TestMethod]
+    public void FromDisplay_EveryUnitBothSystems_InvertsToDisplayOfALevel()
+    {
+        foreach (var formatter in new[] { UnitFormatter.Metric, UnitFormatter.UsCustomary })
+        {
+            foreach (var unit in Enum.GetValues<UnitOfMeasure>())
+            {
+                var display = formatter.ToDisplay(Measure.Level(21.37, unit));
+
+                Assert.AreEqual(21.37, formatter.FromDisplay(display, unit), Tolerance, $"{formatter.System} {unit}");
+            }
+        }
     }
 
     [TestMethod]
@@ -132,6 +184,26 @@ public class UnitFormatterTests
         Assert.AreEqual("1000 mi²", Us.Format(Measure.Level(2589.988110336, UnitOfMeasure.SqKm)));
         Assert.AreEqual("1.74 million mi²", Us.Format(Measure.Level(4.5, UnitOfMeasure.MillionSqKm)));
         Assert.AreEqual("°F anomaly", Us.ShortLabel(UnitOfMeasure.DegreesCelsiusAnomaly));
+    }
+
+    [TestMethod]
+    public void Format_UsCustomaryMassVolumePressureAndFlow_UsesDisplayLabelsAndPrecision()
+    {
+        Assert.AreEqual("220.5 lb", Us.Format(Measure.Level(100, UnitOfMeasure.Kilograms)));
+        Assert.AreEqual("8829 ft³", Us.Format(Measure.Level(250, UnitOfMeasure.CubicMetres)));
+        Assert.AreEqual("14.70 psi", Us.Format(Measure.Level(101.325, UnitOfMeasure.Kilopascals)));
+        Assert.AreEqual("12713.3 ft³/h", Us.Format(Measure.Level(100, UnitOfMeasure.GasLitresPerSecond)));
+        Assert.AreEqual("951.0 gal/h", Us.Format(Measure.Level(1, UnitOfMeasure.LiquidLitresPerSecond)));
+        Assert.AreEqual("US gallons per hour (gal/h)", Us.Label(UnitOfMeasure.LiquidLitresPerSecond));
+    }
+
+    [TestMethod]
+    public void Format_MetricMassVolumePressureAndFlow_UsesMetricLabels()
+    {
+        Assert.AreEqual("100.0 kg", UnitFormatter.Metric.Format(Measure.Level(100, UnitOfMeasure.Kilograms)));
+        Assert.AreEqual("250 m³", UnitFormatter.Metric.Format(Measure.Level(250, UnitOfMeasure.CubicMetres)));
+        Assert.AreEqual("101.33 kPa", UnitFormatter.Metric.Format(Measure.Level(101.3271, UnitOfMeasure.Kilopascals)));
+        Assert.AreEqual("100.0 L/s", UnitFormatter.Metric.Format(Measure.Level(100, UnitOfMeasure.GasLitresPerSecond)));
     }
 
     [TestMethod]

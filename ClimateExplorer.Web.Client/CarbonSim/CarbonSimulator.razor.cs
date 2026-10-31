@@ -18,7 +18,12 @@ public partial class CarbonSimulator : IAsyncDisposable
     private const string FossilTab = "fossil";
     private const string BurnerRateId = "carbon-sim-burner-rate";
     private const string SpeedId = "carbon-sim-speed";
+    private const UnitOfMeasure BurnerRateUnit = UnitOfMeasure.GasLitresPerSecond;
+
+    // In litres per second
     private const double MaxBurnerRate = 10_000;
+    private const double HouseFireRate = 100;
+    private const double HobRate = 0.07;
 
     // A longer gap between ticks, such as while the browser tab is in the background, isn't caught up
     private const double MaxTickSeconds = 0.5;
@@ -45,6 +50,7 @@ public partial class CarbonSimulator : IAsyncDisposable
     private string? burnerRateError;
     private int secondsPerSecond = SimulationSpeed.All[0].SecondsPerSecond;
     private string? announcement;
+    private IUnitFormatter? burnerRateUnits;
     private GasChart? gasChart;
     private CancellationTokenSource? runCancellation;
     private Task? runTask;
@@ -54,9 +60,13 @@ public partial class CarbonSimulator : IAsyncDisposable
 
     private bool IsRunning => runCancellation is not null;
 
-    private string HouseVolumeText => house.Settings.Volume.ToString("N0", CultureInfo.InvariantCulture);
+    private string HouseVolumeText => CarbonSimFormat.Quantity(Units, Measure.Level(house.Settings.Volume, UnitOfMeasure.CubicMetres));
 
     private string StartTemperatureText => Units.Format(Measure.Level(house.Settings.StartTemperature - 273.15, UnitOfMeasure.DegreesCelsius));
+
+    private string HouseFireRateText => CarbonSimFormat.Approximate(Units, Measure.Level(HouseFireRate, BurnerRateUnit));
+
+    private string HobRateText => CarbonSimFormat.Approximate(Units, Measure.Level(HobRate, BurnerRateUnit));
 
     private IReadOnlyList<GasChartSeries> ChartSeries =>
         state.Gases
@@ -70,9 +80,22 @@ public partial class CarbonSimulator : IAsyncDisposable
 
     protected override void OnInitialized()
     {
-        burnerRateText = (house.Settings.BurnerRate * 1000).ToString(CultureInfo.InvariantCulture);
         start = house.Start();
         state = start;
+    }
+
+    // The burner rate is typed in the reader's units, so a change of units rewrites it from the rate in use. That
+    // also drops any invalid text, which was typed in the old units.
+    protected override void OnParametersSet()
+    {
+        if (ReferenceEquals(Units, burnerRateUnits))
+        {
+            return;
+        }
+
+        burnerRateUnits = Units;
+        burnerRateText = CarbonSimFormat.Number(Units.ToDisplay(Measure.Level(house.Settings.BurnerRate * 1000, BurnerRateUnit)));
+        burnerRateError = null;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -98,11 +121,15 @@ public partial class CarbonSimulator : IAsyncDisposable
     {
         burnerRateText = text;
 
-        if (!double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out var litresPerSecond)
+        var parsed = double.TryParse(text, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out var value);
+        var litresPerSecond = Units.FromDisplay(value, BurnerRateUnit);
+
+        if (!parsed
+            || !double.IsFinite(litresPerSecond)
             || litresPerSecond <= 0
             || litresPerSecond > MaxBurnerRate)
         {
-            burnerRateError = $"Enter a number of litres per second, more than 0 and up to {MaxBurnerRate:N0}.";
+            burnerRateError = $"Enter a rate more than 0 and up to {CarbonSimFormat.Quantity(Units, Measure.Level(MaxBurnerRate, BurnerRateUnit))}.";
             await PauseAsync();
             return;
         }

@@ -22,7 +22,7 @@
             <div class="scenario-text">
                 <h2>Methane burning in a sealed house</h2>
                 <p>
-                    A gas burner runs in a sealed @HouseVolumeText m³ house with no windows and no sunlight. The house
+                    A gas burner runs in a sealed @HouseVolumeText house with no windows and no sunlight. The house
                     starts at @StartTemperatureText, the same as outside, so any change in temperature comes from
                     the flame. The burner takes its oxygen from the house's air and stops when the oxygen falls
                     below @CarbonSimFormat.Share(house.Settings.OxygenCutOff).
@@ -34,13 +34,13 @@
                     bursts.
                 </p>
                 <div class="field">
-                    <label for="@BurnerRateId">Methane (litres per second)</label>
+                    <label for="@BurnerRateId">Methane (@Units.ShortLabel(BurnerRateUnit))</label>
                     <TextInput Id="@BurnerRateId"
                                Value="@burnerRateText"
                                ValueChanged="OnBurnerRateChangedAsync"
                                Invalid="@(burnerRateError is not null)"
                                ErrorMessage="@burnerRateError" />
-                    <span class="hint">100 L/s is a house fire; a gas hob burns about 0.07 L/s.</span>
+                    <span class="hint">@HouseFireRateText is a house fire; a gas hob burns about @HobRateText.</span>
                 </div>
             </div>
             <ReactionSummary State="@state" Reaction="@house.Reaction" />

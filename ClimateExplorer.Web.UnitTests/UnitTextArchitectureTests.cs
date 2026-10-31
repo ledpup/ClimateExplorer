@@ -50,7 +50,8 @@ public partial class UnitTextArchitectureTests
 
     // Unit labels, and the Core helpers that produce them. "mm" only counts as a unit when it follows a
     // number or an interpolation hole, or is a string on its own, so words like "summary" don't match.
-    [GeneratedRegex("""°C|°F|km²|mi²|"mm"|[0-9}]mm\b|UnitOfMeasureLabelShort\(|UnitOfMeasureLabel\(|UnitOfMeasureRounding\(""")]
+    // "kg" is the same, and may also follow a closing parenthesis, so a parameter named kg doesn't match.
+    [GeneratedRegex("""°C|°F|km²|mi²|"mm"|[0-9}]mm\b|m³|ft³|kPa|\bpsi\b|\bL/s\b|\bgal/h\b|"kg"|[0-9})] ?kg\b|\blb\b|UnitOfMeasureLabelShort\(|UnitOfMeasureLabel\(|UnitOfMeasureRounding\(""")]
     private static partial Regex UnitTextPattern();
 
     private static IEnumerable<(string File, int Line, string Text)> FindUnitText()

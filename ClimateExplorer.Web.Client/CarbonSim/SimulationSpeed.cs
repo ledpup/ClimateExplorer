@@ -6,6 +6,7 @@ public sealed record SimulationSpeed(int SecondsPerSecond, string Label)
     public static IReadOnlyList<SimulationSpeed> All { get; } =
     [
         new(1, "Real time"),
+        new(10, "10 seconds per second"),
         new(60, "1 minute per second"),
         new(600, "10 minutes per second"),
         new(3600, "1 hour per second"),

@@ -1,7 +1,9 @@
 namespace ClimateExplorer.Web.CarbonSim.UnitTests;
 
 using ClimateExplorer.Web.Client.CarbonSim;
+using ClimateExplorer.Web.Client.Units;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static ClimateExplorer.Core.Enums;
 
 [TestClass]
 public class CarbonSimFormatTests
@@ -15,6 +17,31 @@ public class CarbonSimFormatTests
     public void Number_Value_AtLeastThreeSignificantFigures(double value, string expected)
     {
         Assert.AreEqual(expected, CarbonSimFormat.Number(value));
+    }
+
+    [TestMethod]
+    [DataRow(UnitSystem.Metric, 250.0, "250 m³")]
+    [DataRow(UnitSystem.UsCustomary, 250.0, "8,829 ft³")]
+    public void Quantity_CubicMetres_InTheReadersUnits(UnitSystem system, double cubicMetres, string expected)
+    {
+        Assert.AreEqual(expected, CarbonSimFormat.Quantity(UnitFormatter.For(system), Measure.Level(cubicMetres, UnitOfMeasure.CubicMetres)));
+    }
+
+    [TestMethod]
+    public void Quantity_TightUnit_NoSpaceBeforeLabel()
+    {
+        Assert.AreEqual("20.0°C", CarbonSimFormat.Quantity(UnitFormatter.Metric, Measure.Level(20, UnitOfMeasure.DegreesCelsius)));
+    }
+
+    [TestMethod]
+    [DataRow(UnitSystem.Metric, 100.0, "100 L/s")]
+    [DataRow(UnitSystem.Metric, 0.07, "0.07 L/s")]
+    [DataRow(UnitSystem.UsCustomary, 100.0, "13,000 ft³/h")]
+    [DataRow(UnitSystem.UsCustomary, 0.07, "8.9 ft³/h")]
+    [DataRow(UnitSystem.UsCustomary, 0.0, "0 ft³/h")]
+    public void Approximate_GasFlow_TwoSignificantFiguresInTheReadersUnits(UnitSystem system, double litresPerSecond, string expected)
+    {
+        Assert.AreEqual(expected, CarbonSimFormat.Approximate(UnitFormatter.For(system), Measure.Level(litresPerSecond, UnitOfMeasure.GasLitresPerSecond)));
     }
 
     [TestMethod]

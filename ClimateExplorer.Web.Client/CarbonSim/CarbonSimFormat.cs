@@ -1,6 +1,8 @@
 namespace ClimateExplorer.Web.Client.CarbonSim;
 
 using System.Globalization;
+using ClimateExplorer.Web.Client.Units;
+using static ClimateExplorer.Core.Enums;
 
 /// <summary>Number and time text for the simulator's readouts.</summary>
 public static class CarbonSimFormat
@@ -21,6 +23,30 @@ public static class CarbonSimFormat
         }
 
         return Format(value, Math.Clamp(SignificantFigures - 1 - Magnitude(value), 0, 15));
+    }
+
+    /// <summary>A measure in the reader's units, as <see cref="Number"/> gives it: "250 m³", "8,829 ft³".</summary>
+    public static string Quantity(IUnitFormatter units, Measure measure) =>
+        WithLabel(units, measure.Unit, Number(units.ToDisplay(measure)));
+
+    /// <summary>
+    /// A measure in the reader's units, to two significant figures and without trailing zeros, for a rough example:
+    /// "0.07 L/s", "8.9 ft³/h", "13,000 ft³/h".
+    /// </summary>
+    public static string Approximate(IUnitFormatter units, Measure measure)
+    {
+        var value = units.ToDisplay(measure);
+
+        if (value != 0 && double.IsFinite(value))
+        {
+            var places = 1 - Magnitude(value);
+            var step = Math.Pow(10, -places);
+
+            // Round to a whole number of steps, then to the places, so 0.07 doesn't come out as 0.07000000000000001
+            value = Math.Round(Math.Round(value / step) * step, Math.Max(places, 0));
+        }
+
+        return WithLabel(units, measure.Unit, value.ToString("#,##0.###############", CultureInfo.InvariantCulture));
     }
 
     /// <summary>
@@ -83,6 +109,9 @@ public static class CarbonSimFormat
             ? "< 0.1 ppm"
             : Format(ppm, Math.Abs(ppm) < 9.95 ? 1 : 0) + " ppm";
     }
+
+    private static string WithLabel(IUnitFormatter units, UnitOfMeasure unit, string number) =>
+        units.IsTight(unit) ? number + units.ShortLabel(unit) : $"{number} {units.ShortLabel(unit)}";
 
     private static int Magnitude(double value) => (int)Math.Floor(Math.Log10(Math.Abs(value)));
 
