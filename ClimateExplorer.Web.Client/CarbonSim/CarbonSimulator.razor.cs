@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Components;
 
 /// <summary>
 /// The Carbon-cycle simulator. The fossil fuels tab holds a carousel of scenarios: methane burning in a sealed house
-/// (simulation plan §3.1) and cars on a dead planet. The active scenario's slide has its inputs; the clock runs the
+/// (simulation boxes plan §1.1) and cars on a dead planet. The active scenario's slide has its inputs; the clock runs the
 /// simulation, and the floating panels show its air.
 /// </summary>
 public partial class CarbonSimulator : IAsyncDisposable
@@ -120,8 +120,8 @@ public partial class CarbonSimulator : IAsyncDisposable
         return preview;
     }
 
-    // A scenario brings its own inputs (simulation plan §2.4), replacing the reader's, so the run goes back to time 0
-    // and pauses.
+    // A scenario brings its own inputs (simulation scenarios plan §4), replacing the reader's, so the run goes back to
+    // time 0 and pauses.
     private async Task OnScenarioChangedAsync(int index)
     {
         scenarioIndex = index;
@@ -129,7 +129,7 @@ public partial class CarbonSimulator : IAsyncDisposable
         await OnInputsChangedAsync(scenario.Inputs);
     }
 
-    // Changing an input changes the starting events, so the run goes back to time 0 and pauses (simulation plan §5.1).
+    // Changing an input changes the starting events, so the run goes back to time 0 and pauses (simulation clock plan §1).
     private async Task OnInputsChangedAsync(ScenarioInputs value)
     {
         inputs = value;

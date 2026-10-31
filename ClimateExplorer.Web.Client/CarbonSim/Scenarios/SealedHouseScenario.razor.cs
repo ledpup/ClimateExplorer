@@ -5,7 +5,7 @@ using ClimateExplorer.CarbonCycle.Simulation;
 using ClimateExplorer.Web.Client.Units;
 using static ClimateExplorer.Core.Enums;
 
-/// <summary>Methane burning in a sealed house (simulation plan §3.1).</summary>
+/// <summary>Methane burning in a sealed house (simulation boxes plan §1.1).</summary>
 public partial class SealedHouseScenario
 {
     private SealedHouse House => (SealedHouse)Simulation;

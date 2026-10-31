@@ -3,7 +3,7 @@ namespace ClimateExplorer.Web.Client.CarbonSim.Scenarios;
 using ClimateExplorer.CarbonCycle.Simulation;
 
 /// <summary>
-/// A preset scenario (simulation plan §2.4): its setting, and the inputs it starts with. The reader can change the
+/// A preset scenario (simulation scenarios plan §4): its setting, and the inputs it starts with. The reader can change the
 /// inputs before pressing play.
 /// </summary>
 /// <param name="Title">The scenario's heading, and its name on the carousel's arrows and dots.</param>

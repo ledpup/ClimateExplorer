@@ -6,8 +6,8 @@ using ClimateExplorer.CarbonCycle.Fuels;
 
 // Cars burning petrol in a dead planet's air. One temperature for the whole atmosphere. Something unmodelled, a warm
 // sky, holds the planet at its start temperature; as it warms it loses heat to space, and the CO₂ the cars add keeps
-// some of it in (a simple energy balance, simulation plan §4.3, with no sun, albedo or ocean). The water the cars make
-// rains out at once. The pressure is the weight of the air.
+// some of it in (simulation energy balance plan §1, with no sun, albedo or ocean). The water the cars make rains out
+// at once. The pressure is the weight of the air.
 public sealed class DeadPlanet : ISimulation
 {
     // W/m² per e-fold of CO₂ (Myhre et al. 1998)
@@ -151,7 +151,7 @@ public sealed class DeadPlanet : ISimulation
 
     private SimulationState Step(SimulationState state, double seconds)
     {
-        // The engines can't burn more than the O₂ that's there (simulation plan §5.2)
+        // The engines can't burn more than the O₂ that's there (simulation engine plan §3)
         var burnt = Math.Min(BurnRate(state) * seconds, state.Oxygen / oxygenPerMole);
         var water = burnt * waterPerMole;
 

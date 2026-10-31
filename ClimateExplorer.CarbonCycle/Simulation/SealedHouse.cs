@@ -4,7 +4,7 @@ using ClimateExplorer.CarbonCycle.Calculation;
 using ClimateExplorer.CarbonCycle.Chemistry;
 using ClimateExplorer.CarbonCycle.Fuels;
 
-// The first slice of the simulation engine (simulation plan §5): methane burning in a sealed house. One lumped
+// The first slice of the simulation engine (simulation engine plan): methane burning in a sealed house. One lumped
 // temperature for the air and the house's contents, which lose heat through the walls. Forward Euler on adaptive
 // substeps, so the result doesn't depend on the step the caller asks for (§5.3).
 public sealed class SealedHouse : ISimulation
@@ -162,7 +162,7 @@ public sealed class SealedHouse : ISimulation
     {
         var burnRate = BurnRate(state);
 
-        // The flame can't burn more than the O₂ that's there (simulation plan §5.2)
+        // The flame can't burn more than the O₂ that's there (simulation engine plan §3)
         var burnt = Math.Min(burnRate * seconds, state.Oxygen / oxygenPerMole);
         var heat = burnt * heatPerMole;
         var oxygen = Math.Max(state.Oxygen - (burnt * oxygenPerMole), 0);
@@ -177,7 +177,7 @@ public sealed class SealedHouse : ISimulation
         var newVapour = Math.Min(water, MolesAt(SaturationVapourPressure(temperature), temperature));
         temperature += (vapour - newVapour) * latentHeat / capacity;
 
-        // The vent only removes, and only N₂ (simulation plan §4.4)
+        // The vent only removes, and only N₂ (simulation boxes plan §4)
         var nitrogen = state.Nitrogen;
         var gasMoles = nitrogen + oxygen + state.Argon + carbonDioxide + state.Methane + newVapour;
         var vented = Math.Clamp(gasMoles - MolesAt(Settings.TargetPressure, temperature), 0, nitrogen);
