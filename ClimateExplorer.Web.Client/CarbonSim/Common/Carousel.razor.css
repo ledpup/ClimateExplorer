@@ -1,0 +1,224 @@
+.carousel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.carousel-stage {
+    position: relative;
+}
+
+/* The slides are sized in container units: the active one fills the carousel's width. On fullscreen the slides
+   either side overflow it out to the edges of the browser, which clips them (html:has(.carousel-viewport) in app.css). */
+.carousel-viewport {
+    container-type: inline-size;
+}
+
+/* The track holds the active slide with --carousel-before slides either side, and is moved so the active one sits
+   in the viewport */
+.carousel-track {
+    --carousel-gap: 4rem;
+    --carousel-pitch: calc(100cqw + var(--carousel-gap));
+    --carousel-rest: calc(-1 * var(--carousel-before) * var(--carousel-pitch));
+    display: flex;
+    gap: var(--carousel-gap);
+    transform: translateX(var(--carousel-rest));
+}
+
+.carousel-slide {
+    display: flex;
+    flex: 0 0 100cqw;
+    min-width: 0;
+}
+
+.carousel-slide:not(.carousel-slide-active) {
+    opacity: 0.4;
+}
+
+.carousel-card {
+    flex: 1;
+    min-width: 0;
+    padding: 1.25rem 1.5rem;
+    background-color: var(--climate-color-surface);
+    border: 1px solid var(--climate-color-control-border);
+    border-radius: 12px;
+    box-shadow: var(--climate-shadow-panel);
+}
+
+/* Fullscreen: in the gap between the active slide and its neighbours, which is in the page's margin */
+.carousel-arrow {
+    position: absolute;
+    top: 50%;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 6rem;
+    padding: 0;
+    border: none;
+    border-radius: var(--climate-radius-control);
+    background-color: transparent;
+    color: var(--climate-color-control-text);
+    font-size: 2.5rem;
+    cursor: pointer;
+    transform: translateY(-50%);
+}
+
+.carousel-arrow-left {
+    right: 100%;
+}
+
+.carousel-arrow-right {
+    left: 100%;
+}
+
+.carousel-arrow:hover {
+    background-color: var(--climate-color-control-hover);
+}
+
+.carousel-arrow:focus-visible,
+.carousel-dot:focus-visible {
+    outline: 2px solid var(--climate-color-control-text);
+    outline-offset: 2px;
+}
+
+.carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.25rem;
+}
+
+.carousel-dot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    min-height: 24px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.carousel-dot::before {
+    content: "";
+    box-sizing: border-box;
+    width: 0.75rem;
+    height: 0.75rem;
+    border: 2px solid var(--climate-color-control-text);
+    border-radius: 50%;
+}
+
+.carousel-dot:hover {
+    background-color: var(--climate-color-control-hover);
+}
+
+.carousel-dot[aria-current="true"]::before {
+    background-color: var(--climate-color-control-text);
+}
+
+@media (pointer: coarse) {
+    .carousel-dot {
+        min-width: 44px;
+        min-height: 44px;
+    }
+}
+
+/* Tablet and mobile: one slide shows, like an image carousel, with the arrows in its top corners. A slide is too
+   tall to centre them on, and there they don't cover its controls. */
+@media (max-width: 1024px) {
+    .carousel-viewport {
+        overflow: hidden;
+        padding-block: 0.25rem;
+    }
+
+    .carousel-track {
+        --carousel-gap: 1rem;
+    }
+
+    /* The layout's gutter is the whitespace either side, so the card adds no more than the floating panels do */
+    .carousel-card {
+        padding: 3.75rem 0.5rem 0.5rem;
+    }
+
+    .carousel-arrow {
+        top: 0.5rem;
+        width: 2.75rem;
+        height: 2.75rem;
+        border: 1px solid var(--climate-color-control-border);
+        border-radius: 50%;
+        background-color: var(--climate-color-surface);
+        box-shadow: var(--climate-shadow-panel);
+        font-size: 1.5rem;
+        transform: none;
+    }
+
+    .carousel-arrow-left {
+        right: auto;
+        left: 0.5rem;
+    }
+
+    .carousel-arrow-right {
+        right: 0.5rem;
+        left: auto;
+    }
+}
+
+/* Mobile: like a Collapsible, the card runs over the layout's gutter to the edges of the screen, with only its top and
+   bottom borders */
+@media (max-width: 767px) {
+    .carousel {
+        margin-inline: -1rem;
+    }
+
+    .carousel-card {
+        border-inline: none;
+        border-radius: 0;
+    }
+}
+
+/* A move renders a new track one slide along from where it comes to rest, and slides it home */
+@media (prefers-reduced-motion: no-preference) {
+    .carousel-track-from-left {
+        animation: carousel-from-left 0.35s ease-out;
+    }
+
+    .carousel-track-from-right {
+        animation: carousel-from-right 0.35s ease-out;
+    }
+
+    .carousel-track-from-left .carousel-slide-active,
+    .carousel-track-from-right .carousel-slide-active {
+        animation: carousel-activate 0.35s ease-out;
+    }
+
+    .carousel-slide-leaving {
+        animation: carousel-deactivate 0.35s ease-out;
+    }
+}
+
+@keyframes carousel-from-left {
+    from {
+        transform: translateX(calc(var(--carousel-rest) - var(--carousel-pitch)));
+    }
+}
+
+@keyframes carousel-from-right {
+    from {
+        transform: translateX(calc(var(--carousel-rest) + var(--carousel-pitch)));
+    }
+}
+
+@keyframes carousel-activate {
+    from {
+        opacity: 0.4;
+    }
+}
+
+@keyframes carousel-deactivate {
+    from {
+        opacity: 1;
+    }
+}

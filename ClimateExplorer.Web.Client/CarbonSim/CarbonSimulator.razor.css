@@ -13,40 +13,6 @@ h1 {
     padding: 1rem 0 1.25rem;
 }
 
-.scenario {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 1.5rem 2.5rem;
-    align-items: start;
-}
-
-.scenario-text h2 {
-    margin: 0 0 0.5rem;
-    color: var(--climate-color-control-text);
-    font-size: 1.35rem;
-}
-
-.scenario-text p {
-    margin: 0 0 0.75rem;
-}
-
-.note,
-.hint {
-    color: var(--climate-color-muted-text);
-    font-size: 0.875rem;
-}
-
-.field {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    max-width: 22rem;
-}
-
-.field label {
-    font-weight: 700;
-}
-
 .clock {
     display: flex;
     flex-wrap: wrap;
@@ -75,7 +41,6 @@ h1 {
         padding: 0 0 2rem;
     }
 
-    .scenario,
     .panels {
         grid-template-columns: minmax(0, 1fr);
     }

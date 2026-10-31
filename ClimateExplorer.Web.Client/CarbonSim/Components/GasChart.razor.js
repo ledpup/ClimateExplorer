@@ -5,6 +5,9 @@ import "../../lib/chartjs/chart.umd.min.js";
 const charts = new WeakMap();
 const maxPoints = 1500;
 
+// Julian year, as CarbonSimFormat.Duration
+const year = 365.25 * 86400;
+
 export function create(canvas, series, yTitle) {
     const chart = new Chart(canvas, {
         type: "line",
@@ -23,7 +26,7 @@ export function create(canvas, series, yTitle) {
                 x: {
                     type: "linear",
                     min: 0,
-                    title: { display: true, text: "Time since the burner was lit" },
+                    title: { display: true, text: "Time since the start" },
                     ticks: { callback: (value) => formatTime(value), maxTicksLimit: 8 },
                     grid: { color: "rgb(0 0 0 / 6%)" },
                 },
@@ -96,7 +99,8 @@ function formatTime(seconds) {
     if (seconds < 120) return `${round(seconds)} s`;
     if (seconds < 7200) return `${round(seconds / 60)} min`;
     if (seconds < 172800) return `${round(seconds / 3600)} h`;
-    return `${round(seconds / 86400)} days`;
+    if (seconds < 2 * year) return `${round(seconds / 86400)} days`;
+    return `${round(seconds / year)} years`;
 }
 
 function round(value) {

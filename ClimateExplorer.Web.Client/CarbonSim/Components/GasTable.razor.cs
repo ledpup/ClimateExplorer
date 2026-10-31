@@ -1,22 +1,21 @@
 namespace ClimateExplorer.Web.Client.CarbonSim.Components;
 
-using System.Globalization;
 using ClimateExplorer.CarbonCycle.Chemistry;
 using ClimateExplorer.CarbonCycle.Simulation;
 using ClimateExplorer.Web.Client.Units;
 using Microsoft.AspNetCore.Components;
 using static ClimateExplorer.Core.Enums;
 
-/// <summary>The house's readouts and the share of each gas in its air, now and against the start.</summary>
+/// <summary>The readouts and the share of each gas in the air, now and against the start.</summary>
 public partial class GasTable
 {
     [Parameter]
     [EditorRequired]
-    public HouseState State { get; set; } = default!;
+    public SimulationState State { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
-    public HouseState Start { get; set; } = default!;
+    public SimulationState Start { get; set; } = default!;
 
     [CascadingParameter]
     public IUnitFormatter Units { get; set; } = UnitFormatter.Metric;
@@ -39,7 +38,7 @@ public partial class GasTable
 
     private string TemperatureText => Units.Format(Measure.Level(State.Temperature - 273.15, UnitOfMeasure.DegreesCelsius));
 
-    private string PressureText => (State.Pressure / 1000).ToString("N2", CultureInfo.InvariantCulture) + " kPa";
+    private string PressureText => Units.Format(Measure.Level(State.Pressure / 1000, UnitOfMeasure.Kilopascals));
 
     private string FlameText => State.FlameOn
         ? "Burning"

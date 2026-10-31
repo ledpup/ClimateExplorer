@@ -1,0 +1,38 @@
+@using ClimateExplorer.Web.Client.CarbonSim.Components
+@inherits ScenarioComponent
+
+<div class="scenario">
+    <div class="scenario-text">
+        <h2>@Scenario.Title</h2>
+        <p>
+            A planet the size of Earth, with Earth's air and nothing else: no sun, no ocean, no plants. @CarsText cars
+            drive around it at @SpeedText, day and night, each burning about @PerCarText of petrol. The petrol is taken
+            as pure octane, and it burns completely. Nothing takes the CO₂ back out of the air.
+        </p>
+        <p class="note">
+            With no sun, a real planet would freeze within months, and the cars would make no difference. Here the sky
+            is taken to be warm, holding the planet at its starting temperature, so all that changes it is the cars. As
+            the planet warms it loses more heat to space, and the CO₂ the cars add keeps some of that heat in, as on
+            Earth. With no water vapour, ice or clouds to add to it, the planet warms about @PerDoublingText each time
+            the CO₂ doubles. The water the cars make falls as rain.
+        </p>
+        @if (Inputs.FossilFuels is not null)
+        {
+            <CarCountInput Value="@Inputs.FossilFuels" ValueChanged="OnFossilFuelsChangedAsync" Invalid="InputInvalid" />
+        }
+    </div>
+    <ReactionSummary State="@State" Reaction="@Planet.Reaction">
+        <div>
+            <dt>Water rained out</dt>
+            <dd>@RainedOutText</dd>
+        </div>
+        <div>
+            <dt>Heat kept in by the added CO₂</dt>
+            <dd>@HeatFluxText(Planet.CarbonDioxideForcing(State))</dd>
+        </div>
+        <div>
+            <dt>Heat from the engines</dt>
+            <dd>@HeatFluxText(Planet.EngineHeat(State))</dd>
+        </div>
+    </ReactionSummary>
+</div>

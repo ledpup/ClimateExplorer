@@ -1,0 +1,15 @@
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    max-width: 24rem;
+}
+
+.field label {
+    font-weight: 700;
+}
+
+.hint {
+    color: var(--climate-color-muted-text);
+    font-size: 0.875rem;
+}

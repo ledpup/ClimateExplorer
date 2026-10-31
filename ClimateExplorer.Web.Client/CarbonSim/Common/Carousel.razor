@@ -1,0 +1,54 @@
+@typeparam TItem
+
+@if (Items.Count > 0)
+{
+    <section class="carousel" aria-roledescription="carousel" aria-label="@AriaLabel">
+        <div class="carousel-stage">
+            @if (Items.Count > 1)
+            {
+                <button type="button" class="carousel-arrow carousel-arrow-left" aria-label="@ArrowLabel(-1)" @onclick="ShowLeftNeighbourAsync">
+                    <i class="fas fa-chevron-left" aria-hidden="true"></i>
+                </button>
+            }
+            <div class="carousel-viewport">
+                <div class="@TrackClass" style="--carousel-before: @SlidesBefore" @key="move">
+                    @foreach (var offset in Offsets)
+                    {
+                        <div class="@SlideClass(offset)"
+                             role="group"
+                             aria-roledescription="slide"
+                             aria-label="@PositionText(offset)"
+                             inert="@(offset != 0)">
+                            <div class="carousel-card">
+                                @ItemTemplate?.Invoke(new CarouselSlide<TItem>(ItemAt(offset), offset == 0))
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            @if (Items.Count > 1)
+            {
+                <button type="button" class="carousel-arrow carousel-arrow-right" aria-label="@ArrowLabel(1)" @onclick="ShowRightNeighbourAsync">
+                    <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                </button>
+            }
+        </div>
+
+        @if (Items.Count > 1)
+        {
+            <div class="carousel-dots">
+                @for (var i = 0; i < Items.Count; i++)
+                {
+                    var target = i;
+                    <button type="button"
+                            class="carousel-dot"
+                            aria-label="@($"Show {ItemLabel(Items[target])}")"
+                            aria-current="@(target == index ? "true" : null)"
+                            @onclick="() => ShowAsync(target)"></button>
+                }
+            </div>
+        }
+
+        <div class="visually-hidden" aria-live="polite">@announcement</div>
+    </section>
+}

@@ -35,6 +35,8 @@ internal sealed class RecordingUnitFormatter(IUnitFormatter inner) : IUnitFormat
         return inner.ToDisplay(measure);
     }
 
+    public double FromDisplay(double value, UnitOfMeasure unit) => inner.FromDisplay(value, unit);
+
     public string ShortLabel(UnitOfMeasure unit) => inner.ShortLabel(unit);
 
     public string Label(UnitOfMeasure unit) => inner.Label(unit);

@@ -59,6 +59,12 @@ html:has(dialog.modal[open]) {
     padding-right: var(--climate-modal-scrollbar-width, 0px);
 }
 
+/* A carousel's side slides run past the page's content out to the edges of the browser. Clip them there rather than
+   scroll the page sideways. */
+html:has(.carousel-viewport) {
+    overflow-x: clip;
+}
+
 .secondary-text {
     color: var(--climate-color-muted-text);
 }

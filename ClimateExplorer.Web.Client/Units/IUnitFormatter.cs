@@ -26,6 +26,12 @@ public interface IUnitFormatter
     /// <summary>The unrounded value in display units, for Chart.js data and CSV cells.</summary>
     double ToDisplay(Measure measure);
 
+    /// <summary>
+    /// The metric level for a <paramref name="value"/> a reader typed in display units: the inverse of
+    /// <see cref="ToDisplay"/> for <see cref="Measure.Level"/>.
+    /// </summary>
+    double FromDisplay(double value, UnitOfMeasure unit);
+
     /// <summary>"°F", "in", or the unchanged metric label.</summary>
     string ShortLabel(UnitOfMeasure unit);
 

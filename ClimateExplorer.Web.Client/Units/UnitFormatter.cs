@@ -15,9 +15,16 @@ using static ClimateExplorer.Core.Enums;
 /// </remarks>
 public sealed class UnitFormatter : IUnitFormatter
 {
-    // Both exact by definition: 1 in = 25.4 mm, and 1 mi = 1.609344 km so 1 mi² = 2.589988110336 km².
+    // All exact by definition: 1 in = 25.4 mm, and 1 mi = 1.609344 km so 1 mi² = 2.589988110336 km². 1 lb =
+    // 0.45359237 kg, 1 ft = 0.3048 m so 1 ft³ = 0.028316846592 m³, and 1 US gal = 231 in³ = 3.785411784 L. A psi is
+    // a pound-force (1 lb under standard gravity, 9.80665 m/s²) on a square inch: 6.894757293168361 kPa.
     private const double MillimetresPerInch = 25.4;
     private const double SqKmPerSqMile = 2.589988110336;
+    private const double KilogramsPerPound = 0.45359237;
+    private const double CubicMetresPerCubicFoot = 0.028316846592;
+    private const double LitresPerUsGallon = 3.785411784;
+    private const double KilopascalsPerPsi = KilogramsPerPound * 9.80665 / (MillimetresPerInch * MillimetresPerInch) * 1000;
+    private const double SecondsPerHour = 3600;
 
     // The allow-list. A unit that isn't here shows unchanged in both systems, including any unit added
     // to Core in future. Only DegreesCelsius has an offset, and it applies to levels only: a difference
@@ -30,6 +37,13 @@ public sealed class UnitFormatter : IUnitFormatter
         [UnitOfMeasure.Millimetres] = new(1 / MillimetresPerInch, 0, "in", "Inches (in)", 2, Tight: false),
         [UnitOfMeasure.SqKm] = new(1 / SqKmPerSqMile, 0, "mi²", "Square miles (mi²)", 0, Tight: false),
         [UnitOfMeasure.MillionSqKm] = new(1 / SqKmPerSqMile, 0, "million mi²", "Million square miles", 2, Tight: false),
+        [UnitOfMeasure.Kilograms] = new(1 / KilogramsPerPound, 0, "lb", "Pounds (lb)", 1, Tight: false),
+        [UnitOfMeasure.CubicMetres] = new(1 / CubicMetresPerCubicFoot, 0, "ft³", "Cubic feet (ft³)", 0, Tight: false),
+        [UnitOfMeasure.Kilopascals] = new(1 / KilopascalsPerPsi, 0, "psi", "Pounds per square inch (psi)", 2, Tight: false),
+
+        // US gas appliances and meters are rated in cubic feet per hour, and liquid-fuel burners in gallons per hour.
+        [UnitOfMeasure.GasLitresPerSecond] = new(SecondsPerHour / (CubicMetresPerCubicFoot * 1000), 0, "ft³/h", "Cubic feet per hour (ft³/h)", 1, Tight: false),
+        [UnitOfMeasure.LiquidLitresPerSecond] = new(SecondsPerHour / LitresPerUsGallon, 0, "gal/h", "US gallons per hour (gal/h)", 1, Tight: false),
     };
 
     // The metric units the site has always written without a space before the label ("14.0°C", "12mm").
@@ -97,6 +111,16 @@ public sealed class UnitFormatter : IUnitFormatter
         var offset = measure.Kind == MeasureKind.Level ? conversion.LevelOffset : 0;
 
         return (measure.Value * conversion.Scale) + offset;
+    }
+
+    public double FromDisplay(double value, UnitOfMeasure unit)
+    {
+        if (!TryGetConversion(unit, out var conversion))
+        {
+            return value;
+        }
+
+        return (value - conversion.LevelOffset) / conversion.Scale;
     }
 
     public string ShortLabel(UnitOfMeasure unit)

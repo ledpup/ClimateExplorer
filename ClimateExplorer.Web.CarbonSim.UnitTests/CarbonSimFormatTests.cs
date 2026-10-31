@@ -1,7 +1,9 @@
 namespace ClimateExplorer.Web.CarbonSim.UnitTests;
 
 using ClimateExplorer.Web.Client.CarbonSim;
+using ClimateExplorer.Web.Client.Units;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static ClimateExplorer.Core.Enums;
 
 [TestClass]
 public class CarbonSimFormatTests
@@ -12,9 +14,45 @@ public class CarbonSimFormatTests
     [DataRow(0.00019, "0.000190")]
     [DataRow(-3.21, "-3.21")]
     [DataRow(0.0, "0")]
+    [DataRow(1e9, "1,000,000,000")]
     public void Number_Value_AtLeastThreeSignificantFigures(double value, string expected)
     {
         Assert.AreEqual(expected, CarbonSimFormat.Number(value));
+    }
+
+    [TestMethod]
+    [DataRow(1e12, "1.00 × 10¹²")]
+    [DataRow(1.7731e20, "1.77 × 10²⁰")]
+    [DataRow(9.996e14, "1.00 × 10¹⁵")]
+    [DataRow(-2.5e13, "-2.50 × 10¹³")]
+    public void Number_TrillionOrMore_PowerOfTen(double value, string expected)
+    {
+        Assert.AreEqual(expected, CarbonSimFormat.Number(value));
+    }
+
+    [TestMethod]
+    [DataRow(UnitSystem.Metric, 250.0, "250 m³")]
+    [DataRow(UnitSystem.UsCustomary, 250.0, "8,829 ft³")]
+    public void Quantity_CubicMetres_InTheReadersUnits(UnitSystem system, double cubicMetres, string expected)
+    {
+        Assert.AreEqual(expected, CarbonSimFormat.Quantity(UnitFormatter.For(system), Measure.Level(cubicMetres, UnitOfMeasure.CubicMetres)));
+    }
+
+    [TestMethod]
+    public void Quantity_TightUnit_NoSpaceBeforeLabel()
+    {
+        Assert.AreEqual("20.0°C", CarbonSimFormat.Quantity(UnitFormatter.Metric, Measure.Level(20, UnitOfMeasure.DegreesCelsius)));
+    }
+
+    [TestMethod]
+    [DataRow(UnitSystem.Metric, 100.0, "100 L/s")]
+    [DataRow(UnitSystem.Metric, 0.07, "0.07 L/s")]
+    [DataRow(UnitSystem.UsCustomary, 100.0, "13,000 ft³/h")]
+    [DataRow(UnitSystem.UsCustomary, 0.07, "8.9 ft³/h")]
+    [DataRow(UnitSystem.UsCustomary, 0.0, "0 ft³/h")]
+    public void Approximate_GasFlow_TwoSignificantFiguresInTheReadersUnits(UnitSystem system, double litresPerSecond, string expected)
+    {
+        Assert.AreEqual(expected, CarbonSimFormat.Approximate(UnitFormatter.For(system), Measure.Level(litresPerSecond, UnitOfMeasure.GasLitresPerSecond)));
     }
 
     [TestMethod]
@@ -51,6 +89,8 @@ public class CarbonSimFormatTests
     [DataRow(725.0, "12 min 05 s")]
     [DataRow(11220.0, "3 h 07 min")]
     [DataRow(187200.0, "2 d 4 h")]
+    [DataRow(31557600.0 * 12 + (86400 * 45) + 3600, "12 yr 45 d")]
+    [DataRow(31557600.0 * 3934.6, "3,934 yr")]
     public void Duration_Seconds_InLargestUsefulUnits(double seconds, string expected)
     {
         Assert.AreEqual(expected, CarbonSimFormat.Duration(seconds));

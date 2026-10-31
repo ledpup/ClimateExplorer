@@ -68,9 +68,13 @@
     }
 }
 
-/* Mobile: the panels stack in the page and don't move */
+/* Mobile: the panels stack in the page and don't move. Like a Collapsible, each runs over the layout's gutter to the
+   edges of the screen, with only its top and bottom borders. */
 @media (max-width: 767px) {
     .floating-panel {
+        margin-inline: -1rem;
+        border-inline: none;
+        border-radius: 0;
         translate: none !important;
     }
 

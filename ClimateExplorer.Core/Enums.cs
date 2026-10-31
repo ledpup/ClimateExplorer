@@ -76,6 +76,15 @@ public static class Enums
         Odgi,
         Ph,
         MetresWaterEquivalent,
+        Kilograms,
+        CubicMetres,
+        Kilopascals,
+
+        // A gas volume at 0 °C and 101.325 kPa per second. Shown in US customary as cubic feet per hour.
+        GasLitresPerSecond,
+
+        // Shown in US customary as US gallons per hour.
+        LiquidLitresPerSecond,
     }
 
     public enum SeriesAggregationOptions
@@ -192,6 +201,11 @@ public static class Enums
             UnitOfMeasure.Odgi => "ODGI",
             UnitOfMeasure.Ph => "pH",
             UnitOfMeasure.MetresWaterEquivalent => "m w.e.",
+            UnitOfMeasure.Kilograms => "kg",
+            UnitOfMeasure.CubicMetres => "m³",
+            UnitOfMeasure.Kilopascals => "kPa",
+            UnitOfMeasure.GasLitresPerSecond => "L/s",
+            UnitOfMeasure.LiquidLitresPerSecond => "L/s",
             _ => throw new NotImplementedException(),
         };
     }
@@ -207,6 +221,8 @@ public static class Enums
             UnitOfMeasure.MillionSqKm => 1,
             UnitOfMeasure.SqKm => 0,
             UnitOfMeasure.MetresWaterEquivalent => 1,
+            UnitOfMeasure.CubicMetres => 0,
+            UnitOfMeasure.Kilopascals => 2,
             _ => 1,
         };
     }
@@ -232,6 +248,11 @@ public static class Enums
             UnitOfMeasure.Odgi => "Ozone Depleting Gas Index",
             UnitOfMeasure.Ph => "pH",
             UnitOfMeasure.MetresWaterEquivalent => "Metres water equivalent (m w.e.)",
+            UnitOfMeasure.Kilograms => "Kilograms (kg)",
+            UnitOfMeasure.CubicMetres => "Cubic metres (m³)",
+            UnitOfMeasure.Kilopascals => "Kilopascals (kPa)",
+            UnitOfMeasure.GasLitresPerSecond => "Litres per second (L/s)",
+            UnitOfMeasure.LiquidLitresPerSecond => "Litres per second (L/s)",
             _ => throw new NotImplementedException(),
         };
     }
