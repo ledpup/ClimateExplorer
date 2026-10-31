@@ -60,6 +60,8 @@ Chart:
 - Unit test names use `MethodName_StateUnderTest_ExpectedBehavior`
 - No `async void`; event handlers return `Task`
 - Use collection expressions (`List<T> x = []`), and return tuples rather than use `out` parameters
+- NuGet versions are managed centrally in `Directory.Packages.props`: a `<PackageReference>` has no `Version`; add or
+  update the `<PackageVersion>` there
 
 ## Blazor
 

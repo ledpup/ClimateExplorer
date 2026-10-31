@@ -12,6 +12,7 @@
     <File Path=".github/workflows/master_api-climateexplorer.yml" />
     <File Path=".github/workflows/master_web-climateexplorer.yml" />
     <File Path=".globalconfig" />
+    <File Path="Directory.Packages.props" />
     <File Path="README.md" />
     <File Path="YearlyDataUpdateProcess.md" />
   </Folder>
