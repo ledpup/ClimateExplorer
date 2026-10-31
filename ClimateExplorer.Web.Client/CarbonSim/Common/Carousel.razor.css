@@ -138,12 +138,13 @@
         --carousel-gap: 1rem;
     }
 
+    /* The layout's gutter is the whitespace either side, so the card adds no more than the floating panels do */
     .carousel-card {
-        padding: 4rem 1rem 1rem;
+        padding: 3.75rem 0.5rem 0.5rem;
     }
 
     .carousel-arrow {
-        top: 1rem;
+        top: 0.5rem;
         width: 2.75rem;
         height: 2.75rem;
         border: 1px solid var(--climate-color-control-border);
@@ -156,12 +157,25 @@
 
     .carousel-arrow-left {
         right: auto;
-        left: 0.75rem;
+        left: 0.5rem;
     }
 
     .carousel-arrow-right {
-        right: 0.75rem;
+        right: 0.5rem;
         left: auto;
+    }
+}
+
+/* Mobile: like a Collapsible, the card runs over the layout's gutter to the edges of the screen, with only its top and
+   bottom borders */
+@media (max-width: 767px) {
+    .carousel {
+        margin-inline: -1rem;
+    }
+
+    .carousel-card {
+        border-inline: none;
+        border-radius: 0;
     }
 }
 
