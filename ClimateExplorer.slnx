@@ -12,6 +12,7 @@
     <File Path=".github/workflows/master_api-climateexplorer.yml" />
     <File Path=".github/workflows/master_web-climateexplorer.yml" />
     <File Path=".globalconfig" />
+    <File Path="Directory.Packages.props" />
     <File Path="README.md" />
     <File Path="YearlyDataUpdateProcess.md" />
   </Folder>
@@ -21,6 +22,7 @@
   <Folder Name="/UnitTests/">
     <Project Path="ClimateExplorer.CarbonCycle.UnitTests/ClimateExplorer.CarbonCycle.UnitTests.csproj" />
     <Project Path="ClimateExplorer.Core.UnitTests/ClimateExplorer.Core.UnitTests.csproj" />
+    <Project Path="ClimateExplorer.Web.CarbonSim.UnitTests/ClimateExplorer.Web.CarbonSim.UnitTests.csproj" />
     <Project Path="ClimateExplorer.Web.UnitTests/ClimateExplorer.Web.UnitTests.csproj" />
     <Project Path="ClimateExplorer.WebApi.UnitTests/ClimateExplorer.WebApi.UnitTests.csproj" />
   </Folder>

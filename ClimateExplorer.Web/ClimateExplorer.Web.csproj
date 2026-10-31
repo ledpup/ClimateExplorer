@@ -7,10 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Markdig" Version="1.4.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.13" />
-    <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="10.0.13" />
-    <PackageReference Include="StyleCop.Analyzers.Unstable" Version="1.2.0.556">
+    <PackageReference Include="Markdig" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
+    <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" />
+    <PackageReference Include="StyleCop.Analyzers.Unstable">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

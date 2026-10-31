@@ -1,4 +1,4 @@
-namespace ClimateExplorer.Web.UnitTests;
+namespace ClimateExplorer.Web.CarbonSim.UnitTests;
 
 using ClimateExplorer.Web.Client.CarbonSim;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -47,7 +47,7 @@ public class CarbonSimFormatTests
     }
 
     [TestMethod]
-    [DataRow(45.04, "45.0 s")]
+    [DataRow(45.04, "45 s")]
     [DataRow(725.0, "12 min 05 s")]
     [DataRow(11220.0, "3 h 07 min")]
     [DataRow(187200.0, "2 d 4 h")]

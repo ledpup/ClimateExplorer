@@ -3,8 +3,6 @@ namespace ClimateExplorer.Data.Downloading.Transformers;
 using System.Globalization;
 using System.IO.Compression;
 using CsvHelper;
-using CsvHelper.Configuration;
-using CsvHelper.Configuration.Attributes;
 
 /// <summary>
 /// WGMS's own glacier-list categories - see <see href="https://wgms.ch/products_ref_glaciers/"/>. WGMS's own
@@ -48,7 +46,7 @@ public enum WgmsAveragingStage
 /// </summary>
 /// <param name="filter">Which WGMS glacier category qualifies a glacier to contribute.</param>
 /// <param name="averagingStage">How qualifying glaciers' raw annual balances are combined per year.</param>
-public sealed class WgmsGlacierMassBalanceSourceFileTransformer(WgmsGlacierFilter filter, WgmsAveragingStage averagingStage) : IDataSetSourceFileTransformer
+public sealed partial class WgmsGlacierMassBalanceSourceFileTransformer(WgmsGlacierFilter filter, WgmsAveragingStage averagingStage) : IDataSetSourceFileTransformer
 {
     // Not part of either WGMS rule itself - suppresses years (mostly pre-1946) where only a handful of
     // glaciers have records, which would otherwise let one or two glaciers' values swing the "global"
@@ -142,11 +140,7 @@ public sealed class WgmsGlacierMassBalanceSourceFileTransformer(WgmsGlacierFilte
 
         using var entryStream = entry.Open();
         using var reader = new StreamReader(entryStream);
-        var csvConfiguration = new CsvConfiguration(CultureInfo.InvariantCulture)
-        {
-            MissingFieldFound = null,
-        };
-        using var csv = new CsvReader(reader, csvConfiguration);
+        using var csv = CsvReader.Create(reader, new CsvReaderOptions { Separator = ',' });
 
         var records = new List<AnnualBalanceRecord>();
         await foreach (var row in csv.GetRecordsAsync<MassBalanceRow>(cancellationToken))
@@ -176,11 +170,7 @@ public sealed class WgmsGlacierMassBalanceSourceFileTransformer(WgmsGlacierFilte
 
         using var entryStream = entry.Open();
         using var reader = new StreamReader(entryStream);
-        var csvConfiguration = new CsvConfiguration(CultureInfo.InvariantCulture)
-        {
-            MissingFieldFound = null,
-        };
-        using var csv = new CsvReader(reader, csvConfiguration);
+        using var csv = CsvReader.Create(reader, new CsvReaderOptions { Separator = ',' });
 
         var regionByGlacierId = new Dictionary<string, string>();
         await foreach (var row in csv.GetRecordsAsync<GlacierRegionRow>(cancellationToken))
@@ -207,24 +197,26 @@ public sealed class WgmsGlacierMassBalanceSourceFileTransformer(WgmsGlacierFilte
 
     private sealed record AnnualBalanceRecord(string GlacierId, int Year, double AnnualBalance);
 
-    private sealed class MassBalanceRow
+    [CsvRecord]
+    internal sealed partial class MassBalanceRow
     {
-        [Name("glacier_id")]
+        [CsvColumn("glacier_id")]
         public string? GlacierId { get; set; }
 
-        [Name("year")]
+        [CsvColumn("year")]
         public string? Year { get; set; }
 
-        [Name("annual_balance")]
+        [CsvColumn("annual_balance")]
         public string? AnnualBalance { get; set; }
     }
 
-    private sealed class GlacierRegionRow
+    [CsvRecord]
+    internal sealed partial class GlacierRegionRow
     {
-        [Name("id")]
+        [CsvColumn("id")]
         public string? GlacierId { get; set; }
 
-        [Name("gtng_region")]
+        [CsvColumn("gtng_region")]
         public string? Region { get; set; }
     }
 }

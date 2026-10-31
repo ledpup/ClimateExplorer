@@ -1,8 +1,6 @@
 namespace ClimateExplorer.Data.Ghcnd;
 
-using System.Globalization;
 using CsvHelper;
-using CsvHelper.Configuration;
 
 public static class GhcndCsvReader
 {
@@ -14,13 +12,11 @@ public static class GhcndCsvReader
 
     public static List<GhcndInputRow> ReadRows(TextReader reader)
     {
-        var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+        using var csv = CsvReader.Create(reader, new CsvReaderOptions
         {
-            HeaderValidated = null,
-            MissingFieldFound = null,
-        };
-
-        using var csv = new CsvReader(reader, config);
+            Separator = ',',
+            MalformedData = CsvMalformedDataHandling.Throw,
+        });
         var records = csv.GetRecords<GhcndInputRow>().ToList();
 
         records.ForEach(x =>

@@ -90,9 +90,10 @@ public sealed class AcornSatClimateRecordServiceTests
         Assert.AreNotEqual("cached-signature", outcome.Extension.ComparisonSignature);
         if (outcome.Extension.Decision is AcornSatExtensionDecision.Eligible or AcornSatExtensionDecision.AdjustmentsDetected)
         {
-            // The packaged BOM/023000.zip's TempMax runs to 2026-04-13.
+            // The packaged BOM/023000.zip's TempMax ran to 2026-04-13 when this was written; a data refresh only extends it.
             var stored = await extensionCache.GetAsync(AdelaideLocationId, DataType.TempMax);
-            Assert.AreEqual(new DateOnly(2026, 4, 13), stored!.LatestCdoSourceRecordDate);
+            Assert.IsNotNull(stored!.LatestCdoSourceRecordDate);
+            Assert.IsGreaterThanOrEqualTo(new DateOnly(2026, 4, 13), stored.LatestCdoSourceRecordDate.Value);
         }
     }
 

@@ -1,35 +1,36 @@
-﻿using CsvHelper.Configuration.Attributes;
+﻿using CsvHelper;
 
 namespace ClimateExplorer.Data.Ghcnd;
 
-public class GhcndInputRow
+[CsvRecord]
+public partial class GhcndInputRow
 {
-    [Name("STATION")]
+    [CsvColumn("STATION", Optional = true)]
     public string? Station { get; set; }
 
-    [Name("DATE")]
+    [CsvColumn("DATE", Optional = true)]
     public string? Date { get; set; }
 
-    [Name("PRCP")]
+    [CsvColumn("PRCP", Optional = true)]
     public string? Prcp { get; set; }
 
-    [Name("PRCP_ATTRIBUTES")]
+    [CsvColumn("PRCP_ATTRIBUTES", Optional = true)]
     public string? PrcpAttributes { get; set; }
 
     public bool PrcpQflag => HasQflag(PrcpAttributes);
 
-    [Name("TMAX")]
+    [CsvColumn("TMAX", Optional = true)]
     public string? Tmax { get; set; }
 
-    [Name("TMAX_ATTRIBUTES")]
+    [CsvColumn("TMAX_ATTRIBUTES", Optional = true)]
     public string? TmaxAttributes { get; set; }
 
     public bool TmaxQflag => HasQflag(TmaxAttributes);
 
-    [Name("TMIN")]
+    [CsvColumn("TMIN", Optional = true)]
     public string? Tmin { get; set; }
 
-    [Name("TMIN_ATTRIBUTES")]
+    [CsvColumn("TMIN_ATTRIBUTES", Optional = true)]
     public string? TminAttributes { get; set; }
     public bool TminQflag => HasQflag(TminAttributes);
 

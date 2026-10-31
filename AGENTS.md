@@ -4,7 +4,8 @@
 - Do not run the website, Playwright, Lighthouse, or browser tests. This includes starting
   `dotnet run`/dev servers for the Web or WebApi projects for manual or automated UI verification.
   Verify with `dotnet build` and the unit test projects only (`ClimateExplorer.Core.UnitTests`,
-  `ClimateExplorer.WebApi.UnitTests`, `ClimateExplorer.Web.UnitTests`, `ClimateExplorer.CarbonCycle.UnitTests`).
+  `ClimateExplorer.WebApi.UnitTests`, `ClimateExplorer.Web.UnitTests`, `ClimateExplorer.CarbonCycle.UnitTests`,
+  `ClimateExplorer.Web.CarbonSim.UnitTests`).
 - If a build fails because IIS Express (or another dev server the user started) has locked files in a `bin`
   folder, you may stop that process and rebuild.
 - Don't run `ClimateExplorer.DataPipeline` unless asked. It rebuilds `ClimateExplorer.WebApi/Datasets` from
@@ -26,7 +27,7 @@
 | `ClimateExplorer.DataPipeline` | Packages `SourceData` into `WebApi/Datasets` (see above) |
 | `ClimateExplorer.Data.*` | Downloaders and importers (BOM, GHCNd, GHCNm, misc global series) |
 | `ClimateExplorer.CachingTool` | Pre-warms the API cache |
-| `ClimateExplorer.*.UnitTests` | MSTest. `Web.UnitTests` also scans source (unit text, CSS class usage) |
+| `ClimateExplorer.*.UnitTests` | MSTest. `Web.UnitTests` also scans source (unit text, CSS class usage); `Web.CarbonSim.UnitTests` tests the Carbon Cycle page's UI code in `Web.Client/CarbonSim` |
 | `ClimateExplorer.Web.UiTests` | Playwright tests (don't run) |
 
 ## Front end
@@ -59,6 +60,8 @@ Chart:
 - Unit test names use `MethodName_StateUnderTest_ExpectedBehavior`
 - No `async void`; event handlers return `Task`
 - Use collection expressions (`List<T> x = []`), and return tuples rather than use `out` parameters
+- NuGet versions are managed centrally in `Directory.Packages.props`: a `<PackageReference>` has no `Version`; add or
+  update the `<PackageVersion>` there
 
 ## Blazor
 
