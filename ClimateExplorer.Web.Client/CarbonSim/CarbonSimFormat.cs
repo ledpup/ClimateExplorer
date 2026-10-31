@@ -58,7 +58,7 @@ public static class CarbonSimFormat
     {
         if (seconds < 60)
         {
-            return seconds.ToString("0.0", CultureInfo.InvariantCulture) + " s";
+            return seconds.ToString("0", CultureInfo.InvariantCulture) + " s";
         }
 
         var total = (long)Math.Floor(seconds);
