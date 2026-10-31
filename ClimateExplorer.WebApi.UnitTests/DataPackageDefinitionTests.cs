@@ -92,7 +92,7 @@ public sealed class DataPackageDefinitionTests
         var directory = new DirectoryInfo(AppContext.BaseDirectory);
         while (directory != null)
         {
-            if (File.Exists(Path.Combine(directory.FullName, "ClimateExplorer.sln")))
+            if (File.Exists(Path.Combine(directory.FullName, "ClimateExplorer.slnx")))
             {
                 return directory.FullName;
             }

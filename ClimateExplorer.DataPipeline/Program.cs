@@ -14,7 +14,7 @@ static string GetSolutionRoot()
 
     while (directory is not null)
     {
-        if (File.Exists(Path.Combine(directory.FullName, "ClimateExplorer.sln")))
+        if (File.Exists(Path.Combine(directory.FullName, "ClimateExplorer.slnx")))
         {
             return directory.FullName;
         }
@@ -22,5 +22,5 @@ static string GetSolutionRoot()
         directory = directory.Parent;
     }
 
-    throw new DirectoryNotFoundException("Could not find ClimateExplorer.sln from the application directory.");
+    throw new DirectoryNotFoundException("Could not find ClimateExplorer.slnx from the application directory.");
 }
