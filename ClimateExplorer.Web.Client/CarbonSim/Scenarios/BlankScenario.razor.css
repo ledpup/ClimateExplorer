@@ -1,0 +1,10 @@
+h2 {
+    margin: 0 0 0.5rem;
+    color: var(--climate-color-control-text);
+    font-size: 1.35rem;
+}
+
+.blank {
+    margin: 0;
+    color: var(--climate-color-muted-text);
+}

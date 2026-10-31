@@ -1,29 +1,23 @@
 namespace ClimateExplorer.Web.Client.CarbonSim;
 
 using System.Diagnostics;
-using System.Globalization;
 using ClimateExplorer.CarbonCycle.Simulation;
+using ClimateExplorer.Web.Client.CarbonSim.Common;
 using ClimateExplorer.Web.Client.CarbonSim.Components;
+using ClimateExplorer.Web.Client.CarbonSim.Scenarios;
 using ClimateExplorer.Web.Client.Units;
 using Microsoft.AspNetCore.Components;
-using static ClimateExplorer.Core.Enums;
 
 /// <summary>
-/// The Carbon-cycle simulator: one scenario so far, methane burning in a sealed house (simulation plan §3.1). The
-/// fossil fuels tab sets the burner; the clock runs the simulation, and the floating panels show the house's air.
+/// The Carbon-cycle simulator. The fossil fuels tab holds a carousel of scenarios; so far the only real one is
+/// methane burning in a sealed house (simulation plan §3.1). The active scenario's slide has its inputs; the clock
+/// runs the simulation, and the floating panels show the house's air.
 /// </summary>
 public partial class CarbonSimulator : IAsyncDisposable
 {
     private const string TabsId = "carbon-sim-tabs";
     private const string FossilTab = "fossil";
-    private const string BurnerRateId = "carbon-sim-burner-rate";
     private const string SpeedId = "carbon-sim-speed";
-    private const UnitOfMeasure BurnerRateUnit = UnitOfMeasure.GasLitresPerSecond;
-
-    // In litres per second
-    private const double MaxBurnerRate = 10_000;
-    private const double HouseFireRate = 100;
-    private const double HobRate = 0.07;
 
     // A longer gap between ticks, such as while the browser tab is in the background, isn't caught up
     private const double MaxTickSeconds = 0.5;
@@ -42,15 +36,19 @@ public partial class CarbonSimulator : IAsyncDisposable
         ("#008300", true),
     ];
 
-    private SealedHouse house = new(SealedHouseSettings.Default);
+    // The slides beside the active one show their scenario's own inputs at time 0
+    private readonly Dictionary<Scenario, (SealedHouse House, HouseState Start)> previews = [];
+
+    private int scenarioIndex;
+    private Scenario scenario = ScenarioCatalog.All[0];
+    private ScenarioInputs inputs = ScenarioCatalog.All[0].Inputs;
+    private bool inputInvalid;
+    private SealedHouse house = HouseFor(ScenarioCatalog.All[0], ScenarioCatalog.All[0].Inputs);
     private HouseState start = default!;
     private HouseState state = default!;
     private string selectedTab = FossilTab;
-    private string? burnerRateText;
-    private string? burnerRateError;
     private int secondsPerSecond = SimulationSpeed.All[0].SecondsPerSecond;
     private string? announcement;
-    private IUnitFormatter? burnerRateUnits;
     private GasChart? gasChart;
     private CancellationTokenSource? runCancellation;
     private Task? runTask;
@@ -59,14 +57,6 @@ public partial class CarbonSimulator : IAsyncDisposable
     public IUnitFormatter Units { get; set; } = UnitFormatter.Metric;
 
     private bool IsRunning => runCancellation is not null;
-
-    private string HouseVolumeText => CarbonSimFormat.Quantity(Units, Measure.Level(house.Settings.Volume, UnitOfMeasure.CubicMetres));
-
-    private string StartTemperatureText => Units.Format(Measure.Level(house.Settings.StartTemperature - 273.15, UnitOfMeasure.DegreesCelsius));
-
-    private string HouseFireRateText => CarbonSimFormat.Approximate(Units, Measure.Level(HouseFireRate, BurnerRateUnit));
-
-    private string HobRateText => CarbonSimFormat.Approximate(Units, Measure.Level(HobRate, BurnerRateUnit));
 
     private IReadOnlyList<GasChartSeries> ChartSeries =>
         state.Gases
@@ -84,26 +74,78 @@ public partial class CarbonSimulator : IAsyncDisposable
         state = start;
     }
 
-    // The burner rate is typed in the reader's units, so a change of units rewrites it from the rate in use. That
-    // also drops any invalid text, which was typed in the old units.
-    protected override void OnParametersSet()
-    {
-        if (ReferenceEquals(Units, burnerRateUnits))
-        {
-            return;
-        }
-
-        burnerRateUnits = Units;
-        burnerRateText = CarbonSimFormat.Number(Units.ToDisplay(Measure.Level(house.Settings.BurnerRate * 1000, BurnerRateUnit)));
-        burnerRateError = null;
-    }
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             await ResetChartAsync();
         }
+    }
+
+    // Inputs without fossil fuels leave the burner off
+    private static SealedHouse HouseFor(Scenario scenario, ScenarioInputs inputs) =>
+        new(scenario.Setting with { BurnerRate = inputs.FossilFuels?.MethaneBurnerRate ?? 0 });
+
+    private Dictionary<string, object> ScenarioParameters(CarouselSlide<Scenario> slide)
+    {
+        if (!slide.IsActive)
+        {
+            var (previewHouse, previewStart) = Preview(slide.Item);
+
+            return new()
+            {
+                [nameof(ScenarioComponent.Scenario)] = slide.Item,
+                [nameof(ScenarioComponent.Inputs)] = slide.Item.Inputs,
+                [nameof(ScenarioComponent.House)] = previewHouse,
+                [nameof(ScenarioComponent.State)] = previewStart,
+            };
+        }
+
+        return new()
+        {
+            [nameof(ScenarioComponent.Scenario)] = scenario,
+            [nameof(ScenarioComponent.Inputs)] = inputs,
+            [nameof(ScenarioComponent.InputsChanged)] = EventCallback.Factory.Create<ScenarioInputs>(this, OnInputsChangedAsync),
+            [nameof(ScenarioComponent.InputInvalid)] = EventCallback.Factory.Create(this, OnInputInvalidAsync),
+            [nameof(ScenarioComponent.House)] = house,
+            [nameof(ScenarioComponent.State)] = state,
+        };
+    }
+
+    private (SealedHouse House, HouseState Start) Preview(Scenario item)
+    {
+        if (!previews.TryGetValue(item, out var preview))
+        {
+            var previewHouse = HouseFor(item, item.Inputs);
+            preview = (previewHouse, previewHouse.Start());
+            previews[item] = preview;
+        }
+
+        return preview;
+    }
+
+    // A scenario brings its own inputs (simulation plan §2.4), replacing the reader's, so the run goes back to time 0
+    // and pauses.
+    private async Task OnScenarioChangedAsync(int index)
+    {
+        scenarioIndex = index;
+        scenario = ScenarioCatalog.All[index];
+        await OnInputsChangedAsync(scenario.Inputs);
+    }
+
+    // Changing an input changes the starting events, so the run goes back to time 0 and pauses (simulation plan §5.1).
+    private async Task OnInputsChangedAsync(ScenarioInputs value)
+    {
+        inputs = value;
+        inputInvalid = false;
+        house = HouseFor(scenario, inputs);
+        await RestartAsync();
+    }
+
+    private async Task OnInputInvalidAsync()
+    {
+        inputInvalid = true;
+        await PauseAsync();
     }
 
     private void OnSelectedTabChanged(string name)
@@ -114,29 +156,6 @@ public partial class CarbonSimulator : IAsyncDisposable
     private void OnSpeedChanged(int value)
     {
         secondsPerSecond = value;
-    }
-
-    // Changing the burner changes the starting events, so the run goes back to time 0 and pauses (simulation plan §5.1).
-    private async Task OnBurnerRateChangedAsync(string? text)
-    {
-        burnerRateText = text;
-
-        var parsed = double.TryParse(text, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out var value);
-        var litresPerSecond = Units.FromDisplay(value, BurnerRateUnit);
-
-        if (!parsed
-            || !double.IsFinite(litresPerSecond)
-            || litresPerSecond <= 0
-            || litresPerSecond > MaxBurnerRate)
-        {
-            burnerRateError = $"Enter a rate more than 0 and up to {CarbonSimFormat.Quantity(Units, Measure.Level(MaxBurnerRate, BurnerRateUnit))}.";
-            await PauseAsync();
-            return;
-        }
-
-        burnerRateError = null;
-        house = new SealedHouse(SealedHouseSettings.Default with { BurnerRate = litresPerSecond / 1000 });
-        await RestartAsync();
     }
 
     private async Task TogglePlayAsync()

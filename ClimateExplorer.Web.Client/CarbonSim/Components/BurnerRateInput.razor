@@ -1,0 +1,9 @@
+<div class="field">
+    <label for="@id">Methane (@Units.ShortLabel(Unit))</label>
+    <TextInput Id="@id"
+               Value="@text"
+               ValueChanged="OnTextChangedAsync"
+               Invalid="@(error is not null)"
+               ErrorMessage="@error" />
+    <span class="hint">@HouseFireRateText is a house fire; a gas hob burns about @HobRateText.</span>
+</div>
