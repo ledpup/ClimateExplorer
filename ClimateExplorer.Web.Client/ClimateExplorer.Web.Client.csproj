@@ -34,6 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ClimateExplorer.CarbonCycle\ClimateExplorer.CarbonCycle.csproj" />
     <ProjectReference Include="..\ClimateExplorer.Core\ClimateExplorer.Core.csproj" />
     <ProjectReference Include="..\ClimateExplorer.WebApiClient\ClimateExplorer.WebApiClient.csproj" />
   </ItemGroup>

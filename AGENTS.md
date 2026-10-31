@@ -4,7 +4,7 @@
 - Do not run the website, Playwright, Lighthouse, or browser tests. This includes starting
   `dotnet run`/dev servers for the Web or WebApi projects for manual or automated UI verification.
   Verify with `dotnet build` and the unit test projects only (`ClimateExplorer.Core.UnitTests`,
-  `ClimateExplorer.WebApi.UnitTests`, `ClimateExplorer.Web.UnitTests`).
+  `ClimateExplorer.WebApi.UnitTests`, `ClimateExplorer.Web.UnitTests`, `ClimateExplorer.CarbonCycle.UnitTests`).
 - If a build fails because IIS Express (or another dev server the user started) has locked files in a `bin`
   folder, you may stop that process and rebuild.
 - Don't run `ClimateExplorer.DataPipeline` unless asked. It rebuilds `ClimateExplorer.WebApi/Datasets` from
@@ -21,6 +21,7 @@
 | `ClimateExplorer.WebApi` | Minimal API serving datasets, locations, regions and climate records from `Datasets`; file-backed cache |
 | `ClimateExplorer.WebApiClient` | `IDataService`/`DataService`, the typed HTTP client; caches responses in `IMemoryCache` |
 | `ClimateExplorer.Core` | Domain models, enums, data preparation (binning, aggregation), stats. No UI dependencies |
+| `ClimateExplorer.CarbonCycle` | Carbon Cycle page engine: chemistry catalog, fuels, combustion and calcination. Standard library only; runs in WebAssembly |
 | `ClimateExplorer.SourceData` | Raw source data files |
 | `ClimateExplorer.DataPipeline` | Packages `SourceData` into `WebApi/Datasets` (see above) |
 | `ClimateExplorer.Data.*` | Downloaders and importers (BOM, GHCNd, GHCNm, misc global series) |

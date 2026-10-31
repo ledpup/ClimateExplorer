@@ -1,0 +1,16 @@
+<section class="@CssClass" aria-labelledby="@titleId" @ref="panel">
+    <header class="floating-panel-header" @ref="header">
+        <h2 id="@titleId" class="floating-panel-title">@Title</h2>
+        <button type="button"
+                class="floating-panel-handle"
+                aria-label="Move the @Title panel"
+                aria-describedby="@HintId"
+                data-tooltip="Drag to move, or use the arrow keys">
+            <i class="fas fa-up-down-left-right" aria-hidden="true"></i>
+        </button>
+        <span id="@HintId" class="visually-hidden">Use the arrow keys to move it. Home puts it back.</span>
+    </header>
+    <div class="floating-panel-body">
+        @ChildContent
+    </div>
+</section>

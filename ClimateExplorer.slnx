@@ -1,0 +1,36 @@
+<Solution>
+  <Folder Name="/Data/">
+    <Project Path="ClimateExplorer.Data.Bom.CreateTempMean/ClimateExplorer.Data.Bom.CreateTempMean.csproj" />
+    <Project Path="ClimateExplorer.Data.Bom/ClimateExplorer.Data.Bom.csproj" />
+    <Project Path="ClimateExplorer.Data.Downloading/ClimateExplorer.Data.Downloading.csproj" />
+    <Project Path="ClimateExplorer.Data.Ghcnd/ClimateExplorer.Data.Ghcnd.csproj" />
+    <Project Path="ClimateExplorer.Data.Ghcnm.Precipitation/ClimateExplorer.Data.Ghcnm.Precipitation.csproj" />
+    <Project Path="ClimateExplorer.Data.Ghcnm/ClimateExplorer.Data.Ghcnm.csproj" />
+    <Project Path="ClimateExplorer.Data.Misc/ClimateExplorer.Data.Misc.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".github/workflows/master_api-climateexplorer.yml" />
+    <File Path=".github/workflows/master_web-climateexplorer.yml" />
+    <File Path=".globalconfig" />
+    <File Path="README.md" />
+    <File Path="YearlyDataUpdateProcess.md" />
+  </Folder>
+  <Folder Name="/UiTests/">
+    <Project Path="ClimateExplorer.Web.UiTests/ClimateExplorer.Web.UiTests.csproj" />
+  </Folder>
+  <Folder Name="/UnitTests/">
+    <Project Path="ClimateExplorer.CarbonCycle.UnitTests/ClimateExplorer.CarbonCycle.UnitTests.csproj" />
+    <Project Path="ClimateExplorer.Core.UnitTests/ClimateExplorer.Core.UnitTests.csproj" />
+    <Project Path="ClimateExplorer.Web.UnitTests/ClimateExplorer.Web.UnitTests.csproj" />
+    <Project Path="ClimateExplorer.WebApi.UnitTests/ClimateExplorer.WebApi.UnitTests.csproj" />
+  </Folder>
+  <Project Path="ClimateExplorer.CachingTool/ClimateExplorer.CachingTool.csproj" />
+  <Project Path="ClimateExplorer.CarbonCycle/ClimateExplorer.CarbonCycle.csproj" />
+  <Project Path="ClimateExplorer.Core/ClimateExplorer.Core.csproj" />
+  <Project Path="ClimateExplorer.DataPipeline/ClimateExplorer.DataPipeline.csproj" />
+  <Project Path="ClimateExplorer.SourceData/ClimateExplorer.SourceData.csproj" />
+  <Project Path="ClimateExplorer.Web.Client/ClimateExplorer.Web.Client.csproj" />
+  <Project Path="ClimateExplorer.Web/ClimateExplorer.Web.csproj" />
+  <Project Path="ClimateExplorer.WebApi/ClimateExplorer.WebApi.csproj" />
+  <Project Path="ClimateExplorer.WebApiClient/ClimateExplorer.WebApiClient.csproj" />
+</Solution>

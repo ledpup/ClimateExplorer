@@ -1,0 +1,76 @@
+@page "/carbon-sim"
+@using ClimateExplorer.Web.Client.CarbonSim.Common
+@using ClimateExplorer.Web.Client.CarbonSim.Components
+
+<PageTitle>ClimateExplorer - Carbon-cycle simulator</PageTitle>
+
+<HeadContent>
+    <meta name="description" content="Burn methane in a sealed house and watch the air change." />
+</HeadContent>
+
+<div class="carbon-sim">
+    <h1>Carbon-cycle simulator</h1>
+
+    <Tabs Id="@TabsId" AriaLabel="Inputs" SelectedTab="@selectedTab" SelectedTabChanged="OnSelectedTabChanged">
+        <Tab Name="@FossilTab">Fossil fuels and limestone</Tab>
+        <Tab Name="land" Disabled="true">Land and agriculture</Tab>
+        <Tab Name="waste" Disabled="true">Waste and industrial gases</Tab>
+    </Tabs>
+
+    <div class="tab-panel" role="tabpanel" aria-labelledby="@Tabs.IdFor(TabsId, FossilTab)">
+        <div class="scenario">
+            <div class="scenario-text">
+                <h2>Methane burning in a sealed house</h2>
+                <p>
+                    A gas burner runs in a sealed @HouseVolumeText m³ house with no windows and no sunlight. The house
+                    starts at @StartTemperatureText, the same as outside, so any change in temperature comes from
+                    the flame. The burner takes its oxygen from the house's air and stops when the oxygen falls
+                    below @CarbonSimFormat.Share(house.Settings.OxygenCutOff).
+                </p>
+                <p class="note">
+                    To keep the pressure steady, a vent lets out nitrogen as the flame adds gas or warms the air.
+                    Nitrogen takes no part in burning and makes up most of the air, so letting
+                    only nitrogen out keeps the chemistry simple and stops the pressure building until the house
+                    bursts.
+                </p>
+                <div class="field">
+                    <label for="@BurnerRateId">Methane burned (litres per second)</label>
+                    <TextInput Id="@BurnerRateId"
+                               Value="@burnerRateText"
+                               ValueChanged="OnBurnerRateChangedAsync"
+                               Invalid="@(burnerRateError is not null)"
+                               ErrorMessage="@burnerRateError" />
+                    <span class="hint">100 L/s is a house fire; a gas hob burns about 0.07 L/s.</span>
+                </div>
+            </div>
+            <ReactionSummary State="@state" Reaction="@house.Reaction" />
+        </div>
+    </div>
+
+    <div class="clock" role="group" aria-label="Simulation clock">
+        <Button Icon="@(IsRunning ? "fas fa-pause" : "fas fa-play")"
+                Text="@(IsRunning ? "Pause" : "Play")"
+                Disabled="@(burnerRateError is not null)"
+                OnClick="TogglePlayAsync" />
+        <Button Icon="fas fa-rotate-left" Text="Restart" OnClick="RestartAsync" />
+        <label for="@SpeedId" class="speed-label">Speed</label>
+        <Select TValue="int" Id="@SpeedId" Value="@secondsPerSecond" ValueChanged="OnSpeedChanged">
+            @foreach (var speed in SimulationSpeed.All)
+            {
+                <SelectItem TValue="int" Value="@speed.SecondsPerSecond">@speed.Label</SelectItem>
+            }
+        </Select>
+        <span class="clock-time" aria-live="off">@CarbonSimFormat.Duration(state.Time)</span>
+    </div>
+
+    <div class="panels">
+        <FloatingPanel Title="Gases in the house" Class="gases-panel">
+            <GasTable State="@state" Start="@start" />
+        </FloatingPanel>
+        <FloatingPanel Title="Gases over time" Class="chart-panel">
+            <GasChart @ref="gasChart" Series="@ChartSeries" AriaLabel="Line chart of each gas's share of the air in the house over time" />
+        </FloatingPanel>
+    </div>
+
+    <div class="visually-hidden" aria-live="polite">@announcement</div>
+</div>
