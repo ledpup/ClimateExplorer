@@ -1,12 +1,13 @@
-﻿using CsvHelper.Configuration.Attributes;
+﻿using CsvHelper;
 
 namespace ClimateExplorer.Data.Ghcnd;
 
-public class OutputRowPrecipitation
+[CsvRecord]
+public partial class OutputRowPrecipitation
 {
-    [Name("Date")]
+    [CsvColumn("Date")]
     public string? Date { get; set; }
 
-    [Name("Precipitation")]
+    [CsvColumn("Precipitation")]
     public int? Precipitation { get; set; }
 }

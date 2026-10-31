@@ -211,16 +211,13 @@ public sealed class WgmsReferenceGlacierMassBalanceTests
     private static Dictionary<int, double> LoadMbRefRegionAverageInMetres()
     {
         var path = Path.Combine(AppContext.BaseDirectory, "GlacierFixtures", "mb_ref.csv");
-        using var reader = new StreamReader(path);
-        using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
-        csv.Read();
-        csv.ReadHeader();
+        using var csv = CsvReader.FromFile(path, new CsvReaderOptions { Separator = ',' });
 
         var result = new Dictionary<int, double>();
         while (csv.Read())
         {
-            var year = csv.GetField<int>("Year");
-            var regionAverageMm = csv.GetField<double>("REF_regionAVG");
+            var year = csv.Parse<int>("Year");
+            var regionAverageMm = csv.Parse<double>("REF_regionAVG");
             result[year] = regionAverageMm / 1000.0;
         }
 
@@ -231,21 +228,18 @@ public sealed class WgmsReferenceGlacierMassBalanceTests
     private static IEnumerable<(string GlacierId, string Name, int Year, double AnnualBalance)> ReadRealMassBalanceRows()
     {
         var path = Path.Combine(AppContext.BaseDirectory, "GlacierFixtures", "mass_balance_all_glaciers.csv");
-        using var reader = new StreamReader(path);
-        using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
-        csv.Read();
-        csv.ReadHeader();
+        using var csv = CsvReader.FromFile(path, new CsvReaderOptions { Separator = ',' });
 
         while (csv.Read())
         {
-            var glacierId = csv.GetField("glacier_id");
-            var annualBalance = csv.GetField("annual_balance");
+            var glacierId = csv.GetString("glacier_id");
+            var annualBalance = csv.GetString("annual_balance");
             if (string.IsNullOrWhiteSpace(glacierId) || string.IsNullOrWhiteSpace(annualBalance))
             {
                 continue;
             }
 
-            yield return (glacierId, csv.GetField("glacier_name")!, csv.GetField<int>("year"), double.Parse(annualBalance, CultureInfo.InvariantCulture));
+            yield return (glacierId, csv.GetString("glacier_name"), csv.Parse<int>("year"), double.Parse(annualBalance, CultureInfo.InvariantCulture));
         }
     }
 

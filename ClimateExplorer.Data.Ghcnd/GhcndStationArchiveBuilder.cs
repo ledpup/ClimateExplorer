@@ -1,6 +1,5 @@
 namespace ClimateExplorer.Data.Ghcnd;
 
-using System.Globalization;
 using System.IO.Compression;
 using CsvHelper;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -71,7 +70,7 @@ public static class GhcndStationArchiveBuilder
         var entry = archive.CreateEntry(entryName, CompressionLevel.Optimal);
         await using var entryStream = entry.Open();
         await using var writer = new StreamWriter(entryStream);
-        await using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
+        await using var csv = CsvWriter.Create(writer);
         await csv.WriteRecordsAsync(records, cancellationToken);
     }
 }

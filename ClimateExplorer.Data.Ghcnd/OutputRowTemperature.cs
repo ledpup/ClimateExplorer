@@ -1,15 +1,16 @@
-﻿using CsvHelper.Configuration.Attributes;
+﻿using CsvHelper;
 
 namespace ClimateExplorer.Data.Ghcnd;
 
-public class OutputRowTemperature
+[CsvRecord]
+public partial class OutputRowTemperature
 {
-    [Name("Date")]
+    [CsvColumn("Date")]
     public string? Date { get; set; }
 
-    [Name("TMax")]
+    [CsvColumn("TMax")]
     public int? Tmax { get; set; }
 
-    [Name("TMin")]
+    [CsvColumn("TMin")]
     public int? Tmin { get; set; }
 }

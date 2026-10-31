@@ -4,7 +4,6 @@ using ClimateExplorer.Data.Ghcnd;
 using CsvHelper;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System.Globalization;
 
 var serviceProvider = new ServiceCollection()
     .AddLogging((loggingBuilder) => loggingBuilder
@@ -63,7 +62,7 @@ Parallel.ForEach(stations, station =>
         ProcessTemperature(station, rowsWithData);
         ProcessPrecipitation(station, rowsWithData);
     }
-    catch (BadDataException ex)
+    catch (CsvFormatException ex)
     {
         logger.LogError($"File for station {station.Id} has bad data. Will skip this station.", ex);
     }
@@ -110,6 +109,6 @@ void WriteCsv<T>(string filePathAndName, IEnumerable<T> records)
 {
     logger.LogInformation($"Writing {filePathAndName}.");
     using var writer = new StreamWriter(filePathAndName);
-    using var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture);
+    using var csvWriter = CsvWriter.Create(writer);
     csvWriter.WriteRecords(records);
 }
