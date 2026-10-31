@@ -30,11 +30,11 @@ public abstract class ScenarioComponent : ComponentBase
 
     [Parameter]
     [EditorRequired]
-    public SealedHouse House { get; set; } = default!;
+    public ISimulation Simulation { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
-    public HouseState State { get; set; } = default!;
+    public SimulationState State { get; set; } = default!;
 
     [CascadingParameter]
     public IUnitFormatter Units { get; set; } = UnitFormatter.Metric;

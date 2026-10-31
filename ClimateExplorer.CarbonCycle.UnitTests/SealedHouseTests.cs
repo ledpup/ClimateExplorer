@@ -31,8 +31,8 @@ public class SealedHouseTests
         var state = house.Advance(start, 120);
 
         // Methane comes in through the burner; N₂ goes out through the vent.
-        Assert.AreEqual(Carbon(start) + state.MethaneBurnt, Carbon(state), 1e-6);
-        Assert.AreEqual(Hydrogen(start) + (4 * state.MethaneBurnt), Hydrogen(state), 1e-6);
+        Assert.AreEqual(Carbon(start) + state.FuelBurnt, Carbon(state), 1e-6);
+        Assert.AreEqual(Hydrogen(start) + (4 * state.FuelBurnt), Hydrogen(state), 1e-6);
         Assert.AreEqual(Oxygen(start), Oxygen(state), 1e-6);
         Assert.AreEqual(start.Nitrogen, state.Nitrogen + state.NitrogenVented, 1e-6);
         Assert.AreEqual(start.Argon, state.Argon, 1e-9);
@@ -45,10 +45,10 @@ public class SealedHouseTests
 
         var state = house.Advance(house.Start(), 30);
 
-        Assert.AreEqual(2 * state.MethaneBurnt, state.OxygenUsed, 1e-9);
-        Assert.AreEqual(state.MethaneBurnt, state.CarbonDioxideMade, 1e-9);
-        Assert.AreEqual(2 * state.MethaneBurnt, state.WaterMade, 1e-9);
-        Assert.AreEqual(802e3 * state.MethaneBurnt, state.HeatReleased, 2e3 * state.MethaneBurnt);
+        Assert.AreEqual(2 * state.FuelBurnt, state.OxygenUsed, 1e-9);
+        Assert.AreEqual(state.FuelBurnt, state.CarbonDioxideMade, 1e-9);
+        Assert.AreEqual(2 * state.FuelBurnt, state.WaterMade, 1e-9);
+        Assert.AreEqual(802e3 * state.FuelBurnt, state.HeatReleased, 2e3 * state.FuelBurnt);
     }
 
     [TestMethod]
@@ -137,9 +137,9 @@ public class SealedHouseTests
         Assert.ThrowsExactly<InputValidationException>(() => new SealedHouse(SealedHouseSettings.Default with { Volume = -1 }));
     }
 
-    private static double Carbon(HouseState state) => state.CarbonDioxide + state.Methane;
+    private static double Carbon(SimulationState state) => state.CarbonDioxide + state.Methane;
 
-    private static double Hydrogen(HouseState state) => (4 * state.Methane) + (2 * (state.WaterVapour + state.LiquidWater));
+    private static double Hydrogen(SimulationState state) => (4 * state.Methane) + (2 * (state.WaterVapour + state.LiquidWater));
 
-    private static double Oxygen(HouseState state) => (2 * state.Oxygen) + (2 * state.CarbonDioxide) + state.WaterVapour + state.LiquidWater;
+    private static double Oxygen(SimulationState state) => (2 * state.Oxygen) + (2 * state.CarbonDioxide) + state.WaterVapour + state.LiquidWater;
 }

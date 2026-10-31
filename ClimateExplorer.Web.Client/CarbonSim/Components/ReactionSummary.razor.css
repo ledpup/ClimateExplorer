@@ -33,13 +33,13 @@ td {
     margin: 0.75rem 0 0;
 }
 
-.totals dt {
+.totals ::deep dt {
     color: var(--climate-color-muted-text);
     font-size: 0.875rem;
     font-weight: 400;
 }
 
-.totals dd {
+.totals ::deep dd {
     margin: 0;
     font-weight: 700;
     font-variant-numeric: tabular-nums;

@@ -12,14 +12,28 @@ public static class CarbonSimFormat
     // Shares below 0.1% (1,000 ppm) are given in parts per million, as trace gases usually are
     private const double PercentFrom = 0.001;
 
+    // From a trillion up, numbers are given as a power of ten: a planet's air is about 10²⁰ mol
+    private const double PowerOfTenFrom = 1e12;
+
+    // Julian year
+    private const long SecondsPerYear = 31_557_600;
+
+    private const string SuperscriptDigits = "⁰¹²³⁴⁵⁶⁷⁸⁹";
+
     /// <summary>
-    /// At least three significant figures, with thousands separators: "2,183", "20.9", "0.000190".
+    /// At least three significant figures, with thousands separators: "2,183", "20.9", "0.000190". From a trillion up,
+    /// three significant figures and a power of ten: "1.78 × 10²⁰".
     /// </summary>
     public static string Number(double value)
     {
         if (value == 0 || !double.IsFinite(value))
         {
             return "0";
+        }
+
+        if (Math.Abs(value) >= PowerOfTenFrom)
+        {
+            return PowerOfTen(value);
         }
 
         return Format(value, Math.Clamp(SignificantFigures - 1 - Magnitude(value), 0, 15));
@@ -79,7 +93,7 @@ public static class CarbonSimFormat
         return (change > 0 ? "+" : string.Empty) + text;
     }
 
-    /// <summary>"45.0 s", "12 min 05 s", "3 h 07 min", "2 d 4 h".</summary>
+    /// <summary>"45.0 s", "12 min 05 s", "3 h 07 min", "2 d 4 h", "12 yr 45 d", "3,934 yr".</summary>
     public static string Duration(double seconds)
     {
         if (seconds < 60)
@@ -93,7 +107,9 @@ public static class CarbonSimFormat
         {
             < 3600 => $"{total / 60} min {total % 60:00} s",
             < 86400 => $"{total / 3600} h {(total % 3600) / 60:00} min",
-            _ => $"{total / 86400} d {(total % 86400) / 3600} h",
+            < SecondsPerYear => $"{total / 86400} d {(total % 86400) / 3600} h",
+            < 100 * SecondsPerYear => $"{total / SecondsPerYear} yr {(total % SecondsPerYear) / 86400} d",
+            _ => (total / SecondsPerYear).ToString("N0", CultureInfo.InvariantCulture) + " yr",
         };
     }
 
@@ -112,6 +128,23 @@ public static class CarbonSimFormat
 
     private static string WithLabel(IUnitFormatter units, UnitOfMeasure unit, string number) =>
         units.IsTight(unit) ? number + units.ShortLabel(unit) : $"{number} {units.ShortLabel(unit)}";
+
+    private static string PowerOfTen(double value)
+    {
+        var exponent = Magnitude(value);
+        var mantissa = Math.Round(value / Math.Pow(10, exponent), SignificantFigures - 1);
+
+        // 9.996 × 10¹² rounds up to 10.0 × 10¹²
+        if (Math.Abs(mantissa) >= 10)
+        {
+            mantissa /= 10;
+            exponent++;
+        }
+
+        var superscript = string.Concat(exponent.ToString(CultureInfo.InvariantCulture).Select(digit => SuperscriptDigits[digit - '0']));
+
+        return $"{mantissa.ToString("F" + (SignificantFigures - 1), CultureInfo.InvariantCulture)} × 10{superscript}";
+    }
 
     private static int Magnitude(double value) => (int)Math.Floor(Math.Log10(Math.Abs(value)));
 

@@ -2,7 +2,7 @@
     <p class="equation" aria-label="@EquationAriaLabel">@Reaction.ToEquationString()</p>
 
     <table class="table table--compact">
-        <caption class="visually-hidden">Reactants used and products made since the burner was lit</caption>
+        <caption class="visually-hidden">Reactants used and products made since the start</caption>
         <thead>
             <tr>
                 <th scope="col"><span class="visually-hidden">Side of the equation</span></th>
@@ -35,13 +35,6 @@
             <dt>Heat released</dt>
             <dd>@CarbonSimFormat.Number(State.HeatReleased / 1e6) MJ</dd>
         </div>
-        <div>
-            <dt>Water condensed on the walls</dt>
-            <dd>@CondensedText</dd>
-        </div>
-        <div>
-            <dt>N₂ vented to hold the pressure</dt>
-            <dd>@CarbonSimFormat.Number(State.NitrogenVented) mol</dd>
-        </div>
+        @ChildContent
     </dl>
 </div>

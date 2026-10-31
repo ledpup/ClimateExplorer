@@ -7,7 +7,7 @@
         <p>
             A gas burner runs in a sealed @HouseVolumeText house with no windows and no sunlight. The house starts at
             @StartTemperatureText, the same as outside, so any change in temperature comes from the flame. The burner
-            takes its oxygen from the house's air and stops when the oxygen falls below @CarbonSimFormat.Share(Scenario.Setting.OxygenCutOff).
+            takes its oxygen from the house's air and stops when the oxygen falls below @CarbonSimFormat.Share(House.OxygenCutOff).
         </p>
         <p class="note">
             To keep the pressure steady, a vent lets out nitrogen as the flame adds gas or warms the air. Nitrogen takes
@@ -19,5 +19,14 @@
             <BurnerRateInput Value="@Inputs.FossilFuels" ValueChanged="OnFossilFuelsChangedAsync" Invalid="InputInvalid" />
         }
     </div>
-    <ReactionSummary State="@State" Reaction="@House.Reaction" />
+    <ReactionSummary State="@State" Reaction="@House.Reaction">
+        <div>
+            <dt>Water condensed on the walls</dt>
+            <dd>@CondensedText</dd>
+        </div>
+        <div>
+            <dt>N₂ vented to hold the pressure</dt>
+            <dd>@CarbonSimFormat.Number(State.NitrogenVented) mol</dd>
+        </div>
+    </ReactionSummary>
 </div>

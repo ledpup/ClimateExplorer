@@ -14,7 +14,18 @@ public class CarbonSimFormatTests
     [DataRow(0.00019, "0.000190")]
     [DataRow(-3.21, "-3.21")]
     [DataRow(0.0, "0")]
+    [DataRow(1e9, "1,000,000,000")]
     public void Number_Value_AtLeastThreeSignificantFigures(double value, string expected)
+    {
+        Assert.AreEqual(expected, CarbonSimFormat.Number(value));
+    }
+
+    [TestMethod]
+    [DataRow(1e12, "1.00 × 10¹²")]
+    [DataRow(1.7731e20, "1.77 × 10²⁰")]
+    [DataRow(9.996e14, "1.00 × 10¹⁵")]
+    [DataRow(-2.5e13, "-2.50 × 10¹³")]
+    public void Number_TrillionOrMore_PowerOfTen(double value, string expected)
     {
         Assert.AreEqual(expected, CarbonSimFormat.Number(value));
     }
@@ -78,6 +89,8 @@ public class CarbonSimFormatTests
     [DataRow(725.0, "12 min 05 s")]
     [DataRow(11220.0, "3 h 07 min")]
     [DataRow(187200.0, "2 d 4 h")]
+    [DataRow(31557600.0 * 12 + (86400 * 45) + 3600, "12 yr 45 d")]
+    [DataRow(31557600.0 * 3934.6, "3,934 yr")]
     public void Duration_Seconds_InLargestUsefulUnits(double seconds, string expected)
     {
         Assert.AreEqual(expected, CarbonSimFormat.Duration(seconds));

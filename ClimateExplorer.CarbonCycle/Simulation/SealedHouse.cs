@@ -7,7 +7,7 @@ using ClimateExplorer.CarbonCycle.Fuels;
 // The first slice of the simulation engine (simulation plan §5): methane burning in a sealed house. One lumped
 // temperature for the air and the house's contents, which lose heat through the walls. Forward Euler on adaptive
 // substeps, so the result doesn't depend on the step the caller asks for (§5.3).
-public sealed class SealedHouse
+public sealed class SealedHouse : ISimulation
 {
     // J/(mol·K)
     public const double GasConstant = 8.314462618;
@@ -59,6 +59,8 @@ public sealed class SealedHouse
     // For display; the burner's numbers come from the chemistry engine
     public Reaction Reaction => ReactionCatalog.MethaneCombustion;
 
+    public double OxygenCutOff => Settings.OxygenCutOff;
+
     public double BurnerMolesPerSecond { get; }
 
     // Magnus formula over liquid water (Alduchov and Eskridge 1996), Pa
@@ -69,7 +71,7 @@ public sealed class SealedHouse
         return 610.94 * Math.Exp(17.625 * celsius / (celsius + 243.04));
     }
 
-    public HouseState Start()
+    public SimulationState Start()
     {
         var settings = Settings;
         var temperature = settings.StartTemperature;
@@ -78,7 +80,7 @@ public sealed class SealedHouse
         var dry = gasMoles - water;
         var oxygen = dry * DryAir.Oxygen;
 
-        return new HouseState
+        return new SimulationState
         {
             Temperature = temperature,
             Pressure = settings.TargetPressure,
@@ -92,7 +94,7 @@ public sealed class SealedHouse
         };
     }
 
-    public HouseState Advance(HouseState state, double seconds)
+    public SimulationState Advance(SimulationState state, double seconds)
     {
         var errors = new List<ValidationError>();
         InputValidation.NonNegative(errors, "seconds", seconds);
@@ -121,15 +123,15 @@ public sealed class SealedHouse
 
     private double MolesAt(double pressure, double temperature) => pressure * Settings.Volume / (GasConstant * temperature);
 
-    private double HeatCapacity(HouseState state) => Settings.ContentsHeatCapacity + (state.GasMoles * GasHeatCapacity);
+    private double HeatCapacity(SimulationState state) => Settings.ContentsHeatCapacity + (state.GasMoles * GasHeatCapacity);
 
-    private double BurnRate(HouseState state) => state.FlameOn ? BurnerMolesPerSecond : 0;
+    private double BurnRate(SimulationState state) => state.FlameOn ? BurnerMolesPerSecond : 0;
 
     // W into the house, before condensation
-    private double HeatFlow(HouseState state, double burnRate) =>
+    private double HeatFlow(SimulationState state, double burnRate) =>
         (burnRate * heatPerMole) - (Settings.WallHeatLoss * (state.Temperature - Settings.OutsideTemperature));
 
-    private double StepLimit(HouseState state)
+    private double StepLimit(SimulationState state)
     {
         var limit = double.PositiveInfinity;
         var capacity = HeatCapacity(state);
@@ -156,7 +158,7 @@ public sealed class SealedHouse
         return Math.Max(limit, 1e-6);
     }
 
-    private HouseState Step(HouseState state, double seconds)
+    private SimulationState Step(SimulationState state, double seconds)
     {
         var burnRate = BurnRate(state);
 
@@ -192,7 +194,7 @@ public sealed class SealedHouse
             CarbonDioxide = carbonDioxide,
             WaterVapour = newVapour,
             LiquidWater = water - newVapour,
-            MethaneBurnt = state.MethaneBurnt + burnt,
+            FuelBurnt = state.FuelBurnt + burnt,
             OxygenUsed = state.OxygenUsed + (burnt * oxygenPerMole),
             CarbonDioxideMade = state.CarbonDioxideMade + (burnt * carbonDioxidePerMole),
             WaterMade = state.WaterMade + (burnt * waterPerMole),

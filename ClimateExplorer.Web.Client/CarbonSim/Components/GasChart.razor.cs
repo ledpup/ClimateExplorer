@@ -64,6 +64,6 @@ public partial class GasChart : IAsyncDisposable
     private async Task InitialiseAsync()
     {
         module = await JsRuntime!.InvokeAsync<IJSObjectReference>("import", "./CarbonSim/Components/GasChart.razor.js");
-        await module.InvokeVoidAsync("create", canvas, Series, "Share of the air in the house");
+        await module.InvokeVoidAsync("create", canvas, Series, "Share of the air");
     }
 }

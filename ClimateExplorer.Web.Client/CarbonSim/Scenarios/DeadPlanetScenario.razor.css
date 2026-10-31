@@ -1,0 +1,27 @@
+.scenario {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 1.5rem 2.5rem;
+    align-items: start;
+}
+
+h2 {
+    margin: 0 0 0.5rem;
+    color: var(--climate-color-control-text);
+    font-size: 1.35rem;
+}
+
+p {
+    margin: 0 0 0.75rem;
+}
+
+.note {
+    color: var(--climate-color-muted-text);
+    font-size: 0.875rem;
+}
+
+@media (max-width: 1024px) {
+    .scenario {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}

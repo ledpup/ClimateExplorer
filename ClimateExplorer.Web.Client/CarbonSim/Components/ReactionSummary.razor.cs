@@ -6,16 +6,22 @@ using ClimateExplorer.Web.Client.Units;
 using Microsoft.AspNetCore.Components;
 using static ClimateExplorer.Core.Enums;
 
-/// <summary>The burner's equation, and how much it has used and made so far.</summary>
+/// <summary>
+/// The burner's equation, how much it has used and made so far, and the heat released. A scenario adds its own totals
+/// as <see cref="ChildContent"/>: <c>&lt;div&gt;</c>s of <c>&lt;dt&gt;</c> and <c>&lt;dd&gt;</c>.
+/// </summary>
 public partial class ReactionSummary
 {
     [Parameter]
     [EditorRequired]
-    public HouseState State { get; set; } = default!;
+    public SimulationState State { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
     public Reaction Reaction { get; set; } = default!;
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
 
     [CascadingParameter]
     public IUnitFormatter Units { get; set; } = UnitFormatter.Metric;
@@ -24,12 +30,9 @@ public partial class ReactionSummary
 
     private string MassUnitText => Units.ShortLabel(UnitOfMeasure.Kilograms);
 
-    private string CondensedText =>
-        CarbonSimFormat.Quantity(Units, Measure.Level(State.LiquidWater * SpeciesCatalog.LiquidWater.MolarMass / 1000, UnitOfMeasure.Kilograms));
-
     private IEnumerable<Row> Rows =>
     [
-        Row.For("Reactants", true, SpeciesCatalog.Methane, State.MethaneBurnt),
+        Row.For("Reactants", true, Reaction.Reactants[0].Species, State.FuelBurnt),
         Row.For("Reactants", false, SpeciesCatalog.Oxygen, State.OxygenUsed),
         Row.For("Products", true, SpeciesCatalog.CarbonDioxide, State.CarbonDioxideMade),
         Row.For("Products", false, SpeciesCatalog.WaterVapour, State.WaterMade),

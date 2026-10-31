@@ -2,8 +2,8 @@ namespace ClimateExplorer.CarbonCycle.Simulation;
 
 using ClimateExplorer.CarbonCycle.Chemistry;
 
-// The sealed house at one moment. Amounts are mol, the temperature K, the pressure Pa and times s since the start.
-public sealed record HouseState
+// A simulation's air at one moment. Amounts are mol, the temperature K, the pressure Pa and times s since the start.
+public sealed record SimulationState
 {
     public double Time { get; init; }
 
@@ -30,8 +30,8 @@ public sealed record HouseState
 
     public double? FlameOutTime { get; init; }
 
-    // Totals since the start
-    public double MethaneBurnt { get; init; }
+    // Totals since the start. The fuel is the burner's reaction's first reactant.
+    public double FuelBurnt { get; init; }
 
     public double OxygenUsed { get; init; }
 

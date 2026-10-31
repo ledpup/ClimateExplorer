@@ -1,0 +1,9 @@
+<div class="field">
+    <label for="@id">Cars</label>
+    <TextInput Id="@id"
+               Value="@text"
+               ValueChanged="OnTextChangedAsync"
+               Invalid="@(error is not null)"
+               ErrorMessage="@error" />
+    <span class="hint">The world has about 1.5 billion cars, trucks and buses, though few drive all day.</span>
+</div>

@@ -9,9 +9,9 @@ using ClimateExplorer.Web.Client.Units;
 using Microsoft.AspNetCore.Components;
 
 /// <summary>
-/// The Carbon-cycle simulator. The fossil fuels tab holds a carousel of scenarios; so far the only real one is
-/// methane burning in a sealed house (simulation plan §3.1). The active scenario's slide has its inputs; the clock
-/// runs the simulation, and the floating panels show the house's air.
+/// The Carbon-cycle simulator. The fossil fuels tab holds a carousel of scenarios: methane burning in a sealed house
+/// (simulation plan §3.1) and cars on a dead planet. The active scenario's slide has its inputs; the clock runs the
+/// simulation, and the floating panels show its air.
 /// </summary>
 public partial class CarbonSimulator : IAsyncDisposable
 {
@@ -24,7 +24,7 @@ public partial class CarbonSimulator : IAsyncDisposable
 
     private static readonly TimeSpan TickInterval = TimeSpan.FromMilliseconds(100);
 
-    // Categorical slots in fixed order, one per gas in HouseState.Gases. N₂ and Ar would flatten the others, and CH₄
+    // Categorical slots in fixed order, one per gas in SimulationState.Gases. N₂ and Ar would flatten the others, and CH₄
     // is too small to see, so they start hidden; the legend shows them.
     private static readonly (string Colour, bool Hidden)[] GasStyles =
     [
@@ -37,17 +37,17 @@ public partial class CarbonSimulator : IAsyncDisposable
     ];
 
     // The slides beside the active one show their scenario's own inputs at time 0
-    private readonly Dictionary<Scenario, (SealedHouse House, HouseState Start)> previews = [];
+    private readonly Dictionary<Scenario, (ISimulation Simulation, SimulationState Start)> previews = [];
 
     private int scenarioIndex;
     private Scenario scenario = ScenarioCatalog.All[0];
     private ScenarioInputs inputs = ScenarioCatalog.All[0].Inputs;
     private bool inputInvalid;
-    private SealedHouse house = HouseFor(ScenarioCatalog.All[0], ScenarioCatalog.All[0].Inputs);
-    private HouseState start = default!;
-    private HouseState state = default!;
+    private ISimulation simulation = ScenarioCatalog.All[0].CreateSimulation(ScenarioCatalog.All[0].Inputs);
+    private SimulationState start = default!;
+    private SimulationState state = default!;
     private string selectedTab = FossilTab;
-    private int secondsPerSecond = SimulationSpeed.All[0].SecondsPerSecond;
+    private double secondsPerSecond = SimulationSpeed.All[0].SecondsPerSecond;
     private string? announcement;
     private GasChart? gasChart;
     private CancellationTokenSource? runCancellation;
@@ -70,7 +70,7 @@ public partial class CarbonSimulator : IAsyncDisposable
 
     protected override void OnInitialized()
     {
-        start = house.Start();
+        start = simulation.Start();
         state = start;
     }
 
@@ -82,21 +82,17 @@ public partial class CarbonSimulator : IAsyncDisposable
         }
     }
 
-    // Inputs without fossil fuels leave the burner off
-    private static SealedHouse HouseFor(Scenario scenario, ScenarioInputs inputs) =>
-        new(scenario.Setting with { BurnerRate = inputs.FossilFuels?.MethaneBurnerRate ?? 0 });
-
     private Dictionary<string, object> ScenarioParameters(CarouselSlide<Scenario> slide)
     {
         if (!slide.IsActive)
         {
-            var (previewHouse, previewStart) = Preview(slide.Item);
+            var (previewSimulation, previewStart) = Preview(slide.Item);
 
             return new()
             {
                 [nameof(ScenarioComponent.Scenario)] = slide.Item,
                 [nameof(ScenarioComponent.Inputs)] = slide.Item.Inputs,
-                [nameof(ScenarioComponent.House)] = previewHouse,
+                [nameof(ScenarioComponent.Simulation)] = previewSimulation,
                 [nameof(ScenarioComponent.State)] = previewStart,
             };
         }
@@ -107,17 +103,17 @@ public partial class CarbonSimulator : IAsyncDisposable
             [nameof(ScenarioComponent.Inputs)] = inputs,
             [nameof(ScenarioComponent.InputsChanged)] = EventCallback.Factory.Create<ScenarioInputs>(this, OnInputsChangedAsync),
             [nameof(ScenarioComponent.InputInvalid)] = EventCallback.Factory.Create(this, OnInputInvalidAsync),
-            [nameof(ScenarioComponent.House)] = house,
+            [nameof(ScenarioComponent.Simulation)] = simulation,
             [nameof(ScenarioComponent.State)] = state,
         };
     }
 
-    private (SealedHouse House, HouseState Start) Preview(Scenario item)
+    private (ISimulation Simulation, SimulationState Start) Preview(Scenario item)
     {
         if (!previews.TryGetValue(item, out var preview))
         {
-            var previewHouse = HouseFor(item, item.Inputs);
-            preview = (previewHouse, previewHouse.Start());
+            var previewSimulation = item.CreateSimulation(item.Inputs);
+            preview = (previewSimulation, previewSimulation.Start());
             previews[item] = preview;
         }
 
@@ -138,7 +134,7 @@ public partial class CarbonSimulator : IAsyncDisposable
     {
         inputs = value;
         inputInvalid = false;
-        house = HouseFor(scenario, inputs);
+        simulation = scenario.CreateSimulation(inputs);
         await RestartAsync();
     }
 
@@ -153,7 +149,7 @@ public partial class CarbonSimulator : IAsyncDisposable
         selectedTab = name;
     }
 
-    private void OnSpeedChanged(int value)
+    private void OnSpeedChanged(double value)
     {
         secondsPerSecond = value;
     }
@@ -174,7 +170,7 @@ public partial class CarbonSimulator : IAsyncDisposable
     private async Task RestartAsync()
     {
         await PauseAsync();
-        start = house.Start();
+        start = simulation.Start();
         state = start;
         announcement = null;
         await ResetChartAsync();
@@ -213,11 +209,11 @@ public partial class CarbonSimulator : IAsyncDisposable
                 last = now;
 
                 var wasBurning = state.FlameOn;
-                state = house.Advance(state, realSeconds * secondsPerSecond);
+                state = simulation.Advance(state, realSeconds * secondsPerSecond);
 
                 if (wasBurning && !state.FlameOn)
                 {
-                    announcement = $"Flame out at {CarbonSimFormat.Duration(state.FlameOutTime ?? state.Time)}: oxygen below {CarbonSimFormat.Share(house.Settings.OxygenCutOff)}.";
+                    announcement = $"Flame out at {CarbonSimFormat.Duration(state.FlameOutTime ?? state.Time)}: oxygen below {CarbonSimFormat.Share(simulation.OxygenCutOff)}.";
                 }
 
                 await AppendChartPointAsync();

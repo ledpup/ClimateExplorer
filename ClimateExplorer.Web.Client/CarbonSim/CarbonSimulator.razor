@@ -6,7 +6,7 @@
 <PageTitle>ClimateExplorer - Carbon-cycle simulator</PageTitle>
 
 <HeadContent>
-    <meta name="description" content="Burn methane in a sealed house and watch the air change." />
+    <meta name="description" content="Burn methane in a sealed house, or petrol on a dead planet, and watch the air change." />
 </HeadContent>
 
 <div class="carbon-sim">
@@ -38,20 +38,20 @@
                 OnClick="TogglePlayAsync" />
         <Button Icon="fas fa-rotate-left" Text="Restart" OnClick="RestartAsync" />
         <label for="@SpeedId" class="speed-label">Speed</label>
-        <Select TValue="int" Id="@SpeedId" Value="@secondsPerSecond" ValueChanged="OnSpeedChanged">
+        <Select TValue="double" Id="@SpeedId" Value="@secondsPerSecond" ValueChanged="OnSpeedChanged">
             @foreach (var speed in SimulationSpeed.All)
             {
-                <SelectItem TValue="int" Value="@speed.SecondsPerSecond">@speed.Label</SelectItem>
+                <SelectItem TValue="double" Value="@speed.SecondsPerSecond">@speed.Label</SelectItem>
             }
         </Select>
     </div>
 
     <div class="panels">
-        <FloatingPanel Title="Gases in the house" Class="gases-panel">
+        <FloatingPanel Title="Gases in the air" Class="gases-panel">
             <GasTable State="@state" Start="@start" />
         </FloatingPanel>
         <FloatingPanel Title="Gases over time" Class="chart-panel">
-            <GasChart @ref="gasChart" Series="@ChartSeries" AriaLabel="Line chart of each gas's share of the air in the house over time" />
+            <GasChart @ref="gasChart" Series="@ChartSeries" AriaLabel="Line chart of each gas's share of the air over time" />
         </FloatingPanel>
     </div>
 
