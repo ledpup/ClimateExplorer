@@ -77,7 +77,12 @@ h1 {
     align-items: start;
 }
 
+/* Tablet and mobile: the layout's own gutter is enough */
 @media (max-width: 1024px) {
+    .carbon-sim {
+        padding: 0 0 2rem;
+    }
+
     .scenario,
     .panels {
         grid-template-columns: minmax(0, 1fr);

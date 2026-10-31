@@ -82,4 +82,12 @@
     .floating-panel-handle {
         display: none;
     }
+
+    .floating-panel-header {
+        padding-left: 0.5rem;
+    }
+
+    .floating-panel-body {
+        padding: 0.5rem;
+    }
 }
