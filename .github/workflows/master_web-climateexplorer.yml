@@ -32,6 +32,9 @@ jobs:
       - name: Test Web
         run: dotnet test ClimateExplorer.Web.UnitTests/ClimateExplorer.Web.UnitTests.csproj --configuration Release
 
+      - name: Test Web CarbonSim
+        run: dotnet test ClimateExplorer.Web.CarbonSim.UnitTests/ClimateExplorer.Web.CarbonSim.UnitTests.csproj --configuration Release
+
       - name: dotnet publish
         run: dotnet publish ClimateExplorer.Web/ClimateExplorer.Web.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp
 

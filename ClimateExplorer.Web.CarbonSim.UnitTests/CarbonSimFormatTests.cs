@@ -1,4 +1,4 @@
-namespace ClimateExplorer.Web.UnitTests;
+namespace ClimateExplorer.Web.CarbonSim.UnitTests;
 
 using ClimateExplorer.Web.Client.CarbonSim;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

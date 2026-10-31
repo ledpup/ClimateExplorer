@@ -21,6 +21,7 @@
   <Folder Name="/UnitTests/">
     <Project Path="ClimateExplorer.CarbonCycle.UnitTests/ClimateExplorer.CarbonCycle.UnitTests.csproj" />
     <Project Path="ClimateExplorer.Core.UnitTests/ClimateExplorer.Core.UnitTests.csproj" />
+    <Project Path="ClimateExplorer.Web.CarbonSim.UnitTests/ClimateExplorer.Web.CarbonSim.UnitTests.csproj" />
     <Project Path="ClimateExplorer.Web.UnitTests/ClimateExplorer.Web.UnitTests.csproj" />
     <Project Path="ClimateExplorer.WebApi.UnitTests/ClimateExplorer.WebApi.UnitTests.csproj" />
   </Folder>
