@@ -6,7 +6,7 @@
 - **Scope:** Scenario 2 of the simulator's carousel. A second engine (`DeadPlanet`) beside `SealedHouse`, the
   `ISimulation` interface the page runs, the car count input, and the formatting and clock speeds a planet needs.
 - **Builds on:** [Carbon Cycle simulation — Overview](2026-10-24-01-carbon-cycle-simulation-plan.md) (§6 first slice);
-  [energy balance §1](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md) (planet energy balance)
+  [energy balance §2](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md) (planet energy balance)
 - **Branch context:** `development`
 
 ## 1. The scenario
@@ -43,7 +43,7 @@ Without heat to space there's nothing to stop the warming, and with a cold sky t
 | **B. Cold universe, no sun** | A real Earth with no sun loses ~240 W/m², about 3,000 times the cars' heat. It cools by ~2 °C a day and freezes within months. | The cars make no difference. Not useful. |
 | **C. Warm sky** (chosen) | Something unmodelled holds the planet at 15 °C at the start, as the sun does for Earth. As it warms, it loses more heat to space; CO₂ keeps some in. | Shows the real point. A few lines of code. |
 
-Option C is the planet energy balance of [energy balance plan §1](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md) with the sun and albedo replaced by a constant that
+Option C is the planet energy balance of [energy balance plan §2](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md) with the sun and albedo replaced by a constant that
 balances heat to space at the start:
 
 ```

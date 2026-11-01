@@ -60,7 +60,8 @@ Each sub-plan holds the detail for its topic: settings, processes, formulas, tes
 | [Scenarios and events](2026-11-01-02-carbon-cycle-simulation-scenarios-plan.md) | Starting events, starting air, scale check, presets, events during a run, input and outcome events | §2, §4.4 (two kinds of event), §6.2 |
 | [House and greenhouses](2026-11-01-03-carbon-cycle-simulation-boxes-plan.md) | Scenarios 1–4: box processes, two-node heat balance, gas radiation, plants and weathering, the N₂ vent | §3.1–§3.4, §4.2 (box rows), §4.3 (box heat balance), §4.4 (vent), §8 (boxes) |
 | [Earth settings and the carbon cycle](2026-11-01-04-carbon-cycle-simulation-planet-plan.md) | Scenarios 5–6, the volcano button: ocean, land, outgassing, eruptions, sulfate, gas lifetimes | §3.5–§3.7, §4.2 (planet rows), §8 (planet) |
-| [Sunlight, forcing and the planet energy balance](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md) | The planet energy balance, forcing by agent, albedo, the daily TSI driver | §4.3 (planet energy balance), §6.1, §8 (drivers) |
+| [Sunlight, forcing and the planet energy balance](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md) | Sunlight, the energy budget and a physical start temperature, effective radiative forcing by agent, feedbacks, the daily TSI driver | §4.3 (planet energy balance), §6.1, §8 (drivers) |
+| ↳ [Planet energy budget and forcing — implementation](2026-11-01-08-carbon-cycle-planet-forcing-implementation-plan.md) | The code for the energy balance plan's first part: the forcing schema (CO₂, solar, albedo), the dead planet moved onto it, the sunlight input, the forcing and over-time charts | — |
 | [Run clock, rewind and the event record](2026-11-01-06-carbon-cycle-simulation-clock-plan.md) | Speeds and clock controls, `SimulationRunner`, rewind, checkpoints, the record, save and open | §5.1 (speed, clock controls), §5.5, §7.2, §8 (rewind, record) |
 | [Web client](2026-11-01-07-carbon-cycle-simulation-web-client-plan.md) | Render mode, uPlot charts, units, output tab layout and accessibility, URL state | §7.1, §7.3–§7.6 |
 
@@ -104,7 +105,7 @@ Depends on the chemistry engine ([Tab 1 step 1](2026-10-23-02-carbon-cycle-tab1-
 | 5 | Planet processes: ocean and land boxes, methane oxidation, outgassing + tests | [Planet](2026-11-01-04-carbon-cycle-simulation-planet-plan.md) | — |
 | 6 | Eruptions: injection sizes, stratospheric sulfate + tests | [Planet](2026-11-01-04-carbon-cycle-simulation-planet-plan.md) | — |
 | 7 | Scenarios and events: `Setting`, `InputEvent` and `Scenario` types; settings 1–6 and preset scenarios; turning each input tab's `EmissionResult` into emission events; source and record every default + tests | [Scenarios](2026-11-01-02-carbon-cycle-simulation-scenarios-plan.md), [engine](2026-11-01-01-carbon-cycle-simulation-engine-plan.md) | — |
-| 8 | Energy balance and forcing: sunlight, albedo with ice, forcing by agent (CO₂, CH₄, N₂O, halogenated gases, sulfate); TSI driver: fetch the existing dataset, step averaging, insolation by latitude, extension beyond the record + tests | [Energy balance](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md) | — |
+| 8 | Energy balance and forcing: sunlight, albedo with ice, forcing by agent (CO₂, CH₄, N₂O, halogenated gases, sulfate); TSI driver: fetch the existing dataset, step averaging, insolation by latitude, extension beyond the record + tests | [Energy balance](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md); first part: [implementation](2026-11-01-08-carbon-cycle-planet-forcing-implementation-plan.md) | — |
 | 9 | Render mode routing: `App.razor.cs` per-route mode for the Carbon Cycle page, placeholder, forced navigation and the page's renderer check | [Web client](2026-11-01-07-carbon-cycle-simulation-web-client-plan.md) | — |
 | 10 | uPlot vendoring, the JS module and `[JSImport]` interop | [Web client](2026-11-01-07-carbon-cycle-simulation-web-client-plan.md) | — |
 | 11 | `SimulationRunner` as a scoped service: loop, budget, deltas, readout ticks, input events, eruptions + tests for its plain C# parts | [Clock](2026-11-01-06-carbon-cycle-simulation-clock-plan.md) | Partly (2026-10-31) |
@@ -135,15 +136,16 @@ Question numbers are shared across the Carbon Cycle plans. Each open question is
 | Q16 Scale the emissions to each enclosure? | [Scenarios §8](2026-11-01-02-carbon-cycle-simulation-scenarios-plan.md) |
 | ~~Q17~~ Resolved: scenario 3 is the ideal greenhouse, scenario 4 adds plants and weathering, and Earth without volcanoes is scenario 6, with a volcano button | — |
 | Q18 Prerender the input tabs? | [Web client §7](2026-11-01-07-carbon-cycle-simulation-web-client-plan.md) |
-| Q19 TSI outside 1978–2025 | [Energy balance §4](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md) |
+| Q19 TSI outside 1978–2025 | [Energy balance §9](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md) |
 | Q20 Relight when plants restore the O₂? | [Boxes §7](2026-11-01-03-carbon-cycle-simulation-boxes-plan.md) |
 | ~~Q21~~ Resolved: the output tabs (4–7) are views of this simulation, so the page has one Earth model and no separate impulse-response model | — |
 | Q22 Different emissions per scenario? | [Scenarios §8](2026-11-01-02-carbon-cycle-simulation-scenarios-plan.md) |
 | Q23 Adding an event after rewinding | [Clock §6](2026-11-01-06-carbon-cycle-simulation-clock-plan.md) |
+| Q24 CO₂ above the forcing formula's range | [Energy balance §9](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md) |
 
 ## Summary
 
-The simulation runs the input tabs' emissions forward through time in one or more scenarios, from a sealed house to the whole Earth, on one clock from real time to 1,000 years per second, with rewind and a replayable event record. This overview holds the settings, the tracked quantities and the order of work; seven sub-plans hold the detail. The split itself (2026-11-01) moved text and fixed references; it changed no design decision, apart from merging the energy balance and the TSI driver into one step (§5).
+The simulation runs the input tabs' emissions forward through time in one or more scenarios, from a sealed house to the whole Earth, on one clock from real time to 1,000 years per second, with rewind and a replayable event record. This overview holds the settings, the tracked quantities and the order of work; seven sub-plans hold the detail, and an implementation plan sits under the energy balance plan. The split itself (2026-11-01) moved text and fixed references; it changed no design decision, apart from merging the energy balance and the TSI driver into one step (§5).
 
 ### Change size
 
@@ -157,9 +159,10 @@ Rough totals of the sub-plans' estimates. They overlap where two plans change th
 | Scenarios and events | 3 files, +350 | 5 files, ~130 | — |
 | House and greenhouses | 15 files, +1,450 | 6 files, ~180 | — |
 | Earth settings and the carbon cycle | 13 files, +1,250 | 2 files, ~30 | — |
-| Sunlight, forcing and the energy balance | 8 files, +960 | 4 files, ~110 | — |
+| Sunlight, forcing and the energy balance (the rest) | 7 files, +810 | 4 files, ~80 | — |
+| Planet energy budget and forcing — implementation | 18 files, +1,140 | 20 files, ~675 | — |
 | Run clock, rewind and the record | 10 files, +1,150 | 6 files, ~150 | — |
 | Web client | 21 files, +1,860 | 7 files, ~180 | 4 files, −310 |
-| **Total** | **78 files, +8,020** | **≤35 files, ~1,080** | **4 files, −310** |
+| **Total** | **95 files, +9,010** | **≤55 files, ~1,725** | **4 files, −310** |
 
-About 2,300 of the added lines are tests.
+About 2,550 of the added lines are tests.

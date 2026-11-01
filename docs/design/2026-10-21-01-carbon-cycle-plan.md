@@ -203,7 +203,7 @@ Notes:
 ### 4.2 ClimateExplorer data
 
 Likely needs (to confirm):
-- The simulation: daily total solar irradiance (NOAA NCEI TSI CDR, already in ClimateExplorer) as the sunlight for the greenhouse and Earth scenarios; latest CO₂, CH₄ and N₂O and the global temperature anomaly as starting values; Global Carbon Budget CO₂ emissions for a preset ([simulation energy balance §2](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md), [scenarios §2](2026-11-01-02-carbon-cycle-simulation-scenarios-plan.md)).
+- The simulation: daily total solar irradiance (NOAA NCEI TSI CDR, already in ClimateExplorer) as the sunlight for the greenhouse and Earth scenarios; latest CO₂, CH₄ and N₂O and the global temperature anomaly as starting values; Global Carbon Budget CO₂ emissions for a preset ([simulation energy balance §6](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md), [scenarios §2](2026-11-01-02-carbon-cycle-simulation-scenarios-plan.md)).
 
 ---
 

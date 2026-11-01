@@ -13,7 +13,7 @@ Section references without a plan name are to this document. "Overview" is the [
 
 ### 1.1 Basic Earth
 
-The whole atmosphere, a two-layer ocean, a land biosphere, weathering and volcanic outgassing (§2), with a planet energy balance ([energy balance §1](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md)).
+The whole atmosphere, a two-layer ocean, a land biosphere, weathering and volcanic outgassing (§2), with a planet energy balance ([energy balance §2](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md)).
 
 - **Today's emissions.** The brief's example input is invisible here ([scenarios §3](2026-11-01-02-carbon-cycle-simulation-scenarios-plan.md)). The preset "today's world emissions" shows:
   - CO₂ rising ~2–3 ppm/yr
@@ -32,7 +32,7 @@ Basic Earth with background outgassing switched off. This is where the planet-sc
 3. As CO₂ falls, the planet cools and slows its own weathering. On its own this slows the decline; it would not cause a sharp fall.
 4. The sharp fall comes from ice. Cooling spreads ice, ice reflects more sunlight, and below a threshold that feedback runs away to a frozen planet (a "snowball Earth"). Frozen, weathering almost stops, and the planet stays frozen. How a snowball thaws is out of scope.
 
-So a large temperature drop with frozen water is the likely end state here. The sharp drop is ice-albedo feedback ([energy balance §1](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md)), not weathering itself. Timescale: hundreds of thousands of years (to verify in the engine), a few minutes at 1,000 years per second.
+So a large temperature drop with frozen water is the likely end state here. The sharp drop is ice-albedo feedback ([energy balance §2](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md)), not weathering itself. Timescale: hundreds of thousands of years (to verify in the engine), a few minutes at 1,000 years per second.
 
 ### 1.3 The volcano button
 
@@ -48,7 +48,7 @@ An eruption does two things, on very different timescales. Provisional sizes, to
 | Very large | Tambora, 1815 | to source (several times Pinatubo) | to source | The "year without a summer" |
 | Flood basalt | Siberian Traps (end-Permian) | very large, spread over time | thousands of Gt over ~100,000 years or more (to verify) | Long warming. Modelled as raised outgassing for a period, not as a pulse |
 
-- **SO₂** becomes sulfate aerosol in the stratosphere within weeks and falls out over a year or two (§2). While it's there, it reflects sunlight. This is the same sulfate cooling as [Tab 1 §4](2026-10-21-04-carbon-cycle-tab1-fossil-fuels-plan.md), but high up, where it lasts longer. Its forcing is in the [energy balance plan §1](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md).
+- **SO₂** becomes sulfate aerosol in the stratosphere within weeks and falls out over a year or two (§2). While it's there, it reflects sunlight. This is the same sulfate cooling as [Tab 1 §4](2026-10-21-04-carbon-cycle-tab1-fossil-fuels-plan.md), but high up, where it lasts longer. Its forcing is in the [energy balance plan §3](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md).
 - **CO₂** from an eruption is small. A hundred Pinatubos add ~5 Gt CO₂, about 0.6 ppm and well under a year of today's human emissions (~37 Gt).
 
 **The teaching point, in Earth without volcanoes.** A hundred eruptions at once cool the planet for a few years, and can push a cold planet over the threshold into the ice state.
@@ -70,7 +70,7 @@ As in the [boxes plan §2](2026-11-01-03-carbon-cycle-simulation-boxes-plan.md),
 | Methane oxidation | CH₄ + 2 O₂ → CO₂ + 2 H₂O | CH₄ ÷ lifetime (~9–12 yr) | 5–6 |
 | N₂O and halogenated-gas loss | each → removed (stratospheric breakdown) | amount ÷ lifetime (N₂O ~110 yr; halogenated gases per species, AR6) | 5–6 |
 
-Solar gain and outgoing longwave for the planet are the energy balance ([energy balance §1](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md)).
+Solar gain and outgoing longwave for the planet are the energy balance ([energy balance §2](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md)).
 
 ## 3. Tests
 
@@ -83,7 +83,7 @@ Solar gain and outgoing longwave for the planet are the energy balance ([energy 
 
 - **A fixed Revelle factor** is wrong for large perturbations.
 - **Sulfate forcing** grows less than in proportion at very large loads (particles grow and fall faster), which matters for 100 eruptions at once. It needs a saturating form.
-- **The log CO₂ forcing near zero** and **the ice-albedo tuning** matter most here; they are in the [energy balance plan §5](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md).
+- **The log CO₂ forcing near zero** and **the ice-albedo tuning** matter most here; they are in the [energy balance plan §10](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md).
 
 Each of these gets a Level 2 note.
 

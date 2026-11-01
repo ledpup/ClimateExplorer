@@ -84,7 +84,7 @@ Each process is a reaction (or a transfer) between reservoirs, with a rate law. 
 | Heat through walls | gas → outside air | U × wall area × (T_gas − T_outside); U = 0 by default for ideal walls | 1–4 |
 | Heat into the ground | floor ⇌ ground | G × floor area × (T_floor − T_ground) | 1–4 |
 | Gas radiation | floor ⇌ gas ⇌ sky, infrared (§3) | from the gas emissivity | 3–4 |
-| Solar gain | sun → floor | insolation × transmittances × area (§3; insolation from the [energy balance plan §2](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md)) | 2–4 |
+| Solar gain | sun → floor | insolation × transmittances × area (§3; insolation from the [energy balance plan §6](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md)) | 2–4 |
 
 Photosynthesis in scenario 4 adds the chemistry catalog's first biology species, CH₂O, as the stand-in for stored plant carbon. Weathering adds silicate and carbonate solids: CaSiO₃ (wollastonite, standing for silicate rock) and SiO₂. Forsterite (Mg₂SiO₄, olivine) is a Level 2 alternative for enhanced weathering.
 
@@ -100,7 +100,7 @@ floor: C_floor dT_floor/dt = solar gain − h·A_floor·(T_floor − T_gas) − 
 - **Defaults** are sized for a house and for a greenhouse (to source). The gas's own heat capacity is small: at 100 L/s, heating only the air would take it up by hundreds of kelvins in a minute.
 - **Flame heat** is the Tab 1 engine's heat for the fuel burned at its carbon split. It goes into the gas.
 - **Latent heat:** condensing and freezing release heat (+); evaporating and melting take it in (−).
-- **Solar gain** onto the floor = insolation at the greenhouse's latitude ([energy balance §2](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md)) × atmospheric transmittance (default an all-sky average, to source) × wall transmittance (glass ~0.8–0.9; ideal 1) × floor area.
+- **Solar gain** onto the floor = insolation at the greenhouse's latitude ([energy balance §6](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md)) × atmospheric transmittance (default an all-sky average, to source) × wall transmittance (glass ~0.8–0.9; ideal 1) × floor area.
 - **Radiation depends on the walls.**
   - **Opaque and glass walls** are opaque to infrared and sit at about the gas temperature. The gas's infrared only goes back and forth inside, so there is no net radiation term. This is the §1.2 point.
   - **Ideal walls:** the floor, the gas and the sky exchange infrared (floor taken as black in the infrared; editable emissivity at Level 2):

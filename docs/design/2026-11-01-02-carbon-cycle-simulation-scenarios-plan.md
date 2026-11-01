@@ -13,7 +13,7 @@ Section references without a plan name are to this document. "Overview" is the [
 
 A scenario is the list of events at time 0:
 
-- **Set-up** (one per scenario, only at time 0): the setting ([simulation overview §2](2026-10-24-01-carbon-cycle-simulation-plan.md)), with its size and processes, and the **start date**. The start date sets the sunlight: it gives the day of year for the season and picks the TSI record value ([energy balance §2](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md)). Default: the latest full year in the TSI record.
+- **Set-up** (one per scenario, only at time 0): the setting ([simulation overview §2](2026-10-24-01-carbon-cycle-simulation-plan.md)), with its size and processes, and the **start date**. The start date sets the sunlight: it gives the day of year for the season and picks the TSI record value ([energy balance §6](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md)). Default: the latest full year in the TSI record.
 - **Emissions:** one per activity on the included input tabs ([overview §2.1](2026-10-21-01-carbon-cycle-plan.md)), for example "burn methane at 100 L/s for 5 years". Each is a *pulse* (all at once) or a *constant rate for a duration*, as set on its input tab.
   - A fuel goes through the burner ([boxes §2](2026-11-01-03-carbon-cycle-simulation-boxes-plan.md)): any fuel in the [Tab 1 fuel table](2026-10-21-04-carbon-cycle-tab1-fossil-fuels-plan.md), ideal or real, with its carbon split ([Tab 1 §3](2026-10-21-04-carbon-cycle-tab1-fossil-fuels-plan.md)). Its O₂ comes from the scenario's air.
   - A Tab 2 or Tab 3 activity (cattle, rice, landfill, refrigerant leaks) puts its species straight into the air.
@@ -29,7 +29,7 @@ By default every scenario in a run takes the same emission events from the input
 - **Temperature and pressure:** 101.325 kPa. Temperature defaults to 15 °C, roughly the global mean surface temperature; the Earth scenarios take their starting temperature from the global temperature record (below).
 - **Surroundings** for the enclosures: outside air temperature and ground temperature, each a constant (default 15 °C), and the sky ([boxes §3](2026-11-01-03-carbon-cycle-simulation-boxes-plan.md)). Later, an option to use a ClimateExplorer location's temperature record and latitude.
 
-**ClimateExplorer data used** (the daily TSI is in the [energy balance plan §2](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md)):
+**ClimateExplorer data used** (the daily TSI is in the [energy balance plan §6](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md)):
 
 | Dataset (existing) | Used for |
 |---|---|
