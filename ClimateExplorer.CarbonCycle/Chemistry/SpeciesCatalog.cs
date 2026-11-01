@@ -27,6 +27,9 @@ public static class SpeciesCatalog
     // Gross heating value comparison; moisture in real fuels
     public static Species LiquidWater { get; } = new("H2O(l)", "Water", "H2O", Phase.Liquid, -285.8, Sources.ProvisionalEnthalpy);
 
+    // Frost and snow: liquid water less its heat of fusion (6.0 kJ/mol)
+    public static Species Ice { get; } = new("H2O(s)", "Ice", "H2O", Phase.Solid, -291.8, Sources.ProvisionalEnthalpy);
+
     public static Species Methane { get; } = new("CH4(g)", "Methane", "CH4", Phase.Gas, -74.9, Sources.ProvisionalEnthalpy);
 
     public static Species Ethane { get; } = new("C2H6(g)", "Ethane", "C2H6", Phase.Gas, -84.0, Sources.ProvisionalEnthalpy);
@@ -102,6 +105,7 @@ public static class SpeciesCatalog
         CarbonMonoxide,
         WaterVapour,
         LiquidWater,
+        Ice,
         Methane,
         Ethane,
         Propane,

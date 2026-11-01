@@ -1,9 +1,9 @@
 # Carbon Cycle simulation — Planet energy budget and forcing: implementation
 
 - **Date:** 2026-11-01
-- **Status:** Proposed
+- **Status:** Partly implemented 2026-11-01: steps 1 and 2 (the engine and the inputs; see the addendum). Steps 3 and 4 (the charts) and the slide text (§2.2) are still to do.
 - **Author:** Patrick Lea (with Claude)
-- **Scope:** The code for the first part of the [energy balance plan](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md): sunlight and albedo settings, the energy budget, the forcing schema with CO₂, solar and albedo ERF, the dead planet moved onto them, a sunlight input, and the forcing and over-time charts. `ClimateExplorer.CarbonCycle/Simulation`, `ClimateExplorer.Web.Client/CarbonSim`, and their unit tests.
+- **Scope:** The code for the first part of the [energy balance plan](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md): sunlight and albedo settings, the energy budget, the forcing schema with CO₂, solar and albedo ERF, the dead planet moved onto them, sunlight and albedo carried as inputs with no control on screen, and the forcing and over-time charts. `ClimateExplorer.CarbonCycle/Simulation`, `ClimateExplorer.Web.Client/CarbonSim`, and their unit tests.
 - **Builds on:** [Sunlight, forcing and the planet energy balance](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md) (the physics; "energy balance §N" below); [A billion cars on a dead planet](2026-10-31-01-dead-planet-cars-scenario-plan.md) (the code it changes); [engine](2026-11-01-01-carbon-cycle-simulation-engine-plan.md)
 - **Branch context:** `development`
 
@@ -21,7 +21,7 @@ Section references without a plan name are to this document. The physics, number
 | `RadiativeForcing` (static) | The formulas (energy balance §3): `CarbonDioxide(c, c₀)`, `Solar(s, s₀, α)`, `Albedo(s₀, α, α₀)`. Constants carry their source in a comment and in `Sources`. |
 | `Forcing` and `ForcingBreakdown` (records) | `Forcing(ForcingAgent Agent, double Value)`. `ForcingBreakdown(IReadOnlyList<Forcing> Agents, double NonRadiativeHeat)` with `Total` (the agents only) and `GreenhouseGas` (the `F_GHG` of energy balance §2). |
 | `EnergyBudget` (record) | `IncomingSunlight`, `Reflected`, `Absorbed`, `HeatToSpace`, `NonRadiativeHeat`, `Imbalance`, all W/m². |
-| `PlanetEnergyBalance` (class) | Built from `PlanetEnergySettings` and the reference state (`S₀`, `α₀`, and the reference gases). `StartTemperature()`, `HeatToSpace(T, F_GHG)`, `Feedback(T)` (`λ`), `Budget(T, forcing)`, and `Temperature(T, forcing, heatCapacity, seconds)`, the temperature after a substep (§1.3). No state of its own. |
+| `PlanetEnergyBalance` (class) | Built from `PlanetEnergySettings`. `StartTemperature`, `HeatToSpace(T, F_GHG)`, `Feedback(T)` (`λ`), `Budget(T, forcing)`, `WarmingPerDoubling`, and `Temperature(T, start, end, heatCapacity, seconds)`, the temperature after a substep (§1.3). No state of its own. The caller supplies the reference state through the forcing; the dead planet's is its start. |
 | `IPlanetSimulation : ISimulation` | `PlanetEnergySettings Energy`, `ForcingBreakdown Forcing(SimulationState)`, `EnergyBudget Budget(SimulationState)`, `double WarmingPerDoubling`. The page shows the forcing panels for any simulation that implements it (§2.3). |
 
 `Ice` is added to `SpeciesCatalog` (ΔfH −291.8 kJ/mol; to verify) and `SimulationState` gains `Ice` (mol), so the cars' water can fall as frost (energy balance §5).
@@ -46,6 +46,8 @@ T'   = T_eq + (T − T_eq) e^(−λ t / C)
 
 This stays stable at any step, as today's does. A substep limit of 0.5 K of change keeps the linearisation accurate; the O₂ and CO₂ limits (1% each) stay. On the dead planet the air responds in ~5 weeks (`C/λ`), so at the faster speeds the temperature lands on the balance each substep.
 
+**The forcing ramps across the substep.** Holding the forcing at its start-of-substep value made the temperature trail the CO₂ by a whole substep: after a century, an imbalance of 0.054 W/m² where the real lag is 0.0035. So the heating (`N + H`, linearised about `T`) rises steadily from the substep's start to its end, at rate `r`, and the step uses the exact solution of `C dx/dt = q₀ + r t − λx`. That keeps the true lag, `r C/λ²` in temperature, at any substep length.
+
 ### 1.4 Order and compatibility
 
 `SealedHouse` doesn't change. `ISimulation` doesn't change; `IPlanetSimulation` extends it. Nothing else uses the removed members apart from `DeadPlanetScenario` and the tests, which change with them.
@@ -56,8 +58,7 @@ This stays stable at any step, as today's does. A substep limit of 0.5 K of chan
 
 - **`PlanetInputs`** (record): `SolarConstant` and `Albedo`. `ScenarioInputs` gains `Planet` beside `FossilFuels`. Its comment changes from "one member per input tab" to "one member per input tab, and the setting's own inputs".
 - **`ScenarioCatalog`:** the dead planet's factory maps `Planet` into `DeadPlanetSettings.Energy`. Both sunlight and albedo flow through, so a later scenario or input can set the albedo with no engine change.
-- **`SunlightInput`** (new; `.razor`, `.razor.cs`, `.razor.css`, as `CarCountInput`): a `TextInput` in W/m² with the hint "Today's sun: 1,361 W/m²". It accepts 1 to 100,000 W/m², and the parent validates as `CarCountInput` does. W/m² doesn't convert between unit systems ([web client §3](2026-11-01-07-carbon-cycle-simulation-web-client-plan.md)). Shown on the dead planet's slide, under the car count.
-- **Albedo has no control on screen.** It's in `PlanetInputs` and the settings, and a test checks it reaches the engine.
+- **Neither sunlight nor albedo has a control on screen** (decided 2026-11-01, to keep the slide simple). Both are in `PlanetInputs` and the settings, and a test checks they reach the engine. A `SunlightInput` (a `TextInput` in W/m², as `CarCountInput`) can come later with no engine change.
 
 ### 2.2 The dead planet's slide
 
@@ -98,7 +99,6 @@ Two new `FloatingPanel`s on the page, shown while the active scenario's simulati
 
 **`ClimateExplorer.Web.CarbonSim.UnitTests`**
 - `ScenarioCatalogTests`: the dead planet's `PlanetInputs` (sunlight and albedo) reach `DeadPlanetSettings.Energy`.
-- Sunlight input parsing and range, where it's plain C#.
 
 `ClimateExplorer.Web.UnitTests` (CSS class usage) runs over the new scoped CSS unchanged.
 
@@ -107,7 +107,7 @@ Two new `FloatingPanel`s on the page, shown while the active scenario's simulati
 Each step builds and passes the unit tests on its own.
 
 1. **Engine:** §1, with its tests. `DeadPlanetScenario` switches to `Forcing`/`Budget`, and its text gets the new physics (§2.2).
-2. **Inputs:** `PlanetInputs`, `SunlightInput`, the catalog mapping (§2.1).
+2. **Inputs:** `PlanetInputs` and the catalog mapping (§2.1).
 3. **Forcing panel:** `ForcingChart` and the readouts (§2.3).
 4. **Over time:** `TimeSeriesChart` and the two charts (§2.3).
 
@@ -117,11 +117,12 @@ On landing, update the energy balance plan's status, the [simulation overview §
 
 - **The dead planet's numbers change.** Its start moves from 15 °C to about −12 °C and its warming per doubling from ~1.2 °C to ~1.1 °C, so its tests and text change together. `g₀` is provisional (energy balance §10).
 - **CO₂ beyond the formula's range** (Q24): v1 extrapolates. The readout mark for "beyond the formula's range" is left to the step that settles Q24.
+- **CO₂ below preindustrial:** `RadiativeForcing.CarbonDioxide` takes amounts under 280 ppm as 280 ppm ([energy balance §10](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md)). The dead planet never gets there.
 - **Chart.js streaming cost.** Two more time-series charts appended per tick. At the current tick rate and the gas chart's point counts, this should be fine; if it isn't, push at the readout rate instead, as the bar chart does.
 
 ## Summary
 
-Adds the forcing schema and the energy budget to the engine. That means `PlanetEnergySettings`, a `ForcingAgent` catalog with CO₂, solar and albedo, `RadiativeForcing`, `ForcingBreakdown`, `EnergyBudget`, `PlanetEnergyBalance` and an `IPlanetSimulation` interface. The dead planet moves onto them: it's warmed by the sun, starts in balance at its own temperature, and reports forcing by agent. On the page, the reader gets a sunlight input (albedo is carried but not shown) and a radiative forcing panel with a Chart.js bar chart and energy readouts. An over-time panel charts temperature and forcing, built from the gas chart made generic.
+Adds the forcing schema and the energy budget to the engine. That means `PlanetEnergySettings`, a `ForcingAgent` catalog with CO₂, solar and albedo, `RadiativeForcing`, `ForcingBreakdown`, `EnergyBudget`, `PlanetEnergyBalance` and an `IPlanetSimulation` interface. The dead planet moves onto them: it's warmed by the sun, starts in balance at its own temperature, and reports forcing by agent. On the page, sunlight and albedo are carried as inputs but not shown, and the reader gets a radiative forcing panel with a Chart.js bar chart and energy readouts. An over-time panel charts temperature and forcing, built from the gas chart made generic.
 
 ### Change size
 
@@ -131,12 +132,27 @@ Adds the forcing schema and the energy budget to the engine. That means `PlanetE
 |---|---|---|---|
 | Engine: settings, forcing agents and formulas, breakdown, budget, energy balance, `IPlanetSimulation` | 8 files, +450 | — | — |
 | Engine: `DeadPlanet`, `DeadPlanetSettings`, `SimulationState`, `SpeciesCatalog`, `Sources` | — | 5 files, ~175 | — |
-| Web: `PlanetInputs`, `SunlightInput` | 4 files, +140 | 2 files (`ScenarioInputs`, `ScenarioCatalog`), ~20 | — |
+| Web: `PlanetInputs` | 1 file, +20 | 2 files (`ScenarioInputs`, `ScenarioCatalog`), ~20 | — |
 | Web: `ForcingChart` and the forcing panel | 4 files, +250 | — | — |
 | Web: `GasChart` → `TimeSeriesChart` (renamed), over-time panel | — | 5 files, ~80 | — |
 | Web: page, `DeadPlanetScenario` | — | 5 files, ~200 | — |
 | Tests: `RadiativeForcingTests`, `PlanetEnergyBalanceTests` | 2 files, +300 | — | — |
 | Tests: `DeadPlanetTests`, `ValidationTests`, `ScenarioCatalogTests` | — | 3 files, ~200 | — |
-| **Total** | **18 files, +1,140** | **20 files, ~675** | — |
+| **Total** | **15 files, +1,020** | **20 files, ~675** | — |
 
 The renamed chart's 4 files are counted as changed; its own lines barely change.
+
+## Addendum — implementation notes (2026-11-01)
+
+Steps 1 and 2 are built, without the UI.
+
+- **Engine:** as §1, plus `ForcingBreakdown.Of(agent)` for one agent's value and `PlanetEnergyBalance.DistanceFromBalance` for the 0.5 K substep limit. `DeadPlanet` exposes its `EnergyBalance`. `InputValidation.FractionBelowOne` rejects an albedo or `g₀` of 1, which would leave nothing absorbed or nothing reaching space.
+- **The forcing ramps across each substep** (§1.3). The century test found the problem: the old step showed 16 times the real lag.
+- **Numbers, from the tests:**
+  - **Start:** 261.4 K (−11.8 °C), in balance. `λ` is 3.64 W/(m²·K), and the warming per doubling is 1.08 K.
+  - **After a century:** the CO₂ ERF is 7.0 W/m², the planet is 1.9 K warmer, and it lags the balance by 0.0035 W/m².
+  - **When the engines stop:** CO₂ is 4.16% (the earlier ~3.8% was an estimate), the ERF is 26.0 W/m², and the planet is at 268.2 K (−5 °C).
+  - **Engines' heat:** 0.078 W/m². That's 1% more than before, because the water now falls as frost and gives up its heat of fusion too.
+- **Inputs:** `PlanetInputs` (sunlight and albedo) in `ScenarioInputs.Planet`, mapped into `DeadPlanetSettings.Energy` by `ScenarioCatalog`. No control on screen.
+- **Slide, changed only as far as the build needs:** `DeadPlanetScenario` reads the CO₂ ERF and the engines' heat from `Forcing(state)` and the warming per doubling from the engine. "Water rained out" now counts ice too. Its text still describes the warm sky and says "no sun"; §2.2 replaces it with the UI steps.
+- **Tests:** `RadiativeForcingTests`, `PlanetEnergyBalanceTests` (including the ramp's lag), `DeadPlanetTests` rewritten, `ValidationTests` for `PlanetEnergySettings`, and `ScenarioCatalogTests` for the planet inputs.

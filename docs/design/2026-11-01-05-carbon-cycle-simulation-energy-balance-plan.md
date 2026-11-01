@@ -1,7 +1,7 @@
 # Carbon Cycle simulation — Sunlight, forcing and the planet energy balance
 
 - **Date:** 2026-11-01 (split from the [simulation overview](2026-10-24-01-carbon-cycle-simulation-plan.md), written 2026-10-24; revised 2026-11-01: sunlight as an input, a physical start temperature, effective radiative forcing by agent)
-- **Status:** Proposed. Not built. The first part (sunlight, the energy budget, CO₂ and solar ERF, the dead planet moved onto them) is planned in [Planet energy budget and forcing — implementation](2026-11-01-08-carbon-cycle-planet-forcing-implementation-plan.md).
+- **Status:** Proposed. First part partly built (2026-11-01): sunlight, the energy budget, CO₂, solar and albedo ERF, and the dead planet moved onto them, in the engine; the charts and the slide text are still to do. See [Planet energy budget and forcing — implementation](2026-11-01-08-carbon-cycle-planet-forcing-implementation-plan.md).
 - **Author:** Patrick Lea (with Claude)
 - **Scope:** The planet's zero-dimensional energy balance: sunlight, albedo, the greenhouse effect, heat to space, feedbacks and heat capacity. Effective radiative forcing (ERF) by agent, and what isn't a forcing. The daily TSI driver for planets and greenhouses. What the Radiative forcing tab (Tab 6) shows. The physics only; the code is in the implementation plan.
 - **Builds on:** [Carbon Cycle simulation — Overview](2026-10-24-01-carbon-cycle-simulation-plan.md); [engine](2026-11-01-01-carbon-cycle-simulation-engine-plan.md); [A billion cars on a dead planet](2026-10-31-01-dead-planet-cars-scenario-plan.md) (its "warm sky" is replaced here); [Carbon Cycle page overview §7](2026-10-21-01-carbon-cycle-plan.md) (forcing formulas)
@@ -11,7 +11,7 @@ Section references without a plan name are to this document. "Overview" is the [
 
 ## 1. Sunlight
 
-A planet setting has one sunlight input, the **solar constant** `S`: the sunlight arriving at the planet's distance from the sun, on a surface facing it, in W/m². Default 1361 W/m², today's (Kopp and Lean 2011). The reader can change it, for a fainter young sun or a planet nearer the sun.
+A planet setting has one sunlight input, the **solar constant** `S`: the sunlight arriving at the planet's distance from the sun, on a surface facing it, in W/m². Default 1361 W/m², today's (Kopp and Lean 2011). Like the albedo, it's a setting input with no control on screen yet; a later input or scenario can change it, for a fainter sun or a planet nearer the sun.
 
 - **Why ÷ 4.** The planet catches sunlight on a disc (πr²) but has four times that area (4πr²) to spread it over and radiate from. So the average sunlight per square metre of the planet is `S/4`, ~340 W/m². This is how a single-temperature model allows for the planet being a sphere.
 - **What's left out:** day and night, seasons and latitude. The planet has one temperature, the global mean. Day and night would matter for a box (the greenhouses), and the TSI driver (§6) handles them there.
@@ -96,7 +96,7 @@ The dead planet's "warm sky" ([its plan §3](2026-10-31-01-dead-planet-cars-scen
 | Planck response | ~3.6 W/(m²·K) | `4 × 238 / 261` |
 | Warming per doubling of CO₂ | ~1.1 °C | 3.93 / 3.6 |
 | After 100 years (~1,440 ppm CO₂) | ERF ~7.0 W/m², ~−10 °C | |
-| When the engines stop (~3.8% CO₂, ~3,900 years) | ERF ~26 W/m² (extrapolated, Q24), ~−5 °C | |
+| When the engines stop (~4.2% CO₂, ~3,900 years) | ERF ~26 W/m² (extrapolated, Q24), ~−5 °C | |
 | Engines' heat | 0.077 W/m² | unchanged |
 
 What this changes for the scenario:
@@ -147,9 +147,9 @@ Readouts beside them: the temperature, the absorbed sunlight, the heat to space,
 
 ## 10. Risks
 
-- **The logarithmic CO₂ forcing** also fails as CO₂ nears zero (Earth without volcanoes). The engine needs a floor or a different form at very low CO₂.
+- **CO₂ below preindustrial.** The logarithmic CO₂ forcing fails as CO₂ nears zero. The simulator is about the warming people cause, not paleoclimate, so it doesn't go below preindustrial CO₂ (280 ppm): `RadiativeForcing` takes lower amounts as 280 ppm. Within that range, the model uses straightforward physics, chemistry and biology wherever they apply. This bounds Earth without volcanoes ([planet §1.2](2026-11-01-04-carbon-cycle-simulation-planet-plan.md), Q25).
 - **`g₀` for a dry planet** is an estimate from Earth studies, which include water vapour's overlap with CO₂. A dry atmosphere's CO₂ greenhouse effect also depends on its temperature profile, which one temperature can't represent. The start temperature is only as good as this number, and the text says so.
-- **The ice-albedo step** is a tuning choice that decides when a snowball happens.
+- **The ice-albedo step** is a tuning choice that decides when a snowball happens. It's for the Earth settings only; the dead planet has no ice-albedo.
 - **Readers comparing the dead planet with Earth.** Its warming per doubling is about a third of Earth's, because it has no water vapour feedback. The scenario text says why.
 
 Each gets a Level 2 note.

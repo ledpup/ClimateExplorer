@@ -1,3 +1,4 @@
+@using ClimateExplorer.CarbonCycle.Simulation
 @using ClimateExplorer.Web.Client.CarbonSim.Components
 @inherits ScenarioComponent
 
@@ -28,11 +29,11 @@
         </div>
         <div>
             <dt>Heat kept in by the added CO₂</dt>
-            <dd>@HeatFluxText(Planet.CarbonDioxideForcing(State))</dd>
+            <dd>@HeatFluxText(Forcing.Of(ForcingAgents.CarbonDioxide))</dd>
         </div>
         <div>
             <dt>Heat from the engines</dt>
-            <dd>@HeatFluxText(Planet.EngineHeat(State))</dd>
+            <dd>@HeatFluxText(Forcing.NonRadiativeHeat)</dd>
         </div>
     </ReactionSummary>
 </div>

@@ -45,6 +45,27 @@ public class ScenarioCatalogTests
     }
 
     [TestMethod]
+    public void All_DeadPlanetWithPlanetInputs_SunlightAndAlbedoReachTheEngine()
+    {
+        var scenario = ScenarioCatalog.All[1];
+        var inputs = scenario.Inputs with { Planet = new PlanetInputs { SolarConstant = 1400, Albedo = 0.25 } };
+
+        var energy = ((DeadPlanet)scenario.CreateSimulation(inputs)).Energy;
+
+        Assert.AreEqual(1400, energy.SolarConstant);
+        Assert.AreEqual(0.25, energy.Albedo);
+        Assert.AreEqual(PlanetEnergySettings.DryPlanet.GreenhouseEffect, energy.GreenhouseEffect);
+    }
+
+    [TestMethod]
+    public void All_DeadPlanet_StartsWithTodaysSunAndEarthsAlbedo()
+    {
+        var scenario = ScenarioCatalog.All[1];
+
+        Assert.AreEqual(PlanetEnergySettings.DryPlanet, ((DeadPlanet)scenario.CreateSimulation(scenario.Inputs)).Energy);
+    }
+
+    [TestMethod]
     public void All_EveryScenario_StartsWithItsOwnInputs()
     {
         foreach (var scenario in ScenarioCatalog.All)

@@ -34,6 +34,8 @@ Basic Earth with background outgassing switched off. This is where the planet-sc
 
 So a large temperature drop with frozen water is the likely end state here. The sharp drop is ice-albedo feedback ([energy balance §2](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md)), not weathering itself. Timescale: hundreds of thousands of years (to verify in the engine), a few minutes at 1,000 years per second.
 
+**In question (Q25, §5).** Steps 2 to 4 take CO₂ below preindustrial, which the simulator no longer models ([energy balance §10](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md)). This setting needs rethinking before it's built.
+
 ### 1.3 The volcano button
 
 Any planet setting has an **Erupt** button, with a count (1, 10 or 100) and an eruption size.
@@ -83,9 +85,16 @@ Solar gain and outgoing longwave for the planet are the energy balance ([energy 
 
 - **A fixed Revelle factor** is wrong for large perturbations.
 - **Sulfate forcing** grows less than in proportion at very large loads (particles grow and fall faster), which matters for 100 eruptions at once. It needs a saturating form.
-- **The log CO₂ forcing near zero** and **the ice-albedo tuning** matter most here; they are in the [energy balance plan §10](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md).
+- **CO₂ below preindustrial** and **the ice-albedo tuning** matter most here; they are in the [energy balance plan §10](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md).
 
 Each of these gets a Level 2 note.
+
+## 5. Open questions
+
+- **Q25** Earth without volcanoes, with CO₂ held at or above preindustrial (280 ppm). Its story (§1.2) draws CO₂ down past the start into a snowball. That is paleoclimate, outside the simulator's scope. Options:
+  - stop the drawdown at 280 ppm and show only the return to preindustrial;
+  - keep the setting only for the volcano button and the weathering timescale;
+  - drop it.
 
 ## Summary
 

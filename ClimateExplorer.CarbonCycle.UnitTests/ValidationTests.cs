@@ -4,6 +4,7 @@ using ClimateExplorer.CarbonCycle.Calcination;
 using ClimateExplorer.CarbonCycle.Calculation;
 using ClimateExplorer.CarbonCycle.Chemistry;
 using ClimateExplorer.CarbonCycle.Fuels;
+using ClimateExplorer.CarbonCycle.Simulation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ClimateExplorer.CarbonCycle.UnitTests;
@@ -127,5 +128,29 @@ public class ValidationTests
         var assumptions = CalcinationAssumptions.Default with { CementClinkerRatio = 0 };
 
         Assert.AreEqual("cementClinkerRatio", TestAssert.ThrowsForField(() => Tab1ChemistryEngine.CalcineRock(RockMaterial.Cement, 1, DefaultFuels.IdealCoal, assumptions)));
+    }
+
+    [TestMethod]
+    [DataRow(0.0)]
+    [DataRow(-1.0)]
+    public void PlanetEnergyBalance_SolarConstantNotPositive_RejectsSolarConstant(double value)
+    {
+        Assert.AreEqual("planet.solarConstant", TestAssert.ThrowsForField(() => new PlanetEnergyBalance(PlanetEnergySettings.DryPlanet with { SolarConstant = value })));
+    }
+
+    [TestMethod]
+    [DataRow(-0.1)]
+    [DataRow(1.0)]
+    public void PlanetEnergyBalance_AlbedoOutsideZeroToOne_RejectsAlbedo(double value)
+    {
+        Assert.AreEqual("planet.albedo", TestAssert.ThrowsForField(() => new PlanetEnergyBalance(PlanetEnergySettings.DryPlanet with { Albedo = value })));
+    }
+
+    [TestMethod]
+    [DataRow(-0.1)]
+    [DataRow(1.0)]
+    public void PlanetEnergyBalance_GreenhouseEffectOutsideZeroToOne_RejectsGreenhouseEffect(double value)
+    {
+        Assert.AreEqual("planet.greenhouseEffect", TestAssert.ThrowsForField(() => new PlanetEnergyBalance(PlanetEnergySettings.DryPlanet with { GreenhouseEffect = value })));
     }
 }

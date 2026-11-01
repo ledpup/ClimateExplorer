@@ -23,8 +23,11 @@ public sealed record SimulationState
 
     public double WaterVapour { get; init; }
 
-    // Condensed on the walls
+    // Condensed on the walls, or rained out
     public double LiquidWater { get; init; }
+
+    // Fallen as frost or snow
+    public double Ice { get; init; }
 
     public bool FlameOn { get; init; }
 

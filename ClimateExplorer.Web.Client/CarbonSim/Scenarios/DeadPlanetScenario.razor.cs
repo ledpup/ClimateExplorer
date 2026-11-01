@@ -15,6 +15,8 @@ public partial class DeadPlanetScenario
 
     private DeadPlanet Planet => (DeadPlanet)Simulation;
 
+    private ForcingBreakdown Forcing => Planet.Forcing(State);
+
     private string CarsText => Planet.Settings.Cars.ToString("N0", CultureInfo.InvariantCulture);
 
     private string SpeedText => Units.System == UnitSystem.Metric
@@ -26,13 +28,13 @@ public partial class DeadPlanetScenario
         ? $"{Planet.Settings.PetrolPerCar * 3600:0.#} litres an hour"
         : $"{Units.ToDisplay(Measure.Level(Planet.Settings.PetrolPerCar, UnitOfMeasure.LiquidLitresPerSecond)):0.#} US gallons an hour";
 
-    private string StartTemperatureText => Units.Format(Measure.Level(Planet.Settings.StartTemperature - 273.15, UnitOfMeasure.DegreesCelsius));
+    private string StartTemperatureText => Units.Format(Measure.Level(Planet.EnergyBalance.StartTemperature - 273.15, UnitOfMeasure.DegreesCelsius));
 
     private string PerDoublingText =>
-        Units.Format(Measure.Change(DeadPlanet.CarbonDioxideForcingCoefficient * Math.Log(2) / Planet.Settings.ClimateFeedback, UnitOfMeasure.DegreesCelsius));
+        Units.Format(Measure.Change(Planet.WarmingPerDoubling, UnitOfMeasure.DegreesCelsius));
 
     private string RainedOutText =>
-        CarbonSimFormat.Quantity(Units, Measure.Level(State.LiquidWater * SpeciesCatalog.LiquidWater.MolarMass / 1000, UnitOfMeasure.Kilograms));
+        CarbonSimFormat.Quantity(Units, Measure.Level((State.LiquidWater + State.Ice) * SpeciesCatalog.LiquidWater.MolarMass / 1000, UnitOfMeasure.Kilograms));
 
     private string HeatFluxText(double wattsPerSquareMetre) =>
         CarbonSimFormat.Quantity(Units, Measure.Level(wattsPerSquareMetre, UnitOfMeasure.WattsPerSquareMetre));
