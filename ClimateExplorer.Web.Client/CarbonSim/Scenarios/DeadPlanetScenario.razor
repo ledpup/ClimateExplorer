@@ -6,16 +6,17 @@
     <div class="scenario-text">
         <h2>@Scenario.Title</h2>
         <p>
-            A planet the size of Earth, with Earth's air and nothing else: no sun, no ocean, no plants. @CarsText cars
-            drive around it at @SpeedText, day and night, each burning about @PerCarText of petrol. The petrol is taken
-            as pure octane, and it burns completely. Nothing takes the CO₂ back out of the air.
+            A planet the size of Earth, as far from the sun, with Earth's air and nothing else: no ocean, no plants.
+            @CarsText cars drive around it at @SpeedText, day and night, each burning about @PerCarText of petrol. The
+            petrol is taken as pure octane, and it burns completely. Nothing takes the CO₂ back out of the air.
         </p>
         <p class="note">
-            With no sun, a real planet would freeze within months, and the cars would make no difference. Here the sky
-            is taken to be warm, holding the planet at its starting temperature, so all that changes it is the cars. As
-            the planet warms it loses more heat to space, and the CO₂ the cars add keeps some of that heat in, as on
-            Earth. With no water vapour, ice or clouds to add to it, the planet warms about @PerDoublingText each time
-            the CO₂ doubles. The water the cars make falls as rain.
+            The sun warms the planet. It starts where the heat it sends to space balances the sunlight it absorbs, at
+            about @StartTemperatureText, because dry air with a little CO₂ holds in little heat. The CO₂ the cars add
+            holds in more, so the planet warms until it's in balance again. With no water vapour to add to the warming,
+            that's about @PerDoublingText each time the CO₂ doubles, less than on Earth. The water the cars make
+            @WaterFallsText. The planet reflects as much sunlight as Earth, though about half of Earth's is reflected by
+            clouds, which a dry planet wouldn't have.
         </p>
         @if (Inputs.FossilFuels is not null)
         {
@@ -24,8 +25,8 @@
     </div>
     <ReactionSummary State="@State" Reaction="@Planet.Reaction">
         <div>
-            <dt>Water rained out</dt>
-            <dd>@RainedOutText</dd>
+            <dt>Water fallen as frost or rain</dt>
+            <dd>@FallenOutText</dd>
         </div>
         <div>
             <dt>Heat kept in by the added CO₂</dt>

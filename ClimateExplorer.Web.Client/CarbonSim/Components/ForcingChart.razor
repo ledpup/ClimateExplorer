@@ -1,0 +1,22 @@
+<div class="forcing-chart">
+    <canvas @ref="canvas" role="img" aria-label="@AriaLabel"></canvas>
+</div>
+
+<table class="visually-hidden">
+    <caption>@AriaLabel</caption>
+    <thead>
+        <tr>
+            <th scope="col">Agent</th>
+            <th scope="col">Forcing (@UnitText)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var bar in Bars)
+        {
+            <tr>
+                <th scope="row">@bar.Label</th>
+                <td>@ValueText(bar.Value)</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,10 +1,10 @@
-.gas-chart {
+.time-series-chart {
     position: relative;
     height: 22rem;
 }
 
 @media (max-width: 767px) {
-    .gas-chart {
+    .time-series-chart {
         height: 18rem;
     }
 }

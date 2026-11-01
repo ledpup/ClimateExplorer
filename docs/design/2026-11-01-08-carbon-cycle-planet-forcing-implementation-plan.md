@@ -1,7 +1,7 @@
 # Carbon Cycle simulation — Planet energy budget and forcing: implementation
 
 - **Date:** 2026-11-01
-- **Status:** Partly implemented 2026-11-01: steps 1 and 2 (the engine and the inputs; see the addendum). Steps 3 and 4 (the charts) and the slide text (§2.2) are still to do.
+- **Status:** Implemented 2026-11-01 (see the addendum).
 - **Author:** Patrick Lea (with Claude)
 - **Scope:** The code for the first part of the [energy balance plan](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md): sunlight and albedo settings, the energy budget, the forcing schema with CO₂, solar and albedo ERF, the dead planet moved onto them, sunlight and albedo carried as inputs with no control on screen, and the forcing and over-time charts. `ClimateExplorer.CarbonCycle/Simulation`, `ClimateExplorer.Web.Client/CarbonSim`, and their unit tests.
 - **Builds on:** [Sunlight, forcing and the planet energy balance](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md) (the physics; "energy balance §N" below); [A billion cars on a dead planet](2026-10-31-01-dead-planet-cars-scenario-plan.md) (the code it changes); [engine](2026-11-01-01-carbon-cycle-simulation-engine-plan.md)
@@ -144,7 +144,7 @@ The renamed chart's 4 files are counted as changed; its own lines barely change.
 
 ## Addendum — implementation notes (2026-11-01)
 
-Steps 1 and 2 are built, without the UI.
+Steps 1 and 2 were built first, without the UI; steps 3 and 4 and the slide text followed the same day.
 
 - **Engine:** as §1, plus `ForcingBreakdown.Of(agent)` for one agent's value and `PlanetEnergyBalance.DistanceFromBalance` for the 0.5 K substep limit. `DeadPlanet` exposes its `EnergyBalance`. `InputValidation.FractionBelowOne` rejects an albedo or `g₀` of 1, which would leave nothing absorbed or nothing reaching space.
 - **The forcing ramps across each substep** (§1.3). The century test found the problem: the old step showed 16 times the real lag.
@@ -156,3 +156,25 @@ Steps 1 and 2 are built, without the UI.
 - **Inputs:** `PlanetInputs` (sunlight and albedo) in `ScenarioInputs.Planet`, mapped into `DeadPlanetSettings.Energy` by `ScenarioCatalog`. No control on screen.
 - **Slide, changed only as far as the build needs:** `DeadPlanetScenario` reads the CO₂ ERF and the engines' heat from `Forcing(state)` and the warming per doubling from the engine. "Water rained out" now counts ice too. Its text still describes the warm sky and says "no sun"; §2.2 replaces it with the UI steps.
 - **Tests:** `RadiativeForcingTests`, `PlanetEnergyBalanceTests` (including the ramp's lag), `DeadPlanetTests` rewritten, `ValidationTests` for `PlanetEnergySettings`, and `ScenarioCatalogTests` for the planet inputs.
+
+**Steps 3 and 4, and the slide (§2.2, §2.3):**
+
+- **Slide:** the warm sky paragraph is replaced as §2.2 says. The start temperature and the warming per doubling come from
+  the engine, and "falls as frost" or "as rain" follows the start temperature. The summary's water row is "Water fallen
+  as frost or rain".
+- **`ForcingChart`:** as §2.3, with a dashed divider drawn by a small Chart.js plugin, and the engines' heat in grey. The
+  label "Engines' heat (not a forcing)" is a constant, since engines are the only non-radiative heat so far. It redraws
+  whenever its values change, which today is every tick, because the page re-renders per tick until the
+  [clock plan](2026-11-01-06-carbon-cycle-simulation-clock-plan.md)'s readout rate lands.
+- **`EnergyReadouts`** (new; `.razor`, `.razor.cs`, `.razor.css`): the six readouts sit in their own component under the
+  bar chart, styled as `GasTable`'s, with a note on what the imbalance is. Flows show to 0.01 W/m².
+- **`TimeSeriesChart`:** `GasChart` renamed, with `YTitle`, `YUnit` and `BeginAtZero` parameters. `TimeSeriesChartSeries`
+  gains `Dashed`: the total forcing runs on top of the CO₂ forcing, and the heat to space on top of the absorbed
+  sunlight, so the second of each pair is dashed. The panel is titled "Temperature and forcing over time".
+- **Units:** the temperature chart is in display units. When the reader changes the unit setting mid-run, `ConvertAsync`
+  maps the points already drawn (°C to °F as `v × scale + offset`), so the history isn't lost.
+- **Page:** the charts now reset after the render that follows a restart, not during it. The planet panels appear and go
+  with the scenario, so their chart references are only current after that render; the page drops them when the
+  simulation isn't a planet.
+- **Deferred:** the 280 ppm floor for Earth with and without volcanoes ([energy balance §10](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md),
+  Q25) stays as it is for now.

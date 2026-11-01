@@ -120,5 +120,6 @@ Implemented as above on 2026-10-31. Follow-ups:
   water vapour, ice and clouds add.
 - **The warm sky is replaced (2026-11-01).** The engine now has sunlight, an albedo and a greenhouse effect, and starts
   in balance at about −12 °C. The `StartTemperature` and `ClimateFeedback` settings are gone, and the cars' water falls
-  as frost. The slide's text still describes the warm sky until the UI steps of the
-  [implementation plan](2026-11-01-08-carbon-cycle-planet-forcing-implementation-plan.md) land.
+  as frost. The slide's text now describes the sun and the balance, with the start temperature and the warming per
+  doubling taken from the engine; see the
+  [implementation plan](2026-11-01-08-carbon-cycle-planet-forcing-implementation-plan.md).

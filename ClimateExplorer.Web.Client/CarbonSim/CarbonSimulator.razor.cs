@@ -7,11 +7,12 @@ using ClimateExplorer.Web.Client.CarbonSim.Components;
 using ClimateExplorer.Web.Client.CarbonSim.Scenarios;
 using ClimateExplorer.Web.Client.Units;
 using Microsoft.AspNetCore.Components;
+using static ClimateExplorer.Core.Enums;
 
 /// <summary>
 /// The Carbon-cycle simulator. The fossil fuels tab holds a carousel of scenarios: methane burning in a sealed house
 /// (simulation boxes plan §1.1) and cars on a dead planet. The active scenario's slide has its inputs; the clock runs the
-/// simulation, and the floating panels show its air.
+/// simulation, and the floating panels show its air. A planet also gets its forcing and energy budget, now and over time.
 /// </summary>
 public partial class CarbonSimulator : IAsyncDisposable
 {
@@ -36,6 +37,19 @@ public partial class CarbonSimulator : IAsyncDisposable
         ("#008300", true),
     ];
 
+    // A planet's lines. The forcing is in reds, as warming; the absorbed sunlight and heat to space stay together, so
+    // one is dashed. The total forcing is dashed for the same reason: with CO₂ the only agent that changes, it's the same.
+    private static readonly IReadOnlyList<TimeSeriesChartSeries> TemperatureSeries = [new("Temperature", "#d6604d")];
+
+    private static readonly IReadOnlyList<TimeSeriesChartSeries> EnergySeries =
+    [
+        new("CO₂ forcing", "#d6604d"),
+        new("Total forcing", "#b2182b", Dashed: true),
+        new("Imbalance", "#1baf7a"),
+        new("Absorbed sunlight, change", "#eda100"),
+        new("Heat to space, change", "#2a78d6", Dashed: true),
+    ];
+
     // The slides beside the active one show their scenario's own inputs at time 0
     private readonly Dictionary<Scenario, (ISimulation Simulation, SimulationState Start)> previews = [];
 
@@ -49,7 +63,15 @@ public partial class CarbonSimulator : IAsyncDisposable
     private string selectedTab = FossilTab;
     private double secondsPerSecond = SimulationSpeed.All[0].SecondsPerSecond;
     private string? announcement;
-    private GasChart? gasChart;
+    private TimeSeriesChart? gasChart;
+    private TimeSeriesChart? temperatureChart;
+    private TimeSeriesChart? energyChart;
+
+    // The charts are reset after the render that follows a restart, once the planet charts are on the page or gone
+    private bool chartsStale = true;
+
+    // The units the temperature chart's points are in
+    private IUnitFormatter chartUnits = UnitFormatter.Metric;
     private CancellationTokenSource? runCancellation;
     private Task? runTask;
 
@@ -58,9 +80,9 @@ public partial class CarbonSimulator : IAsyncDisposable
 
     private bool IsRunning => runCancellation is not null;
 
-    private IReadOnlyList<GasChartSeries> ChartSeries =>
+    private IReadOnlyList<TimeSeriesChartSeries> GasSeries =>
         state.Gases
-            .Select((gas, i) => new GasChartSeries(gas.Species.ToDisplayString(), GasStyles[i].Colour, GasStyles[i].Hidden))
+            .Select((gas, i) => new TimeSeriesChartSeries(gas.Species.ToDisplayString(), GasStyles[i].Colour, GasStyles[i].Hidden))
             .ToList();
 
     public async ValueTask DisposeAsync()
@@ -76,11 +98,20 @@ public partial class CarbonSimulator : IAsyncDisposable
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (chartsStale)
         {
-            await ResetChartAsync();
+            chartsStale = false;
+            await ResetChartsAsync();
+        }
+        else if (Units.System != chartUnits.System)
+        {
+            await ConvertTemperatureChartAsync();
         }
     }
+
+    // The unit after each value on a chart's axis, with a space where the unit setting puts one: "°C", " W/m²"
+    private string AxisUnit(UnitOfMeasure unit) =>
+        Units.IsTight(unit) ? Units.ShortLabel(unit) : " " + Units.ShortLabel(unit);
 
     private Dictionary<string, object> ScenarioParameters(CarouselSlide<Scenario> slide)
     {
@@ -173,7 +204,7 @@ public partial class CarbonSimulator : IAsyncDisposable
         start = simulation.Start();
         state = start;
         announcement = null;
-        await ResetChartAsync();
+        chartsStale = true;
     }
 
     private async Task PauseAsync()
@@ -216,7 +247,7 @@ public partial class CarbonSimulator : IAsyncDisposable
                     announcement = $"Flame out at {CarbonSimFormat.Duration(state.FlameOutTime ?? state.Time)}: oxygen below {CarbonSimFormat.Share(simulation.OxygenCutOff)}.";
                 }
 
-                await AppendChartPointAsync();
+                await AppendChartPointsAsync();
                 await InvokeAsync(StateHasChanged);
             }
         }
@@ -225,18 +256,73 @@ public partial class CarbonSimulator : IAsyncDisposable
         }
     }
 
-    private async Task ResetChartAsync()
+    private async Task ResetChartsAsync()
     {
-        if (gasChart is null)
+        // The planet charts are only on the page while the simulation is a planet; otherwise their references are stale
+        if (simulation is not IPlanetSimulation)
+        {
+            temperatureChart = null;
+            energyChart = null;
+        }
+
+        chartUnits = Units;
+
+        TimeSeriesChart?[] charts = [gasChart, temperatureChart, energyChart];
+
+        foreach (var chart in charts.OfType<TimeSeriesChart>())
+        {
+            await chart.ResetAsync();
+        }
+
+        await AppendChartPointsAsync();
+    }
+
+    // The reader changed the unit setting: the temperatures already drawn move to the new units, as a line v × scale +
+    // offset from the old display units to the new
+    private async Task ConvertTemperatureChartAsync()
+    {
+        double Convert(double value) =>
+            Units.ToDisplay(Measure.Level(chartUnits.FromDisplay(value, UnitOfMeasure.DegreesCelsius), UnitOfMeasure.DegreesCelsius));
+
+        var offset = Convert(0);
+        var scale = Convert(1) - offset;
+        chartUnits = Units;
+
+        if (temperatureChart is not null)
+        {
+            await temperatureChart.ConvertAsync(scale, offset);
+        }
+    }
+
+    private async Task AppendChartPointsAsync()
+    {
+        if (gasChart is not null)
+        {
+            await gasChart.AppendAsync(state.Time, state.Gases.Select(gas => 100 * gas.Moles / state.GasMoles).ToList());
+        }
+
+        if (simulation is not IPlanetSimulation planet || temperatureChart is null || energyChart is null)
         {
             return;
         }
 
-        await gasChart.ResetAsync();
-        await AppendChartPointAsync();
-    }
+        await temperatureChart.AppendAsync(
+            state.Time,
+            [chartUnits.ToDisplay(Measure.Level(state.Temperature - 273.15, UnitOfMeasure.DegreesCelsius))]);
 
-    private Task AppendChartPointAsync() =>
-        gasChart?.AppendAsync(state.Time, state.Gases.Select(gas => 100 * gas.Moles / state.GasMoles).ToList())
-        ?? Task.CompletedTask;
+        var forcing = planet.Forcing(state);
+        var budget = planet.Budget(state);
+        var startBudget = planet.Budget(start);
+
+        // In the order of EnergySeries
+        await energyChart.AppendAsync(
+            state.Time,
+            [
+                forcing.Of(ForcingAgents.CarbonDioxide),
+                forcing.Total,
+                budget.Imbalance,
+                budget.Absorbed - startBudget.Absorbed,
+                budget.HeatToSpace - startBudget.HeatToSpace,
+            ]);
+    }
 }

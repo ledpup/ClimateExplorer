@@ -1,0 +1,30 @@
+<dl class="readouts">
+    <div class="readout">
+        <dt>Temperature</dt>
+        <dd>@TemperatureText</dd>
+    </div>
+    <div class="readout">
+        <dt>Absorbed sunlight</dt>
+        <dd>@FluxText(Budget.Absorbed)</dd>
+    </div>
+    <div class="readout">
+        <dt>Heat to space</dt>
+        <dd>@FluxText(Budget.HeatToSpace)</dd>
+    </div>
+    <div class="readout">
+        <dt>Imbalance</dt>
+        <dd>@FluxText(Budget.Imbalance, signed: true)</dd>
+    </div>
+    <div class="readout">
+        <dt>Total forcing</dt>
+        <dd>@FluxText(Forcing.Total, signed: true)</dd>
+    </div>
+    <div class="readout">
+        <dt>Warming per doubling of CO₂</dt>
+        <dd>@PerDoublingText</dd>
+    </div>
+</dl>
+<p class="note">
+    The imbalance is the absorbed sunlight less the heat to space. It stays small, because the planet warms until the
+    heat it sends to space catches up with the forcing.
+</p>
