@@ -26,6 +26,15 @@ internal static class InputValidation
         }
     }
 
+    // 0 or more and less than 1, for a share that can't be all
+    public static void FractionBelowOne(List<ValidationError> errors, string field, double value)
+    {
+        if (!double.IsFinite(value) || value < 0 || value >= 1)
+        {
+            errors.Add(new ValidationError(field, $"must be 0 or more and less than 1, not {value}."));
+        }
+    }
+
     public static void SumsToOne(List<ValidationError> errors, string field, IEnumerable<double> values)
     {
         var sum = values.Sum();

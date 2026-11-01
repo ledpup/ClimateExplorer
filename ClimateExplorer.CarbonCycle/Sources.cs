@@ -16,4 +16,14 @@ public static class Sources
     public const string ProvisionalCalcination = "Provisional default from the Tab 1 plan §2.1 (IPCC Tier 1); to verify (Tab 1 step 2)";
 
     public const string Generated = "Generated from the fuel's composition";
+
+    public const string CarbonDioxideForcing = "AR6 WG1 Ch. 7 (Forster et al. 2021): 3.93 W/m² per doubling of CO₂; to verify";
+
+    public const string SolarForcing = "The change in absorbed sunlight, ΔS/4 × (1 − α); AR6's small adjustment left out, to verify";
+
+    public const string AlbedoForcing = "The change in absorbed sunlight, −S₀/4 × Δα";
+
+    public const string SolarConstant = "Kopp and Lean 2011: 1361 W/m²";
+
+    public const string DryPlanetGreenhouseEffect = "Provisional: CO₂'s share of the greenhouse effect, without water vapour or clouds (to source, e.g. Schmidt et al. 2010)";
 }

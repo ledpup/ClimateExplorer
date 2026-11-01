@@ -5,8 +5,8 @@
 - **Author:** Patrick Lea (with Claude)
 - **Scope:** Scenario 2 of the simulator's carousel. A second engine (`DeadPlanet`) beside `SealedHouse`, the
   `ISimulation` interface the page runs, the car count input, and the formatting and clock speeds a planet needs.
-- **Builds on:** [Carbon Cycle page — Simulation](2026-10-24-01-carbon-cycle-simulation-plan.md) (§3.5 planet energy
-  balance, §11.1 first slice)
+- **Builds on:** [Carbon Cycle simulation — Overview](2026-10-24-01-carbon-cycle-simulation-plan.md) (§6 first slice);
+  [energy balance §2](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md) (planet energy balance)
 - **Branch context:** `development`
 
 ## 1. The scenario
@@ -27,7 +27,7 @@ Tab 1 chemistry engine (`DefaultFuels.IdealPetrol`), as the house burns methane.
 | CO₂ made | ~80 Gt a year | about twice today's fossil emissions (~37 Gt) |
 | Air | 1.77 × 10²⁰ mol, 5.135 × 10¹⁸ kg | Earth's dry air (Trenberth and Smith 2005) |
 | CO₂ rise | ~10 ppm a year | 1 ppm is ~7.8 Gt CO₂ |
-| Engines stop (O₂ below 15%) | after ~3,930 years | 12.5 O₂ per octane; CO₂ is then ~3.8% |
+| Engines stop (O₂ below 15%) | after ~3,930 years | 12.5 O₂ per octane; CO₂ is then ~4.2% (corrected 2026-11-01) |
 | Engine heat | 39 TW, 0.077 W/m² | octane's heat of combustion plus the latent heat of its rained-out water |
 
 The scenario needs the clock to run at years per second, so the speed control gains 1 week, 1 year, 10 years and
@@ -43,7 +43,7 @@ Without heat to space there's nothing to stop the warming, and with a cold sky t
 | **B. Cold universe, no sun** | A real Earth with no sun loses ~240 W/m², about 3,000 times the cars' heat. It cools by ~2 °C a day and freezes within months. | The cars make no difference. Not useful. |
 | **C. Warm sky** (chosen) | Something unmodelled holds the planet at 15 °C at the start, as the sun does for Earth. As it warms, it loses more heat to space; CO₂ keeps some in. | Shows the real point. A few lines of code. |
 
-Option C is the planet energy balance of simulation plan §4.3 with the sun and albedo replaced by a constant that
+Option C is the planet energy balance of [energy balance plan §2](2026-11-01-05-carbon-cycle-simulation-energy-balance-plan.md) with the sun and albedo replaced by a constant that
 balances heat to space at the start:
 
 ```
@@ -68,7 +68,7 @@ C dT/dt = engine heat + F(CO₂) − λ (T − T₀)          F = 5.35 ln(C/C₀
 - **Pressure is the weight of the air** (mass × g ÷ area), 98.7 kPa at the start, Earth's mean surface pressure. Each
   octane burnt takes 48 g out of the air (12.5 O₂ in, 8 CO₂ out, the water rained out), so it falls slightly.
 - **One temperature for the whole atmosphere.** No lapse rate, no stratosphere.
-- **Engines stop at the same 15% O₂ cut-off as the house's flame** (simulation plan §4.4). Real engines would lose
+- **Engines stop at the same 15% O₂ cut-off as the house's flame** ([engine plan §5](2026-11-01-01-carbon-cycle-simulation-engine-plan.md)). Real engines would lose
   power and run rich before that.
 
 ## 5. Design
@@ -118,3 +118,8 @@ Implemented as above on 2026-10-31. Follow-ups:
   the house by then, so only the time readout shows it. Solving its heat loss exactly, as the planet does, would fix it.
 - **Earth-like feedbacks.** A Level 2 option could use Earth's `λ` (~1.2 W/(m²·K), 3 °C per doubling) to show what
   water vapour, ice and clouds add.
+- **The warm sky is replaced (2026-11-01).** The engine now has sunlight, an albedo and a greenhouse effect, and starts
+  in balance at about −12 °C. The `StartTemperature` and `ClimateFeedback` settings are gone, and the cars' water falls
+  as frost. The slide's text now describes the sun and the balance, with the start temperature and the warming per
+  doubling taken from the engine; see the
+  [implementation plan](2026-11-01-08-carbon-cycle-planet-forcing-implementation-plan.md).

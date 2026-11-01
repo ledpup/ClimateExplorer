@@ -1,7 +1,9 @@
 @page "/carbon-sim"
+@using ClimateExplorer.CarbonCycle.Simulation
 @using ClimateExplorer.Web.Client.CarbonSim.Common
 @using ClimateExplorer.Web.Client.CarbonSim.Components
 @using ClimateExplorer.Web.Client.CarbonSim.Scenarios
+@using static ClimateExplorer.Core.Enums
 
 <PageTitle>ClimateExplorer - Carbon-cycle simulator</PageTitle>
 
@@ -51,8 +53,32 @@
             <GasTable State="@state" Start="@start" />
         </FloatingPanel>
         <FloatingPanel Title="Gases over time" Class="chart-panel">
-            <GasChart @ref="gasChart" Series="@ChartSeries" AriaLabel="Line chart of each gas's share of the air over time" />
+            <TimeSeriesChart @ref="gasChart"
+                             Series="@GasSeries"
+                             YTitle="Share of the air"
+                             YUnit="%"
+                             AriaLabel="Line chart of each gas's share of the air over time" />
         </FloatingPanel>
+        @if (simulation is IPlanetSimulation planet)
+        {
+            <FloatingPanel Title="Radiative forcing" Class="forcing-panel">
+                <ForcingChart Forcing="@planet.Forcing(state)" AriaLabel="Bar chart of the radiative forcing by agent now" />
+                <EnergyReadouts Simulation="@planet" State="@state" />
+            </FloatingPanel>
+            <FloatingPanel Title="Temperature and forcing over time" Class="over-time-panel">
+                <TimeSeriesChart @ref="temperatureChart"
+                                 Series="@TemperatureSeries"
+                                 YTitle="Temperature"
+                                 YUnit="@AxisUnit(UnitOfMeasure.DegreesCelsius)"
+                                 BeginAtZero="false"
+                                 AriaLabel="Line chart of the planet's temperature over time" />
+                <TimeSeriesChart @ref="energyChart"
+                                 Series="@EnergySeries"
+                                 YTitle="Forcing and energy"
+                                 YUnit="@AxisUnit(UnitOfMeasure.WattsPerSquareMetre)"
+                                 AriaLabel="Line chart over time of the forcing, the imbalance, and the change since the start in absorbed sunlight and heat to space" />
+            </FloatingPanel>
+        }
     </div>
 
     <div class="visually-hidden" aria-live="polite">@announcement</div>

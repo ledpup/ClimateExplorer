@@ -4,22 +4,23 @@ using ClimateExplorer.CarbonCycle.Calculation;
 using ClimateExplorer.CarbonCycle.Chemistry;
 using ClimateExplorer.CarbonCycle.Fuels;
 
-// Cars burning petrol in a dead planet's air. One temperature for the whole atmosphere. Something unmodelled, a warm
-// sky, holds the planet at its start temperature; as it warms it loses heat to space, and the CO₂ the cars add keeps
-// some of it in (a simple energy balance, simulation plan §4.3, with no sun, albedo or ocean). The water the cars make
-// rains out at once. The pressure is the weight of the air.
-public sealed class DeadPlanet : ISimulation
+// Cars burning petrol in a dead planet's air. One temperature for the whole planet. The sun warms it, and it starts where
+// the heat it sends to space balances the sunlight it absorbs. The CO₂ the cars add keeps more heat in, so it warms until
+// it balances again (energy balance plan §2 and §5). The water the cars make falls out at once, as frost below freezing.
+// The pressure is the weight of the air.
+public sealed class DeadPlanet : IPlanetSimulation
 {
-    // W/m² per e-fold of CO₂ (Myhre et al. 1998)
-    public const double CarbonDioxideForcingCoefficient = 5.35;
-
     // J/(kg·K), dry air at constant pressure
     private const double AirHeatCapacity = 1004;
 
-    // The largest share of the O₂ one substep may burn, and the largest rise in CO₂. The temperature is solved exactly
-    // over a substep, so it sets no limit.
+    // K
+    private const double FreezingPoint = 273.15;
+
+    // The largest share of the O₂ one substep may burn, the largest rise in CO₂, and the largest change in temperature,
+    // which keeps the temperature's linearisation accurate (planet forcing implementation plan §1.3)
     private const double MaxOxygenChange = 0.01;
     private const double MaxCarbonDioxideChange = 0.01;
+    private const double MaxTemperatureChange = 0.5;
 
     // Per call to Advance; past it the state stops short of the time asked for
     private const int MaxSubsteps = 10_000;
@@ -27,10 +28,13 @@ public sealed class DeadPlanet : ISimulation
     private readonly double oxygenPerMole;
     private readonly double carbonDioxidePerMole;
     private readonly double waterPerMole;
-
-    // J/mol of fuel, with the water rained out, so its latent heat is in the air too
-    private readonly double heatPerMole;
     private readonly double combustionHeatPerMole;
+
+    // J/mol of water given up as it falls out of the air, as rain or as frost
+    private readonly double condensationHeat;
+    private readonly double depositionHeat;
+
+    // J/(m²·K), the air's
     private readonly double heatCapacity;
 
     public DeadPlanet(DeadPlanetSettings settings)
@@ -41,6 +45,7 @@ public sealed class DeadPlanet : ISimulation
 
         Settings = settings;
         Fuel = DefaultFuels.IdealPetrol;
+        EnergyBalance = new PlanetEnergyBalance(settings.Energy);
 
         var octane = SpeciesCatalog.Octane;
         FuelMolesPerSecond = settings.Cars * settings.PetrolPerCar / 1000 * Fuel.Density!.Value / (octane.MolarMass / 1000);
@@ -52,12 +57,17 @@ public sealed class DeadPlanet : ISimulation
         waterPerMole = perMole.ProductMoles(Material.Water);
         combustionHeatPerMole = -perMole.EnthalpyChange;
 
-        var latentHeat = 1000 * (SpeciesCatalog.WaterVapour.EnthalpyOfFormation!.Value - SpeciesCatalog.LiquidWater.EnthalpyOfFormation!.Value);
-        heatPerMole = combustionHeatPerMole + (waterPerMole * latentHeat);
-        heatCapacity = settings.AtmosphereMass * AirHeatCapacity;
+        var vapour = SpeciesCatalog.WaterVapour.EnthalpyOfFormation!.Value;
+        condensationHeat = 1000 * (vapour - SpeciesCatalog.LiquidWater.EnthalpyOfFormation!.Value);
+        depositionHeat = 1000 * (vapour - SpeciesCatalog.Ice.EnthalpyOfFormation!.Value);
+        heatCapacity = settings.AtmosphereMass * AirHeatCapacity / settings.SurfaceArea;
     }
 
     public DeadPlanetSettings Settings { get; }
+
+    public PlanetEnergySettings Energy => Settings.Energy;
+
+    public PlanetEnergyBalance EnergyBalance { get; }
 
     public Fuel Fuel { get; }
 
@@ -69,12 +79,13 @@ public sealed class DeadPlanet : ISimulation
     // Of octane, all the cars together
     public double FuelMolesPerSecond { get; }
 
-    // W/m²: the heat the CO₂ added since the start keeps in
-    public double CarbonDioxideForcing(SimulationState state) =>
-        CarbonDioxideForcingCoefficient * Math.Log(state.CarbonDioxide / state.GasMoles / DryAir.CarbonDioxide);
+    public double WarmingPerDoubling => EnergyBalance.WarmingPerDoubling;
 
-    // W/m²: the engines' own heat, spread over the planet
-    public double EngineHeat(SimulationState state) => BurnRate(state) * heatPerMole / Settings.SurfaceArea;
+    // The engines' heat, with the water's as it falls out, is non-radiative heat beside the forcings
+    public ForcingBreakdown Forcing(SimulationState state) =>
+        ForcingWith(state, BurnRate(state) * HeatPerMole(state.Temperature) / Settings.SurfaceArea);
+
+    public EnergyBudget Budget(SimulationState state) => EnergyBalance.Budget(state.Temperature, Forcing(state));
 
     public SimulationState Start()
     {
@@ -88,7 +99,7 @@ public sealed class DeadPlanet : ISimulation
 
         var state = new SimulationState
         {
-            Temperature = settings.StartTemperature,
+            Temperature = EnergyBalance.StartTemperature,
             Nitrogen = gasMoles * DryAir.Nitrogen,
             Oxygen = gasMoles * DryAir.Oxygen,
             Argon = gasMoles * DryAir.Argon,
@@ -127,6 +138,25 @@ public sealed class DeadPlanet : ISimulation
         return state;
     }
 
+    // The reference state is the start: today's CO₂, and the planet's own sunlight and albedo, which don't change here.
+    // So the solar and albedo forcings stay 0, and the reader sees the sun isn't the cause.
+    private ForcingBreakdown ForcingWith(SimulationState state, double nonRadiativeHeat)
+    {
+        var energy = Settings.Energy;
+
+        return new(
+            [
+                new(ForcingAgents.CarbonDioxide, RadiativeForcing.CarbonDioxide(state.CarbonDioxide / state.GasMoles, DryAir.CarbonDioxide)),
+                new(ForcingAgents.Solar, RadiativeForcing.Solar(energy.SolarConstant, energy.SolarConstant, energy.Albedo)),
+                new(ForcingAgents.Albedo, RadiativeForcing.Albedo(energy.SolarConstant, energy.Albedo, energy.Albedo)),
+            ],
+            nonRadiativeHeat);
+    }
+
+    // J/mol of fuel, with the water fallen out, so its latent heat is in the air too
+    private double HeatPerMole(double temperature) =>
+        combustionHeatPerMole + (waterPerMole * (temperature < FreezingPoint ? depositionHeat : condensationHeat));
+
     // The weight of the air on each square metre
     private double PressureOf(SimulationState state) =>
         state.Gases.Sum(gas => gas.Moles * gas.Species.MolarMass / 1000) * Settings.Gravity / Settings.SurfaceArea;
@@ -135,49 +165,50 @@ public sealed class DeadPlanet : ISimulation
 
     private double StepLimit(SimulationState state)
     {
+        var limit = TemperatureStepLimit(state);
         var burnRate = BurnRate(state);
 
-        if (burnRate == 0)
+        if (burnRate > 0)
         {
-            return double.PositiveInfinity;
+            limit = Math.Min(
+                limit,
+                Math.Min(
+                    MaxOxygenChange * state.Oxygen / (burnRate * oxygenPerMole),
+                    MaxCarbonDioxideChange * state.CarbonDioxide / (burnRate * carbonDioxidePerMole)));
         }
-
-        var limit = Math.Min(
-            MaxOxygenChange * state.Oxygen / (burnRate * oxygenPerMole),
-            MaxCarbonDioxideChange * state.CarbonDioxide / (burnRate * carbonDioxidePerMole));
 
         return Math.Max(limit, 1e-6);
     }
 
+    // Close to balance, a step of any length lands on it. Further away, the step is cut to the time the current rate of
+    // warming takes to move the temperature by MaxTemperatureChange.
+    private double TemperatureStepLimit(SimulationState state)
+    {
+        var distance = Math.Abs(EnergyBalance.DistanceFromBalance(state.Temperature, Forcing(state)));
+
+        if (distance <= MaxTemperatureChange)
+        {
+            return double.PositiveInfinity;
+        }
+
+        return MaxTemperatureChange * heatCapacity / (distance * EnergyBalance.Feedback(state.Temperature));
+    }
+
     private SimulationState Step(SimulationState state, double seconds)
     {
-        // The engines can't burn more than the O₂ that's there (simulation plan §5.2)
+        // The engines can't burn more than the O₂ that's there (simulation engine plan §3)
         var burnt = Math.Min(BurnRate(state) * seconds, state.Oxygen / oxygenPerMole);
         var water = burnt * waterPerMole;
+        var frozen = state.Temperature < FreezingPoint;
 
-        // Heat in from the engines and the CO₂, held through the substep. Heat out to space grows with the warming, so
-        // the temperature relaxes towards where they balance.
-        var heating = (burnt * heatPerMole / seconds) + (CarbonDioxideForcing(state) * Settings.SurfaceArea);
-        var lossPerKelvin = Settings.ClimateFeedback * Settings.SurfaceArea;
-        double temperature;
-
-        if (lossPerKelvin > 0)
-        {
-            var balance = Settings.StartTemperature + (heating / lossPerKelvin);
-            temperature = balance + ((state.Temperature - balance) * Math.Exp(-seconds * lossPerKelvin / heatCapacity));
-        }
-        else
-        {
-            temperature = state.Temperature + (heating * seconds / heatCapacity);
-        }
-
+        // Water that has already fallen stays as it fell
         var next = state with
         {
             Time = state.Time + seconds,
-            Temperature = temperature,
             Oxygen = Math.Max(state.Oxygen - (burnt * oxygenPerMole), 0),
             CarbonDioxide = state.CarbonDioxide + (burnt * carbonDioxidePerMole),
-            LiquidWater = state.LiquidWater + water,
+            LiquidWater = frozen ? state.LiquidWater : state.LiquidWater + water,
+            Ice = frozen ? state.Ice + water : state.Ice,
             FuelBurnt = state.FuelBurnt + burnt,
             OxygenUsed = state.OxygenUsed + (burnt * oxygenPerMole),
             CarbonDioxideMade = state.CarbonDioxideMade + (burnt * carbonDioxidePerMole),
@@ -185,6 +216,11 @@ public sealed class DeadPlanet : ISimulation
             HeatReleased = state.HeatReleased + (burnt * combustionHeatPerMole),
         };
 
-        return next with { Pressure = PressureOf(next) };
+        // The engines' heat is held through the substep, and the CO₂'s forcing rises steadily with the CO₂
+        var engineHeat = burnt * HeatPerMole(state.Temperature) / seconds / Settings.SurfaceArea;
+        var temperature = EnergyBalance.Temperature(
+            state.Temperature, ForcingWith(state, engineHeat), ForcingWith(next, engineHeat), heatCapacity, seconds);
+
+        return next with { Temperature = temperature, Pressure = PressureOf(next) };
     }
 }

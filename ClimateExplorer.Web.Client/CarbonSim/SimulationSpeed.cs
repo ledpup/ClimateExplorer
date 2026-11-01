@@ -1,6 +1,6 @@
 namespace ClimateExplorer.Web.Client.CarbonSim;
 
-/// <summary>A stop on the clock's speed control: simulated seconds per real second (simulation plan §5.1).</summary>
+/// <summary>A stop on the clock's speed control: simulated seconds per real second (simulation clock plan §1).</summary>
 public sealed record SimulationSpeed(double SecondsPerSecond, string Label)
 {
     private const double Day = 86400;
