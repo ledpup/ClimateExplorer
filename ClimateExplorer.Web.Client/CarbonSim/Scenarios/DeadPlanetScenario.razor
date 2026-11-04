@@ -6,17 +6,14 @@
     <div class="scenario-text">
         <h2>@Scenario.Title</h2>
         <p>
-            A planet the size of Earth, as far from the sun, with Earth's air and nothing else: no ocean, no plants.
-            @CarsText cars drive around it at @SpeedText, day and night, each burning about @PerCarText of petrol. The
-            petrol is taken as pure octane, and it burns completely. Nothing takes the CO₂ back out of the air.
+            Imagine Earth's atmosphere but little else: no ocean, no clouds, no plants.
+            @CarsText cars drive at @SpeedText continuously. Each car burns @PerCarText of petrol (we're treating it as pure octane). There is nothing to take the CO₂ out of the air.
         </p>
         <p class="note">
-            The sun warms the planet. It starts where the heat it sends to space balances the sunlight it absorbs, at
-            about @StartTemperatureText, because dry air with a little CO₂ holds in little heat. The CO₂ the cars add
-            holds in more, so the planet warms until it's in balance again. With no water vapour to add to the warming,
+            The sun warms the planet. The planet's average temperature is about @StartTemperatureText because dry air with a little CO₂ holds in little heat. The CO₂ the cars add
+            holds in more heat, so less escapes to space than the planet absorbs, and it warms until the two match again. With no water vapour to add to the warming,
             that's about @PerDoublingText each time the CO₂ doubles, less than on Earth. The water the cars make
-            @WaterFallsText. The planet reflects as much sunlight as Earth, though about half of Earth's is reflected by
-            clouds, which a dry planet wouldn't have.
+            @WaterFallsText.
         </p>
         @if (Inputs.FossilFuels is not null)
         {

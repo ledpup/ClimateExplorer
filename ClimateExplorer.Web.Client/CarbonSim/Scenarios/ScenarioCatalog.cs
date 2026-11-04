@@ -11,7 +11,7 @@ public static class ScenarioCatalog
             "Methane burning in a sealed house",
             typeof(SealedHouseScenario),
             HouseFor,
-            new ScenarioInputs { FossilFuels = new FossilFuelInputs { MethaneBurnerRate = 0.1 } }),
+            new ScenarioInputs { FossilFuels = new FossilFuelInputs { MethaneBurnerRate = 0.001 } }),
 
         new(
             "A billion cars on a dead planet",
