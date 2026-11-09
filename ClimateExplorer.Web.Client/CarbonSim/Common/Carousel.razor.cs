@@ -103,6 +103,7 @@ public partial class Carousel<TItem>
 
         this.fromLeft = fromLeft;
         index = target;
+        receivedIndex = target;
         move++;
         announcement = $"{ItemLabel(Items[target])}, {target + 1} of {Items.Count}";
 
