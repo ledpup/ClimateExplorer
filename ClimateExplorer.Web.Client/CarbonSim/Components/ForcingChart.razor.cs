@@ -1,6 +1,7 @@
 namespace ClimateExplorer.Web.Client.CarbonSim.Components;
 
 using ClimateExplorer.CarbonCycle.Simulation;
+using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.Units;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -46,16 +47,10 @@ public partial class ForcingChart : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        try
+        if (module is not null)
         {
-            if (module is not null)
-            {
-                await module.InvokeVoidAsync("destroy", canvas);
-                await module.DisposeAsync();
-            }
-        }
-        catch (JSDisconnectedException)
-        {
+            await module.InvokeVoidIfConnectedAsync("destroy", canvas);
+            await module.DisposeAsync();
         }
     }
 

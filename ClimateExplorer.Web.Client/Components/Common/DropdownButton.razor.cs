@@ -60,35 +60,23 @@ public partial class DropdownButton : IAsyncDisposable
 
     public async Task CloseAsync()
     {
-        try
+        if (dropdown is not null)
         {
-            if (dropdown is not null)
-            {
-                await dropdown.InvokeVoidAsync("hide");
-            }
-        }
-        catch (JSDisconnectedException)
-        {
+            await dropdown.InvokeVoidIfConnectedAsync("hide");
         }
     }
 
     public async ValueTask DisposeAsync()
     {
-        try
+        if (dropdown is not null)
         {
-            if (dropdown is not null)
-            {
-                await dropdown.InvokeVoidAsync("dispose");
-                await dropdown.DisposeAsync();
-            }
-
-            if (module is not null)
-            {
-                await module.DisposeAsync();
-            }
+            await dropdown.InvokeVoidIfConnectedAsync("dispose");
+            await dropdown.DisposeAsync();
         }
-        catch (JSDisconnectedException)
+
+        if (module is not null)
         {
+            await module.DisposeAsync();
         }
     }
 
