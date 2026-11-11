@@ -591,7 +591,6 @@ public partial class Index : ChartablePage
         if (LocationDictionary is null)
         {
             ChangeLocationModalLoading = true;
-            StateHasChanged();
 
             try
             {
@@ -603,7 +602,6 @@ public partial class Index : ChartablePage
                 ChangeLocationModalLoading = false;
             }
 
-            StateHasChanged();
             return;
         }
 
@@ -620,7 +618,6 @@ public partial class Index : ChartablePage
 
         NearMeLoading = true;
         NearMeErrorMessage = null;
-        StateHasChanged();
 
         try
         {
@@ -645,7 +642,6 @@ public partial class Index : ChartablePage
         finally
         {
             NearMeLoading = false;
-            StateHasChanged();
         }
     }
 

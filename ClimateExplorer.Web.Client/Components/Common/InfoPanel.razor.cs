@@ -64,7 +64,6 @@ public partial class InfoPanel : ComponentBase
     private async Task DismissAsync()
     {
         isAnimatingOut = true;
-        StateHasChanged();
 
         await Task.Delay(400);
 
@@ -75,7 +74,5 @@ public partial class InfoPanel : ComponentBase
         {
             await DismissalService.DismissAsync(PanelName, Version);
         }
-
-        StateHasChanged();
     }
 }
