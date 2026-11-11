@@ -1,15 +1,14 @@
 namespace ClimateExplorer.Web.Client.Components;
 
+using ClimateExplorer.Web.Client.Components.Common;
+using ClimateExplorer.Web.Client.Services.Map;
 using CurrentDevice;
 using DPBlazorMapLibrary;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
-public partial class MapContainer
+public partial class MapContainer : IAsyncDisposable
 {
-    private static readonly string[] MarkerOptionLabels = ["negative", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "null"];
-
-    private readonly SemaphoreSlim markerOptionsLock = new(1, 1);
     private readonly SemaphoreSlim mapLifecycleLock = new(1, 1);
     private Map? map;
     private MapOptions? mapOptions;
@@ -19,11 +18,20 @@ public partial class MapContainer
     private LatLng? lastExpandedCentre = null;
     private LatLng? lastCollapsedCentre = null;
     private Core.Model.Location? internalLocation;
-    private List<Guid> markersAdded = new();
-    private Dictionary<string, MarkerOptions> markerOptions = new();
     private bool mapRerendering = false;
     private bool mapTransitionInProgress = false;
-    private int mapRenderVersion = 0;
+
+    private IJSObjectReference? module;
+    private DotNetObjectReference<MapContainer>? dotNetRef;
+
+    // The JS marker layer (MapContainer.razor.js), the map it draws on, and what it was last given.
+    private IJSObjectReference? markerLayer;
+    private Map? markerLayerMap;
+    private IEnumerable<Core.Model.Location>? markerLayerLocations;
+    private Guid? markerLayerSelectedId;
+
+    private IEnumerable<Core.Model.Location>? markersBuiltFor;
+    private MapMarker[] markers = [];
 
     [Parameter]
     public IEnumerable<Core.Model.Location>? Locations { get; set; }
@@ -38,9 +46,6 @@ public partial class MapContainer
     public LayerFactory? LayerFactory { get; init; }
 
     [Inject]
-    public IIconFactory? IconFactory { get; init; }
-
-    [Inject]
     public IJSRuntime? JsRuntime { get; init; }
 
     [Inject]
@@ -52,110 +57,6 @@ public partial class MapContainer
     private bool IsMapExpanded { get; set; } = false;
 
     private bool? IsMobileDevice { get; set; }
-
-    public async Task CreateMapMarkers()
-    {
-        if (mapTransitionInProgress || Locations == null || mapOptions == null || map == null || this.IconFactory == null || this.LayerFactory == null || JsRuntime == null)
-        {
-            return;
-        }
-
-        await mapLifecycleLock.WaitAsync();
-        try
-        {
-            if (mapTransitionInProgress || Locations == null || mapOptions == null || map == null || this.IconFactory == null || this.LayerFactory == null || JsRuntime == null)
-            {
-                return;
-            }
-
-            var markerMap = map;
-            var markerMapOptions = mapOptions;
-            var markerMapVersion = mapRenderVersion;
-
-            Logger!.LogInformation("Creating map markers");
-
-            await CreateMarkerOptions();
-
-            if (IsStaleMapMarkerCreation(markerMap, markerMapOptions, markerMapVersion))
-            {
-                return;
-            }
-
-            var bounds = await markerMap.GetBounds();
-
-            if (bounds is null || IsStaleMapMarkerCreation(markerMap, markerMapOptions, markerMapVersion))
-            {
-                return;
-            }
-
-            int added = 0;
-            foreach (var location in Locations)
-            {
-                if (markersAdded.Contains(location.Id))
-                {
-                    continue;
-                }
-
-                var lat = location.Coordinates.Latitude;
-                var lng = location.Coordinates.Longitude;
-
-                if (bounds is not null)
-                {
-                    bool latInRange = IsLatBetween(lat, bounds.SouthWest!.Lat, bounds.NorthEast!.Lat);
-                    bool lngInRange = IsLngBetween(lng, bounds.SouthWest!.Lng, bounds.NorthEast!.Lng);
-
-                    if (!latInRange || !lngInRange)
-                    {
-                        continue;
-                    }
-                }
-
-                var label = GetMarkerOptionLabel(location);
-
-                if (!markerOptions.TryGetValue(label, out var markerOption))
-                {
-                    Logger!.LogWarning(
-                        "No marker option found for label {Label}. Marker option count is {MarkerOptionCount}.",
-                        label,
-                        markerOptions.Count);
-
-                    continue;
-                }
-
-                if (IsStaleMapMarkerCreation(markerMap, markerMapOptions, markerMapVersion))
-                {
-                    return;
-                }
-
-                var marker = await this.LayerFactory.CreateMarkerAndAddToMap(new LatLng(lat, lng, location.Coordinates.Elevation ?? 0), markerMap, markerOption);
-
-                if (IsStaleMapMarkerCreation(markerMap, markerMapOptions, markerMapVersion))
-                {
-                    return;
-                }
-
-                await marker.BindTooltip(location.FullTitle!);
-                await marker.OnClick(async (MouseEvent mouseEvent) => await HandleMapMouseEvent(mouseEvent));
-
-                markersAdded.Add(location.Id);
-
-                added++;
-            }
-
-            Logger!.LogInformation($"Created {added} markers.");
-
-            Logger!.LogInformation("Created map markers");
-        }
-        catch (JSDisconnectedException)
-        {
-            // The circuit was torn down while a JS interop call was in flight (e.g. the user
-            // navigated away). Creating markers is moot at that point, so ignore it.
-        }
-        finally
-        {
-            mapLifecycleLock.Release();
-        }
-    }
 
     public async Task CreateMainTileLayer()
     {
@@ -183,6 +84,32 @@ public partial class MapContainer
         mainTileLayerCreated = true;
 
         Logger!.LogInformation("Created main tile layer");
+    }
+
+    [JSInvokable]
+    public async Task OnMarkerClick(Guid locationId)
+    {
+        var location = Locations?.FirstOrDefault(x => x.Id == locationId);
+        if (location is null)
+        {
+            return;
+        }
+
+        lastExpandedCentre = new LatLng(location.Coordinates.Latitude, location.Coordinates.Longitude);
+        await OnLocationChange.InvokeAsync(location.Id);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await DisposeMarkerLayer();
+
+        if (module is not null)
+        {
+            await module.DisposeAsync();
+        }
+
+        dotNetRef?.Dispose();
+        GC.SuppressFinalize(this);
     }
 
     protected override async Task OnParametersSetAsync()
@@ -217,7 +144,7 @@ public partial class MapContainer
             }
         }
 
-        await CreateVisibleMapMarkers();
+        await UpdateMarkerLayer();
 
         await base.OnParametersSetAsync();
     }
@@ -227,26 +154,7 @@ public partial class MapContainer
         IsMobileDevice ??= await CurrentDeviceService!.Mobile();
     }
 
-    private static bool IsLatBetween(double value, double a, double b)
-    {
-        var min = Math.Min(a, b);
-        var max = Math.Max(a, b);
-        return value >= min && value <= max;
-    }
-
-    private static bool IsLngBetween(double lng, double west, double east)
-    {
-        // Normal case: west <= east
-        if (west <= east)
-        {
-            return lng >= west && lng <= east;
-        }
-
-        // Bounds cross the dateline (e.g. west=170, east=-170)
-        return lng >= west || lng <= east;
-    }
-
-    private static string GetMarkerOptionLabel(Core.Model.Location location)
+    private static string GetMarkerIconLabel(Core.Model.Location location)
     {
         if (location.HeatingScore == null)
         {
@@ -258,17 +166,8 @@ public partial class MapContainer
             : location.HeatingScore.Value.ToString();
     }
 
-    private bool IsStaleMapMarkerCreation(Map markerMap, MapOptions markerMapOptions, int markerMapVersion)
-    {
-        return mapTransitionInProgress ||
-            map != markerMap ||
-            mapOptions != markerMapOptions ||
-            mapRenderVersion != markerMapVersion;
-    }
-
     private async Task AfterMapRender()
     {
-        await CreateMarkerOptions();
         await CreateMainTileLayer();
         if (mapRerendering)
         {
@@ -276,18 +175,117 @@ public partial class MapContainer
             mapRerendering = false;
         }
 
-        await CreateMapMarkers();
-        await map!.OnMoveEnd(async (moveEvent) => await HandleMoveEnd(moveEvent));
+        await UpdateMarkerLayer();
     }
 
-    private async Task CreateVisibleMapMarkers()
+    /// <summary>
+    /// Creates the JS marker layer for the current map, or brings it up to date with the locations and the
+    /// selected location. The layer itself adds and removes markers as the map moves.
+    /// </summary>
+    private async Task UpdateMarkerLayer()
     {
-        if (map is null)
+        if (mapTransitionInProgress || map is null || Locations is null || JsRuntime is null)
         {
             return;
         }
 
-        await CreateMapMarkers();
+        await mapLifecycleLock.WaitAsync();
+        try
+        {
+            var currentMap = map;
+            var locations = Locations;
+            if (mapTransitionInProgress || currentMap is null || locations is null)
+            {
+                return;
+            }
+
+            var selectedId = internalLocation?.Id;
+
+            if (markerLayer is not null && markerLayerMap == currentMap)
+            {
+                if (!ReferenceEquals(markerLayerLocations, locations))
+                {
+                    markerLayerLocations = locations;
+                    markerLayerSelectedId = selectedId;
+                    await markerLayer.InvokeVoidAsync("setLocations", GetMarkers(locations), selectedId);
+                }
+                else if (markerLayerSelectedId != selectedId)
+                {
+                    markerLayerSelectedId = selectedId;
+                    await markerLayer.InvokeVoidAsync("setSelected", selectedId);
+                }
+
+                return;
+            }
+
+            // The map is new (first render, or the map was expanded or collapsed), so the old layer went with the old map.
+            await DisposeMarkerLayer();
+
+            module ??= await JsRuntime.InvokeAsync<IJSObjectReference>("import", "./Components/MapContainer.razor.js");
+            dotNetRef ??= DotNetObjectReference.Create(this);
+
+            markerLayer = await module.InvokeAsync<IJSObjectReference>(
+                "createMarkerLayer",
+                currentMap.MapReference,
+                dotNetRef,
+                GetMarkers(locations),
+                selectedId);
+            markerLayerMap = currentMap;
+            markerLayerLocations = locations;
+            markerLayerSelectedId = selectedId;
+
+            Logger!.LogInformation("Created map marker layer for {MarkerCount} locations", markers.Length);
+        }
+        catch (JSDisconnectedException)
+        {
+            // The circuit was torn down while a JS interop call was in flight (e.g. the user
+            // navigated away). Drawing markers is moot at that point, so ignore it.
+        }
+        finally
+        {
+            mapLifecycleLock.Release();
+        }
+    }
+
+    private MapMarker[] GetMarkers(IEnumerable<Core.Model.Location> locations)
+    {
+        if (ReferenceEquals(markersBuiltFor, locations))
+        {
+            return markers;
+        }
+
+        var locationList = locations.ToList();
+        var minimumZooms = MapMarkerZoomTiers.Calculate(locationList);
+
+        markers = [.. locationList
+            .DistinctBy(x => x.Id)
+            .Select(x => new MapMarker(
+                x.Id,
+                x.Coordinates.Latitude,
+                x.Coordinates.Longitude,
+                GetMarkerIconLabel(x),
+                x.FullTitle,
+                minimumZooms[x.Id]))];
+        markersBuiltFor = locations;
+
+        return markers;
+    }
+
+    private async Task DisposeMarkerLayer()
+    {
+        if (markerLayer is null)
+        {
+            return;
+        }
+
+        var layer = markerLayer;
+        markerLayer = null;
+        markerLayerMap = null;
+        markerLayerLocations = null;
+        markerLayerSelectedId = null;
+
+        await layer.InvokeVoidIfConnectedAsync("dispose");
+        await layer.DisposeAsync();
     }
 
     private async Task ScrollToPoint(Coordinates point)
@@ -299,61 +297,6 @@ public partial class MapContainer
 
         var latlng = new LatLng(point.Latitude, point.Longitude);
         await map.PanTo(latlng);
-    }
-
-    private async Task CreateMarkerOptions()
-    {
-        if (markerOptions.Count == MarkerOptionLabels.Length)
-        {
-            return;
-        }
-
-        await markerOptionsLock.WaitAsync();
-        try
-        {
-            if (markerOptions.Count == MarkerOptionLabels.Length)
-            {
-                return;
-            }
-
-            var options = new Dictionary<string, MarkerOptions>(MarkerOptionLabels.Length);
-            foreach (var label in MarkerOptionLabels)
-            {
-                var iconOptions = new IconOptions
-                {
-                    IconUrl = $"/images/map-markers/{label}.png",
-                    IconSize = new Point(48, 48),
-                    IconAnchor = new Point(23, 47),
-                };
-
-                options.Add(
-                    label,
-                    new MarkerOptions
-                {
-                    Alt = label,
-                    Opacity = 0.75,
-                    Draggable = false,
-                    IconRef = await this.IconFactory!.Create(iconOptions),
-                });
-            }
-
-            markerOptions = options;
-        }
-        finally
-        {
-            markerOptionsLock.Release();
-        }
-    }
-
-    private async Task HandleMapMouseEvent(MouseEvent mouseEvent)
-    {
-        Logger!.LogInformation("HandleMapMouseEvent()");
-
-        var lat = Math.Round(mouseEvent.LatLng!.Lat, 1);
-        var lng = Math.Round(mouseEvent.LatLng.Lng, 1);
-        var newLocation = Locations!.Single(x => Math.Round(x.Coordinates.Latitude, 1) == lat && Math.Round(x.Coordinates.Longitude, 1) == lng);
-        lastExpandedCentre = new LatLng(newLocation.Coordinates.Latitude, newLocation.Coordinates.Longitude);
-        await OnLocationChange.InvokeAsync(newLocation.Id);
     }
 
     private async Task ExpandMap()
@@ -404,8 +347,10 @@ public partial class MapContainer
         try
         {
             mapTransitionInProgress = true;
-            mapRenderVersion++;
-            markersAdded = []; // Force re-creation of markers
+
+            // The markers belong to the map being removed; AfterMapRender creates a layer on the new one.
+            await DisposeMarkerLayer();
+
             mainTileLayerCreated = false;
             mapOptions = null;
             map = null;
@@ -454,8 +399,8 @@ public partial class MapContainer
         Logger!.LogInformation("Map options initialised");
     }
 
-    private async Task HandleMoveEnd(MoveEvent moveEvent)
-    {
-        await CreateMapMarkers();
-    }
+    /// <summary>
+    /// One location as the JS marker layer needs it. Serialised camelCase.
+    /// </summary>
+    private sealed record MapMarker(Guid Id, double Lat, double Lng, string Label, string Title, int MinZoom);
 }
