@@ -64,10 +64,19 @@ builder.Services.AddResponseCompression(
         // data, identical for all callers, with no per-user secret or credential in the mix (see the CORS policy
         // comment above - "our users aren't authenticated").
         options.EnableForHttps = true;
+
+        // Providers are preferred in the order added when the client accepts several encodings equally.
+        // Zstandard first; Brotli and gzip stay as fallbacks for clients that don't send "zstd".
+        options.Providers.Add<ZstandardCompressionProvider>();
         options.Providers.Add<BrotliCompressionProvider>();
         options.Providers.Add<GzipCompressionProvider>();
 
         // ResponseCompressionDefaults.MimeTypes already covers application/json.
+    });
+builder.Services.Configure<ZstandardCompressionProviderOptions>(
+    options => options.CompressionOptions = new ZstandardCompressionOptions
+    {
+        Quality = ZstandardCompressionOptions.DefaultQuality,
     });
 builder.Services.Configure<BrotliCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
 builder.Services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);

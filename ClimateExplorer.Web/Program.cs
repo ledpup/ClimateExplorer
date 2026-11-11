@@ -1,4 +1,5 @@
 #pragma warning disable SA1200 // Using directives should be placed correctly
+using System.Net;
 using Blazored.LocalStorage;
 using ClimateExplorer.Core.Blog;
 using ClimateExplorer.Web;
@@ -49,6 +50,13 @@ builder.Services
     .AddHttpClient<IDataService, DataService>(client =>
     {
         client.BaseAddress = new Uri(builder.Configuration["DataServiceBaseUri"]!);
+    })
+
+    // Prerender calls the API from the server, so ask for compressed responses here. The WebAssembly
+    // client doesn't set this: the browser sends Accept-Encoding and decompresses itself.
+    .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+    {
+        AutomaticDecompression = DecompressionMethods.Zstandard | DecompressionMethods.Brotli | DecompressionMethods.GZip,
     });
 
 builder.Services.AddSingleton<IBlogService, ClimateExplorer.Web.Blog.BlogService>();
