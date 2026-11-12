@@ -31,6 +31,7 @@ doesn't depend on record length, and it's about three times less noisy than the 
 | Chart | Since 1961 becomes a trend window choice for any yearly series |
 | Chart: adding a trend | A trend added by clicking defaults to **Since 1961**, falling back to the other windows when it isn't available or significant |
 | Presets | Unchanged: they keep their explicit `TrendPeriod`s (mostly Full) |
+| Rate units | As now: everything users see is per decade (dashboard field and tooltip, heating score info and table, Locations page, Recent Observations tile, chart). Only the statistics table in About trends (`TrendStatSectionBuilder`) shows per year, and the Since 1961 tab follows it unchanged. Stored data stays per year (`TrendSummary.Slope`), except the heating score bands, which are stored per decade because they're only ever displayed |
 | Window name | `TrendWindow.Since1961`, labelled "Since 1961". The URL serialises the enum by name, so adding a value doesn't break links |
 
 ## The Since-1961 window
@@ -99,12 +100,15 @@ reloaded.
   (Stage 1's recency rule). A negative slope scores −1. Locations without an eligible trend get no
   score (null), as they do now when there's no anomaly.
 - `HeatingScoreRow`: rename `MinimumWarmingAnomaly`/`MaximumWarmingAnomaly` to
-  `MinimumSlope`/`MaximumSlope`, stored in °C per year like `TrendSummary`. **Deployment:** these are
+  `MinimumRatePerDecade`/`MaximumRatePerDecade`, stored in **°C per decade**, the unit the info page
+  shows. `TrendSummary.Slope` stays per year, so `SetHeatingScores` multiplies by 10 when it writes the
+  bands, and the names say "per decade" so nobody mixes the two up. Round them in `CacheJsonOptions`
+  (3 decimal places, like the anomaly). **Deployment:** these are
   `required` properties, so an old client and a new API (or the reverse) fail on the heating score
   table. Deploy Web and API together. The table only loads when someone opens the info modal, so the
   impact is small.
-- `ApiMeasures.HeatingScoreAnomalyBound` → `HeatingScoreRateBound`: a rate per decade, so °F conversion
-  uses the difference factor and per-decade scaling, like the trend field (`TrendFormatting`).
+- `ApiMeasures.HeatingScoreAnomalyBound` → `HeatingScoreRateBound`: the bound is already per decade, so
+  °F conversion only needs the difference factor (no per-year to per-decade scaling).
 - `HeatingScoreInfo`: rewrite the text and table.
   - The score ranks the since-1961 warming rate (°C/decade) into tenths.
   - Why 1961: the WMO reference period. It's the same period for every station, so a long record no
@@ -190,7 +194,7 @@ Each stage adds or updates tests using `MethodName_StateUnderTest_ExpectedBehavi
   significant, otherwise Full; a second trend skips it; an explicit Full request stays Full),
   `ChartSeriesListSerializerTrendTests`
   (the `Since1961` name round-trips), Recent Observations calculator tests.
-- **WebApi:** `CacheJsonOptionsTests` if the `HeatingScoreRow` rename touches rounding.
+- **WebApi:** `CacheJsonOptionsTests` (the per-decade bounds are rounded).
 
 ## Risks
 
@@ -216,8 +220,8 @@ thresholds before the score changes.
 
 ### Change size
 
-- **Projects:** `ClimateExplorer.Core`, `ClimateExplorer.WebApi` (comments only, unless rounding
-  changes), `ClimateExplorer.Web.Client`, `ClimateExplorer.CachingTool` (comment), and the Core, Web
+- **Projects:** `ClimateExplorer.Core`, `ClimateExplorer.WebApi` (rounding the heating score bands,
+  comments), `ClimateExplorer.Web.Client`, `ClimateExplorer.CachingTool` (comment), and the Core, Web
   and WebApi unit test projects.
 - **Not changed:** `ClimateExplorer.WebApiClient`, `ClimateExplorer.DataPipeline`, datasets.
 
@@ -226,9 +230,9 @@ thresholds before the score changes.
 | 1 | Core: enum, defaults, window helper, calculator, fits, `Location` | 1 file, +30 | 5 files, ~50 | — |
 | 1 | Web.Client: `TrendWindowLabel`; CachingTool comment | — | 2 files, ~6 | — |
 | 1 | Tests: trend calculator, serialisation | — | 2 files, ~90 | — |
-| 2 | Core: `SetHeatingScores`, `HeatingScoreRow` | — | 2 files, ~45 | — |
+| 2 | Core: `SetHeatingScores`, `HeatingScoreRow`; WebApi: `CacheJsonOptions` rounding | — | 3 files, ~50 | — |
 | 2 | Web.Client: `HeatingScoreInfo` (razor + cs), `ApiMeasures`, Locations tooltip | — | 4 files, ~50 | — |
-| 2 | Tests: heating score, `ApiMeasures` | — | 2 files, ~70 | — |
+| 2 | Tests: heating score, `ApiMeasures`, `CacheJsonOptions` | — | 3 files, ~80 | — |
 | 3 | Web.Client: field builder, details builder, `TemperatureTrendInfo` | — | 3 files, ~50 | — |
 | 3 | Tests: field builder, details builder | — | 2 files, ~70 | — |
 | 4 | Web.Client: `ChartSeriesTrendCalculator` window and `SelectionPriority` (+ checks elsewhere) | — | 1–3 files, ~35 | — |
@@ -236,6 +240,6 @@ thresholds before the score changes.
 | 5 | Core: `TrendWindowSet`, `TrendWindowCalculator` | — | 2 files, ~20 | — |
 | 5 | Web.Client: calculator, view models, tile, About trends, explainer | — | 6 files, ~70 | — |
 | 5 | Tests: trend window calculator, Recent Observations | — | 2 files, ~60 | — |
-| | **Total** | **1 file, +30** | **~36 file edits (~26 distinct files), ~705** | — |
+| | **Total** | **1 file, +30** | **~38 file edits (~28 distinct files), ~720** | — |
 
-Tests are roughly half the lines (~380 of ~705).
+Tests are roughly half the lines (~390 of ~720).
