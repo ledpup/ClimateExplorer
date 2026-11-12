@@ -18,10 +18,10 @@ var logger = serviceProvider.GetService<ILoggerFactory>()!.CreateLogger<Program>
 
 const int minimumStationsInCountry = 5;
 
-// A station needs this many complete years in the last 30, so its "last 30 years" trend (which takes the last 30
-// complete years) covers roughly the last 30 calendar years. 25 is too strict: one missing month voids a year.
+// Drops stations with only a scattering of complete years in the last 30. Kept loose: one missing month voids a
+// year (IsValidYear), and 20 of 30 dropped stations worth keeping, such as Cape Sorell.
 const int recentPeriodYears = 30;
-const int minimumCompleteYearsInRecentPeriod = 20;
+const int minimumCompleteYearsInRecentPeriod = 10;
 
 var httpClient = new HttpClient();
 var userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36";

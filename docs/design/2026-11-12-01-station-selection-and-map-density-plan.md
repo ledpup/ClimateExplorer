@@ -336,12 +336,19 @@ Rules as implemented in `ClimateExplorer.Data.Ghcnm/Program.cs`:
   considered and not taken.
 - **History:** at least 60 complete years (`AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly`),
   as before.
-- **Recent completeness (new):** at least 20 complete years in the last 30 (current year − 30 to
-  current year − 1), counted by `GetCompleteYearsInRecentPeriod`.
+- **Recent completeness:** at least 10 complete years in the last 30 (current year − 30 to current
+  year − 1), counted by `GetCompleteYearsInRecentPeriod`. It was first 20, which dropped wanted
+  stations such as Cape Sorell (Tasmania, 11 of 30), whose recent years often miss a month. Removing
+  the rule added 480 stations (3,675) and put `Datasets` about 10 MiB over the cap; 10 keeps 420 of them.
 - **Country top-up:** unchanged. These stations skip the recent-completeness rule.
 - **Spacing:** `StationSpacingSelector` (new, in `ClimateExplorer.Core`) replaces DBSCAN.
   - It works per country, with the pre-existing (BOM, UK) locations as seeds.
   - The radius is 25 km for a 60-year record, falling to 10 km at 120 years (`GetSpacingRadiusKm`).
+    The same radius applies in every country. A wider US radius (40 km falling to 20 km) was tried to
+    keep `Datasets` under the 1 GB cap and gave 3,339 stations (US 1,257) and 933 MiB. It was removed
+    when the cap turned out not to apply (below).
+  - **No 1 GB cap.** The cap dated from the Free App Service tier. The API is on Basic (B1), whose plan
+    storage is 10 GB, shared by its apps, runtime cache and logs.
   - Priority: stations in the last run's `Stations_ghcnm_adjusted.json` go first, then by complete
     years, then by ID.
   - The `DE`/`US` distance overrides are gone.
@@ -375,8 +382,9 @@ stations, and `selected-stations.json` is no longer written.
 - Tests: `ClimateExplorer.Core.UnitTests/StationSpacingSelectorTests.cs` (6). They include the chaining
   case: a–b–c, 11 km apart, keeps a and c.
 
-**Expected result.** A Python re-implementation of these rules on the 2026-11-10 GHCNm file gives
-3,195 stations (1,901 today):
+**Expected result.** A Python re-implementation of these rules, with the recent-completeness rule, on
+the 2026-11-10 GHCNm file gave 3,195 stations (1,901 before). Without that rule the count is higher;
+the figures below haven't been re-run:
 
 | | Count |
 |---|---|
