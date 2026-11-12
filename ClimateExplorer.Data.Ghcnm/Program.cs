@@ -23,6 +23,12 @@ const int minimumStationsInCountry = 5;
 const int recentPeriodYears = 30;
 const int minimumCompleteYearsInRecentPeriod = 10;
 
+// A station with nothing else within 75 km (in any country) is kept on a short record: 10 complete years and any
+// monthly value in the last 10 years. It gets no warming anomaly, but it's the only data for that area.
+const double isolationRadiusKm = 75;
+const int isolatedMinimumCompleteYears = 10;
+const int isolatedRecentYears = 10;
+
 var httpClient = new HttpClient();
 var userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36";
 var acceptLanguage = "en-US,en;q=0.9,es;q=0.8";
@@ -93,7 +99,7 @@ var preExistingStations = preExistingLocations.Select(x => new Station
 // The rest go best record first.
 var previouslySelectedIds = await GetPreviouslySelectedStationIds();
 var candidates = combinedStations
-    .OrderByDescending(x => previouslySelectedIds.Contains(x.Id) || previouslySelectedIds.Contains(GhcnmStationIds.GetPreviousId(x.Id) ?? string.Empty))
+    .OrderByDescending(IsPreviouslySelected)
     .ThenByDescending(x => x.Score ?? 0)
     .ThenBy(x => x.Id)
     .ToList();
@@ -109,8 +115,32 @@ var spacedStations = StationSpacingSelector.Select(
 
 logger.LogInformation($"{spacedStations.Count} of {candidates.Count} stations kept after leaving out those close to a better station in the same country or to a pre-existing location");
 
-var selectedStations = await RemoveDuplicateLocations(spacedStations);
-logger.LogInformation($"{selectedStations.Count} stations have been selected after adjusting for data quality, spacing and removing duplicates of pre-existing locations");
+// Fill the gaps: stations that failed the record-length rules but have nothing kept or pre-existing within 75 km.
+// Checked across borders, as the point is coverage. Best record first, and each one kept blocks those near it.
+var lastYearsWithAnyValue = await GetLastYearWithAnyValue("qcf");
+var spacedStationIds = spacedStations.Select(x => x.Id).ToHashSet();
+var isolatedCandidates = fullStations
+    .Where(x => !spacedStationIds.Contains(x.Id)
+                && x.Coordinates != null
+                && x.CountryCode != null
+                && (x.Score ?? 0) >= isolatedMinimumCompleteYears
+                && lastYearsWithAnyValue.GetValueOrDefault(x.Id) >= DateTime.Now.Year - isolatedRecentYears)
+    .OrderByDescending(IsPreviouslySelected)
+    .ThenByDescending(x => x.Score ?? 0)
+    .ThenBy(x => x.Id)
+    .ToList();
+
+var isolatedStations = StationSpacingSelector.Select(
+    [.. preExistingStations, .. spacedStations],
+    isolatedCandidates,
+    _ => string.Empty,
+    x => x.Coordinates!.Value,
+    _ => isolationRadiusKm);
+
+logger.LogInformation($"{isolatedStations.Count} of {isolatedCandidates.Count} short-record stations added because nothing else is within {isolationRadiusKm} km (at least {isolatedMinimumCompleteYears} complete years and a value since {DateTime.Now.Year - isolatedRecentYears})");
+
+var selectedStations = await RemoveDuplicateLocations([.. spacedStations, .. isolatedStations]);
+logger.LogInformation($"{selectedStations.Count} stations have been selected after adjusting for data quality, spacing, isolation and removing duplicates of pre-existing locations");
 
 var locations = new List<Location>();
 var dataFileMapping = new DataFileMapping
@@ -185,6 +215,50 @@ static async Task<HashSet<string>> GetPreviouslySelectedStationIds()
 
     var stations = await Station.GetStationsFromFile(Folders.SelectedStationsFile);
     return [.. stations.Select(x => x.Id)];
+}
+
+bool IsPreviouslySelected(Station station)
+{
+    return previouslySelectedIds.Contains(station.Id)
+        || previouslySelectedIds.Contains(GhcnmStationIds.GetPreviousId(station.Id) ?? string.Empty);
+}
+
+// Each station's last year with at least one monthly value, whether or not the year is complete.
+static async Task<Dictionary<string, int>> GetLastYearWithAnyValue(string version)
+{
+    var dir = new DirectoryInfo(@$"SourceData\{version}\");
+    var dataFileName = dir.GetFiles("*.dat").Single().FullName;
+
+    var lastYears = new Dictionary<string, int>();
+    foreach (var record in await File.ReadAllLinesAsync(dataFileName))
+    {
+        if (!HasAnyValue(record))
+        {
+            continue;
+        }
+
+        var id = record[..11];
+        var year = int.Parse(record.Substring(11, 4));
+        if (year > lastYears.GetValueOrDefault(id))
+        {
+            lastYears[id] = year;
+        }
+    }
+
+    return lastYears;
+}
+
+static bool HasAnyValue(string record)
+{
+    for (var i = 0; i < 12; i++)
+    {
+        if (record.Substring(19 + (i * 8), 5) != "-9999")
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 // Counts each station's complete years (all 12 months present) from firstYear to lastYear.

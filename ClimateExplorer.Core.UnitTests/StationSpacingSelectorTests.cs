@@ -44,6 +44,24 @@ public class StationSpacingSelectorTests
     }
 
     [TestMethod]
+    public void Select_OneGroupForAllCountries_BlocksAcrossBorders()
+    {
+        // The GHCNm importer's isolation pass puts every station in one group, so a seed in another country blocks.
+        var seed = new TestStation("seed", "ES", 0, 0);
+        var acrossBorder = new TestStation("acrossBorder", "PT", 0, 0.5);
+        var remote = new TestStation("remote", "PT", 0, 1);
+
+        var selected = StationSpacingSelector.Select(
+            [seed],
+            [acrossBorder, remote],
+            _ => string.Empty,
+            x => new Coordinates(x.Latitude, x.Longitude),
+            _ => 75);
+
+        CollectionAssert.AreEqual(new[] { "remote" }, Ids(selected));
+    }
+
+    [TestMethod]
     public void Select_SeedWithinRadius_SkipsCandidateAndDoesNotReturnSeed()
     {
         var seed = new TestStation("seed", "AU", 0, 0);

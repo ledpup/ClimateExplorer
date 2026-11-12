@@ -1,8 +1,9 @@
 # Station selection and map density
 
 - **Date:** 2026-11-12
-- **Status:** Implemented 2026-11-12: map (Proposal 2) and station selection (Proposal 1); see the
-  addenda. The GHCNm, GHCNd and precipitation importers and the DataPipeline haven't been re-run yet.
+- **Status:** Implemented 2026-11-12: map (Proposal 2), station selection (Proposal 1) and the isolation
+  rule; see the addenda. The importers and the DataPipeline have been re-run for Proposal 1, but not yet
+  for the isolation rule.
 - **Author:** Patrick (with Claude)
 - **Scope:** `ClimateExplorer.Data.Ghcnm` (station selection), `ClimateExplorer.Core` (spacing
   algorithm, `Location`), `ClimateExplorer.WebApi` (map zoom per location), `ClimateExplorer.Web.Client`
@@ -436,3 +437,55 @@ only because there are more stations. A sample of 21 old archives: `AE000041196`
 and now holds 1944-2025 (19,773); `LG000026313` held 2022-2025 and now 1941-2026; many others stopped
 in 2015-2021 and now run to 2025-2026. The estimate was based on the old archives' size per year, so it
 undercounted.
+
+## Addendum — isolation rule (2026-11-12)
+
+**Why.** Geelong, Wollongong and Bendigo have no location. Every station in those towns fails the 60
+complete years rule (the best are Geelong SEC with 55, closed in 1970, and Bendigo Airport with 32). The old
+long-record sites closed and their replacements are 20 to 35 years old. Stitching old and new stations
+together was ruled out: BOM does a lot of analysis before doing that.
+
+**Rule.** After spacing, `ClimateExplorer.Data.Ghcnm/Program.cs` adds any station that:
+
+- has at least 10 complete years (`isolatedMinimumCompleteYears`)
+- has any monthly value in the last 10 years (`isolatedRecentYears`, `GetLastYearWithAnyValue`), even
+  if the year isn't complete
+- has no pre-existing location and no kept station within 75 km (`isolationRadiusKm`), **in any
+  country**. The aim is coverage, so this check crosses borders, unlike spacing.
+
+Order: last run's stations first, then complete years, then ID. Each station kept blocks others within
+75 km. `StationSpacingSelector` does this with one group for every station; no change to `Core` was needed.
+The result then goes through `RemoveDuplicateLocations` with the spaced stations.
+
+**Effect** (simulated on the 2026-11-10 GHCNm file against the 3,725 shipped locations):
+
+| D | Added | AU |
+|---|---|---|
+| 50 km | 2,698 | 236 |
+| **75 km (chosen)** | **1,809** | **159** |
+| 100 km | 1,264 | 100 |
+| 150 km | 728 | 48 |
+
+The rule fills empty country: US, Canada, Russia, outback Australia, Antarctica. It doesn't bring back
+the three towns, because each is near a shipped location: Avalon (Geelong) is 31 km from Laverton,
+Albion Park (Wollongong) 49 km from Nowra, and Bendigo Airport 64 km from Maryborough.
+Many of the additions have under 60 complete years, so they show a grey marker with no warming anomaly.
+They still get daily data from GHCNd.
+
+**Costs.**
+
+- GHCNd: the 1,809 stations average about 62 years of record, roughly +250–350 MB (today 3,560
+  archives, 844 MB). Runtime refresh is on demand, so stations nobody views aren't downloaded. Full
+  `Data.Ghcnd` runs cover about 57% more stations.
+- `/location` (loaded 5 s after render): about 75 bytes per location compressed. Production today: 2,014
+  locations, 152 KB Brotli. With Proposal 1, about 280 KB; with the isolation rule, about 400–420 KB.
+  zstd at the default level is the same size as Brotli for this payload (152,013 vs 151,866 bytes).
+- 12 of the new names clash with an existing location's URL name (for example `perry`, `sale`,
+  `jacksonville`), and 2 repeat within the set. `/location-by-path` takes the first match, so those
+  stations can only be reached from the map or by ID, as with the clashes that exist today.
+
+**Tests.** `StationSpacingSelectorTests.Select_OneGroupForAllCountries_BlocksAcrossBorders`. The
+filter itself is in `Program.cs` top-level code and isn't unit tested.
+
+**To run:** as for Proposal 1 (GHCNm twice if new IDs are added, then precipitation, GHCNd, DataPipeline,
+then rebuild the WebApi location cache).
