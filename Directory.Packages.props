@@ -18,7 +18,6 @@
     <PackageVersion Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageVersion Include="CsvHelper" Version="34.0.0" />
     <PackageVersion Include="CurrentDevice" Version="1.0.3" />
-    <PackageVersion Include="Dbscan" Version="3.0.0" />
     <PackageVersion Include="FluentFTP" Version="55.1.0" />
     <PackageVersion Include="GeoCoordinate.NetStandard1" Version="1.0.1" />
     <PackageVersion Include="Geolocation" Version="1.2.1" />

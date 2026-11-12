@@ -5,5 +5,7 @@ public class Folders
     public const string SourceDataFolder = @"..\..\..\..\ClimateExplorer.SourceData\";
     public const string MetaDataFolder = @"..\..\..\..\ClimateExplorer.WebApi\MetaData\";
     public const string GhcnmFolder = @"..\..\..\..\ClimateExplorer.Data.Ghcnm\";
-    public const string SelectedStationsFile = @"..\..\..\..\ClimateExplorer.Data.Ghcnm\bin\Debug\net10.0\Output\MetaData\selected-stations.json";
+
+    // The GHCNm stations selected by ClimateExplorer.Data.Ghcnm. GHCNd and GHCNm precipitation import the same stations.
+    public const string SelectedStationsFile = MetaDataFolder + @"Station\Stations_ghcnm_adjusted.json";
 }

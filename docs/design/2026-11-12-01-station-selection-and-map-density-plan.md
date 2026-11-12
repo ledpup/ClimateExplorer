@@ -1,8 +1,8 @@
 # Station selection and map density
 
 - **Date:** 2026-11-12
-- **Status:** Map (Proposal 2) implemented 2026-11-12 (see addendum); station selection (Proposal 1)
-  proposed
+- **Status:** Implemented 2026-11-12: map (Proposal 2) and station selection (Proposal 1); see the
+  addenda. The GHCNm, GHCNd and precipitation importers and the DataPipeline haven't been re-run yet.
 - **Author:** Patrick (with Claude)
 - **Scope:** `ClimateExplorer.Data.Ghcnm` (station selection), `ClimateExplorer.Core` (spacing
   algorithm, `Location`), `ClimateExplorer.WebApi` (map zoom per location), `ClimateExplorer.Web.Client`
@@ -122,6 +122,72 @@ problem is "one per cluster", not the radius.
 The marker is a 48 px pin about 38 px wide. At the default zoom (7), 40 px is about 39 km at 37° N
 and about 49 km at the equator. With a 40 km floor, markers mostly don't overlap at the default
 zoom. Going lower only pays off once the map hides markers when zoomed out (Proposal 2).
+
+### Revised rules, now that the map handles overlap
+
+The map no longer needs stations spaced apart (Proposal 2). The radius now only removes near-duplicates
+(airport and town, several stations in one city). Selection is about quality and storage.
+
+**Storage.** Datasets is 477 MB against a 1 GB cap. GHCNd is 317 MB of it: 1,854 files, about 1.9 KB
+per year of record, so about 190 KB for a typical location. GHCNm adds about 7 KB. The cap allows
+about 2,700 more locations. Keeping 150 MB spare for yearly growth leaves room for about 1,800.
+
+**Rules simulated** (current GHCNm, per country, today's stations first, no country top-up; the
+storage column is GHCNd only):
+
+| Last complete year | Complete years | Of last 30 complete | Radius by record length | Total | Shipped dropped | New | Storage |
+|---|---|---|---|---|---|---|---|
+| ≥ 2016 (today) | ≥ 60 | — | 75 → 40 km | 2,314 | 338 | 751 | +118 MB |
+| ≥ 2016 | ≥ 60 | — | 50 → 25 km | 2,804 | 324 | 1,227 | +209 MB |
+| ≥ 2023 | ≥ 60 | ≥ 25 | 50 → 25 km | 1,905 | 785 | 789 | +32 MB |
+| ≥ 2023 | ≥ 60 | ≥ 20 | 50 → 25 km | 2,275 | 619 | 993 | +108 MB |
+| ≥ 2016 | ≥ 60 | ≥ 20 | 25 → 10 km | 2,901 | 449 | 1,449 | +214 MB |
+| **≥ 2021** | **≥ 60** | **≥ 20** | **25 → 10 km** | **2,764** | **541** | **1,404** | **+190 MB** |
+| ≥ 2023 | ≥ 60 | ≥ 20 | 25 → 10 km | 2,639 | 618 | 1,356 | +171 MB |
+| ≥ 2023 | ≥ 60 | ≥ 15 | 25 → 10 km | 2,834 | 565 | 1,498 | +213 MB |
+| ≥ 2023 | ≥ 60 | ≥ 15 | none | 3,093 | 565 | 1,757 | +256 MB |
+
+Why each rule:
+
+- **Recency: last complete year ≥ current year − 5** (today's rule is − 10). Of stations with 60 or
+  more complete years, 2,617 end in 2025 and 481 in 2024. The 2018 group (95 stations) is the main
+  thing − 5 removes. − 3 was tried and is too strict. Of the 345 long-record stations whose last
+  complete year is 2021–2023, 289 still reported monthly values in 2024–2026. They're live stations
+  with an odd missing month, not closed ones: one missing month voids the year (`IsValidYear`). An
+  alternative test, "any monthly value in the last 2 years", selects almost the same stations
+  (2,745 against 2,764), so the simpler complete-year rule is enough.
+- **History: keep 60 complete years.** `AnomalyCalculator` needs 60, so anything shorter has no
+  warming anomaly. It would get a grey marker and no heating score.
+- **Recent completeness: at least 20 of the last 30 years complete.** The "last 30 years" trend uses
+  the last 30 *complete* years, which for a gappy station can span 50 calendar years. 25 is too
+  harsh, because a single missing month voids a year (`IsValidYear`). Sevilla has 29.
+- **Radius: 25 km for a 60-year record, falling to 10 km at 120 years.** This drops duplicates in the
+  same town. Without any radius, the extra ~250 stations are mostly second and third stations for the
+  same place (Lethbridge has four).
+- Keep the country top-up and the per-country rule.
+
+Of the 541 shipped stations dropped under the chosen rule: 217 came in through the country top-up (under
+60 complete years; this simulation leaves the top-up out, so most of them stay), 149 end before 2021, 99
+have fewer than 20 of the last 30 years, and 76 are no longer in the file (next point). None are lost to
+the radius, because today's stations go first.
+
+**Canadian station IDs changed.** NOAA renumbered Canada in GHCNm from `CA00nnnnnnn` to
+`CAN0nnnnnnn` (Banff: `CA003050520` → `CAN03050520`). 75 shipped stations are affected. Before
+re-running:
+
+- `GhcnIdToLocationIds.json` has 3,643 `CA00` entries and 1 `CAN`. As things stand, every Canadian
+  station gets a new location GUID, and the program exits to save them.
+- The local `ghcnd-stations.txt` (from August) still uses `CA00`. GHCNd is looked up by the GHCNm ID,
+  so Canadian locations would lose their daily data.
+
+Map `CAN0` → `CA00` when reading the GHCNm files, or keep an alias both ways, so Canada keeps its GUIDs and
+its GHCNd files.
+
+**Compression.** In .NET 11, `ZipArchive` reads only Stored, Deflate and Deflate64, so Zstandard
+and Brotli can't go inside the existing `.zip` files. As plain `.csv.br` or `.csv.zst` files, on a
+sample of 41 GHCNd files, Brotli at maximum saves 35% (about 110 MB) and Zstandard level 19 saves
+27%. The CSV is unchanged either way, but the files no longer open with a double-click. The rules
+above fit without it, so keep it in reserve.
 
 ## Findings: the map
 
@@ -261,3 +327,69 @@ builds with 0 warnings; `ClimateExplorer.Web.UnitTests` 510 passed). Worth check
 - a view across the antimeridian (NZ, Fiji)
 
 The Playwright `ChartTests` still selects `.leaflet-marker-icon`, which Leaflet's `L.marker` keeps.
+
+## Addendum — implementation notes (Proposal 1, 2026-11-12)
+
+Rules as implemented in `ClimateExplorer.Data.Ghcnm/Program.cs`:
+
+- **Recency:** last complete year ≥ current year − 10, as before. The − 3 and − 5 options above were
+  considered and not taken.
+- **History:** at least 60 complete years (`AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly`),
+  as before.
+- **Recent completeness (new):** at least 20 complete years in the last 30 (current year − 30 to
+  current year − 1), counted by `GetCompleteYearsInRecentPeriod`.
+- **Country top-up:** unchanged. These stations skip the recent-completeness rule.
+- **Spacing:** `StationSpacingSelector` (new, in `ClimateExplorer.Core`) replaces DBSCAN.
+  - It works per country, with the pre-existing (BOM, UK) locations as seeds.
+  - The radius is 25 km for a 60-year record, falling to 10 km at 120 years (`GetSpacingRadiusKm`).
+  - Priority: stations in the last run's `Stations_ghcnm_adjusted.json` go first, then by complete
+    years, then by ID.
+  - The `DE`/`US` distance overrides are gone.
+- **Duplicate removal:** `RemoveDuplicateLocations` now matches pre-existing locations within the same
+  country only. It also removes every match, where `SingleOrDefault` would have thrown on two.
+
+**Canadian renumbering.** Current GHCNd uses `CAN0` IDs as well (8,447, and no `CA00`). The August
+local copy of `ghcnd-stations.txt` was out of date. GHCNm precipitation files exist under both forms.
+So the new IDs are kept everywhere. `GhcnmStationIds.GetPreviousId` maps `CAN0nnnnnnn` →
+`CA00nnnnnnn` for two things only:
+
+- carrying the old location GUID into `GhcnIdToLocationIds.json`
+- recognising a renumbered station as previously selected
+
+The odd `CAN030828JF` (not 7 digits) is left alone.
+
+**`Folders.SelectedStationsFile`** pointed at `ClimateExplorer.Data.Ghcnm\bin\Debug\net10.0\...` after the
+move to `net11.0`. GHCNd and precipitation would have read a stale list. It now points at
+`WebApi\MetaData\Station\Stations_ghcnm_adjusted.json`, which the GHCNm importer writes with the same
+stations, and `selected-stations.json` is no longer written.
+
+**Other changes:**
+
+- `CreateStationDataFiles` uses a `HashSet` instead of `SingleOrDefault` for each line of the data file.
+- The `Dbscan` package and `GeoListSpatialIndex.cs` are removed. The `GeoCoordinate.NetStandard1`
+  reference is removed from `ClimateExplorer.Data.Ghcnm`; `ClimateExplorer.Core` brings it in.
+- Tests: `ClimateExplorer.Core.UnitTests/StationSpacingSelectorTests.cs` (6). They include the chaining
+  case: a–b–c, 11 km apart, keeps a and c.
+
+**Expected result.** A Python re-implementation of these rules on the 2026-11-10 GHCNm file gives
+3,195 stations (1,901 today):
+
+| | Count |
+|---|---|
+| Today's stations kept | 1,768 |
+| Today's stations dropped | 133 |
+| New | 1,427 |
+
+By country: US 1,189, JP 129, DE 104, CA 73, ES 41 (Sevilla included), AU 30, GB 22.
+
+GHCNd for the new stations is about +280 MB, so Datasets ends up near 750 MB of the 1 GB cap.
+
+**To run** (in order):
+
+1. `ClimateExplorer.Data.Ghcnm`. The first run adds the `CAN0` IDs to `GhcnIdToLocationIds.json` and
+   exits ("PLEASE RE-RUN"). Rebuild so the updated file is copied to `bin`, then run it again.
+2. `ClimateExplorer.Data.Ghcnm.Precipitation`
+3. `ClimateExplorer.Data.Ghcnd`
+4. `ClimateExplorer.DataPipeline`
+
+Then rebuild the WebApi location cache.

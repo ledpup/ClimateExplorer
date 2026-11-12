@@ -2,7 +2,6 @@
 using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Data.Ghcnm;
-using Dbscan;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
@@ -19,6 +18,11 @@ var logger = serviceProvider.GetService<ILoggerFactory>()!.CreateLogger<Program>
 
 const int minimumStationsInCountry = 5;
 
+// A station needs this many complete years in the last 30, so its "last 30 years" trend (which takes the last 30
+// complete years) covers roughly the last 30 calendar years. 25 is too strict: one missing month voids a year.
+const int recentPeriodYears = 30;
+const int minimumCompleteYearsInRecentPeriod = 20;
+
 var httpClient = new HttpClient();
 var userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36";
 var acceptLanguage = "en-US,en;q=0.9,es;q=0.8";
@@ -32,7 +36,6 @@ const string stationsFileCsv = @"MetaData\stations.csv";
 const string preExistingLocationsFile = @"MetaData\pre-existing-locations.json";
 // Holds ISO country codes. Renamed from stations.json so a cache from before the FIPS to ISO mapping is never read.
 const string stationsFileJson = @"Output\MetaData\stations-iso.json";
-const string selectedStationsFileJson = @"Output\MetaData\selected-stations.json";
 
 var dataStations = await GetStationFromData("qcf");
 
@@ -48,7 +51,12 @@ fullStations.ForEach(x =>
 {
     if (!ghcnIdToLocationIds.ContainsKey(x.Id))
     {
-        ghcnIdToLocationIds.Add(x.Id, Guid.NewGuid());
+        // A renumbered station keeps the location ID it had under its old station ID, so links to it still work.
+        var previousId = GhcnmStationIds.GetPreviousId(x.Id);
+        var locationId = previousId != null && ghcnIdToLocationIds.TryGetValue(previousId, out var previousLocationId)
+            ? previousLocationId
+            : Guid.NewGuid();
+        ghcnIdToLocationIds.Add(x.Id, locationId);
         newStations.Add(x.Id);
     }
 });
@@ -61,21 +69,16 @@ if (newStations.Any())
     Environment.Exit(0);
 }
 
-var filteredStations = FilterStationsByRecencyAndMinimumScore(fullStations, (short)(DateTime.Now.Year - 10), AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly);
+var completeYearsInRecentPeriod = await GetCompleteYearsInRecentPeriod("qcf", DateTime.Now.Year - recentPeriodYears, DateTime.Now.Year - 1);
+var filteredStations = FilterStationsByRecencyAndMinimumScore(fullStations, (short)(DateTime.Now.Year - 10), AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly, completeYearsInRecentPeriod);
 
-logger.LogInformation($"{filteredStations.Count} stations remaining after filtering based on recency and longevity of the data (records no longer than {DateTime.Now.Year - 10}) and at least {AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly} years of data");
+logger.LogInformation($"{filteredStations.Count} stations remaining after filtering based on recency and longevity of the data (records no longer than {DateTime.Now.Year - 10}), at least {AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly} complete years of data, and at least {minimumCompleteYearsInRecentPeriod} complete years in the last {recentPeriodYears}");
 
 var combinedStations = await EnsureCountryRepresentation(fullStations, filteredStations, (short)(DateTime.Now.Year - 10));
 
 logger.LogInformation($"{combinedStations.Count} stations after adjusting for country representation (trying to having at least 5 stations per country, even if the data is poor)");
 
-// Germany and the US had a poor representation of stations over the map (due to quantity and density).
-// Have changed the distance to be more favourable to selecting a good representation.
-var countryDistanceOverride = new Dictionary<string, int>
-{
-    { "DE", 45 },
-    { "US", 70 },
-};
+// Locations from other sources (BOM, UK). Stations near them are left out, as they'd duplicate them.
 var preExistingLocations = await GetPreExistingLocations();
 var preExistingStations = preExistingLocations.Select(x => new Station
 {
@@ -83,21 +86,31 @@ var preExistingStations = preExistingLocations.Select(x => new Station
     Name = x.Name,
     CountryCode = x.CountryCode,
     Coordinates = x.Coordinates,
-    FirstYear = 1500,               // Fudge the first year so pre-existing location will always be the one chosen in the cluster
-    LastYear = DateTime.Today.Year,
-    YearsOfMissingData = 0,
     Source = "Pre-Existing"
 }).ToList();
-var totalStationSet = new List<Station>();
-totalStationSet.AddRange(combinedStations);
-totalStationSet.AddRange(preExistingStations);
 
-var selectedStationsPostClustering = SelectStationsByDbscanClusteringAndTakingHighestScore(totalStationSet, 75, countryDistanceOverride, 2);
+// The stations selected last time go first, so a re-run keeps them (and their URLs) unless they now fail the filters.
+// The rest go best record first.
+var previouslySelectedIds = await GetPreviouslySelectedStationIds();
+var candidates = combinedStations
+    .OrderByDescending(x => previouslySelectedIds.Contains(x.Id) || previouslySelectedIds.Contains(GhcnmStationIds.GetPreviousId(x.Id) ?? string.Empty))
+    .ThenByDescending(x => x.Score ?? 0)
+    .ThenBy(x => x.Id)
+    .ToList();
 
-logger.LogInformation($"{selectedStationsPostClustering.Count(x => x.Source != null)} stations selected by DBSCAN were already pre-existing locations. These will now be removed from final set (they were only used to prevent station overlap).");
-selectedStationsPostClustering = selectedStationsPostClustering.Where(x => x.Source == null).ToList();
-var selectedStations = await RemoveDuplicateLocations(selectedStationsPostClustering);
-logger.LogInformation($"{selectedStations.Count} stations have been selected after adjusting for data quality, cluster using DBSCAN and removing of duplicates due to pre-existing locations");
+// Spacing is per country: people look for a station in their own country, even when a better one is just across
+// the border. The map hides markers that would overlap until the user zooms in.
+var spacedStations = StationSpacingSelector.Select(
+    preExistingStations,
+    candidates,
+    x => x.CountryCode!,
+    x => x.Coordinates!.Value,
+    x => GetSpacingRadiusKm(x.Score ?? 0));
+
+logger.LogInformation($"{spacedStations.Count} of {candidates.Count} stations kept after leaving out those close to a better station in the same country or to a pre-existing location");
+
+var selectedStations = await RemoveDuplicateLocations(spacedStations);
+logger.LogInformation($"{selectedStations.Count} stations have been selected after adjusting for data quality, spacing and removing duplicates of pre-existing locations");
 
 var locations = new List<Location>();
 var dataFileMapping = new DataFileMapping
@@ -136,8 +149,6 @@ var jsonSerializerOptions = new JsonSerializerOptions
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
 };
 
-SaveStations(selectedStations, selectedStationsFileJson);
-
 var outputFileSuffix = "_ghcnm_adjusted";
 
 File.WriteAllText(Folders.MetaDataFolder + $@"Location\Locations{outputFileSuffix}.json", JsonSerializer.Serialize(locations, jsonSerializerOptions));
@@ -151,56 +162,51 @@ var ghcnm = dataSetDefinitions.Single(x => x.ShortName == "GHCNm");
 await CreateStationDataFiles("qcf", @"Temperature\GHCNm\Adjusted", selectedStations, logger);
 await CreateStationDataFiles("qcu", @"Temperature\GHCNm\Unadjusted", selectedStations, logger);
 
-List<Station> SelectStationsByDbscanClusteringAndTakingHighestScore(List<Station> processedStations, double distance, Dictionary<string, int> countryDistanceOverride, int minimumPointsPerCluster)
+// The map hides markers that would overlap, so spacing only removes near-duplicates (an airport and its town,
+// several stations in one city). 25 km for a station with the minimum record, shrinking to 10 km at 120 years.
+static double GetSpacingRadiusKm(int completeYears)
 {
-    var stationsGroupedByCountry = processedStations.GroupBy(x => x.CountryCode);
+    const double shortRecordRadiusKm = 25;
+    const double longRecordRadiusKm = 10;
+    const int shortRecordYears = AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly;
+    const int longRecordYears = 120;
 
-    var selectedStations = new List<Station>();
-    foreach (var groupedCountry in stationsGroupedByCountry)
+    var fraction = Math.Clamp((completeYears - shortRecordYears) / (double)(longRecordYears - shortRecordYears), 0, 1);
+    return shortRecordRadiusKm - ((shortRecordRadiusKm - longRecordRadiusKm) * fraction);
+}
+
+// The stations the last run selected, from the station file it wrote for the WebApi.
+static async Task<HashSet<string>> GetPreviouslySelectedStationIds()
+{
+    if (!File.Exists(Folders.SelectedStationsFile))
     {
-        var stationsInCountry = groupedCountry.ToList();
-
-        var index = new GeoListSpatialIndex<PointInfo<GeoPoint>>(stationsInCountry.Select(x => new PointInfo<GeoPoint>(new GeoPoint(x.Id, x.Coordinates!.Value.Latitude, x.Coordinates.Value.Longitude))));
-
-        var distanceForClustering = countryDistanceOverride.ContainsKey(groupedCountry.Key!) ? countryDistanceOverride[groupedCountry.Key!] : distance;
-        var dbscanResult = Dbscan.Dbscan.CalculateClusters(
-                index,
-                epsilon: distanceForClustering,
-                minimumPointsPerCluster: minimumPointsPerCluster);
-
-        foreach (var cluster in dbscanResult.Clusters)
-        {
-            int highestScore = 0;
-            var selectedStationId = cluster.Objects.First().Id;
-            foreach (var geoPoint in cluster.Objects)
-            {
-                var geoPointStation = stationsInCountry.Single(x => x.Id == geoPoint.Id);
-
-                if (geoPointStation.Score > highestScore)
-                {
-                    logger.LogInformation($"Station {geoPointStation.Id} has a score of {geoPointStation.Score}, beating the current highest of {highestScore}");
-                    highestScore = geoPointStation.Score.Value;
-                    selectedStationId = geoPointStation.Id;
-                }
-                else
-                {
-                    logger.LogInformation($"Station {geoPointStation.Id} has a score of {geoPointStation.Score}. That is not higher than {highestScore}");
-                }
-            }
-            logger.LogInformation($"Station {selectedStationId} has been selected");
-            var selectedStation = stationsInCountry.Single(x => x.Id == selectedStationId);
-            selectedStations.Add(selectedStation);
-        }
-
-        foreach (var unclusteredStation in dbscanResult.UnclusteredObjects)
-        {
-            var station = stationsInCountry.Single(x => x.Id == unclusteredStation.Id);
-            logger.LogInformation($"Unclustered station {unclusteredStation.Id} has been selected");
-            selectedStations.Add(station);
-        }
+        return [];
     }
 
-    return selectedStations;
+    var stations = await Station.GetStationsFromFile(Folders.SelectedStationsFile);
+    return [.. stations.Select(x => x.Id)];
+}
+
+// Counts each station's complete years (all 12 months present) from firstYear to lastYear.
+static async Task<Dictionary<string, int>> GetCompleteYearsInRecentPeriod(string version, int firstYear, int lastYear)
+{
+    var dir = new DirectoryInfo(@$"SourceData\{version}\");
+    var dataFileName = dir.GetFiles("*.dat").Single().FullName;
+
+    var counts = new Dictionary<string, int>();
+    foreach (var record in await File.ReadAllLinesAsync(dataFileName))
+    {
+        var year = int.Parse(record.Substring(11, 4));
+        if (year < firstYear || year > lastYear || !IsValidYear(record))
+        {
+            continue;
+        }
+
+        var id = record[..11];
+        counts[id] = counts.GetValueOrDefault(id) + 1;
+    }
+
+    return counts;
 }
 
 async Task SaveStationMetaData(List<Station> stations)
@@ -316,7 +322,7 @@ async Task<List<Station>> GetStations(string version, List<Station> inputStation
     return GetStationsFromFile();
 }
 
-List<Station> FilterStationsByRecencyAndMinimumScore(List<Station> stations, short lastYearOfDataNoLaterThan, short minimumScore)
+List<Station> FilterStationsByRecencyAndMinimumScore(List<Station> stations, short lastYearOfDataNoLaterThan, short minimumScore, Dictionary<string, int> completeYearsInRecentPeriod)
 {
     var selectedStations = new List<Station>();
     foreach (var station in stations)
@@ -329,6 +335,12 @@ List<Station> FilterStationsByRecencyAndMinimumScore(List<Station> stations, sho
         if (station.Score < minimumScore)
         {
             logger!.LogInformation($"Station {station.Id} is being filtered out because it has too much missing data. It's score ({station.Score}) (i.e., age ({station.Age}) - number of years of missing data ({station.YearsOfMissingData})) is less than the minimum score ({minimumScore})");
+            continue;
+        }
+        var recentCompleteYears = completeYearsInRecentPeriod.GetValueOrDefault(station.Id);
+        if (recentCompleteYears < minimumCompleteYearsInRecentPeriod)
+        {
+            logger!.LogInformation($"Station {station.Id} is being filtered out because only {recentCompleteYears} of the last {recentPeriodYears} years are complete (minimum {minimumCompleteYearsInRecentPeriod})");
             continue;
         }
         logger!.LogInformation($"Station {station.Id} has been accepted. Its last year of records was {station.LastYear!.Value} and it's age is {station.Age} and its score is {station.Score}");
@@ -397,6 +409,7 @@ static async Task CreateStationDataFiles(string version, string outputFolderName
     var dataFileName = sourceDir.GetFiles("*.dat").Single().FullName;
 
     var records = await File.ReadAllLinesAsync(dataFileName);
+    var stationIds = stations.Select(x => x.Id).ToHashSet();
 
     string? currentStation = null;
     StreamWriter? writer = null;
@@ -405,8 +418,7 @@ static async Task CreateStationDataFiles(string version, string outputFolderName
     {
         var id = record.Substring(0, 11);
 
-        var station = stations.SingleOrDefault(s => s.Id == id);
-        if (station == null)
+        if (!stationIds.Contains(id))
         {
             continue;
         }
@@ -486,23 +498,28 @@ async Task<List<Station>> RemoveDuplicateLocations(List<Station> dataQualityFilt
     var stationsRemoved = 0;
     foreach (var preExistingLocation in preExistingLocations)
     {
-        var stationMatchedOnName = dataQualityFilteredStations.SingleOrDefault(x => x.Name!.Replace('_', ' ').Equals(preExistingLocation.Name, StringComparison.OrdinalIgnoreCase));
-        if (stationMatchedOnName != null)
+        // Same country only: a pre-existing Perth (Australia) mustn't remove Perth in Scotland.
+        // With more stations selected, more than one can match, so remove them all.
+        var stationsInCountry = dataQualityFilteredStations.Where(x => x.CountryCode == preExistingLocation.CountryCode).ToList();
+        var matchedOn = "name";
+        var matches = stationsInCountry
+            .Where(x => x.Name!.Replace('_', ' ').Equals(preExistingLocation.Name, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        if (matches.Count == 0)
         {
-            logger.LogInformation($"Found match of station based on name ({stationMatchedOnName!.Name}). Will remove this station from the set");
-            dataQualityFilteredStations.Remove(stationMatchedOnName);
-            stationsRemoved++;
+            matchedOn = "geo-coordinates";
+            matches = stationsInCountry
+                .Where(x => Math.Round(x.Coordinates!.Value.Latitude, 1) == Math.Round(preExistingLocation.Coordinates.Latitude, 1)
+                         && Math.Round(x.Coordinates.Value.Longitude, 1) == Math.Round(preExistingLocation.Coordinates.Longitude, 1))
+                .ToList();
         }
-        else
+
+        foreach (var match in matches)
         {
-            stationMatchedOnName = dataQualityFilteredStations.SingleOrDefault(x => Math.Round(x.Coordinates!.Value.Latitude, 1) == Math.Round(preExistingLocation.Coordinates.Latitude, 1)
-                                                                                 && Math.Round(x.Coordinates.Value.Longitude, 1) == Math.Round(preExistingLocation.Coordinates.Longitude, 1));
-            if (stationMatchedOnName != null)
-            {
-                logger.LogInformation($"Found match of station based on geo-coordinates (their names are '{stationMatchedOnName!.Name}' and '{preExistingLocation.Name}'). Will remove this station from the set");
-                dataQualityFilteredStations.Remove(stationMatchedOnName);
-                stationsRemoved++;
-            }
+            logger.LogInformation($"Found match of station based on {matchedOn} (their names are '{match.Name}' and '{preExistingLocation.Name}'). Will remove this station from the set");
+            dataQualityFilteredStations.Remove(match);
+            stationsRemoved++;
         }
     }
 
