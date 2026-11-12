@@ -16,7 +16,9 @@ public class Location : GeographicalEntity
 
     /// <summary>
     /// Linear trends of the location's yearly temperature series. Null below 30 complete years; the
-    /// full-record trend only for 30-59 years; full record then last 30 years from 60.
+    /// full-record trend only for 30-59 years; full record then last 30 years from 60. A since-1961 trend
+    /// follows whenever its window is eligible (at least 30 complete years from 1961, the first no later
+    /// than 1965; see <see cref="Stats.TrendWindows.GetSince1961Points"/>).
     /// </summary>
     public List<TrendSummary>? TemperatureTrends { get; set; }
 
@@ -29,6 +31,9 @@ public class Location : GeographicalEntity
 
     [JsonIgnore]
     public TrendSummary? Last30YearTemperatureTrend => TemperatureTrends?.FirstOrDefault(x => x.Window == TrendWindow.Last30);
+
+    [JsonIgnore]
+    public TrendSummary? Since1961TemperatureTrend => TemperatureTrends?.FirstOrDefault(x => x.Window == TrendWindow.Since1961);
 
     [JsonIgnore]
     public string FullTitle =>

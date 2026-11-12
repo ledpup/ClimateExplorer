@@ -89,7 +89,9 @@ public class LocationTrendDetailsBuilderTests
 
         var details = LocationTrendDetailsBuilder.Build(ToBinnedRecords(points));
 
-        foreach (var summary in summaries)
+        // The modal doesn't show the since-1961 window yet (Stage 3 of the since-1961 plan adds it; drop this
+        // filter then).
+        foreach (var summary in summaries.Where(x => x.Window != TrendWindow.Since1961))
         {
             var window = details.Windows.Single(x => x.Window == summary.Window);
             Assert.AreEqual(summary.FirstYear, window.FirstYear);

@@ -13,4 +13,5 @@ public enum TrendWindow
     Last30,
     RecentDecade,
     FirstHalf,
+    Since1961,
 }

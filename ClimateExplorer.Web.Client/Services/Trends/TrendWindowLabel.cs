@@ -1,6 +1,7 @@
 namespace ClimateExplorer.Web.Client.Services.Trends;
 
 using ClimateExplorer.Core.Model;
+using ClimateExplorer.Core.Stats;
 
 /// <summary>
 /// The one place the trend windows are named, so the chart's dropdown, the About-trends panels and
@@ -16,6 +17,7 @@ public static class TrendWindowLabel
             TrendWindow.Last30 => $"Last {ChartSeriesTrendCalculator.RecentWindowYears} years",
             TrendWindow.RecentDecade => $"Last {ChartSeriesTrendCalculator.RecentDecadeWindowYears} years",
             TrendWindow.FirstHalf => "Early period",
+            TrendWindow.Since1961 => $"Since {TrendDefaults.FixedPeriodStartYear}",
             _ => throw new NotImplementedException($"TrendWindow {window}"),
         };
     }
@@ -32,6 +34,7 @@ public static class TrendWindowLabel
             TrendWindow.Last30 => $"the last {ChartSeriesTrendCalculator.RecentWindowYears} years",
             TrendWindow.RecentDecade => $"the last {ChartSeriesTrendCalculator.RecentDecadeWindowYears} years",
             TrendWindow.FirstHalf => "the early period (the first half of the record)",
+            TrendWindow.Since1961 => $"since {TrendDefaults.FixedPeriodStartYear}, the start of the WMO reference period",
             _ => throw new NotImplementedException($"TrendWindow {window}"),
         };
     }

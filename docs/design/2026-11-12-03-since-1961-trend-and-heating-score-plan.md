@@ -1,7 +1,8 @@
 # Since-1961 trend and heating score
 
 - **Date:** 2026-11-12
-- **Status:** Proposed
+- **Status:** Stage 1 implemented 2026-11-12 (build and unit tests clean); dry run done, see the
+  [addendum](#addendum-stage-1-dry-run-2026-11-12). Stages 2–5 not started
 - **Author:** Patrick (with Claude)
 - **Scope:** `ClimateExplorer.Core` (trend windows, `Location.SetHeatingScores`, `HeatingScoreRow`),
   `ClimateExplorer.WebApi` (location cache), `ClimateExplorer.Web.Client` (location dashboard trend field
@@ -41,8 +42,9 @@ in `TrendDefaults` next to the existing windows:
 
 - `FixedPeriodStartYear = 1961`.
 - **Points:** the complete years with year ≥ 1961.
-- **Fitted only when** the first complete year in the window is no later than
-  `FixedPeriodStartYear + FixedPeriodStartToleranceYears` (proposed: 5, so 1965), and the window has at
+- **Fitted only when** the first complete year in the window falls within the first
+  `FixedPeriodStartToleranceYears` years (proposed: 5, the start of 1961 to the end of 1965, so
+  `firstYear < FixedPeriodStartYear + FixedPeriodStartToleranceYears`), and the window has at
   least `MinimumYearsForTrend` (30) complete years. The start check stops a series that begins in 1990
   from getting a "since 1961" trend that is really a full-period trend. The 30-year floor is the rule
   every other trend uses.
@@ -243,3 +245,123 @@ thresholds before the score changes.
 | | **Total** | **1 file, +30** | **~38 file edits (~28 distinct files), ~720** | — |
 
 Tests are roughly half the lines (~390 of ~720).
+
+## Addendum: Stage 1 dry run (2026-11-12)
+
+Taken from the local location cache rebuilt with Stage 1 (`CachingTool`, 2026-11-12). That cache has
+5,535 locations, against 2,014 in production when the research note was written, because of the new
+stations on `development`. So the counts are larger than the note's, and the score-change table isn't
+directly comparable with the note's last-30 one. The Stage 2 scoring was simulated in a scratch script
+with the same decile algorithm as `SetHeatingScores`.
+
+### Implementation notes
+
+- The start rule is `firstYear < FixedPeriodStartYear + FixedPeriodStartToleranceYears`: the first
+  complete year in the window must fall between the start of 1961 and the end of 1965.
+- `TemperatureTrendCalculator.GetWindowPoints(..., Since1961)` returns an empty list when the window isn't
+  eligible.
+- `LocationTrendDetailsBuilderTests.Build_SameSeries_MatchesTheLocationsPreCalculatedSummaries` skips
+  the Since 1961 summary until Stage 3 adds the window to the modal. Remove that filter in Stage 3.
+
+### Coverage
+
+| | Locations |
+|---|---|
+| With a warming anomaly (scored today) | 3,484 |
+| With a since-1961 trend | 3,994 (3,888 significant, 97%) |
+| … first complete year 1961 / 1962–1965 | 3,388 / 606 |
+| … last year before 2015 (fails the recency rule; newest last year is 2025) | 41 |
+| **Eligible for the score** | **3,953** |
+| Scored today but not eligible | 101 (89 have no eligible window: gaps around 1961–65 or under 30 complete years; 12 fail the recency rule) |
+| Eligible but not scored today | 570 (under 60 complete years, so no anomaly) |
+
+So the number of scored locations rises from 3,484 to 3,953.
+
+### Rates and bands
+
+Since-1961 rate across eligible locations: mean 0.291, median 0.283, SD 0.108 °C/decade. The 103
+non-significant rates are all below 0.23 °C/decade.
+
+| Score | Since-1961 rate (°C/decade) |
+|---|---|
+| 9 | 0.425 – 1.040 |
+| 8 | 0.380 – 0.425 |
+| 7 | 0.344 – 0.380 |
+| 6 | 0.311 – 0.344 |
+| 5 | 0.283 – 0.311 |
+| 4 | 0.257 – 0.283 |
+| 3 | 0.234 – 0.257 |
+| 2 | 0.203 – 0.233 |
+| 1 | 0.159 – 0.203 |
+| 0 | 0.012 – 0.159 |
+| −1 | negative (7 locations) |
+
+The 7 negative rates are Halley (−0.28, significant), Francistown (−0.12, significant), Dumont
+d'Urville, Seminole, Alum Fork, Rapa and Casey (−0.03 to −0.07, not significant). Scoring only
+significant negatives as −1 would move the last five to 0.
+
+### Score change, current anomaly score → since-1961 score
+
+| Change | 0 | 1 | 2 | 3 | 4 | 5+ |
+|---|---|---|---|---|---|---|
+| Locations (n = 3,383) | 928 | 1,222 | 655 | 297 | 173 | 108 |
+
+37% move by 2 or more. The biggest movers are of two kinds:
+
+- **Long records with a cold early period**, which have a high anomaly but an ordinary rate since 1961:
+  Buenos Aires Observatorio 9 → 1 (record from 1856), Pasadena 9 → 1, Hiroshima 9 → 2, Vladivostok 9 → 2,
+  Groton 8 → 1.
+- **Flat early records, then strong warming after 1961**: Savannah 0 → 7, Tasiilaq 0 → 7, Inukjuak
+  0 → 7, Danville 1 → 8, Kolguev Severnyi 1 → 9.
+
+Rank correlation of the since-1961 rate with the anomaly is 0.78, and with the last-30 trend 0.74.
+
+### Record length
+
+| Measure | Spearman ρ with record length |
+|---|---|
+| Since-1961 rate, all eligible | −0.12 |
+| … within the US / outside the US | −0.02 / −0.00 |
+| … within each country (countries with 30+ locations) | −0.01 |
+| Warming anomaly | +0.01 |
+| Full-record trend | −0.64 |
+| Last-30 trend | −0.09 |
+
+The −0.12 overall comes from geography, not the method. US stations warmed more slowly since 1961
+(median 0.245 against 0.322 °C/decade elsewhere) and make up most of the 100–149-year records (964 of
+1,555). Within any one group the correlation is about zero. Medians by record length:
+
+| Record length (years) | n | Since-1961 rate (°C/dec) | Significant | Mean new score |
+|---|---|---|---|---|
+| under 60 | 56 | 0.317 | 96% | 5.5 |
+| 60–79 | 1,221 | 0.303 | 98% | 4.9 |
+| 80–99 | 857 | 0.295 | 99% | 4.8 |
+| 100–119 | 591 | 0.251 | 94% | 3.6 |
+| 120–149 | 964 | 0.262 | 96% | 3.9 |
+| 150+ | 264 | 0.327 | 100% | 5.4 |
+
+(The anomaly's ρ is now +0.01, against +0.21 in the research note, also because of the new stations.)
+
+### Noise
+
+With n ≈ 63 consecutive years the slope's standard error is about σ × 0.07 °C/decade: about
+0.035 at a maritime station and up to 0.1 inland. The middle bands are only 0.023–0.045 wide, so a
+score still carries about ±1 band of noise at the coast and up to ±3 inland. That's better than the
+last-30 trend's ±2 to ±4, but the score isn't precise. Taking σ ≈ 0.8 °C as typical, roughly three
+quarters of the spread between stations is real, against under half for the last-30 trend. One unusual
+final year (1 °C off) moves the slope by about 0.015 °C/decade, under half a band, so scores won't jump
+every year as the window slides.
+
+### Thresholds settled
+
+- **Start tolerance: keep 5 years (1961–1965).** The median rate doesn't drift with the start year
+  (1961: 0.285, 1962: 0.258, 1963: 0.262, 1964: 0.341, 1965: 0.337 °C/decade; the later years have small
+  samples and fewer US stations). Widening to 10 years would add about 170 locations whose trend would
+  really start in 1966–1970.
+- **Minimum years: keep 30 for both the trend and the score.** The cache doesn't record how many
+  complete years each window has, so gaps can't be measured here. But the start and recency rules
+  already make every score-eligible window span at least 51 calendar years, so the floor of 30 only
+  applies when over 40% of the years are incomplete. Thirty points spread over 50+ years also fit the
+  slope more tightly than 30 consecutive years do.
+- **Recency rule: keep it** (last year within 10 years of the newest). It removes 41 locations,
+  mostly ending in 2005–2014.
