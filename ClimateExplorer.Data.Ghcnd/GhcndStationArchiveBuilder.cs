@@ -47,6 +47,25 @@ public static class GhcndStationArchiveBuilder
             }
         }
 
+        await WriteAsync(archivePath, stationId, temperatureRecords, precipitationRecords, cancellationToken);
+    }
+
+    /// <summary>
+    /// Writes a station archive with a <c>Temperature/[station].csv</c> entry, a <c>Precipitation/[station].csv</c>
+    /// entry, or both. A null list leaves that entry out.
+    /// </summary>
+    public static async Task WriteAsync(
+        string archivePath,
+        string stationId,
+        List<OutputRowTemperature>? temperatureRecords,
+        List<OutputRowPrecipitation>? precipitationRecords,
+        CancellationToken cancellationToken)
+    {
+        if (temperatureRecords == null && precipitationRecords == null)
+        {
+            throw new InvalidOperationException("A GHCNd station archive must contain at least one measurement family.");
+        }
+
         Directory.CreateDirectory(Path.GetDirectoryName(archivePath)!);
         await using var archiveStream = new FileStream(archivePath, FileMode.CreateNew, FileAccess.ReadWrite, FileShare.None, 81920, FileOptions.Asynchronous);
         using var archive = new ZipArchive(archiveStream, ZipArchiveMode.Create, leaveOpen: false);

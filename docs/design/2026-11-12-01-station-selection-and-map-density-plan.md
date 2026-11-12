@@ -368,6 +368,10 @@ stations, and `selected-stations.json` is no longer written.
 - `CreateStationDataFiles` uses a `HashSet` instead of `SingleOrDefault` for each line of the data file.
 - The `Dbscan` package and `GeoListSpatialIndex.cs` are removed. The `GeoCoordinate.NetStandard1`
   reference is removed from `ClimateExplorer.Data.Ghcnm`; `ClimateExplorer.Core` brings it in.
+- `GhcndBulkStationFileCache` skips a station GHCNd doesn't have (404) and logs it, instead of stopping
+  the run. Any other error still throws. The first run stopped on `NZM00093780`. 12 of the 3,195
+  selected stations aren't in GHCNd (5 Mexico, 3 Fiji, 2 Sint Maarten/Curaçao, 1 New Zealand,
+  1 Jan Mayen); they get GHCNm monthly data only. Tests: `GhcndBulkStationFileCacheTests` (2).
 - Tests: `ClimateExplorer.Core.UnitTests/StationSpacingSelectorTests.cs` (6). They include the chaining
   case: a–b–c, 11 km apart, keeps a and c.
 
@@ -393,3 +397,34 @@ GHCNd for the new stations is about +280 MB, so Datasets ends up near 750 MB of 
 4. `ClimateExplorer.DataPipeline`
 
 Then rebuild the WebApi location cache.
+
+**DataPipeline fix (2026-11-12).** The first DataPipeline run failed: "6112 source files were not
+packaged". Two causes:
+
+- `Data.Ghcnd` still wrote split CSVs (`SourceData/GHCNd/Temperature/[station].csv` and
+  `Precipitation/[station].csv`), the layout the July download plan replaced with one archive per station.
+  DataPipeline only copies `SourceData/GHCNd/[station].zip`, so 6,109 CSVs were left out, and the 1,854
+  archives it did copy were the old station set. `Data.Ghcnd` now writes `GHCNd/[station].zip` through
+  `GhcndStationArchiveBuilder.WriteAsync`, the same layout the Web API's runtime refresh writes. It deletes
+  the old archives and the legacy split folders first.
+- DataPipeline's loose-file list was missing `CO2/co2_daily_mlo.txt`, `Glaciers/wgms-glacier-mass-balance-index.csv`
+  and `Met/meantemp_daily_totals.txt`, which were added to `Datasets` directly.
+
+DataPipeline now logs each step with counts, sizes and time, shows progress through long steps, and on
+failure lists the unpackaged files grouped by folder. Re-run `Data.Ghcnd` (the downloaded CSVs are reused),
+then DataPipeline.
+
+**Result (2026-11-12).** DataPipeline packaged 13,066 source files into 3,393 assets. The final move into
+`Datasets` needed a few retries while the new archives were scanned. `Datasets` is now 892 MB
+(471 MB before), of the 1 GB cap:
+
+| | Before | After |
+|---|---|---|
+| GHCNd archives | 1,854, 312 MB | 3,146, 731 MB |
+| Everything else | 159 MB | 161 MB |
+
+GHCNd grew more than the +280 MB estimate because many of the old archives were truncated, not
+only because there are more stations. A sample of 21 old archives: `AE000041196` held 1955-1960 (2,184 days)
+and now holds 1944-2025 (19,773); `LG000026313` held 2022-2025 and now 1941-2026; many others stopped
+in 2015-2021 and now run to 2025-2026. The estimate was based on the old archives' size per year, so it
+undercounted.

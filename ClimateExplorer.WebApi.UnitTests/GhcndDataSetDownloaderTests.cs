@@ -108,6 +108,17 @@ public sealed class GhcndDataSetDownloaderTests
                 CancellationToken.None));
     }
 
+    [TestMethod]
+    public async Task WriteAsync_NoRecords_ThrowsAndWritesNoArchive()
+    {
+        var archivePath = Path.Combine(temporaryRoot, "empty.zip");
+
+        await Assert.ThrowsExactlyAsync<InvalidOperationException>(
+            () => GhcndStationArchiveBuilder.WriteAsync(archivePath, "TEST", null, null, CancellationToken.None));
+
+        Assert.IsFalse(File.Exists(archivePath));
+    }
+
     private static async Task<DataSetDownloadRequest> ResolveSharedStationRequest()
     {
         var definitions = await DataSetDefinition.GetDataSetDefinitions(Path.Combine(Folders.MetaDataFolder, "DataFileMapping"));

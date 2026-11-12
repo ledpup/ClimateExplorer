@@ -1,0 +1,241 @@
+# Since-1961 trend and heating score
+
+- **Date:** 2026-11-12
+- **Status:** Proposed
+- **Author:** Patrick (with Claude)
+- **Scope:** `ClimateExplorer.Core` (trend windows, `Location.SetHeatingScores`, `HeatingScoreRow`),
+  `ClimateExplorer.WebApi` (location cache), `ClimateExplorer.Web.Client` (location dashboard trend field
+  and modal, heating score info, Locations page, Recent Observations trend tab, chart trends, presets)
+- **Builds on:** [Heating score: trend vs warming anomaly](2026-11-12-02-heating-score-trend-vs-anomaly.md)
+- **Branch context:** written on `development`
+
+## Goal
+
+Add a fourth trend window, **Since 1961**: an OLS slope over the complete years from 1961 to the last
+year. Use it everywhere trends appear, and rank the heating score on it instead of on the warming
+anomaly. The research note explains the choice: it's the same period for every station, so it
+doesn't depend on record length, and it's about three times less noisy than the last-30-years trend.
+1961 is the start of the WMO reference period.
+
+## Decisions
+
+| Question | Decision |
+|---|---|
+| Heating score basis | Since-1961 slope, ranked into deciles 9–0 as now |
+| Negative scores | A negative since-1961 slope scores **−1**. *Chosen: any negative slope, matching the info page's "highlight any location that has not warmed". Scoring only significant negatives as −1 (others 0) is a one-line change if you prefer it.* |
+| Trends stored on `Location` | Full, Last30 and Since1961. Full stays: `MapMarkerZoomTiers.GetRecordLength` uses its `FirstYear`, and the dashboard tooltip shows it |
+| Dashboard trend field value | Last 30 years if significant, otherwise Since 1961 if significant, otherwise nothing. The full-period trend is no longer a fallback |
+| Dashboard trend tooltip | Lists every significant trend: Last 30 years, Since 1961, Full period |
+| Recent Observations tile | Last 30 years (headline), Since 1961, Early period |
+| Recent Observations About trends | Window toggle: Last 30 years, Since 1961, Early period, Full period. Default is Last 30 years, matching the tile headline |
+| Chart | Since 1961 becomes a trend window choice for any yearly series |
+| Chart: adding a trend | A trend added by clicking defaults to **Since 1961**, falling back to the other windows when it isn't available or significant |
+| Presets | Unchanged: they keep their explicit `TrendPeriod`s (mostly Full) |
+| Window name | `TrendWindow.Since1961`, labelled "Since 1961". The URL serialises the enum by name, so adding a value doesn't break links |
+
+## The Since-1961 window
+
+All three trend code paths (location trends, chart, Recent Observations) use one definition. It goes
+in `TrendDefaults` next to the existing windows:
+
+- `FixedPeriodStartYear = 1961`.
+- **Points:** the complete years with year ≥ 1961.
+- **Fitted only when** the first complete year in the window is no later than
+  `FixedPeriodStartYear + FixedPeriodStartToleranceYears` (proposed: 5, so 1965), and the window has at
+  least `MinimumYearsForTrend` (30) complete years. The start check stops a series that begins in 1990
+  from getting a "since 1961" trend that is really a full-period trend. The 30-year floor is the rule
+  every other trend uses.
+- **Shared helper:** `TrendWindows.GetSince1961Points(orderedPoints)` returns the window, or null when
+  the window isn't eligible. `TemperatureTrendCalculator.GetWindowPoints`,
+  `ChartSeriesTrendCalculator` and `TrendWindowCalculator` all call it, so the rule lives in one place.
+
+Two thresholds are proposals for Stage 1's dry run to confirm: the start tolerance, and whether the
+heating score should need more than 30 years in the window.
+
+The heating score also needs the window to be recent: **the last year must be within 10 years of the
+newest last year across all locations** (2015 or later today). Without this, a station that closed in
+1995 would be ranked on 1961–1995. That's 24 locations today with a last year before 2018. This rule
+is for the score only; the trend itself is still shown for those stations.
+
+## Stages
+
+Each stage builds and passes the unit tests on its own, and can ship on its own.
+
+### Stage 1: calculate and store the Since-1961 trend
+
+No visible change apart from the new window existing.
+
+- `TrendWindow`: add `Since1961`.
+- `TrendDefaults`: the constants above. The shared window helper goes here or in a small `TrendWindows`
+  class in `Core/Stats`.
+- `TemperatureTrendFits`: add `Since1961` (nullable). `TemperatureTrendCalculator.Fit` fits it when
+  eligible, `GetWindowPoints` handles it, and `Summarise` adds its `TrendSummary` after Full and Last30.
+- `Location`: add a `Since1961TemperatureTrend` accessor like the other two.
+- `TrendWindowLabel`: add "Since 1961" and the description "since 1961, the start of the WMO
+  reference period". Both switches throw on an unknown window, so this has to go in the same stage.
+- Update the `CachingTool` comment and the `Location.TemperatureTrends` doc comment.
+
+**Dry run before Stage 2.** Rebuild the location cache (`CachingTool`, against a locally running
+WebApi; you run this, since agents don't start the API) or deploy Stage 1. Then re-run the research
+note's analysis on `/location`:
+
+- how many locations get a since-1961 trend, and how many of those are significant
+- the decile bands
+- the score change for each location compared with the current anomaly score
+- the record-length correlation, expected to be close to 0
+
+Use the results to settle the start tolerance and minimum years, and add them to this doc as an
+addendum.
+
+**Deployment:** the API serialises `TrendWindow` by name with `JsonStringEnumConverter`, which **throws
+on an unknown name**. A web client that predates Stage 1 would fail to deserialise `/location` once
+the API sends `"Since1961"`. Deploy the Web app first (or both together), then rebuild the API cache.
+Browser tabs left open on the old WebAssembly build will fail to load locations until they're
+reloaded.
+
+### Stage 2: heating score on the Since-1961 slope
+
+- `Location.SetHeatingScores`: rank on `Since1961TemperatureTrend.Slope` for eligible locations
+  (Stage 1's recency rule). A negative slope scores −1. Locations without an eligible trend get no
+  score (null), as they do now when there's no anomaly.
+- `HeatingScoreRow`: rename `MinimumWarmingAnomaly`/`MaximumWarmingAnomaly` to
+  `MinimumSlope`/`MaximumSlope`, stored in °C per year like `TrendSummary`. **Deployment:** these are
+  `required` properties, so an old client and a new API (or the reverse) fail on the heating score
+  table. Deploy Web and API together. The table only loads when someone opens the info modal, so the
+  impact is small.
+- `ApiMeasures.HeatingScoreAnomalyBound` → `HeatingScoreRateBound`: a rate per decade, so °F conversion
+  uses the difference factor and per-decade scaling, like the trend field (`TrendFormatting`).
+- `HeatingScoreInfo`: rewrite the text and table.
+  - The score ranks the since-1961 warming rate (°C/decade) into tenths.
+  - Why 1961: the WMO reference period. It's the same period for every station, so a long record no
+    longer raises or lowers the score.
+  - Why not the last 30 years: a 30-year trend at a single station is too noisy to rank on.
+  - The dashboard's trend field shows the last 30 years first, so it can differ from the rate the
+    score uses. Say so, and show this location's since-1961 rate.
+  - Negative rates score −1.
+  - Remove the "not a fully standardised metric" caveat about long records. Keep the inland vs coastal
+    point.
+  - Table columns: Heating score, Warming rate since 1961 (°C/decade).
+- `Locations.razor`: update the heating score filter tooltip ("a measure of how much a location has
+  warmed" → how fast it has warmed since 1961).
+- The warming anomaly field, its info modal and the Locations page anomaly column are unchanged.
+
+### Stage 3: location dashboard trend field and modal
+
+- `LocationTrendFieldBuilder`: value = Last30 if significant, otherwise Since1961 if significant,
+  otherwise null. The tooltip table lists each significant trend in the order Last 30 years, Since
+  1961, Full period, with year ranges.
+- `LocationTrendDetailsBuilder`: add the Since1961 window. The modal list and the About-trends tabs
+  (`TemperatureTrendAboutPanel`) pick it up automatically. Order: Full, Last 30, Since 1961, Early.
+  Or reorder to match the tooltip; decide this in the stage.
+- `TemperatureTrendInfo.razor`: update the "which trend is shown" paragraph and the minimum-years
+  paragraph to cover Since 1961's eligibility rule.
+- **Locations page trend column:** it follows `LocationTrendFieldBuilder`, so it switches to
+  Last30 → Since1961 automatically. Sorting would still mix two windows. Since the heating score column
+  now gives the standardised comparison, leave this as it is unless you'd rather the column show
+  Since 1961 only.
+
+### Stage 4: chart
+
+- `ChartSeriesTrendCalculator`: fit Since1961 when the plotted points are eligible, and insert it after
+  Full in `windows` (the dropdown and tab order).
+- **Adding a trend defaults to Since 1961.** Both add-trend buttons (`ChartSeriesView.OnAddTrendClicked`
+  and `AddTrendSection`) add a `new ChartSeriesTrendRequest()` with no `TrendPeriod`, so
+  `ResolveWindow` picks from `SelectionPriority`. Make it Since1961, Full, Last30, RecentDecade,
+  FirstHalf, and rewrite its doc comment ("Full period first, since that's the trend most people
+  mean"): Since 1961 is the same period for every series and matches the heating score. Results:
+  - A first trend added by clicking draws Since 1961 when it's available and significant, otherwise
+    Full.
+  - A second trend added on the same series skips the windows already shown (`excludedFromDefault`),
+    so it lands on Full.
+  - **Presets are unchanged.** They request their window explicitly, and an explicit request is
+    honoured while it's significant. Only when a preset's window isn't significant for a location does
+    the fallback now try Since 1961 before Full.
+  - Existing shared URLs carry the resolved window name, so they keep the window they had.
+- The window applies to whatever series is plotted (temperature, precipitation, CO₂, global series),
+  using the plotted (possibly smoothed) points like every other window. A chart whose `startYear` is
+  after 1965 doesn't get it.
+- `ChartSeriesTrendNotificationBuilder`, `ChartDisplayBuilder`, the trend dropdown and the About-trends
+  panel already loop over windows and labels. Check that each one offers and names Since 1961 without
+  special handling.
+- Update the remarks on `ChartSeriesTrendCalculator`: it's now five windows, and Since 1961 has its own
+  eligibility rule.
+
+### Stage 5: Recent Observations trend tab
+
+- `TrendWindowSet`: add `Since1961Trend` (nullable). `TrendWindowCalculator.Calculate` fits it with the
+  shared helper, at degree 1 like the other windows.
+- `RecentObservationsCalculator.Trend`: build the since-1961 points, value text, positive flag and
+  tooltip, as it does for the other windows. `RecentObservationTrendViewModel` gets the matching
+  properties.
+- `RecentObservationTrend.razor`: the headline becomes **Last 30 years**, then Since 1961, then Early
+  period. Full period moves off the tile. Labels use `TrendWindowLabel`.
+- `AboutTrends`: add the Since 1961 toggle option, order the options as in Decisions, and default to
+  Last 30 years when a metric tab is selected.
+- `TrendsOverviewExplainer`: mention Since 1961, if its text lists the windows.
+- Keep Recent Observations' 60-year minimum. The 1961 window is eligible on its own terms on top of
+  that.
+
+## Testing
+
+Each stage adds or updates tests using `MethodName_StateUnderTest_ExpectedBehavior` names:
+
+- **Core:** `TemperatureTrendCalculatorTests` (eligibility: starts 1961, starts 1965, starts 1966, under
+  30 years in the window; the slope only uses ≥ 1961), `LocationTemperatureTrendsSerializationTests`
+  (round-trips `Since1961`), `HeatingScoreTests` (ranked on the slope, negative → −1, recency rule,
+  no eligible trend → null), `TrendWindowCalculatorTests`.
+- **Web:** `LocationTrendFieldBuilderTests` (Last30 → Since1961 → null, the tooltip lists only
+  significant ones), `LocationTrendDetailsBuilderTests`, `ApiMeasuresTests` (rate bound in °F),
+  `ChartSeriesTrendCalculatorTests` (eligible/ineligible; with no requested window, Since 1961 when it's
+  significant, otherwise Full; a second trend skips it; an explicit Full request stays Full),
+  `ChartSeriesListSerializerTrendTests`
+  (the `Since1961` name round-trips), Recent Observations calculator tests.
+- **WebApi:** `CacheJsonOptionsTests` if the `HeatingScoreRow` rename touches rounding.
+
+## Risks
+
+- **Scores change a lot.** In the research note, 60% of locations moved by 2 or more under the
+  last-30 trend. Since-1961 should move fewer, but well-known locations will still change. The info
+  page should say the method changed, and a short blog post would help.
+- **Deployment order** (Stages 1 and 2, above).
+- **Coverage:** locations without an eligible since-1961 trend lose their score. The research note
+  estimates up to 1,757 eligible against 1,750 scored today, but gaps will lower that. The Stage 1 dry
+  run gives the real number.
+- **Old blog posts** (2022) describe the anomaly-based score. Leave them as a record of the time; a new
+  post can explain the change.
+
+## Summary
+
+The plan adds a Since-1961 trend window, defined once in Core and used by location trends, the chart
+and Recent Observations. It ranks the heating score on that slope, with negative slopes scoring −1.
+The dashboard trend field shows the last 30 years first and then Since 1961, with every significant
+trend in its tooltip. Recent Observations shows Last 30 years, Since 1961 and Early period on the
+tile, and keeps Full period in About trends. On the chart, a trend added by clicking defaults to Since
+1961, and presets keep their windows. Stage 1 stores the trend and includes a dry run that sets the
+thresholds before the score changes.
+
+### Change size
+
+- **Projects:** `ClimateExplorer.Core`, `ClimateExplorer.WebApi` (comments only, unless rounding
+  changes), `ClimateExplorer.Web.Client`, `ClimateExplorer.CachingTool` (comment), and the Core, Web
+  and WebApi unit test projects.
+- **Not changed:** `ClimateExplorer.WebApiClient`, `ClimateExplorer.DataPipeline`, datasets.
+
+| Stage | Area | Added | Changed | Removed |
+|---|---|---|---|---|
+| 1 | Core: enum, defaults, window helper, calculator, fits, `Location` | 1 file, +30 | 5 files, ~50 | — |
+| 1 | Web.Client: `TrendWindowLabel`; CachingTool comment | — | 2 files, ~6 | — |
+| 1 | Tests: trend calculator, serialisation | — | 2 files, ~90 | — |
+| 2 | Core: `SetHeatingScores`, `HeatingScoreRow` | — | 2 files, ~45 | — |
+| 2 | Web.Client: `HeatingScoreInfo` (razor + cs), `ApiMeasures`, Locations tooltip | — | 4 files, ~50 | — |
+| 2 | Tests: heating score, `ApiMeasures` | — | 2 files, ~70 | — |
+| 3 | Web.Client: field builder, details builder, `TemperatureTrendInfo` | — | 3 files, ~50 | — |
+| 3 | Tests: field builder, details builder | — | 2 files, ~70 | — |
+| 4 | Web.Client: `ChartSeriesTrendCalculator` window and `SelectionPriority` (+ checks elsewhere) | — | 1–3 files, ~35 | — |
+| 4 | Tests: chart trend calculator (incl. default window), serializer | — | 2 files, ~90 | — |
+| 5 | Core: `TrendWindowSet`, `TrendWindowCalculator` | — | 2 files, ~20 | — |
+| 5 | Web.Client: calculator, view models, tile, About trends, explainer | — | 6 files, ~70 | — |
+| 5 | Tests: trend window calculator, Recent Observations | — | 2 files, ~60 | — |
+| | **Total** | **1 file, +30** | **~36 file edits (~26 distinct files), ~705** | — |
+
+Tests are roughly half the lines (~380 of ~705).
