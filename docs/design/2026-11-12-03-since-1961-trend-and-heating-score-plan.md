@@ -2,7 +2,8 @@
 
 - **Date:** 2026-11-12
 - **Status:** Stage 1 implemented 2026-11-12 (build and unit tests clean); dry run done, see the
-  [addendum](#addendum-stage-1-dry-run-2026-11-12). Stages 2–5 not started
+  [addendum](#addendum-stage-1-dry-run-2026-11-12). Stage 2 implemented 2026-11-13 (build and unit
+  tests clean, UI unverified; see [Stage 2 notes](#stage-2-notes-2026-11-13)). Stages 3–5 not started
 - **Author:** Patrick (with Claude)
 - **Scope:** `ClimateExplorer.Core` (trend windows, `Location.SetHeatingScores`, `HeatingScoreRow`),
   `ClimateExplorer.WebApi` (location cache), `ClimateExplorer.Web.Client` (location dashboard trend field
@@ -365,3 +366,22 @@ every year as the window slides.
   slope more tightly than 30 consecutive years do.
 - **Recency rule: keep it** (last year within 10 years of the newest). It removes 41 locations,
   mostly ending in 2005–2014.
+
+## Stage 2 notes (2026-11-13)
+
+- `Location.SetHeatingScores` clears every location's score first, then scores only the eligible ones,
+  so a location that loses its since-1961 trend can't keep an old score. The recency rule is
+  `Location.HeatingScoreMaximumYearsBehindNewest` (10) and the negative score is
+  `Location.NegativeRateHeatingScore` (−1).
+- `ApiMeasures` has `HeatingScoreRate(location)` (the location's since-1961 slope, scaled to per decade)
+  next to `HeatingScoreRateBound`, so the info page doesn't scale slopes itself.
+- `HeatingScoreInfo` shows the rates and bounds to three decimal places, because the middle bands are
+  only 0.02–0.05 °C/decade wide. It says the method changed in November 2026. For a location with no
+  score, it explains why. A −1 score isn't in the table, so the text only says "highlighted below" for
+  scores of 0 to 9.
+- The Recent Observations "too short" message said its 60-year minimum matched the warming anomaly
+  *and heating score*. The heating score no longer uses that minimum, so the message now names only the
+  warming anomaly.
+- **Deployment:** after deploying the API, rebuild the cache with `CachingTool`. Until then the cached
+  heating score table still has the old property names. `FileBackedTwoLayerCache.Get` swallows the
+  deserialisation error and returns null, so the heating score info stays empty until the rebuild.

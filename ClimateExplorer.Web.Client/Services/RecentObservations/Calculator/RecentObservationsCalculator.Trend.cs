@@ -75,7 +75,7 @@ public sealed partial class RecentObservationsCalculator
                 MinimumRequiredYears = AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly,
                 UnavailableReason = $"Less than {AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly} complete years of data. "
                     + $"Recent Observations trends use the same {AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly}-year minimum "
-                    + "as the warming anomaly and heating score, so they're comparable with them.",
+                    + "as the warming anomaly, so they're comparable with it.",
             };
         }
 

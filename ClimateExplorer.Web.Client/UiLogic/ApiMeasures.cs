@@ -50,12 +50,21 @@ public static class ApiMeasures
     }
 
     /// <summary>
-    /// A bound of a heating score's warming anomaly range (<see cref="HeatingScoreRow"/>). A difference, like the
-    /// anomalies it bounds.
+    /// The since-1961 warming rate the heating score ranks (<see cref="Location.Since1961TemperatureTrend"/>),
+    /// per decade. A difference: the stored slope is per year, and is scaled to per decade here.
     /// </summary>
-    public static Measure HeatingScoreAnomalyBound(double bound)
+    public static Measure? HeatingScoreRate(Location location)
     {
-        return Measure.Change(bound, UnitOfMeasure.DegreesCelsius);
+        return location.Since1961TemperatureTrend is { } trend ? Measure.Change(trend.Slope * 10, UnitOfMeasure.DegreesCelsius) : null;
+    }
+
+    /// <summary>
+    /// A bound of a heating score's range of since-1961 warming rates (<see cref="HeatingScoreRow"/>). Already per
+    /// decade, so it needs no scaling. A difference, like the rates it bounds.
+    /// </summary>
+    public static Measure HeatingScoreRateBound(double boundPerDecade)
+    {
+        return Measure.Change(boundPerDecade, UnitOfMeasure.DegreesCelsius);
     }
 
     /// <summary>A climate record's value: the observation, or month or year average, it ranks. A level.</summary>

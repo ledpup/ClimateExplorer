@@ -12,11 +12,12 @@ using ClimateExplorer.Core.Model;
 /// </summary>
 /// <remarks>
 /// Rounding applies only when writing. It must not feed back into calculations: heating scores and their bands are
-/// derived from the full-precision warming anomalies before the locations are cached.
+/// derived from the locations' trends before the locations and the heating score table are cached.
 /// </remarks>
 internal static class CacheJsonOptions
 {
     private const int WarmingAnomalyDecimalPlaces = 3;
+    private const int HeatingScoreRateDecimalPlaces = 3;
     private const int CoordinateDecimalPlaces = 6;
     private const int ElevationDecimalPlaces = 0;
 
@@ -32,6 +33,11 @@ internal static class CacheJsonOptions
         if (typeInfo.Type == typeof(Location))
         {
             RoundProperty(typeInfo, nameof(Location.WarmingAnomaly), WarmingAnomalyDecimalPlaces);
+        }
+        else if (typeInfo.Type == typeof(HeatingScoreRow))
+        {
+            RoundProperty(typeInfo, nameof(HeatingScoreRow.MinimumRatePerDecade), HeatingScoreRateDecimalPlaces);
+            RoundProperty(typeInfo, nameof(HeatingScoreRow.MaximumRatePerDecade), HeatingScoreRateDecimalPlaces);
         }
         else if (typeInfo.Type == typeof(Coordinates))
         {

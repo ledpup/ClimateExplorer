@@ -1,6 +1,7 @@
 namespace ClimateExplorer.Web.Client.Components.Info;
 
 using ClimateExplorer.Core.Model;
+using ClimateExplorer.Core.Stats;
 using ClimateExplorer.Web.Client.Units;
 using ClimateExplorer.Web.UiLogic;
 using ClimateExplorer.WebApiClient.Services;
@@ -21,7 +22,15 @@ public partial class HeatingScoreInfo
     [CascadingParameter]
     public IUnitFormatter Units { get; set; } = UnitFormatter.Metric;
 
-    private string AnomalyUnitLabel => Units.ShortLabel(UnitOfMeasure.DegreesCelsius);
+    private static int StartYear => TrendDefaults.FixedPeriodStartYear;
+
+    private static int LatestFirstYear => TrendDefaults.FixedPeriodStartYear + TrendDefaults.FixedPeriodStartToleranceYears - 1;
+
+    private static int MinimumYears => TrendDefaults.MinimumYearsForTrend;
+
+    private static int MaximumYearsBehindNewest => Location.HeatingScoreMaximumYearsBehindNewest;
+
+    private string RateUnitLabel => $"{Units.ShortLabel(UnitOfMeasure.DegreesCelsius)}/decade";
 
     protected override async Task OnInitializedAsync()
     {
@@ -33,10 +42,10 @@ public partial class HeatingScoreInfo
         HeatingScoreTable = await DataService!.GetHeatingScoreTable();
     }
 
-    // The table and the location's anomaly are both differences, shown a place more precisely than usual
-    // so neighbouring score bands can be told apart.
-    private string FormatLocationAnomaly(Location location) =>
-        ApiMeasures.WarmingAnomaly(location) is { } anomaly ? Units.Format(anomaly, extraDecimals: 1) : "NA";
+    // The middle score bands are only a few hundredths of a degree per decade wide, so the rates are shown to
+    // three decimal places (two more than a temperature difference) for neighbouring bands to be told apart.
+    private string FormatLocationRate(Location location) =>
+        ApiMeasures.HeatingScoreRate(location) is { } rate ? $"{Units.Format(rate, signed: true, extraDecimals: 2)}/decade" : "NA";
 
-    private string FormatBound(double bound) => Units.FormatNumber(ApiMeasures.HeatingScoreAnomalyBound(bound), extraDecimals: 1);
+    private string FormatBound(double bound) => Units.FormatNumber(ApiMeasures.HeatingScoreRateBound(bound), extraDecimals: 2);
 }
