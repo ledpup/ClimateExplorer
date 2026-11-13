@@ -3,7 +3,9 @@
 - **Date:** 2026-11-12
 - **Status:** Stage 1 implemented 2026-11-12 (build and unit tests clean); dry run done, see the
   [addendum](#addendum-stage-1-dry-run-2026-11-12). Stage 2 implemented 2026-11-13 (build and unit
-  tests clean, UI unverified; see [Stage 2 notes](#stage-2-notes-2026-11-13)). Stages 3–5 not started
+  tests clean, UI unverified; see [Stage 2 notes](#stage-2-notes-2026-11-13)). Stage 3 implemented
+  2026-11-13 (build and unit tests clean, UI unverified; see [Stage 3 notes](#stage-3-notes-2026-11-13)).
+  Stages 4–5 not started
 - **Author:** Patrick (with Claude)
 - **Scope:** `ClimateExplorer.Core` (trend windows, `Location.SetHeatingScores`, `HeatingScoreRow`),
   `ClimateExplorer.WebApi` (location cache), `ClimateExplorer.Web.Client` (location dashboard trend field
@@ -26,7 +28,7 @@ doesn't depend on record length, and it's about three times less noisy than the 
 | Heating score basis | Since-1961 slope, ranked into deciles 9–0 as now |
 | Negative scores | A negative since-1961 slope scores **−1**. *Chosen: any negative slope, matching the info page's "highlight any location that has not warmed". Scoring only significant negatives as −1 (others 0) is a one-line change if you prefer it.* |
 | Trends stored on `Location` | Full, Last30 and Since1961. Full stays: `MapMarkerZoomTiers.GetRecordLength` uses its `FirstYear`, and the dashboard tooltip shows it |
-| Dashboard trend field value | Last 30 years if significant, otherwise Since 1961 if significant, otherwise nothing. The full-period trend is no longer a fallback |
+| Dashboard trend field value | Last 30 years if significant, otherwise Since 1961 if significant, otherwise Full period if significant, otherwise nothing. *Changed in Stage 3: dropping the Full fallback would have blanked the field for 621 locations* |
 | Dashboard trend tooltip | Lists every significant trend: Last 30 years, Since 1961, Full period |
 | Recent Observations tile | Last 30 years (headline), Since 1961, Early period |
 | Recent Observations About trends | Window toggle: Last 30 years, Since 1961, Early period, Full period. Default is Last 30 years, matching the tile headline |
@@ -130,7 +132,7 @@ reloaded.
 ### Stage 3: location dashboard trend field and modal
 
 - `LocationTrendFieldBuilder`: value = Last30 if significant, otherwise Since1961 if significant,
-  otherwise null. The tooltip table lists each significant trend in the order Last 30 years, Since
+  otherwise Full if significant, otherwise null (see the Stage 3 notes). The tooltip table lists each significant trend in the order Last 30 years, Since
   1961, Full period, with year ranges.
 - `LocationTrendDetailsBuilder`: add the Since1961 window. The modal list and the About-trends tabs
   (`TemperatureTrendAboutPanel`) pick it up automatically. Order: Full, Last 30, Since 1961, Early.
@@ -385,3 +387,20 @@ every year as the window slides.
 - **Deployment:** after deploying the API, rebuild the cache with `CachingTool`. Until then the cached
   heating score table still has the old property names. `FileBackedTwoLayerCache.Get` swallows the
   deserialisation error and returns null, so the heating score info stays empty until the rebuild.
+
+## Stage 3 notes (2026-11-13)
+
+- **The full-period fallback stays.** On the Stage 1 cache, dropping it would have blanked the
+  dashboard trend field for 621 locations (184 → 728 with no field). Those are mostly 30–59-year records
+  starting after 1965, which have no since-1961 window. The field shows the first significant trend of
+  Last 30 years → Since 1961 → Full period. The heating score still ranks only the since-1961 trend, and
+  the trend info page says the two can differ.
+- **Field labels:** "Last 30 years trend", "Trend since 1961", "Trend". The hover tooltip lists every
+  significant trend stored on `Location`, in the same order. Early period isn't stored there, so it
+  isn't in the tooltip.
+- **Modal and About trends:** the order is Last 30 years, Since 1961, Full period, Early period: the
+  field's order, then the early period.
+- **Locations page trend column:** unchanged. It uses `LocationTrendFieldBuilder`, so it follows the
+  same order.
+- Removed the Stage 1 Since1961 filter from
+  `LocationTrendDetailsBuilderTests.Build_SameSeries_MatchesTheLocationsPreCalculatedSummaries`.

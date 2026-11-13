@@ -32,9 +32,9 @@ public class LocationTrendDetailsBuilderTests
     }
 
     [TestMethod]
-    public void Build_45CompleteYears_ReturnsFullPeriodOnly()
+    public void Build_45CompleteYearsBefore1961_ReturnsFullPeriodOnly()
     {
-        var details = LocationTrendDetailsBuilder.Build(ToBinnedRecords(TrendTestData.CreateNoisyLine(1960, 45)));
+        var details = LocationTrendDetailsBuilder.Build(ToBinnedRecords(TrendTestData.CreateNoisyLine(1900, 45)));
 
         Assert.AreEqual(45, details.CompleteYearCount);
         Assert.HasCount(1, details.Windows);
@@ -43,25 +43,30 @@ public class LocationTrendDetailsBuilderTests
     }
 
     [TestMethod]
-    public void Build_60CompleteYears_ReturnsFullLast30AndEarlyPeriodInOrder()
+    public void Build_60CompleteYearsFrom1960_ReturnsEveryWindowInDashboardOrder()
     {
         var details = LocationTrendDetailsBuilder.Build(ToBinnedRecords(TrendTestData.CreateNoisyLine(1960, 60)));
 
         CollectionAssert.AreEqual(
-            new[] { TrendWindow.Full, TrendWindow.Last30, TrendWindow.FirstHalf },
+            new[] { TrendWindow.Last30, TrendWindow.Since1961, TrendWindow.Full, TrendWindow.FirstHalf },
             details.Windows.Select(x => x.Window).ToArray());
 
-        var full = details.Windows[0];
-        Assert.AreEqual(1960, full.FirstYear);
-        Assert.AreEqual(2019, full.LastYear);
-        Assert.HasCount(60, full.Points);
-
-        var last30 = details.Windows[1];
+        var last30 = details.Windows[0];
         Assert.AreEqual(1990, last30.FirstYear);
         Assert.AreEqual(2019, last30.LastYear);
         Assert.HasCount(30, last30.Points);
 
-        var firstHalf = details.Windows[2];
+        var since1961 = details.Windows[1];
+        Assert.AreEqual(1961, since1961.FirstYear);
+        Assert.AreEqual(2019, since1961.LastYear);
+        Assert.HasCount(59, since1961.Points);
+
+        var full = details.Windows[2];
+        Assert.AreEqual(1960, full.FirstYear);
+        Assert.AreEqual(2019, full.LastYear);
+        Assert.HasCount(60, full.Points);
+
+        var firstHalf = details.Windows[3];
         Assert.AreEqual(1960, firstHalf.FirstYear);
         Assert.AreEqual(1989, firstHalf.LastYear);
         Assert.HasCount(30, firstHalf.Points);
@@ -77,8 +82,9 @@ public class LocationTrendDetailsBuilderTests
         var details = LocationTrendDetailsBuilder.Build(records);
 
         Assert.AreEqual(60, details.CompleteYearCount);
-        Assert.AreEqual(1960, details.Windows[0].FirstYear);
-        Assert.AreEqual(2019, details.Windows[0].LastYear);
+        var full = details.Windows.Single(x => x.Window == TrendWindow.Full);
+        Assert.AreEqual(1960, full.FirstYear);
+        Assert.AreEqual(2019, full.LastYear);
     }
 
     [TestMethod]
@@ -89,9 +95,9 @@ public class LocationTrendDetailsBuilderTests
 
         var details = LocationTrendDetailsBuilder.Build(ToBinnedRecords(points));
 
-        // The modal doesn't show the since-1961 window yet (Stage 3 of the since-1961 plan adds it; drop this
-        // filter then).
-        foreach (var summary in summaries.Where(x => x.Window != TrendWindow.Since1961))
+        Assert.IsTrue(summaries.Any(x => x.Window == TrendWindow.Since1961));
+
+        foreach (var summary in summaries)
         {
             var window = details.Windows.Single(x => x.Window == summary.Window);
             Assert.AreEqual(summary.FirstYear, window.FirstYear);

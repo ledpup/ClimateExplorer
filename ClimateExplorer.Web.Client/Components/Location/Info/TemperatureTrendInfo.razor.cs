@@ -1,6 +1,7 @@
 namespace ClimateExplorer.Web.Client.Components.Info;
 
 using ClimateExplorer.Core.Model;
+using ClimateExplorer.Core.Stats;
 using ClimateExplorer.Web.Client.Services.Trends;
 using ClimateExplorer.Web.Client.UiModel.Trends;
 using ClimateExplorer.Web.Client.Units;
@@ -8,8 +9,8 @@ using Microsoft.AspNetCore.Components;
 using static ClimateExplorer.Core.Enums;
 
 /// <summary>
-/// The dashboard temperature trend field's modal. It recalculates the full-period, last-30-years and
-/// early-period trends from the climate stripe's yearly data, so it can explain each one and offer the
+/// The dashboard temperature trend field's modal. It recalculates the last-30-years, since-1961,
+/// full-period and early-period trends from the climate stripe's yearly data, so it can explain each one and offer the
 /// full statistical breakdown through "About trends".
 /// </summary>
 public partial class TemperatureTrendInfo
@@ -30,6 +31,8 @@ public partial class TemperatureTrendInfo
 
     [CascadingParameter]
     public IUnitFormatter Units { get; set; } = UnitFormatter.Metric;
+
+    private static int LatestSince1961FirstYear => TrendDefaults.FixedPeriodStartYear + TrendDefaults.FixedPeriodStartToleranceYears - 1;
 
     private LocationTrendDetails? Details { get; set; }
 
