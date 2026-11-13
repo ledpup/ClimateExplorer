@@ -17,8 +17,17 @@ public partial class PrecipitationAnomalyInfo
     [Parameter]
     public CalculatedAnomaly? CalculatedAnomaly { get; set; }
 
+    /// <summary>
+    /// How many complete years of precipitation records the location has, to explain a missing anomaly. Null
+    /// when there's no precipitation data at all.
+    /// </summary>
+    [Parameter]
+    public int? CompleteYearCount { get; set; }
+
     [CascadingParameter]
     public IUnitFormatter Units { get; set; } = UnitFormatter.Metric;
+
+    private static int MinimumYears => AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly;
 
     private string AnomalyAsString => CalculatedAnomaly is null
         ? "NA"

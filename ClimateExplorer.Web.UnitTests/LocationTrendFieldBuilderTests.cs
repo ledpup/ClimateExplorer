@@ -22,6 +22,44 @@ public class LocationTrendFieldBuilderTests
     }
 
     [TestMethod]
+    public void Build_Last30NotSignificantSince1961Significant_LabelsTrendSince1961()
+    {
+        var field = LocationTrendFieldBuilder.Build(CreateLocation(fullSignificant: true, last30Significant: false, since1961Significant: true));
+
+        Assert.IsNotNull(field);
+        Assert.AreEqual("Trend since 1961", field.Label);
+        Assert.AreEqual("+0.25°C /decade", field.Value);
+        Assert.AreEqual(0.025, field.Slope);
+        StringAssert.Contains(field.Tooltip, ">Since 1961</td>");
+        StringAssert.Contains(field.Tooltip, ">1961–2024</td>");
+        StringAssert.Contains(field.Tooltip, ">+0.25°C /decade</td>");
+        Assert.DoesNotContain("Last 30 years", field.Tooltip);
+    }
+
+    [TestMethod]
+    public void Build_AllSignificant_ShowsLast30AndListsAllThreeInOrder()
+    {
+        var field = LocationTrendFieldBuilder.Build(CreateLocation(fullSignificant: true, last30Significant: true, since1961Significant: true));
+
+        Assert.IsNotNull(field);
+        Assert.AreEqual("Last 30 years trend", field.Label);
+
+        var last30 = field.Tooltip.IndexOf(">Last 30 years</td>", System.StringComparison.Ordinal);
+        var since1961 = field.Tooltip.IndexOf(">Since 1961</td>", System.StringComparison.Ordinal);
+        var full = field.Tooltip.IndexOf(">Full period</td>", System.StringComparison.Ordinal);
+        Assert.IsTrue(last30 >= 0 && last30 < since1961 && since1961 < full, field.Tooltip);
+    }
+
+    [TestMethod]
+    public void Build_Since1961NotSignificant_TooltipOmitsIt()
+    {
+        var field = LocationTrendFieldBuilder.Build(CreateLocation(fullSignificant: true, last30Significant: true, since1961Significant: false));
+
+        Assert.IsNotNull(field);
+        Assert.DoesNotContain("Since 1961", field.Tooltip);
+    }
+
+    [TestMethod]
     public void Build_OnlyFullSignificant_LabelsTrend()
     {
         var field = LocationTrendFieldBuilder.Build(CreateLocation(fullSignificant: true, last30Significant: false));
@@ -115,13 +153,14 @@ public class LocationTrendFieldBuilderTests
         Assert.AreEqual("-0.21°C", LocationTrendFieldBuilder.FormatAmountPerDecade(-0.021));
     }
 
-    private static Location CreateLocation(bool fullSignificant, bool last30Significant)
+    private static Location CreateLocation(bool fullSignificant, bool last30Significant, bool since1961Significant = false)
     {
         var location = TrendTestData.CreateLocation();
         location.TemperatureTrends =
         [
             new TrendSummary(TrendWindow.Full, 1910, 0.014, fullSignificant),
             new TrendSummary(TrendWindow.Last30, 1995, 0.032, last30Significant),
+            new TrendSummary(TrendWindow.Since1961, 1961, 0.025, since1961Significant),
         ];
         location.LastYear = 2024;
 

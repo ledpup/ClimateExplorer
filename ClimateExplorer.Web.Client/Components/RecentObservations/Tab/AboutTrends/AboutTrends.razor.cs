@@ -12,9 +12,12 @@ public partial class AboutTrends
 {
     private const string OverviewTabName = "Overview";
 
+    // The tile's headline, so the statistics open on the trend the user was just looking at.
+    private const TrendWindow DefaultWindow = TrendWindow.Last30;
+
     private SidePanel? sidePanel;
     private string selectedMetricKey = OverviewTabName;
-    private TrendWindow selectedWindow = TrendWindow.Full;
+    private TrendWindow selectedWindow = DefaultWindow;
 
     [Parameter]
     [EditorRequired]
@@ -28,6 +31,14 @@ public partial class AboutTrends
     public Task Show()
     {
         return sidePanel!.ShowAsync();
+    }
+
+    // The tile's order, then the full period. Since 1961 only when the metric's record is eligible for it.
+    private static IReadOnlyList<TrendWindow> GetWindows(RecentObservationTrendViewModel metric)
+    {
+        return metric.Since1961Trend is null
+            ? [TrendWindow.Last30, TrendWindow.FirstHalf, TrendWindow.Full]
+            : [TrendWindow.Last30, TrendWindow.Since1961, TrendWindow.FirstHalf, TrendWindow.Full];
     }
 
     private static IReadOnlyList<TrendStatSection> BuildSections(RecentObservationTrendViewModel metric, TrendWindow window)
@@ -53,6 +64,7 @@ public partial class AboutTrends
         {
             TrendWindow.Full => metric.FullPeriodTrend,
             TrendWindow.Last30 => metric.RecentTrend,
+            TrendWindow.Since1961 => metric.Since1961Trend,
             TrendWindow.FirstHalf => metric.FirstHalfTrend,
             _ => throw new NotImplementedException(),
         };
@@ -64,6 +76,7 @@ public partial class AboutTrends
         {
             TrendWindow.Full => (metric.FullPeriodPoints, "Full recordset"),
             TrendWindow.Last30 => (metric.RecentTrendPoints, "Last 30 years"),
+            TrendWindow.Since1961 => (metric.Since1961TrendPoints, TrendWindowLabel.Get(TrendWindow.Since1961)),
             TrendWindow.FirstHalf => (metric.FirstHalfTrendPoints, "First half of recordset"),
             _ => throw new NotImplementedException(),
         };
@@ -72,7 +85,7 @@ public partial class AboutTrends
     private void OnMetricTabChanged(string tabName)
     {
         selectedMetricKey = tabName;
-        selectedWindow = TrendWindow.Full;
+        selectedWindow = DefaultWindow;
     }
 
     private void SelectWindow(TrendWindow window)

@@ -23,9 +23,11 @@ public static class LocationTrendDetailsBuilder
             return new LocationTrendDetails(points.Count, [.. points.OrderBy(x => x.X)], []);
         }
 
+        // The dashboard field's order (the first significant one is shown), then the early period.
         var windows = new List<LocationTrendWindow>();
-        AddWindow(windows, fits, TrendWindow.Full, fits.FullPeriod);
         AddWindow(windows, fits, TrendWindow.Last30, fits.Last30Years);
+        AddWindow(windows, fits, TrendWindow.Since1961, fits.Since1961);
+        AddWindow(windows, fits, TrendWindow.Full, fits.FullPeriod);
         AddWindow(windows, fits, TrendWindow.FirstHalf, fits.FirstHalf);
 
         return new LocationTrendDetails(fits.OrderedPoints.Count, fits.OrderedPoints, windows);

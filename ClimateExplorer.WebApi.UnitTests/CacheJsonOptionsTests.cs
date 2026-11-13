@@ -73,6 +73,19 @@ public class CacheJsonOptionsTests
     }
 
     [TestMethod]
+    public void Serialize_HeatingScoreRow_RoundsRatesToThreeDecimalPlaces()
+    {
+        var row = new HeatingScoreRow { MinimumRatePerDecade = 0.42512345678, MaximumRatePerDecade = 1.0398765, Score = 9 };
+
+        var json = JsonSerializer.Serialize(new[] { row }, CacheJsonOptions.Create());
+        var roundTripped = JsonSerializer.Deserialize<List<HeatingScoreRow>>(json)!;
+
+        StringAssert.Contains(json, "\"MinimumRatePerDecade\":0.425,");
+        StringAssert.Contains(json, "\"MaximumRatePerDecade\":1.04,");
+        Assert.AreEqual(new HeatingScoreRow { MinimumRatePerDecade = 0.425, MaximumRatePerDecade = 1.04, Score = 9 }, roundTripped[0]);
+    }
+
+    [TestMethod]
     public void Serialize_Location_IsNotIndented()
     {
         var json = JsonSerializer.Serialize(

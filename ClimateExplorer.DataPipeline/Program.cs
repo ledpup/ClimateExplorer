@@ -4,10 +4,9 @@ var solutionRoot = GetSolutionRoot();
 var sourceRoot = Path.Combine(solutionRoot, "ClimateExplorer.SourceData");
 var outputRoot = Path.Combine(solutionRoot, "ClimateExplorer.WebApi", "Datasets");
 
-var result = new DataPackageBuilder(sourceRoot, outputRoot).Build();
+var result = new DataPackageBuilder(sourceRoot, outputRoot, Console.Out).Build();
 
-Console.WriteLine($"Created {result.PhysicalAssetCount} physical assets containing {result.LogicalFileCount} logical files.");
-
+Console.WriteLine($"Created {result.PhysicalAssetCount:N0} physical assets containing {result.LogicalFileCount:N0} logical files.");
 static string GetSolutionRoot()
 {
     var directory = new DirectoryInfo(AppContext.BaseDirectory);

@@ -7,6 +7,15 @@ using GeoCoordinatePortable;
 
 public class Location : GeographicalEntity
 {
+    /// <summary>
+    /// A location is only scored when its last year is within this many years of the newest last year
+    /// of any location, so a station that closed decades ago isn't ranked on a shorter window.
+    /// </summary>
+    public const int HeatingScoreMaximumYearsBehindNewest = 10;
+
+    /// <summary>The heating score of a location whose since-1961 warming rate is negative.</summary>
+    public const short NegativeRateHeatingScore = -1;
+
     private const short TitleMaximumLength = 30;
     public required string CountryCode { get; set; }
     public string? Country { get; set; }
@@ -16,7 +25,9 @@ public class Location : GeographicalEntity
 
     /// <summary>
     /// Linear trends of the location's yearly temperature series. Null below 30 complete years; the
-    /// full-record trend only for 30-59 years; full record then last 30 years from 60.
+    /// full-record trend only for 30-59 years; full record then last 30 years from 60. A since-1961 trend
+    /// follows whenever its window is eligible (at least 30 complete years from 1961, the first no later
+    /// than 1965; see <see cref="Stats.TrendWindows.GetSince1961Points"/>).
     /// </summary>
     public List<TrendSummary>? TemperatureTrends { get; set; }
 
@@ -29,6 +40,9 @@ public class Location : GeographicalEntity
 
     [JsonIgnore]
     public TrendSummary? Last30YearTemperatureTrend => TemperatureTrends?.FirstOrDefault(x => x.Window == TrendWindow.Last30);
+
+    [JsonIgnore]
+    public TrendSummary? Since1961TemperatureTrend => TemperatureTrends?.FirstOrDefault(x => x.Window == TrendWindow.Since1961);
 
     [JsonIgnore]
     public string FullTitle =>
@@ -130,47 +144,58 @@ public class Location : GeographicalEntity
         return distances;
     }
 
+    /// <summary>
+    /// Scores each location's since-1961 warming rate (<see cref="Since1961TemperatureTrend"/>) against
+    /// every other location's. The rates of zero or more are ranked into tenths, from 9 (the fastest 10%)
+    /// to 0, and a negative rate scores <see cref="NegativeRateHeatingScore"/>. Only locations with a
+    /// since-1961 trend and a last year within <see cref="HeatingScoreMaximumYearsBehindNewest"/> of the
+    /// newest are scored; the rest get no score.
+    /// </summary>
+    /// <returns>The range of rates each score covers, in °C per decade.</returns>
     public static List<HeatingScoreRow> SetHeatingScores(IEnumerable<Location> locations)
     {
-        var locationsWithWarming = locations.Where(x => x?.WarmingAnomaly >= 0);
-        var numberOfLocations = locationsWithWarming.Count();
-        var locationsOrderedByWarming = locationsWithWarming.OrderByDescending(x => x.WarmingAnomaly);
-        var tenPercent = (int)MathF.Round(numberOfLocations * .1f, 0);
+        var allLocations = locations.Where(x => x is not null).ToList();
+        allLocations.ForEach(x => x.HeatingScore = null);
+
+        var newestLastYear = allLocations.Max(x => x.LastYear);
+        var eligible = allLocations
+            .Where(x => x.Since1961TemperatureTrend is not null && x.LastYear >= newestLastYear - HeatingScoreMaximumYearsBehindNewest)
+            .ToList();
+
+        var ranked = eligible
+            .Where(x => x.Since1961TemperatureTrend!.Slope >= 0)
+            .OrderByDescending(x => x.Since1961TemperatureTrend!.Slope)
+            .ToList();
+        var tenPercent = (int)MathF.Round(ranked.Count * .1f, 0);
         var heatingScoreTable = new List<HeatingScoreRow>();
-        for (short i = 9; i >= 0; i--)
+        var scoredCount = 0;
+
+        for (short score = 9; score >= 0; score--)
         {
-            var nextTenPercent = locationsOrderedByWarming
-                .Where(x => x.HeatingScore == null)
-                .Take(tenPercent)
-                .ToList();
+            // Score 0 takes whatever is left, in case rounding leaves slightly more than 10%.
+            var band = ranked.Skip(scoredCount).Take(score == 0 ? ranked.Count : tenPercent).ToList();
+            scoredCount += band.Count;
 
-            // In case there is a rounding error and slightly more than 10% left over, assign all the remaining to a score of zero
-            if (i == 0)
+            if (band.Count == 0)
             {
-                nextTenPercent = locationsOrderedByWarming
-                    .Where(x => x.HeatingScore == null)
-                    .ToList();
+                continue;
             }
 
-            if (nextTenPercent.Any())
-            {
-                heatingScoreTable.Add(
-                    new HeatingScoreRow
-                    {
-                        MaximumWarmingAnomaly = nextTenPercent.First().WarmingAnomaly!.Value,
-                        MinimumWarmingAnomaly = nextTenPercent.Last().WarmingAnomaly!.Value,
-                        Score = i,
-                    });
-            }
+            heatingScoreTable.Add(
+                new HeatingScoreRow
+                {
+                    MaximumRatePerDecade = band[0].Since1961TemperatureTrend!.Slope * 10,
+                    MinimumRatePerDecade = band[^1].Since1961TemperatureTrend!.Slope * 10,
+                    Score = score,
+                });
 
-            nextTenPercent.ForEach(x => x.HeatingScore = i);
+            band.ForEach(x => x.HeatingScore = score);
         }
 
-        // If the WarmingAnomaly is negative, use that as the HeatingScore, rounded to 0 decimal places
-        locations
-            .Where(x => x?.WarmingAnomaly < 0)
+        eligible
+            .Where(x => x.Since1961TemperatureTrend!.Slope < 0)
             .ToList()
-            .ForEach(x => x.HeatingScore = (short)Math.Round(x.WarmingAnomaly!.Value, 0));
+            .ForEach(x => x.HeatingScore = NegativeRateHeatingScore);
 
         return heatingScoreTable;
     }

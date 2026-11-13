@@ -1,5 +1,6 @@
 namespace ClimateExplorer.Web.Client.CarbonSim.Common;
 
+using ClimateExplorer.Web.Client.Components.Common;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
@@ -36,16 +37,10 @@ public partial class FloatingPanel : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        try
+        if (module is not null)
         {
-            if (module is not null)
-            {
-                await module.InvokeVoidAsync("dispose", panel);
-                await module.DisposeAsync();
-            }
-        }
-        catch (JSDisconnectedException)
-        {
+            await module.InvokeVoidIfConnectedAsync("dispose", panel);
+            await module.DisposeAsync();
         }
     }
 

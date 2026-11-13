@@ -22,4 +22,17 @@ public static class TrendDefaults
     /// sub-period has 30 points of its own, and the last 30 is genuinely different from the full period.
     /// </summary>
     public const int MinimumYearsForSubPeriodWindows = AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly;
+
+    /// <summary>
+    /// The first year of the Since 1961 window: the start of the WMO 1961-1990 reference period. It's
+    /// the same period for every series, so its trend doesn't depend on how long the record is.
+    /// </summary>
+    public const int FixedPeriodStartYear = 1961;
+
+    /// <summary>
+    /// The Since 1961 window is only fitted when its first complete year falls within this many years of
+    /// <see cref="FixedPeriodStartYear"/> (1961-1965). Without it, a series starting in 1990 would get a
+    /// "since 1961" trend that is really its full period.
+    /// </summary>
+    public const int FixedPeriodStartToleranceYears = 5;
 }

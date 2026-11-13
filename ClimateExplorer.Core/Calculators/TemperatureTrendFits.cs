@@ -8,6 +8,10 @@ using ClimateExplorer.Core.Stats.Model;
 /// </summary>
 /// <param name="FullPeriod">The fit over every complete year.</param>
 /// <param name="Last30Years">The fit over the last 30 complete years; null below 60 complete years.</param>
+/// <param name="Since1961">
+/// The fit over the complete years from 1961; null when that window isn't eligible (see
+/// <see cref="Stats.TrendWindows.GetSince1961Points"/>).
+/// </param>
 /// <param name="FirstHalf">
 /// The fit over the early period (the first half of the complete years); null below 60 complete years.
 /// Not summarised onto <see cref="Model.Location"/> - only the modal shows it.
@@ -16,5 +20,6 @@ using ClimateExplorer.Core.Stats.Model;
 public sealed record TemperatureTrendFits(
     PolynomialRegressionResult FullPeriod,
     PolynomialRegressionResult? Last30Years,
+    PolynomialRegressionResult? Since1961,
     PolynomialRegressionResult? FirstHalf,
     IReadOnlyList<DataPoint> OrderedPoints);

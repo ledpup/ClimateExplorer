@@ -35,14 +35,12 @@ public partial class SidePanel : ComponentBase
     private async Task DismissAsync()
     {
         isAnimatingOut = true;
-        StateHasChanged();
 
         await Task.Delay(400);
 
         isVisible = false;
         isAnimatingOut = false;
         isExpanded = false;
-        StateHasChanged();
     }
 
     private void ToggleExpand()

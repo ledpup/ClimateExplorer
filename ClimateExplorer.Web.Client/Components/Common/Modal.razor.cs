@@ -120,35 +120,23 @@ public partial class Modal : IAsyncDisposable
     /// </summary>
     public async Task HideAsync()
     {
-        try
+        if (controller is not null)
         {
-            if (controller is not null)
-            {
-                await controller.InvokeVoidAsync("close");
-            }
-        }
-        catch (JSDisconnectedException)
-        {
+            await controller.InvokeVoidIfConnectedAsync("close");
         }
     }
 
     public async ValueTask DisposeAsync()
     {
-        try
+        if (controller is not null)
         {
-            if (controller is not null)
-            {
-                await controller.InvokeVoidAsync("dispose");
-                await controller.DisposeAsync();
-            }
-
-            if (module is not null)
-            {
-                await module.DisposeAsync();
-            }
+            await controller.InvokeVoidIfConnectedAsync("dispose");
+            await controller.DisposeAsync();
         }
-        catch (JSDisconnectedException)
+
+        if (module is not null)
         {
+            await module.DisposeAsync();
         }
     }
 

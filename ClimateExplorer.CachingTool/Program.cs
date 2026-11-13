@@ -21,8 +21,9 @@ var memoryCache = new MemoryCache(new MemoryCacheOptions { SizeLimit = DataServi
 var httpClient = new HttpClient() { BaseAddress = new Uri("http://localhost:54836/"), Timeout = Timeout.InfiniteTimeSpan };
 var dataService = new DataService(httpClient, memoryCache);
 
-// Generate cached locations (WarmingAnomaly, TemperatureTrends, RecordHigh, heating scores). This only reads the
-// source files already published; it never downloads data - that is done by ClimateExplorer.Data.Misc.
+// Generate cached locations (WarmingAnomaly, TemperatureTrends (full, last 30 years, since 1961), RecordHigh,
+// heating scores). This only reads the source files already published; it never downloads data - that is done by
+// ClimateExplorer.Data.Misc.
 logger.LogInformation("Creating locations cache");
 await dataService.GetLocations(permitCreateCache: true);
 logger.LogInformation("Finished creating locations cache");

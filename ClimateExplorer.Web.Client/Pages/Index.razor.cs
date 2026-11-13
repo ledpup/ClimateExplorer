@@ -336,14 +336,9 @@ public partial class Index : ChartablePage
     {
         if (location is null)
         {
-            // Genuine not-found. Only redirect once interactive; during prerendering we leave
-            // Location null and let the interactive pass make the call, rather than emitting a
-            // redirect into the prerendered response.
-            if (RendererInfo.IsInteractive)
-            {
-                NavManager!.NavigateTo("/error", true);
-            }
-
+            // Genuine not-found. The Router renders its NotFoundPage in place (the URL stays as typed);
+            // during prerendering the response also gets a 404 status, so it isn't a soft 404.
+            NavManager!.NotFound();
             return;
         }
 
@@ -591,7 +586,6 @@ public partial class Index : ChartablePage
         if (LocationDictionary is null)
         {
             ChangeLocationModalLoading = true;
-            StateHasChanged();
 
             try
             {
@@ -603,7 +597,6 @@ public partial class Index : ChartablePage
                 ChangeLocationModalLoading = false;
             }
 
-            StateHasChanged();
             return;
         }
 
@@ -620,7 +613,6 @@ public partial class Index : ChartablePage
 
         NearMeLoading = true;
         NearMeErrorMessage = null;
-        StateHasChanged();
 
         try
         {
@@ -645,7 +637,6 @@ public partial class Index : ChartablePage
         finally
         {
             NearMeLoading = false;
-            StateHasChanged();
         }
     }
 

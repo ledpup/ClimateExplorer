@@ -18,6 +18,8 @@ using ILoggerFactory factory = LoggerFactory.Create(builder => builder.AddConsol
 ILogger logger = factory.CreateLogger("ClimateExplorer.Data.Misc");
 logger.LogInformation("Starting ClimateExplorer.Data.Misc");
 
+await BuildStaticContent.GenerateSiteMap();
+
 var httpClient = CreateHttpClient();
 
 var dataSetSourceAssetResolver = new DataSetSourceAssetResolver(Path.Combine(Folders.MetaDataFolder, "DataFileMapping"));
@@ -71,7 +73,6 @@ var stations = NoaaGlobalTemp.DataFileMapping().LocationIdToDataFileMappings.Val
 File.WriteAllText($@"{Folders.MetaDataFolder}\Station\Stations_NoaaGlobalTemp.json", JsonSerializer.Serialize(stations.Select(x => new Station { Id = x }), jsonSerializerOptions));
 File.WriteAllText($@"{Folders.MetaDataFolder}\DataFileMapping\DataFileMapping_NoaaGlobalTemp.json", JsonSerializer.Serialize(NoaaGlobalTemp.DataFileMapping(), jsonSerializerOptions));
 
-await BuildStaticContent.GenerateSiteMap();
 GenerateMapMarkers();
 
 static void GenerateMapMarkers()

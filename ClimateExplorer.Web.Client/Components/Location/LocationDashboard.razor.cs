@@ -21,6 +21,21 @@ using static ClimateExplorer.Core.Enums;
 
 public partial class LocationDashboard
 {
+    // The overview fields' value when a location has none, e.g. too short a record for a warming anomaly.
+    private const string NoValue = "—";
+
+    private const string WarmingAnomalyTooltip =
+        "How much warmer the last 30 years have been than the first half of the location's records, on average."
+        + "<br>Click for more information.";
+
+    private const string PrecipitationAnomalyTooltip =
+        "How much wetter or drier the last 30 years have been than the first half of the location's records, as an average yearly total."
+        + "<br>Click for more information.";
+
+    private const string HeatingScoreTooltip =
+        "How fast the location has warmed since 1961, ranked against every other location: 9 is the fastest-warming 10%, 0 the slowest."
+        + "<br>Click for more information.";
+
     private SidePanel? climateRecordsSidePanel;
     private SidePanel? recentObservationsSidePanel;
     private LocationDataSetMetadataSidePanel? dataSetMetadataSidePanel;
@@ -79,7 +94,7 @@ public partial class LocationDashboard
 
     private string? WarmingAnomalyAsString => OverviewLocation is null
         ? null
-        : ApiMeasures.WarmingAnomaly(OverviewLocation) is { } anomaly ? Units.Format(anomaly, signed: true) : "NA";
+        : ApiMeasures.WarmingAnomaly(OverviewLocation) is { } anomaly ? Units.Format(anomaly, signed: true) : NoValue;
 
     private LocationTrendField? TemperatureTrendField => OverviewLocation is null ? null : LocationTrendFieldBuilder.Build(OverviewLocation, Units);
     private RenderFragment? TemperatureTrendContent { get; set; }
@@ -92,7 +107,7 @@ public partial class LocationDashboard
 
     private string? PrecipitationAnomalyAsString => !PrecipitationAnomalyLoaded
         ? null
-        : PrecipitationAnomaly is null ? "NA" : Units.Format(ApiMeasures.Anomaly(PrecipitationAnomaly, UnitOfMeasure.Millimetres), signed: true);
+        : PrecipitationAnomaly is null ? NoValue : Units.Format(ApiMeasures.Anomaly(PrecipitationAnomaly, UnitOfMeasure.Millimetres), signed: true);
 
     private Guid? LocationIdLastTimeOnParametersSetAsyncWasCalled { get; set; }
 
@@ -187,18 +202,22 @@ public partial class LocationDashboard
             Logger!.LogInformation("Loading data");
 
             var temperatureAnomaly = await CalculateAnomaly(DataSubstitute.StandardTemperatureDataMatches(), ContainerAggregationFunctions.Mean);
+
+            // Built even when there's no anomaly (or no temperature data at all), so the popup can say why.
+            WarmingAnomalyContent = Location == null
+                    ? null
+                    : builder =>
+                    {
+                        builder.OpenComponent(0, typeof(WarmingAnomalyInfo));
+                        builder.AddAttribute(1, "Location", Location);
+                        builder.AddAttribute(2, "CalculatedAnomaly", temperatureAnomaly?.CalculatedAnomaly);
+                        builder.AddAttribute(3, "CompleteYearCount", temperatureAnomaly?.DataSet?.DataRecords.Count(x => x.Value.HasValue));
+                        builder.CloseComponent();
+                    };
+
             if (temperatureAnomaly != null)
             {
                 TemperatureDataType = temperatureAnomaly.DataSet?.DataType;
-                WarmingAnomalyContent = Location == null
-                        ? null
-                        : builder =>
-                        {
-                            builder.OpenComponent(0, typeof(WarmingAnomalyInfo));
-                            builder.AddAttribute(1, "Location", Location);
-                            builder.AddAttribute(2, "CalculatedAnomaly", temperatureAnomaly.CalculatedAnomaly);
-                            builder.CloseComponent();
-                        };
                 TemperatureTrendContent = Location == null
                         ? null
                         : builder =>
@@ -214,7 +233,6 @@ public partial class LocationDashboard
             else
             {
                 TemperatureDataType = null;
-                WarmingAnomalyContent = null;
                 TemperatureTrendContent = null;
                 TemperatureLocationMean = null;
                 TemperatureAnomalyRecords = null;
@@ -228,6 +246,9 @@ public partial class LocationDashboard
                                     builder.AddAttribute(1, "Location", Location);
                                     builder.CloseComponent();
                                 };
+
+            // Precipitation is loaded on demand, so a new location must load its own when the stripe is turned on.
+            PrecipitationAnomalyLoaded = false;
 
             if (DisplayPrecipitation)
             {
@@ -276,29 +297,21 @@ public partial class LocationDashboard
     protected async Task GeneratePrecipitationView()
     {
         var precipitationAnomaly = await CalculateAnomaly([new DataSubstitute { DataType = DataType.Precipitation }], ContainerAggregationFunctions.Sum);
-        if (precipitationAnomaly != null)
-        {
-            PrecipitationAnomalyLoaded = true;
-            PrecipitationAnomaly = precipitationAnomaly.CalculatedAnomaly;
-            PrecipitationLocationMean = precipitationAnomaly.DataSet?.DataRecords.Average(x => x.Value);
-            PrecipitationAnomalyRecords = precipitationAnomaly.AnomalyRecords;
-            PrecipitationAnomalyContent = Location == null
-                    ? null
-                    : builder =>
-                    {
-                        builder.OpenComponent(0, typeof(PrecipitationAnomalyInfo));
-                        builder.AddAttribute(1, "Location", Location);
-                        builder.AddAttribute(2, "CalculatedAnomaly", precipitationAnomaly.CalculatedAnomaly);
-                        builder.CloseComponent();
-                    };
-        }
-        else
-        {
-            PrecipitationAnomalyLoaded = false;
-            PrecipitationAnomaly = null;
-            PrecipitationLocationMean = null;
-            PrecipitationAnomalyRecords = null;
-            PrecipitationAnomalyContent = null;
-        }
+
+        // Loaded even when there's no anomaly (or no precipitation data at all), so the field and its popup can say why.
+        PrecipitationAnomalyLoaded = true;
+        PrecipitationAnomaly = precipitationAnomaly?.CalculatedAnomaly;
+        PrecipitationLocationMean = precipitationAnomaly?.DataSet?.DataRecords.Average(x => x.Value);
+        PrecipitationAnomalyRecords = precipitationAnomaly?.AnomalyRecords;
+        PrecipitationAnomalyContent = Location == null
+                ? null
+                : builder =>
+                {
+                    builder.OpenComponent(0, typeof(PrecipitationAnomalyInfo));
+                    builder.AddAttribute(1, "Location", Location);
+                    builder.AddAttribute(2, "CalculatedAnomaly", precipitationAnomaly?.CalculatedAnomaly);
+                    builder.AddAttribute(3, "CompleteYearCount", precipitationAnomaly?.DataSet?.DataRecords.Count(x => x.Value.HasValue));
+                    builder.CloseComponent();
+                };
     }
 }

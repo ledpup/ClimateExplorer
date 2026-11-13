@@ -25,6 +25,9 @@ public partial class Locations
     private Dictionary<Guid, LocationTrendField> locationTrends = new();
     private string? countryFilter;
     private string? heatingScoreFilter;
+    private bool requireAnomaly = true;
+    private bool requireHeatingScore = true;
+    private bool requireTrend = true;
     private string sortColumn = "name";
     private bool sortAscending = true;
     private int currentPage = 1;
@@ -73,6 +76,21 @@ public partial class Locations
                     _ when int.TryParse(heatingScoreFilter, out var score) => query.Where(l => l.HeatingScore == score),
                     _ => query,
                 };
+            }
+
+            if (requireAnomaly)
+            {
+                query = query.Where(l => l.WarmingAnomaly.HasValue);
+            }
+
+            if (requireHeatingScore)
+            {
+                query = query.Where(l => l.HeatingScore.HasValue);
+            }
+
+            if (requireTrend)
+            {
+                query = query.Where(l => locationTrends.ContainsKey(l.Id));
             }
 
             if (!string.IsNullOrEmpty(nameFilter))
@@ -224,6 +242,40 @@ public partial class Locations
     private void OnHeatingScoreFilterChanged(string value)
     {
         heatingScoreFilter = string.IsNullOrEmpty(value) ? null : value;
+
+        // "No heating score" and "Only with heating score" can't both hold, so picking the former clears the latter.
+        if (heatingScoreFilter == HeatingScoreFilterNullScore)
+        {
+            requireHeatingScore = false;
+        }
+
+        currentPage = 1;
+        UpdateFilteredCount();
+    }
+
+    private void OnRequireAnomalyChanged(bool value)
+    {
+        requireAnomaly = value;
+        currentPage = 1;
+        UpdateFilteredCount();
+    }
+
+    private void OnRequireHeatingScoreChanged(bool value)
+    {
+        requireHeatingScore = value;
+
+        if (requireHeatingScore && heatingScoreFilter == HeatingScoreFilterNullScore)
+        {
+            heatingScoreFilter = null;
+        }
+
+        currentPage = 1;
+        UpdateFilteredCount();
+    }
+
+    private void OnRequireTrendChanged(bool value)
+    {
+        requireTrend = value;
         currentPage = 1;
         UpdateFilteredCount();
     }

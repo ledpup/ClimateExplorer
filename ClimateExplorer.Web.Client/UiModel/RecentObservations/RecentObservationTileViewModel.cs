@@ -164,12 +164,12 @@ public sealed record RecentObservationTileViewModel
     {
         return [.. metrics.Select(metric => metric with
         {
-            HeadlineText = null,
-            HeadlineCaption = null,
-            FullPeriodTooltip = null,
             RecentTrendYearRange = null,
             RecentTrendValueText = null,
             RecentTrendTooltip = null,
+            Since1961TrendYearRange = null,
+            Since1961TrendValueText = null,
+            Since1961TrendTooltip = null,
             FirstHalfTrendYearRange = null,
             FirstHalfTrendValueText = null,
             FirstHalfTrendTooltip = null,

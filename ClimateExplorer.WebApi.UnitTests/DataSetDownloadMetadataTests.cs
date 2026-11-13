@@ -21,9 +21,22 @@ public sealed class DataSetDownloadMetadataTests
 
         var assets = await resolver.ResolveAllAsync(CancellationToken.None);
 
+        // One shared archive per GHCNd station in either mapping. The GHCNd importer regenerates these mappings,
+        // so the count comes from the files rather than being pinned.
+        var mappingFolder = Path.Combine(Folders.MetaDataFolder, "DataFileMapping");
+        var temperature = await DataFileMapping.GetDataFileMappingFromFile(Path.Combine(mappingFolder, "DataFileMapping_ghcnd_temperature.json"));
+        var precipitation = await DataFileMapping.GetDataFileMappingFromFile(Path.Combine(mappingFolder, "DataFileMapping_ghcnd_precipitation.json"));
+        var ghcndStationCount = temperature.LocationIdToDataFileMappings.Values
+            .Concat(precipitation.LocationIdToDataFileMappings.Values)
+            .SelectMany(x => x)
+            .Select(x => x.Id)
+            .Distinct(StringComparer.Ordinal)
+            .Count();
+
         // 92 closed BOM stations (205 total mapped BOM stations - 113 currently open, one per BOM location)
         // are deliberately excluded from automatic retrieval; see IsAutomaticallyRetrievable.
-        Assert.HasCount(2003, assets);
+        Assert.HasCount(ghcndStationCount, assets.Where(x => x.DownloaderKey == "ghcnd-station"));
+        Assert.HasCount(149, assets.Where(x => x.DownloaderKey != "ghcnd-station"));
         CollectionAssert.AreEquivalent(
             new[] { "bom-station", "direct-http", "ghcnd-station", "greenland-melt", "noaa-global-temperature", "ocean-acidity", "ozone", "sea-level", "wgms-glacier-mass-balance" },
             assets.Select(x => x.DownloaderKey).Distinct().ToArray());

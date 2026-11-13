@@ -6,10 +6,10 @@ using ClimateExplorer.Core.Stats;
 using ClimateExplorer.Core.Stats.Model;
 
 /// <summary>
-/// Fits the full-record, last-30-years and early-period linear trends of a location's yearly temperature
-/// series. The API uses it to put compact <see cref="TrendSummary"/>s on every <see cref="Location"/>, and
-/// the dashboard's temperature trend modal recalculates the full statistics with the same <see cref="Fit"/>,
-/// so the two always describe the same windows.
+/// Fits the full-record, last-30-years, since-1961 and early-period linear trends of a location's yearly
+/// temperature series. The API uses it to put compact <see cref="TrendSummary"/>s on every
+/// <see cref="Location"/>, and the dashboard's temperature trend modal recalculates the full statistics with
+/// the same <see cref="Fit"/>, so the two always describe the same windows.
 /// </summary>
 public static class TemperatureTrendCalculator
 {
@@ -19,7 +19,8 @@ public static class TemperatureTrendCalculator
     /// Fits the trend windows. Null below <see cref="TrendDefaults.MinimumYearsForTrend"/> complete years;
     /// the full period only below <see cref="TrendDefaults.MinimumYearsForSubPeriodWindows"/>; otherwise
     /// the full period, the last <see cref="TrendDefaults.RecentWindowYears"/> complete years and the early
-    /// period (the first half of the complete years).
+    /// period (the first half of the complete years). The since-1961 window has its own eligibility rule
+    /// (<see cref="TrendWindows.GetSince1961Points"/>) and is fitted whenever that rule allows.
     /// </summary>
     public static TemperatureTrendFits? Fit(IReadOnlyList<DataPoint> points)
     {
@@ -33,16 +34,20 @@ public static class TemperatureTrendCalculator
         var ordered = points.OrderBy(x => x.X).ToList();
         var hasSubPeriods = ordered.Count >= TrendDefaults.MinimumYearsForSubPeriodWindows;
 
+        var since1961Points = TrendWindows.GetSince1961Points(ordered);
+
         return new TemperatureTrendFits(
             FitWindow(ordered, TrendWindow.Full),
             hasSubPeriods ? FitWindow(ordered, TrendWindow.Last30) : null,
+            since1961Points is null ? null : PolynomialRegressionCalculator.Calculate(since1961Points, degree: 1),
             hasSubPeriods ? FitWindow(ordered, TrendWindow.FirstHalf) : null,
             ordered);
     }
 
     /// <summary>
     /// The complete years a window's trend is fitted to, from a year-ordered series (e.g.
-    /// <see cref="TemperatureTrendFits.OrderedPoints"/>).
+    /// <see cref="TemperatureTrendFits.OrderedPoints"/>). Empty for the since-1961 window when it isn't
+    /// eligible.
     /// </summary>
     public static IReadOnlyList<DataPoint> GetWindowPoints(IReadOnlyList<DataPoint> orderedPoints, TrendWindow window)
     {
@@ -53,14 +58,15 @@ public static class TemperatureTrendCalculator
             TrendWindow.Full => orderedPoints,
             TrendWindow.Last30 => [.. orderedPoints.TakeLast(TrendDefaults.RecentWindowYears)],
             TrendWindow.FirstHalf => [.. orderedPoints.Take(orderedPoints.Count / 2)],
+            TrendWindow.Since1961 => TrendWindows.GetSince1961Points(orderedPoints) ?? [],
             _ => throw new ArgumentOutOfRangeException(nameof(window), window, "Temperature trends aren't fitted over this window."),
         };
     }
 
     /// <summary>
-    /// The compact form of <paramref name="fits"/>: the full-period summary, then the last-30-years one
-    /// when there is one. The early period isn't summarised, to keep the locations download small - only
-    /// the modal shows it, from its own recalculation. A window whose slope isn't finite is dropped (the
+    /// The compact form of <paramref name="fits"/>: the full-period summary, then the last-30-years and
+    /// since-1961 ones when there are. The early period isn't summarised, to keep the locations download
+    /// small - only the modal shows it, from its own recalculation. A window whose slope isn't finite is dropped (the
     /// full period's takes the whole list with it), because the locations cache is serialised with
     /// options that reject NaN/Infinity.
     /// </summary>
@@ -76,6 +82,11 @@ public static class TemperatureTrendCalculator
         if (fits.Last30Years is not null && double.IsFinite(fits.Last30Years.Curve.Slope))
         {
             summaries.Add(ToSummary(TrendWindow.Last30, fits.Last30Years));
+        }
+
+        if (fits.Since1961 is not null && double.IsFinite(fits.Since1961.Curve.Slope))
+        {
+            summaries.Add(ToSummary(TrendWindow.Since1961, fits.Since1961));
         }
 
         return summaries;

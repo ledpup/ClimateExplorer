@@ -47,7 +47,8 @@ public class ChartSeriesTrendCalculatorTests
     [TestMethod]
     public void Calculate_59Years_OmitsLast30AndEarlyPeriodWindows()
     {
-        var points = CreatePerfectLine(1960, TrendDefaults.MinimumYearsForSubPeriodWindows - 1, slope: 0.02);
+        // Ends before 1961, so there's no since-1961 window either.
+        var points = CreatePerfectLine(1900, TrendDefaults.MinimumYearsForSubPeriodWindows - 1, slope: 0.02);
 
         var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, TrendWindow.Full, predictionYears: 20);
 
@@ -63,15 +64,83 @@ public class ChartSeriesTrendCalculatorTests
 
         var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, TrendWindow.Full, predictionYears: 20);
 
-        Assert.HasCount(4, result.Windows);
+        Assert.HasCount(5, result.Windows);
+        Assert.HasCount(59, result.GetWindow(TrendWindow.Since1961)!.Points);
         Assert.HasCount(30, result.GetWindow(TrendWindow.Last30)!.Points);
         Assert.HasCount(30, result.GetWindow(TrendWindow.FirstHalf)!.Points);
     }
 
     [TestMethod]
+    public void Calculate_RecordFrom1900_Since1961UsesOnlyYearsFrom1961()
+    {
+        var points = CreateNoisyLine(1900, 121, slope: 0.02, noise: 0.5);
+
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, TrendWindow.Since1961, predictionYears: 5);
+        var since1961 = result.GetWindow(TrendWindow.Since1961)!;
+        var expected = PolynomialRegressionCalculator.Calculate(points.Where(x => x.X >= 1961).ToList(), 1);
+
+        Assert.AreEqual(1961, since1961.Points[0].X);
+        Assert.HasCount(60, since1961.Points);
+        Assert.AreEqual(expected.Curve.Slope, since1961.Regression.Curve.Slope, 1e-12);
+    }
+
+    [TestMethod]
+    public void Calculate_PointsStartIn1965_FitsSince1961()
+    {
+        var points = CreatePerfectLine(1965, 40, slope: 0.02);
+
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, requestedWindow: null, predictionYears: 5);
+
+        Assert.IsNotNull(result.GetWindow(TrendWindow.Since1961));
+    }
+
+    [TestMethod]
+    public void Calculate_PointsStartIn1966_OmitsSince1961()
+    {
+        var points = CreatePerfectLine(1966, 60, slope: 0.02);
+
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, requestedWindow: null, predictionYears: 5);
+
+        Assert.IsNull(result.GetWindow(TrendWindow.Since1961));
+        Assert.AreEqual(TrendWindow.Full, result.Projection?.Window);
+    }
+
+    [TestMethod]
+    public void Calculate_NothingRequestedAndSince1961Significant_DrawsSince1961()
+    {
+        var points = CreatePerfectLine(1900, 121, slope: 0.02);
+
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, requestedWindow: null, predictionYears: 5);
+
+        Assert.AreEqual(TrendWindow.Since1961, result.Projection?.Window);
+    }
+
+    [TestMethod]
+    public void Calculate_FullRequestedAndSince1961Significant_KeepsFull()
+    {
+        // Presets ask for their window explicitly, so the new default doesn't change them.
+        var points = CreatePerfectLine(1900, 121, slope: 0.02);
+
+        var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, TrendWindow.Full, predictionYears: 5);
+
+        Assert.AreEqual(TrendWindow.Full, result.Projection?.Window);
+    }
+
+    [TestMethod]
+    public void Calculate_SecondTrendWithSince1961AlreadyShown_DrawsFull()
+    {
+        var points = CreatePerfectLine(1900, 121, slope: 0.02);
+
+        var result = ChartSeriesTrendCalculator.Calculate(
+            Subject, points, TrendRegressionType.Linear, requestedWindow: null, predictionYears: 5, excludedFromDefault: new HashSet<TrendWindow> { TrendWindow.Since1961 });
+
+        Assert.AreEqual(TrendWindow.Full, result.Projection?.Window);
+    }
+
+    [TestMethod]
     public void Calculate_SavedLast30PeriodBelow60Years_FallsBackToFull()
     {
-        var points = CreatePerfectLine(1960, TrendDefaults.MinimumYearsForSubPeriodWindows - 1, slope: 0.02);
+        var points = CreatePerfectLine(1900, TrendDefaults.MinimumYearsForSubPeriodWindows - 1, slope: 0.02);
 
         var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, TrendWindow.Last30, predictionYears: 20);
 
@@ -81,7 +150,7 @@ public class ChartSeriesTrendCalculatorTests
     [TestMethod]
     public void Calculate_SavedEarlyPeriodBelow60Years_FallsBackToFull()
     {
-        var points = CreatePerfectLine(1960, TrendDefaults.MinimumYearsForSubPeriodWindows - 1, slope: 0.02);
+        var points = CreatePerfectLine(1900, TrendDefaults.MinimumYearsForSubPeriodWindows - 1, slope: 0.02);
 
         var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, TrendWindow.FirstHalf, predictionYears: 20);
 
@@ -96,7 +165,7 @@ public class ChartSeriesTrendCalculatorTests
         var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, TrendWindow.Full, predictionYears: 20);
 
         CollectionAssert.AreEqual(
-            new[] { TrendWindow.Full, TrendWindow.Last30, TrendWindow.RecentDecade, TrendWindow.FirstHalf },
+            new[] { TrendWindow.Full, TrendWindow.Since1961, TrendWindow.Last30, TrendWindow.RecentDecade, TrendWindow.FirstHalf },
             result.Windows.Select(x => x.Window).ToList());
     }
 
@@ -211,7 +280,7 @@ public class ChartSeriesTrendCalculatorTests
         var result = ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, TrendWindow.Full, predictionYears: 20);
 
         Assert.IsNull(result.UnavailableReason);
-        Assert.HasCount(4, result.Windows);
+        Assert.HasCount(5, result.Windows);
         Assert.IsFalse(result.HasSignificantWindow);
         Assert.IsEmpty(result.SignificantWindows);
         Assert.IsNull(result.Projection);
@@ -351,7 +420,17 @@ public class ChartSeriesTrendCalculatorTests
     }
 
     [TestMethod]
-    public void ResolveWindow_NothingRequested_PrefersTheFullPeriod()
+    public void ResolveWindow_NothingRequested_PrefersSince1961()
+    {
+        var significant = new[] { TrendWindow.FirstHalf, TrendWindow.Last30, TrendWindow.Full, TrendWindow.Since1961, TrendWindow.RecentDecade };
+
+        var result = ChartSeriesTrendCalculator.ResolveWindow(significant, requestedWindow: null);
+
+        Assert.AreEqual(TrendWindow.Since1961, result);
+    }
+
+    [TestMethod]
+    public void ResolveWindow_Since1961NotSignificant_PrefersTheFullPeriod()
     {
         var significant = new[] { TrendWindow.FirstHalf, TrendWindow.Last30, TrendWindow.Full, TrendWindow.RecentDecade };
 

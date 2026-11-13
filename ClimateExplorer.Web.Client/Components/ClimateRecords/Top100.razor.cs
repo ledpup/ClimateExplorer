@@ -3,6 +3,7 @@ namespace ClimateExplorer.Web.Client.Components.Location;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using ClimateExplorer.Core.Model;
+using ClimateExplorer.Web.Client.Components.Common;
 using ClimateExplorer.Web.Client.UiModel;
 using ClimateExplorer.Web.Client.Units;
 using ClimateExplorer.Web.UiLogic;
@@ -69,16 +70,10 @@ public partial class Top100 : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        try
+        if (module is not null)
         {
-            if (module is not null)
-            {
-                await module.InvokeVoidAsync("unobserveWidth", spaceRef);
-                await module.DisposeAsync();
-            }
-        }
-        catch (JSDisconnectedException)
-        {
+            await module.InvokeVoidIfConnectedAsync("unobserveWidth", spaceRef);
+            await module.DisposeAsync();
         }
 
         dotNetRef?.Dispose();

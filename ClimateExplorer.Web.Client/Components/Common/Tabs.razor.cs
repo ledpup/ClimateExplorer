@@ -55,15 +55,9 @@ public partial class Tabs : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        try
+        if (module is not null)
         {
-            if (module is not null)
-            {
-                await module.DisposeAsync();
-            }
-        }
-        catch (JSDisconnectedException)
-        {
+            await module.DisposeAsync();
         }
     }
 

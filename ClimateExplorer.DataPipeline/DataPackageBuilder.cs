@@ -1,8 +1,9 @@
 namespace ClimateExplorer.DataPipeline;
 
+using System.Diagnostics;
 using System.IO.Compression;
 
-public sealed class DataPackageBuilder(string sourceRoot, string outputRoot)
+public sealed class DataPackageBuilder(string sourceRoot, string outputRoot, TextWriter log)
 {
     private static readonly DateTimeOffset ArchiveTimestamp = new(2000, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
@@ -13,25 +14,33 @@ public sealed class DataPackageBuilder(string sourceRoot, string outputRoot)
 
     public DataPackageBuildResult Build()
     {
+        var stopwatch = Stopwatch.StartNew();
+        log.WriteLine($"Source: {sourceRoot}");
+        log.WriteLine($"Output: {outputRoot}");
         ValidateRoots();
 
         stagingRoot = outputRoot + $".staging-{Guid.NewGuid():N}";
         Directory.CreateDirectory(stagingRoot);
+        log.WriteLine($"Staging: {stagingRoot}");
 
         try
         {
-            BuildBomArchives();
-            BuildGhcndArchives();
-            BuildAcornSatArchive();
-            BuildGhcnmArchive();
-            CopyLooseFiles();
-            ValidateTargetLayout();
-            ReplaceOutput();
+            RunStep("BOM station archives", BuildBomArchives);
+            RunStep("GHCNd station archives", BuildGhcndArchives);
+            RunStep("ACORN-SAT.zip", BuildAcornSatArchive);
+            RunStep("GHCNm.zip", BuildGhcnmArchive);
+            RunStep("Loose files", CopyLooseFiles);
+            RunStep("Validate layout", ValidateTargetLayout);
+            RunStep("Replace output", ReplaceOutput);
+
+            log.WriteLine($"Package: {FormatSize(GetDirectorySize(outputRoot))} in {outputRoot}. Total time {stopwatch.Elapsed:mm\\:ss}.");
 
             return new DataPackageBuildResult(registry.PhysicalAssets.Count, registry.LogicalFileCount);
         }
-        catch
+        catch (Exception ex)
         {
+            log.WriteLine($"FAILED: {ex.Message}");
+            log.WriteLine($"Removing {stagingRoot}.");
             if (Directory.Exists(stagingRoot))
             {
                 Directory.Delete(stagingRoot, true);
@@ -41,20 +50,37 @@ public sealed class DataPackageBuilder(string sourceRoot, string outputRoot)
         }
     }
 
-    private void BuildBomArchives()
+    private void RunStep(string name, Func<string> step)
     {
-        CopyArchiveDirectory("BOM");
+        log.WriteLine($"{name}...");
+        var stopwatch = Stopwatch.StartNew();
+        var summary = step();
+        log.WriteLine($"{name}: {summary} ({stopwatch.Elapsed.TotalSeconds:0.0}s)");
     }
 
-    private void BuildGhcndArchives()
+    private string BuildBomArchives()
     {
-        CopyArchiveDirectory("GHCNd");
+        return CopyArchiveDirectory("BOM");
     }
 
-    private void CopyArchiveDirectory(string relativeDirectory)
+    private string BuildGhcndArchives()
+    {
+        return CopyArchiveDirectory("GHCNd");
+    }
+
+    private string CopyArchiveDirectory(string relativeDirectory)
     {
         var sourceDirectory = SourcePath(relativeDirectory);
-        foreach (var sourceArchivePath in Directory.GetFiles(sourceDirectory, "*.zip", SearchOption.TopDirectoryOnly).Order(StringComparer.Ordinal))
+        var sourceArchivePaths = Directory.GetFiles(sourceDirectory, "*.zip", SearchOption.TopDirectoryOnly).Order(StringComparer.Ordinal).ToArray();
+        if (sourceArchivePaths.Length == 0)
+        {
+            throw new InvalidDataException($"No station archives (*.zip) found in '{sourceDirectory}'.");
+        }
+
+        var progress = new ProgressLog(log, relativeDirectory, sourceArchivePaths.Length);
+        long bytes = 0;
+        var entryCount = 0;
+        foreach (var sourceArchivePath in sourceArchivePaths)
         {
             var targetRelativePath = NormalizeRelativePath(Path.Combine(relativeDirectory, Path.GetFileName(sourceArchivePath)));
             registry.RegisterPhysicalAsset(targetRelativePath);
@@ -68,24 +94,29 @@ public sealed class DataPackageBuilder(string sourceRoot, string outputRoot)
                 registry.RegisterArchiveSource(
                     sourceArchivePath,
                     archive.Entries.Select(entry => $"{targetRelativePath}!/{NormalizeArchiveEntry(entry.FullName)}"));
+                entryCount += archive.Entries.Count;
             }
 
             var targetPath = Path.Combine(stagingRoot, targetRelativePath);
             Directory.CreateDirectory(Path.GetDirectoryName(targetPath)!);
             File.Copy(sourceArchivePath, targetPath);
+            bytes += new FileInfo(targetPath).Length;
+            progress.Increment();
         }
+
+        return $"copied {sourceArchivePaths.Length:N0} archives with {entryCount:N0} entries, {FormatSize(bytes)}";
     }
 
-    private void BuildAcornSatArchive()
+    private string BuildAcornSatArchive()
     {
         var sourceDirectory = SourcePath(@"Temperature\ACORN-SAT");
         var entries = Directory.GetFiles(sourceDirectory, "*", SearchOption.AllDirectories)
             .Select(file => new ArchiveSource(file, Path.GetRelativePath(sourceDirectory, file)));
 
-        CreateArchive("ACORN-SAT.zip", entries);
+        return CreateArchive("ACORN-SAT.zip", entries);
     }
 
-    private void BuildGhcnmArchive()
+    private string BuildGhcnmArchive()
     {
         var temperatureDirectory = SourcePath(@"Temperature\GHCNm");
         var precipitationDirectory = SourcePath(@"Precipitation\GHCNm");
@@ -94,14 +125,15 @@ public sealed class DataPackageBuilder(string sourceRoot, string outputRoot)
         var precipitationEntries = Directory.GetFiles(precipitationDirectory, "*", SearchOption.AllDirectories)
             .Select(file => new ArchiveSource(file, Path.Combine("Precipitation", Path.GetRelativePath(precipitationDirectory, file))));
 
-        CreateArchive("GHCNm.zip", temperatureEntries.Concat(precipitationEntries));
+        return CreateArchive("GHCNm.zip", temperatureEntries.Concat(precipitationEntries));
     }
 
-    private void CopyLooseFiles()
+    private string CopyLooseFiles()
     {
         var files = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
             [@"CO2\co2_mm_mlo.txt"] = @"CO2\co2_mm_mlo.txt",
+            [@"CO2\co2_daily_mlo.txt"] = @"CO2\co2_daily_mlo.txt",
             [@"Methane\ch4_mm_gl.txt"] = @"Methane\ch4_mm_gl.txt",
             [@"NitrousOxide\n2o_mm_gl.txt"] = @"NitrousOxide\n2o_mm_gl.txt",
             [@"Nino34\nino34.long.anom.data.txt"] = @"Nino34\nino34.long.anom.data.txt",
@@ -110,6 +142,7 @@ public sealed class DataPackageBuilder(string sourceRoot, string outputRoot)
             [@"OceanAcidity\HOT_surface_CO2_reduced.csv"] = @"OceanAcidity\HOT_surface_CO2_reduced.csv",
             [@"SeaLevel\slr_sla_gbl_free_ref_90_reduced.csv"] = @"SeaLevel\slr_sla_gbl_free_ref_90_reduced.csv",
             [@"Greenland\greenland-melt-area.csv"] = @"Greenland\greenland-melt-area.csv",
+            [@"Glaciers\wgms-glacier-mass-balance-index.csv"] = @"Glaciers\wgms-glacier-mass-balance-index.csv",
             [@"ArcticSeaIce\N_seaice_extent_daily_v4.0.csv"] = @"ArcticSeaIce\N_seaice_extent_daily_v4.0.csv",
             [@"AntarcticSeaIce\S_seaice_extent_daily_v4.0.csv"] = @"AntarcticSeaIce\S_seaice_extent_daily_v4.0.csv",
             [@"OzoneHoleArea\cams_ozone_monitoring_sh_ozone_area_reduced.csv"] = @"OzoneHoleArea\cams_ozone_monitoring_sh_ozone_area_reduced.csv",
@@ -121,33 +154,49 @@ public sealed class DataPackageBuilder(string sourceRoot, string outputRoot)
             [@"ODGI\odgi_table1.csv"] = @"ODGI\odgi_table1.csv",
             [@"ODGI\odgi_table2.csv"] = @"ODGI\odgi_table2.csv",
             [@"Met\meantemp_monthly_totals.txt"] = @"Met\meantemp_monthly_totals.txt",
+            [@"Met\meantemp_daily_totals.txt"] = @"Met\meantemp_daily_totals.txt",
             [@"Met\maxtemp_daily_totals.txt"] = @"Met\maxtemp_daily_totals.txt",
             [@"Met\mintemp_daily_totals.txt"] = @"Met\mintemp_daily_totals.txt",
             [@"Met\HadCEP_daily_totals.txt"] = @"Met\HadCEP_daily_totals.txt",
         };
 
+        var fileCount = 0;
+        long bytes = 0;
         foreach (var file in files)
         {
-            CopyLooseFile(file.Key, file.Value);
+            bytes += CopyLooseFile(file.Key, file.Value);
+            fileCount++;
         }
 
-        CopyLooseDirectory("NOAAGlobalTemp", "NOAAGlobalTemp");
+        var (directoryFileCount, directoryBytes) = CopyLooseDirectory("NOAAGlobalTemp", "NOAAGlobalTemp");
+
+        return $"copied {fileCount + directoryFileCount:N0} files, {FormatSize(bytes + directoryBytes)}";
     }
 
-    private void CopyLooseDirectory(string sourceDirectory, string targetDirectory)
+    private (int FileCount, long Bytes) CopyLooseDirectory(string sourceDirectory, string targetDirectory)
     {
         var fullSourceDirectory = SourcePath(sourceDirectory);
+        var fileCount = 0;
+        long bytes = 0;
         foreach (var file in Directory.GetFiles(fullSourceDirectory, "*", SearchOption.AllDirectories).Order(StringComparer.Ordinal))
         {
-            CopyLooseFile(
+            bytes += CopyLooseFile(
                 Path.GetRelativePath(sourceRoot, file),
                 Path.Combine(targetDirectory, Path.GetRelativePath(fullSourceDirectory, file)));
+            fileCount++;
         }
+
+        return (fileCount, bytes);
     }
 
-    private void CopyLooseFile(string sourceRelativePath, string targetRelativePath)
+    private long CopyLooseFile(string sourceRelativePath, string targetRelativePath)
     {
         var sourceFile = SourcePath(sourceRelativePath);
+        if (!File.Exists(sourceFile))
+        {
+            throw new FileNotFoundException($"Loose source file '{sourceFile}' doesn't exist. Download it, or remove it from {nameof(CopyLooseFiles)}.", sourceFile);
+        }
+
         var normalizedTargetPath = NormalizeRelativePath(targetRelativePath);
         registry.RegisterLogicalFile(sourceFile, normalizedTargetPath);
         registry.RegisterPhysicalAsset(normalizedTargetPath);
@@ -155,9 +204,10 @@ public sealed class DataPackageBuilder(string sourceRoot, string outputRoot)
         var targetFile = Path.Combine(stagingRoot, normalizedTargetPath);
         Directory.CreateDirectory(Path.GetDirectoryName(targetFile)!);
         File.Copy(sourceFile, targetFile);
+        return new FileInfo(targetFile).Length;
     }
 
-    private void CreateArchive(string targetRelativePath, IEnumerable<ArchiveSource> sourceEntries)
+    private string CreateArchive(string targetRelativePath, IEnumerable<ArchiveSource> sourceEntries)
     {
         var normalizedTargetPath = NormalizeRelativePath(targetRelativePath);
         registry.RegisterPhysicalAsset(normalizedTargetPath);
@@ -173,28 +223,29 @@ public sealed class DataPackageBuilder(string sourceRoot, string outputRoot)
 
         var archivePath = Path.Combine(stagingRoot, normalizedTargetPath);
         Directory.CreateDirectory(Path.GetDirectoryName(archivePath)!);
-        using var fileStream = new FileStream(archivePath, FileMode.CreateNew, FileAccess.Write, FileShare.None);
-        using var archive = new ZipArchive(fileStream, ZipArchiveMode.Create);
-
-        foreach (var sourceEntry in entries)
+        var progress = new ProgressLog(log, normalizedTargetPath, entries.Length);
+        long sourceBytes = 0;
+        using (var fileStream = new FileStream(archivePath, FileMode.CreateNew, FileAccess.Write, FileShare.None))
+        using (var archive = new ZipArchive(fileStream, ZipArchiveMode.Create))
         {
-            registry.RegisterLogicalFile(sourceEntry.SourcePath, $"{normalizedTargetPath}!/{sourceEntry.EntryPath}");
+            foreach (var sourceEntry in entries)
+            {
+                registry.RegisterLogicalFile(sourceEntry.SourcePath, $"{normalizedTargetPath}!/{sourceEntry.EntryPath}");
 
-            var entry = archive.CreateEntry(sourceEntry.EntryPath, CompressionLevel.Optimal);
-            entry.LastWriteTime = ArchiveTimestamp;
-            using var input = File.OpenRead(sourceEntry.SourcePath);
-            using var output = entry.Open();
-            input.CopyTo(output);
+                var entry = archive.CreateEntry(sourceEntry.EntryPath, CompressionLevel.Optimal);
+                entry.LastWriteTime = ArchiveTimestamp;
+                using var input = File.OpenRead(sourceEntry.SourcePath);
+                using var output = entry.Open();
+                input.CopyTo(output);
+                sourceBytes += input.Length;
+                progress.Increment();
+            }
         }
+
+        return $"{entries.Length:N0} entries, {FormatSize(sourceBytes)} compressed to {FormatSize(new FileInfo(archivePath).Length)}";
     }
 
-    private Dictionary<string, string> GetFilesByStation(string sourceDirectory, Func<string, string> stationSelector)
-    {
-        return Directory.GetFiles(SourcePath(sourceDirectory), "*.csv", SearchOption.TopDirectoryOnly)
-            .ToDictionary(stationSelector, StringComparer.OrdinalIgnoreCase);
-    }
-
-    private void ValidateTargetLayout()
+    private string ValidateTargetLayout()
     {
         string[] obsoleteAssets =
         [
@@ -219,11 +270,35 @@ public sealed class DataPackageBuilder(string sourceRoot, string outputRoot)
             .Where(file => !IsBuildArtifact(file) && !file.EndsWith("ClimateExplorer.SourceData.csproj", StringComparison.OrdinalIgnoreCase))
             .Select(Path.GetFullPath)
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
-        var omittedFiles = sourceFiles.Except(registry.SourcePaths, StringComparer.OrdinalIgnoreCase).ToArray();
+        var omittedFiles = sourceFiles.Except(registry.SourcePaths, StringComparer.OrdinalIgnoreCase).Order(StringComparer.OrdinalIgnoreCase).ToArray();
         if (omittedFiles.Length > 0)
         {
-            throw new InvalidDataException($"{omittedFiles.Length} source files were not packaged. First omitted file: '{omittedFiles[0]}'.");
+            throw new InvalidDataException(DescribeOmittedFiles(sourceRoot, omittedFiles));
         }
+
+        return $"all {sourceFiles.Count:N0} source files packaged into {registry.PhysicalAssets.Count:N0} assets ({registry.LogicalFileCount:N0} logical files)";
+    }
+
+    /// <summary>
+    /// Every file in SourceData must end up in the package, so a dataset can't be silently left out. Lists the
+    /// unpackaged files by folder, so the message says which dataset is missing rather than naming one file.
+    /// </summary>
+    public static string DescribeOmittedFiles(string sourceRoot, IReadOnlyList<string> omittedFiles)
+    {
+        const int examplesPerFolder = 3;
+        var byFolder = omittedFiles
+            .GroupBy(file => Path.GetDirectoryName(Path.GetRelativePath(sourceRoot, file)) ?? string.Empty, StringComparer.OrdinalIgnoreCase)
+            .OrderBy(group => group.Key, StringComparer.OrdinalIgnoreCase)
+            .Select(group =>
+            {
+                var examples = string.Join(", ", group.Take(examplesPerFolder).Select(Path.GetFileName));
+                var more = group.Count() > examplesPerFolder ? ", ..." : string.Empty;
+                return $"  {group.Key}: {group.Count():N0} files ({examples}{more})";
+            });
+
+        return $"{omittedFiles.Count:N0} source files in {sourceRoot} aren't packaged:{Environment.NewLine}"
+            + string.Join(Environment.NewLine, byFolder) + Environment.NewLine
+            + $"Package them in {nameof(DataPackageBuilder)} (station archives, an annual archive, or {nameof(CopyLooseFiles)}), or delete them from SourceData if nothing uses them.";
     }
 
     private bool IsBuildArtifact(string file)
@@ -234,7 +309,7 @@ public sealed class DataPackageBuilder(string sourceRoot, string outputRoot)
             || relativePath.EndsWith(".lscache", StringComparison.OrdinalIgnoreCase);
     }
 
-    private void ReplaceOutput()
+    private string ReplaceOutput()
     {
         var backupRoot = outputRoot + $".backup-{Guid.NewGuid():N}";
         Directory.CreateDirectory(outputRoot);
@@ -242,36 +317,70 @@ public sealed class DataPackageBuilder(string sourceRoot, string outputRoot)
 
         try
         {
+            log.WriteLine($"  Moving the current contents to {backupRoot}");
             MoveDirectoryContents(outputRoot, backupRoot);
+            log.WriteLine($"  Moving the new package from {stagingRoot}");
             MoveDirectoryContents(stagingRoot, outputRoot);
             Directory.Delete(stagingRoot);
+            log.WriteLine($"  Deleting {backupRoot}");
             Directory.Delete(backupRoot, true);
+
+            return $"replaced the contents of {outputRoot}";
         }
         catch
         {
+            log.WriteLine($"Replacing the output failed. Restoring the previous contents from {backupRoot}.");
             if (Directory.Exists(outputRoot) && Directory.Exists(backupRoot))
             {
                 MoveDirectoryContents(outputRoot, stagingRoot);
                 MoveDirectoryContents(backupRoot, outputRoot);
                 Directory.Delete(backupRoot);
+                log.WriteLine($"Restored {outputRoot} to its previous contents.");
             }
 
             throw;
         }
     }
 
-    private static void MoveDirectoryContents(string sourceDirectory, string destinationDirectory)
+    private void MoveDirectoryContents(string sourceDirectory, string destinationDirectory)
     {
         Directory.CreateDirectory(destinationDirectory);
 
         foreach (var file in Directory.GetFiles(sourceDirectory))
         {
-            File.Move(file, Path.Combine(destinationDirectory, Path.GetFileName(file)));
+            var destination = Path.Combine(destinationDirectory, Path.GetFileName(file));
+            MoveWithRetry(file, destination, () => File.Move(file, destination));
         }
 
         foreach (var directory in Directory.GetDirectories(sourceDirectory))
         {
-            Directory.Move(directory, Path.Combine(destinationDirectory, Path.GetFileName(directory)));
+            var destination = Path.Combine(destinationDirectory, Path.GetFileName(directory));
+            MoveWithRetry(directory, destination, () => Directory.Move(directory, destination));
+        }
+    }
+
+    /// <summary>
+    /// Windows refuses to move a folder while any file in it is open. Just after thousands of archives are
+    /// written, antivirus or the search indexer is usually still reading some of them, so wait and retry.
+    /// </summary>
+    private void MoveWithRetry(string source, string destination, Action move)
+    {
+        TimeSpan[] delays = [.. Enumerable.Range(1, 12).Select(attempt => TimeSpan.FromSeconds(Math.Min(attempt, 5)))];
+
+        for (var attempt = 0; ; attempt++)
+        {
+            try
+            {
+                move();
+                return;
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException && attempt < delays.Length)
+            {
+                log.WriteLine(
+                    $"  Couldn't move {source} to {destination} ({ex.Message.TrimEnd()}). Something has a file in it open, " +
+                    $"probably antivirus or the search indexer scanning new files. Retry {attempt + 1}/{delays.Length} in {delays[attempt].TotalSeconds:0}s.");
+                Thread.Sleep(delays[attempt]);
+            }
         }
     }
 
@@ -321,7 +430,35 @@ public sealed class DataPackageBuilder(string sourceRoot, string outputRoot)
         return NormalizeRelativePath(path).Replace(Path.DirectorySeparatorChar, '/');
     }
 
+    private static long GetDirectorySize(string directory)
+    {
+        return Directory.GetFiles(directory, "*", SearchOption.AllDirectories).Sum(file => new FileInfo(file).Length);
+    }
+
+    private static string FormatSize(long bytes)
+    {
+        return bytes >= 1024 * 1024
+            ? $"{bytes / (1024.0 * 1024):N1} MB"
+            : $"{bytes / 1024.0:N1} KB";
+    }
+
     private sealed record ArchiveSource(string SourcePath, string EntryPath);
+
+    /// <summary>Logs "name: done/total" about every 10%, so a long step shows it's still going.</summary>
+    private sealed class ProgressLog(TextWriter log, string name, int total)
+    {
+        private readonly int interval = Math.Max(1, total / 10);
+        private int done;
+
+        public void Increment()
+        {
+            done++;
+            if (done < total && done % interval == 0)
+            {
+                log.WriteLine($"  {name}: {done:N0}/{total:N0}");
+            }
+        }
+    }
 }
 
 public sealed record DataPackageBuildResult(int PhysicalAssetCount, int LogicalFileCount);

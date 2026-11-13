@@ -5,25 +5,28 @@
 
 @if (Location != null && HeatingScoreTable != null)
 {
-    <p>The heating score is a number between 0 and 9. It is calculated by ordering all warming anomalies across the locations in the dataset into 10 sets of <a href="https://en.wikipedia.org/wiki/Percentile" target=" _blank">percentiles</a>. Each set is a single heating score and it represents 10% of the total number of locations.</p>
-    <p>For example, the top ten 10% of warming anomalies are scored as a 9, the bottom 10% are scored as 0.</p>
-    <p>Negative warming anomalies are scored differently; they use the warming anomaly, rounded to zero decimal places as the score. This is to highlight any location that has not warmed.</p>
-    <p>Although the heating score compares locations, its not a fully standardised metric. The major factors influencing scores are:</p>
-    <ul>
-        <li>Stations that have been operating for a long time. The effect of global warming is more obvious when there are many records as temperature records in the past were cooler for most locations.</li>
-        <li>Inland vs coastal locations. The ocean is warming more slowly compared with the land. Therefore, coastal locations are likely to have warmed less than inland locations.</li>
-    </ul>
-    <p>
-        The table below lists each heating score and the range of warming anomalies that bound the score.
-    </p>
+    <p>The heating score is a number between 0 and 9 that compares how fast a location has warmed with every other location in the dataset. It ranks each location's warming rate since @StartYear into 10 equal groups, or <a href="https://en.wikipedia.org/wiki/Decile" target="_blank">deciles</a>. The fastest-warming 10% of locations score 9 and the slowest 10% score 0. A location whose rate since @StartYear is negative scores @Location.NegativeRateHeatingScore, to highlight any location that has not warmed.</p>
+    <p>@StartYear is the start of the World Meteorological Organization's 1961–1990 reference period, which is used to track long-term climate change. Every location is ranked on the same period, so a long record doesn't raise or lower its score.</p>
+    <p>A location needs at least @MinimumYears complete years of data from @StartYear, starting no later than @LatestFirstYear, to get a score. Its data must also run to within @MaximumYearsBehindNewest years of the newest data in the dataset.</p>
 
-    @if (Location.WarmingAnomaly.HasValue)
+    @if (Location.HeatingScore.HasValue && Location.Since1961TemperatureTrend is not null)
     {
         <p>
-            The warming anomaly for <strong>@Location.Name</strong> is <strong>@FormatLocationAnomaly(Location)</strong>. Its heating score is <strong>@Location.HeatingScore</strong>, highlighted below.
+            The warming rate since @StartYear for <strong>@Location.Name</strong> is <strong>@FormatLocationRate(Location)</strong>. Its heating score is <strong>@Location.HeatingScore</strong>@(Location.HeatingScore >= 0 ? ", highlighted below" : string.Empty).
+            The dashboard's trend field shows the last 30 years first, when that trend is significant, so it can show a different rate.
         </p>
     }
-    
+    else
+    {
+        <p>
+            <strong>@Location.Name</strong> doesn't have a heating score, because it doesn't have sufficient data.
+        </p>
+    }
+
+    <p>
+        The table below lists each heating score and the range of warming rates it covers.
+    </p>
+
     <div class="table-card">
         <div class="table-header">
             <span>Heating score table</span>
@@ -32,7 +35,7 @@
             <thead>
                 <tr>
                     <th scope="col"><strong>Heating score</strong></th>
-                    <th scope="col" class="text-center"><strong>Warming anomaly range (@AnomalyUnitLabel)</strong></th>
+                    <th scope="col" class="text-center"><strong>Warming rate since @StartYear (@RateUnitLabel)</strong></th>
                 </tr>
             </thead>
             <tbody>
@@ -40,7 +43,7 @@
                 {
                     <tr class="@(Location.HeatingScore == heatingScoreRow.Score ? "is-highlighted" : null)">
                         <td>@heatingScoreRow.Score</td>
-                        <td>@FormatBound(heatingScoreRow.MinimumWarmingAnomaly) - @FormatBound(heatingScoreRow.MaximumWarmingAnomaly)</td>
+                        <td>@FormatBound(heatingScoreRow.MinimumRatePerDecade) - @FormatBound(heatingScoreRow.MaximumRatePerDecade)</td>
                     </tr>
                 }
             </tbody>

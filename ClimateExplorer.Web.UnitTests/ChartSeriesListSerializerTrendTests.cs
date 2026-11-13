@@ -34,6 +34,17 @@ public class ChartSeriesListSerializerTrendTests
     }
 
     [TestMethod]
+    public void ParseChartSeriesDefinitionList_Since1961Trend_IsPreserved()
+    {
+        var series = CreateChartSeries();
+        series.Trends.Add(new ChartSeriesTrendRequest { TrendPeriod = TrendWindow.Since1961 });
+
+        var parsed = RoundTrip(series);
+
+        Assert.AreEqual(TrendWindow.Since1961, parsed.Trends[0].TrendPeriod);
+    }
+
+    [TestMethod]
     public void ParseChartSeriesDefinitionList_TrendModuleOff_RoundTripsAsOff()
     {
         var parsed = RoundTrip(CreateChartSeries());

@@ -102,6 +102,29 @@ public class TrendWindowCalculatorTests
             TrendWindowCalculator.Calculate(points, minimumCompletePoints: 5, recentWindowSize: 30));
     }
 
+    [TestMethod]
+    public void Calculate_PointsFrom1900_FitsSince1961OverTheYearsFrom1961()
+    {
+        var points = CreatePerfectLine(1900, 121, slope: 0.02);
+
+        var result = TrendWindowCalculator.Calculate(points, minimumCompletePoints: 60, recentWindowSize: 30)!;
+
+        Assert.IsNotNull(result.Since1961Trend);
+        Assert.AreEqual(1961, result.Since1961Trend.Input.MinimumX);
+        Assert.AreEqual(60, result.Since1961Trend.Input.Count);
+        Assert.AreEqual(0.02, result.Since1961Trend.Curve.Slope, 1e-9);
+    }
+
+    [TestMethod]
+    public void Calculate_PointsStartIn1966_Since1961IsNull()
+    {
+        var points = CreatePerfectLine(1966, 60, slope: 0.02);
+
+        var result = TrendWindowCalculator.Calculate(points, minimumCompletePoints: 60, recentWindowSize: 30)!;
+
+        Assert.IsNull(result.Since1961Trend);
+    }
+
     private static List<DataPoint> CreatePerfectLine(int startYear, int count, double slope)
     {
         return [.. Enumerable.Range(0, count).Select(i => new DataPoint(startYear + i, slope * i))];

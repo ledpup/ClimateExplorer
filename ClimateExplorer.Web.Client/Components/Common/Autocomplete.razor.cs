@@ -102,21 +102,15 @@ public partial class Autocomplete<TItem, TValue> : IAsyncDisposable
     {
         CancelDebounce();
 
-        try
+        if (controller is not null)
         {
-            if (controller is not null)
-            {
-                await controller.InvokeVoidAsync("dispose");
-                await controller.DisposeAsync();
-            }
-
-            if (module is not null)
-            {
-                await module.DisposeAsync();
-            }
+            await controller.InvokeVoidIfConnectedAsync("dispose");
+            await controller.DisposeAsync();
         }
-        catch (JSDisconnectedException)
+
+        if (module is not null)
         {
+            await module.DisposeAsync();
         }
     }
 
