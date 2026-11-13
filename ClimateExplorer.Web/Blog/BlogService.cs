@@ -1,5 +1,6 @@
 namespace ClimateExplorer.Web.Blog;
 
+using System.Globalization;
 using System.Text.RegularExpressions;
 using ClimateExplorer.Core.Blog;
 using Markdig;
@@ -13,6 +14,7 @@ public class BlogService : IBlogService
     private static readonly Regex ExternalLinksRegex = new(@"<a href=""(https?://[^""]+)""", RegexOptions.Compiled);
     private static readonly Regex FirstParagraphRegex = new(@"<p>(.*?)</p>", RegexOptions.Compiled | RegexOptions.Singleline);
     private static readonly Regex StripTagsRegex = new(@"<[^>]+>", RegexOptions.Compiled);
+    private static readonly Regex OffsetWithoutColonRegex = new(@"([+-]\d{2})(\d{2})$", RegexOptions.Compiled);
 
     private readonly IReadOnlyList<BlogPost> posts;
 
@@ -21,7 +23,7 @@ public class BlogService : IBlogService
         var postsDir = Path.Combine(env.ContentRootPath, "BlogPosts");
         var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
 
-        var postList = new List<BlogPost>();
+        var postList = new List<(BlogPost Post, DateTimeOffset? PublishedAt)>();
 
         foreach (var file in Directory.EnumerateFiles(postsDir, "*.md").OrderBy(f => f))
         {
@@ -50,7 +52,7 @@ public class BlogService : IBlogService
             var processedBody = PreprocessMarkdown(body);
             var html = ExternalLinksRegex.Replace(Markdown.ToHtml(processedBody, pipeline), @"<a href=""$1"" target=""_blank"" rel=""noopener noreferrer""");
 
-            postList.Add(new BlogPost
+            var post = new BlogPost
             {
                 Slug = slug,
                 Title = title,
@@ -58,10 +60,16 @@ public class BlogService : IBlogService
                 Category = category,
                 HtmlContent = html,
                 Excerpt = ExtractExcerpt(html),
-            });
+            };
+
+            postList.Add((post, ParsePublishedAt(meta.GetValueOrDefault("date"))));
         }
 
-        posts = [.. postList.OrderByDescending(p => p.Date)];
+        // The file name sets the date; the front matter's time orders posts published on the same day.
+        posts = [.. postList
+            .OrderByDescending(p => p.Post.Date)
+            .ThenByDescending(p => p.PublishedAt ?? DateTimeOffset.MinValue)
+            .Select(p => p.Post)];
     }
 
     public Task<IReadOnlyList<BlogPost>> GetAllPostsAsync() => Task.FromResult(posts);
@@ -79,6 +87,20 @@ public class BlogService : IBlogService
     {
         var currentIndex = posts.ToList().FindIndex(p => string.Equals(p.Slug, slug, StringComparison.OrdinalIgnoreCase));
         return Task.FromResult(currentIndex >= 0 && currentIndex < posts.Count - 1 ? posts[currentIndex + 1] : null);
+    }
+
+    // Front matter dates look like "2026-11-13 13:00:00 +1100". DateTimeOffset needs a colon in the offset.
+    private static DateTimeOffset? ParsePublishedAt(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return null;
+        }
+
+        var normalised = OffsetWithoutColonRegex.Replace(value.Trim(), "$1:$2");
+        return DateTimeOffset.TryParse(normalised, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var publishedAt)
+            ? publishedAt
+            : null;
     }
 
     private static (string FrontMatter, string Body) SplitFrontMatter(string raw)

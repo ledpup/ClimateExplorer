@@ -37,6 +37,13 @@
     color: var(--climate-color-muted-text);
 }
 
+.toolbar-checkboxes {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+}
+
 .location-count {
     white-space: nowrap;
     flex-shrink: 0;
