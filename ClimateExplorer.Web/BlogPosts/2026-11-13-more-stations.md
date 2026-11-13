@@ -1,6 +1,6 @@
 ---
 layout: single
-title: "More stations, and a map that can hold them"
+title: "Adding more stations to the website"
 date: 2026-11-13 13:00:00 +1100
 categories: datasets
 ---
