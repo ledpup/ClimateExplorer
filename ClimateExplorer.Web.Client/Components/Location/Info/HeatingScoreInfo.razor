@@ -7,8 +7,7 @@
 {
     <p>The heating score is a number between 0 and 9 that compares how fast a location has warmed with every other location in the dataset. It ranks each location's warming rate since @StartYear into 10 equal groups, or <a href="https://en.wikipedia.org/wiki/Decile" target="_blank">deciles</a>. The fastest-warming 10% of locations score 9 and the slowest 10% score 0. A location whose rate since @StartYear is negative scores @Location.NegativeRateHeatingScore, to highlight any location that has not warmed.</p>
     <p>@StartYear is the start of the World Meteorological Organization's 1961–1990 reference period, which is used to track long-term climate change. Every location is ranked on the same period, so a long record doesn't raise or lower its score.</p>
-    <p>A location needs at least @MinimumYears complete years of data from @StartYear, starting no later than @LatestFirstYear, to get a score. Its data must also run to within @MaximumYearsBehindNewest years of the most recent location's.</p>
-    <p>The ocean is warming more slowly than the land. You will likely see inland locations warming at a faster rate than coastal. The Northern Hemisphere is warming faster than the Southern Hemisphere for the same reason - the North has about 70% of Earth's land.</p>
+    <p>A location needs at least @MinimumYears complete years of data from @StartYear, starting no later than @LatestFirstYear, to get a score. Its data must also run to within @MaximumYearsBehindNewest years of the newest data in the dataset.</p>
 
     @if (Location.HeatingScore.HasValue && Location.Since1961TemperatureTrend is not null)
     {
@@ -20,7 +19,7 @@
     else
     {
         <p>
-            <strong>@Location.Name</strong> doesn't have a heating score, because it doesn't have enough data since @StartYear or its data ends too long ago.
+            <strong>@Location.Name</strong> doesn't have a heating score, because it doesn't have sufficient data.
         </p>
     }
 
