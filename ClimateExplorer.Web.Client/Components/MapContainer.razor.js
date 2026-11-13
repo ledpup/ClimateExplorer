@@ -31,6 +31,10 @@ function isInView(bounds, lat, lng) {
 }
 
 export function createMarkerLayer(map, dotNetRef, locations, selectedId) {
+    if (!map) {
+        throw new Error("createMarkerLayer: the Leaflet map has not been created yet");
+    }
+
     const layer = L.layerGroup().addTo(map);
     const markers = new Map();
     let items = locations;

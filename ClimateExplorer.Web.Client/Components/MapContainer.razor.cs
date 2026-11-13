@@ -184,7 +184,9 @@ public partial class MapContainer : IAsyncDisposable
     /// </summary>
     private async Task UpdateMarkerLayer()
     {
-        if (mapTransitionInProgress || map is null || Locations is null || JsRuntime is null)
+        // The Map component's @ref is set as soon as it renders, but its Leaflet map (MapReference) only exists once
+        // its own OnAfterRenderAsync has run. Until then there is nothing to draw on; AfterMapRender calls back here.
+        if (mapTransitionInProgress || map?.MapReference is null || Locations is null || JsRuntime is null)
         {
             return;
         }
@@ -194,7 +196,7 @@ public partial class MapContainer : IAsyncDisposable
         {
             var currentMap = map;
             var locations = Locations;
-            if (mapTransitionInProgress || currentMap is null || locations is null)
+            if (mapTransitionInProgress || currentMap?.MapReference is null || locations is null)
             {
                 return;
             }
@@ -240,6 +242,15 @@ public partial class MapContainer : IAsyncDisposable
         {
             // The circuit was torn down while a JS interop call was in flight (e.g. the user
             // navigated away). Drawing markers is moot at that point, so ignore it.
+        }
+        catch (JSException ex)
+        {
+            // An unhandled exception here (called from OnParametersSetAsync) would end the Blazor Server circuit and
+            // freeze the whole page, so a marker failure must not escape. If creation failed, markerLayer is still null
+            // and the next update creates it; if an update failed, forgetting what was sent makes the next one resend.
+            Logger!.LogError(ex, "Failed to create or update the map marker layer");
+            markerLayerLocations = null;
+            markerLayerSelectedId = null;
         }
         finally
         {
