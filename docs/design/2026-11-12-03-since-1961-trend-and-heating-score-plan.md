@@ -5,7 +5,8 @@
   [addendum](#addendum-stage-1-dry-run-2026-11-12). Stage 2 implemented 2026-11-13 (build and unit
   tests clean, UI unverified; see [Stage 2 notes](#stage-2-notes-2026-11-13)). Stage 3 implemented
   2026-11-13 (build and unit tests clean, UI unverified; see [Stage 3 notes](#stage-3-notes-2026-11-13)).
-  Stages 4–5 not started
+  Stage 4 implemented 2026-11-13 (build and unit tests clean, UI unverified; see
+  [Stage 4 notes](#stage-4-notes-2026-11-13)). Stage 5 not started
 - **Author:** Patrick (with Claude)
 - **Scope:** `ClimateExplorer.Core` (trend windows, `Location.SetHeatingScores`, `HeatingScoreRow`),
   `ClimateExplorer.WebApi` (location cache), `ClimateExplorer.Web.Client` (location dashboard trend field
@@ -404,3 +405,18 @@ every year as the window slides.
   same order.
 - Removed the Stage 1 Since1961 filter from
   `LocationTrendDetailsBuilderTests.Build_SameSeries_MatchesTheLocationsPreCalculatedSummaries`.
+
+## Stage 4 notes (2026-11-13)
+
+- `ChartSeriesTrendCalculator` fits Since 1961 from `TrendWindows.GetSince1961Points` over the plotted
+  points, at the chosen regression degree like every other window. Window order: Full, Since 1961,
+  Last 30 years, Last 10 years, Early period.
+- `SelectionPriority` is Since 1961, Full, Last 30, Last 10, Early, so a trend added by clicking draws
+  Since 1961, and a second one lands on Full. Explicit requests (presets, shared URLs) are unchanged.
+- The dropdown, About-trends tabs, legend label ("Since 1961 trend") and notifications all name the
+  window through `TrendWindowLabel`, so none of them needed changing.
+- `TrendsOverviewExplainer` lists only some windows ("among them …"), so it's still accurate. Stage 5
+  adds Since 1961 to it.
+- Tests: tests that used records from 1960 with 59 years now start in 1900, so they still have no
+  since-1961 window. New tests cover the window's points, the 1965/1966 start, the default pick, an
+  explicit Full request and the second-trend fallback, plus a serializer round trip.

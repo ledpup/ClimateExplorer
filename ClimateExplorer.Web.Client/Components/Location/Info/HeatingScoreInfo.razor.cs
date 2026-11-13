@@ -45,7 +45,7 @@ public partial class HeatingScoreInfo
     // The middle score bands are only a few hundredths of a degree per decade wide, so the rates are shown to
     // three decimal places (two more than a temperature difference) for neighbouring bands to be told apart.
     private string FormatLocationRate(Location location) =>
-        ApiMeasures.HeatingScoreRate(location) is { } rate ? $"{Units.Format(rate, signed: true, extraDecimals: 2)}/decade" : "NA";
+        ApiMeasures.HeatingScoreRate(location) is { } rate ? $"{Units.Format(rate, signed: true, extraDecimals: 1)}/decade" : "NA";
 
-    private string FormatBound(double bound) => Units.FormatNumber(ApiMeasures.HeatingScoreRateBound(bound), extraDecimals: 2);
+    private string FormatBound(double bound) => Units.FormatNumber(ApiMeasures.HeatingScoreRateBound(bound), extraDecimals: 1);
 }

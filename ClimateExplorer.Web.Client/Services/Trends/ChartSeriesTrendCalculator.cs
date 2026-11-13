@@ -10,14 +10,18 @@ using ClimateExplorer.Web.Client.UiModel.Trends;
 /// the selected one forward.
 /// </summary>
 /// <remarks>
-/// The full-period, last-30-years, last-10-years and early-period windows and the significance test
-/// are deliberately the same shape as the Recent Observations trend tab's - same four window
-/// definitions, same significance rule generalised from a slope t-test to an overall-model F-test
-/// (identical to the t-test at degree 1). The minimum data requirement is not: the chart (like the
-/// location dashboard) fits a trend from <see cref="TrendDefaults.MinimumYearsForTrend"/> complete
+/// There are five windows: the full period, since 1961, the last 30 years, the last 10 years and the
+/// early period. The full-period, last-30-years, last-10-years and early-period windows and the
+/// significance test are deliberately the same shape as the Recent Observations trend tab's - same
+/// window definitions, same significance rule generalised from a slope t-test to an overall-model
+/// F-test (identical to the t-test at degree 1). The minimum data requirement is not: the chart (like
+/// the location dashboard) fits a trend from <see cref="TrendDefaults.MinimumYearsForTrend"/> complete
 /// years, and only adds the last-30-years and early-period windows from
 /// <see cref="TrendDefaults.MinimumYearsForSubPeriodWindows"/>, while the tile keeps the warming
-/// anomaly's 60-year floor for every window. Unlike the tile, every window here can be fit at degree 1, 2 or 3
+/// anomaly's 60-year floor for every window. The since-1961 window has its own eligibility rule,
+/// shared with the location trends (<see cref="TrendWindows.GetSince1961Points"/>): it needs the plotted
+/// points to start by 1965 and to have 30 years from 1961, so a chart whose start year is later than
+/// 1965 doesn't get it. Unlike the tile, every window here can be fit at degree 1, 2 or 3
 /// (<see cref="TrendRegressionType"/>): picking a curve can make a window newly significant or newly
 /// not, so every window is fit directly with <see cref="PolynomialRegressionCalculator"/> at the
 /// requested degree rather than through <c>TrendWindowCalculator</c>, which is fixed at degree 1 by
@@ -39,11 +43,12 @@ public static class ChartSeriesTrendCalculator
 
     /// <summary>
     /// Which window to fall back to when the user hasn't chosen one, or when the one they chose is
-    /// no longer significant. Full period first, since that's the trend most people mean by default
-    /// ("what's the whole record done?"), then most-recently-relevant.
+    /// no longer significant. Since 1961 first: it's the same period for every series, so trends on
+    /// different locations compare directly, and it's the trend the heating score ranks. Then the full
+    /// period ("what's the whole record done?"), then most-recently-relevant.
     /// </summary>
     private static readonly TrendWindow[] SelectionPriority =
-        [TrendWindow.Full, TrendWindow.Last30, TrendWindow.RecentDecade, TrendWindow.FirstHalf];
+        [TrendWindow.Since1961, TrendWindow.Full, TrendWindow.Last30, TrendWindow.RecentDecade, TrendWindow.FirstHalf];
 
     /// <param name="lastMeasuredYear">
     /// The true last calendar year with real (raw) data, when it differs from the last year in
@@ -98,12 +103,16 @@ public static class ChartSeriesTrendCalculator
         // is nearly the whole record and the early period is a short, low-power fit.
         var hasSubPeriodWindows = ordered.Count >= TrendDefaults.MinimumYearsForSubPeriodWindows;
 
-        // Declared in dropdown/tab display order: full period first, matching SelectionPriority
-        // below.
+        // Declared in dropdown/tab display order: full period first, then since 1961.
         var windows = new List<ChartSeriesTrendWindowResult>
         {
             new(TrendWindow.Full, PolynomialRegressionCalculator.Calculate(ordered, degree), ordered),
         };
+
+        if (TrendWindows.GetSince1961Points(ordered) is { } since1961Points)
+        {
+            windows.Add(new(TrendWindow.Since1961, PolynomialRegressionCalculator.Calculate(since1961Points, degree), since1961Points));
+        }
 
         if (hasSubPeriodWindows)
         {
