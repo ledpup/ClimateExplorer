@@ -50,6 +50,30 @@ public class ClimateStripeUnitsTests
         Assert.AreEqual("Year 2020<br>Precipitation total of 652mm<br>31mm above average<br>105% of the average", tooltip);
     }
 
+    [TestMethod]
+    public void Rank_TiedYears_ShareRankBelowWarmer()
+    {
+        List<YearlyValues> records =
+        [
+            new(2021, 0.2, 15.2, 100),
+            new(2022, 0.5, 15.5, 100),
+            new(2023, 0.2, 15.2, 100),
+            new(2024, 0.9, 15.9, 100),
+        ];
+
+        var ranks = records.Select(x => YearlyValuesHelper.Rank(x, records)).ToList();
+
+        CollectionAssert.AreEqual(new[] { 3, 2, 3, 1 }, ranks);
+    }
+
+    [TestMethod]
+    [DataRow(UnitOfMeasure.DegreesCelsius, 3, "3rd warmest of 56 years")]
+    [DataRow(UnitOfMeasure.Millimetres, 1, "1st wettest of 56 years")]
+    public void GetRankDescription_UnitOfMeasure_UsesSuperlative(UnitOfMeasure unitOfMeasure, int rank, string expected)
+    {
+        Assert.AreEqual(expected, YearlyValuesHelper.GetRankDescription(rank, 56, unitOfMeasure));
+    }
+
     // Everything the stripe and its info panel show for each year, as they ask for it.
     private static async Task<List<Measure>> RecordStripeMeasures(double shift)
     {

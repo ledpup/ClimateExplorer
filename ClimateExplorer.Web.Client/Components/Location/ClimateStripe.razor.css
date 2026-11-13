@@ -16,19 +16,21 @@
         background-color: white;
         border: 8px solid;
         text-align: center;
+        white-space: nowrap;
         position: absolute;
         bottom: calc(100% + 18px);
         left: 50%;
         transform: translateX(-50%);
-        min-width: 85px;
-        height: 110px;
+        width: 90px;
+        height: 120px;
         z-index: 1000;
         pointer-events: none;
         border-radius: 12px;
         flex-direction: column;
-        justify-content: space-between;
+        justify-content: center;
+        gap: 8px;
         align-items: center;
-        padding: 10px 12px;
+        padding: 8px 12px;
         color: #595959;
     }
 
@@ -38,6 +40,11 @@
         }
 
         .single-stripe .label .abs {
+            font-size: 0.9rem;
+            line-height: 1;
+        }
+
+        .single-stripe .label .rank {
             font-size: 0.9rem;
             line-height: 1;
         }
@@ -61,7 +68,7 @@
         height: 20px;
         background-color: var(--label-colour);
         box-shadow: 0 0 0 200px var(--label-colour);
-        clip-path: polygon(0% 100%, 100% 100%, calc(50% + 37px) 0%, calc(50% - 37px) 0%);
+        clip-path: polygon(0% 100%, 100% 100%, calc(50% + 39px) 0%, calc(50% - 39px) 0%);
         z-index: 999;
     }
 

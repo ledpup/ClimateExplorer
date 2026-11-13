@@ -25,16 +25,16 @@ public partial class LocationDashboard
     private const string NoValue = "—";
 
     private const string WarmingAnomalyTooltip =
-        "How much warmer the last 30 years have been than the first half of the location's records, on average."
-        + "<br>Click for more information.";
+        "<p>How much warmer the last 30 years have been than the first half of the location's records, on average.</p>"
+        + "<p>Click for more information.</p>";
 
     private const string PrecipitationAnomalyTooltip =
-        "How much wetter or drier the last 30 years have been than the first half of the location's records, as an average yearly total."
-        + "<br>Click for more information.";
+        "<p>How much wetter or drier the last 30 years have been than the first half of the location's records, as an average yearly total.</p>"
+        + "<p>Click for more information.</p>";
 
     private const string HeatingScoreTooltip =
-        "How fast the location has warmed since 1961, ranked against every other location: 9 is the fastest-warming 10%, 0 the slowest."
-        + "<br>Click for more information.";
+        "<p>How fast the location has warmed since 1961, ranked against every other location: 9 is the fastest-warming 10%, 0 the slowest.</p>"
+        + "<p>Click for more information.</p>";
 
     private SidePanel? climateRecordsSidePanel;
     private SidePanel? recentObservationsSidePanel;
@@ -128,7 +128,7 @@ public partial class LocationDashboard
                 ? $"{CultureInfo.InvariantCulture.DateTimeFormat.GetAbbreviatedMonthName(recordHigh.Month!.Value)} {recordHigh.Year}"
                 : DateLabels.ShortDayMonthYear(new DateOnly(recordHigh.Year, recordHigh.Month!.Value, recordHigh.Day.Value));
 
-            return $"{OverviewLocation.Name} record high of {Units.Format(value)} set {recordHighDate}.<br>Click for more records.";
+            return $"<p>{OverviewLocation.Name} record high of {Units.Format(value)} set {recordHighDate}.</p><p>Click for more records.</p>";
         }
     }
 

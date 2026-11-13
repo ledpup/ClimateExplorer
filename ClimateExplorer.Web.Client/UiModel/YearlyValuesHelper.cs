@@ -1,5 +1,6 @@
 namespace ClimateExplorer.Web.Client.UiModel;
 
+using ClimateExplorer.Core.Calculators;
 using ClimateExplorer.Web.Client.Units;
 using ClimateExplorer.Web.UiModel;
 using static ClimateExplorer.Core.Enums;
@@ -18,6 +19,16 @@ public static class YearlyValuesHelper
 
     /// <summary>The mean of the whole series. A level.</summary>
     public static Measure LocationMean(double mean, UnitOfMeasure unitOfMeasure) => Measure.Level(mean, unitOfMeasure);
+
+    /// <summary>The year's place in the series, 1 being the warmest or wettest. Tied years share a rank.</summary>
+    public static int Rank(YearlyValues values, IEnumerable<YearlyValues> records) => 1 + records.Count(x => x.Absolute > values.Absolute);
+
+    /// <summary>E.g. "3rd warmest of 56 years".</summary>
+    public static string GetRankDescription(int rank, int count, UnitOfMeasure unitOfMeasure)
+    {
+        var superlative = unitOfMeasure == UnitOfMeasure.Millimetres ? "wettest" : "warmest";
+        return $"{RecentObservationComparison.FormatOrdinal(rank)} {superlative} of {count} years";
+    }
 
     public static string GetTooltip(YearlyValues values, UnitOfMeasure unitOfMeasure, IUnitFormatter? units = null, bool includeYear = true)
     {

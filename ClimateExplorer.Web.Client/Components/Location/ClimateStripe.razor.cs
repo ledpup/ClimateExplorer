@@ -12,6 +12,7 @@ public partial class ClimateStripe
 {
     private double min;
     private double max;
+    private Dictionary<short, int> ranks = [];
 
     private Modal? popup;
 
@@ -55,6 +56,7 @@ public partial class ClimateStripe
         {
             min = DataRecords.Min(x => x.Relative);
             max = DataRecords.Max(x => x.Relative);
+            ranks = DataRecords.ToDictionary(x => x.Year, x => YearlyValuesHelper.Rank(x, DataRecords));
         }
 
         await base.OnParametersSetAsync();
@@ -118,7 +120,11 @@ public partial class ClimateStripe
 
     private string GetAbsoluteValue(YearlyValues values) => Units.Format(YearlyValuesHelper.Absolute(values, UnitOfMeasure!.Value));
 
-    private string GetTooltip(YearlyValues values) => YearlyValuesHelper.GetTooltip(values, UnitOfMeasure!.Value, Units);
+    private string GetRankLabel(YearlyValues values) => $"{ranks[values.Year]} / {DataRecords!.Count}";
+
+    private string GetTooltip(YearlyValues values) =>
+        $"{YearlyValuesHelper.GetTooltip(values, UnitOfMeasure!.Value, Units)}<br>"
+        + YearlyValuesHelper.GetRankDescription(ranks[values.Year], DataRecords!.Count, UnitOfMeasure!.Value);
 
     private async Task FilterToYear(short year)
     {
