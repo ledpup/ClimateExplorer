@@ -26,11 +26,13 @@ public static class TrendWindowCalculator
         var ordered = points.OrderBy(p => p.X).ToList();
         var recentCount = Math.Min(recentWindowSize, ordered.Count);
         var firstHalfCount = ordered.Count / 2;
+        var since1961Points = TrendWindows.GetSince1961Points(ordered);
 
         return new TrendWindowSet(
             PolynomialRegressionCalculator.Calculate(ordered, degree: 1, alpha: alpha),
             PolynomialRegressionCalculator.Calculate(ordered.TakeLast(recentCount), degree: 1, alpha: alpha),
             PolynomialRegressionCalculator.Calculate(ordered.Take(firstHalfCount), degree: 1, alpha: alpha),
+            since1961Points is null ? null : PolynomialRegressionCalculator.Calculate(since1961Points, degree: 1, alpha: alpha),
             ordered.Count);
     }
 }

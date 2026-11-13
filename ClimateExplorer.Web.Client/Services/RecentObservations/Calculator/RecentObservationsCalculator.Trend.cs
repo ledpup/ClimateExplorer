@@ -9,9 +9,9 @@ using ClimateExplorer.Web.Client.UiModel.RecentObservations;
 using ClimateExplorer.Web.Client.Units;
 using static ClimateExplorer.Core.Enums;
 
-// Builds the "Trend" tab: the full-period, recent-window and first-half linear trends for
-// each metric, sharing TrendFormatting with the About-trends modal so both describe a trend
-// the same way.
+// Builds the "Trend" tab: the last-30-years, since-1961, first-half and full-period linear
+// trends for each metric, sharing TrendFormatting with the About-trends modal so both describe
+// a trend the same way. The tile shows the first three; About trends shows all four.
 public sealed partial class RecentObservationsCalculator
 {
     private static IReadOnlyList<RecentObservationTrendViewModel> BuildTrendMetrics(
@@ -84,29 +84,33 @@ public sealed partial class RecentObservationsCalculator
         var firstHalfCount = ordered.Count / 2;
         var recentPoints = ordered.TakeLast(recentCount).ToList();
         var firstHalfPoints = ordered.Take(firstHalfCount).ToList();
+        var since1961Trend = trendSet.Since1961Trend;
+        var since1961Points = since1961Trend is null ? [] : TrendWindows.GetSince1961Points(ordered) ?? [];
 
         return new RecentObservationTrendViewModel
         {
             Label = metric.VariationLabel,
             Unit = metric.Unit,
             CompleteYearCount = trendSet.CompletePointCount,
-            HeadlineText = TrendFormatting.FormatPerDecade(trendSet.HistoricalTrend, trendSet.HistoricalTrend.Input.MaximumX, metric.Unit, units),
-            IsHeadlinePositive = TrendFormatting.IsTrendPositive(trendSet.HistoricalTrend, trendSet.HistoricalTrend.Input.MaximumX),
-            HeadlineCaption = FormatYearRange(trendSet.HistoricalTrend),
-            FullPeriodTooltip = BuildTrendTooltip(ordered, trendSet.HistoricalTrend, metric.Unit, units),
             RecentTrendYearRange = FormatYearRange(trendSet.RecentTrend),
             RecentTrendValueText = TrendFormatting.FormatPerDecade(trendSet.RecentTrend, trendSet.RecentTrend.Input.MaximumX, metric.Unit, units),
             IsRecentTrendPositive = TrendFormatting.IsTrendPositive(trendSet.RecentTrend, trendSet.RecentTrend.Input.MaximumX),
             RecentTrendTooltip = BuildTrendTooltip(recentPoints, trendSet.RecentTrend, metric.Unit, units),
+            Since1961TrendYearRange = since1961Trend is null ? null : FormatYearRange(since1961Trend),
+            Since1961TrendValueText = since1961Trend is null ? null : TrendFormatting.FormatPerDecade(since1961Trend, since1961Trend.Input.MaximumX, metric.Unit, units),
+            IsSince1961TrendPositive = since1961Trend is not null && TrendFormatting.IsTrendPositive(since1961Trend, since1961Trend.Input.MaximumX),
+            Since1961TrendTooltip = since1961Trend is null ? null : BuildTrendTooltip(since1961Points, since1961Trend, metric.Unit, units),
             FirstHalfTrendYearRange = FormatYearRange(trendSet.FirstHalfTrend),
             FirstHalfTrendValueText = TrendFormatting.FormatPerDecade(trendSet.FirstHalfTrend, trendSet.FirstHalfTrend.Input.MaximumX, metric.Unit, units),
             IsFirstHalfTrendPositive = TrendFormatting.IsTrendPositive(trendSet.FirstHalfTrend, trendSet.FirstHalfTrend.Input.MaximumX),
             FirstHalfTrendTooltip = BuildTrendTooltip(firstHalfPoints, trendSet.FirstHalfTrend, metric.Unit, units),
             FullPeriodTrend = trendSet.HistoricalTrend,
             RecentTrend = trendSet.RecentTrend,
+            Since1961Trend = since1961Trend,
             FirstHalfTrend = trendSet.FirstHalfTrend,
             FullPeriodPoints = ordered,
             RecentTrendPoints = recentPoints,
+            Since1961TrendPoints = since1961Points,
             FirstHalfTrendPoints = firstHalfPoints,
         };
     }

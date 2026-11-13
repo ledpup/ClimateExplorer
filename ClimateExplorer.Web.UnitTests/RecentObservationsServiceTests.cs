@@ -1256,9 +1256,8 @@ public class RecentObservationsServiceTests
         var trend = (RecentObservationTrendTabViewModel)latestSevenDays.AvailableExpandedTabs.Single(x => x.Key == MetricGroupKey.Trend);
         var precipitation = trend.Metrics.Single();
 
-        Assert.IsNull(precipitation.HeadlineText);
-        Assert.IsNull(precipitation.HeadlineCaption);
         Assert.IsNull(precipitation.RecentTrendValueText);
+        Assert.IsNull(precipitation.Since1961TrendValueText);
         Assert.IsNull(precipitation.FirstHalfTrendValueText);
         Assert.AreEqual("Recent observations are below the completeness threshold.", precipitation.UnavailableReason);
     }
@@ -2317,12 +2316,36 @@ public class RecentObservationsServiceTests
         var precipitation = trend.Metrics.Single();
 
         Assert.AreEqual("Precipitation", precipitation.Label);
-        Assert.AreEqual("+70mm /decade", precipitation.HeadlineText);
-        Assert.AreEqual("1960-2026", precipitation.HeadlineCaption);
         Assert.AreEqual("1997-2026", precipitation.RecentTrendYearRange);
         Assert.AreEqual("+70mm /decade", precipitation.RecentTrendValueText);
+        Assert.AreEqual("1961-2026", precipitation.Since1961TrendYearRange);
+        Assert.AreEqual("+70mm /decade", precipitation.Since1961TrendValueText);
+        Assert.HasCount(66, precipitation.Since1961TrendPoints);
         Assert.AreEqual("1960-1992", precipitation.FirstHalfTrendYearRange);
         Assert.AreEqual("+70mm /decade", precipitation.FirstHalfTrendValueText);
+    }
+
+    [TestMethod]
+    public async Task GetPrecipitationRecords_TrendTab_RecordStartsAfter1965_HasNoSince1961Trend()
+    {
+        var historicalRecords = CreateHistoricalRangeRecords(new DateOnly(2026, 6, 8), new DateOnly(2026, 6, 14), startYear: 1966, endYear: 2025);
+        var service = CreateService(
+            historicalRecords: historicalRecords,
+            recentValue: date => (date.Year - 1960) + date.Day);
+
+        var result = await service.GetPrecipitationRecords(
+            CreateSouthernHemisphereLocation(),
+            previousDayCount: 1,
+            previousMonthCount: 0,
+            previousSeasonCount: 0);
+        var latestSevenDays = result.Tiles.Single(x => x.PeriodKind == RecentObservationPeriodKind.LatestSevenDays);
+        var trend = (RecentObservationTrendTabViewModel)latestSevenDays.AvailableExpandedTabs.Single(x => x.Key == MetricGroupKey.Trend);
+        var precipitation = trend.Metrics.Single();
+
+        Assert.IsNull(precipitation.UnavailableReason);
+        Assert.IsNotNull(precipitation.RecentTrendValueText);
+        Assert.IsNull(precipitation.Since1961Trend);
+        Assert.IsNull(precipitation.Since1961TrendValueText);
     }
 
     [TestMethod]
@@ -2341,7 +2364,7 @@ public class RecentObservationsServiceTests
 
         Assert.IsNotNull(trend);
         var precipitation = trend.Metrics.Single();
-        Assert.IsNull(precipitation.HeadlineText);
+        Assert.IsNull(precipitation.RecentTrendValueText);
         StringAssert.StartsWith(precipitation.UnavailableReason!, "Less than 60 complete years of data.");
     }
 
@@ -2500,9 +2523,9 @@ public class RecentObservationsServiceTests
         var trend = (RecentObservationTrendTabViewModel)latestSevenDays.AvailableExpandedTabs.Single(x => x.Key == MetricGroupKey.Trend);
         var averageMax = trend.Metrics.Single(x => x.Label == "Maximum");
 
-        Assert.AreEqual("+0.35°C /decade", averageMax.HeadlineText);
         Assert.AreEqual("1997-2026", averageMax.RecentTrendYearRange);
         Assert.AreEqual("+0.35°C /decade", averageMax.RecentTrendValueText);
+        Assert.AreEqual("+0.35°C /decade", averageMax.Since1961TrendValueText);
     }
 
     [TestMethod]
@@ -2535,7 +2558,7 @@ public class RecentObservationsServiceTests
         var trend = (RecentObservationTrendTabViewModel)latestSevenDays.AvailableExpandedTabs.Single(x => x.Key == MetricGroupKey.Trend);
         var averageMax = trend.Metrics.Single(x => x.Label == "Maximum");
 
-        Assert.AreEqual("-0.25°C /decade", averageMax.HeadlineText);
+        Assert.AreEqual("-0.25°C /decade", averageMax.RecentTrendValueText);
     }
 
     [TestMethod]
@@ -2568,7 +2591,6 @@ public class RecentObservationsServiceTests
         var trend = (RecentObservationTrendTabViewModel)latestSevenDays.AvailableExpandedTabs.Single(x => x.Key == MetricGroupKey.Trend);
         var averageMax = trend.Metrics.Single(x => x.Label == "Maximum");
 
-        Assert.AreEqual("No significant trend", averageMax.HeadlineText);
         Assert.AreEqual("1997-2026", averageMax.RecentTrendYearRange);
         Assert.AreEqual("No significant trend", averageMax.RecentTrendValueText);
     }

@@ -1,4 +1,6 @@
 @namespace ClimateExplorer.Web.Client.Components.RecentObservations
+@using ClimateExplorer.Core.Model
+@using ClimateExplorer.Web.Client.Services.Trends
 
 <dl class="recent-observation-detail-metrics">
     @foreach (var metric in Metrics)
@@ -12,25 +14,25 @@
                 }
                 else
                 {
-                    @if (!string.IsNullOrWhiteSpace(metric.HeadlineText))
-                    {
-                        <Tooltip Text="@metric.FullPeriodTooltip" Multiline="true">
-                            <div class="recent-observation-detail-headline">
-                                <span class="recent-observation-detail-current @ValueClassifier.GetValueClass(metric.HeadlineText, metric.IsHeadlinePositive)">@metric.HeadlineText</span>
-                                <span class="recent-observation-detail-rank">full period</span>
-                            </div>
-                        </Tooltip>
-                    }
                     @if (!string.IsNullOrWhiteSpace(metric.RecentTrendValueText))
                     {
                         <Tooltip Text="@metric.RecentTrendTooltip" Multiline="true">
-                            <span class="recent-observation-detail-record">Last 30 years: <span class="@ValueClassifier.GetValueClass(metric.RecentTrendValueText, metric.IsRecentTrendPositive)">@metric.RecentTrendValueText</span></span>
+                            <div class="recent-observation-detail-headline">
+                                <span class="recent-observation-detail-current @ValueClassifier.GetValueClass(metric.RecentTrendValueText, metric.IsRecentTrendPositive)">@metric.RecentTrendValueText</span>
+                                <span class="recent-observation-detail-rank">@TrendWindowLabel.Get(TrendWindow.Last30).ToLowerInvariant()</span>
+                            </div>
+                        </Tooltip>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(metric.Since1961TrendValueText))
+                    {
+                        <Tooltip Text="@metric.Since1961TrendTooltip" Multiline="true">
+                            <span class="recent-observation-detail-record">@TrendWindowLabel.Get(TrendWindow.Since1961): <span class="@ValueClassifier.GetValueClass(metric.Since1961TrendValueText, metric.IsSince1961TrendPositive)">@metric.Since1961TrendValueText</span></span>
                         </Tooltip>
                     }
                     @if (!string.IsNullOrWhiteSpace(metric.FirstHalfTrendValueText))
                     {
                         <Tooltip Text="@metric.FirstHalfTrendTooltip" Multiline="true">
-                            <span class="recent-observation-detail-record">Early period: <span class="@ValueClassifier.GetValueClass(metric.FirstHalfTrendValueText, metric.IsFirstHalfTrendPositive)">@metric.FirstHalfTrendValueText</span></span>
+                            <span class="recent-observation-detail-record">@TrendWindowLabel.Get(TrendWindow.FirstHalf): <span class="@ValueClassifier.GetValueClass(metric.FirstHalfTrendValueText, metric.IsFirstHalfTrendPositive)">@metric.FirstHalfTrendValueText</span></span>
                         </Tooltip>
                     }
                 }

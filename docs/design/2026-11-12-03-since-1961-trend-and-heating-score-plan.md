@@ -6,7 +6,8 @@
   tests clean, UI unverified; see [Stage 2 notes](#stage-2-notes-2026-11-13)). Stage 3 implemented
   2026-11-13 (build and unit tests clean, UI unverified; see [Stage 3 notes](#stage-3-notes-2026-11-13)).
   Stage 4 implemented 2026-11-13 (build and unit tests clean, UI unverified; see
-  [Stage 4 notes](#stage-4-notes-2026-11-13)). Stage 5 not started
+  [Stage 4 notes](#stage-4-notes-2026-11-13)). Stage 5 implemented 2026-11-13 (build and unit tests
+  clean, UI unverified; see [Stage 5 notes](#stage-5-notes-2026-11-13)). All stages done
 - **Author:** Patrick (with Claude)
 - **Scope:** `ClimateExplorer.Core` (trend windows, `Location.SetHeatingScores`, `HeatingScoreRow`),
   `ClimateExplorer.WebApi` (location cache), `ClimateExplorer.Web.Client` (location dashboard trend field
@@ -420,3 +421,18 @@ every year as the window slides.
 - Tests: tests that used records from 1960 with 59 years now start in 1900, so they still have no
   since-1961 window. New tests cover the window's points, the 1965/1966 start, the default pick, an
   explicit Full request and the second-trend fallback, plus a serializer round trip.
+
+## Stage 5 notes (2026-11-13)
+
+- `TrendWindowSet` gains `Since1961Trend` (nullable), fitted by `TrendWindowCalculator` at degree 1 from
+  `TrendWindows.GetSince1961Points`. The points are the metric's yearly values for the period (plus
+  the current, possibly partial, year), so the window is per metric and per tile.
+- **Tile:** the headline is Last 30 years, followed by Since 1961 (only when eligible), then Early
+  period. Labels come from `TrendWindowLabel`. The full period is no longer on the tile, so its display
+  fields (`HeadlineText`, `IsHeadlinePositive`, `HeadlineCaption`, `FullPeriodTooltip`) were removed from
+  `RecentObservationTrendViewModel`. About trends still has the full-period regression and points.
+- **About trends:** the toggle is Last 30 years, Since 1961 (only when eligible), Early period, Full
+  period. It opens on Last 30 years, and goes back to it when you switch metric tab.
+- `TrendsOverviewExplainer` (shared by the chart, the location trend modal and Recent Observations) now
+  lists Since 1961 and why it's the same period everywhere.
+- Recent Observations keeps its 60-year minimum. Since 1961 needs that as well as its own rule.
