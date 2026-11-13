@@ -2,6 +2,9 @@
 @using ClimateExplorer.Core.Calculators
 
 <p>The warming anomaly is the temperature difference between the average of the last 30 years of temperatures compared with the average of the first half of the dataset. 30 years was chosen to fit the convention of the <a href="https://en.wikipedia.org/wiki/Climatological_normal" target="_blank">climatological normal</a>. The first half of the dataset is used as a proxy for a natural baseline; it is expected to be less affected by anthropogenic warming.</p>
+
+<p>A minimum of @MinimumYears complete years of data is required to calculate a warming anomaly.</p>
+
 @if (CalculatedAnomaly is not null)
 {
     <p>For example:</p>
@@ -17,5 +20,14 @@
         </li>
     </ul>
 }
-
-<p>A minimum of 60 years of data is required to calculate a warming anomaly.</p>
+else if (Location is not null)
+{
+    @if (CompleteYearCount is { } count)
+    {
+        <p><strong>@Location.Name</strong> has @count complete year@(count == 1 ? string.Empty : "s") of temperature records, so it doesn't have a warming anomaly.</p>
+    }
+    else
+    {
+        <p><strong>@Location.Name</strong> doesn't have temperature records, so it doesn't have a warming anomaly.</p>
+    }
+}
