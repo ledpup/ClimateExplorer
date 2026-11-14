@@ -1,6 +1,12 @@
 ﻿namespace ClimateExplorer.Core.Model;
 public class DataSetDefinition
 {
+    /// <summary>
+    /// The definitions read from the default mapping folder. The mapping files are a few MB of JSON that don't change
+    /// while the process runs, and the API reads them on every dataset request, so they're loaded once.
+    /// </summary>
+    private static Task<List<DataSetDefinition>>? defaultDataSetDefinitions;
+
     public required Guid Id { get; set; }
     public required string Name { get; init; }
     public required string ShortName { get; init; }
@@ -19,9 +25,20 @@ public class DataSetDefinition
 
     public DataFileMapping? DataLocationMapping { get; set; }
 
-    public static Task<List<DataSetDefinition>> GetDataSetDefinitions()
+    /// <summary>
+    /// Gets the definitions from the default mapping folder, loaded once per process. Callers share the definition
+    /// objects, so treat them as read-only; the list itself is a fresh copy.
+    /// </summary>
+    public static async Task<List<DataSetDefinition>> GetDataSetDefinitions()
     {
-        return GetDataSetDefinitions(null);
+        var task = defaultDataSetDefinitions;
+        if (task is null || task.IsFaulted || task.IsCanceled)
+        {
+            task = GetDataSetDefinitions(null);
+            defaultDataSetDefinitions = task;
+        }
+
+        return [.. await task];
     }
 
     public static async Task<List<DataSetDefinition>> GetDataSetDefinitions(string? dataFileMappingFolder)

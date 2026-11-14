@@ -32,8 +32,14 @@ internal static class LocationEndpoints
         Location[] cacheResult = null;
         if (locationId == null)
         {
+            if (services.Locations is { } inMemory)
+            {
+                return inMemory;
+            }
+
             cacheKey = "Locations";
             cacheResult = await services.LongtermCache.Get<Location[]>(cacheKey);
+            services.Locations = cacheResult;
         }
         else
         {
@@ -144,9 +150,15 @@ internal static class LocationEndpoints
         var heatingScoreTable = Location.SetHeatingScores(locations);
         await services.LongtermCache.Put(ClimateExplorerApiConstants.HeatingScoreTable, heatingScoreTable.ToArray());
 
-        await services.LongtermCache.Put(cacheKey, locations.ToArray());
+        var locationArray = locations.ToArray();
+        await services.LongtermCache.Put(cacheKey, locationArray);
 
-        return locations;
+        if (locationId == null)
+        {
+            services.Locations = locationArray;
+        }
+
+        return locationArray;
     }
 
     public static async Task<List<LocationDistance>> GetNearbyLocations(
@@ -205,8 +217,9 @@ internal static class LocationEndpoints
         [FromServices] ClimateExplorerApiServices services,
         Guid locationId)
     {
+        // The long-term location list (held in memory), but never building it here: that's the slow full rebuild.
         var metadataService = new LocationDataSetMetadataService(
-            getLocations: () => GetCachedLocations(services, locationId, permitCreateCache: false));
+            getLocations: () => GetCachedLocations(services, permitCreateCache: false));
 
         var result = await metadataService.GetAsync(locationId);
         if (!result.LocationFound)

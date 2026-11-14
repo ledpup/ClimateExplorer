@@ -111,7 +111,7 @@ public partial class LocationDashboard
                 return null;
             }
 
-            var tooltip = $"<p>{TemperatureMeanLabel}</p><p>{Location?.Name}: {TemperatureMeanAsString}</p><p>This is the average of its yearly "
+            var tooltip = $"<p>{TemperatureMeanLabel}</p><p>{Location?.Name}: <b>{TemperatureMeanAsString}</b></p><p>This is the average of its yearly "
                 + $"{(TemperatureDataType == DataType.TempMax ? "maximum" : "mean")} temperatures for {records[0].Year}–{records[^1].Year}.</p>";
 
             return TemperatureDataType == DataType.TempMax
