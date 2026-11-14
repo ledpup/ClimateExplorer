@@ -105,7 +105,7 @@ public class ChartSeriesTrendNotificationBuilderTests
         var notification = ChartSeriesTrendNotificationBuilder.Build("Hobart | Max temperature", trend, "Hobart", null, trendOrdinal: 2);
 
         Assert.IsNotNull(notification);
-        StringAssert.StartsWith(notification!.Message, "Hobart | Max temperature, trend 2:");
+        StringAssert.StartsWith(notification!.Message, "<div>Hobart | Max temperature, trend 2:");
     }
 
     [TestMethod]
@@ -117,7 +117,7 @@ public class ChartSeriesTrendNotificationBuilderTests
         var withNullOrdinal = ChartSeriesTrendNotificationBuilder.Build("Hobart | Max temperature", trend, "Hobart", null, trendOrdinal: null);
 
         Assert.AreEqual(withoutOrdinal!.Message, withNullOrdinal!.Message);
-        StringAssert.StartsWith(withoutOrdinal.Message, "Hobart | Max temperature:");
+        StringAssert.StartsWith(withoutOrdinal.Message, "<div>Hobart | Max temperature:");
     }
 
     private static ChartSeriesTrend Calculate(IReadOnlyList<DataPoint> points)

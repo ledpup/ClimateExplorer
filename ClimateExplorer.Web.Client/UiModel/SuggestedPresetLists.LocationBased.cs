@@ -155,13 +155,13 @@ public static partial class SuggestedPresetLists
                             new ChartSeriesTrendRequest
                             {
                                 RegressionType = TrendRegressionType.Linear,
-                                TrendPeriod = TrendWindow.Full,
+                                TrendPeriod = TrendWindow.Since1961,
                                 TrendPredictionYears = 50,
                             },
                             new ChartSeriesTrendRequest
                             {
                                 RegressionType = TrendRegressionType.Quadratic,
-                                TrendPeriod = TrendWindow.Full,
+                                TrendPeriod = TrendWindow.Since1961,
                                 TrendPredictionYears = 50,
                             },
                         ],
