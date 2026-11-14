@@ -134,7 +134,6 @@
     .collapser:hover {
         color: #0071c1;
     }
-
     .collapser .collapser-chevron {
         flex-shrink: 0;
         margin-right: 0.6em;

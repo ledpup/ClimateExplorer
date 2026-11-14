@@ -357,6 +357,11 @@ html:has(.carousel-viewport) {
     margin-bottom: 0;
 }
 
+.tooltip ul {
+    margin: 0 0 0.5rem;
+    padding-left: 1.25rem;
+}
+
 @media (prefers-reduced-motion: no-preference) {
     .tooltip:popover-open {
         transition: opacity 0.15s;

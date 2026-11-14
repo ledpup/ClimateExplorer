@@ -41,6 +41,12 @@ public partial class Collapsible
     [Parameter]
     public string? FullTitle { get; set; }
 
+    /// <summary>
+    /// A multiline tooltip shown on hovering the title. May contain simple markup (see <see cref="Tooltip.Text"/>).
+    /// </summary>
+    [Parameter]
+    public string? TitleTooltip { get; set; }
+
     [Parameter]
     public RenderFragment? CollapsedContent { get; set; }
 

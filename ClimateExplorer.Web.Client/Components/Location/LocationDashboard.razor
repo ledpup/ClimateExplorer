@@ -5,7 +5,7 @@
 @using ClimateExplorer.Web.Client.UiModel.RecentObservations
 @using static ClimateExplorer.Core.Enums
 
-<Collapsible @ref="LocationCollapsible" Title="@Location?.DisplayTitle" CompactTitle="@Location?.CodeTitle" MinimalTitle="@Location?.Name" OnShowOrHide="OverviewShowOrHideHandler" CollapserSize="Collapsible.CollapserSizes.ExtraLarge">
+<Collapsible @ref="LocationCollapsible" Title="@Location?.DisplayTitle" CompactTitle="@Location?.CodeTitle" MinimalTitle="@Location?.Name" OnShowOrHide="OverviewShowOrHideHandler" CollapserSize="Collapsible.CollapserSizes.ExtraLarge" TitleTooltip="@TemperatureMeanTooltip">
     <CollapsedContent>
         <span class="chart-controls">
             <Tooltip Multiline="true" Style="display: inline-block" Text="Change the current location. Four ways to choose:<br>• Near me — use browser location<br>• Random — a surprise location<br>• Search — type a location name<br>• Nearby — closest stations">
