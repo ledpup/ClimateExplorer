@@ -121,7 +121,7 @@ public static partial class SuggestedPresetLists
                                     new ChartSeriesTrendRequest
                                     {
                                         RegressionType = TrendRegressionType.Quadratic,
-                                        TrendPeriod = TrendWindow.Full,
+                                        TrendPeriod = TrendWindow.Since1961,
                                         TrendPredictionTargetYear = 2100,
                                     },
                                     new ChartSeriesTrendRequest

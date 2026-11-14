@@ -54,18 +54,18 @@ public static class ChartSeriesTrendNotificationBuilder
             return null;
         }
 
-        var detail = string.Join(
-            " ",
+        // The summary, each rejected window and the closing note are sibling <div>s, so each starts
+        // on its own line.
+        var detail = string.Concat(
             rejected.Select(window => DescribeRejectedWindow(window, trend.Subject.Unit, trend.Subject.FormatterFor(units ?? UnitFormatter.Metric))));
 
-        var threshold = ThresholdText(trend);
+        var footer = $"<div>A period is only offered when its p-value is below {ThresholdText(trend)}. "
+            + "Open <b>About trends</b> for the full statistics on every period.</div>";
 
         if (!trend.HasSignificantWindow)
         {
             return Create(
-                $"{subjectLabel}: none of the trend periods produce a statistically significant trend, so no trend line was added. "
-                + $"{detail} A period is only offered when its p-value is below {threshold}. "
-                + "Open <b>About trends</b> for the full statistics on every period.",
+                $"<div>{subjectLabel}: none of the trend periods produce a statistically significant trend, so no trend line was added.</div>{detail}{footer}",
                 NotificationType.Warning,
                 locationName,
                 locationId);
@@ -76,8 +76,7 @@ public static class ChartSeriesTrendNotificationBuilder
             : $"{NumberWord(rejected.Count)} of the trend periods aren't statistically significant, so they aren't offered as options";
 
         return Create(
-            $"{subjectLabel}: {subject}. {detail} A period is only offered when its p-value is below {threshold}. "
-            + "Open <b>About trends</b> for the full statistics on every period.",
+            $"<div>{subjectLabel}: {subject}.</div>{detail}{footer}",
             NotificationType.Info,
             locationName,
             locationId);
@@ -90,8 +89,8 @@ public static class ChartSeriesTrendNotificationBuilder
         var rate = TrendFormatting.FormatPerDecadeValue(window.Regression, window.Regression.Input.MaximumX, unit, units);
         var pValue = TrendFormatting.FormatPValue(window.Regression.Significance.PValue);
 
-        return $"<b>{label}</b> ({years}): the fitted rate is {rate}, but p = {pValue} - the year-to-year scatter is too large, "
-            + "relative to the number of years, to tell this apart from no trend at all.";
+        return $"<div><b>{label}</b> ({years}): the fitted rate is {rate}, but p = {pValue} - the year-to-year scatter is too large, "
+            + "relative to the number of years, to tell this apart from no trend at all.</div>";
     }
 
     private static string ThresholdText(ChartSeriesTrend trend)
