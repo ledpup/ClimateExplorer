@@ -105,7 +105,7 @@ public class ChartSeriesTrendNotificationBuilderTests
         var notification = ChartSeriesTrendNotificationBuilder.Build("Hobart | Max temperature", trend, "Hobart", null, TrendRegressionType.Quadratic);
 
         Assert.IsNotNull(notification);
-        StringAssert.StartsWith(notification!.Message, "<div>Hobart | Max temperature, quadratic trend:");
+        StringAssert.StartsWith(notification!.Message, "<div>Hobart | Max temperature, <b>quadratic trend</b>:");
     }
 
     [TestMethod]
@@ -149,8 +149,8 @@ public class ChartSeriesTrendNotificationBuilderTests
         var notifications = ChartSeriesTrendNotificationBuilder.BuildForSeries("Hobart | Max temperature", trends, "Hobart", null);
 
         Assert.HasCount(2, notifications);
-        StringAssert.StartsWith(notifications[0].Message, "<div>Hobart | Max temperature, linear trend:");
-        StringAssert.StartsWith(notifications[1].Message, "<div>Hobart | Max temperature, quadratic trend:");
+        StringAssert.StartsWith(notifications[0].Message, "<div>Hobart | Max temperature, <b>linear trend</b>:");
+        StringAssert.StartsWith(notifications[1].Message, "<div>Hobart | Max temperature, <b>quadratic trend</b>:");
     }
 
     [TestMethod]
