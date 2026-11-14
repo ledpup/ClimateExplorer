@@ -41,6 +41,13 @@ public partial class Collapsible
     [Parameter]
     public string? FullTitle { get; set; }
 
+    /// <summary>
+    /// Secondary content after the title, in smaller, regular-weight text. It sits outside the clickable
+    /// title, so clicking it doesn't expand or collapse the panel.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? TitleSuffix { get; set; }
+
     [Parameter]
     public RenderFragment? CollapsedContent { get; set; }
 

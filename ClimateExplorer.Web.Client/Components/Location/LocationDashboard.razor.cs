@@ -24,13 +24,11 @@ public partial class LocationDashboard
     // The overview fields' value when a location has none, e.g. too short a record for a warming anomaly.
     private const string NoValue = "—";
 
-    private const string WarmingAnomalyTooltip =
-        "<p>How much warmer the last 30 years have been than the first half of the location's records, on average.</p>"
-        + "<p>Click for more information.</p>";
+    private const string WarmingAnomalyDescription =
+        "How much warmer the last 30 years have been than the first half of the location's records, on average.";
 
-    private const string PrecipitationAnomalyTooltip =
-        "<p>How much wetter or drier the last 30 years have been than the first half of the location's records, as an average yearly total.</p>"
-        + "<p>Click for more information.</p>";
+    private const string PrecipitationAnomalyDescription =
+        "How much wetter or drier the last 30 years have been than the first half of the location's records, as an average yearly total.";
 
     private const string HeatingScoreTooltip =
         "<p>How fast the location has warmed since 1961, ranked against every other location: 9 is the fastest-warming 10%, 0 the slowest.</p>"
@@ -88,6 +86,40 @@ public partial class LocationDashboard
     private double? TemperatureLocationMean { get; set; }
     private RenderFragment? WarmingAnomalyContent { get; set; }
 
+    // Calculated in the client once the stripe data loads; until then the tooltip has no period averages.
+    private CalculatedAnomaly? TemperatureAnomaly { get; set; }
+
+    private string WarmingAnomalyTooltip => AnomalyTooltip.Build(WarmingAnomalyDescription, TemperatureAnomaly, UnitOfMeasure.DegreesCelsius, Units);
+
+    // The average of the yearly temperatures the stripe is built from, shown beside the location name.
+    // Hidden while a location's data loads, so the previous location's value never shows against the new name.
+    private string? TemperatureMeanAsString => StripeLoadingIndicatorVisible || TemperatureLocationMean is not { } mean
+        ? null
+        : Units.Format(YearlyValuesHelper.LocationMean(mean, UnitOfMeasure.DegreesCelsius));
+
+    // The temperature fallback can land on maximum temperature where a location records no mean.
+    private string TemperatureMeanLabel => TemperatureDataType == DataType.TempMax
+        ? "Average maximum temperature"
+        : "Average temperature";
+
+    private string? TemperatureMeanTooltip
+    {
+        get
+        {
+            if (TemperatureMeanAsString is null || TemperatureAnomalyRecords is not { Count: > 0 } records)
+            {
+                return null;
+            }
+
+            var tooltip = $"<p>{TemperatureMeanLabel} at {Location?.Name}: {TemperatureMeanAsString}, the average of its yearly "
+                + $"{(TemperatureDataType == DataType.TempMax ? "maximum" : "mean")} temperatures for {records[0].Year}–{records[^1].Year}.</p>";
+
+            return TemperatureDataType == DataType.TempMax
+                ? tooltip + "<p>This location has no mean temperature record, so daily maximums are used.</p>"
+                : tooltip;
+        }
+    }
+
     // The location the overview fields describe, set once per location. The fields themselves are
     // formatted at render, so they follow a change of unit system without recalculating anything.
     private Location? OverviewLocation { get; set; }
@@ -104,6 +136,8 @@ public partial class LocationDashboard
     private RenderFragment? PrecipitationAnomalyContent { get; set; }
     private bool PrecipitationAnomalyLoaded { get; set; }
     private CalculatedAnomaly? PrecipitationAnomaly { get; set; }
+
+    private string PrecipitationAnomalyTooltip => AnomalyTooltip.Build(PrecipitationAnomalyDescription, PrecipitationAnomaly, UnitOfMeasure.Millimetres, Units);
 
     private string? PrecipitationAnomalyAsString => !PrecipitationAnomalyLoaded
         ? null
@@ -185,6 +219,9 @@ public partial class LocationDashboard
 
         OverviewLocation = Location;
 
+        // Drop the previous location's averages from the tooltip until this location's are calculated.
+        TemperatureAnomaly = null;
+
         await base.OnParametersSetAsync();
     }
 
@@ -202,6 +239,7 @@ public partial class LocationDashboard
             Logger!.LogInformation("Loading data");
 
             var temperatureAnomaly = await CalculateAnomaly(DataSubstitute.StandardTemperatureDataMatches(), ContainerAggregationFunctions.Mean);
+            TemperatureAnomaly = temperatureAnomaly?.CalculatedAnomaly;
 
             // Built even when there's no anomaly (or no temperature data at all), so the popup can say why.
             WarmingAnomalyContent = Location == null

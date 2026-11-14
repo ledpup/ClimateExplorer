@@ -26,6 +26,10 @@
                         </span>
                     }
                 </span>
+                @if (TitleSuffix != null && (ShowTitleWhenExpanded || !ShowContent))
+                {
+                    <span class="collapsible-title-suffix">@TitleSuffix</span>
+                }
             </span>
             @if (CollapsedContent != null)
             {

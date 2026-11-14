@@ -25,13 +25,17 @@
     }
 
 .collapser-clickable {
+    align-self: baseline;
     display: inline-flex;
     align-items: center;
     min-width: 0;
     max-width: 100%;
 }
 
+/* The title's baseline becomes the clickable span's (the chevron stays centred), so a title suffix can sit
+   on the same baseline. The title is the tallest item, so this doesn't move it. */
 .collapsible-title {
+    align-self: baseline;
     display: flex;
     align-items: center;
     flex: 1 1 auto;
@@ -134,6 +138,18 @@
     .collapser:hover {
         color: #0071c1;
     }
+
+/* Not part of the clickable title, so it keeps its colour and default cursor while the header is hovered */
+.collapsible-title-suffix {
+    align-self: baseline;
+    flex: 0 0 auto;
+    margin-left: 0.75rem;
+    color: #595959;
+    font-size: 1rem;
+    font-weight: normal;
+    white-space: nowrap;
+    cursor: default;
+}
 
     .collapser .collapser-chevron {
         flex-shrink: 0;
