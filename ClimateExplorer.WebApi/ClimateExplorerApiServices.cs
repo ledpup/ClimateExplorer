@@ -1,6 +1,7 @@
 namespace ClimateExplorer.WebApi;
 
 using System.Net.Http;
+using ClimateExplorer.Core.Model;
 using ClimateExplorer.Data.Downloading.Orchestration;
 using ClimateExplorer.WebApi.Infrastructure;
 using Microsoft.Extensions.Logging;
@@ -41,4 +42,10 @@ public sealed class ClimateExplorerApiServices(
     internal IDataSetSourceUpdateCoordinator DataSetSourceUpdateCoordinator { get; private set; } = null!;
 
     internal ILogger<ClimateExplorerApiServices> Logger { get; private set; } = NullLogger<ClimateExplorerApiServices>.Instance;
+
+    /// <summary>
+    /// The long-term cache's "Locations" entry, kept in memory. The file is several MB and every location lookup
+    /// (by Id, by path, nearby) needs it; it only changes when this process rebuilds it.
+    /// </summary>
+    internal Location[] Locations { get; set; }
 }
