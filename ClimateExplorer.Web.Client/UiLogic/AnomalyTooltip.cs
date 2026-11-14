@@ -15,8 +15,8 @@ public static class AnomalyTooltip
         var periods = anomaly is null
             ? string.Empty
             : "<ul>"
-                + Period(anomaly.FirstYearInFirstHalf, anomaly.LastYearInFirstHalf, anomaly.AverageOfFirstHalf, unit, units)
                 + Period(anomaly.FirstYearInLast30Years, anomaly.LastYearInLast30Years, anomaly.AverageOfLast30Years, unit, units)
+                + Period(anomaly.FirstYearInFirstHalf, anomaly.LastYearInFirstHalf, anomaly.AverageOfFirstHalf, unit, units)
                 + "</ul>";
 
         return $"<p>{description}</p>{periods}<p>Click for more information.</p>";

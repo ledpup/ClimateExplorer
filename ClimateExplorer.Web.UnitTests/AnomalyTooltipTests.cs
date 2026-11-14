@@ -18,12 +18,12 @@ public class AnomalyTooltipTests
     }
 
     [TestMethod]
-    public void Build_Temperature_ListsFirstHalfThenLast30YearsAverages()
+    public void Build_Temperature_ListsLast30YearsThenFirstHalfAverages()
     {
         var tooltip = AnomalyTooltip.Build("Warmer.", CreateAnomaly(21.34, 22.46), UnitOfMeasure.DegreesCelsius, UnitFormatter.Metric);
 
         Assert.AreEqual(
-            "<p>Warmer.</p><ul><li>1910–1966 average: 21.34°C</li><li>1995–2024 average: 22.46°C</li></ul><p>Click for more information.</p>",
+            "<p>Warmer.</p><ul><li>1995–2024 average: 22.46°C</li><li>1910–1966 average: 21.34°C</li></ul><p>Click for more information.</p>",
             tooltip);
     }
 

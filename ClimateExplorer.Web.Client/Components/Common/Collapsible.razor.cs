@@ -42,11 +42,10 @@ public partial class Collapsible
     public string? FullTitle { get; set; }
 
     /// <summary>
-    /// Secondary content after the title, in smaller, regular-weight text. It sits outside the clickable
-    /// title, so clicking it doesn't expand or collapse the panel.
+    /// A multiline tooltip shown on hovering the title. May contain simple markup (see <see cref="Tooltip.Text"/>).
     /// </summary>
     [Parameter]
-    public RenderFragment? TitleSuffix { get; set; }
+    public string? TitleTooltip { get; set; }
 
     [Parameter]
     public RenderFragment? CollapsedContent { get; set; }

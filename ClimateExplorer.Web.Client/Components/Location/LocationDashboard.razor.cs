@@ -91,8 +91,8 @@ public partial class LocationDashboard
 
     private string WarmingAnomalyTooltip => AnomalyTooltip.Build(WarmingAnomalyDescription, TemperatureAnomaly, UnitOfMeasure.DegreesCelsius, Units);
 
-    // The average of the yearly temperatures the stripe is built from, shown beside the location name.
-    // Hidden while a location's data loads, so the previous location's value never shows against the new name.
+    // The average of the yearly temperatures the stripe is built from, in the location name's tooltip.
+    // Null while a location's data loads, so the previous location's value never shows against the new name.
     private string? TemperatureMeanAsString => StripeLoadingIndicatorVisible || TemperatureLocationMean is not { } mean
         ? null
         : Units.Format(YearlyValuesHelper.LocationMean(mean, UnitOfMeasure.DegreesCelsius));

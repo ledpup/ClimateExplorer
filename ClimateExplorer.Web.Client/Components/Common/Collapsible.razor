@@ -19,17 +19,13 @@
 
                     @if (ShowTitleWhenExpanded || !ShowContent)
                     {
-                        <span class="collapsible-title">
+                        <span class="collapsible-title" data-tooltip="@TitleTooltip" data-tooltip-multiline="@(TitleTooltip != null ? "true" : null)">
                             <span class="collapsible-title-full">@Title</span>
                             <span class="collapsible-title-compact">@EffectiveCompactTitle</span>
                             <span class="collapsible-title-minimal">@EffectiveMinimalTitle</span>
                         </span>
                     }
                 </span>
-                @if (TitleSuffix != null && (ShowTitleWhenExpanded || !ShowContent))
-                {
-                    <span class="collapsible-title-suffix">@TitleSuffix</span>
-                }
             </span>
             @if (CollapsedContent != null)
             {
