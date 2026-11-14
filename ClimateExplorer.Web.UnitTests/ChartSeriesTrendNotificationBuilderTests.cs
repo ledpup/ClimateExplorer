@@ -98,31 +98,98 @@ public class ChartSeriesTrendNotificationBuilderTests
     }
 
     [TestMethod]
-    public void Build_TrendOrdinalGiven_PrefixesTheMessageWithItsPosition()
+    public void Build_RegressionTypeGiven_PrefixesTheMessageWithIt()
     {
         var trend = Calculate(CreateFlatNoise(1900, 101));
 
-        var notification = ChartSeriesTrendNotificationBuilder.Build("Hobart | Max temperature", trend, "Hobart", null, trendOrdinal: 2);
+        var notification = ChartSeriesTrendNotificationBuilder.Build("Hobart | Max temperature", trend, "Hobart", null, TrendRegressionType.Quadratic);
 
         Assert.IsNotNull(notification);
-        StringAssert.StartsWith(notification!.Message, "<div>Hobart | Max temperature, trend 2:");
+        StringAssert.StartsWith(notification!.Message, "<div>Hobart | Max temperature, quadratic trend:");
     }
 
     [TestMethod]
-    public void Build_NoTrendOrdinalGiven_MessageIsByteIdenticalToTheSingleTrendWording()
+    public void Build_NoRegressionTypeGiven_PrefixesTheMessageWithTheSeriesTitleOnly()
     {
         var trend = Calculate(CreateFlatNoise(1900, 101));
 
-        var withoutOrdinal = ChartSeriesTrendNotificationBuilder.Build("Hobart | Max temperature", trend, "Hobart", null);
-        var withNullOrdinal = ChartSeriesTrendNotificationBuilder.Build("Hobart | Max temperature", trend, "Hobart", null, trendOrdinal: null);
+        var notification = ChartSeriesTrendNotificationBuilder.Build("Hobart | Max temperature", trend, "Hobart", null);
 
-        Assert.AreEqual(withoutOrdinal!.Message, withNullOrdinal!.Message);
-        StringAssert.StartsWith(withoutOrdinal.Message, "<div>Hobart | Max temperature:");
+        StringAssert.StartsWith(notification!.Message, "<div>Hobart | Max temperature:");
     }
 
-    private static ChartSeriesTrend Calculate(IReadOnlyList<DataPoint> points)
+    [TestMethod]
+    public void BuildForSeries_TrendsShareARegressionType_NotifiesOnceWithoutNamingIt()
     {
-        return ChartSeriesTrendCalculator.Calculate(Subject, points, TrendRegressionType.Linear, requestedWindow: null, predictionYears: 20);
+        var points = CreateFlatNoise(1900, 101);
+        List<ChartSeriesTrend> trends =
+        [
+            Calculate(points, TrendRegressionType.Linear, TrendWindow.Full),
+            Calculate(points, TrendRegressionType.Linear, TrendWindow.Last30),
+            Calculate(points, TrendRegressionType.Linear, TrendWindow.FirstHalf),
+        ];
+
+        var notifications = ChartSeriesTrendNotificationBuilder.BuildForSeries("Hobart | Max temperature", trends, "Hobart", null);
+
+        Assert.HasCount(1, notifications);
+        StringAssert.StartsWith(notifications[0].Message, "<div>Hobart | Max temperature:");
+    }
+
+    [TestMethod]
+    public void BuildForSeries_TrendsOfDifferentRegressionTypes_NotifiesOncePerTypeAndNamesIt()
+    {
+        var points = CreateFlatNoise(1900, 101);
+        List<ChartSeriesTrend> trends =
+        [
+            Calculate(points, TrendRegressionType.Linear, TrendWindow.Full),
+            Calculate(points, TrendRegressionType.Quadratic, TrendWindow.Full),
+            Calculate(points, TrendRegressionType.Linear, TrendWindow.Last30),
+        ];
+
+        var notifications = ChartSeriesTrendNotificationBuilder.BuildForSeries("Hobart | Max temperature", trends, "Hobart", null);
+
+        Assert.HasCount(2, notifications);
+        StringAssert.StartsWith(notifications[0].Message, "<div>Hobart | Max temperature, linear trend:");
+        StringAssert.StartsWith(notifications[1].Message, "<div>Hobart | Max temperature, quadratic trend:");
+    }
+
+    [TestMethod]
+    public void BuildForSeries_TooFewYearsForAnyTrend_NotifiesOnceWithoutNamingARegressionType()
+    {
+        var points = CreatePerfectLine(1990, 10, slope: 0.03);
+        List<ChartSeriesTrend> trends =
+        [
+            Calculate(points, TrendRegressionType.Linear, TrendWindow.Full),
+            Calculate(points, TrendRegressionType.Cubic, TrendWindow.Full),
+        ];
+
+        var notifications = ChartSeriesTrendNotificationBuilder.BuildForSeries("Hobart | Max temperature", trends, "Hobart", null);
+
+        Assert.HasCount(1, notifications);
+        Assert.AreEqual("Hobart | Max temperature: no trend could be fitted. " + trends[0].UnavailableReason, notifications[0].Message);
+    }
+
+    [TestMethod]
+    public void BuildForSeries_EveryWindowSignificant_ReturnsNoNotifications()
+    {
+        var points = CreatePerfectLine(1900, 101, slope: 0.03);
+        List<ChartSeriesTrend> trends =
+        [
+            Calculate(points, TrendRegressionType.Linear, TrendWindow.Full),
+            Calculate(points, TrendRegressionType.Linear, TrendWindow.Last30),
+        ];
+
+        var notifications = ChartSeriesTrendNotificationBuilder.BuildForSeries("Hobart | Max temperature", trends, "Hobart", null);
+
+        Assert.IsEmpty(notifications);
+    }
+
+    private static ChartSeriesTrend Calculate(
+        IReadOnlyList<DataPoint> points,
+        TrendRegressionType regressionType = TrendRegressionType.Linear,
+        TrendWindow? requestedWindow = null)
+    {
+        return ChartSeriesTrendCalculator.Calculate(Subject, points, regressionType, requestedWindow, predictionYears: 20);
     }
 
     private static List<DataPoint> CreatePerfectLine(int startYear, int count, double slope)

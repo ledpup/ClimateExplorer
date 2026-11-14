@@ -216,20 +216,14 @@ public sealed class ChartDataBuilder : IChartDataBuilder
                 {
                     windowsAlreadyShown.Add(trend.Projection.Window);
                 }
-
-                var notification = ChartSeriesTrendNotificationBuilder.Build(
-                    subject.Label,
-                    trend,
-                    cs.SourceDataSet.GeographicalEntity?.Name,
-                    locationId: null,
-                    trendOrdinal: csd.Trends.Count > 1 ? i + 1 : null,
-                    units: units);
-
-                if (notification is not null)
-                {
-                    messages.Add(notification);
-                }
             }
+
+            messages.AddRange(ChartSeriesTrendNotificationBuilder.BuildForSeries(
+                subject.Label,
+                results,
+                cs.SourceDataSet.GeographicalEntity?.Name,
+                locationId: null,
+                units: units));
 
             cs.Trends = results;
         }

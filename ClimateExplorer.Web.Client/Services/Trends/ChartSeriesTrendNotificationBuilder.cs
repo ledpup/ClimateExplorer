@@ -18,12 +18,49 @@ using static ClimateExplorer.Core.Enums;
 /// </remarks>
 public static class ChartSeriesTrendNotificationBuilder
 {
-    /// <param name="trendOrdinal">
-    /// The trend's 1-based position on its series (e.g. 2 for the second of three), or null when
-    /// the series has only one trend. Included in the message prefix only when a series has more
-    /// than one trend - so three notifications about one series don't read as duplicates of each
-    /// other - and omitted otherwise, keeping the single-trend wording byte-identical to before
-    /// multiple trends per series existed.
+    /// <summary>
+    /// The notifications for every trend on one series, without repeats. All of a series' trends are
+    /// fitted to the same points, and which windows are significant depends only on the regression
+    /// type, not on the window a trend shows or its projection. So trends that share a regression type
+    /// would produce the same notification, and only the first of them is reported. When too few years
+    /// are plotted for any trend, that's true whatever the regression type, so it's reported once.
+    /// </summary>
+    /// <param name="units">The reader's unit system for the fitted rates. Defaults to metric.</param>
+    public static List<UserNotification> BuildForSeries(
+        string seriesTitle,
+        IReadOnlyList<ChartSeriesTrend> trends,
+        string? locationName,
+        Guid? locationId,
+        IUnitFormatter? units = null)
+    {
+        ArgumentNullException.ThrowIfNull(trends);
+
+        if (trends.FirstOrDefault(x => x.UnavailableReason is not null) is { } unavailable)
+        {
+            return Build(seriesTitle, unavailable, locationName, locationId, units: units) is { } notification ? [notification] : [];
+        }
+
+        var byRegressionType = trends.DistinctBy(x => x.RegressionType).ToList();
+        var nameRegressionType = byRegressionType.Count > 1;
+
+        return
+        [
+            .. byRegressionType
+                .Select(trend => Build(
+                    seriesTitle,
+                    trend,
+                    locationName,
+                    locationId,
+                    nameRegressionType ? trend.RegressionType : null,
+                    units))
+                .OfType<UserNotification>(),
+        ];
+    }
+
+    /// <param name="regressionType">
+    /// Named in the message prefix (e.g. "quadratic trend") when a series has trends of more than one
+    /// regression type, so their notifications don't read as duplicates of each other. Null otherwise,
+    /// keeping the single-trend wording unchanged.
     /// </param>
     /// <param name="units">The reader's unit system for the fitted rates. Defaults to metric.</param>
     public static UserNotification? Build(
@@ -31,12 +68,14 @@ public static class ChartSeriesTrendNotificationBuilder
         ChartSeriesTrend trend,
         string? locationName,
         Guid? locationId,
-        int? trendOrdinal = null,
+        TrendRegressionType? regressionType = null,
         IUnitFormatter? units = null)
     {
         ArgumentNullException.ThrowIfNull(trend);
 
-        var subjectLabel = trendOrdinal is { } ordinal ? $"{Escape(seriesTitle)}, trend {ordinal}" : Escape(seriesTitle);
+        var subjectLabel = regressionType is { } type
+            ? $"{Escape(seriesTitle)}, <b>{type.ToString().ToLowerInvariant()} trend</b>"
+            : Escape(seriesTitle);
 
         if (trend.UnavailableReason is { } unavailableReason)
         {
