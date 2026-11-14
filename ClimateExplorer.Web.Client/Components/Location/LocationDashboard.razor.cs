@@ -100,7 +100,7 @@ public partial class LocationDashboard
     // The temperature fallback can land on maximum temperature where a location records no mean.
     private string TemperatureMeanLabel => TemperatureDataType == DataType.TempMax
         ? "Average maximum temperature"
-        : "Average temperature";
+        : "Average mean temperature";
 
     private string? TemperatureMeanTooltip
     {
@@ -111,7 +111,7 @@ public partial class LocationDashboard
                 return null;
             }
 
-            var tooltip = $"<p>{TemperatureMeanLabel} at {Location?.Name}: {TemperatureMeanAsString}, the average of its yearly "
+            var tooltip = $"<p>{TemperatureMeanLabel}</p><p>{Location?.Name}: {TemperatureMeanAsString}</p><p>This is the average of its yearly "
                 + $"{(TemperatureDataType == DataType.TempMax ? "maximum" : "mean")} temperatures for {records[0].Year}–{records[^1].Year}.</p>";
 
             return TemperatureDataType == DataType.TempMax
