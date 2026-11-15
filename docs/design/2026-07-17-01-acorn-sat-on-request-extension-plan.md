@@ -224,9 +224,14 @@ for one data type/location only when all of the following hold:
    spans both 2025 and 2026. Do not append when ACORN-SAT already contains any
    date in year `Y`, and fail closed (`AcornNotThroughPreviousYear`) if
    ACORN-SAT has no complete prior year at all.
-4. The non-null date sets match over comparison year `C`. A value present only
-   in ACORN-SAT or only in CDO for that year is insufficient evidence that raw
-   values from `C + 1` onward can stand in for the adjusted series.
+4. Every non-null ACORN-SAT date in comparison year `C` has a non-null CDO
+   value. A value present only in ACORN-SAT for that year is insufficient
+   evidence that raw values from `C + 1` onward can stand in for the adjusted
+   series. A value present only in CDO is allowed: ACORN-SAT leaves out some
+   observations CDO keeps (52 maximum/minimum series in 2025, Hobart's TempMax
+   by one day, 2025-11-27), and those days say nothing about adjustments.
+   (Changed 2026-11-15; this step first required the two date sets to be equal,
+   which kept Hobart's maximum at 31 December 2025.)
 5. Every paired value in year `C` is within the existing 0.1-degree tolerance.
    Preserve the executable's intended one-decimal comparison semantics and
    cover the exact boundary in tests; do not rely on untested binary
@@ -393,8 +398,8 @@ station-selection rules into the ACORN-SAT component.
    `CdoContributed`).
 2. **Done.** `AcornSatRecordExtender.Extend(...)` computes the comparison year
    as the latest year for which ACORN-SAT reaches 31 December (not
-   necessarily `today`'s year minus one), checks the non-null date sets match
-   over that year, and reproduces the retired executable's exact
+   necessarily `today`'s year minus one), checks every non-null ACORN-SAT date
+   has a CDO value over that year, and reproduces the retired executable's exact
    `Math.Round(Math.Abs(diff), 1) > 0.1` tolerance semantics.
 3. **Done.** The overlay is every non-null CDO date strictly after the latest
    ACORN-SAT date through `today`, which the implementation and tests confirm
@@ -621,8 +626,8 @@ builds. Do not run the website, Playwright, Lighthouse, or browser tests.
 - **The response remains labelled adjusted while its newest values originate
   from CDO.** Require the conservative eligibility rules and include both
   sources in metadata whenever an overlay contributes.
-- **No observed difference is not proof when data is absent.** Require matching
-  non-null date sets and at least one pair; cache missing/failed cases only as
+- **No observed difference is not proof when data is absent.** Require a CDO value
+  for every non-null ACORN-SAT date and at least one pair; cache missing/failed cases only as
   transient outcomes.
 - **An annual ACORN-SAT release can revise history as well as add a year.** Read
   the annual base on every response as today and key only the eligibility
