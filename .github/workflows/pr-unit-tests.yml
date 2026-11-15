@@ -1,0 +1,38 @@
+name: Unit tests
+
+on:
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  unit-tests:
+    # Make this job name a required status check in the master branch protection rule.
+    name: Unit tests
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '11.x'
+          include-prerelease: true
+
+      # One step per project: pwsh only fails a step on its last command's exit code.
+      - name: Test Core
+        run: dotnet test ClimateExplorer.Core.UnitTests/ClimateExplorer.Core.UnitTests.csproj --configuration Release --filter "TestCategory!=Performance"
+
+      - name: Test CarbonCycle
+        run: dotnet test ClimateExplorer.CarbonCycle.UnitTests/ClimateExplorer.CarbonCycle.UnitTests.csproj --configuration Release
+
+      - name: Test WebApi
+        run: dotnet test ClimateExplorer.WebApi.UnitTests/ClimateExplorer.WebApi.UnitTests.csproj --configuration Release
+
+      - name: Test Web
+        run: dotnet test ClimateExplorer.Web.UnitTests/ClimateExplorer.Web.UnitTests.csproj --configuration Release
+
+      - name: Test Web CarbonSim
+        run: dotnet test ClimateExplorer.Web.CarbonSim.UnitTests/ClimateExplorer.Web.CarbonSim.UnitTests.csproj --configuration Release
