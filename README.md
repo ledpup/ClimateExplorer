@@ -10,7 +10,7 @@ This github site is the digital repository for everything used to bring [the web
 
 ## Architecture and code
 - Built in [Visual Studio 2026 Community Edition](https://visualstudio.microsoft.com/vs/community/) using
-  - .NET 10
+  - .NET 11
   - C#
   - Blazor
   - Minimal Web API
@@ -25,7 +25,6 @@ This github site is the digital repository for everything used to bring [the web
   - Charting: https://www.chartjs.org/ ([source](https://github.com/chartjs/Chart.js))
   - Icons: https://fontawesome.com/ (Font Awesome Free)
   - Mapping: https://github.com/ledpup/DPBlazorMap
-  - Clustering tool: https://www.nuget.org/packages/DBSCAN/ ([source](https://github.com/viceroypenguin/Dbscan))
 
 ## How to use
 
