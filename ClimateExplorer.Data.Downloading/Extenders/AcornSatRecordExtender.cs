@@ -117,9 +117,11 @@ public static class AcornSatRecordExtender
             .ToDictionary(x => x.Date!.Value, x => x.Value!.Value);
         var cdoNonNullDates = cdoComparisonYearRecords.Keys.ToHashSet();
 
+        // Every ACORN-SAT value must have a CDO value to compare it with, so no adjusted day goes unchecked. CDO may
+        // hold extra days: ACORN-SAT leaves out some observations that CDO keeps (Hobart's TempMax for 2025-11-27,
+        // not yet quality-controlled in CDO), and those days say nothing about adjustments.
         if (acornNonNullDates.Count == 0 ||
-            cdoNonNullDates.Count == 0 ||
-            !acornNonNullDates.SetEquals(cdoNonNullDates))
+            !acornNonNullDates.IsSubsetOf(cdoNonNullDates))
         {
             return new AcornSatRecordExtensionResult
             {
