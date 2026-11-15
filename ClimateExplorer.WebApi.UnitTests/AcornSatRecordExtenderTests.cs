@@ -103,6 +103,45 @@ public sealed class AcornSatRecordExtenderTests
     }
 
     [TestMethod]
+    public void Extend_CdoHasDayAcornLeftOut_IsEligible()
+    {
+        // Mirrors Hobart's 2025 TempMax: CDO has 2025-11-27, ACORN-SAT doesn't, and every other day matches.
+        var leftOut = new DateOnly(2025, 11, 27);
+        var acorn = BuildDailySeries(new DateOnly(2025, 1, 1), new DateOnly(2025, 12, 31), day => day == leftOut ? null : 18.4);
+        var cdo = BuildDailySeries(new DateOnly(2025, 1, 1), Today20260710, _ => 18.4);
+
+        var result = AcornSatRecordExtender.Extend(acorn, cdo, "094029", "094029", Today20260710);
+
+        Assert.AreEqual(AcornSatExtensionDecision.Eligible, result.Decision);
+        Assert.AreEqual(new DateOnly(2026, 1, 1), result.OverlayRecords.First().Date);
+    }
+
+    [TestMethod]
+    public void Extend_AcornHasDayCdoLacks_FailsClosedAsInsufficientData()
+    {
+        var missing = new DateOnly(2025, 11, 27);
+        var acorn = BuildDailySeries(new DateOnly(2025, 1, 1), new DateOnly(2025, 12, 31), _ => 18.4);
+        var cdo = BuildDailySeries(new DateOnly(2025, 1, 1), Today20260710, day => day == missing ? null : 18.4);
+
+        var result = AcornSatRecordExtender.Extend(acorn, cdo, "094029", "094029", Today20260710);
+
+        Assert.AreEqual(AcornSatExtensionDecision.InsufficientComparisonData, result.Decision);
+        Assert.AreEqual(0, result.OverlayRecords.Count);
+    }
+
+    [TestMethod]
+    public void Extend_CdoHasExtraDayAndDifferenceAboveTolerance_IsRejectedAsAdjustmentsDetected()
+    {
+        var leftOut = new DateOnly(2025, 11, 27);
+        var acorn = BuildDailySeries(new DateOnly(2025, 1, 1), new DateOnly(2025, 12, 31), day => day == leftOut ? null : 18.4);
+        var cdo = BuildDailySeries(new DateOnly(2025, 1, 1), Today20260710, day => day == new DateOnly(2025, 3, 1) ? 18.6 : 18.4);
+
+        var result = AcornSatRecordExtender.Extend(acorn, cdo, "094029", "094029", Today20260710);
+
+        Assert.AreEqual(AcornSatExtensionDecision.AdjustmentsDetected, result.Decision);
+    }
+
+    [TestMethod]
     public void Extend_ExactEquality_IsEligible()
     {
         var acorn = BuildDailySeries(new DateOnly(2025, 1, 1), new DateOnly(2025, 12, 31), _ => 18.4);
