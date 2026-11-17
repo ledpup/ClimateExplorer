@@ -9,8 +9,10 @@
     <Project Path="ClimateExplorer.Data.Misc/ClimateExplorer.Data.Misc.csproj" />
   </Folder>
   <Folder Name="/Solution Items/">
+    <File Path=".github/workflows/claude-code-review.yml" />
     <File Path=".github/workflows/master_api-climateexplorer.yml" />
     <File Path=".github/workflows/master_web-climateexplorer.yml" />
+    <File Path=".github/workflows/pr-unit-tests.yml" />
     <File Path=".globalconfig" />
     <File Path="Directory.Packages.props" />
     <File Path="README.md" />

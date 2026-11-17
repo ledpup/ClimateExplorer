@@ -9,7 +9,7 @@ const icons = new Map();
 function getIcon(label) {
     let icon = icons.get(label);
     if (!icon) {
-        icon = L.icon({ iconUrl: `/images/map-markers/${label}.png`, iconSize, iconAnchor });
+        icon = L.icon({ iconUrl: `/images/map-markers/${label}.svg`, iconSize, iconAnchor });
         icons.set(label, icon);
     }
     return icon;
