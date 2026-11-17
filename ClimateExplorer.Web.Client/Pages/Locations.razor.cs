@@ -271,7 +271,7 @@ public partial class Locations
             [HeatingScoreQueryParameter] = heatingScoreFilter,
         });
 
-        NavManager.NavigateTo(uri, false, true);
+        NavManager!.NavigateTo(uri, false, true);
     }
 
     private void UpdateFilteredCount()
