@@ -206,14 +206,6 @@ public class Location : GeographicalEntity
         return table;
     }
 
-    private static List<Location> GetEligibleForHeatingScore(List<Location> allLocations)
-    {
-        var newestLastYear = allLocations.Max(x => x.LastYear);
-        return allLocations
-            .Where(x => x.Since1961TemperatureTrend is not null && x.LastYear >= newestLastYear - HeatingScoreMaximumYearsBehindNewest)
-            .ToList();
-    }
-
     public override string ToString()
     {
         return FullTitle;
@@ -222,6 +214,14 @@ public class Location : GeographicalEntity
     public string UrlReadyName()
     {
         return Name.ToLower().Replace(" ", "-").Replace("'", "-");
+    }
+
+    private static List<Location> GetEligibleForHeatingScore(List<Location> allLocations)
+    {
+        var newestLastYear = allLocations.Max(x => x.LastYear);
+        return allLocations
+            .Where(x => x.Since1961TemperatureTrend is not null && x.LastYear >= newestLastYear - HeatingScoreMaximumYearsBehindNewest)
+            .ToList();
     }
 
     private static async Task SetCountries(List<Location> locations)

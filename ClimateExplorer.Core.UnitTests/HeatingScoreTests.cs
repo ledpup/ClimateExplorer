@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using ClimateExplorer.Core.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -197,6 +198,19 @@ public class HeatingScoreTests
     public void SetHeatingScores_NoLocations_ReturnsEmptyTable()
     {
         Assert.IsEmpty(Location.SetHeatingScores([]));
+    }
+
+    [TestMethod]
+    public void HeatingScoreRow_JsonWithoutNullProperties_Deserializes()
+    {
+        // The API leaves nulls out, so the no-score row arrives as only its count.
+        var row = JsonSerializer.Deserialize<HeatingScoreRow>("""{"locationCount":1582}""", JsonSerializerOptions.Web);
+
+        Assert.IsNotNull(row);
+        Assert.IsNull(row.Score);
+        Assert.IsNull(row.MinimumRatePerDecade);
+        Assert.IsNull(row.MaximumRatePerDecade);
+        Assert.AreEqual(1582, row.LocationCount);
     }
 
     private static List<Location> CreateEvenlySpacedLocations(int count) =>
