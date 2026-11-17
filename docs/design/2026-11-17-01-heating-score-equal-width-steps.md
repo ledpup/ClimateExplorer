@@ -127,7 +127,7 @@ since-1961 rates (nearest rank, rounding down), so the step is 0.0484 °C/decade
 - Until the caching tool is run, the cached scores are still deciles while the table is already the new
   steps, so the highlighted row in the info panel can disagree with a location's score.
 - Info panel, Locations filter tooltip and dashboard tooltip reworded. The 2026-11-13 blog post was deleted and
-  replaced by `2026-11-17-heating-score-equal-steps.md`, which stands alone.
+  replaced by `2026-11-17-trend-score-equal-steps.md`, which stands alone.
 - Tests: the two decile tests were replaced with equal-width, outlier, table, no-spread and
   `GetHeatingScoreTable` tests. Expected values were checked with a Python port of the algorithm, since the
   C# couldn't be built here.

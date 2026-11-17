@@ -1,14 +1,14 @@
 ---
 layout: single
-title: "Heating score: how fast, in equal steps"
+title: "Trend score: how fast, in equal steps"
 date: 2026-11-17 14:00:00 +1100
 categories: site-info
 ---
-The heating score now measures how fast each location is warming, not how much it has warmed, and it's now scored in ten steps of equal width. It's based on a new trend, **since 1961** until the last complete year of data (2025 at the time of writing).
+The heating score has been changed to the **trend score**. It measures how fast each location is warming, not how much it has warmed, and it's now scored in ten steps of equal width. It's based on a new trend, **since 1961** until the last complete year of data (2025 at the time of writing).
 
 ## Why a rate
 
-The heating score used to rank the warming anomaly: the average of the last 30 years minus the average of the first half of the record. That tells you how much warmer a location is than it used to be, but "used to be" depends on when the record starts. A record that starts in the 1850s compares today with a colder past than one that starts in the 1950s.
+The score used to rank the warming anomaly: the average of the last 30 years minus the average of the first half of the record. That tells you how much warmer a location is than it used to be, but "used to be" depends on when the record starts. A record that starts in the 1850s compares today with a colder past than one that starts in the 1950s.
 
 The rate of temperature increase, in °C per decade, is a better number for seeing how quickly a location's climate is changing. It can be compared directly between locations.
 
@@ -39,7 +39,7 @@ One problem with equal steps is that a handful of extreme locations decide where
 
 ## What changed
 
-3,953 locations have a heating score, 3,946 of them from 0 to 9. They are spread over the scores like this:
+3,953 locations have a trend score, 3,946 of them from 0 to 9. They are spread over the scores like this:
 
 | Score | Warming rate since 1961 (°C per decade) | Locations |
 | --- | --- | --- |
@@ -62,6 +62,6 @@ The [2022 post on location summary information](https://climateexplorer.net/blog
 
 ## Since 1961 elsewhere
 
-- **Dashboard:** the trend field still shows the last 30 years when that trend is significant. Otherwise it shows the trend since 1961, then the full-period trend. Hover over it to see every significant trend. The trend field and the heating score can use different rates, and the heating score's info panel shows the rate it uses.
+- **Dashboard:** the trend field still shows the last 30 years when that trend is significant. Otherwise it shows the trend since 1961, then the full-period trend. Hover over it to see every significant trend. The trend field and the trend score can use different rates, and the trend score's info panel shows the rate it uses.
 - **Chart:** adding a trend to a yearly series now draws the since-1961 trend, if the series starts by 1965 and the trend is significant. Presets and shared links keep their trends.
 - **Recent Observations:** each tile shows the last 30 years, since 1961 and the early period. The full-period trend is still in About trends.
