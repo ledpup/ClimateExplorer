@@ -25,7 +25,7 @@
     }
 
     <p>
-        The table below lists each heating score and the range of warming rates it covers.
+        The table below lists each heating score, the range of warming rates it covers and the number of locations that have it, and ends with the locations that have no score.
     </p>
 
     <div class="table-card">
@@ -44,8 +44,8 @@
                 @foreach (var heatingScoreRow in HeatingScoreTable)
                 {
                     <tr class="@(Location.HeatingScore == heatingScoreRow.Score ? "is-highlighted" : null)">
-                        <td>@heatingScoreRow.Score</td>
-                        <td>@FormatBound(heatingScoreRow.MinimumRatePerDecade) - @FormatBound(heatingScoreRow.MaximumRatePerDecade)</td>
+                        <td>@(heatingScoreRow.Score?.ToString() ?? "No score")</td>
+                        <td>@(heatingScoreRow.MinimumRatePerDecade is { } minimum && heatingScoreRow.MaximumRatePerDecade is { } maximum ? $"{FormatBound(minimum)} - {FormatBound(maximum)}" : "NA")</td>
                         <td class="text-center">@heatingScoreRow.LocationCount.ToString("N0")</td>
                     </tr>
                 }

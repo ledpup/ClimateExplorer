@@ -177,11 +177,20 @@ public class Location : GeographicalEntity
     }
 
     /// <summary>
-    /// The heating score table (the range of rates each score covers) for these locations, without setting their
-    /// scores. It is the table <see cref="SetHeatingScores"/> returns.
+    /// The heating score table for these locations, without setting their scores: the rows
+    /// <see cref="SetHeatingScores"/> returns, then a last row, with a null score, counting the locations that
+    /// have no score.
     /// </summary>
-    public static List<HeatingScoreRow> GetHeatingScoreTable(IEnumerable<Location> locations) =>
-        HeatingScoreScale.Create(GetEligibleForHeatingScore(locations.Where(x => x is not null).ToList()))?.GetTable() ?? [];
+    public static List<HeatingScoreRow> GetHeatingScoreTable(IEnumerable<Location> locations)
+    {
+        var allLocations = locations.Where(x => x is not null).ToList();
+        var eligible = GetEligibleForHeatingScore(allLocations);
+        var table = HeatingScoreScale.Create(eligible)?.GetTable() ?? [];
+
+        table.Add(new HeatingScoreRow { Score = null, MinimumRatePerDecade = null, MaximumRatePerDecade = null, LocationCount = allLocations.Count - eligible.Count });
+
+        return table;
+    }
 
     private static List<Location> GetEligibleForHeatingScore(List<Location> allLocations)
     {

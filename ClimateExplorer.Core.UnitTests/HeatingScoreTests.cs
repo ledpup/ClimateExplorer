@@ -68,16 +68,16 @@ public class HeatingScoreTests
         Assert.IsTrue(table.All(x => x.LocationCount is >= 9 and <= 11));
 
         // The top and bottom bands run out to the actual highest and lowest rates.
-        Assert.AreEqual(1.0, table[0].MaximumRatePerDecade, 1e-9);
-        Assert.AreEqual(0.892, table[0].MinimumRatePerDecade, 1e-9);
-        Assert.AreEqual(0.108, table[^1].MaximumRatePerDecade, 1e-9);
-        Assert.AreEqual(0, table[^1].MinimumRatePerDecade, 1e-9);
+        Assert.AreEqual(1.0, table[0].MaximumRatePerDecade!.Value, 1e-9);
+        Assert.AreEqual(0.892, table[0].MinimumRatePerDecade!.Value, 1e-9);
+        Assert.AreEqual(0.108, table[^1].MaximumRatePerDecade!.Value, 1e-9);
+        Assert.AreEqual(0, table[^1].MinimumRatePerDecade!.Value, 1e-9);
 
         // The steps in between are all 0.098 °C per decade wide and touch.
         for (var i = 1; i < 9; i++)
         {
-            Assert.AreEqual(0.098, table[i].MaximumRatePerDecade - table[i].MinimumRatePerDecade, 1e-9);
-            Assert.AreEqual(table[i].MinimumRatePerDecade, table[i + 1].MaximumRatePerDecade, 1e-9);
+            Assert.AreEqual(0.098, table[i].MaximumRatePerDecade!.Value - table[i].MinimumRatePerDecade!.Value, 1e-9);
+            Assert.AreEqual(table[i].MinimumRatePerDecade!.Value, table[i + 1].MaximumRatePerDecade!.Value, 1e-9);
         }
     }
 
@@ -91,19 +91,46 @@ public class HeatingScoreTests
         Assert.IsTrue(locations.All(x => x.HeatingScore == 0));
         Assert.HasCount(1, table);
         Assert.AreEqual(2, table[0].LocationCount);
-        Assert.AreEqual(0.3, table[0].MinimumRatePerDecade, 1e-9);
-        Assert.AreEqual(0.3, table[0].MaximumRatePerDecade, 1e-9);
+        Assert.AreEqual(0.3, table[0].MinimumRatePerDecade!.Value, 1e-9);
+        Assert.AreEqual(0.3, table[0].MaximumRatePerDecade!.Value, 1e-9);
     }
 
     [TestMethod]
-    public void GetHeatingScoreTable_AnyLocations_MatchesSetHeatingScoresWithoutSettingScores()
+    public void GetHeatingScoreTable_AnyLocations_HasTheScoreRowsWithoutSettingScores()
     {
         var locations = CreateEvenlySpacedLocations(101);
 
         var table = Location.GetHeatingScoreTable(locations);
 
         Assert.IsTrue(locations.All(x => x.HeatingScore is null));
-        CollectionAssert.AreEqual(Location.SetHeatingScores(locations), table);
+        CollectionAssert.AreEqual(Location.SetHeatingScores(locations), table.Take(10).ToList());
+    }
+
+    [TestMethod]
+    public void GetHeatingScoreTable_LocationsWithoutAScore_EndsWithANoScoreRowCountingThem()
+    {
+        var locations = CreateEvenlySpacedLocations(101);
+        locations.Add(CreateLocation(since1961Slope: null));
+        locations.Add(CreateLocation(since1961Slope: 0.05, lastYear: NewestLastYear - Location.HeatingScoreMaximumYearsBehindNewest - 1));
+
+        var table = Location.GetHeatingScoreTable(locations);
+
+        Assert.HasCount(11, table);
+        Assert.IsNull(table[^1].Score);
+        Assert.IsNull(table[^1].MinimumRatePerDecade);
+        Assert.IsNull(table[^1].MaximumRatePerDecade);
+        Assert.AreEqual(2, table[^1].LocationCount);
+        Assert.AreEqual(101, table.Take(10).Sum(x => x.LocationCount));
+    }
+
+    [TestMethod]
+    public void GetHeatingScoreTable_NoLocationHasAScore_IsJustTheNoScoreRow()
+    {
+        var table = Location.GetHeatingScoreTable([CreateLocation(since1961Slope: null)]);
+
+        Assert.HasCount(1, table);
+        Assert.IsNull(table[0].Score);
+        Assert.AreEqual(1, table[0].LocationCount);
     }
 
     [TestMethod]
