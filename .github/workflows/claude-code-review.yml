@@ -4,6 +4,11 @@ on:
   pull_request:
     types: [opened, synchronize, ready_for_review, reopened]
 
+# A new push cancels the in-flight review of the older commit
+concurrency:
+  group: claude-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
   review:
     # Skip draft PRs
@@ -23,7 +28,7 @@ jobs:
       - name: Run Claude Code review
         uses: anthropics/claude-code-action@v1
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           track_progress: true
           prompt: |
             REPO: ${{ github.repository }}
