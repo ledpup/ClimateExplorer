@@ -1,5 +1,7 @@
 @namespace ClimateExplorer.Web.Client.Components.Info
 @using ClimateExplorer.Core.Model
+@using ClimateExplorer.Web.Client.Components.Common
+@using ClimateExplorer.Web.Client.Components.Location
 @using ClimateExplorer.WebApiClient.Services
 @using System
 
@@ -25,7 +27,7 @@
     }
 
     <p>
-        The table below shows the warming rates each score covers and how many locations have it.
+        The table below shows the warming rates each score covers and how many locations have it. Select a row to list its locations.
     </p>
 
     <div class="table-card">
@@ -43,13 +45,39 @@
             <tbody>
                 @foreach (var heatingScoreRow in HeatingScoreTable)
                 {
-                    <tr class="@(Location.HeatingScore == heatingScoreRow.Score ? "is-highlighted" : null)">
-                        <td>@(heatingScoreRow.Score?.ToString() ?? "No score")</td>
-                        <td>@(heatingScoreRow.MinimumRatePerDecade is { } minimum && heatingScoreRow.MaximumRatePerDecade is { } maximum ? $"{FormatBound(minimum)} - {FormatBound(maximum)}" : "NA")</td>
-                        <td class="text-center">@heatingScoreRow.LocationCount.ToString("N0")</td>
+                    var row = heatingScoreRow;
+                    <tr class="@GetRowClass(row)" @onclick="() => ShowLocationsAsync(row)">
+                        <td>@(row.Score?.ToString() ?? "No score")</td>
+                        <td>@(row.MinimumRatePerDecade is { } minimum && row.MaximumRatePerDecade is { } maximum ? $"{FormatBound(minimum)} - {FormatBound(maximum)}" : "NA")</td>
+                        <td class="text-center">
+                            @if (row.LocationCount > 0)
+                            {
+                                @* The row handles a mouse click anywhere on it; the button is for the keyboard and screen readers *@
+                                <span @onclick:stopPropagation="true">
+                                    <Button Variant="ButtonVariant.Link"
+                                            Text="@row.LocationCount.ToString("N0")"
+                                            AriaLabel="@($"List the {GetLocationsTitle(row).ToLowerInvariant()}")"
+                                            OnClick="() => ShowLocationsAsync(row)" />
+                                </span>
+                            }
+                            else
+                            {
+                                @row.LocationCount.ToString("N0")
+                            }
+                        </td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
 }
+
+@* Inside the modal's <dialog>, so it shows above the modal rather than behind it *@
+<SidePanel @ref="locationsSidePanel" Title="@(selectedRow is null ? string.Empty : GetLocationsTitle(selectedRow))" Width="85%" AllowExpand="true">
+    @if (selectedRow is not null)
+    {
+        <LocationsTable ShowFilters="false"
+                        HeatingScore="@LocationsTable.GetHeatingScoreFilter(selectedRow.Score)"
+                        LocationLinkClicked="CloseModalAsync" />
+    }
+</SidePanel>

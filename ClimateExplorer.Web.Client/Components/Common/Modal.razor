@@ -18,7 +18,10 @@
         <div class="modal-body">
             @if (isOpen || RenderContentWhenClosed)
             {
-                @ChildContent
+                @* So the content can close its modal *@
+                <CascadingValue Value="this" IsFixed="true">
+                    @ChildContent
+                </CascadingValue>
             }
         </div>
     </div>
