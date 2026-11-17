@@ -39,7 +39,6 @@
                     {
                         <OverviewField Label="Location" Tooltip="Click to locate on Google Maps" OnClick="OpenLocationMapAsync"><Value>@GeoLocationAsString</Value></OverviewField>
                         <OverviewField Label="Warming anomaly" Tooltip="@WarmingAnomalyTooltip" PopupContent="@WarmingAnomalyContent"><Value>@(WarmingAnomalyAsString ?? NoValue)</Value></OverviewField>
-                        <OverviewField Label="Trend score" Tooltip="@TrendScoreTooltip" PopupContent="@TrendScoreContent"><Value>@(Location.TrendScore?.ToString() ?? NoValue)</Value></OverviewField>
                     }
                     @if (Location?.RecordHigh != null)
                     {
@@ -49,13 +48,17 @@
                     {
                         <OverviewField Label="Recent observations" OnClick="@ShowRecentObservationsAsync" ToolTip="Compare daily observations with historical climate records"><Value>View</Value></OverviewField>
                     }
-                    @if (TemperatureTrendField is not null)
-                    {
-                        <OverviewField Label="@TemperatureTrendField.Label" Tooltip="@TemperatureTrendField.Tooltip" TooltipMultiline="false" PopupTitle="Temperature trend" PopupContent="@TemperatureTrendContent"><Value>@TemperatureTrendField.Value</Value></OverviewField>
-                    }
                     @if (DisplayPrecipitation && PrecipitationAnomalyAsString != null)
                     {
                         <OverviewField Label="Precipitation anomaly" Tooltip="@PrecipitationAnomalyTooltip" PopupContent="@PrecipitationAnomalyContent"><Value>@PrecipitationAnomalyAsString</Value></OverviewField>
+                    }
+                    @if (Location is not null)
+                    {
+                        <OverviewField Label="Trend score" Tooltip="@TrendScoreTooltip" PopupContent="@TrendScoreContent"><Value>@(Location.TrendScore?.ToString() ?? NoValue)</Value></OverviewField>
+                    }
+                    @if (TemperatureTrendField is not null)
+                    {
+                        <OverviewField Label="@TemperatureTrendField.Label" Tooltip="@TemperatureTrendField.Tooltip" TooltipMultiline="false" PopupTitle="Temperature trend" PopupContent="@TemperatureTrendContent"><Value>@TemperatureTrendField.Value</Value></OverviewField>
                     }
                 </div>
             </LoadingIndicator>
