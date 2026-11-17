@@ -1,0 +1,148 @@
+/* ── Table toolbar ───────────────────────────────────────────────────────── */
+.table-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.toolbar-filters {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.name-filter-wrapper {
+    flex: 1;
+    min-width: 10em;
+    max-width: 18em;
+}
+
+/* Border, radius, colours, hover, focus and the touch sizing come from .control in app.css */
+.name-filter-input {
+    width: 100%;
+    padding: 0.25rem 0.5rem;
+}
+
+.name-filter-input::placeholder {
+    color: var(--climate-color-muted-text);
+}
+
+.toolbar-checkboxes {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+}
+
+.location-count {
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* ── Fixed-width columns (stop re-sorting from resizing the table) ──────── */
+/* Column widths come from the header row only, so page content can't shift them.
+   Columns without a width (name, country, data types, data sources) share what's left. */
+.locations-table {
+    table-layout: fixed;
+}
+
+/* These headers are long enough to wrap onto two lines. */
+.anomaly-col,
+.trend-col,
+.trend-col,
+.recent-observations-col {
+    white-space: normal;
+}
+
+::deep .country-col {
+    width: 20%;
+}
+
+::deep .anomaly-col {
+    width: 7em;
+}
+
+::deep .trend-col {
+    width: 6em;
+}
+
+::deep .trend-col {
+    width: 8em;
+}
+
+::deep .recent-observations-col {
+    width: 8em;
+}
+
+::deep .record-high-col {
+    width: 10em;
+}
+
+/* ── Column sub-header ───────────────────────────────────────────────────── */
+.trend-subheader {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: normal;
+}
+
+/* ── Trend score badge ───────────────────────────────────────────────────── */
+.trend-badge {
+    display: inline-block;
+    padding: 0.15rem 0.55rem;
+    /* The pale scores (0-3) would blend into the striped rows without an outline, as on the map markers. */
+    border: 1px solid rgb(0 0 0 / 40%);
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    min-width: 2rem;
+    text-align: center;
+}
+
+/* ── Data types / sources cells ──────────────────────────────────────────── */
+.data-types-cell,
+.data-sources-cell {
+    font-size: 0.8rem;
+    color: #555;
+    white-space: normal;
+}
+
+/* ── Sort icon muted ─────────────────────────────────────────────────────── */
+.fa-sort {
+    opacity: 0.35;
+}
+
+/* ── Responsive columns ──────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+    ::deep .data-types-col,
+    ::deep .data-sources-col,
+    ::deep .data-types-cell,
+    ::deep .data-sources-cell {
+        display: none;
+    }
+}
+
+@media (max-width: 767px) {
+    ::deep .country-col,
+    ::deep .country-cell,
+    ::deep .anomaly-col,
+    ::deep .anomaly-cell,
+    ::deep .trend-col,
+    ::deep .trend-cell,
+    ::deep .recent-observations-col,
+    ::deep .recent-observations-cell {
+        display: none;
+    }
+
+    ::deep .record-high-col {
+        width: 7em;
+    }
+}
+
+/* ── Loading placeholder ─────────────────────────────────────────────────── */
+.loading-placeholder {
+    min-height: 30rem;
+}

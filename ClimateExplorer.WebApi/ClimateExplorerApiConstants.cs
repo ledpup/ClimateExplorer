@@ -4,8 +4,6 @@ using System;
 
 internal static class ClimateExplorerApiConstants
 {
-    internal static string HeatingScoreTable => "HeatingScoreTable";
-
     internal static string NearbyLocations => "NearbyLocations";
 
     internal static string RecentObservationsCacheKeyPrefix => "RecentObservations";

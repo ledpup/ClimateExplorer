@@ -53,12 +53,12 @@ public class ApiMeasuresTests
     }
 
     [TestMethod]
-    public void HeatingScoreRate_Since1961Trend_IsChangePerDecadeInCelsius()
+    public void TrendScoreRate_Since1961Trend_IsChangePerDecadeInCelsius()
     {
         var location = CreateLocation();
         location.TemperatureTrends = [new TrendSummary(TrendWindow.Since1961, 1961, 0.0291, true)];
 
-        var measure = ApiMeasures.HeatingScoreRate(location)!.Value;
+        var measure = ApiMeasures.TrendScoreRate(location)!.Value;
 
         // The stored slope is per year: 0.0291 °C/year is 0.291 °C/decade, and 0.5238 °F/decade.
         Assert.AreEqual(MeasureKind.Change, measure.Kind);
@@ -67,18 +67,18 @@ public class ApiMeasuresTests
     }
 
     [TestMethod]
-    public void HeatingScoreRate_NoSince1961Trend_IsNull()
+    public void TrendScoreRate_NoSince1961Trend_IsNull()
     {
         var location = CreateLocation();
         location.TemperatureTrends = [new TrendSummary(TrendWindow.Full, 1900, 0.01, true)];
 
-        Assert.IsNull(ApiMeasures.HeatingScoreRate(location));
+        Assert.IsNull(ApiMeasures.TrendScoreRate(location));
     }
 
     [TestMethod]
-    public void HeatingScoreRateBound_AnyBound_IsChangeInCelsiusWithNoScaling()
+    public void TrendScoreRateBound_AnyBound_IsChangeInCelsiusWithNoScaling()
     {
-        var measure = ApiMeasures.HeatingScoreRateBound(0.5);
+        var measure = ApiMeasures.TrendScoreRateBound(0.5);
 
         // Already per decade, so °F only scales the difference: 0.5 °C/decade is 0.9 °F/decade.
         Assert.AreEqual(MeasureKind.Change, measure.Kind);

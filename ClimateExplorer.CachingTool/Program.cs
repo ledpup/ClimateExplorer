@@ -22,7 +22,7 @@ var httpClient = new HttpClient() { BaseAddress = new Uri("http://localhost:5483
 var dataService = new DataService(httpClient, memoryCache);
 
 // Generate cached locations (WarmingAnomaly, TemperatureTrends (full, last 30 years, since 1961), RecordHigh,
-// heating scores). This only reads the source files already published; it never downloads data - that is done by
+// trend scores). This only reads the source files already published; it never downloads data - that is done by
 // ClimateExplorer.Data.Misc.
 logger.LogInformation("Creating locations cache");
 await dataService.GetLocations(permitCreateCache: true);

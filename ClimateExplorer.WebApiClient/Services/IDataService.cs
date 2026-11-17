@@ -31,7 +31,7 @@ public interface IDataService
         short? year = null,
         DataResolution? minimumDataResolution = null);
     Task<Dictionary<string, string>> GetCountries();
-    Task<IEnumerable<HeatingScoreRow>> GetHeatingScoreTable();
+    Task<IEnumerable<TrendScoreRow>> GetTrendScoreTable();
     Task<ClimateRecordsResponse?> GetClimateRecords(
         Guid locationId,
         DataType dataType = DataType.TempMax,

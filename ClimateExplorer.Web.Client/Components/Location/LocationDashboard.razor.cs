@@ -30,8 +30,8 @@ public partial class LocationDashboard
     private const string PrecipitationAnomalyDescription =
         "How much wetter or drier the last 30 years have been than the first half of the location's records, as an average yearly total.";
 
-    private const string HeatingScoreTooltip =
-        "<p>How fast the location has warmed since 1961, ranked against every other location: 9 is the fastest-warming 10%, 0 the slowest.</p>"
+    private const string TrendScoreTooltip =
+        "<p>How fast the location has warmed since 1961, compared with every other location, from 0 (slowest) to 9 (fastest).</p>"
         + "<p>Click for more information.</p>";
 
     private SidePanel? climateRecordsSidePanel;
@@ -147,7 +147,7 @@ public partial class LocationDashboard
 
     private DataType? TemperatureDataType { get; set; }
 
-    private RenderFragment? HeatingScoreContent { get; set; }
+    private RenderFragment? TrendScoreContent { get; set; }
 
     private string? RecordHighToolTip
     {
@@ -276,11 +276,11 @@ public partial class LocationDashboard
                 TemperatureAnomalyRecords = null;
             }
 
-            HeatingScoreContent = Location == null
+            TrendScoreContent = Location == null
                                 ? null
                                 : builder =>
                                 {
-                                    builder.OpenComponent(0, typeof(HeatingScoreInfo));
+                                    builder.OpenComponent(0, typeof(TrendScoreInfo));
                                     builder.AddAttribute(1, "Location", Location);
                                     builder.CloseComponent();
                                 };

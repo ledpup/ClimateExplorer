@@ -45,7 +45,7 @@ public partial class Index : ChartablePage
         {
             return Location == null
                 ? "ClimateExplorer helps you understand climate change trends where you live. Explore long-term temperature and precipitation data for thousands of locations worldwide."
-                : $"Explore long-term climate trends for {Location.FullTitle}. View temperature records, warming anomaly, heating score, and climate stripes.";
+                : $"Explore long-term climate trends for {Location.FullTitle}. View temperature records, warming anomaly, trend score, and climate stripes.";
         }
     }
 

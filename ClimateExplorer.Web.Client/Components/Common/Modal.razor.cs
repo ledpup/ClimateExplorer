@@ -8,7 +8,7 @@ using Microsoft.JSInterop;
 /// <c>&lt;dialog&gt;</c> opened with <c>showModal()</c>, so the browser keeps focus inside it, closes it on Escape
 /// and returns focus to the opener; Modal.razor.js adds closing on a backdrop click. Open it with
 /// <see cref="ShowAsync"/> or <c>@bind-Visible</c>. The body isn't rendered while the modal is closed, unless
-/// <see cref="RenderContentWhenClosed"/> is set.
+/// <see cref="RenderContentWhenClosed"/> is set. The modal cascades itself to its content, so the content can close it.
 /// </summary>
 public partial class Modal : IAsyncDisposable
 {

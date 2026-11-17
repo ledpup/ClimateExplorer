@@ -11,17 +11,23 @@ public class Location : GeographicalEntity
     /// A location is only scored when its last year is within this many years of the newest last year
     /// of any location, so a station that closed decades ago isn't ranked on a shorter window.
     /// </summary>
-    public const int HeatingScoreMaximumYearsBehindNewest = 10;
+    public const int TrendScoreMaximumYearsBehindNewest = 10;
 
-    /// <summary>The heating score of a location whose since-1961 warming rate is negative.</summary>
-    public const short NegativeRateHeatingScore = -1;
+    /// <summary>The trend score of a location whose since-1961 warming rate is negative.</summary>
+    public const short NegativeRateTrendScore = -1;
+
+    /// <summary>The percentile of non-negative since-1961 rates at which the trend score steps start: lower rates score 0.</summary>
+    public const double TrendScoreLowPercentile = 0.01;
+
+    /// <summary>The percentile of non-negative since-1961 rates at which the trend score steps end: higher rates score 9.</summary>
+    public const double TrendScoreHighPercentile = 0.99;
 
     private const short TitleMaximumLength = 30;
     public required string CountryCode { get; set; }
     public string? Country { get; set; }
     public required Coordinates Coordinates { get; set; }
     public double? WarmingAnomaly { get; set; }
-    public short? HeatingScore { get; set; }
+    public short? TrendScore { get; set; }
 
     /// <summary>
     /// Linear trends of the location's yearly temperature series. Null below 30 complete years; the
@@ -145,59 +151,59 @@ public class Location : GeographicalEntity
     }
 
     /// <summary>
-    /// Scores each location's since-1961 warming rate (<see cref="Since1961TemperatureTrend"/>) against
-    /// every other location's. The rates of zero or more are ranked into tenths, from 9 (the fastest 10%)
-    /// to 0, and a negative rate scores <see cref="NegativeRateHeatingScore"/>. Only locations with a
-    /// since-1961 trend and a last year within <see cref="HeatingScoreMaximumYearsBehindNewest"/> of the
-    /// newest are scored; the rest get no score.
+    /// Scores each location's since-1961 warming rate (<see cref="Since1961TemperatureTrend"/>) on ten equal-width
+    /// steps, from 9 (fastest) to 0. The steps span the rates of zero or more between the
+    /// <see cref="TrendScoreLowPercentile"/> and <see cref="TrendScoreHighPercentile"/> of those rates, so a few
+    /// outliers don't stretch the scale: rates above the range score 9 and rates below it score 0. A negative
+    /// rate scores <see cref="NegativeRateTrendScore"/>. Only locations with a since-1961 trend and a last year
+    /// within <see cref="TrendScoreMaximumYearsBehindNewest"/> of the newest are scored; the rest get no score.
     /// </summary>
     /// <returns>The range of rates each score covers, in °C per decade.</returns>
-    public static List<HeatingScoreRow> SetHeatingScores(IEnumerable<Location> locations)
+    public static List<TrendScoreRow> SetTrendScores(IEnumerable<Location> locations)
     {
         var allLocations = locations.Where(x => x is not null).ToList();
-        allLocations.ForEach(x => x.HeatingScore = null);
+        allLocations.ForEach(x => x.TrendScore = null);
 
-        var newestLastYear = allLocations.Max(x => x.LastYear);
-        var eligible = allLocations
-            .Where(x => x.Since1961TemperatureTrend is not null && x.LastYear >= newestLastYear - HeatingScoreMaximumYearsBehindNewest)
-            .ToList();
+        var eligible = GetEligibleForTrendScore(allLocations);
+        var scale = TrendScoreScale.Create(eligible);
 
-        var ranked = eligible
-            .Where(x => x.Since1961TemperatureTrend!.Slope >= 0)
-            .OrderByDescending(x => x.Since1961TemperatureTrend!.Slope)
-            .ToList();
-        var tenPercent = (int)MathF.Round(ranked.Count * .1f, 0);
-        var heatingScoreTable = new List<HeatingScoreRow>();
-        var scoredCount = 0;
-
-        for (short score = 9; score >= 0; score--)
+        foreach (var location in eligible)
         {
-            // Score 0 takes whatever is left, in case rounding leaves slightly more than 10%.
-            var band = ranked.Skip(scoredCount).Take(score == 0 ? ranked.Count : tenPercent).ToList();
-            scoredCount += band.Count;
-
-            if (band.Count == 0)
-            {
-                continue;
-            }
-
-            heatingScoreTable.Add(
-                new HeatingScoreRow
-                {
-                    MaximumRatePerDecade = band[0].Since1961TemperatureTrend!.Slope * 10,
-                    MinimumRatePerDecade = band[^1].Since1961TemperatureTrend!.Slope * 10,
-                    Score = score,
-                });
-
-            band.ForEach(x => x.HeatingScore = score);
+            var slope = location.Since1961TemperatureTrend!.Slope;
+            location.TrendScore = slope < 0 ? NegativeRateTrendScore : scale!.Score(slope);
         }
 
-        eligible
-            .Where(x => x.Since1961TemperatureTrend!.Slope < 0)
-            .ToList()
-            .ForEach(x => x.HeatingScore = NegativeRateHeatingScore);
+        return scale?.GetTable() ?? [];
+    }
 
-        return heatingScoreTable;
+    /// <summary>
+    /// The trend score table for these locations, without setting their scores: the rows
+    /// <see cref="SetTrendScores"/> returns, then a row for <see cref="NegativeRateTrendScore"/> (the range of
+    /// the negative rates and the number of locations), then a last row, with a null score, counting the locations
+    /// that have no score.
+    /// </summary>
+    public static List<TrendScoreRow> GetTrendScoreTable(IEnumerable<Location> locations)
+    {
+        var allLocations = locations.Where(x => x is not null).ToList();
+        var eligible = GetEligibleForTrendScore(allLocations);
+        var table = TrendScoreScale.Create(eligible)?.GetTable() ?? [];
+
+        var negativeRates = eligible
+            .Select(x => x.Since1961TemperatureTrend!.Slope)
+            .Where(x => x < 0)
+            .ToList();
+        table.Add(
+            new TrendScoreRow
+            {
+                Score = NegativeRateTrendScore,
+                MinimumRatePerDecade = negativeRates.Count == 0 ? null : negativeRates.Min() * 10,
+                MaximumRatePerDecade = negativeRates.Count == 0 ? null : negativeRates.Max() * 10,
+                LocationCount = negativeRates.Count,
+            });
+
+        table.Add(new TrendScoreRow { Score = null, MinimumRatePerDecade = null, MaximumRatePerDecade = null, LocationCount = allLocations.Count - eligible.Count });
+
+        return table;
     }
 
     public override string ToString()
@@ -208,6 +214,14 @@ public class Location : GeographicalEntity
     public string UrlReadyName()
     {
         return Name.ToLower().Replace(" ", "-").Replace("'", "-");
+    }
+
+    private static List<Location> GetEligibleForTrendScore(List<Location> allLocations)
+    {
+        var newestLastYear = allLocations.Max(x => x.LastYear);
+        return allLocations
+            .Where(x => x.Since1961TemperatureTrend is not null && x.LastYear >= newestLastYear - TrendScoreMaximumYearsBehindNewest)
+            .ToList();
     }
 
     private static async Task SetCountries(List<Location> locations)
@@ -224,4 +238,80 @@ public class LocationDistance
     public required double Distance { get; set; }
     public required double BearingDegrees { get; set; }
     public required string CompassRoseDirection { get; set; }
+}
+
+/// <summary>The ten equal-width steps of the trend score, over the since-1961 rates (per year) of the scored locations.</summary>
+[System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:File may only contain a single type", Justification = "Not important")]
+internal sealed class TrendScoreScale
+{
+    private const int StepCount = 10;
+    private const double PerDecade = 10;
+
+    private readonly double low;
+    private readonly double step;
+    private readonly List<double> sortedRates;
+
+    private TrendScoreScale(List<double> sortedRates)
+    {
+        this.sortedRates = sortedRates;
+        low = Percentile(sortedRates, Location.TrendScoreLowPercentile);
+        step = (Percentile(sortedRates, Location.TrendScoreHighPercentile) - low) / StepCount;
+    }
+
+    /// <summary>The scale for the eligible locations, or null when none has a rate of zero or more.</summary>
+    public static TrendScoreScale? Create(IEnumerable<Location> eligible)
+    {
+        var rates = eligible
+            .Select(x => x.Since1961TemperatureTrend!.Slope)
+            .Where(x => x >= 0)
+            .Order()
+            .ToList();
+
+        if (rates.Count == 0)
+        {
+            return null;
+        }
+
+        return new TrendScoreScale(rates);
+    }
+
+    public short Score(double rate)
+    {
+        // No spread (one location, or every rate the same): nothing to tell the locations apart by.
+        if (step <= 0)
+        {
+            return 0;
+        }
+
+        return (short)Math.Clamp(Math.Floor((rate - low) / step), 0, StepCount - 1);
+    }
+
+    public List<TrendScoreRow> GetTable()
+    {
+        var minimumRate = sortedRates[0];
+        var maximumRate = sortedRates[^1];
+
+        if (step <= 0)
+        {
+            return [new TrendScoreRow { MinimumRatePerDecade = minimumRate * PerDecade, MaximumRatePerDecade = maximumRate * PerDecade, Score = 0, LocationCount = sortedRates.Count }];
+        }
+
+        var counts = sortedRates.GroupBy(x => Score(x)).ToDictionary(x => (int)x.Key, x => x.Count());
+
+        // The top and bottom scores also hold the outliers, so their ranges run out to the actual extremes.
+        return Enumerable.Range(0, StepCount)
+            .Reverse()
+            .Select(score => new TrendScoreRow
+            {
+                MinimumRatePerDecade = (score == 0 ? Math.Min(minimumRate, low) : low + (score * step)) * PerDecade,
+                MaximumRatePerDecade = (score == StepCount - 1 ? Math.Max(maximumRate, low + (StepCount * step)) : low + ((score + 1) * step)) * PerDecade,
+                Score = score,
+                LocationCount = counts.GetValueOrDefault(score),
+            })
+            .ToList();
+    }
+
+    // Nearest rank, rounding down: the rate at this fraction of the way through the sorted rates.
+    private static double Percentile(List<double> sortedRates, double fraction) =>
+        sortedRates[(int)(fraction * (sortedRates.Count - 1))];
 }

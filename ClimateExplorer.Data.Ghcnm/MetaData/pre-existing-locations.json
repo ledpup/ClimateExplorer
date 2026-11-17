@@ -8,7 +8,7 @@
       "Elevation": 48
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "70a07bb0-2220-402b-be83-f2c35edfdd12",
     "Name": "Adelaide"
@@ -22,7 +22,7 @@
       "Elevation": 68
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "e491279a-781c-4eb0-8ccf-d49f3d9e2d5a",
     "Name": "Albany"
@@ -36,7 +36,7 @@
       "Elevation": 546
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "fbb67194-9253-4ed2-bd20-f4a0211b264b",
     "Name": "Alice Springs"
@@ -50,7 +50,7 @@
       "Elevation": 24
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "0cfb93a1-e0b6-4b87-87a6-90c0e01ca9ca",
     "Name": "Amberley"
@@ -64,7 +64,7 @@
       "Elevation": 266
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "176e8056-e246-4566-b307-3c0b1ca8fde4",
     "Name": "Barcaldine"
@@ -78,7 +78,7 @@
       "Elevation": 713
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "0b927604-fbaa-4930-bb5c-cf4b0f8b8914",
     "Name": "Bathurst"
@@ -92,7 +92,7 @@
       "Elevation": 46
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "65aea1bb-5395-4b14-bf6f-8ca1559099cd",
     "Name": "Birdsville"
@@ -106,7 +106,7 @@
       "Elevation": 161
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "f285ba2b-d6d6-4390-a80f-803522668bde",
     "Name": "Boulia"
@@ -120,7 +120,7 @@
       "Elevation": 107
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "bab198bd-3940-4f13-a4f7-68af10735039",
     "Name": "Bourke"
@@ -134,7 +134,7 @@
       "Elevation": 178
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "9ea5be14-0e54-4453-8e8b-4c11e075cb42",
     "Name": "Bridgetown"
@@ -148,7 +148,7 @@
       "Elevation": 4
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "b7e0c061-e71c-4fc4-8068-c0432398c24f",
     "Name": "Brisbane Airport"
@@ -162,7 +162,7 @@
       "Elevation": 7
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "05daa0ea-6227-4225-bf52-8204808709b5",
     "Name": "Broome"
@@ -176,7 +176,7 @@
       "Elevation": 30
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "b2c819cd-b20b-48b0-8148-eef2f8fd88b7",
     "Name": "Bundaberg"
@@ -190,7 +190,7 @@
       "Elevation": 5
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "fba7ed39-c752-460d-aa2e-342da7b55817",
     "Name": "Burketown"
@@ -204,7 +204,7 @@
       "Elevation": 667
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "5f6f3d62-4c80-441d-b30f-104d2f5d2e96",
     "Name": "Butlers Gorge"
@@ -218,7 +218,7 @@
       "Elevation": 1482
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "f7a20e98-23e9-4920-be3c-b72f8a22754d",
     "Name": "Cabramurra"
@@ -232,7 +232,7 @@
       "Elevation": 2
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "8fe98f5f-c239-4f2f-961a-5686147e53f7",
     "Name": "Cairns"
@@ -246,7 +246,7 @@
       "Elevation": 231
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "09a5ba01-f523-4be3-ae7b-7a29a0da581c",
     "Name": "Camooweal"
@@ -260,7 +260,7 @@
       "Elevation": 577
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "c0f2743b-fb00-4128-9024-bafa4e1c85ed",
     "Name": "Canberra"
@@ -274,7 +274,7 @@
       "Elevation": 158
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "f1be5e90-f9fd-40f4-9db8-2c5564a7e908",
     "Name": "Cape Borda"
@@ -288,7 +288,7 @@
       "Elevation": 60
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "eb75b5eb-8feb-4118-b6ab-bbe9b4fbc334",
     "Name": "Cape Bruny"
@@ -302,7 +302,7 @@
       "Elevation": 13
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "f8dfe45b-d49c-4c0f-8d69-27d2d92cdb4b",
     "Name": "Cape Leeuwin"
@@ -316,7 +316,7 @@
       "Elevation": 99
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "33d2cd26-bded-4abc-8e03-2f3266e3923f",
     "Name": "Cape Moreton"
@@ -330,7 +330,7 @@
       "Elevation": 82
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "592c8e33-cc36-4cce-9af1-82bb3f26a5af",
     "Name": "Cape Otway"
@@ -344,7 +344,7 @@
       "Elevation": 4
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "1c72f3e1-7d98-4ac5-8b64-1b5b2a4d599e",
     "Name": "Carnarvon"
@@ -358,7 +358,7 @@
       "Elevation": 15
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "4397371d-a43b-4925-af58-bec79e6ca802",
     "Name": "Ceduna"
@@ -372,7 +372,7 @@
       "Elevation": 78
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "a5a179b5-5394-44d1-b653-bbf6b052279c",
     "Name": "Central England"
@@ -386,7 +386,7 @@
       "Elevation": 301
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "0bc92500-5977-4aa2-81ae-a57ff8eabed3",
     "Name": "Charleville"
@@ -400,7 +400,7 @@
       "Elevation": 289
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "80a5afb6-f043-4e61-b1e3-b60029b9c559",
     "Name": "Charters Towers"
@@ -414,7 +414,7 @@
       "Elevation": 260
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "6f523c50-bf77-44d1-8418-57ea555855a3",
     "Name": "Cobar"
@@ -428,7 +428,7 @@
       "Elevation": 3
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "8a63813f-8544-46b6-806e-6bc32dfc1b0d",
     "Name": "Coffs Harbour"
@@ -442,7 +442,7 @@
       "Elevation": 216
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "d7307020-9788-4269-ae25-19926ca9e198",
     "Name": "Cunderdin"
@@ -456,7 +456,7 @@
       "Elevation": 324
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "fc5ff168-2c7a-4913-bac7-957d7efa065b",
     "Name": "Dalwallinu"
@@ -470,7 +470,7 @@
       "Elevation": 30
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "00147d6f-1569-422f-8322-a42b98e25071",
     "Name": "Darwin"
@@ -484,7 +484,7 @@
       "Elevation": 94
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "2e2acf0b-592b-4ba4-adc9-b6f08546b92a",
     "Name": "Deniliquin"
@@ -498,7 +498,7 @@
       "Elevation": 284
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "5e5c8eee-e28d-4651-bb04-24d08e89c254",
     "Name": "Dubbo"
@@ -512,7 +512,7 @@
       "Elevation": 25
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "7c7d3560-0741-4966-a878-b2749afc7737",
     "Name": "Esperance"
@@ -526,7 +526,7 @@
       "Elevation": 93
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "663a6037-a8de-462a-9d74-396ec881ffeb",
     "Name": "Eucla"
@@ -540,7 +540,7 @@
       "Elevation": 159
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "a7a48420-7677-444a-a6aa-e8d6eb195729",
     "Name": "Forrest"
@@ -554,7 +554,7 @@
       "Elevation": 15
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "714a7fe5-cea8-4e9b-bac0-cb01f8d0fff3",
     "Name": "Gabo Island"
@@ -568,7 +568,7 @@
       "Elevation": 110
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "64004954-c0c6-4de3-9ac1-3f50bada1ec9",
     "Name": "Gayndah"
@@ -582,7 +582,7 @@
       "Elevation": 301
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "2bf20585-6b1a-4e3c-a8ed-1d87e67789a6",
     "Name": "Georgetown"
@@ -596,7 +596,7 @@
       "Elevation": 29
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "c6ba58ea-6142-4954-afac-256ca81c67bc",
     "Name": "Geraldton"
@@ -610,7 +610,7 @@
       "Elevation": 598
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "e61fd5fb-f6a0-41b0-99bf-bc2eddb1a90c",
     "Name": "Giles"
@@ -624,7 +624,7 @@
       "Elevation": 65
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "db8309f6-72b8-49e2-89b3-69a13989a392",
     "Name": "Grove"
@@ -638,7 +638,7 @@
       "Elevation": 307
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "b8a3092a-041f-478d-951f-5ee4dda0a410",
     "Name": "Gunnedah"
@@ -652,7 +652,7 @@
       "Elevation": 409
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "ba6fb433-bc80-4890-8c8b-16830b95f633",
     "Name": "Halls Creek"
@@ -666,7 +666,7 @@
       "Elevation": 50
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "aed87aa0-1d0c-44aa-8561-cde0fc936395",
     "Name": "Hobart"
@@ -680,7 +680,7 @@
       "Elevation": 4
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "1d06ff8a-82ba-4613-875f-1b4893536c42",
     "Name": "Horn Island"
@@ -694,7 +694,7 @@
       "Elevation": 582
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "c5094f09-3fb3-4455-bf7b-b835928ad5f3",
     "Name": "Inverell"
@@ -708,7 +708,7 @@
       "Elevation": 365
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "6e8b7fce-49bf-41d2-959d-62130a40fb22",
     "Name": "Kalgoorlie-Boulder"
@@ -722,7 +722,7 @@
       "Elevation": 23
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "cbb11150-ec74-4401-8357-fae6fef70768",
     "Name": "Kalumburu"
@@ -736,7 +736,7 @@
       "Elevation": 474
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "48c35ccf-3ff8-4448-90de-1e491c500887",
     "Name": "Karijini North (Wittenoom)"
@@ -750,7 +750,7 @@
       "Elevation": 320
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "aa0021dd-8c27-4101-96b7-5e6b60c0c70a",
     "Name": "Katanning"
@@ -764,7 +764,7 @@
       "Elevation": 77
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "23701518-8a46-4b7e-b9ef-da570d77b7cb",
     "Name": "Kerang"
@@ -778,7 +778,7 @@
       "Elevation": 59
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "6b771c0b-97d3-45c7-9cd1-72fdee232e7c",
     "Name": "Kyancutta"
@@ -792,7 +792,7 @@
       "Elevation": 19
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "20ab0202-8038-4275-aad2-70788ec68d6e",
     "Name": "Larapuna (Eddystone Point)"
@@ -806,7 +806,7 @@
       "Elevation": 166
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "b483cb66-25cc-45ee-b1c8-8db405f0415a",
     "Name": "Launceston Airport"
@@ -820,7 +820,7 @@
       "Elevation": 20
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "ddbdddc8-8f95-4a44-b55b-f52378460640",
     "Name": "Laverton"
@@ -834,7 +834,7 @@
       "Elevation": 5
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "2119d5bf-94b0-4724-b2b8-bcd5f787877b",
     "Name": "Learmonth"
@@ -848,7 +848,7 @@
       "Elevation": 192
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "9fff8b80-9230-4161-a626-c0f6e8c3b3e7",
     "Name": "Longreach"
@@ -862,7 +862,7 @@
       "Elevation": 3
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "1b4b65dc-5742-432d-a4ae-d83069397723",
     "Name": "Low Head"
@@ -876,7 +876,7 @@
       "Elevation": 30
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "a5bff3b7-d9dc-40cb-bdb0-f2f07af2e2b7",
     "Name": "Mackay"
@@ -890,7 +890,7 @@
       "Elevation": 182
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "909dadb1-c33b-412b-97e0-42f5704f4090",
     "Name": "Marble Bar"
@@ -904,7 +904,7 @@
       "Elevation": 50
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "516cbbab-1226-4caa-b18d-e5b2aeeff7d6",
     "Name": "Marree"
@@ -918,7 +918,7 @@
       "Elevation": 517
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "9ce454b6-7e6c-4516-88a7-6504444a4754",
     "Name": "Meekatharra"
@@ -932,7 +932,7 @@
       "Elevation": 7
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "1e743b5c-f9bf-477c-8b16-7d45c67909a7",
     "Name": "Melbourne"
@@ -946,7 +946,7 @@
       "Elevation": 315
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "fdd46b2e-4da4-4426-a17d-034ee9752ef6",
     "Name": "Merredin"
@@ -960,7 +960,7 @@
       "Elevation": 50
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "f6093d63-0476-4bd4-bb88-6322cf04dfaa",
     "Name": "Mildura"
@@ -974,7 +974,7 @@
       "Elevation": 304
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "a14c760f-4858-4f36-8d0a-7f219dc9b303",
     "Name": "Miles"
@@ -988,7 +988,7 @@
       "Elevation": 271
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "503be743-9f46-4f6f-8b3e-8ce830e12fe7",
     "Name": "Morawa"
@@ -1002,7 +1002,7 @@
       "Elevation": 213
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "8867cc4a-6da5-41e6-a4f7-e02dd9460cdd",
     "Name": "Moree"
@@ -1016,7 +1016,7 @@
       "Elevation": 17
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "59803ca9-d81b-4888-bd08-473f659e1fc0",
     "Name": "Moruya Heads"
@@ -1030,7 +1030,7 @@
       "Elevation": 63
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "4865e9b4-d86a-4961-b65c-cc33f969ff04",
     "Name": "Mount Gambier"
@@ -1044,7 +1044,7 @@
       "Elevation": 138
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "4006f876-24bb-4b31-9318-72fcf44f47b0",
     "Name": "Nhill"
@@ -1058,7 +1058,7 @@
       "Elevation": 18
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "f0991551-814d-4323-9c0b-c8f12b887985",
     "Name": "Normanton"
@@ -1072,7 +1072,7 @@
       "Elevation": 109
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "6c8d1781-f74b-45b8-bfe2-8a952b278011",
     "Name": "Nowra"
@@ -1086,7 +1086,7 @@
       "Elevation": 275
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "b13e3137-51c7-432a-9194-2c3f42f0e438",
     "Name": "Nuriootpa"
@@ -1100,7 +1100,7 @@
       "Elevation": 116
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "69e0e687-7e35-466a-b518-ee4c76af5cf6",
     "Name": "Oodnadatta"
@@ -1114,7 +1114,7 @@
       "Elevation": 62
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "32ecbe0c-95a6-4d39-b8f4-c7ac859c8122",
     "Name": "Orbost"
@@ -1128,7 +1128,7 @@
       "Elevation": 203
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "944b1732-d083-40b8-b865-fbf63941414c",
     "Name": "Palmerville"
@@ -1142,7 +1142,7 @@
       "Elevation": 15
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "02619137-0d4d-4bcf-8ae3-f87697cd178d",
     "Name": "Perth Airport"
@@ -1156,7 +1156,7 @@
       "Elevation": 85
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "1130dd09-dd90-4a8f-8a65-31f14dd449e3",
     "Name": "Point Perpendicular"
@@ -1170,7 +1170,7 @@
       "Elevation": 6
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "04d33b2f-2a8a-4cf0-b281-68b74475d2b4",
     "Name": "Port Hedland"
@@ -1184,7 +1184,7 @@
       "Elevation": 8
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "b4e10e95-ce0f-4ae6-85cf-bc611c8164e8",
     "Name": "Port Lincoln"
@@ -1198,7 +1198,7 @@
       "Elevation": 4
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "5d20e960-257d-4bc2-8d06-162c19fa86a2",
     "Name": "Port Macquarie"
@@ -1212,7 +1212,7 @@
       "Elevation": 340
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "916c204a-0847-4fd3-9ad0-0ccc5ae9c601",
     "Name": "Rabbit Flat"
@@ -1226,7 +1226,7 @@
       "Elevation": 19
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "6c834afc-799c-473e-9d59-91a7ec7974a2",
     "Name": "Richmond (NSW)"
@@ -1240,7 +1240,7 @@
       "Elevation": 206
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "53ea40d9-d6fb-4ffe-9bde-e4188698f2de",
     "Name": "Richmond (Qld)"
@@ -1254,7 +1254,7 @@
       "Elevation": 3
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "5885b48d-d66d-4e89-a30e-ff40a0c7d153",
     "Name": "Robe"
@@ -1268,7 +1268,7 @@
       "Elevation": 10
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "e51c740e-2666-4f56-b397-0a68b26a6c3c",
     "Name": "Rockhampton"
@@ -1282,7 +1282,7 @@
       "Elevation": 175
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "9498f548-f000-4ff2-9c5d-fb7d3037493c",
     "Name": "Rutherglen"
@@ -1296,7 +1296,7 @@
       "Elevation": 4
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "7703f086-589e-406d-b152-dde26cbe6418",
     "Name": "Sale"
@@ -1310,7 +1310,7 @@
       "Elevation": 221
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "5a927fc5-5f9d-46a0-af66-3023610337d8",
     "Name": "Scone"
@@ -1324,7 +1324,7 @@
       "Elevation": 109
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "55f5699c-7d1f-4952-8bf1-4b924d7461d1",
     "Name": "Snowtown"
@@ -1338,7 +1338,7 @@
       "Elevation": 198
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "e9581d86-1e15-42aa-ad4b-b3960a119b10",
     "Name": "St George"
@@ -1352,7 +1352,7 @@
       "Elevation": 39
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "0788f2da-2034-40e2-badc-b77fc7d4bbd3",
     "Name": "Sydney"
@@ -1366,7 +1366,7 @@
       "Elevation": 123
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "9882e6ca-a0aa-479c-b1a6-169e94481afd",
     "Name": "Tarcoola"
@@ -1380,7 +1380,7 @@
       "Elevation": 375
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "5cfaf343-06a2-4bc6-a451-b8f2d3751da9",
     "Name": "Tennant Creek"
@@ -1394,7 +1394,7 @@
       "Elevation": 130
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "a205d717-c18b-4082-9822-d3309f2637f7",
     "Name": "Thargomindah"
@@ -1408,7 +1408,7 @@
       "Elevation": 176
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "04f7dd04-7bc2-4c4f-ae1e-2ee7180d8649",
     "Name": "Tibooburra"
@@ -1422,7 +1422,7 @@
       "Elevation": 4
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "b0783cae-1c6f-4570-8ab3-19df57ee1820",
     "Name": "Townsville"
@@ -1436,7 +1436,7 @@
       "Elevation": 88
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "be54baa5-c044-41c3-affa-50884f7c9735",
     "Name": "Victoria River Downs"
@@ -1450,7 +1450,7 @@
       "Elevation": 212
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "d209e7e6-d3da-40d4-b377-61cf7056d376",
     "Name": "Wagga Wagga"
@@ -1464,7 +1464,7 @@
       "Elevation": 133
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "82fbe1bf-5c58-4f9b-8f5d-71fdd060d2e9",
     "Name": "Walgett"
@@ -1478,7 +1478,7 @@
       "Elevation": 275
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "81644c2e-0ddc-472f-bae6-d976e6d623bc",
     "Name": "Wandering"
@@ -1492,7 +1492,7 @@
       "Elevation": 18
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "bc211d96-5bf6-4427-acac-81b40e17a4ce",
     "Name": "Weipa"
@@ -1506,7 +1506,7 @@
       "Elevation": 257
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "141b8a24-fc66-4ec5-a71c-2c779d802ca2",
     "Name": "West Wyalong"
@@ -1520,7 +1520,7 @@
       "Elevation": 94
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "bd628d1f-9c2d-403c-abb5-e2e440fd3a02",
     "Name": "Wilcannia"
@@ -1534,7 +1534,7 @@
       "Elevation": 7
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "f0f62231-f0d3-4ded-a945-133d4ecc4255",
     "Name": "Williamtown"
@@ -1548,7 +1548,7 @@
       "Elevation": 95
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "45feed6f-2821-43de-99ec-e605e3f36f75",
     "Name": "Wilsons Promontory"
@@ -1562,7 +1562,7 @@
       "Elevation": 166
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "b41a2fa1-ce5c-473e-b2d7-17d43e9dbc8b",
     "Name": "Woomera"
@@ -1576,7 +1576,7 @@
       "Elevation": 27
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null,
     "Id": "54e1d0a7-54be-4fb9-b88e-d6a4b8a1b595",
     "Name": "Yamba"

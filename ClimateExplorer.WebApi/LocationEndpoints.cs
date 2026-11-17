@@ -146,9 +146,8 @@ internal static class LocationEndpoints
             }
         });
 
-        // Can't set the heating scores until every location's trends are calculated.
-        var heatingScoreTable = Location.SetHeatingScores(locations);
-        await services.LongtermCache.Put(ClimateExplorerApiConstants.HeatingScoreTable, heatingScoreTable.ToArray());
+        // Can't set the trend scores until every location's trends are calculated.
+        Location.SetTrendScores(locations);
 
         var locationArray = locations.ToArray();
         await services.LongtermCache.Put(cacheKey, locationArray);

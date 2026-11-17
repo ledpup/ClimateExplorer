@@ -9,7 +9,7 @@
       "Elevation": 23
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -22,7 +22,7 @@
       "Elevation": 409
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -35,7 +35,7 @@
       "Elevation": 7
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -48,7 +48,7 @@
       "Elevation": 6
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -61,7 +61,7 @@
       "Elevation": 182
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -74,7 +74,7 @@
       "Elevation": 5
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -87,7 +87,7 @@
       "Elevation": 474
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -100,7 +100,7 @@
       "Elevation": 4
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -113,7 +113,7 @@
       "Elevation": 517
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -126,7 +126,7 @@
       "Elevation": 271
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -139,7 +139,7 @@
       "Elevation": 324
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -152,7 +152,7 @@
       "Elevation": 29
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -165,7 +165,7 @@
       "Elevation": 15
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -178,7 +178,7 @@
       "Elevation": 13
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -191,7 +191,7 @@
       "Elevation": 178
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -204,7 +204,7 @@
       "Elevation": 25
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -217,7 +217,7 @@
       "Elevation": 68
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -230,7 +230,7 @@
       "Elevation": 315
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -243,7 +243,7 @@
       "Elevation": 216
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -256,7 +256,7 @@
       "Elevation": 320
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -269,7 +269,7 @@
       "Elevation": 275
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -282,7 +282,7 @@
       "Elevation": 93
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -295,7 +295,7 @@
       "Elevation": 159
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -308,7 +308,7 @@
       "Elevation": 365
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -321,7 +321,7 @@
       "Elevation": 598
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -334,7 +334,7 @@
       "Elevation": 30
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -347,7 +347,7 @@
       "Elevation": 88
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -360,7 +360,7 @@
       "Elevation": 375
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -373,7 +373,7 @@
       "Elevation": 546
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -386,7 +386,7 @@
       "Elevation": 340
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -399,7 +399,7 @@
       "Elevation": 166
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -412,7 +412,7 @@
       "Elevation": 123
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -425,7 +425,7 @@
       "Elevation": 116
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -438,7 +438,7 @@
       "Elevation": 50
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -451,7 +451,7 @@
       "Elevation": 15
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -464,7 +464,7 @@
       "Elevation": 59
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -477,7 +477,7 @@
       "Elevation": 8
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -490,7 +490,7 @@
       "Elevation": 109
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -503,7 +503,7 @@
       "Elevation": 158
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -516,7 +516,7 @@
       "Elevation": 48
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -529,7 +529,7 @@
       "Elevation": 275
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -542,7 +542,7 @@
       "Elevation": 63
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -555,7 +555,7 @@
       "Elevation": 3
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -568,7 +568,7 @@
       "Elevation": 18
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -581,7 +581,7 @@
       "Elevation": 4
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -594,7 +594,7 @@
       "Elevation": 203
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -607,7 +607,7 @@
       "Elevation": 18
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -620,7 +620,7 @@
       "Elevation": 5
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -633,7 +633,7 @@
       "Elevation": 301
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -646,7 +646,7 @@
       "Elevation": 206
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -659,7 +659,7 @@
       "Elevation": 2
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -672,7 +672,7 @@
       "Elevation": 4
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -685,7 +685,7 @@
       "Elevation": 30
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -698,7 +698,7 @@
       "Elevation": 289
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -711,7 +711,7 @@
       "Elevation": 266
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -724,7 +724,7 @@
       "Elevation": 192
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -737,7 +737,7 @@
       "Elevation": 231
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -750,7 +750,7 @@
       "Elevation": 161
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -763,7 +763,7 @@
       "Elevation": 46
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -776,7 +776,7 @@
       "Elevation": 110
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -789,7 +789,7 @@
       "Elevation": 10
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -802,7 +802,7 @@
       "Elevation": 30
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -815,7 +815,7 @@
       "Elevation": 24
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -828,7 +828,7 @@
       "Elevation": 99
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -841,7 +841,7 @@
       "Elevation": 4
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -854,7 +854,7 @@
       "Elevation": 304
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -867,7 +867,7 @@
       "Elevation": 198
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -880,7 +880,7 @@
       "Elevation": 301
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -893,7 +893,7 @@
       "Elevation": 130
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -906,7 +906,7 @@
       "Elevation": 94
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -919,7 +919,7 @@
       "Elevation": 176
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -932,7 +932,7 @@
       "Elevation": 260
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -945,7 +945,7 @@
       "Elevation": 107
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -958,7 +958,7 @@
       "Elevation": 257
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -971,7 +971,7 @@
       "Elevation": 133
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -984,7 +984,7 @@
       "Elevation": 213
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -997,7 +997,7 @@
       "Elevation": 307
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -1010,7 +1010,7 @@
       "Elevation": 582
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -1023,7 +1023,7 @@
       "Elevation": 27
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -1036,7 +1036,7 @@
       "Elevation": 3
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -1049,7 +1049,7 @@
       "Elevation": 4
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -1062,7 +1062,7 @@
       "Elevation": 7
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -1075,7 +1075,7 @@
       "Elevation": 221
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -1088,7 +1088,7 @@
       "Elevation": 713
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -1101,7 +1101,7 @@
       "Elevation": 284
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -1114,7 +1114,7 @@
       "Elevation": 39
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -1127,7 +1127,7 @@
       "Elevation": 19
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -1140,7 +1140,7 @@
       "Elevation": 109
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -1153,7 +1153,7 @@
       "Elevation": 85
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -1166,7 +1166,7 @@
       "Elevation": 17
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -1179,7 +1179,7 @@
       "Elevation": 577
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -1192,7 +1192,7 @@
       "Elevation": 212
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -1205,7 +1205,7 @@
       "Elevation": 1482
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -1218,7 +1218,7 @@
       "Elevation": 94
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -1231,7 +1231,7 @@
       "Elevation": 50
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -1244,7 +1244,7 @@
       "Elevation": 138
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -1257,7 +1257,7 @@
       "Elevation": 77
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -1270,7 +1270,7 @@
       "Elevation": 175
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -1283,7 +1283,7 @@
       "Elevation": 15
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -1296,7 +1296,7 @@
       "Elevation": 62
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -1309,7 +1309,7 @@
       "Elevation": 4
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -1322,7 +1322,7 @@
       "Elevation": 95
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -1335,7 +1335,7 @@
       "Elevation": 7
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -1348,7 +1348,7 @@
       "Elevation": 20
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -1361,7 +1361,7 @@
       "Elevation": 82
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -1374,7 +1374,7 @@
       "Elevation": 3
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -1387,7 +1387,7 @@
       "Elevation": 166
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -1400,7 +1400,7 @@
       "Elevation": 19
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -1413,7 +1413,7 @@
       "Elevation": 50
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -1426,7 +1426,7 @@
       "Elevation": 60
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -1439,7 +1439,7 @@
       "Elevation": 65
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   },
   {
@@ -1452,7 +1452,7 @@
       "Elevation": 667
     },
     "WarmingAnomaly": null,
-    "HeatingScore": null,
+    "TrendScore": null,
     "NearbyLocations": null
   }
 ]

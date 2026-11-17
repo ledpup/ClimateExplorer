@@ -37,8 +37,8 @@ internal static class MetadataEndpoints
             "       Returns a list of countries.\n" +
             "   GET /region\n" +
             "       Returns a list of regions.\n" +
-            "   GET /heating-score-table\n" +
-            "       A table that records the range of warming anomalies for each heating score.\n" +
+            "   GET /trend-score-table\n" +
+            "       A table that records the range of since-1961 warming rates (per decade) for each trend score.\n" +
             "   GET /climate-record\n" +
             "       Returns a ranked list of climate records at a specific location\n" +
             "           Parameters:\n" +
@@ -86,11 +86,26 @@ internal static class MetadataEndpoints
         return (await Country.GetCountries(@"MetaData\countries.txt")).ToDictionary(x => x.Key, x => x.Value.Name);
     }
 
-    public static async Task<IEnumerable<HeatingScoreRow>> GetHeatingScoreTable(
+    public static async Task<IEnumerable<TrendScoreRow>> GetTrendScoreTable(
         [FromServices] ClimateExplorerApiServices services)
     {
-        var result = await services.LongtermCache.Get<List<HeatingScoreRow>>(ClimateExplorerApiConstants.HeatingScoreTable);
-        return result;
+        var locations = await LocationEndpoints.GetCachedLocations(services);
+
+        // Memoised against the locations array it was built from, so a rebuild of the locations invalidates it.
+        if (services.TrendScoreTable is { } memo && ReferenceEquals(memo.Source, locations))
+        {
+            return memo.Table;
+        }
+
+        var table = Location.GetTrendScoreTable(locations);
+
+        // Only memoise a table built from the array the services hold.
+        if (locations is Location[] array && ReferenceEquals(array, services.Locations))
+        {
+            services.TrendScoreTable = (array, table);
+        }
+
+        return table;
     }
 
     private static async Task<IReadOnlyList<DataSetDefinitionViewModel>> BuildDataSetDefinitions()
