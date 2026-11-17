@@ -45,7 +45,7 @@
                             }
                         </Select>
                     </Tooltip>
-                    <Tooltip Text="Filter locations by heating score, a measure of how fast a location has warmed since 1961 relative to all other locations.<br>The score is created by ordering all warming rates since 1961 and grouping into deciles." Multiline="true">
+                    <Tooltip Text="Filter locations by heating score, a measure of how fast a location has warmed since 1961 relative to all other locations.<br>The score splits the range of warming rates since 1961 into 10 steps of equal width, from 0 (slowest) to 9 (fastest)." Multiline="true">
                         <Select TValue="string"
                                 Value="@(heatingScoreFilter ?? string.Empty)"
                                 ValueChanged="@OnHeatingScoreFilterChanged"

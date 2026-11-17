@@ -1,7 +1,7 @@
 # Heating score: equal-width steps instead of deciles
 
 - **Date:** 2026-11-17
-- **Status:** Proposed (investigation only; no code changed)
+- **Status:** Implemented 2026-11-17 with 1st/99th percentile clipping (see [addendum](#addendum-implementation-notes)); not built or tested here, no .NET SDK in the session
 - **Author:** Patrick (with Claude)
 - **Scope:** `Location.SetHeatingScores` in `ClimateExplorer.Core`; its unit tests; the wording in
   `HeatingScoreInfo`. The table, API and map need no change.
@@ -109,3 +109,25 @@ usable spread. The change is confined to one method and its tests.
 
 Risk: low. The cached table and locations regenerate on the next cache build, so existing cached scores
 stay deciles until then.
+
+## Addendum: implementation notes
+
+Shipped as option B, clipping both ends: steps run from the 1st to the 99th percentile of the non-negative
+since-1961 rates (nearest rank, rounding down), so the step is 0.0484 °C/decade on the current data.
+
+- `Location.SetHeatingScores` scores with a new `HeatingScoreScale` (low, step). Rates above the top
+  step score 9 and below the bottom score 0. The 9 and 0 rows of the table run out to the actual highest and
+  lowest rates; the other rows are the step bounds. Ten rows are always emitted (empty steps included). With
+  no spread (one location, or all rates equal) everything scores 0 with a single row.
+- **The table is no longer cached.** `Location.GetHeatingScoreTable(locations)` calculates it from the
+  cached locations when `/heating-score-table` is called (about 4,000 rates; the sort is trivial). The
+  `HeatingScoreTable` cache key, its rounding in `CacheJsonOptions` and its test were removed. The existing cache
+  file for it is now unused. The per-location `HeatingScore` stays in the `Locations` cache: the map, the
+  Locations page and the dashboard read it, and it needs every location's trend.
+- Until the caching tool is run, the cached scores are still deciles while the table is already the new
+  steps, so the highlighted row in the info panel can disagree with a location's score.
+- Info panel, Locations filter tooltip and dashboard tooltip reworded. The 2026-11-13 blog post was deleted and
+  replaced by `2026-11-17-heating-score-equal-steps.md`, which stands alone.
+- Tests: the two decile tests were replaced with equal-width, outlier, table, no-spread and
+  `GetHeatingScoreTable` tests. Expected values were checked with a Python port of the algorithm, since the
+  C# couldn't be built here.

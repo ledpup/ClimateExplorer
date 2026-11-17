@@ -28,6 +28,10 @@ public partial class HeatingScoreInfo
 
     private static int MinimumYears => TrendDefaults.MinimumYearsForTrend;
 
+    private static int SlowPercent => (int)Math.Round(Location.HeatingScoreLowPercentile * 100);
+
+    private static int FastPercent => (int)Math.Round((1 - Location.HeatingScoreHighPercentile) * 100);
+
     private static int MaximumYearsBehindNewest => Location.HeatingScoreMaximumYearsBehindNewest;
 
     private string RateUnitLabel => $"{Units.ShortLabel(UnitOfMeasure.DegreesCelsius)}/decade";
@@ -42,8 +46,8 @@ public partial class HeatingScoreInfo
         HeatingScoreTable = await DataService!.GetHeatingScoreTable();
     }
 
-    // The middle score bands are only a few hundredths of a degree per decade wide, so the rates are shown to
-    // three decimal places (two more than a temperature difference) for neighbouring bands to be told apart.
+    // The score steps are only a few hundredths of a degree per decade wide, so the rates are shown to three decimal
+    // places (two more than a temperature difference) for neighbouring steps to be told apart.
     private string FormatLocationRate(Location location) =>
         ApiMeasures.HeatingScoreRate(location) is { } rate ? $"{Units.Format(rate, signed: true, extraDecimals: 1)}/decade" : "NA";
 

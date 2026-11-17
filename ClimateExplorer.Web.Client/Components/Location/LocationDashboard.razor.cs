@@ -31,7 +31,7 @@ public partial class LocationDashboard
         "How much wetter or drier the last 30 years have been than the first half of the location's records, as an average yearly total.";
 
     private const string HeatingScoreTooltip =
-        "<p>How fast the location has warmed since 1961, ranked against every other location: 9 is the fastest-warming 10%, 0 the slowest.</p>"
+        "<p>How fast the location has warmed since 1961, compared with every other location, from 0 (slowest) to 9 (fastest).</p>"
         + "<p>Click for more information.</p>";
 
     private SidePanel? climateRecordsSidePanel;

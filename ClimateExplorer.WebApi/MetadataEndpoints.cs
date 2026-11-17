@@ -89,8 +89,9 @@ internal static class MetadataEndpoints
     public static async Task<IEnumerable<HeatingScoreRow>> GetHeatingScoreTable(
         [FromServices] ClimateExplorerApiServices services)
     {
-        var result = await services.LongtermCache.Get<List<HeatingScoreRow>>(ClimateExplorerApiConstants.HeatingScoreTable);
-        return result;
+        // Calculated from the cached locations, not cached itself: it only takes their since-1961 rates.
+        var locations = await LocationEndpoints.GetCachedLocations(services);
+        return Location.GetHeatingScoreTable(locations);
     }
 
     private static async Task<IReadOnlyList<DataSetDefinitionViewModel>> BuildDataSetDefinitions()
