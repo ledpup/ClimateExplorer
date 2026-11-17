@@ -37,6 +37,7 @@
                 <tr>
                     <th scope="col"><strong>Heating score</strong></th>
                     <th scope="col" class="text-center"><strong>Warming rate since @StartYear (@RateUnitLabel)</strong></th>
+                    <th scope="col" class="text-center"><strong>Locations</strong></th>
                 </tr>
             </thead>
             <tbody>
@@ -45,6 +46,7 @@
                     <tr class="@(Location.HeatingScore == heatingScoreRow.Score ? "is-highlighted" : null)">
                         <td>@heatingScoreRow.Score</td>
                         <td>@FormatBound(heatingScoreRow.MinimumRatePerDecade) - @FormatBound(heatingScoreRow.MaximumRatePerDecade)</td>
+                        <td class="text-center">@heatingScoreRow.LocationCount.ToString("N0")</td>
                     </tr>
                 }
             </tbody>

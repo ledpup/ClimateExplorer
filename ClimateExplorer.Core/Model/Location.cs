@@ -226,15 +226,13 @@ internal sealed class HeatingScoreScale
 
     private readonly double low;
     private readonly double step;
-    private readonly double minimumRate;
-    private readonly double maximumRate;
+    private readonly List<double> sortedRates;
 
-    private HeatingScoreScale(double low, double high, double minimumRate, double maximumRate)
+    private HeatingScoreScale(List<double> sortedRates)
     {
-        this.low = low;
-        step = (high - low) / StepCount;
-        this.minimumRate = minimumRate;
-        this.maximumRate = maximumRate;
+        this.sortedRates = sortedRates;
+        low = Percentile(sortedRates, Location.HeatingScoreLowPercentile);
+        step = (Percentile(sortedRates, Location.HeatingScoreHighPercentile) - low) / StepCount;
     }
 
     /// <summary>The scale for the eligible locations, or null when none has a rate of zero or more.</summary>
@@ -251,11 +249,7 @@ internal sealed class HeatingScoreScale
             return null;
         }
 
-        return new HeatingScoreScale(
-            Percentile(rates, Location.HeatingScoreLowPercentile),
-            Percentile(rates, Location.HeatingScoreHighPercentile),
-            rates[0],
-            rates[^1]);
+        return new HeatingScoreScale(rates);
     }
 
     public short Score(double rate)
@@ -271,10 +265,15 @@ internal sealed class HeatingScoreScale
 
     public List<HeatingScoreRow> GetTable()
     {
+        var minimumRate = sortedRates[0];
+        var maximumRate = sortedRates[^1];
+
         if (step <= 0)
         {
-            return [new HeatingScoreRow { MinimumRatePerDecade = minimumRate * PerDecade, MaximumRatePerDecade = maximumRate * PerDecade, Score = 0 }];
+            return [new HeatingScoreRow { MinimumRatePerDecade = minimumRate * PerDecade, MaximumRatePerDecade = maximumRate * PerDecade, Score = 0, LocationCount = sortedRates.Count }];
         }
+
+        var counts = sortedRates.GroupBy(x => Score(x)).ToDictionary(x => (int)x.Key, x => x.Count());
 
         // The top and bottom scores also hold the outliers, so their ranges run out to the actual extremes.
         return Enumerable.Range(0, StepCount)
@@ -284,6 +283,7 @@ internal sealed class HeatingScoreScale
                 MinimumRatePerDecade = (score == 0 ? Math.Min(minimumRate, low) : low + (score * step)) * PerDecade,
                 MaximumRatePerDecade = (score == StepCount - 1 ? Math.Max(maximumRate, low + (StepCount * step)) : low + ((score + 1) * step)) * PerDecade,
                 Score = score,
+                LocationCount = counts.GetValueOrDefault(score),
             })
             .ToList();
     }

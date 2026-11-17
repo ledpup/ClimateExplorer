@@ -131,3 +131,5 @@ since-1961 rates (nearest rank, rounding down), so the step is 0.0484 °C/decade
 - Tests: the two decile tests were replaced with equal-width, outlier, table, no-spread and
   `GetHeatingScoreTable` tests. Expected values were checked with a Python port of the algorithm, since the
   C# couldn't be built here.
+- The info panel table has a Locations column: `HeatingScoreRow.LocationCount`, counted when the table is
+  calculated (so it reflects the cached locations' rates, not their cached scores).

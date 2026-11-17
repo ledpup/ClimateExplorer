@@ -63,6 +63,10 @@ public class HeatingScoreTests
         Assert.HasCount(10, table);
         CollectionAssert.AreEqual(Enumerable.Range(0, 10).Reverse().ToList(), table.Select(x => x.Score).ToList());
 
+        // 101 evenly spaced rates, so about ten to a step; the ends also hold the rates beyond the percentiles.
+        Assert.AreEqual(101, table.Sum(x => x.LocationCount));
+        Assert.IsTrue(table.All(x => x.LocationCount is >= 9 and <= 11));
+
         // The top and bottom bands run out to the actual highest and lowest rates.
         Assert.AreEqual(1.0, table[0].MaximumRatePerDecade, 1e-9);
         Assert.AreEqual(0.892, table[0].MinimumRatePerDecade, 1e-9);
@@ -86,6 +90,7 @@ public class HeatingScoreTests
 
         Assert.IsTrue(locations.All(x => x.HeatingScore == 0));
         Assert.HasCount(1, table);
+        Assert.AreEqual(2, table[0].LocationCount);
         Assert.AreEqual(0.3, table[0].MinimumRatePerDecade, 1e-9);
         Assert.AreEqual(0.3, table[0].MaximumRatePerDecade, 1e-9);
     }

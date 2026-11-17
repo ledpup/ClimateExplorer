@@ -9,4 +9,7 @@ public sealed record HeatingScoreRow
     public required double MinimumRatePerDecade { get; set; }
     public required double MaximumRatePerDecade { get; set; }
     public required int Score { get; set; }
+
+    /// <summary>The number of locations that have this score.</summary>
+    public required int LocationCount { get; set; }
 }
