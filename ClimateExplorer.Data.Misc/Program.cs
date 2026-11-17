@@ -97,7 +97,8 @@ static void GenerateMapMarkers()
         WriteMapMarker(template, Path.Combine(outputFolder, $"{fileName}.svg"), text, HeatingScoreColours.Get(score));
     }
 
-    WriteMapMarker(template, Path.Combine(outputFolder, "null.svg"), "?", HeatingScoreColours.NoScore);
+    // A location without a score gets a plain grey marker, with no text.
+    WriteMapMarker(template, Path.Combine(outputFolder, "null.svg"), string.Empty, HeatingScoreColours.NoScore);
 }
 
 static void WriteMapMarker(string template, string path, string text, (string Background, string Text) colours)
