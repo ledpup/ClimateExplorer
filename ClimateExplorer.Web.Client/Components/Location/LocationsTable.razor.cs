@@ -303,21 +303,8 @@ public partial class LocationsTable
 
     private static string GetHeatingScoreBadgeStyle(short score)
     {
-        var (bg, fg) = score switch
-        {
-            9 => ("#8B0000", "white"),
-            8 => ("#c70000", "white"),
-            7 => ("#e05000", "white"),
-            6 => ("#e08000", "white"),
-            5 => ("#c8a000", "black"),
-            4 => ("#8fb339", "black"),
-            3 => ("#5a9e3b", "white"),
-            2 => ("#3a8a7c", "white"),
-            1 => ("#3b78af", "white"),
-            0 => ("#5b7fbd", "white"),
-            _ => ("#4a6dab", "white"),
-        };
-        return $"background-color: {bg}; color: {fg};";
+        var (background, text) = HeatingScoreColours.Get(score);
+        return $"background-color: {background}; color: {text};";
     }
 
     private static bool IsValidHeatingScoreFilter(string value) =>

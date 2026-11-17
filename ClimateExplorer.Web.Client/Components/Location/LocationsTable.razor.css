@@ -93,6 +93,8 @@
 .heating-badge {
     display: inline-block;
     padding: 0.15rem 0.55rem;
+    /* The pale scores (0-3) would blend into the striped rows without an outline, as on the map markers. */
+    border: 1px solid rgb(0 0 0 / 40%);
     border-radius: 8px;
     font-size: 0.8rem;
     font-weight: 600;

@@ -18,6 +18,13 @@ using ILoggerFactory factory = LoggerFactory.Create(builder => builder.AddConsol
 ILogger logger = factory.CreateLogger("ClimateExplorer.Data.Misc");
 logger.LogInformation("Starting ClimateExplorer.Data.Misc");
 
+// "--map-markers" only regenerates the map markers, without the site map or any dataset download.
+if (args.Contains("--map-markers"))
+{
+    GenerateMapMarkers();
+    return;
+}
+
 await BuildStaticContent.GenerateSiteMap();
 
 var httpClient = CreateHttpClient();
@@ -75,62 +82,32 @@ File.WriteAllText($@"{Folders.MetaDataFolder}\DataFileMapping\DataFileMapping_No
 
 GenerateMapMarkers();
 
+// Writes one marker per heating score into the web app, which serves the SVGs as they are. The colours
+// come from HeatingScoreColours, which the locations table's badges use too.
 static void GenerateMapMarkers()
 {
-    var fillColours = new List<string>
+    const string outputFolder = @"..\..\..\..\ClimateExplorer.Web\wwwroot\images\map-markers\";
+    var template = File.ReadAllText("MapMarker.svg");
+
+    foreach (var score in HeatingScoreColours.Scores)
     {
-        "#053061", // negative (deep cold blue)
-
-        "#c6dbe0", // 0 (light blue)
-        "#deebf7", // 1 (pale blue)
-        "#ffefef", // 2
-        "#fee8c8", // 3 (warm cream)
-        "#fdd49e", // 4 (light orange)
-        "#fdbb84", // 5 (orange)
-        "#fc8d59", // 6 (orange-red)
-        "#ef6548", // 7 (red-orange)
-        "#d7301f", // 8 (strong red)
-        "#67001f", // 9 (deep hot red)
-
-        "#D0D0D0", // ? (neutral/unknown)
-    };
-
-    var textColours = new List<string>
-    {
-        "#ffffff", // negative (dark fill → white text)
-
-        "#333333", // 0 (light fill → dark text)
-        "#333333", // 1
-        "#333333", // 2
-        "#333333", // 3
-        "#333333", // 4
-        "#333333", // 5
-        "#ffffff", // 6
-        "#ffffff", // 7
-        "#ffffff", // 8
-        "#ffffff", // 9
-
-        "#333333", // ? (neutral grey → dark text)
-    };
-
-    for (var i = -1; i < 11; i++)
-    {
-        var svg = File.ReadAllText("MapMarker.svg");
-        svg = svg.Replace("{colour}", fillColours[i + 1]);
-        var text = i == -1
-                        ? "-"
-                        : i == 10
-                            ? "?"
-                            : i.ToString();
-        svg = svg.Replace("{text}", text);
-        svg = svg.Replace("{text-colour}", textColours[i + 1]);
-        var fileName = i == -1
-                            ? "negative"
-                            : i == 10
-                                    ? "null"
-                                    : i.ToString();
-        File.WriteAllText($"{fileName}.svg", svg);
+        var (fileName, text) = score == Location.NegativeRateHeatingScore
+            ? ("negative", "-")
+            : (score.ToString(), score.ToString());
+        WriteMapMarker(template, Path.Combine(outputFolder, $"{fileName}.svg"), text, HeatingScoreColours.Get(score));
     }
+
+    // A location without a score gets a plain grey marker, with no text.
+    WriteMapMarker(template, Path.Combine(outputFolder, "null.svg"), string.Empty, HeatingScoreColours.NoScore);
+}
+
+static void WriteMapMarker(string template, string path, string text, (string Background, string Text) colours)
+{
+    var svg = template
+        .Replace("{colour}", colours.Background)
+        .Replace("{text-colour}", colours.Text)
+        .Replace("{text}", text);
+    File.WriteAllText(path, svg);
 }
 
 static HttpClient CreateHttpClient()
