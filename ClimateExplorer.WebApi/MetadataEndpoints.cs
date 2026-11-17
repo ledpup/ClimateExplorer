@@ -89,9 +89,23 @@ internal static class MetadataEndpoints
     public static async Task<IEnumerable<TrendScoreRow>> GetTrendScoreTable(
         [FromServices] ClimateExplorerApiServices services)
     {
-        // Calculated from the cached locations, not cached itself: it only takes their since-1961 rates.
         var locations = await LocationEndpoints.GetCachedLocations(services);
-        return Location.GetTrendScoreTable(locations);
+
+        // Memoised against the locations array it was built from, so a rebuild of the locations invalidates it.
+        if (services.TrendScoreTable is { } memo && ReferenceEquals(memo.Source, locations))
+        {
+            return memo.Table;
+        }
+
+        var table = Location.GetTrendScoreTable(locations);
+
+        // Only memoise a table built from the array the services hold.
+        if (locations is Location[] array && ReferenceEquals(array, services.Locations))
+        {
+            services.TrendScoreTable = (array, table);
+        }
+
+        return table;
     }
 
     private static async Task<IReadOnlyList<DataSetDefinitionViewModel>> BuildDataSetDefinitions()

@@ -1,5 +1,6 @@
 namespace ClimateExplorer.WebApi;
 
+using System.Collections.Generic;
 using System.Net.Http;
 using ClimateExplorer.Core.Model;
 using ClimateExplorer.Data.Downloading.Orchestration;
@@ -48,4 +49,10 @@ public sealed class ClimateExplorerApiServices(
     /// (by Id, by path, nearby) needs it; it only changes when this process rebuilds it.
     /// </summary>
     internal Location[] Locations { get; set; }
+
+    /// <summary>
+    /// The trend score table, with the <see cref="Locations"/> array it was built from. Building it sorts every
+    /// location's rate, so it's kept until <see cref="Locations"/> is replaced.
+    /// </summary>
+    internal (Location[] Source, IReadOnlyList<TrendScoreRow> Table)? TrendScoreTable { get; set; }
 }
