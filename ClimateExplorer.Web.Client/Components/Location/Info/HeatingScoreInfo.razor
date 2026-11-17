@@ -5,15 +5,15 @@
 
 @if (Location != null && HeatingScoreTable != null)
 {
-    <p>The heating score is a number between 0 and 9 that compares how fast a location has warmed with every other location in the dataset. It splits the range of warming rates since @StartYear into 10 steps of equal width. The fastest-warming locations score 9 and the slowest score 0. A location whose rate since @StartYear is negative scores @Location.NegativeRateHeatingScore, to highlight any location that has not warmed.</p>
-    <p>The steps start at the rate that @SlowPercent% of locations are slower than, and end at the rate that @FastPercent% are faster than, so a few unusually fast or slow locations don't stretch the scale. Locations beyond either end score 9 or 0, and their warming rates are included in those two rows of the table. Because the steps are equal widths and not equal groups of locations, most locations score in the middle.</p>
+    <p>The heating score, from 0 to 9, compares how fast a location has warmed since @StartYear with every other location in the dataset. Locations that have cooled score @Location.NegativeRateHeatingScore.</p>
+    <p>Each score covers an equal step of warming rate. The 10 steps span the middle @MiddlePercent% of rates, so a few outliers don't stretch the scale; locations beyond either end score 0 or 9. Because the steps are equal in width, not in number of locations, most locations score in the middle.</p>
     <p>@StartYear is the start of the World Meteorological Organization's 1961–1990 reference period, which is used to track long-term climate change. Every location is ranked on the same period, so a long record doesn't raise or lower its score.</p>
     <p>A location needs at least @MinimumYears complete years of data from @StartYear, starting no later than @LatestFirstYear, to get a score. Its data must also run to within @MaximumYearsBehindNewest years of the newest data in the dataset.</p>
 
     @if (Location.HeatingScore.HasValue && Location.Since1961TemperatureTrend is not null)
     {
         <p>
-            The warming rate since @StartYear for <strong>@Location.Name</strong> is <strong>@FormatLocationRate(Location)</strong>. Its heating score is <strong>@Location.HeatingScore</strong>@(Location.HeatingScore >= 0 ? ", highlighted below" : string.Empty).
+            The warming rate since @StartYear for <strong>@Location.Name</strong> is <strong>@FormatLocationRate(Location)</strong>. Its heating score is <strong>@Location.HeatingScore</strong>, highlighted below.
             The dashboard's trend field shows the last 30 years first, when that trend is significant, so it can show a different rate.
         </p>
     }
@@ -25,7 +25,7 @@
     }
 
     <p>
-        The table below lists each heating score, the range of warming rates it covers and the number of locations that have it, and ends with the locations that have cooled since @StartYear and those that have no score.
+        The table below shows the warming rates each score covers and how many locations have it.
     </p>
 
     <div class="table-card">

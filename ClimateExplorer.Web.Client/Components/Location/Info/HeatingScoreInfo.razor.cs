@@ -28,9 +28,7 @@ public partial class HeatingScoreInfo
 
     private static int MinimumYears => TrendDefaults.MinimumYearsForTrend;
 
-    private static int SlowPercent => (int)Math.Round(Location.HeatingScoreLowPercentile * 100);
-
-    private static int FastPercent => (int)Math.Round((1 - Location.HeatingScoreHighPercentile) * 100);
+    private static int MiddlePercent => (int)Math.Round((Location.HeatingScoreHighPercentile - Location.HeatingScoreLowPercentile) * 100);
 
     private static int MaximumYearsBehindNewest => Location.HeatingScoreMaximumYearsBehindNewest;
 
