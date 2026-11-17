@@ -7,7 +7,7 @@
 
 @if (Location != null && HeatingScoreTable != null)
 {
-    <p>The heating score, from 0 to 9, compares how fast a location has warmed since @StartYear with every other location in the dataset. Locations that have cooled score @Location.NegativeRateHeatingScore.</p>
+    <p>The trend score, from 0 to 9, compares how fast a location has warmed since @StartYear with every other location in the dataset. Locations that have cooled score @Location.NegativeRateHeatingScore.</p>
     <p>@StartYear is the start of the World Meteorological Organization's 1961–1990 reference period, which is used to track long-term climate change. Every location is ranked on the same period, so a long record doesn't raise or lower its score.</p>
     <p>The middle @MiddlePercent% of warming rates is split into 10 equal steps, so a few outliers don't stretch the scale; locations beyond either end score 0 or 9. Because the steps are equal in width, not in number of locations, most locations score in the middle.</p>
     <p>A location needs at least @MinimumYears complete years of data from @StartYear, starting no later than @LatestFirstYear, to get a score. Its data must also run to within @MaximumYearsBehindNewest years of the newest data in the dataset.</p>
@@ -15,14 +15,14 @@
     @if (Location.HeatingScore.HasValue && Location.Since1961TemperatureTrend is not null)
     {
         <p>
-            The warming rate since @StartYear for <strong>@Location.Name</strong> is <strong>@FormatLocationRate(Location)</strong>. Its heating score is <strong>@Location.HeatingScore</strong>, highlighted below.
+            The warming rate since @StartYear for <strong>@Location.Name</strong> is <strong>@FormatLocationRate(Location)</strong>. Its trend score is <strong>@Location.HeatingScore</strong>, highlighted below.
             The dashboard's trend field shows the last 30 years first, when that trend is significant, so it can show a different rate.
         </p>
     }
     else
     {
         <p>
-            <strong>@Location.Name</strong> doesn't have a heating score, because it doesn't have sufficient data.
+            <strong>@Location.Name</strong> doesn't have a trend score, because it doesn't have sufficient data.
         </p>
     }
 
@@ -32,12 +32,12 @@
 
     <div class="table-card">
         <div class="table-header">
-            <span>Heating score table</span>
+            <span>Trend score table</span>
         </div>
         <table class="table table--striped table--compact">
             <thead>
                 <tr>
-                    <th scope="col"><strong>Heating score</strong></th>
+                    <th scope="col"><strong>Trend score</strong></th>
                     <th scope="col" class="text-center"><strong>Warming rate since @StartYear (@RateUnitLabel)</strong></th>
                     <th scope="col" class="text-center"><strong>Locations</strong></th>
                 </tr>

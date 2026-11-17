@@ -328,7 +328,7 @@ public partial class LocationsTable
     {
         heatingScoreFilter = value;
 
-        // "No heating score" and "Has heating score" can't both hold, so picking the former clears the latter.
+        // "No trend score" and "Has trend score" can't both hold, so picking the former clears the latter.
         if (heatingScoreFilter == HeatingScoreFilterNullScore)
         {
             requireHeatingScore = false;

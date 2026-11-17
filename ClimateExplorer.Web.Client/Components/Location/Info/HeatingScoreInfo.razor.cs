@@ -54,9 +54,9 @@ public partial class HeatingScoreInfo
 
     private static string GetLocationsTitle(HeatingScoreRow row) => row.Score switch
     {
-        null => "Locations without a heating score",
-        < 0 => $"Locations that have cooled (heating score {row.Score})",
-        _ => $"Locations with heating score {row.Score}",
+        null => "Locations without a trend score",
+        < 0 => $"Locations that have cooled (trend score {row.Score})",
+        _ => $"Locations with trend score {row.Score}",
     };
 
     // The score steps are only a few hundredths of a degree per decade wide, so the rates are shown to three decimal

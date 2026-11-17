@@ -4,7 +4,7 @@
 @using ClimateExplorer.Web.Client.Services.Trends
 
 <p>The temperature trend is the rate at which yearly temperatures have been changing, shown per decade. It is the straight line of best fit (an ordinary least squares linear regression) through every complete year of temperature records.</p>
-<p>A trend is only shown on the dashboard when it is statistically significant (p &lt; 0.05). The last @TrendDefaults.RecentWindowYears years trend is shown when it is significant, because it says the most about the climate now. Otherwise the trend since @TrendDefaults.FixedPeriodStartYear is shown, which covers the same period at every location; otherwise the full period trend. The heating score ranks the trend since @TrendDefaults.FixedPeriodStartYear, so it can be based on a different trend from the one shown here.</p>
+<p>A trend is only shown on the dashboard when it is statistically significant (p &lt; 0.05). The last @TrendDefaults.RecentWindowYears years trend is shown when it is significant, because it says the most about the climate now. Otherwise the trend since @TrendDefaults.FixedPeriodStartYear is shown, which covers the same period at every location; otherwise the full period trend. The trend score ranks the trend since @TrendDefaults.FixedPeriodStartYear, so it can be based on a different trend from the one shown here.</p>
 
 @if (Details is { Windows.Count: > 0 } details)
 {
