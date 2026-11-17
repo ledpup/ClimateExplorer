@@ -178,14 +178,28 @@ public class Location : GeographicalEntity
 
     /// <summary>
     /// The heating score table for these locations, without setting their scores: the rows
-    /// <see cref="SetHeatingScores"/> returns, then a last row, with a null score, counting the locations that
-    /// have no score.
+    /// <see cref="SetHeatingScores"/> returns, then a row for <see cref="NegativeRateHeatingScore"/> (the range of
+    /// the negative rates and the number of locations), then a last row, with a null score, counting the locations
+    /// that have no score.
     /// </summary>
     public static List<HeatingScoreRow> GetHeatingScoreTable(IEnumerable<Location> locations)
     {
         var allLocations = locations.Where(x => x is not null).ToList();
         var eligible = GetEligibleForHeatingScore(allLocations);
         var table = HeatingScoreScale.Create(eligible)?.GetTable() ?? [];
+
+        var negativeRates = eligible
+            .Select(x => x.Since1961TemperatureTrend!.Slope)
+            .Where(x => x < 0)
+            .ToList();
+        table.Add(
+            new HeatingScoreRow
+            {
+                Score = NegativeRateHeatingScore,
+                MinimumRatePerDecade = negativeRates.Count == 0 ? null : negativeRates.Min() * 10,
+                MaximumRatePerDecade = negativeRates.Count == 0 ? null : negativeRates.Max() * 10,
+                LocationCount = negativeRates.Count,
+            });
 
         table.Add(new HeatingScoreRow { Score = null, MinimumRatePerDecade = null, MaximumRatePerDecade = null, LocationCount = allLocations.Count - eligible.Count });
 

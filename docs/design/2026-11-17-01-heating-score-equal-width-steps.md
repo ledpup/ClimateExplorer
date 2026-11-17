@@ -135,4 +135,5 @@ since-1961 rates (nearest rank, rounding down), so the step is 0.0484 °C/decade
   calculated (so it reflects the cached locations' rates, not their cached scores).
 - The table ends with a "No score" row (`Score`, `MinimumRatePerDecade` and `MaximumRatePerDecade` are now
   nullable; `Location.GetHeatingScoreTable` adds it, `SetHeatingScores` doesn't) counting the locations with no
-  since-1961 trend or a last year more than 10 years behind. The 7 locations that score −1 have no row.
+  since-1961 trend or a last year more than 10 years behind. A row for the −1 score (the range of the negative
+  rates and their count; 7 locations) comes before it, so the counts add up to every location.

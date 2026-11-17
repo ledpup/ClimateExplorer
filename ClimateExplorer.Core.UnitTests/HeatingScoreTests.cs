@@ -115,7 +115,7 @@ public class HeatingScoreTests
 
         var table = Location.GetHeatingScoreTable(locations);
 
-        Assert.HasCount(11, table);
+        Assert.HasCount(12, table);
         Assert.IsNull(table[^1].Score);
         Assert.IsNull(table[^1].MinimumRatePerDecade);
         Assert.IsNull(table[^1].MaximumRatePerDecade);
@@ -128,9 +128,27 @@ public class HeatingScoreTests
     {
         var table = Location.GetHeatingScoreTable([CreateLocation(since1961Slope: null)]);
 
-        Assert.HasCount(1, table);
-        Assert.IsNull(table[0].Score);
-        Assert.AreEqual(1, table[0].LocationCount);
+        Assert.HasCount(2, table);
+        Assert.AreEqual(0, table[0].LocationCount);
+        Assert.IsNull(table[1].Score);
+        Assert.AreEqual(1, table[1].LocationCount);
+    }
+
+    [TestMethod]
+    public void GetHeatingScoreTable_NegativeRates_HaveARowWithTheirRangeAndCount()
+    {
+        var locations = CreateEvenlySpacedLocations(101);
+        locations.Add(CreateLocation(since1961Slope: -0.006));
+        locations.Add(CreateLocation(since1961Slope: -0.0001));
+
+        var table = Location.GetHeatingScoreTable(locations);
+
+        var negative = table[^2];
+        Assert.AreEqual(Location.NegativeRateHeatingScore, negative.Score);
+        Assert.AreEqual(2, negative.LocationCount);
+        Assert.AreEqual(-0.06, negative.MinimumRatePerDecade!.Value, 1e-9);
+        Assert.AreEqual(-0.001, negative.MaximumRatePerDecade!.Value, 1e-9);
+        Assert.AreEqual(101, table.Take(10).Sum(x => x.LocationCount));
     }
 
     [TestMethod]
