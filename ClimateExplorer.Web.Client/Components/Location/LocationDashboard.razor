@@ -39,7 +39,7 @@
                     {
                         <OverviewField Label="Location" Tooltip="Click to locate on Google Maps" OnClick="OpenLocationMapAsync"><Value>@GeoLocationAsString</Value></OverviewField>
                         <OverviewField Label="Warming anomaly" Tooltip="@WarmingAnomalyTooltip" PopupContent="@WarmingAnomalyContent"><Value>@(WarmingAnomalyAsString ?? NoValue)</Value></OverviewField>
-                        <OverviewField Label="Trend score" Tooltip="@HeatingScoreTooltip" PopupContent="@HeatingScoreContent"><Value>@(Location.HeatingScore?.ToString() ?? NoValue)</Value></OverviewField>
+                        <OverviewField Label="Trend score" Tooltip="@TrendScoreTooltip" PopupContent="@TrendScoreContent"><Value>@(Location.TrendScore?.ToString() ?? NoValue)</Value></OverviewField>
                     }
                     @if (Location?.RecordHigh != null)
                     {

@@ -5,17 +5,17 @@
 @using ClimateExplorer.WebApiClient.Services
 @using System
 
-@if (Location != null && HeatingScoreTable != null)
+@if (Location != null && TrendScoreTable != null)
 {
-    <p>The trend score, from 0 to 9, compares how fast a location has warmed since @StartYear with every other location in the dataset. Locations that have cooled score @Location.NegativeRateHeatingScore.</p>
+    <p>The trend score, from 0 to 9, compares how fast a location has warmed since @StartYear with every other location in the dataset. Locations that have cooled score @Location.NegativeRateTrendScore.</p>
     <p>@StartYear is the start of the World Meteorological Organization's 1961–1990 reference period, which is used to track long-term climate change. Every location is ranked on the same period, so a long record doesn't raise or lower its score.</p>
     <p>The middle @MiddlePercent% of warming rates is split into 10 equal steps, so a few outliers don't stretch the scale; locations beyond either end score 0 or 9. Because the steps are equal in width, not in number of locations, most locations score in the middle.</p>
     <p>A location needs at least @MinimumYears complete years of data from @StartYear, starting no later than @LatestFirstYear, to get a score. Its data must also run to within @MaximumYearsBehindNewest years of the newest data in the dataset.</p>
 
-    @if (Location.HeatingScore.HasValue && Location.Since1961TemperatureTrend is not null)
+    @if (Location.TrendScore.HasValue && Location.Since1961TemperatureTrend is not null)
     {
         <p>
-            The warming rate since @StartYear for <strong>@Location.Name</strong> is <strong>@FormatLocationRate(Location)</strong>. Its trend score is <strong>@Location.HeatingScore</strong>, highlighted below.
+            The warming rate since @StartYear for <strong>@Location.Name</strong> is <strong>@FormatLocationRate(Location)</strong>. Its trend score is <strong>@Location.TrendScore</strong>, highlighted below.
             The dashboard's trend field shows the last 30 years first, when that trend is significant, so it can show a different rate.
         </p>
     }
@@ -39,9 +39,9 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var heatingScoreRow in HeatingScoreTable)
+                @foreach (var trendScoreRow in TrendScoreTable)
                 {
-                    var row = heatingScoreRow;
+                    var row = trendScoreRow;
                     <tr class="@GetRowClass(row)" @onclick="() => ShowLocationsAsync(row)">
                         <td>@(row.Score?.ToString() ?? "No score")</td>
                         <td>@(row.MinimumRatePerDecade is { } minimum && row.MaximumRatePerDecade is { } maximum ? $"{FormatBound(minimum)} - {FormatBound(maximum)}" : "NA")</td>
@@ -73,7 +73,7 @@
     @if (selectedRow is not null)
     {
         <LocationsTable ShowFilters="false"
-                        HeatingScore="@LocationsTable.GetHeatingScoreFilter(selectedRow.Score)"
+                        TrendScore="@LocationsTable.GetTrendScoreFilter(selectedRow.Score)"
                         LocationLinkClicked="CloseModalAsync" />
     }
 </SidePanel>

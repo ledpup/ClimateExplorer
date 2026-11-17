@@ -50,19 +50,19 @@ public static class ApiMeasures
     }
 
     /// <summary>
-    /// The since-1961 warming rate the heating score ranks (<see cref="Location.Since1961TemperatureTrend"/>),
+    /// The since-1961 warming rate the trend score ranks (<see cref="Location.Since1961TemperatureTrend"/>),
     /// per decade. A difference: the stored slope is per year, and is scaled to per decade here.
     /// </summary>
-    public static Measure? HeatingScoreRate(Location location)
+    public static Measure? TrendScoreRate(Location location)
     {
         return location.Since1961TemperatureTrend is { } trend ? Measure.Change(trend.Slope * 10, UnitOfMeasure.DegreesCelsius) : null;
     }
 
     /// <summary>
-    /// A bound of a heating score's range of since-1961 warming rates (<see cref="HeatingScoreRow"/>). Already per
+    /// A bound of a trend score's range of since-1961 warming rates (<see cref="TrendScoreRow"/>). Already per
     /// decade, so it needs no scaling. A difference, like the rates it bounds.
     /// </summary>
-    public static Measure HeatingScoreRateBound(double boundPerDecade)
+    public static Measure TrendScoreRateBound(double boundPerDecade)
     {
         return Measure.Change(boundPerDecade, UnitOfMeasure.DegreesCelsius);
     }

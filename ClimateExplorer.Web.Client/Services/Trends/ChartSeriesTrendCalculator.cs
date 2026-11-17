@@ -44,7 +44,7 @@ public static class ChartSeriesTrendCalculator
     /// <summary>
     /// Which window to fall back to when the user hasn't chosen one, or when the one they chose is
     /// no longer significant. Since 1961 first: it's the same period for every series, so trends on
-    /// different locations compare directly, and it's the trend the heating score ranks. Then the full
+    /// different locations compare directly, and it's the one the trend score ranks. Then the full
     /// period ("what's the whole record done?"), then most-recently-relevant.
     /// </summary>
     private static readonly TrendWindow[] SelectionPriority =

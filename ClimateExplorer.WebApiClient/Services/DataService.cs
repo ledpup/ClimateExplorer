@@ -232,16 +232,16 @@ public class DataService : IDataService
         return result!;
     }
 
-    public async Task<IEnumerable<HeatingScoreRow>> GetHeatingScoreTable()
+    public async Task<IEnumerable<TrendScoreRow>> GetTrendScoreTable()
     {
-        const string heatingScoreTableKey = "HeatingScoreTable";
-        var result = GetCached<IEnumerable<HeatingScoreRow>>(heatingScoreTableKey);
+        const string trendScoreTableKey = "TrendScoreTable";
+        var result = GetCached<IEnumerable<TrendScoreRow>>(trendScoreTableKey);
         if (result == null)
         {
-            var url = $"/heating-score-table";
-            result = await httpClient.GetFromJsonAsync<HeatingScoreRow[]>(url);
+            var url = $"/trend-score-table";
+            result = await httpClient.GetFromJsonAsync<TrendScoreRow[]>(url);
 
-            SetCached(heatingScoreTableKey, result!);
+            SetCached(trendScoreTableKey, result!);
         }
         
         return result!;

@@ -11,7 +11,7 @@ using ClimateExplorer.Core.Model;
 /// write to the precision that is meaningful (or displayed), to keep the cache files small.
 /// </summary>
 /// <remarks>
-/// Rounding applies only when writing. It must not feed back into calculations: heating scores and their bands are
+/// Rounding applies only when writing. It must not feed back into calculations: trend scores and their bands are
 /// derived from the locations' trends before the locations are cached.
 /// </remarks>
 internal static class CacheJsonOptions

@@ -15,21 +15,21 @@ using static ClimateExplorer.Core.Enums;
 
 /// <summary>
 /// The table of all locations, with its filters, sorting and paging, and the side panels its links open. The country
-/// and heating score filters are bindable, so a page can keep them in its URL. With <see cref="ShowFilters"/> off, the
+/// and trend score filters are bindable, so a page can keep them in its URL. With <see cref="ShowFilters"/> off, the
 /// table header (filters and count) is hidden and the "Has ..." checkboxes start unticked, so only
-/// <see cref="Country"/> and <see cref="HeatingScore"/> filter the list.
+/// <see cref="Country"/> and <see cref="TrendScore"/> filter the list.
 /// </summary>
 public partial class LocationsTable
 {
     /// <summary>
-    /// The <see cref="HeatingScore"/> filter for locations without a heating score.
+    /// The <see cref="TrendScore"/> filter for locations without a trend score.
     /// </summary>
-    public const string HeatingScoreFilterNullScore = "null-score";
+    public const string TrendScoreFilterNullScore = "null-score";
 
     /// <summary>
-    /// The <see cref="HeatingScore"/> filter for locations that have cooled (a negative heating score).
+    /// The <see cref="TrendScore"/> filter for locations that have cooled (a negative trend score).
     /// </summary>
-    public const string HeatingScoreFilterNegative = "negative";
+    public const string TrendScoreFilterNegative = "negative";
 
     private List<Location> allLocations = [];
     private IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions = [];
@@ -37,9 +37,9 @@ public partial class LocationsTable
     private Dictionary<Guid, List<string>> locationDataSources = new();
     private Dictionary<Guid, LocationTrendField> locationTrends = new();
     private string? countryFilter;
-    private string? heatingScoreFilter;
+    private string? trendScoreFilter;
     private bool requireAnomaly = true;
-    private bool requireHeatingScore = true;
+    private bool requireTrendScore = true;
     private bool requireTrend = true;
     private string sortColumn = "name";
     private bool sortAscending = true;
@@ -56,7 +56,7 @@ public partial class LocationsTable
 
     // The parameter values last applied, so a re-render of the parent doesn't reset a filter changed here
     private string? appliedCountry;
-    private string? appliedHeatingScore;
+    private string? appliedTrendScore;
 
     /// <summary>
     /// Shows the table header: the filters and the location count. When it's hidden, the "Has ..." checkboxes start
@@ -75,14 +75,14 @@ public partial class LocationsTable
     public EventCallback<string?> CountryChanged { get; set; }
 
     /// <summary>
-    /// The heating score filter: a score from 0 to 9, <see cref="HeatingScoreFilterNegative"/> or
-    /// <see cref="HeatingScoreFilterNullScore"/> (see <see cref="GetHeatingScoreFilter"/>). Other values are ignored.
+    /// The trend score filter: a score from 0 to 9, <see cref="TrendScoreFilterNegative"/> or
+    /// <see cref="TrendScoreFilterNullScore"/> (see <see cref="GetTrendScoreFilter"/>). Other values are ignored.
     /// </summary>
     [Parameter]
-    public string? HeatingScore { get; set; }
+    public string? TrendScore { get; set; }
 
     [Parameter]
-    public EventCallback<string?> HeatingScoreChanged { get; set; }
+    public EventCallback<string?> TrendScoreChanged { get; set; }
 
     /// <summary>
     /// Raised when a location's name link is clicked. The browser still follows the link.
@@ -116,13 +116,13 @@ public partial class LocationsTable
                 query = query.Where(l => (l.Country ?? l.CountryCode) == countryFilter);
             }
 
-            if (!string.IsNullOrEmpty(heatingScoreFilter))
+            if (!string.IsNullOrEmpty(trendScoreFilter))
             {
-                query = heatingScoreFilter switch
+                query = trendScoreFilter switch
                 {
-                    HeatingScoreFilterNullScore => query.Where(l => !l.HeatingScore.HasValue),
-                    HeatingScoreFilterNegative => query.Where(l => l.HeatingScore.HasValue && l.HeatingScore.Value < 0),
-                    _ when int.TryParse(heatingScoreFilter, out var score) => query.Where(l => l.HeatingScore == score),
+                    TrendScoreFilterNullScore => query.Where(l => !l.TrendScore.HasValue),
+                    TrendScoreFilterNegative => query.Where(l => l.TrendScore.HasValue && l.TrendScore.Value < 0),
+                    _ when int.TryParse(trendScoreFilter, out var score) => query.Where(l => l.TrendScore == score),
                     _ => query,
                 };
             }
@@ -132,9 +132,9 @@ public partial class LocationsTable
                 query = query.Where(l => l.WarmingAnomaly.HasValue);
             }
 
-            if (requireHeatingScore)
+            if (requireTrendScore)
             {
-                query = query.Where(l => l.HeatingScore.HasValue);
+                query = query.Where(l => l.TrendScore.HasValue);
             }
 
             if (requireTrend)
@@ -155,9 +155,9 @@ public partial class LocationsTable
                 "anomaly" => sortAscending
                     ? query.OrderBy(l => l.WarmingAnomaly ?? double.MinValue)
                     : query.OrderByDescending(l => l.WarmingAnomaly ?? double.MinValue),
-                "heatingscore" => sortAscending
-                    ? query.OrderBy(l => l.HeatingScore ?? int.MinValue)
-                    : query.OrderByDescending(l => l.HeatingScore ?? int.MinValue),
+                "trendscore" => sortAscending
+                    ? query.OrderBy(l => l.TrendScore ?? int.MinValue)
+                    : query.OrderByDescending(l => l.TrendScore ?? int.MinValue),
                 "trend" => sortAscending
                     ? query.OrderBy(l => GetTrendSlope(l.Id))
                     : query.OrderByDescending(l => GetTrendSlope(l.Id)),
@@ -179,13 +179,13 @@ public partial class LocationsTable
     private IEnumerable<DataSetDefinitionViewModel> DataSetDefinitions => dataSetDefinitions;
 
     /// <summary>
-    /// The <see cref="HeatingScore"/> filter that lists the locations with this score: null for the locations with
+    /// The <see cref="TrendScore"/> filter that lists the locations with this score: null for the locations with
     /// no score, and a negative score for the locations that have cooled.
     /// </summary>
-    public static string GetHeatingScoreFilter(int? score) => score switch
+    public static string GetTrendScoreFilter(int? score) => score switch
     {
-        null => HeatingScoreFilterNullScore,
-        < 0 => HeatingScoreFilterNegative,
+        null => TrendScoreFilterNullScore,
+        < 0 => TrendScoreFilterNegative,
         _ => score.Value.ToString(CultureInfo.InvariantCulture),
     };
 
@@ -198,7 +198,7 @@ public partial class LocationsTable
         if (!ShowFilters)
         {
             requireAnomaly = false;
-            requireHeatingScore = false;
+            requireTrendScore = false;
             requireTrend = false;
         }
 
@@ -270,10 +270,10 @@ public partial class LocationsTable
             changed = true;
         }
 
-        if (HeatingScore != appliedHeatingScore)
+        if (TrendScore != appliedTrendScore)
         {
-            appliedHeatingScore = HeatingScore;
-            SetHeatingScoreFilter(!string.IsNullOrEmpty(HeatingScore) && IsValidHeatingScoreFilter(HeatingScore) ? HeatingScore : null);
+            appliedTrendScore = TrendScore;
+            SetTrendScoreFilter(!string.IsNullOrEmpty(TrendScore) && IsValidTrendScoreFilter(TrendScore) ? TrendScore : null);
             changed = true;
         }
 
@@ -301,24 +301,24 @@ public partial class LocationsTable
         _ => dt.ToString(),
     };
 
-    private static string GetHeatingScoreBadgeStyle(short score)
+    private static string GetTrendScoreBadgeStyle(short score)
     {
-        var (background, text) = HeatingScoreColours.Get(score);
+        var (background, text) = TrendScoreColours.Get(score);
         return $"background-color: {background}; color: {text};";
     }
 
-    private static bool IsValidHeatingScoreFilter(string value) =>
-        value is HeatingScoreFilterNullScore or HeatingScoreFilterNegative
+    private static bool IsValidTrendScoreFilter(string value) =>
+        value is TrendScoreFilterNullScore or TrendScoreFilterNegative
         || (int.TryParse(value, out var score) && score is >= 0 and <= 9);
 
-    private void SetHeatingScoreFilter(string? value)
+    private void SetTrendScoreFilter(string? value)
     {
-        heatingScoreFilter = value;
+        trendScoreFilter = value;
 
         // "No trend score" and "Has trend score" can't both hold, so picking the former clears the latter.
-        if (heatingScoreFilter == HeatingScoreFilterNullScore)
+        if (trendScoreFilter == TrendScoreFilterNullScore)
         {
-            requireHeatingScore = false;
+            requireTrendScore = false;
         }
     }
 
@@ -336,12 +336,12 @@ public partial class LocationsTable
         await RaiseCountryChangedAsync();
     }
 
-    private async Task OnHeatingScoreFilterChanged(string value)
+    private async Task OnTrendScoreFilterChanged(string value)
     {
-        SetHeatingScoreFilter(string.IsNullOrEmpty(value) ? null : value);
+        SetTrendScoreFilter(string.IsNullOrEmpty(value) ? null : value);
         currentPage = 1;
         UpdateFilteredCount();
-        await RaiseHeatingScoreChangedAsync();
+        await RaiseTrendScoreChangedAsync();
     }
 
     private Task RaiseCountryChangedAsync()
@@ -350,10 +350,10 @@ public partial class LocationsTable
         return CountryChanged.InvokeAsync(countryFilter);
     }
 
-    private Task RaiseHeatingScoreChangedAsync()
+    private Task RaiseTrendScoreChangedAsync()
     {
-        appliedHeatingScore = heatingScoreFilter;
-        return HeatingScoreChanged.InvokeAsync(heatingScoreFilter);
+        appliedTrendScore = trendScoreFilter;
+        return TrendScoreChanged.InvokeAsync(trendScoreFilter);
     }
 
     private void OnRequireAnomalyChanged(bool value)
@@ -363,16 +363,16 @@ public partial class LocationsTable
         UpdateFilteredCount();
     }
 
-    private async Task OnRequireHeatingScoreChanged(bool value)
+    private async Task OnRequireTrendScoreChanged(bool value)
     {
-        requireHeatingScore = value;
+        requireTrendScore = value;
         currentPage = 1;
 
-        if (requireHeatingScore && heatingScoreFilter == HeatingScoreFilterNullScore)
+        if (requireTrendScore && trendScoreFilter == TrendScoreFilterNullScore)
         {
-            heatingScoreFilter = null;
+            trendScoreFilter = null;
             UpdateFilteredCount();
-            await RaiseHeatingScoreChangedAsync();
+            await RaiseTrendScoreChangedAsync();
             return;
         }
 

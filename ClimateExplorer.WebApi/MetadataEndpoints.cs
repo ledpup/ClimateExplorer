@@ -37,8 +37,8 @@ internal static class MetadataEndpoints
             "       Returns a list of countries.\n" +
             "   GET /region\n" +
             "       Returns a list of regions.\n" +
-            "   GET /heating-score-table\n" +
-            "       A table that records the range of warming anomalies for each heating score.\n" +
+            "   GET /trend-score-table\n" +
+            "       A table that records the range of since-1961 warming rates (per decade) for each trend score.\n" +
             "   GET /climate-record\n" +
             "       Returns a ranked list of climate records at a specific location\n" +
             "           Parameters:\n" +
@@ -86,12 +86,12 @@ internal static class MetadataEndpoints
         return (await Country.GetCountries(@"MetaData\countries.txt")).ToDictionary(x => x.Key, x => x.Value.Name);
     }
 
-    public static async Task<IEnumerable<HeatingScoreRow>> GetHeatingScoreTable(
+    public static async Task<IEnumerable<TrendScoreRow>> GetTrendScoreTable(
         [FromServices] ClimateExplorerApiServices services)
     {
         // Calculated from the cached locations, not cached itself: it only takes their since-1961 rates.
         var locations = await LocationEndpoints.GetCachedLocations(services);
-        return Location.GetHeatingScoreTable(locations);
+        return Location.GetTrendScoreTable(locations);
     }
 
     private static async Task<IReadOnlyList<DataSetDefinitionViewModel>> BuildDataSetDefinitions()

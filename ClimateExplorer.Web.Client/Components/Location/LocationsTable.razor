@@ -38,8 +38,8 @@ else
                     </Tooltip>
                     <Tooltip Text="Filter locations by trend score, a measure of how fast a location has warmed since 1961 relative to all other locations.<br>The score splits the range of warming rates since 1961 into 10 steps of equal width, from 0 (slowest) to 9 (fastest)." Multiline="true">
                         <Select TValue="string"
-                                Value="@(heatingScoreFilter ?? string.Empty)"
-                                ValueChanged="@OnHeatingScoreFilterChanged"
+                                Value="@(trendScoreFilter ?? string.Empty)"
+                                ValueChanged="@OnTrendScoreFilterChanged"
                                 aria-label="Trend score">
                             <SelectItem Value="@string.Empty">Any trend score</SelectItem>
                             @for (var i = 9; i >= 0; i--)
@@ -47,13 +47,13 @@ else
                                 var score = i;
                                 <SelectItem Value="@score.ToString()">@score</SelectItem>
                             }
-                            <SelectItem Value="@HeatingScoreFilterNegative">Negative (&lt; 0)</SelectItem>
-                            <SelectItem Value="@HeatingScoreFilterNullScore">No trend score</SelectItem>
+                            <SelectItem Value="@TrendScoreFilterNegative">Negative (&lt; 0)</SelectItem>
+                            <SelectItem Value="@TrendScoreFilterNullScore">No trend score</SelectItem>
                         </Select>
                     </Tooltip>
                     <div class="toolbar-checkboxes">
                         <Checkbox Text="Has anomaly" Value="@requireAnomaly" ValueChanged="@OnRequireAnomalyChanged" />
-                        <Checkbox Text="Has trend score" Value="@requireHeatingScore" ValueChanged="@OnRequireHeatingScoreChanged" />
+                        <Checkbox Text="Has trend score" Value="@requireTrendScore" ValueChanged="@OnRequireTrendScoreChanged" />
                         <Checkbox Text="Has trend" Value="@requireTrend" ValueChanged="@OnRequireTrendChanged" />
                     </div>
                 </div>
@@ -72,8 +72,8 @@ else
                     <th scope="col" class="anomaly-col text-center" aria-sort="@GetAriaSort("anomaly")">
                         <button type="button" class="sort-button" @onclick='() => OnSortChanged("anomaly")'><strong>Warming anomaly <i class="fas @GetSortIconClass("anomaly")" aria-hidden="true"></i></strong></button>
                     </th>
-                    <th scope="col" class="heating-col text-center" aria-sort="@GetAriaSort("heatingscore")">
-                        <button type="button" class="sort-button" @onclick='() => OnSortChanged("heatingscore")'><strong>Trend score <i class="fas @GetSortIconClass("heatingscore")" aria-hidden="true"></i></strong></button>
+                    <th scope="col" class="trend-col text-center" aria-sort="@GetAriaSort("trendscore")">
+                        <button type="button" class="sort-button" @onclick='() => OnSortChanged("trendscore")'><strong>Trend score <i class="fas @GetSortIconClass("trendscore")" aria-hidden="true"></i></strong></button>
                     </th>
                     <th scope="col" class="trend-col text-center" aria-sort="@GetAriaSort("trend")">
                         <button type="button" class="sort-button" @onclick='() => OnSortChanged("trend")'>
@@ -103,9 +103,9 @@ else
                         <td class="country-cell">@(location.Country ?? location.CountryCode)</td>
                         <td class="anomaly-cell text-center">@FormatAnomaly(location)</td>
                         <td class="text-center">
-                            @if (location.HeatingScore.HasValue)
+                            @if (location.TrendScore.HasValue)
                             {
-                                <span class="heating-badge" style="@GetHeatingScoreBadgeStyle(location.HeatingScore.Value)">@location.HeatingScore</span>
+                                <span class="trend-badge" style="@GetTrendScoreBadgeStyle(location.TrendScore.Value)">@location.TrendScore</span>
                             }
                             else
                             {

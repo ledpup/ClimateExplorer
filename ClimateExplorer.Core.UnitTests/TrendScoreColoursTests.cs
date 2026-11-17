@@ -7,16 +7,16 @@ using ClimateExplorer.Core.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [TestClass]
-public class HeatingScoreColoursTests
+public class TrendScoreColoursTests
 {
     private const double MinimumTextContrast = 4.5;
 
     [TestMethod]
     public void Get_EveryScore_TextMeetsWcagAaContrast()
     {
-        foreach (var score in HeatingScoreColours.Scores)
+        foreach (var score in TrendScoreColours.Scores)
         {
-            var (background, text) = HeatingScoreColours.Get(score);
+            var (background, text) = TrendScoreColours.Get(score);
 
             var contrast = ContrastRatio(background, text);
 
@@ -27,7 +27,7 @@ public class HeatingScoreColoursTests
     [TestMethod]
     public void NoScore_Text_MeetsWcagAaContrast()
     {
-        var (background, text) = HeatingScoreColours.NoScore;
+        var (background, text) = TrendScoreColours.NoScore;
 
         Assert.IsGreaterThanOrEqualTo(MinimumTextContrast, ContrastRatio(background, text));
     }
@@ -35,10 +35,10 @@ public class HeatingScoreColoursTests
     [TestMethod]
     public void Get_EveryScore_HasItsOwnBackground()
     {
-        var backgrounds = HeatingScoreColours.Scores.Select(x => HeatingScoreColours.Get(x).Background).ToList();
+        var backgrounds = TrendScoreColours.Scores.Select(x => TrendScoreColours.Get(x).Background).ToList();
 
         Assert.HasCount(backgrounds.Count, backgrounds.Distinct());
-        Assert.DoesNotContain(HeatingScoreColours.NoScore.Background, backgrounds);
+        Assert.DoesNotContain(TrendScoreColours.NoScore.Background, backgrounds);
     }
 
     // A difference of about 0.02 in OKLab is just noticeable side by side. Map markers are small and seen
@@ -47,13 +47,13 @@ public class HeatingScoreColoursTests
     public void Get_AnyTwoScores_BackgroundsAreEasyToTellApart()
     {
         const double minimumDifference = 0.09;
-        var scores = HeatingScoreColours.Scores;
+        var scores = TrendScoreColours.Scores;
 
         for (var i = 0; i < scores.Count; i++)
         {
             for (var j = i + 1; j < scores.Count; j++)
             {
-                var difference = OkLabDifference(HeatingScoreColours.Get(scores[i]).Background, HeatingScoreColours.Get(scores[j]).Background);
+                var difference = OkLabDifference(TrendScoreColours.Get(scores[i]).Background, TrendScoreColours.Get(scores[j]).Background);
 
                 Assert.IsGreaterThanOrEqualTo(minimumDifference, difference, $"Scores {scores[i]} and {scores[j]} are {difference:0.000} apart");
             }
@@ -63,7 +63,7 @@ public class HeatingScoreColoursTests
     [TestMethod]
     public void Get_ScoreOutsideTheRange_IsNoScore()
     {
-        Assert.AreEqual(HeatingScoreColours.NoScore, HeatingScoreColours.Get(10));
+        Assert.AreEqual(TrendScoreColours.NoScore, TrendScoreColours.Get(10));
     }
 
     private static double ContrastRatio(string first, string second)

@@ -82,23 +82,23 @@ File.WriteAllText($@"{Folders.MetaDataFolder}\DataFileMapping\DataFileMapping_No
 
 GenerateMapMarkers();
 
-// Writes one marker per heating score into the web app, which serves the SVGs as they are. The colours
-// come from HeatingScoreColours, which the locations table's badges use too.
+// Writes one marker per trend score into the web app, which serves the SVGs as they are. The colours
+// come from TrendScoreColours, which the locations table's badges use too.
 static void GenerateMapMarkers()
 {
     const string outputFolder = @"..\..\..\..\ClimateExplorer.Web\wwwroot\images\map-markers\";
     var template = File.ReadAllText("MapMarker.svg");
 
-    foreach (var score in HeatingScoreColours.Scores)
+    foreach (var score in TrendScoreColours.Scores)
     {
-        var (fileName, text) = score == Location.NegativeRateHeatingScore
+        var (fileName, text) = score == Location.NegativeRateTrendScore
             ? ("negative", "-")
             : (score.ToString(), score.ToString());
-        WriteMapMarker(template, Path.Combine(outputFolder, $"{fileName}.svg"), text, HeatingScoreColours.Get(score));
+        WriteMapMarker(template, Path.Combine(outputFolder, $"{fileName}.svg"), text, TrendScoreColours.Get(score));
     }
 
     // A location without a score gets a plain grey marker, with no text.
-    WriteMapMarker(template, Path.Combine(outputFolder, "null.svg"), string.Empty, HeatingScoreColours.NoScore);
+    WriteMapMarker(template, Path.Combine(outputFolder, "null.svg"), string.Empty, TrendScoreColours.NoScore);
 }
 
 static void WriteMapMarker(string template, string path, string text, (string Background, string Text) colours)

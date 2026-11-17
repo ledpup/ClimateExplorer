@@ -9,10 +9,10 @@ using ClimateExplorer.WebApiClient.Services;
 using Microsoft.AspNetCore.Components;
 using static ClimateExplorer.Core.Enums;
 
-public partial class HeatingScoreInfo
+public partial class TrendScoreInfo
 {
     private SidePanel? locationsSidePanel;
-    private HeatingScoreRow? selectedRow;
+    private TrendScoreRow? selectedRow;
 
     [Inject]
     public IDataService? DataService { get; set; }
@@ -21,7 +21,7 @@ public partial class HeatingScoreInfo
     public Location? Location { get; set; }
 
     [PersistentState]
-    public IEnumerable<HeatingScoreRow>? HeatingScoreTable { get; set; }
+    public IEnumerable<TrendScoreRow>? TrendScoreTable { get; set; }
 
     [CascadingParameter]
     public IUnitFormatter Units { get; set; } = UnitFormatter.Metric;
@@ -32,9 +32,9 @@ public partial class HeatingScoreInfo
 
     private static int MinimumYears => TrendDefaults.MinimumYearsForTrend;
 
-    private static int MiddlePercent => (int)Math.Round((Location.HeatingScoreHighPercentile - Location.HeatingScoreLowPercentile) * 100);
+    private static int MiddlePercent => (int)Math.Round((Location.TrendScoreHighPercentile - Location.TrendScoreLowPercentile) * 100);
 
-    private static int MaximumYearsBehindNewest => Location.HeatingScoreMaximumYearsBehindNewest;
+    private static int MaximumYearsBehindNewest => Location.TrendScoreMaximumYearsBehindNewest;
 
     // The popup this is shown in, closed when a location in the side panel is followed
     [CascadingParameter]
@@ -44,15 +44,15 @@ public partial class HeatingScoreInfo
 
     protected override async Task OnInitializedAsync()
     {
-        if (HeatingScoreTable is not null)
+        if (TrendScoreTable is not null)
         {
             return;
         }
 
-        HeatingScoreTable = await DataService!.GetHeatingScoreTable();
+        TrendScoreTable = await DataService!.GetTrendScoreTable();
     }
 
-    private static string GetLocationsTitle(HeatingScoreRow row) => row.Score switch
+    private static string GetLocationsTitle(TrendScoreRow row) => row.Score switch
     {
         null => "Locations without a trend score",
         < 0 => $"Locations that have cooled (trend score {row.Score})",
@@ -62,13 +62,13 @@ public partial class HeatingScoreInfo
     // The score steps are only a few hundredths of a degree per decade wide, so the rates are shown to three decimal
     // places (two more than a temperature difference) for neighbouring steps to be told apart.
     private string FormatLocationRate(Location location) =>
-        ApiMeasures.HeatingScoreRate(location) is { } rate ? $"{Units.Format(rate, signed: true, extraDecimals: 1)}/decade" : "NA";
+        ApiMeasures.TrendScoreRate(location) is { } rate ? $"{Units.Format(rate, signed: true, extraDecimals: 1)}/decade" : "NA";
 
-    private string FormatBound(double bound) => Units.FormatNumber(ApiMeasures.HeatingScoreRateBound(bound), extraDecimals: 1);
+    private string FormatBound(double bound) => Units.FormatNumber(ApiMeasures.TrendScoreRateBound(bound), extraDecimals: 1);
 
-    private string? GetRowClass(HeatingScoreRow row)
+    private string? GetRowClass(TrendScoreRow row)
     {
-        var highlighted = Location?.HeatingScore == row.Score;
+        var highlighted = Location?.TrendScore == row.Score;
         var clickable = row.LocationCount > 0;
 
         return (highlighted, clickable) switch
@@ -80,7 +80,7 @@ public partial class HeatingScoreInfo
         };
     }
 
-    private async Task ShowLocationsAsync(HeatingScoreRow row)
+    private async Task ShowLocationsAsync(TrendScoreRow row)
     {
         if (row.LocationCount == 0)
         {

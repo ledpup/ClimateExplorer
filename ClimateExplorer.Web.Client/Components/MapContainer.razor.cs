@@ -156,14 +156,14 @@ public partial class MapContainer : IAsyncDisposable
 
     private static string GetMarkerIconLabel(Core.Model.Location location)
     {
-        if (location.HeatingScore == null)
+        if (location.TrendScore == null)
         {
             return "null";
         }
 
-        return location.HeatingScore.Value < 0
+        return location.TrendScore.Value < 0
             ? "negative"
-            : location.HeatingScore.Value.ToString();
+            : location.TrendScore.Value.ToString();
     }
 
     private async Task AfterMapRender()
