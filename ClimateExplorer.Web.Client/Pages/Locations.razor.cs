@@ -17,6 +17,8 @@ public partial class Locations
 {
     private const string HeatingScoreFilterNullScore = "null-score";
     private const string HeatingScoreFilterNegative = "negative";
+    private const string CountryQueryParameter = "country";
+    private const string HeatingScoreQueryParameter = "heatingScore";
 
     private List<Location> allLocations = [];
     private IEnumerable<DataSetDefinitionViewModel> dataSetDefinitions = [];
@@ -46,6 +48,15 @@ public partial class Locations
 
     [Inject]
     private ILogger<Locations>? Logger { get; set; }
+
+    [Inject]
+    private NavigationManager? NavManager { get; set; }
+
+    [SupplyParameterFromQuery(Name = CountryQueryParameter)]
+    private string? CountryFromQuery { get; set; }
+
+    [SupplyParameterFromQuery(Name = HeatingScoreQueryParameter)]
+    private string? HeatingScoreFromQuery { get; set; }
 
     // Formatting only: sorting stays on the metric values, and every conversion is increasing, so the
     // order is the same in every unit system.
@@ -186,6 +197,8 @@ public partial class Locations
             .Distinct()
             .Order()];
 
+        ApplyFiltersFromQuery();
+
         UpdateFilteredCount();
         log.LogInformation("Done");
     }
@@ -226,6 +239,41 @@ public partial class Locations
         return $"background-color: {bg}; color: {fg};";
     }
 
+    private static bool IsValidHeatingScoreFilter(string value) =>
+        value is HeatingScoreFilterNullScore or HeatingScoreFilterNegative
+        || (int.TryParse(value, out var score) && score is >= 0 and <= 9);
+
+    // Unknown values in the URL are ignored rather than producing an empty table.
+    private void ApplyFiltersFromQuery()
+    {
+        if (!string.IsNullOrEmpty(CountryFromQuery) && availableCountries.Contains(CountryFromQuery))
+        {
+            countryFilter = CountryFromQuery;
+        }
+
+        if (!string.IsNullOrEmpty(HeatingScoreFromQuery) && IsValidHeatingScoreFilter(HeatingScoreFromQuery))
+        {
+            heatingScoreFilter = HeatingScoreFromQuery;
+
+            if (heatingScoreFilter == HeatingScoreFilterNullScore)
+            {
+                requireHeatingScore = false;
+            }
+        }
+    }
+
+    // Replaces the current history entry, so each dropdown change doesn't add a back-button stop.
+    private void UpdateQueryString()
+    {
+        var uri = NavManager!.GetUriWithQueryParameters(new Dictionary<string, object?>
+        {
+            [CountryQueryParameter] = countryFilter,
+            [HeatingScoreQueryParameter] = heatingScoreFilter,
+        });
+
+        NavManager.NavigateTo(uri, false, true);
+    }
+
     private void UpdateFilteredCount()
     {
         filteredCount = FilteredAndSortedLocations.Count();
@@ -237,6 +285,7 @@ public partial class Locations
         countryFilter = string.IsNullOrEmpty(value) ? null : value;
         currentPage = 1;
         UpdateFilteredCount();
+        UpdateQueryString();
     }
 
     private void OnHeatingScoreFilterChanged(string value)
@@ -251,6 +300,7 @@ public partial class Locations
 
         currentPage = 1;
         UpdateFilteredCount();
+        UpdateQueryString();
     }
 
     private void OnRequireAnomalyChanged(bool value)
@@ -271,6 +321,7 @@ public partial class Locations
 
         currentPage = 1;
         UpdateFilteredCount();
+        UpdateQueryString();
     }
 
     private void OnRequireTrendChanged(bool value)
