@@ -1,5 +1,6 @@
 ﻿namespace ClimateExplorer.Core.Model;
 
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -51,6 +52,19 @@ public class Station
         var text = await File.ReadAllTextAsync(pathAndFileName);
         var list = JsonSerializer.Deserialize<List<Station>>(text)!;
         return list;
+    }
+
+    /// <summary>
+    /// A station name as people read it. Sources such as GHCN and BOM give names in upper case with underscores
+    /// ("AVALON_AIRPORT"); those become title case with spaces ("Avalon Airport"). A name with any lower-case letter
+    /// is taken as already formatted, and only loses its underscores.
+    /// </summary>
+    public static string ToDisplayName(string name)
+    {
+        var spaced = name.Replace('_', ' ');
+        return spaced.Any(char.IsLower)
+            ? spaced
+            : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(spaced.ToLowerInvariant());
     }
 
     public override string ToString()

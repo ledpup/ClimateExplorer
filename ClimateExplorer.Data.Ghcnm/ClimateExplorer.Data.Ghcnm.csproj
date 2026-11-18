@@ -19,6 +19,9 @@
     <Content Include="MetaData\GhcnIdToLocationIds.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="MetaData\geonames-cities.tsv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="MetaData\ghcnm-fips-to-iso.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

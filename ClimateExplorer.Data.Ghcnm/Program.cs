@@ -4,7 +4,6 @@ using ClimateExplorer.Core.Model;
 using ClimateExplorer.Data.Ghcnm;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -28,6 +27,17 @@ const int minimumCompleteYearsInRecentPeriod = 10;
 const double isolationRadiusKm = 75;
 const int isolatedMinimumCompleteYears = 10;
 const int isolatedRecentYears = 10;
+
+// The smallest spacing radius (a 120-year record). Two kept stations closer than this are near-duplicates.
+const double spacingFloorKm = 10;
+
+// A city (GeoNames) with no location within 30 km of its centre, in its country, gets the best station within 25 km
+// of the centre. Measured from the city, not the station: Avalon Airport is 17 km from Geelong but 31 km from
+// Laverton, while Geelong itself has nothing within 48 km. The station needs the recent-completeness rule and a
+// value in the last 10 years. The location is named after the city.
+const int cityMinimumPopulation = 50_000;
+const double cityCoveredRadiusKm = 30;
+const double cityCandidateRadiusKm = 25;
 
 var httpClient = new HttpClient();
 var userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36";
@@ -115,12 +125,47 @@ var spacedStations = StationSpacingSelector.Select(
 
 logger.LogInformation($"{spacedStations.Count} of {candidates.Count} stations kept after leaving out those close to a better station in the same country or to a pre-existing location");
 
-// Fill the gaps: stations that failed the record-length rules but have nothing kept or pre-existing within 75 km.
-// Checked across borders, as the point is coverage. Best record first, and each one kept blocks those near it.
+// Cities without a location: the best station near the centre, in the same country, that isn't within 10 km of a
+// kept station or nearer a bigger city. Each one picked covers the smaller cities around it.
 var lastYearsWithAnyValue = await GetLastYearWithAnyValue("qcf");
 var spacedStationIds = spacedStations.Select(x => x.Id).ToHashSet();
-var isolatedCandidates = fullStations
+var cities = await GeoNamesCities.Load(httpClient, cityMinimumPopulation, logger);
+var cityCandidates = fullStations
     .Where(x => !spacedStationIds.Contains(x.Id)
+                && x.Coordinates != null
+                && x.CountryCode != null
+                && completeYearsInRecentPeriod.GetValueOrDefault(x.Id) >= minimumCompleteYearsInRecentPeriod
+                && lastYearsWithAnyValue.GetValueOrDefault(x.Id) >= DateTime.Now.Year - isolatedRecentYears)
+    .OrderByDescending(IsPreviouslySelected)
+    .ThenByDescending(x => x.Score ?? 0)
+    .ThenBy(x => x.Id)
+    .ToList();
+
+var cityStations = CityStationSelector.Select(
+    cities,
+    [.. preExistingStations, .. spacedStations],
+    cityCandidates,
+    x => x.CountryCode!,
+    x => x.Coordinates!.Value,
+    cityCoveredRadiusKm,
+    cityCandidateRadiusKm,
+    spacingFloorKm);
+
+foreach (var cityStation in cityStations)
+{
+    logger.LogInformation($"City {cityStation.City.Name}, {cityStation.City.CountryCode} (population {cityStation.City.Population}) gets station {cityStation.Station.Id} {cityStation.Station.Name}, {cityStation.DistanceKm:0.0} km from the centre");
+}
+
+logger.LogInformation($"{cityStations.Count} stations added for cities of {cityMinimumPopulation} or more with no location within {cityCoveredRadiusKm} km (from {cityCandidates.Count} candidates within {cityCandidateRadiusKm} km of a centre, at least {minimumCompleteYearsInRecentPeriod} complete years in the last {recentPeriodYears} and a value since {DateTime.Now.Year - isolatedRecentYears})");
+
+var cityByStationId = cityStations.ToDictionary(x => x.Station.Id, x => x.City);
+var keptBeforeIsolation = new List<Station>([.. spacedStations, .. cityStations.Select(x => x.Station)]);
+var keptBeforeIsolationIds = keptBeforeIsolation.Select(x => x.Id).ToHashSet();
+
+// Fill the gaps: stations that failed the record-length rules but have nothing kept or pre-existing within 75 km.
+// Checked across borders, as the point is coverage. Best record first, and each one kept blocks those near it.
+var isolatedCandidates = fullStations
+    .Where(x => !keptBeforeIsolationIds.Contains(x.Id)
                 && x.Coordinates != null
                 && x.CountryCode != null
                 && (x.Score ?? 0) >= isolatedMinimumCompleteYears
@@ -131,7 +176,7 @@ var isolatedCandidates = fullStations
     .ToList();
 
 var isolatedStations = StationSpacingSelector.Select(
-    [.. preExistingStations, .. spacedStations],
+    [.. preExistingStations, .. keptBeforeIsolation],
     isolatedCandidates,
     _ => string.Empty,
     x => x.Coordinates!.Value,
@@ -139,8 +184,8 @@ var isolatedStations = StationSpacingSelector.Select(
 
 logger.LogInformation($"{isolatedStations.Count} of {isolatedCandidates.Count} short-record stations added because nothing else is within {isolationRadiusKm} km (at least {isolatedMinimumCompleteYears} complete years and a value since {DateTime.Now.Year - isolatedRecentYears})");
 
-var selectedStations = await RemoveDuplicateLocations([.. spacedStations, .. isolatedStations]);
-logger.LogInformation($"{selectedStations.Count} stations have been selected after adjusting for data quality, spacing, isolation and removing duplicates of pre-existing locations");
+var selectedStations = await RemoveDuplicateLocations([.. keptBeforeIsolation, .. isolatedStations]);
+logger.LogInformation($"{selectedStations.Count} stations have been selected after adjusting for data quality, spacing, cities, isolation and removing duplicates of pre-existing locations");
 
 var locations = new List<Location>();
 var dataFileMapping = new DataFileMapping
@@ -149,14 +194,17 @@ var dataFileMapping = new DataFileMapping
     LocationIdToDataFileMappings = new Dictionary<Guid, List<DataFileFilterAndAdjustment>>()
 };
 
-var textinfo = CultureInfo.CurrentCulture.TextInfo;
-
 selectedStations.ForEach(x =>
     {
+        // A city station is named after its city, with the station kept alongside: "Geelong (Avalon Airport)". The
+        // station file keeps the station's own name.
+        var stationName = Station.ToDisplayName(x.Name!);
+        var city = cityByStationId.GetValueOrDefault(x.Id);
         var location = new Location
         {
             Id = ghcnIdToLocationIds[x.Id],
-            Name = textinfo.ToTitleCase(x.Name!.Replace('_', ' ').ToLower()),
+            Name = city?.Name ?? stationName,
+            StationName = city is null ? null : stationName,
             Coordinates = x.Coordinates!.Value,
             CountryCode = x.CountryCode!,
         };
@@ -197,7 +245,7 @@ await CreateStationDataFiles("qcu", @"Temperature\GHCNm\Unadjusted", selectedSta
 static double GetSpacingRadiusKm(int completeYears)
 {
     const double shortRecordRadiusKm = 25;
-    const double longRecordRadiusKm = 10;
+    const double longRecordRadiusKm = spacingFloorKm;
     const int shortRecordYears = AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly;
     const int longRecordYears = 120;
 

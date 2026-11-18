@@ -39,6 +39,12 @@ public class Location : GeographicalEntity
 
     public int? LastYear { get; set; }
 
+    /// <summary>
+    /// The weather station, when the location is named after the city it serves rather than the station (the GHCNm
+    /// importer's city rule): "Avalon Airport" for Geelong. Null when the location's name is the station's.
+    /// </summary>
+    public string? StationName { get; set; }
+
     public DataRecord? RecordHigh { get; set; }
 
     [JsonIgnore]
@@ -50,11 +56,18 @@ public class Location : GeographicalEntity
     [JsonIgnore]
     public TrendSummary? Since1961TemperatureTrend => TemperatureTrends?.FirstOrDefault(x => x.Window == TrendWindow.Since1961);
 
+    /// <summary>The name, followed by the station in brackets when there is one: "Geelong (Avalon Airport)".</summary>
+    [JsonIgnore]
+    public string NameWithStation =>
+        string.IsNullOrWhiteSpace(StationName)
+            ? Name
+            : $"{Name} ({StationName})";
+
     [JsonIgnore]
     public string FullTitle =>
         string.IsNullOrWhiteSpace(Country)
-            ? Name
-            : $"{Name}, {Country}";
+            ? NameWithStation
+            : $"{NameWithStation}, {Country}";
 
     [JsonIgnore]
     public string CodeTitle =>
@@ -69,14 +82,14 @@ public class Location : GeographicalEntity
         {
             if (string.IsNullOrWhiteSpace(CountryWithoutOwner))
             {
-                return Name;
+                return NameWithStation;
             }
 
-            var proposedTitle = $"{Name}, {CountryWithoutOwner}";
+            var proposedTitle = $"{NameWithStation}, {CountryWithoutOwner}";
 
             var country = proposedTitle?.Length > TitleMaximumLength ? CountryCode : CountryWithoutOwner;
 
-            return $"{Name}, {country}";
+            return $"{NameWithStation}, {country}";
         }
     }
 

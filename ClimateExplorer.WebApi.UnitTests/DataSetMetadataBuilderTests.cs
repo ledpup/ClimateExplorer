@@ -187,6 +187,21 @@ public sealed class DataSetMetadataBuilderTests
         Assert.AreEqual("Station One", result.Stations.Single().StationName);
     }
 
+    [TestMethod]
+    public async Task BuildAsync_UpperCaseStationName_ReturnsTitleCaseWithSpaces()
+    {
+        var dataSetDefinition = CreateDataSetDefinition(
+            DataSetDefinitionId,
+            LocationId,
+            [new DataFileFilterAndAdjustment { Id = "ASN00087113" }]);
+        var stationLookup = new StubStationMetadataLookup(
+            new Station { Id = "ASN00087113", Name = "AVALON_AIRPORT" });
+
+        var result = await CreateBuilder(stationLookup).BuildAsync(dataSetDefinition, LocationId);
+
+        Assert.AreEqual("Avalon Airport", result.Stations.Single().StationName);
+    }
+
     private static DataSetMetadataBuilder CreateBuilder(IStationMetadataLookup stationLookup)
     {
         return new DataSetMetadataBuilder(stationLookup, id => Task.FromResult(CreateGeographicalEntity(id)));

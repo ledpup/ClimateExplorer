@@ -468,7 +468,8 @@ The result then goes through `RemoveDuplicateLocations` with the spaced stations
 
 The rule fills empty country: US, Canada, Russia, outback Australia, Antarctica. It doesn't bring back
 the three towns, because each is near a shipped location: Avalon (Geelong) is 31 km from Laverton,
-Albion Park (Wollongong) 49 km from Nowra, and Bendigo Airport 64 km from Maryborough.
+Albion Park (Wollongong) 49 km from Nowra, and Bendigo Airport 64 km from Maryborough. See
+[City stations](2026-11-18-01-city-stations-plan.md) for a rule that does.
 Many of the additions have under 60 complete years, so they show a grey marker with no warming anomaly.
 They still get daily data from GHCNd.
 
