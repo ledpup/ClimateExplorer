@@ -313,6 +313,18 @@ Implemented as planned, with these details and deviations.
 - `Station.ToDisplayName` (new): underscores to spaces, and title case when the name has no lower-case letter.
   The importer and `DataSetMetadataBuilder` share it. The importer used `CurrentCulture` title case before and
   now uses invariant. Every GHCNm name is upper case, so existing location names don't change.
+  - **Follow-up (PR #807 review):** title casing keeps known abbreviations in capitals (`AWS`, `AP`, `CS`, `RAAF`,
+    `AFB`, Roman numerals and so on; the initials in `StationAbbreviations`) and compass offsets ("Dallas 7 NE", "Troy 3N"). It also
+    capitalises after "Mc" ("McKinley Park") and after a one-letter prefix and apostrophe ("O'Neill", "M'Sila"). 670
+    of the 5,524 names in the station metadata files change. Casing doesn't change `UrlReadyName`, which lower-cases.
+    GHCNm gives "CHICAGO_OHARE" with no apostrophe, so it stays "Ohare"; adding one would move its URL.
+  - **Follow-up:** `StationAbbreviations` also lists shortened words that stay title case ("Intl", "Rgnl", "Muni").
+    The location dashboard's title tooltip ends with what each abbreviation in the name stands for
+    (`AbbreviationTooltip`). The meanings are compiled into the client; there's no API call. Matching ignores case, so
+    names written before the initials list ("Bellambi Aws") are explained too. 746 of 5,501 locations get one.
+  - `Locations_ghcnm_adjusted.json` was updated in place rather than by rerunning the importer: each location's
+    station name was recomputed from `Stations_ghcnm_adjusted.json` through the data file mapping. 600 `Name` and 63
+    `StationName` values changed; city names were left alone.
 
 **Importer (`ClimateExplorer.Data.Ghcnm`)**
 
@@ -350,7 +362,7 @@ Implemented as planned, with these details and deviations.
   - other country
   - nearer a bigger city
   - nearer a smaller city (Johannesburg)
-- `LocationTitleTests` (8 tests): the title properties, `UrlReadyName` and `ToDisplayName`.
+- `LocationTitleTests` (12 test methods): the title properties, `UrlReadyName` and `ToDisplayName`.
 - `DataSetMetadataBuilderTests`: one new test (`BuildAsync_UpperCaseStationName_ReturnsTitleCaseWithSpaces`).
 - The solution builds with no warnings. Passing: `Core.UnitTests` 326, `WebApi.UnitTests` 225, `Web.UnitTests` 535.
 

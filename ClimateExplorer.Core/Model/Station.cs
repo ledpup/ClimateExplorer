@@ -3,8 +3,9 @@
 using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 
-public class Station
+public partial class Station
 {
     public required string Id { get; set; }
     public string? Name { get; set; }
@@ -59,16 +60,47 @@ public class Station
     /// ("AVALON_AIRPORT"); those become title case with spaces ("Avalon Airport"). A name with any lower-case letter
     /// is taken as already formatted, and only loses its underscores.
     /// </summary>
+    /// <remarks>
+    /// Title casing keeps the initials in <see cref="StationAbbreviations"/> in capitals ("Bellambi AWS", "Atlanta
+    /// Peachtree AP"), as well as compass
+    /// offsets ("Dallas 7 NE", "Troy 3N"). It also capitalises after "Mc" ("McKinley Park") and after a one-letter
+    /// prefix and apostrophe ("O'Neill", "M'Sila").
+    /// </remarks>
     public static string ToDisplayName(string name)
     {
         var spaced = name.Replace('_', ' ');
-        return spaced.Any(char.IsLower)
-            ? spaced
-            : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(spaced.ToLowerInvariant());
+        if (spaced.Any(char.IsLower))
+        {
+            return spaced;
+        }
+
+        var titleCase = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(spaced.ToLowerInvariant());
+        return StationAbbreviations.WordRegex().Replace(titleCase, x => ToDisplayWord(x.Value));
     }
 
     public override string ToString()
     {
         return Id;
     }
+
+    private static string ToDisplayWord(string word)
+    {
+        var upper = word.ToUpperInvariant();
+        if (StationAbbreviations.IsInitialism(upper) || CompassOffsetRegex().IsMatch(upper))
+        {
+            return upper;
+        }
+
+        // "Mckinley" -> "McKinley"; "O'neill" -> "O'Neill"
+        if (word.Length > 2 && (word.StartsWith("Mc", StringComparison.Ordinal) || word[1] == '\'') && char.IsLetter(word[2]))
+        {
+            return string.Concat(word.AsSpan(0, 2), char.ToUpperInvariant(word[2]).ToString(), word.AsSpan(3));
+        }
+
+        return word;
+    }
+
+    // A compass point, optionally after a distance: "NE", "SSW", "3N", "4WNW"
+    [GeneratedRegex(@"^\d*(N|S|E|W|NE|NW|SE|SW|NNE|ENE|ESE|SSE|SSW|WSW|WNW|NNW)$")]
+    private static partial Regex CompassOffsetRegex();
 }

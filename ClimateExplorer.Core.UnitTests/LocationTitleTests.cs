@@ -68,6 +68,46 @@ public class LocationTitleTests
         Assert.AreEqual("Station One", Station.ToDisplayName("Station One"));
     }
 
+    [TestMethod]
+    [DataRow("BELLAMBI_AWS", "Bellambi AWS")]
+    [DataRow("ATLANTA_PEACHTREE_AP", "Atlanta Peachtree AP")]
+    [DataRow("NEW_YORK_JFK_INTL_AP", "New York JFK Intl AP")]
+    [DataRow("WILLIAMTOWN RAAF", "Williamtown RAAF")]
+    [DataRow("SULTAN_MAHMUD_BADARUDDIN_II", "Sultan Mahmud Badaruddin II")]
+    [DataRow("PORT MACQUARIE AIRPORT AWS (COMPARISON)", "Port Macquarie Airport AWS (Comparison)")]
+    public void ToDisplayName_Abbreviation_KeepsCapitals(string name, string expected)
+    {
+        Assert.AreEqual(expected, Station.ToDisplayName(name));
+    }
+
+    [TestMethod]
+    [DataRow("DALLAS_7_NE", "Dallas 7 NE")]
+    [DataRow("TROY_3N", "Troy 3N")]
+    [DataRow("BATTLE_CREEK_5NW", "Battle Creek 5NW")]
+    public void ToDisplayName_CompassOffset_KeepsCapitals(string name, string expected)
+    {
+        Assert.AreEqual(expected, Station.ToDisplayName(name));
+    }
+
+    [TestMethod]
+    [DataRow("MCKINLEY_PARK", "McKinley Park")]
+    [DataRow("O'NEILL", "O'Neill")]
+    [DataRow("M'SILA", "M'Sila")]
+    [DataRow("KING'S_PARK", "King's Park")]
+    [DataRow("CALGARY_INT'L_CS", "Calgary Int'l CS")]
+    public void ToDisplayName_McOrApostrophe_CapitalisesAfterPrefix(string name, string expected)
+    {
+        Assert.AreEqual(expected, Station.ToDisplayName(name));
+    }
+
+    [TestMethod]
+    [DataRow("MACAPA", "Macapa")]
+    [DataRow("SAN PEDRO", "San Pedro")]
+    public void ToDisplayName_OrdinaryWord_TitleCase(string name, string expected)
+    {
+        Assert.AreEqual(expected, Station.ToDisplayName(name));
+    }
+
     private static Location CreateLocation(string name, string? stationName)
     {
         return new Location

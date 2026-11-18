@@ -327,7 +327,7 @@
       "Elevation": 18.299999237060547
     },
     "Id": "2a173209-1496-4884-9f2a-e44a7b69e931",
-    "Name": "Providence T F Green Ap"
+    "Name": "Providence T F Green AP"
   },
   {
     "CountryCode": "AT",
@@ -617,7 +617,7 @@
       "Elevation": 321.8999938964844
     },
     "Id": "1f301743-e86e-4c3d-8642-bfff829ef3ed",
-    "Name": "Dubuque Rgnl Ap"
+    "Name": "Dubuque Rgnl AP"
   },
   {
     "CountryCode": "PT",
@@ -687,7 +687,7 @@
       "Elevation": 192.3000030517578
     },
     "Id": "fc16c9ed-c917-4995-aa0c-88ddc61f1418",
-    "Name": "Detroit Metro Ap"
+    "Name": "Detroit Metro AP"
   },
   {
     "CountryCode": "KZ",
@@ -817,7 +817,7 @@
       "Elevation": 1.2000000476837158
     },
     "Id": "4e25085d-6356-4bc9-bbac-e57fc2609996",
-    "Name": "Key West Intl Ap"
+    "Name": "Key West Intl AP"
   },
   {
     "CountryCode": "US",
@@ -827,7 +827,7 @@
       "Elevation": 2.0999999046325684
     },
     "Id": "b3b0c060-6439-46fd-b5ec-4e9ce013e6d3",
-    "Name": "Newark Intl Ap"
+    "Name": "Newark Intl AP"
   },
   {
     "CountryCode": "AT",
@@ -847,7 +847,7 @@
       "Elevation": 11.600000381469727
     },
     "Id": "fb7e97f7-5938-4f39-83e5-a0d52dd39805",
-    "Name": "Sacramento 5 Ese"
+    "Name": "Sacramento 5 ESE"
   },
   {
     "CountryCode": "ES",
@@ -897,7 +897,7 @@
       "Elevation": 198.10000610351562
     },
     "Id": "6aedc3e0-2a21-47a4-a0dc-9a1fef0fe915",
-    "Name": "Peoria Gtr Peoria Ap"
+    "Name": "Peoria Gtr Peoria AP"
   },
   {
     "CountryCode": "DE",
@@ -957,7 +957,7 @@
       "Elevation": 265.79998779296875
     },
     "Id": "df22cacf-b6e2-449f-bd4f-9309434cc321",
-    "Name": "Minneapolis St Paul Ap"
+    "Name": "Minneapolis St Paul AP"
   },
   {
     "CountryCode": "SK",
@@ -1037,7 +1037,7 @@
       "Elevation": 264
     },
     "Id": "1a54587d-9f7b-477b-93f1-403c7cf0e119",
-    "Name": "Madison Dane Rgnl Ap"
+    "Name": "Madison Dane Rgnl AP"
   },
   {
     "CountryCode": "DK",
@@ -1077,7 +1077,7 @@
       "Elevation": 198.6999969482422
     },
     "Id": "d6092534-24bc-4968-b7b9-c59a0e7e9ffa",
-    "Name": "La Crosse Muni Ap"
+    "Name": "La Crosse Muni AP"
   },
   {
     "CountryCode": "CN",
@@ -1107,7 +1107,7 @@
       "Elevation": 77.4000015258789
     },
     "Id": "cb46655e-a73e-4e9d-8108-0862eb68ae4c",
-    "Name": "Memphis Intl Ap"
+    "Name": "Memphis Intl AP"
   },
   {
     "CountryCode": "US",
@@ -1117,7 +1117,7 @@
       "Elevation": 256.29998779296875
     },
     "Id": "434b73d7-c8fc-4d09-a2e9-91387c827459",
-    "Name": "Lansing Capital City Ap"
+    "Name": "Lansing Capital City AP"
   },
   {
     "CountryCode": "US",
@@ -1157,7 +1157,7 @@
       "Elevation": 286.5
     },
     "Id": "2a009881-e35b-47e9-8708-7e5f3a67a6d7",
-    "Name": "Lynchburg Rgnl Ap"
+    "Name": "Lynchburg Rgnl AP"
   },
   {
     "CountryCode": "US",
@@ -1167,7 +1167,7 @@
       "Elevation": 182.89999389648438
     },
     "Id": "ce0378c0-5afe-42d3-a7a8-02459460a5b7",
-    "Name": "Nashville Intl Ap"
+    "Name": "Nashville Intl AP"
   },
   {
     "CountryCode": "US",
@@ -1197,7 +1197,7 @@
       "Elevation": 95.0999984741211
     },
     "Id": "912e0f67-5c0c-4adf-94af-5a4829b0c44e",
-    "Name": "Albany Ap"
+    "Name": "Albany AP"
   },
   {
     "CountryCode": "US",
@@ -1267,7 +1267,7 @@
       "Elevation": 14
     },
     "Id": "517e6d1f-0390-432d-86b1-0d32e7e9cbe6",
-    "Name": "Savannah Intl Ap"
+    "Name": "Savannah Intl AP"
   },
   {
     "CountryCode": "US",
@@ -1277,7 +1277,7 @@
       "Elevation": 100.5999984741211
     },
     "Id": "bffefec7-53f7-49d7-8187-e4f7c8287e71",
-    "Name": "Burlington Intl Ap"
+    "Name": "Burlington Intl AP"
   },
   {
     "CountryCode": "US",
@@ -1287,7 +1287,7 @@
       "Elevation": 103.5999984741211
     },
     "Id": "5147bc80-98f8-4b97-a226-83d6070a4ca8",
-    "Name": "Harrisburg Cptl Cy Ap"
+    "Name": "Harrisburg Cptl Cy AP"
   },
   {
     "CountryCode": "NL",
@@ -1447,7 +1447,7 @@
       "Elevation": 222.5
     },
     "Id": "78350635-c2e5-4726-b207-0d6358fe2d0c",
-    "Name": "Erie Intl Ap"
+    "Name": "Erie Intl AP"
   },
   {
     "CountryCode": "US",
@@ -1457,7 +1457,7 @@
       "Elevation": 291.70001220703125
     },
     "Id": "fe09f6bf-7b7b-442f-b819-d6d021c3dfc3",
-    "Name": "Des Moines Intl Ap"
+    "Name": "Des Moines Intl AP"
   },
   {
     "CountryCode": "US",
@@ -1467,7 +1467,7 @@
       "Elevation": 2.4000000953674316
     },
     "Id": "cd34db63-6be0-4dc1-9c95-8c1458dae532",
-    "Name": "San Francisco Intl Ap"
+    "Name": "San Francisco Intl AP"
   },
   {
     "CountryCode": "DE",
@@ -1527,7 +1527,7 @@
       "Elevation": 3.4000000953674316
     },
     "Id": "0a673aa6-2f9b-451c-b0c8-808f4bbcd07a",
-    "Name": "Cape Hatteras Ap"
+    "Name": "Cape Hatteras AP"
   },
   {
     "CountryCode": "CN",
@@ -1577,7 +1577,7 @@
       "Elevation": 26.200000762939453
     },
     "Id": "0d89c3a9-7182-44f1-a68d-4a3e71da75c8",
-    "Name": "New Brunswick 3 Se"
+    "Name": "New Brunswick 3 SE"
   },
   {
     "CountryCode": "US",
@@ -1627,7 +1627,7 @@
       "Elevation": 390.1000061035156
     },
     "Id": "9e54c3b7-a7c4-4cd7-9cb9-72f233612779",
-    "Name": "Huron Rgnl Ap"
+    "Name": "Huron Rgnl AP"
   },
   {
     "CountryCode": "US",
@@ -1637,7 +1637,7 @@
       "Elevation": 107.5999984741211
     },
     "Id": "0cce599e-2c70-4df5-a4df-a380dce0ca29",
-    "Name": "Red Bluff Muni Ap"
+    "Name": "Red Bluff Muni AP"
   },
   {
     "CountryCode": "US",
@@ -1647,7 +1647,7 @@
       "Elevation": 5.800000190734863
     },
     "Id": "177b9c6d-6a15-4ce4-a9a9-13a30f116369",
-    "Name": "Portland Intl Ap"
+    "Name": "Portland Intl AP"
   },
   {
     "CountryCode": "BA",
@@ -1717,7 +1717,7 @@
       "Elevation": 274.29998779296875
     },
     "Id": "3af1a8e0-7332-4328-a27c-2d1d3bfc5ece",
-    "Name": "Fargo Hector Intl Ap"
+    "Name": "Fargo Hector Intl AP"
   },
   {
     "CountryCode": "US",
@@ -1727,7 +1727,7 @@
       "Elevation": 846.7000122070312
     },
     "Id": "7a990dcb-f035-4c85-b58e-fc1411163942",
-    "Name": "North Platte Rgnl Ap"
+    "Name": "North Platte Rgnl AP"
   },
   {
     "CountryCode": "US",
@@ -1737,7 +1737,7 @@
       "Elevation": 787.9000244140625
     },
     "Id": "a02e57e8-5d29-417c-9d6f-212c6478bfd9",
-    "Name": "Havre City Co Ap"
+    "Name": "Havre City Co AP"
   },
   {
     "CountryCode": "JP",
@@ -1837,7 +1837,7 @@
       "Elevation": 447.79998779296875
     },
     "Id": "9eabc2d6-b9d9-42f2-a8a4-dc069e2830cc",
-    "Name": "Concordia Muni Ap"
+    "Name": "Concordia Muni AP"
   },
   {
     "CountryCode": "US",
@@ -1847,7 +1847,7 @@
       "Elevation": 355.3999938964844
     },
     "Id": "2154ca1d-9087-483b-aaae-be7d50d69d9c",
-    "Name": "Walla Walla Rgnl Ap"
+    "Name": "Walla Walla Rgnl AP"
   },
   {
     "CountryCode": "AU",
@@ -2067,7 +2067,7 @@
       "Elevation": 7
     },
     "Id": "5217a55c-93c0-4313-9d3a-6c5e934b4bc7",
-    "Name": "Auckland Aero Aws"
+    "Name": "Auckland Aero AWS"
   },
   {
     "CountryCode": "RU",
@@ -2117,7 +2117,7 @@
       "Elevation": 204.5
     },
     "Id": "afd14c8f-ddf5-4391-a7ce-fbe0fb6f4b52",
-    "Name": "Chattanooga Lovell Ap"
+    "Name": "Chattanooga Lovell AP"
   },
   {
     "CountryCode": "LK",
@@ -2317,7 +2317,7 @@
       "Elevation": 34.099998474121094
     },
     "Id": "fa56d231-b0c3-42a2-a819-75df973f88ca",
-    "Name": "Pensacola Rgnl Ap"
+    "Name": "Pensacola Rgnl AP"
   },
   {
     "CountryCode": "US",
@@ -2327,7 +2327,7 @@
       "Elevation": 366.70001220703125
     },
     "Id": "6b340d11-dba6-4b2c-8853-d8e6d438f8b8",
-    "Name": "Pittsburgh Intl Ap"
+    "Name": "Pittsburgh Intl AP"
   },
   {
     "CountryCode": "DE",
@@ -2417,7 +2417,7 @@
       "Elevation": 531
     },
     "Id": "28c817af-bf56-49a5-b087-1d93e9590a88",
-    "Name": "Pierre Rgnl Ap"
+    "Name": "Pierre Rgnl AP"
   },
   {
     "CountryCode": "US",
@@ -2427,7 +2427,7 @@
       "Elevation": 264.8999938964844
     },
     "Id": "09577b6f-5f74-452d-adda-9c5685d06aa8",
-    "Name": "Cincinnati Northern Ky Ap"
+    "Name": "Cincinnati Northern Ky AP"
   },
   {
     "CountryCode": "US",
@@ -2437,7 +2437,7 @@
       "Elevation": 298.70001220703125
     },
     "Id": "7cb0e00e-eac6-4c51-ac93-2ba5878aefaf",
-    "Name": "Lexington Bluegrass Ap"
+    "Name": "Lexington Bluegrass AP"
   },
   {
     "CountryCode": "UZ",
@@ -2547,7 +2547,7 @@
       "Elevation": 2214.699951171875
     },
     "Id": "ce02f43e-56ac-462e-a4fa-0e69b7cc3ef2",
-    "Name": "Laramie Rgnl Ap"
+    "Name": "Laramie Rgnl AP"
   },
   {
     "CountryCode": "US",
@@ -2557,7 +2557,7 @@
       "Elevation": 151.5
     },
     "Id": "e1d90cd9-5a76-4789-91b5-6d1d5bd5bdfa",
-    "Name": "Redding Muni Ap"
+    "Name": "Redding Muni AP"
   },
   {
     "CountryCode": "US",
@@ -2577,7 +2577,7 @@
       "Elevation": 579.7000122070312
     },
     "Id": "fc8c636a-dba3-453a-8876-728e42dfa1f7",
-    "Name": "Williston Sloulin Intl Ap"
+    "Name": "Williston Sloulin Intl AP"
   },
   {
     "CountryCode": "DE",
@@ -2667,7 +2667,7 @@
       "Elevation": 272.20001220703125
     },
     "Id": "7ad5b8fe-ebca-43f5-8526-a0a141b9cd4a",
-    "Name": "Columbia Rgnl Ap"
+    "Name": "Columbia Rgnl AP"
   },
   {
     "CountryCode": "US",
@@ -2767,7 +2767,7 @@
       "Elevation": 391.70001220703125
     },
     "Id": "bae74d04-d9ef-4d3e-a13b-cdf7fb718a79",
-    "Name": "Oklahoma City Will Rogers Ap"
+    "Name": "Oklahoma City Will Rogers AP"
   },
   {
     "CountryCode": "US",
@@ -2797,7 +2797,7 @@
       "Elevation": 1704.4000244140625
     },
     "Id": "24ffc852-c7fc-4d3d-9949-e5300192d83f",
-    "Name": "Lander Hunt Fld Ap"
+    "Name": "Lander Hunt Fld AP"
   },
   {
     "CountryCode": "HR",
@@ -2887,7 +2887,7 @@
       "Elevation": 3
     },
     "Id": "fef3629b-014c-41b5-a3a4-681a14dbbbc9",
-    "Name": "Royal Oak 2 Ssw"
+    "Name": "Royal Oak 2 SSW"
   },
   {
     "CountryCode": "US",
@@ -3067,7 +3067,7 @@
       "Elevation": 126.80000305175781
     },
     "Id": "4b9b726b-12d7-4da0-9626-66d2481246fe",
-    "Name": "Raleigh Durham Intl Ap"
+    "Name": "Raleigh Durham Intl AP"
   },
   {
     "CountryCode": "US",
@@ -3087,7 +3087,7 @@
       "Elevation": 162.5
     },
     "Id": "cfe6577d-7187-453e-a11b-342aa3010337",
-    "Name": "Rochester Gtr Intl Ap"
+    "Name": "Rochester Gtr Intl AP"
   },
   {
     "CountryCode": "US",
@@ -3107,7 +3107,7 @@
       "Elevation": 6.099999904632568
     },
     "Id": "7727ba54-f695-486c-8716-27b8e2efdee2",
-    "Name": "Eureka Wfo Woodley Island"
+    "Name": "Eureka WFO Woodley Island"
   },
   {
     "CountryCode": "CA",
@@ -3117,7 +3117,7 @@
       "Elevation": 79
     },
     "Id": "81520255-b29c-4371-8e32-6e769312fbca",
-    "Name": "Ottawa Cda"
+    "Name": "Ottawa CDA"
   },
   {
     "CountryCode": "DE",
@@ -3207,7 +3207,7 @@
       "Elevation": 1116.800048828125
     },
     "Id": "36991710-4fbc-4044-b505-b204b8d3516c",
-    "Name": "Great Falls Intl Ap"
+    "Name": "Great Falls Intl AP"
   },
   {
     "CountryCode": "CA",
@@ -3297,7 +3297,7 @@
       "Elevation": 579
     },
     "Id": "9fde3810-c2b6-45b5-9c67-7f75bae64b59",
-    "Name": "Indian Head Cda"
+    "Name": "Indian Head CDA"
   },
   {
     "CountryCode": "CA",
@@ -3427,7 +3427,7 @@
       "Elevation": 240.5
     },
     "Id": "1582bb71-c370-45e6-9bdd-328ef07f3869",
-    "Name": "San Antonio Intl Ap"
+    "Name": "San Antonio Intl AP"
   },
   {
     "CountryCode": "US",
@@ -3437,7 +3437,7 @@
       "Elevation": 1166.800048828125
     },
     "Id": "69185fd9-47eb-4118-9e79-26802a4115dc",
-    "Name": "Helena Rgnl Ap"
+    "Name": "Helena Rgnl AP"
   },
   {
     "CountryCode": "US",
@@ -3447,7 +3447,7 @@
       "Elevation": 121.9000015258789
     },
     "Id": "5c63a559-60d4-4f22-b6d8-b556157854f1",
-    "Name": "Evansville Regional Ap"
+    "Name": "Evansville Regional AP"
   },
   {
     "CountryCode": "US",
@@ -3457,7 +3457,7 @@
       "Elevation": 2.700000047683716
     },
     "Id": "8c220462-5e0c-4791-8a34-bd6926250ab8",
-    "Name": "Astoria Rgnl Ap"
+    "Name": "Astoria Rgnl AP"
   },
   {
     "CountryCode": "DE",
@@ -3607,7 +3607,7 @@
       "Elevation": 362.70001220703125
     },
     "Id": "84ffbba3-6975-409a-84cb-099581142b5c",
-    "Name": "Lincoln Muni Ap"
+    "Name": "Lincoln Muni AP"
   },
   {
     "CountryCode": "US",
@@ -3617,7 +3617,7 @@
       "Elevation": 717.2000122070312
     },
     "Id": "8f730dbf-55c1-4258-b529-4cf21abfa447",
-    "Name": "Spokane Intl Ap"
+    "Name": "Spokane Intl AP"
   },
   {
     "CountryCode": "DE",
@@ -3657,7 +3657,7 @@
       "Elevation": 228.60000610351562
     },
     "Id": "99724553-3664-43fd-9814-e8ab4a425d26",
-    "Name": "Wauseon Wtp"
+    "Name": "Wauseon WTP"
   },
   {
     "CountryCode": "US",
@@ -3667,7 +3667,7 @@
       "Elevation": 9.100000381469727
     },
     "Id": "a49f626b-c80a-410c-aded-b254c4658136",
-    "Name": "Norfolk Intl Ap"
+    "Name": "Norfolk Intl AP"
   },
   {
     "CountryCode": "US",
@@ -3697,7 +3697,7 @@
       "Elevation": 2.0999999046325684
     },
     "Id": "aed00ecd-e325-4550-b2c3-b84e06c9db8e",
-    "Name": "Honolulu Intl Ap"
+    "Name": "Honolulu Intl AP"
   },
   {
     "CountryCode": "HU",
@@ -3767,7 +3767,7 @@
       "Elevation": 1471
     },
     "Id": "13acdb3b-2ee4-47c8-ba82-1a1199a8fcc3",
-    "Name": "Grand Junction Wfo"
+    "Name": "Grand Junction WFO"
   },
   {
     "CountryCode": "US",
@@ -3797,7 +3797,7 @@
       "Elevation": 64
     },
     "Id": "d95e039a-8875-43d9-8562-3406ad32ccb5",
-    "Name": "Vancouver 4 Nne"
+    "Name": "Vancouver 4 NNE"
   },
   {
     "CountryCode": "US",
@@ -3977,7 +3977,7 @@
       "Elevation": 901.2999877929688
     },
     "Id": "1c76b9ce-aba5-40ec-93ce-c211ab97ee9f",
-    "Name": "Kalispell Glacier Ap"
+    "Name": "Kalispell Glacier AP"
   },
   {
     "CountryCode": "US",
@@ -3997,7 +3997,7 @@
       "Elevation": 226.1999969482422
     },
     "Id": "87050b5c-0d1d-4d74-9b54-3e495fe334cc",
-    "Name": "Kansas City Downtown Ap"
+    "Name": "Kansas City Downtown AP"
   },
   {
     "CountryCode": "US",
@@ -4007,7 +4007,7 @@
       "Elevation": 57.29999923706055
     },
     "Id": "8fdff2d2-9984-42ca-b26c-dbc81a9700dc",
-    "Name": "Olympia Ap"
+    "Name": "Olympia AP"
   },
   {
     "CountryCode": "BR",
@@ -4087,7 +4087,7 @@
       "Elevation": 1271
     },
     "Id": "6885efa3-d3f9-452c-bb4b-2ca175801fea",
-    "Name": "Rocky Ford 2 Se"
+    "Name": "Rocky Ford 2 SE"
   },
   {
     "CountryCode": "US",
@@ -4117,7 +4117,7 @@
       "Elevation": 963.2000122070312
     },
     "Id": "df4d8267-3831-421f-9ba8-261d5011bd4c",
-    "Name": "Rapid City Rgnl Ap"
+    "Name": "Rapid City Rgnl AP"
   },
   {
     "CountryCode": "US",
@@ -4277,7 +4277,7 @@
       "Elevation": 122.5
     },
     "Id": "2138ff43-0ebc-4d05-af8f-3cae1f390059",
-    "Name": "Clarksville Wwtp"
+    "Name": "Clarksville WWTP"
   },
   {
     "CountryCode": "US",
@@ -4287,7 +4287,7 @@
       "Elevation": 645.2999877929688
     },
     "Id": "ee24c8de-aa95-443c-bc31-e0079c93c138",
-    "Name": "Asheville Rgnl Ap"
+    "Name": "Asheville Rgnl AP"
   },
   {
     "CountryCode": "US",
@@ -4297,7 +4297,7 @@
       "Elevation": 101.5
     },
     "Id": "483193f4-e868-4420-9ce8-39997f441f2f",
-    "Name": "Fresno Yosemite Intl Ap"
+    "Name": "Fresno Yosemite Intl AP"
   },
   {
     "CountryCode": "US",
@@ -4307,7 +4307,7 @@
       "Elevation": 181.10000610351562
     },
     "Id": "a6f811ab-c83a-43da-b74c-24135736d8ed",
-    "Name": "Springfield Capital Ap"
+    "Name": "Springfield Capital AP"
   },
   {
     "CountryCode": "AR",
@@ -4417,7 +4417,7 @@
       "Elevation": 312.1000061035156
     },
     "Id": "07a84603-a161-4225-b29a-bdd4bf5516a6",
-    "Name": "Greenville Wtp"
+    "Name": "Greenville WTP"
   },
   {
     "CountryCode": "US",
@@ -4427,7 +4427,7 @@
       "Elevation": 204.1999969482422
     },
     "Id": "79f32c3c-6a5e-4ba8-8dd2-cf39fbf7f80f",
-    "Name": "Norwalk Wwtp"
+    "Name": "Norwalk WWTP"
   },
   {
     "CountryCode": "US",
@@ -4457,7 +4457,7 @@
       "Elevation": 8.800000190734863
     },
     "Id": "a8256185-3fe6-4901-ad40-1704cfb475f6",
-    "Name": "Miami Intl Ap"
+    "Name": "Miami Intl AP"
   },
   {
     "CountryCode": "US",
@@ -4477,7 +4477,7 @@
       "Elevation": 972.9000244140625
     },
     "Id": "1f349a7a-d916-4c62-8636-f636e0aa0830",
-    "Name": "Missoula Intl Ap"
+    "Name": "Missoula Intl AP"
   },
   {
     "CountryCode": "AR",
@@ -4547,7 +4547,7 @@
       "Elevation": 201.1999969482422
     },
     "Id": "1bd6db11-1439-455e-8733-c7a3ead94cf5",
-    "Name": "Saginaw Mbs Intl Ap"
+    "Name": "Saginaw Mbs Intl AP"
   },
   {
     "CountryCode": "US",
@@ -4557,7 +4557,7 @@
       "Elevation": 62.5
     },
     "Id": "95f5ae5d-9d6f-46ba-94f9-4b1adb555d0f",
-    "Name": "Salem Mcnary Fld"
+    "Name": "Salem McNary Fld"
   },
   {
     "CountryCode": "US",
@@ -4567,7 +4567,7 @@
       "Elevation": 696.5
     },
     "Id": "dde6ba0a-1852-4cdb-b8eb-d9e2818a26f7",
-    "Name": "Glasgow Intl Ap"
+    "Name": "Glasgow Intl AP"
   },
   {
     "CountryCode": "US",
@@ -4647,7 +4647,7 @@
       "Elevation": 160.89999389648438
     },
     "Id": "a209a51e-c7ff-43e2-9514-14c3ccb1888a",
-    "Name": "Bowling Green Warren Co Ap"
+    "Name": "Bowling Green Warren Co AP"
   },
   {
     "CountryCode": "AR",
@@ -4747,7 +4747,7 @@
       "Elevation": 310.8999938964844
     },
     "Id": "9238f2b3-70d3-44e3-a50d-b1bd9f5bdcef",
-    "Name": "Milan 1 Nw"
+    "Name": "Milan 1 NW"
   },
   {
     "CountryCode": "US",
@@ -4777,7 +4777,7 @@
       "Elevation": 186.5
     },
     "Id": "7d46ace0-636a-40ee-a1b5-c819955375eb",
-    "Name": "Chicago Midway Ap"
+    "Name": "Chicago Midway AP"
   },
   {
     "CountryCode": "US",
@@ -4787,7 +4787,7 @@
       "Elevation": 1202.4000244140625
     },
     "Id": "9bfbdb30-d4f4-453e-9c3c-7f8e3f0867de",
-    "Name": "Sheridan Co Ap"
+    "Name": "Sheridan Co AP"
   },
   {
     "CountryCode": "US",
@@ -4957,7 +4957,7 @@
       "Elevation": 125.9000015258789
     },
     "Id": "e0446abe-8aed-4cf4-a552-260c7e604bde",
-    "Name": "Syracuse Hancock Intl Ap"
+    "Name": "Syracuse Hancock Intl AP"
   },
   {
     "CountryCode": "US",
@@ -4967,7 +4967,7 @@
       "Elevation": 190.5
     },
     "Id": "223c12f0-1d33-49b9-a90c-045d0966d329",
-    "Name": "Muskegon Co Ap"
+    "Name": "Muskegon Co AP"
   },
   {
     "CountryCode": "US",
@@ -5057,7 +5057,7 @@
       "Elevation": 13.399999618530273
     },
     "Id": "5bfb382d-2a31-40c8-a605-6b0222dbcd66",
-    "Name": "Corpus Christi Nws"
+    "Name": "Corpus Christi NWS"
   },
   {
     "CountryCode": "US",
@@ -5077,7 +5077,7 @@
       "Elevation": 1678.199951171875
     },
     "Id": "bd3c73a8-fb65-4410-9d8d-3ecdd0dbb08e",
-    "Name": "Butte Bert Mooney Ap"
+    "Name": "Butte Bert Mooney AP"
   },
   {
     "CountryCode": "UZ",
@@ -5207,7 +5207,7 @@
       "Elevation": 167.60000610351562
     },
     "Id": "85fa5d14-bd99-416f-b38a-d5538a5cb964",
-    "Name": "Monroe 2 Se"
+    "Name": "Monroe 2 SE"
   },
   {
     "CountryCode": "US",
@@ -5217,7 +5217,7 @@
       "Elevation": 205.6999969482422
     },
     "Id": "6211a815-a4f6-4860-a09d-fcd1b59d63ab",
-    "Name": "Bowling Green Wwtp"
+    "Name": "Bowling Green WWTP"
   },
   {
     "CountryCode": "US",
@@ -5227,7 +5227,7 @@
       "Elevation": 397.79998779296875
     },
     "Id": "4ea043eb-65cc-446f-a37d-d5d0068be159",
-    "Name": "Forestburg 4 Nne"
+    "Name": "Forestburg 4 NNE"
   },
   {
     "CountryCode": "US",
@@ -5237,7 +5237,7 @@
       "Elevation": 235.60000610351562
     },
     "Id": "04838bf1-f34a-49ec-9f33-b4463b7d253f",
-    "Name": "South Bend Michiana Rgnl Ap"
+    "Name": "South Bend Michiana Rgnl AP"
   },
   {
     "CountryCode": "LK",
@@ -5347,7 +5347,7 @@
       "Elevation": 265.20001220703125
     },
     "Id": "d8861e2f-5b1a-476d-8e84-cf38d7f0e548",
-    "Name": "Gainesville 5 Ene"
+    "Name": "Gainesville 5 ENE"
   },
   {
     "CountryCode": "US",
@@ -5367,7 +5367,7 @@
       "Elevation": 293.20001220703125
     },
     "Id": "5fb90b75-9c3e-4d13-b839-16b708c934a7",
-    "Name": "Knoxville Mcghee Tyson Ap"
+    "Name": "Knoxville McGhee Tyson AP"
   },
   {
     "CountryCode": "AU",
@@ -5397,7 +5397,7 @@
       "Elevation": 179
     },
     "Id": "4aa9727e-d4d4-4c8e-a9e5-0e045eeeee3d",
-    "Name": "Sodankyla Aws"
+    "Name": "Sodankyla AWS"
   },
   {
     "CountryCode": "ID",
@@ -5557,7 +5557,7 @@
       "Elevation": 554.0999755859375
     },
     "Id": "15e468db-e452-4517-9366-6452a28d7ee0",
-    "Name": "Wellsboro 4 Sw"
+    "Name": "Wellsboro 4 SW"
   },
   {
     "CountryCode": "US",
@@ -5567,7 +5567,7 @@
       "Elevation": 4.599999904632568
     },
     "Id": "08b602a4-c610-44fd-8f35-ff1ae6ff6ddc",
-    "Name": "Bellingham 3 Ssw"
+    "Name": "Bellingham 3 SSW"
   },
   {
     "CountryCode": "US",
@@ -5587,7 +5587,7 @@
       "Elevation": 532.7999877929688
     },
     "Id": "56500946-06d5-4a96-8b8d-7ac0997abdaa",
-    "Name": "Watertown Rgnl Ap"
+    "Name": "Watertown Rgnl AP"
   },
   {
     "CountryCode": "US",
@@ -5597,7 +5597,7 @@
       "Elevation": 1533.0999755859375
     },
     "Id": "263ec021-ca76-4cd7-8757-a833169d9330",
-    "Name": "Elko Rgnl Ap"
+    "Name": "Elko Rgnl AP"
   },
   {
     "CountryCode": "LK",
@@ -5757,7 +5757,7 @@
       "Elevation": 137.1999969482422
     },
     "Id": "2d4f3fad-e03b-451f-9cfc-55dbc1a964f4",
-    "Name": "Vincennes 5 Ne"
+    "Name": "Vincennes 5 NE"
   },
   {
     "CountryCode": "US",
@@ -5777,7 +5777,7 @@
       "Elevation": 440.3999938964844
     },
     "Id": "70e8674b-0551-4498-8ce1-f797e421a125",
-    "Name": "Eveleth Wwtp"
+    "Name": "Eveleth WWTP"
   },
   {
     "CountryCode": "US",
@@ -5857,7 +5857,7 @@
       "Elevation": 10.699999809265137
     },
     "Id": "1d7eebdc-f6dd-4c4c-88e5-563c2c7c939b",
-    "Name": "St Paul Island Ap"
+    "Name": "St Paul Island AP"
   },
   {
     "CountryCode": "CN",
@@ -5947,7 +5947,7 @@
       "Elevation": 189
     },
     "Id": "8c95d679-a3b3-463c-a717-078ca8d776d1",
-    "Name": "Decatur Wtp"
+    "Name": "Decatur WTP"
   },
   {
     "CountryCode": "US",
@@ -5967,7 +5967,7 @@
       "Elevation": 463.29998779296875
     },
     "Id": "3f087be7-4d2a-43ee-be4b-91f7adfdff74",
-    "Name": "Mcpherson"
+    "Name": "McPherson"
   },
   {
     "CountryCode": "US",
@@ -5997,7 +5997,7 @@
       "Elevation": 497.3999938964844
     },
     "Id": "d577a333-7e82-4549-9dd3-ac3ab68adb85",
-    "Name": "Brookings 2 Ne"
+    "Name": "Brookings 2 NE"
   },
   {
     "CountryCode": "US",
@@ -6007,7 +6007,7 @@
       "Elevation": 253.3000030517578
     },
     "Id": "1ab97bdc-d1d1-4d86-809c-219919113b3d",
-    "Name": "Parkersburg Wood Co Ap"
+    "Name": "Parkersburg Wood Co AP"
   },
   {
     "CountryCode": "US",
@@ -6027,7 +6027,7 @@
       "Elevation": 1344.199951171875
     },
     "Id": "40181de5-789d-441e-a87d-fd58c77ebbdb",
-    "Name": "Reno Tahoe Intl Ap"
+    "Name": "Reno Tahoe Intl AP"
   },
   {
     "CountryCode": "US",
@@ -6037,7 +6037,7 @@
       "Elevation": 5.199999809265137
     },
     "Id": "97b898de-4be7-4c60-af68-dfbb843e2500",
-    "Name": "North Bend Rgnl Ap"
+    "Name": "North Bend Rgnl AP"
   },
   {
     "CountryCode": "US",
@@ -6047,7 +6047,7 @@
       "Elevation": 437.1000061035156
     },
     "Id": "a30fd0d2-7008-4a94-ad31-89fab74ea199",
-    "Name": "Park Rapids Muni Ap"
+    "Name": "Park Rapids Muni AP"
   },
   {
     "CountryCode": "CA",
@@ -6117,7 +6117,7 @@
       "Elevation": 2.700000047683716
     },
     "Id": "84d1b3bb-4a9c-4a24-abf6-f343b32e7d62",
-    "Name": "San Juan L M Marin Ap"
+    "Name": "San Juan L M Marin AP"
   },
   {
     "CountryCode": "RU",
@@ -6287,7 +6287,7 @@
       "Elevation": 19.5
     },
     "Id": "6285e816-1491-4e23-9cd9-e88994588437",
-    "Name": "Baton Rouge Ryan Ap"
+    "Name": "Baton Rouge Ryan AP"
   },
   {
     "CountryCode": "AU",
@@ -6397,7 +6397,7 @@
       "Elevation": 18.299999237060547
     },
     "Id": "7aefdb68-69f1-40fb-aeb0-519a0eab2c4d",
-    "Name": "Davis 2 Wsw Exp Farm"
+    "Name": "Davis 2 WSW Exp Farm"
   },
   {
     "CountryCode": "US",
@@ -6457,7 +6457,7 @@
       "Elevation": 270.70001220703125
     },
     "Id": "9f82ed57-f362-420e-8309-444121f2d3be",
-    "Name": "Crookston Nw Exp Sta"
+    "Name": "Crookston NW Exp Sta"
   },
   {
     "CountryCode": "US",
@@ -6487,7 +6487,7 @@
       "Elevation": 162.8000030517578
     },
     "Id": "6874764f-e9f0-477f-9b66-40f01f530a70",
-    "Name": "Martinsburg E Wv Rgnl Ap"
+    "Name": "Martinsburg E Wv Rgnl AP"
   },
   {
     "CountryCode": "US",
@@ -6497,7 +6497,7 @@
       "Elevation": 50
     },
     "Id": "7d8cd5f2-e804-4ea1-843e-25f76c356800",
-    "Name": "Richmond Intl Ap"
+    "Name": "Richmond Intl AP"
   },
   {
     "CountryCode": "US",
@@ -6507,7 +6507,7 @@
       "Elevation": 11.600000381469727
     },
     "Id": "1cd677df-8f22-4a36-b87e-d562b8b083bf",
-    "Name": "Lafayette Rgnl Ap"
+    "Name": "Lafayette Rgnl AP"
   },
   {
     "CountryCode": "US",
@@ -6517,7 +6517,7 @@
       "Elevation": 188.39999389648438
     },
     "Id": "b350988d-b807-4aa9-b963-c0e516115f00",
-    "Name": "Traverse City Cherry Cptl Ap"
+    "Name": "Traverse City Cherry Cptl AP"
   },
   {
     "CountryCode": "US",
@@ -6527,7 +6527,7 @@
       "Elevation": 24.399999618530273
     },
     "Id": "44af8f9a-4e09-45fc-b162-47282820e5e8",
-    "Name": "Kodiak Ap"
+    "Name": "Kodiak AP"
   },
   {
     "CountryCode": "CN",
@@ -6597,7 +6597,7 @@
       "Elevation": 265.20001220703125
     },
     "Id": "1028b613-f845-4993-aa9d-a9b25df2289e",
-    "Name": "Berne Wwtp"
+    "Name": "Berne WWTP"
   },
   {
     "CountryCode": "US",
@@ -6617,7 +6617,7 @@
       "Elevation": 79.19999694824219
     },
     "Id": "8fd12feb-4c55-4c75-9818-fdd0987aa707",
-    "Name": "Flemington 5 Nnw"
+    "Name": "Flemington 5 NNW"
   },
   {
     "CountryCode": "US",
@@ -6727,7 +6727,7 @@
       "Elevation": 160
     },
     "Id": "991c520d-09dc-4353-9d5f-bc7cb1521740",
-    "Name": "Ottawa 5Sw"
+    "Name": "Ottawa 5SW"
   },
   {
     "CountryCode": "US",
@@ -6867,7 +6867,7 @@
       "Elevation": 316.1000061035156
     },
     "Id": "3180216b-5052-44ad-9520-52a4d98e829f",
-    "Name": "Greenville Wb Ap"
+    "Name": "Greenville Wb AP"
   },
   {
     "CountryCode": "US",
@@ -6887,7 +6887,7 @@
       "Elevation": 117.30000305175781
     },
     "Id": "1cf060ff-0a63-4873-9ff4-bc69cbc4e007",
-    "Name": "Covington 3 Sw"
+    "Name": "Covington 3 SW"
   },
   {
     "CountryCode": "US",
@@ -6897,7 +6897,7 @@
       "Elevation": 766.5999755859375
     },
     "Id": "7c5c35a4-f309-4332-9134-04257786cf8d",
-    "Name": "Pullman 2 Nw"
+    "Name": "Pullman 2 NW"
   },
   {
     "CountryCode": "US",
@@ -6927,7 +6927,7 @@
       "Elevation": 2134.5
     },
     "Id": "af9dcfda-f5d2-4528-a991-cf7ba94e62a5",
-    "Name": "Flagstaff Pulliam Ap"
+    "Name": "Flagstaff Pulliam AP"
   },
   {
     "CountryCode": "US",
@@ -6937,7 +6937,7 @@
       "Elevation": 32.900001525878906
     },
     "Id": "f4960c58-1ca5-45a7-a297-45595a0eb36e",
-    "Name": "Orlando Executive Ap"
+    "Name": "Orlando Executive AP"
   },
   {
     "CountryCode": "US",
@@ -6947,7 +6947,7 @@
       "Elevation": 44.5
     },
     "Id": "1fd61695-8722-4f6a-9ff1-162324851dd3",
-    "Name": "Florence Rgnl Ap"
+    "Name": "Florence Rgnl AP"
   },
   {
     "CountryCode": "US",
@@ -6957,7 +6957,7 @@
       "Elevation": 300.20001220703125
     },
     "Id": "7b83c872-b0c3-4a7c-8a03-3d52d983eb10",
-    "Name": "Chanute Martin Johnson Ap"
+    "Name": "Chanute Martin Johnson AP"
   },
   {
     "CountryCode": "US",
@@ -6967,7 +6967,7 @@
       "Elevation": 1202.4000244140625
     },
     "Id": "d4192de5-b3a9-4f29-805d-2a7140b975f4",
-    "Name": "Scottsbluff Heilig Ap"
+    "Name": "Scottsbluff Heilig AP"
   },
   {
     "CountryCode": "US",
@@ -6977,7 +6977,7 @@
       "Elevation": 1585
     },
     "Id": "3624e072-d41f-4139-b0b0-c7740ad48d38",
-    "Name": "Dillon Ap"
+    "Name": "Dillon AP"
   },
   {
     "CountryCode": "CA",
@@ -7007,7 +7007,7 @@
       "Elevation": 660
     },
     "Id": "a9883a16-2d46-42a8-a947-15a8ec6219f8",
-    "Name": "Scott Cda"
+    "Name": "Scott CDA"
   },
   {
     "CountryCode": "CN",
@@ -7107,7 +7107,7 @@
       "Elevation": 54.900001525878906
     },
     "Id": "73fdc23f-f8c5-4906-9527-3f67d7c17578",
-    "Name": "Albany 3 Se"
+    "Name": "Albany 3 SE"
   },
   {
     "CountryCode": "US",
@@ -7127,7 +7127,7 @@
       "Elevation": 217.89999389648438
     },
     "Id": "2c2c1524-89c4-49b6-bd68-c535b0e063c7",
-    "Name": "West Lafayette 6 Nw"
+    "Name": "West Lafayette 6 NW"
   },
   {
     "CountryCode": "US",
@@ -7137,7 +7137,7 @@
       "Elevation": 353.6000061035156
     },
     "Id": "3aed62db-8153-438b-886e-d0915661fbdc",
-    "Name": "Atlantic 1 Ne"
+    "Name": "Atlantic 1 NE"
   },
   {
     "CountryCode": "US",
@@ -7227,7 +7227,7 @@
       "Elevation": 4
     },
     "Id": "4ec60e49-796c-4dcf-a3b9-785e24af4803",
-    "Name": "Nome Muni Ap"
+    "Name": "Nome Muni AP"
   },
   {
     "CountryCode": "AU",
@@ -7387,7 +7387,7 @@
       "Elevation": 6.099999904632568
     },
     "Id": "4bad7f3d-762b-49b6-bc52-ac64bb72f57f",
-    "Name": "Cape May 2 Nw"
+    "Name": "Cape May 2 NW"
   },
   {
     "CountryCode": "US",
@@ -7407,7 +7407,7 @@
       "Elevation": 291.3999938964844
     },
     "Id": "5915b365-31b5-4fe3-a4d2-b6c1c395f422",
-    "Name": "Uniontown 1 Ne"
+    "Name": "Uniontown 1 NE"
   },
   {
     "CountryCode": "US",
@@ -7417,7 +7417,7 @@
       "Elevation": 512.0999755859375
     },
     "Id": "ad6d8cc1-28d2-4eb0-80c0-6abf422e04b4",
-    "Name": "Academy 2Ne"
+    "Name": "Academy 2NE"
   },
   {
     "CountryCode": "US",
@@ -7487,7 +7487,7 @@
       "Elevation": 210.89999389648438
     },
     "Id": "a1940a9c-3124-4b43-90f5-32536ed4e892",
-    "Name": "Burlington Muni Ap"
+    "Name": "Burlington Muni AP"
   },
   {
     "CountryCode": "US",
@@ -7497,7 +7497,7 @@
       "Elevation": 271.29998779296875
     },
     "Id": "5723feb3-9786-4acd-acde-7629852b55ee",
-    "Name": "Needles Ap"
+    "Name": "Needles AP"
   },
   {
     "CountryCode": "US",
@@ -7507,7 +7507,7 @@
       "Elevation": 1489.300048828125
     },
     "Id": "0b4ff707-e1ef-4d89-9590-7c76d99c7cbb",
-    "Name": "Winslow Muni Ap"
+    "Name": "Winslow Muni AP"
   },
   {
     "CountryCode": "BR",
@@ -7697,7 +7697,7 @@
       "Elevation": 737.5999755859375
     },
     "Id": "0d5b9863-dafe-419c-b946-10a6ebfb7b79",
-    "Name": "Oakland 1 Se"
+    "Name": "Oakland 1 SE"
   },
   {
     "CountryCode": "US",
@@ -7717,7 +7717,7 @@
       "Elevation": 442
     },
     "Id": "41132f4c-d0d7-4af7-8c00-286f9233c0f7",
-    "Name": "Stambaugh 2Sse"
+    "Name": "Stambaugh 2SSE"
   },
   {
     "CountryCode": "US",
@@ -7767,7 +7767,7 @@
       "Elevation": 271.29998779296875
     },
     "Id": "18b2acce-ae30-47ba-8376-34f908a49d16",
-    "Name": "Reidsville 2 Nw"
+    "Name": "Reidsville 2 NW"
   },
   {
     "CountryCode": "US",
@@ -7807,7 +7807,7 @@
       "Elevation": 36.599998474121094
     },
     "Id": "36c27589-cab2-444b-8a79-e0115547356c",
-    "Name": "Anchorage Intl Ap"
+    "Name": "Anchorage Intl AP"
   },
   {
     "CountryCode": "US",
@@ -7817,7 +7817,7 @@
       "Elevation": 9.399999618530273
     },
     "Id": "e8ad8450-1dc5-4327-9806-5919f49d835c",
-    "Name": "Barrow Post Rogers Ap"
+    "Name": "Barrow Post Rogers AP"
   },
   {
     "CountryCode": "AU",
@@ -7987,7 +7987,7 @@
       "Elevation": 326.3999938964844
     },
     "Id": "18b34e45-31cd-4b03-a75f-4ed7f3e329d1",
-    "Name": "Iron Mt Kingsford Wwtp"
+    "Name": "Iron Mt Kingsford WWTP"
   },
   {
     "CountryCode": "US",
@@ -8027,7 +8027,7 @@
       "Elevation": 442
     },
     "Id": "5829a8e1-d0c8-4e19-a959-49e412e6e367",
-    "Name": "Columbus 3 Ne"
+    "Name": "Columbus 3 NE"
   },
   {
     "CountryCode": "US",
@@ -8057,7 +8057,7 @@
       "Elevation": 289.6000061035156
     },
     "Id": "dc312957-586b-4fb6-8e3b-0b7d9367c287",
-    "Name": "Statesville 2 Nne"
+    "Name": "Statesville 2 NNE"
   },
   {
     "CountryCode": "US",
@@ -8067,7 +8067,7 @@
       "Elevation": 253
     },
     "Id": "ec4a5538-90bd-41d6-809c-423354390348",
-    "Name": "Grand Forks Univ Nws"
+    "Name": "Grand Forks Univ NWS"
   },
   {
     "CountryCode": "US",
@@ -8077,7 +8077,7 @@
       "Elevation": 259.1000061035156
     },
     "Id": "d5629695-f03e-43c9-9e9f-545baf73dc80",
-    "Name": "Lima Wwtp"
+    "Name": "Lima WWTP"
   },
   {
     "CountryCode": "US",
@@ -8087,7 +8087,7 @@
       "Elevation": 304.79998779296875
     },
     "Id": "60af3953-a2b3-48d5-8026-b0080acc0db7",
-    "Name": "Urbana Wwtp"
+    "Name": "Urbana WWTP"
   },
   {
     "CountryCode": "US",
@@ -8117,7 +8117,7 @@
       "Elevation": 1051.5999755859375
     },
     "Id": "0c00d470-509f-479a-a5fa-ccd7ca89a5ef",
-    "Name": "Rapid City 4Nw"
+    "Name": "Rapid City 4NW"
   },
   {
     "CountryCode": "US",
@@ -8137,7 +8137,7 @@
       "Elevation": 1263.4000244140625
     },
     "Id": "78373fb8-bb61-4340-8da5-8c6dd16152e6",
-    "Name": "Lewistown Muni Ap"
+    "Name": "Lewistown Muni AP"
   },
   {
     "CountryCode": "CA",
@@ -8157,7 +8157,7 @@
       "Elevation": 910
     },
     "Id": "a7f2b20d-b9d8-4186-86e6-e8be2e3168d9",
-    "Name": "Lethbridge Cda"
+    "Name": "Lethbridge CDA"
   },
   {
     "CountryCode": "GL",
@@ -8297,7 +8297,7 @@
       "Elevation": 128
     },
     "Id": "19634c96-b07d-4765-ad9f-1e58b3e25fcb",
-    "Name": "Du Quoin 4 Se"
+    "Name": "Du Quoin 4 SE"
   },
   {
     "CountryCode": "US",
@@ -8327,7 +8327,7 @@
       "Elevation": 231.60000610351562
     },
     "Id": "aaa46874-fac1-467d-8008-bb67dec949fe",
-    "Name": "Adrian 2 Nne"
+    "Name": "Adrian 2 NNE"
   },
   {
     "CountryCode": "US",
@@ -8367,7 +8367,7 @@
       "Elevation": 437.3999938964844
     },
     "Id": "9c0bd131-5a55-410e-8d9a-96423f377d55",
-    "Name": "Fullerton 1 Ese"
+    "Name": "Fullerton 1 ESE"
   },
   {
     "CountryCode": "US",
@@ -8377,7 +8377,7 @@
       "Elevation": 478.5
     },
     "Id": "bfa2fd91-69b0-44be-96f9-86ad884235de",
-    "Name": "Faulkton 1 Nw"
+    "Name": "Faulkton 1 NW"
   },
   {
     "CountryCode": "US",
@@ -8427,7 +8427,7 @@
       "Elevation": 175.3000030517578
     },
     "Id": "e27a0a0b-2569-4514-a9bb-58de9a185f8b",
-    "Name": "Terre Haute Caa Ap"
+    "Name": "Terre Haute Caa AP"
   },
   {
     "CountryCode": "DZ",
@@ -8757,7 +8757,7 @@
       "Elevation": 94.5
     },
     "Id": "e50f31f7-136e-4ab6-9abb-ba945c512d5d",
-    "Name": "Saratoga Springs 4 Sw"
+    "Name": "Saratoga Springs 4 SW"
   },
   {
     "CountryCode": "US",
@@ -8807,7 +8807,7 @@
       "Elevation": 311.20001220703125
     },
     "Id": "9d62191c-9ce0-45f7-84c6-3dcf4d325f47",
-    "Name": "Redwood Falls Muni Ap"
+    "Name": "Redwood Falls Muni AP"
   },
   {
     "CountryCode": "BY",
@@ -8827,7 +8827,7 @@
       "Elevation": 49
     },
     "Id": "d16dbfca-5704-4b03-80bb-c7a2dd132049",
-    "Name": "Kentville Cda Cs"
+    "Name": "Kentville CDA CS"
   },
   {
     "CountryCode": "EG",
@@ -8977,7 +8977,7 @@
       "Elevation": 376.3999938964844
     },
     "Id": "71ff182f-9c25-493b-a00f-f62f2417c70b",
-    "Name": "Winfield 3Ne"
+    "Name": "Winfield 3NE"
   },
   {
     "CountryCode": "US",
@@ -8987,7 +8987,7 @@
       "Elevation": 3.700000047683716
     },
     "Id": "4bdf5bd8-e65e-40b6-909e-1e77ce94e9d9",
-    "Name": "Franklin 3 Nw"
+    "Name": "Franklin 3 NW"
   },
   {
     "CountryCode": "US",
@@ -9077,7 +9077,7 @@
       "Elevation": 397.5
     },
     "Id": "7e0ce0e3-0ff8-4003-912d-fa537568ffdd",
-    "Name": "Rochester Intl Ap"
+    "Name": "Rochester Intl AP"
   },
   {
     "CountryCode": "US",
@@ -9087,7 +9087,7 @@
       "Elevation": 4.900000095367432
     },
     "Id": "656ea08e-f698-4b4c-b3dd-7be67fb9a47a",
-    "Name": "Juneau Intl Ap"
+    "Name": "Juneau Intl AP"
   },
   {
     "CountryCode": "US",
@@ -9097,7 +9097,7 @@
       "Elevation": 474.29998779296875
     },
     "Id": "46b491d0-416d-4b9a-8e8f-ebc9b7a5cc43",
-    "Name": "Hobart Muni Ap"
+    "Name": "Hobart Muni AP"
   },
   {
     "CountryCode": "CN",
@@ -9317,7 +9317,7 @@
       "Elevation": 1245.4000244140625
     },
     "Id": "a268c016-389a-416c-ab87-8d65bbd7e0f8",
-    "Name": "Tucumcari 4 Ne"
+    "Name": "Tucumcari 4 NE"
   },
   {
     "CountryCode": "US",
@@ -9357,7 +9357,7 @@
       "Elevation": 315.79998779296875
     },
     "Id": "1d648933-dcb7-4c87-ac95-5f741f589efb",
-    "Name": "Newport 1 Nw"
+    "Name": "Newport 1 NW"
   },
   {
     "CountryCode": "US",
@@ -9377,7 +9377,7 @@
       "Elevation": 1169.800048828125
     },
     "Id": "abf5866b-7fc5-480e-8ea0-de2444cb742f",
-    "Name": "Cut Bank Muni Ap"
+    "Name": "Cut Bank Muni AP"
   },
   {
     "CountryCode": "FR",
@@ -9427,7 +9427,7 @@
       "Elevation": 93.9000015258789
     },
     "Id": "1e9e66f9-8117-409d-a91b-28258e6cbce5",
-    "Name": "Prescott 2 Nnw"
+    "Name": "Prescott 2 NNW"
   },
   {
     "CountryCode": "US",
@@ -9457,7 +9457,7 @@
       "Elevation": 249.89999389648438
     },
     "Id": "017a2ad8-ba59-45b1-b971-4aabeb5c06a3",
-    "Name": "Kokomo 3 Wsw"
+    "Name": "Kokomo 3 WSW"
   },
   {
     "CountryCode": "US",
@@ -9487,7 +9487,7 @@
       "Elevation": 234.6999969482422
     },
     "Id": "12187e99-1916-4111-8b33-7417a49c36b2",
-    "Name": "Hart 3 Wsw"
+    "Name": "Hart 3 WSW"
   },
   {
     "CountryCode": "US",
@@ -9507,7 +9507,7 @@
       "Elevation": 445
     },
     "Id": "5211a8c2-2227-4411-990a-ef87919a151d",
-    "Name": "Crete 4Ese"
+    "Name": "Crete 4ESE"
   },
   {
     "CountryCode": "US",
@@ -9547,7 +9547,7 @@
       "Elevation": 33.5
     },
     "Id": "acfa8fe9-421a-4336-87ec-0821ab63fe2f",
-    "Name": "Wilson 3 Sw"
+    "Name": "Wilson 3 SW"
   },
   {
     "CountryCode": "US",
@@ -9587,7 +9587,7 @@
       "Elevation": 384
     },
     "Id": "a9e2e4ed-b2d0-47b3-aa76-440d92932083",
-    "Name": "Centerville 6 Se"
+    "Name": "Centerville 6 SE"
   },
   {
     "CountryCode": "US",
@@ -9617,7 +9617,7 @@
       "Elevation": 87.80000305175781
     },
     "Id": "e281803f-2683-44de-b945-1d0bf4bd568e",
-    "Name": "Lufkin Angelina Co Ap"
+    "Name": "Lufkin Angelina Co AP"
   },
   {
     "CountryCode": "US",
@@ -9627,7 +9627,7 @@
       "Elevation": 208.5
     },
     "Id": "a19b2d16-9433-46c2-9f40-85af62bbee7d",
-    "Name": "Alpena Co Rgnl Ap"
+    "Name": "Alpena Co Rgnl AP"
   },
   {
     "CountryCode": "BR",
@@ -9827,7 +9827,7 @@
       "Elevation": 268.20001220703125
     },
     "Id": "830c4bcf-ba07-47b4-b03e-c582b896d194",
-    "Name": "Albia 3 Nne"
+    "Name": "Albia 3 NNE"
   },
   {
     "CountryCode": "US",
@@ -9907,7 +9907,7 @@
       "Elevation": 413
     },
     "Id": "ae4ed6fd-5388-49ad-aff2-612d67ff446c",
-    "Name": "Rogersville 1 Ne"
+    "Name": "Rogersville 1 NE"
   },
   {
     "CountryCode": "US",
@@ -10167,7 +10167,7 @@
       "Elevation": 256
     },
     "Id": "45f9fb29-0f74-4a8d-aa26-9afd04b9166c",
-    "Name": "Crawfordsville 6 Se"
+    "Name": "Crawfordsville 6 SE"
   },
   {
     "CountryCode": "US",
@@ -10177,7 +10177,7 @@
       "Elevation": 423.70001220703125
     },
     "Id": "e4b602b7-5e8f-46a4-89ed-5f7473f6660f",
-    "Name": "Lincoln 1 Se"
+    "Name": "Lincoln 1 SE"
   },
   {
     "CountryCode": "US",
@@ -10187,7 +10187,7 @@
       "Elevation": 374.8999938964844
     },
     "Id": "a2b411a6-a17b-47d7-850e-04f2f65f6aef",
-    "Name": "Albert Lea 3 Se"
+    "Name": "Albert Lea 3 SE"
   },
   {
     "CountryCode": "US",
@@ -10247,7 +10247,7 @@
       "Elevation": 655.2999877929688
     },
     "Id": "2694b266-9df6-4d45-8324-f951235e957f",
-    "Name": "New Salem 5Nw"
+    "Name": "New Salem 5NW"
   },
   {
     "CountryCode": "US",
@@ -10287,7 +10287,7 @@
       "Elevation": 317
     },
     "Id": "0d4bce07-f797-4f5e-8bd8-276b09b36d83",
-    "Name": "Lancaster 4 Wsw"
+    "Name": "Lancaster 4 WSW"
   },
   {
     "CountryCode": "US",
@@ -10297,7 +10297,7 @@
       "Elevation": 329.20001220703125
     },
     "Id": "8c7e8f36-de49-469c-851e-a32feb6feee3",
-    "Name": "Neillsville 3Ese"
+    "Name": "Neillsville 3ESE"
   },
   {
     "CountryCode": "US",
@@ -10337,7 +10337,7 @@
       "Elevation": 1373.0999755859375
     },
     "Id": "06576097-86fe-49e1-bced-cfefb6dfbedc",
-    "Name": "Battle Mountain 4Se"
+    "Name": "Battle Mountain 4SE"
   },
   {
     "CountryCode": "US",
@@ -10347,7 +10347,7 @@
       "Elevation": 9.399999618530273
     },
     "Id": "03246044-31f4-4502-ac09-b54d96ac9469",
-    "Name": "Cordova M K Smith Ap"
+    "Name": "Cordova M K Smith AP"
   },
   {
     "CountryCode": "US",
@@ -10357,7 +10357,7 @@
       "Elevation": 31.100000381469727
     },
     "Id": "3a6e1087-a103-42b7-8f6c-f6b4181b2c86",
-    "Name": "Bethel Ap"
+    "Name": "Bethel AP"
   },
   {
     "CountryCode": "AR",
@@ -10597,7 +10597,7 @@
       "Elevation": 944
     },
     "Id": "28d4edab-1507-439d-af5e-c004a2d60b94",
-    "Name": "Billings Wtp"
+    "Name": "Billings WTP"
   },
   {
     "CountryCode": "US",
@@ -10687,7 +10687,7 @@
       "Elevation": 474.6000061035156
     },
     "Id": "480e458c-d50f-42f1-bce0-522976828a8b",
-    "Name": "Dayton 1 Wsw"
+    "Name": "Dayton 1 WSW"
   },
   {
     "CountryCode": "US",
@@ -10777,7 +10777,7 @@
       "Elevation": 218
     },
     "Id": "70047987-f1fd-425c-8b5d-fc771f481ce9",
-    "Name": "Kapuskasing Cda On"
+    "Name": "Kapuskasing CDA On"
   },
   {
     "CountryCode": "CN",
@@ -10987,7 +10987,7 @@
       "Elevation": 606.5999755859375
     },
     "Id": "89f2b5df-ee9e-4266-a2ed-78b7581b2ea4",
-    "Name": "O\u0027neill"
+    "Name": "O\u0027Neill"
   },
   {
     "CountryCode": "US",
@@ -11057,7 +11057,7 @@
       "Elevation": 271.29998779296875
     },
     "Id": "c04536a2-9747-4fe6-b39d-b207570d32ed",
-    "Name": "Piedmont Triad Intl Ap"
+    "Name": "Piedmont Triad Intl AP"
   },
   {
     "CountryCode": "US",
@@ -11067,7 +11067,7 @@
       "Elevation": 106.69999694824219
     },
     "Id": "fd138d74-9fc5-4d90-afd1-f7630f98e50a",
-    "Name": "Talkeetna Ap"
+    "Name": "Talkeetna AP"
   },
   {
     "CountryCode": "CN",
@@ -11297,7 +11297,7 @@
       "Elevation": 719.2999877929688
     },
     "Id": "2455615b-81ac-4a44-8c9b-fdc465bf3fc8",
-    "Name": "Norton 9Sse"
+    "Name": "Norton 9SSE"
   },
   {
     "CountryCode": "US",
@@ -11377,7 +11377,7 @@
       "Elevation": 568.0999755859375
     },
     "Id": "dca6da19-c552-4d33-8001-3daf66f216e1",
-    "Name": "Ritzville 1 Sse"
+    "Name": "Ritzville 1 SSE"
   },
   {
     "CountryCode": "US",
@@ -11417,7 +11417,7 @@
       "Elevation": 603.2000122070312
     },
     "Id": "f3b9e287-b841-4525-b6e3-1bef84f4b1d2",
-    "Name": "Elkins Randolph Co Ap"
+    "Name": "Elkins Randolph Co AP"
   },
   {
     "CountryCode": "US",
@@ -11427,7 +11427,7 @@
       "Elevation": 310
     },
     "Id": "59faa5c8-d341-4868-b41f-89a0938feffa",
-    "Name": "Wichita Falls Muni Ap"
+    "Name": "Wichita Falls Muni AP"
   },
   {
     "CountryCode": "US",
@@ -11447,7 +11447,7 @@
       "Elevation": 395.29998779296875
     },
     "Id": "a9b83418-0aec-461b-a13f-7cad8b931d7c",
-    "Name": "Medford Rogue Vly Ap"
+    "Name": "Medford Rogue Vly AP"
   },
   {
     "CountryCode": "CA",
@@ -11617,7 +11617,7 @@
       "Elevation": 277.3999938964844
     },
     "Id": "05397409-5107-443e-9e09-fbac35274e54",
-    "Name": "Parsons 2 Nw"
+    "Name": "Parsons 2 NW"
   },
   {
     "CountryCode": "US",
@@ -11637,7 +11637,7 @@
       "Elevation": 249.89999389648438
     },
     "Id": "18c43e5c-d1ff-406a-bb86-25e8135f259a",
-    "Name": "Nevada Wtp"
+    "Name": "Nevada WTP"
   },
   {
     "CountryCode": "US",
@@ -11667,7 +11667,7 @@
       "Elevation": 506
     },
     "Id": "6b968fc6-623c-4900-a2fc-d18b580691ef",
-    "Name": "Indian Lake 2Sw"
+    "Name": "Indian Lake 2SW"
   },
   {
     "CountryCode": "US",
@@ -11687,7 +11687,7 @@
       "Elevation": 137.1999969482422
     },
     "Id": "1c4087da-b856-4e25-9fba-08e14a21a8e3",
-    "Name": "Estacada 2 Se"
+    "Name": "Estacada 2 SE"
   },
   {
     "CountryCode": "US",
@@ -11737,7 +11737,7 @@
       "Elevation": 6.099999904632568
     },
     "Id": "82a3dceb-0c48-4db4-9399-64e0f307568e",
-    "Name": "L F Wade Intl Ap Kindley Fld"
+    "Name": "L F Wade Intl AP Kindley Fld"
   },
   {
     "CountryCode": "BD",
@@ -12017,7 +12017,7 @@
       "Elevation": 9.100000381469727
     },
     "Id": "aa703f07-efb0-4ceb-8997-39800efffd15",
-    "Name": "Donaldsonville 4 Sw"
+    "Name": "Donaldsonville 4 SW"
   },
   {
     "CountryCode": "US",
@@ -12027,7 +12027,7 @@
       "Elevation": 4.599999904632568
     },
     "Id": "70544775-f1ee-48d0-8ea2-471456ee7a14",
-    "Name": "Thibodaux 4 Se"
+    "Name": "Thibodaux 4 SE"
   },
   {
     "CountryCode": "US",
@@ -12057,7 +12057,7 @@
       "Elevation": 181.39999389648438
     },
     "Id": "954086c8-4e8f-4498-ad52-0a592f52143a",
-    "Name": "Harbor Beach 1 Sse"
+    "Name": "Harbor Beach 1 SSE"
   },
   {
     "CountryCode": "US",
@@ -12067,7 +12067,7 @@
       "Elevation": 682.7999877929688
     },
     "Id": "72319a3f-17a8-4411-88c6-32de96728ff3",
-    "Name": "Heron 2 Nw"
+    "Name": "Heron 2 NW"
   },
   {
     "CountryCode": "US",
@@ -12167,7 +12167,7 @@
       "Elevation": 118.9000015258789
     },
     "Id": "9591d8b0-881e-40f2-95e4-ffa9aa285903",
-    "Name": "Allentown Intl Ap"
+    "Name": "Allentown Intl AP"
   },
   {
     "CountryCode": "US",
@@ -12197,7 +12197,7 @@
       "Elevation": 46.29999923706055
     },
     "Id": "6f997c9f-ab65-4881-be50-294ec9a5b76a",
-    "Name": "Merced Muni Ap"
+    "Name": "Merced Muni AP"
   },
   {
     "CountryCode": "UZ",
@@ -12407,7 +12407,7 @@
       "Elevation": 2635.300048828125
     },
     "Id": "82a50456-b04f-4b0a-9d1e-ad8229399a95",
-    "Name": "Telluride 4Wnw"
+    "Name": "Telluride 4WNW"
   },
   {
     "CountryCode": "US",
@@ -12477,7 +12477,7 @@
       "Elevation": 3
     },
     "Id": "a8e54686-95d3-4c9e-805f-f2fef002a281",
-    "Name": "Morehead City 2 Wnw"
+    "Name": "Morehead City 2 WNW"
   },
   {
     "CountryCode": "US",
@@ -12537,7 +12537,7 @@
       "Elevation": 362.70001220703125
     },
     "Id": "f9c10d0d-9835-4233-a6bd-335af5441c2c",
-    "Name": "Vermillion 2 Se"
+    "Name": "Vermillion 2 SE"
   },
   {
     "CountryCode": "US",
@@ -12597,7 +12597,7 @@
       "Elevation": 928.0999755859375
     },
     "Id": "c92f9003-1f89-43f6-a603-7635a3b9b4d3",
-    "Name": "Hayes Center 1Nw"
+    "Name": "Hayes Center 1NW"
   },
   {
     "CountryCode": "UY",
@@ -12797,7 +12797,7 @@
       "Elevation": 2757.800048828125
     },
     "Id": "db6df0d5-2d02-4005-b72e-48a79a071525",
-    "Name": "Hermit 7 Ese"
+    "Name": "Hermit 7 ESE"
   },
   {
     "CountryCode": "US",
@@ -12807,7 +12807,7 @@
       "Elevation": 1508.800048828125
     },
     "Id": "45a0dc61-4014-4196-8297-bc4db197a3c0",
-    "Name": "Longmont 2 Ese"
+    "Name": "Longmont 2 ESE"
   },
   {
     "CountryCode": "US",
@@ -12827,7 +12827,7 @@
       "Elevation": 149.39999389648438
     },
     "Id": "c358b250-8fbe-40bd-ae5b-b6c2ba71df49",
-    "Name": "Mt Vernon 3 Ne"
+    "Name": "Mt Vernon 3 NE"
   },
   {
     "CountryCode": "US",
@@ -12847,7 +12847,7 @@
       "Elevation": 269.70001220703125
     },
     "Id": "5cb571f0-6b63-4b89-a316-5552d43d5f46",
-    "Name": "W Branch 3Se"
+    "Name": "W Branch 3SE"
   },
   {
     "CountryCode": "US",
@@ -12897,7 +12897,7 @@
       "Elevation": 1003.4000244140625
     },
     "Id": "f733c56c-74f0-4450-9873-f16cc498b05f",
-    "Name": "Flatwillow 4 Ene"
+    "Name": "Flatwillow 4 ENE"
   },
   {
     "CountryCode": "US",
@@ -12957,7 +12957,7 @@
       "Elevation": 841.9000244140625
     },
     "Id": "cc56f60d-451c-40cf-9b80-641af1a1290b",
-    "Name": "Longmire Rainier Nps"
+    "Name": "Longmire Rainier NPS"
   },
   {
     "CountryCode": "US",
@@ -13257,7 +13257,7 @@
       "Elevation": 210.3000030517578
     },
     "Id": "567fcb9d-253a-435d-ac96-7d0b967d690c",
-    "Name": "Winamac 2Sse"
+    "Name": "Winamac 2SSE"
   },
   {
     "CountryCode": "US",
@@ -13267,7 +13267,7 @@
       "Elevation": 347.5
     },
     "Id": "4087b633-a7fe-4d3b-ab9b-a75ccada5b2f",
-    "Name": "Ft Dodge 5Nnw"
+    "Name": "Ft Dodge 5NNW"
   },
   {
     "CountryCode": "US",
@@ -13367,7 +13367,7 @@
       "Elevation": 4.599999904632568
     },
     "Id": "66a28142-332e-4ff6-bef3-e441821cbbf2",
-    "Name": "Ft Myers Page Fld Ap"
+    "Name": "Ft Myers Page Fld AP"
   },
   {
     "CountryCode": "US",
@@ -13377,7 +13377,7 @@
       "Elevation": 3
     },
     "Id": "9d8399a1-67ec-4ace-af30-41e17b087e6d",
-    "Name": "Washington Reagan Ap"
+    "Name": "Washington Reagan AP"
   },
   {
     "CountryCode": "US",
@@ -13387,7 +13387,7 @@
       "Elevation": 10.100000381469727
     },
     "Id": "c975115b-b25d-425b-a4d2-ce7d8518c4ce",
-    "Name": "Yakutat State Ap"
+    "Name": "Yakutat State AP"
   },
   {
     "CountryCode": "US",
@@ -13397,7 +13397,7 @@
       "Elevation": 3027.300048828125
     },
     "Id": "38cb304f-0666-4a7b-85b6-4aaf8ae0c33b",
-    "Name": "Leadville Lake Co Ap"
+    "Name": "Leadville Lake Co AP"
   },
   {
     "CountryCode": "US",
@@ -13407,7 +13407,7 @@
       "Elevation": 76.80000305175781
     },
     "Id": "b81b8972-9d17-4cdd-817d-3f15261f72d2",
-    "Name": "El Dorado S Ar Rgnl Ap"
+    "Name": "El Dorado S Ar Rgnl AP"
   },
   {
     "CountryCode": "UZ",
@@ -13457,7 +13457,7 @@
       "Elevation": 21
     },
     "Id": "6234295c-c98b-40b2-b54b-ccb9284509aa",
-    "Name": "L\u0027assomption"
+    "Name": "L\u0027Assomption"
   },
   {
     "CountryCode": "CN",
@@ -13777,7 +13777,7 @@
       "Elevation": 266.70001220703125
     },
     "Id": "d773f13b-b6d0-4669-a431-be451e8c0c3c",
-    "Name": "Goshen 3Sw"
+    "Name": "Goshen 3SW"
   },
   {
     "CountryCode": "US",
@@ -13787,7 +13787,7 @@
       "Elevation": 414.5
     },
     "Id": "a7ad1919-71a6-4900-811b-a60073191ef5",
-    "Name": "Sioux Ctr 2 Se"
+    "Name": "Sioux Ctr 2 SE"
   },
   {
     "CountryCode": "US",
@@ -13847,7 +13847,7 @@
       "Elevation": 649.2000122070312
     },
     "Id": "75105fde-6fcd-406f-a39a-17bcb97f0583",
-    "Name": "Kearney 4 Ne"
+    "Name": "Kearney 4 NE"
   },
   {
     "CountryCode": "US",
@@ -13947,7 +13947,7 @@
       "Elevation": 298.1000061035156
     },
     "Id": "c2febef1-8888-4635-9bf5-743c2077f413",
-    "Name": "Mather 3 Nw"
+    "Name": "Mather 3 NW"
   },
   {
     "CountryCode": "US",
@@ -13957,7 +13957,7 @@
       "Elevation": 245.6999969482422
     },
     "Id": "071c7184-694b-4a85-b314-02206373c591",
-    "Name": "Shawano 2Ssw"
+    "Name": "Shawano 2SSW"
   },
   {
     "CountryCode": "US",
@@ -13977,7 +13977,7 @@
       "Elevation": 58.79999923706055
     },
     "Id": "440f7bff-57db-420e-9031-4d35554afc10",
-    "Name": "Alma Bacon Co Ap"
+    "Name": "Alma Bacon Co AP"
   },
   {
     "CountryCode": "US",
@@ -13987,7 +13987,7 @@
       "Elevation": 187.5
     },
     "Id": "990c509e-29ec-4e00-a469-e1d6860aa517",
-    "Name": "Birmingham Ap"
+    "Name": "Birmingham AP"
   },
   {
     "CountryCode": "US",
@@ -13997,7 +13997,7 @@
       "Elevation": 105.5
     },
     "Id": "fac6710d-6096-49e1-8bb6-2b21c89805e9",
-    "Name": "Concord Muni Ap"
+    "Name": "Concord Muni AP"
   },
   {
     "CountryCode": "US",
@@ -14007,7 +14007,7 @@
       "Elevation": 560.7999877929688
     },
     "Id": "665ad1a4-8697-43bb-a80f-5492879ebf3c",
-    "Name": "Grand Island Ap"
+    "Name": "Grand Island AP"
   },
   {
     "CountryCode": "US",
@@ -14017,7 +14017,7 @@
       "Elevation": 1908.699951171875
     },
     "Id": "5cbe6ffe-1e90-46d8-9575-0b9e201b87fb",
-    "Name": "Ely Yelland Fld Ap"
+    "Name": "Ely Yelland Fld AP"
   },
   {
     "CountryCode": "US",
@@ -14027,7 +14027,7 @@
       "Elevation": 9.100000381469727
     },
     "Id": "285b366b-f821-4907-a118-efdbe7ca6ec7",
-    "Name": "Kotzebue Ralph Wein Ap"
+    "Name": "Kotzebue Ralph Wein AP"
   },
   {
     "CountryCode": "US",
@@ -14117,7 +14117,7 @@
       "Elevation": 77.4000015258789
     },
     "Id": "9b3f62e0-2691-4a48-adda-3a40234559db",
-    "Name": "Guam Intl Ap"
+    "Name": "Guam Intl AP"
   },
   {
     "CountryCode": "JP",
@@ -14407,7 +14407,7 @@
       "Elevation": 114.30000305175781
     },
     "Id": "2f217548-2953-460c-9f2b-a9a8be35b92f",
-    "Name": "Hope 3 Ne"
+    "Name": "Hope 3 NE"
   },
   {
     "CountryCode": "US",
@@ -14487,7 +14487,7 @@
       "Elevation": 41.099998474121094
     },
     "Id": "4d1beeca-1db9-4c5d-af4b-a6f7b9d2e467",
-    "Name": "Nashua 2 Nnw"
+    "Name": "Nashua 2 NNW"
   },
   {
     "CountryCode": "US",
@@ -14507,7 +14507,7 @@
       "Elevation": 1475.199951171875
     },
     "Id": "0440ab4e-e04f-4d6c-bb0a-c57f00f33e70",
-    "Name": "Los Lunas 3 Ssw"
+    "Name": "Los Lunas 3 SSW"
   },
   {
     "CountryCode": "US",
@@ -14547,7 +14547,7 @@
       "Elevation": 205.6999969482422
     },
     "Id": "3b749676-9fe3-4339-83ae-64375529bd5b",
-    "Name": "Leaburg 1 Sw"
+    "Name": "Leaburg 1 SW"
   },
   {
     "CountryCode": "US",
@@ -14577,7 +14577,7 @@
       "Elevation": 516.9000244140625
     },
     "Id": "7c939d0e-d17f-4927-b0c8-515444d18674",
-    "Name": "Mobridge 2Nnw"
+    "Name": "Mobridge 2NNW"
   },
   {
     "CountryCode": "US",
@@ -14607,7 +14607,7 @@
       "Elevation": 192
     },
     "Id": "08835aca-4b6a-4bff-9752-94ba806249fa",
-    "Name": "Denton 2 Se"
+    "Name": "Denton 2 SE"
   },
   {
     "CountryCode": "US",
@@ -15057,7 +15057,7 @@
       "Elevation": 301.79998779296875
     },
     "Id": "87d30a97-b870-4186-9ead-f29e1de221fb",
-    "Name": "Montevideo 1 Sw"
+    "Name": "Montevideo 1 SW"
   },
   {
     "CountryCode": "US",
@@ -15107,7 +15107,7 @@
       "Elevation": 291.70001220703125
     },
     "Id": "d7ceee25-3cb8-4147-9fda-82473d8984c7",
-    "Name": "Washington Court House Wwtp"
+    "Name": "Washington Court House WWTP"
   },
   {
     "CountryCode": "US",
@@ -15147,7 +15147,7 @@
       "Elevation": 1414.300048828125
     },
     "Id": "324402ab-ec54-46e1-a8e9-b04ef765139d",
-    "Name": "Gillette 4Se"
+    "Name": "Gillette 4SE"
   },
   {
     "CountryCode": "US",
@@ -15167,7 +15167,7 @@
       "Elevation": 307.79998779296875
     },
     "Id": "2973b65b-6436-44e9-b4c3-41b019d5dcb1",
-    "Name": "Atlanta Hartsfield Intl Ap"
+    "Name": "Atlanta Hartsfield Intl AP"
   },
   {
     "CountryCode": "US",
@@ -15187,7 +15187,7 @@
       "Elevation": 3.700000047683716
     },
     "Id": "982e1824-30ea-4cb7-91b8-2289b57d00ba",
-    "Name": "Boston Logan Intl Ap"
+    "Name": "Boston Logan Intl AP"
   },
   {
     "CountryCode": "US",
@@ -15207,7 +15207,7 @@
       "Elevation": 241.10000610351562
     },
     "Id": "5263fd03-99cf-475b-b7a8-3aeffd5cabf0",
-    "Name": "Ft Wayne Intl Ap"
+    "Name": "Ft Wayne Intl AP"
   },
   {
     "CountryCode": "US",
@@ -15217,7 +15217,7 @@
       "Elevation": 19.5
     },
     "Id": "b2fad2c8-03c3-4ac6-ae15-93134a50295d",
-    "Name": "Homer Ap"
+    "Name": "Homer AP"
   },
   {
     "CountryCode": "US",
@@ -15227,7 +15227,7 @@
       "Elevation": 234.6999969482422
     },
     "Id": "8b3a486e-898e-4c7b-98d9-3cfa7c1e8a4c",
-    "Name": "Mcalester Rgnl Ap"
+    "Name": "McAlester Rgnl AP"
   },
   {
     "CountryCode": "AR",
@@ -15497,7 +15497,7 @@
       "Elevation": 7
     },
     "Id": "7e66a715-ccdb-49e0-8fff-8fd268968a73",
-    "Name": "Fairhope 2 Ne"
+    "Name": "Fairhope 2 NE"
   },
   {
     "CountryCode": "US",
@@ -15557,7 +15557,7 @@
       "Elevation": 268.79998779296875
     },
     "Id": "80e0e136-1e3c-4419-8e15-6924b5ba78b2",
-    "Name": "Greenville 2 Nne"
+    "Name": "Greenville 2 NNE"
   },
   {
     "CountryCode": "US",
@@ -15567,7 +15567,7 @@
       "Elevation": 204.1999969482422
     },
     "Id": "ee895f3e-f10e-4c9a-b4a5-c591178ec6eb",
-    "Name": "Manistee 3Se"
+    "Name": "Manistee 3SE"
   },
   {
     "CountryCode": "US",
@@ -15577,7 +15577,7 @@
       "Elevation": 222.5
     },
     "Id": "47b8fa3f-9244-4158-8aa3-bc4c1405e8f3",
-    "Name": "Owosso Wwtp"
+    "Name": "Owosso WWTP"
   },
   {
     "CountryCode": "US",
@@ -15647,7 +15647,7 @@
       "Elevation": 383.1000061035156
     },
     "Id": "b7f7c20b-9f5d-492c-8aa8-ebf4fa6476e3",
-    "Name": "Stehekin 4 Nw"
+    "Name": "Stehekin 4 NW"
   },
   {
     "CountryCode": "US",
@@ -15677,7 +15677,7 @@
       "Elevation": 13.399999618530273
     },
     "Id": "fd8d52cc-156e-4dd1-864b-dc041110ff39",
-    "Name": "Houston Hobby Ap"
+    "Name": "Houston Hobby AP"
   },
   {
     "CountryCode": "US",
@@ -15697,7 +15697,7 @@
       "Elevation": 161.8000030517578
     },
     "Id": "076f25c5-7094-470b-b137-72cf9594b238",
-    "Name": "St Louis Lambert Intl Ap"
+    "Name": "St Louis Lambert Intl AP"
   },
   {
     "CountryCode": "US",
@@ -15707,7 +15707,7 @@
       "Elevation": 310.29998779296875
     },
     "Id": "e6f94750-c7fc-4f72-b97b-b4e5a248bc8e",
-    "Name": "St Cloud Rgnl Ap"
+    "Name": "St Cloud Rgnl AP"
   },
   {
     "CountryCode": "US",
@@ -15717,7 +15717,7 @@
       "Elevation": 1618.5
     },
     "Id": "215056ff-c390-4d43-a341-1802eec0126c",
-    "Name": "Albuquerque Intl Ap"
+    "Name": "Albuquerque Intl AP"
   },
   {
     "CountryCode": "US",
@@ -15727,7 +15727,7 @@
       "Elevation": 2054.699951171875
     },
     "Id": "4efcf24d-31c2-41a6-9efe-17f3dce0ea0a",
-    "Name": "Rock Springs Ap"
+    "Name": "Rock Springs AP"
   },
   {
     "CountryCode": "US",
@@ -15737,7 +15737,7 @@
       "Elevation": 23.200000762939453
     },
     "Id": "0020812c-4dec-423e-a00c-6818c021ddbb",
-    "Name": "Ketchikan Intl Ap"
+    "Name": "Ketchikan Intl AP"
   },
   {
     "CountryCode": "US",
@@ -15747,7 +15747,7 @@
       "Elevation": 101.5
     },
     "Id": "fb74ad87-ee1c-4b98-acae-bd28e2147bfd",
-    "Name": "Mcgrath Ap"
+    "Name": "McGrath AP"
   },
   {
     "CountryCode": "UZ",
@@ -16187,7 +16187,7 @@
       "Elevation": 533.0999755859375
     },
     "Id": "5d5f272d-1e30-42f0-8a4b-43aa5744eb05",
-    "Name": "Winthrop 1 Wsw"
+    "Name": "Winthrop 1 WSW"
   },
   {
     "CountryCode": "US",
@@ -16197,7 +16197,7 @@
       "Elevation": 190.1999969482422
     },
     "Id": "94f09093-4761-4d64-b2c1-7f6d8631a6a2",
-    "Name": "Caribou Muni Ap"
+    "Name": "Caribou Muni AP"
   },
   {
     "CountryCode": "US",
@@ -16217,7 +16217,7 @@
       "Elevation": 149
     },
     "Id": "c8b399ea-f5bd-43cf-9a4c-8fe5d6b49392",
-    "Name": "Bakersfield Ap"
+    "Name": "Bakersfield AP"
   },
   {
     "CountryCode": "US",
@@ -16477,7 +16477,7 @@
       "Elevation": 28.700000762939453
     },
     "Id": "4ac7b682-1b69-41d8-9d5a-39100ab54ca3",
-    "Name": "Koror Wso"
+    "Name": "Koror WSO"
   },
   {
     "CountryCode": "PH",
@@ -16637,7 +16637,7 @@
       "Elevation": 2323.199951171875
     },
     "Id": "2d8cff9b-45a0-449e-a554-5abbbf01223b",
-    "Name": "Gunnison 3Sw"
+    "Name": "Gunnison 3SW"
   },
   {
     "CountryCode": "US",
@@ -16667,7 +16667,7 @@
       "Elevation": 396.20001220703125
     },
     "Id": "2e780c5e-b9b6-4433-912f-ae6903f03553",
-    "Name": "Forest City 2 Nne"
+    "Name": "Forest City 2 NNE"
   },
   {
     "CountryCode": "US",
@@ -16737,7 +16737,7 @@
       "Elevation": 204.1999969482422
     },
     "Id": "d03a831c-985a-445c-85f4-d39292563fed",
-    "Name": "Jefferson City Wtp"
+    "Name": "Jefferson City WTP"
   },
   {
     "CountryCode": "US",
@@ -16827,7 +16827,7 @@
       "Elevation": 5.800000190734863
     },
     "Id": "471667a4-d6f4-4a26-9bba-340cdc242b78",
-    "Name": "Tampa Intl Ap"
+    "Name": "Tampa Intl AP"
   },
   {
     "CountryCode": "US",
@@ -16837,7 +16837,7 @@
       "Elevation": 1.2000000476837158
     },
     "Id": "34ad43d9-ab3f-42cd-9400-09b8690c8f5e",
-    "Name": "New Orleans Intl Ap"
+    "Name": "New Orleans Intl AP"
   },
   {
     "CountryCode": "US",
@@ -16847,7 +16847,7 @@
       "Elevation": 3
     },
     "Id": "4936ccb1-b8b8-4cdb-8eb0-19797c7e6bc3",
-    "Name": "Philadelphia Intl Ap"
+    "Name": "Philadelphia Intl AP"
   },
   {
     "CountryCode": "US",
@@ -16857,7 +16857,7 @@
       "Elevation": 221.89999389648438
     },
     "Id": "41be46b8-4946-464e-b518-d17abc527944",
-    "Name": "Charlotte Douglas Ap"
+    "Name": "Charlotte Douglas AP"
   },
   {
     "CountryCode": "US",
@@ -16867,7 +16867,7 @@
       "Elevation": 152.39999389648438
     },
     "Id": "181d3ed6-33fc-478f-8308-3ff68d4b6662",
-    "Name": "Waco Rgnl Ap"
+    "Name": "Waco Rgnl AP"
   },
   {
     "CountryCode": "US",
@@ -16877,7 +16877,7 @@
       "Elevation": 180.39999389648438
     },
     "Id": "4f352958-bcd3-438e-9a27-46848cd5191e",
-    "Name": "Moline Quad City Intl Ap"
+    "Name": "Moline Quad City Intl AP"
   },
   {
     "CountryCode": "UY",
@@ -17177,7 +17177,7 @@
       "Elevation": 190.5
     },
     "Id": "a31e7129-9d6f-4cb3-9a30-f47edc16bd4b",
-    "Name": "Effingham 3Sw"
+    "Name": "Effingham 3SW"
   },
   {
     "CountryCode": "US",
@@ -17257,7 +17257,7 @@
       "Elevation": 295
     },
     "Id": "e1748765-ffaf-4640-b9d0-3b979a4a696f",
-    "Name": "Xenia 6 Sse"
+    "Name": "Xenia 6 SSE"
   },
   {
     "CountryCode": "US",
@@ -17317,7 +17317,7 @@
       "Elevation": 198.10000610351562
     },
     "Id": "fa9d8c08-c877-4e6d-a9f9-cc34bb5c7403",
-    "Name": "Tulsa Intl Ap"
+    "Name": "Tulsa Intl AP"
   },
   {
     "CountryCode": "US",
@@ -17327,7 +17327,7 @@
       "Elevation": 368.20001220703125
     },
     "Id": "64282e85-d188-4334-bdc9-6bca68d1eccf",
-    "Name": "Akron Canton Rgnl Ap"
+    "Name": "Akron Canton Rgnl AP"
   },
   {
     "CountryCode": "US",
@@ -17337,7 +17337,7 @@
       "Elevation": 22.600000381469727
     },
     "Id": "1a7bcdf2-2cab-472a-9d09-37edac51233e",
-    "Name": "Salinas Municipal Ap"
+    "Name": "Salinas Municipal AP"
   },
   {
     "CountryCode": "US",
@@ -17347,7 +17347,7 @@
       "Elevation": 69.19999694824219
     },
     "Id": "14109531-b330-473c-b133-4a7ec93807ff",
-    "Name": "Tanana Calhoun Mem Ap"
+    "Name": "Tanana Calhoun Mem AP"
   },
   {
     "CountryCode": "US",
@@ -17357,7 +17357,7 @@
       "Elevation": 1884
     },
     "Id": "57b80587-99ef-4ed3-ab9e-20aacfc14c41",
-    "Name": "Colorado Springs Muni Ap"
+    "Name": "Colorado Springs Muni AP"
   },
   {
     "CountryCode": "US",
@@ -17367,7 +17367,7 @@
       "Elevation": 295.70001220703125
     },
     "Id": "4a69706a-dc11-4fc8-973d-abaa1ea91397",
-    "Name": "Winston Salem Rynlds Ap"
+    "Name": "Winston Salem Rynlds AP"
   },
   {
     "CountryCode": "US",
@@ -17377,7 +17377,7 @@
       "Elevation": 666.9000244140625
     },
     "Id": "767666ef-4f78-416e-a283-39823c530764",
-    "Name": "Hill City Muni Ap"
+    "Name": "Hill City Muni AP"
   },
   {
     "CountryCode": "AR",
@@ -17977,7 +17977,7 @@
       "Elevation": 315.20001220703125
     },
     "Id": "5fa7d88f-95bb-483d-88b7-4b82e05af383",
-    "Name": "Bolivar 1 Ne"
+    "Name": "Bolivar 1 NE"
   },
   {
     "CountryCode": "US",
@@ -18077,7 +18077,7 @@
       "Elevation": 77.69999694824219
     },
     "Id": "704fcf91-e6ed-42bc-a22c-1464b3e17f76",
-    "Name": "Beeville 5 Ne"
+    "Name": "Beeville 5 NE"
   },
   {
     "CountryCode": "US",
@@ -18177,7 +18177,7 @@
       "Elevation": 100.5999984741211
     },
     "Id": "0690ac0a-c994-440a-826f-7804a3ec5957",
-    "Name": "Jackson Intl Ap"
+    "Name": "Jackson Intl AP"
   },
   {
     "CountryCode": "US",
@@ -18187,7 +18187,7 @@
       "Elevation": 457.20001220703125
     },
     "Id": "20417580-b7ce-4e27-a3dd-1576c70e619f",
-    "Name": "Bristol Tri City Ap"
+    "Name": "Bristol Tri City AP"
   },
   {
     "CountryCode": "US",
@@ -18197,7 +18197,7 @@
       "Elevation": 136.89999389648438
     },
     "Id": "ddaba375-4755-4321-acae-4d671cc32068",
-    "Name": "Ft Smith Rgnl Ap"
+    "Name": "Ft Smith Rgnl AP"
   },
   {
     "CountryCode": "US",
@@ -18227,7 +18227,7 @@
       "Elevation": 472.70001220703125
     },
     "Id": "5478e969-3950-47ae-be44-2a37c15f33c4",
-    "Name": "Norfolk Karl Stefan Ap"
+    "Name": "Norfolk Karl Stefan AP"
   },
   {
     "CountryCode": "US",
@@ -18237,7 +18237,7 @@
       "Elevation": 22.299999237060547
     },
     "Id": "55e23285-d4aa-4022-8804-7a58e9178f97",
-    "Name": "Modesto City Co Ap"
+    "Name": "Modesto City Co AP"
   },
   {
     "CountryCode": "US",
@@ -18247,7 +18247,7 @@
       "Elevation": 1421.300048828125
     },
     "Id": "77ffb49f-35c2-4acd-976b-eb25c337fb52",
-    "Name": "Akron Washington Co Ap"
+    "Name": "Akron Washington Co AP"
   },
   {
     "CountryCode": "AR",
@@ -18457,7 +18457,7 @@
       "Elevation": 32
     },
     "Id": "1126ebd7-79c2-4fe3-80b2-f425d2d92952",
-    "Name": "New Plymouth Aws"
+    "Name": "New Plymouth AWS"
   },
   {
     "CountryCode": "NZ",
@@ -18467,7 +18467,7 @@
       "Elevation": 19
     },
     "Id": "448febb4-7259-454b-89e5-655971d57d91",
-    "Name": "Campbell Island Aws"
+    "Name": "Campbell Island AWS"
   },
   {
     "CountryCode": "RS",
@@ -18667,7 +18667,7 @@
       "Elevation": 103.5999984741211
     },
     "Id": "17e7806b-fea3-4b0a-bd90-34b9d9407e65",
-    "Name": "Moultrie 2 Ese"
+    "Name": "Moultrie 2 ESE"
   },
   {
     "CountryCode": "US",
@@ -18687,7 +18687,7 @@
       "Elevation": 275.79998779296875
     },
     "Id": "49d1ad21-804a-4cb4-a296-37f42683f2d2",
-    "Name": "Grinnell 3 Sw"
+    "Name": "Grinnell 3 SW"
   },
   {
     "CountryCode": "US",
@@ -18727,7 +18727,7 @@
       "Elevation": 136.89999389648438
     },
     "Id": "8696de15-174b-40d0-85ae-900c443392dc",
-    "Name": "Henderson 8 Ssw"
+    "Name": "Henderson 8 SSW"
   },
   {
     "CountryCode": "US",
@@ -18897,7 +18897,7 @@
       "Elevation": 360.6000061035156
     },
     "Id": "ec9c15d4-c0dd-4cfc-a9b6-a3c917684a17",
-    "Name": "Intl Falls Intl Ap"
+    "Name": "Intl Falls Intl AP"
   },
   {
     "CountryCode": "US",
@@ -18907,7 +18907,7 @@
       "Elevation": 1627
     },
     "Id": "0c7fd1d5-40d3-4763-b5d8-6c7e5e392d4f",
-    "Name": "Casper Natrona Co Ap"
+    "Name": "Casper Natrona Co AP"
   },
   {
     "CountryCode": "US",
@@ -18917,7 +18917,7 @@
       "Elevation": 23.799999237060547
     },
     "Id": "8bd51168-fda8-4d8d-9af3-d3df8958edc7",
-    "Name": "Cold Bay Ap"
+    "Name": "Cold Bay AP"
   },
   {
     "CountryCode": "US",
@@ -18927,7 +18927,7 @@
       "Elevation": 522.0999755859375
     },
     "Id": "19222bf3-8708-4646-a62b-98efa6731d04",
-    "Name": "Northway Ap"
+    "Name": "Northway AP"
   },
   {
     "CountryCode": "US",
@@ -18937,7 +18937,7 @@
       "Elevation": 195.6999969482422
     },
     "Id": "ef9d03a9-1709-4d9d-b90e-ac0e5f1dfcb0",
-    "Name": "Bettles Ap"
+    "Name": "Bettles AP"
   },
   {
     "CountryCode": "US",
@@ -18947,7 +18947,7 @@
       "Elevation": 268.20001220703125
     },
     "Id": "b82f4b96-90a6-4c46-bc5d-6b329f563a31",
-    "Name": "Zanesville Muni Ap"
+    "Name": "Zanesville Muni AP"
   },
   {
     "CountryCode": "AU",
@@ -19527,7 +19527,7 @@
       "Elevation": 1962
     },
     "Id": "ead630e9-d67f-40ba-a18a-328e529fa588",
-    "Name": "Alta 1 Nnw"
+    "Name": "Alta 1 NNW"
   },
   {
     "CountryCode": "US",
@@ -19547,7 +19547,7 @@
       "Elevation": 9.399999618530273
     },
     "Id": "bbc43ed8-8656-46aa-9b4f-599e5dcef65d",
-    "Name": "Daytona Beach Intl Ap"
+    "Name": "Daytona Beach Intl AP"
   },
   {
     "CountryCode": "US",
@@ -19567,7 +19567,7 @@
       "Elevation": 545.5999755859375
     },
     "Id": "689cf8fe-f224-4edc-aea2-d17b8831d149",
-    "Name": "Abilene Rgnl Ap"
+    "Name": "Abilene Rgnl AP"
   },
   {
     "CountryCode": "US",
@@ -19587,7 +19587,7 @@
       "Elevation": 6.699999809265137
     },
     "Id": "a7ee1202-bb0f-46d2-8fb5-3abf95bf40b9",
-    "Name": "Seward Ap"
+    "Name": "Seward AP"
   },
   {
     "CountryCode": "AU",
@@ -19957,7 +19957,7 @@
       "Elevation": 271.29998779296875
     },
     "Id": "bff48006-d6f1-45af-97d8-6ad8c5be4a48",
-    "Name": "Pontiac Wwtp"
+    "Name": "Pontiac WWTP"
   },
   {
     "CountryCode": "US",
@@ -19967,7 +19967,7 @@
       "Elevation": 275.79998779296875
     },
     "Id": "73b9bcda-25a5-41ba-9225-c87f83909f4c",
-    "Name": "Vanderbilt 11Ene"
+    "Name": "Vanderbilt 11ENE"
   },
   {
     "CountryCode": "US",
@@ -20017,7 +20017,7 @@
       "Elevation": 104.5
     },
     "Id": "179dc3b5-1a9e-4f0f-bb99-4f6b2826f899",
-    "Name": "Macon Middle Ga Rgnl Ap"
+    "Name": "Macon Middle Ga Rgnl AP"
   },
   {
     "CountryCode": "US",
@@ -20027,7 +20027,7 @@
       "Elevation": 40.20000076293945
     },
     "Id": "2e9bc94a-bea0-423a-ab9f-a9eac1008648",
-    "Name": "Augusta Bush Fld Ap"
+    "Name": "Augusta Bush Fld AP"
   },
   {
     "CountryCode": "US",
@@ -20037,7 +20037,7 @@
       "Elevation": 358.1000061035156
     },
     "Id": "97e5f842-3292-493a-b013-f487b5db7fdb",
-    "Name": "Roanoke Rgnl Ap"
+    "Name": "Roanoke Rgnl AP"
   },
   {
     "CountryCode": "US",
@@ -20047,7 +20047,7 @@
       "Elevation": 181.10000610351562
     },
     "Id": "9af78e23-f8b9-4b7d-87ec-a47602886f51",
-    "Name": "Anniston Metro Ap"
+    "Name": "Anniston Metro AP"
   },
   {
     "CountryCode": "US",
@@ -20057,7 +20057,7 @@
       "Elevation": 239.3000030517578
     },
     "Id": "f8b42bc4-6731-46d5-bb04-cd08760f9529",
-    "Name": "Athens Ben Epps Ap"
+    "Name": "Athens Ben Epps AP"
   },
   {
     "CountryCode": "US",
@@ -20067,7 +20067,7 @@
       "Elevation": 61.599998474121094
     },
     "Id": "f0a549a1-363b-4c52-a262-baecf23106ec",
-    "Name": "Montgomery Ap"
+    "Name": "Montgomery AP"
   },
   {
     "CountryCode": "US",
@@ -20077,7 +20077,7 @@
       "Elevation": 164.60000610351562
     },
     "Id": "28486ef0-4515-4f30-95d6-4629556cee77",
-    "Name": "Muscle Shoals Rgnl Ap"
+    "Name": "Muscle Shoals Rgnl AP"
   },
   {
     "CountryCode": "US",
@@ -20087,7 +20087,7 @@
       "Elevation": 267
     },
     "Id": "ec0ad8bf-2dc8-44aa-a146-4b52b2c9d861",
-    "Name": "Topeka Muni Ap"
+    "Name": "Topeka Muni AP"
   },
   {
     "CountryCode": "US",
@@ -20097,7 +20097,7 @@
       "Elevation": 431.6000061035156
     },
     "Id": "49a70a89-0c5d-4a5e-aa63-957a809f7c20",
-    "Name": "Alexandria Muni Ap"
+    "Name": "Alexandria Muni AP"
   },
   {
     "CountryCode": "US",
@@ -20107,7 +20107,7 @@
       "Elevation": 2095.199951171875
     },
     "Id": "d80327f6-fc39-48fc-96a3-e643bd1be87d",
-    "Name": "Las Vegas Muni Ap"
+    "Name": "Las Vegas Muni AP"
   },
   {
     "CountryCode": "US",
@@ -20117,7 +20117,7 @@
       "Elevation": 2296.10009765625
     },
     "Id": "bfe35014-a706-461b-a00c-b191f0a4cd1e",
-    "Name": "Alamosa San Luis Ap"
+    "Name": "Alamosa San Luis AP"
   },
   {
     "CountryCode": "US",
@@ -20127,7 +20127,7 @@
       "Elevation": 584.2999877929688
     },
     "Id": "8350f7fa-644a-4104-a879-74aa97f15863",
-    "Name": "Barstow Daggett Ap"
+    "Name": "Barstow Daggett AP"
   },
   {
     "CountryCode": "US",
@@ -20147,7 +20147,7 @@
       "Elevation": 1287.800048828125
     },
     "Id": "c58afbbe-e031-4d39-bf84-899f5ea7c499",
-    "Name": "Salt Lake City Intl Ap"
+    "Name": "Salt Lake City Intl AP"
   },
   {
     "CountryCode": "US",
@@ -20157,7 +20157,7 @@
       "Elevation": 107.5999984741211
     },
     "Id": "4a33114e-11ee-4ca1-8103-89c748f821f6",
-    "Name": "Eugene Mahlon Sweet Ap"
+    "Name": "Eugene Mahlon Sweet AP"
   },
   {
     "CountryCode": "US",
@@ -20167,7 +20167,7 @@
       "Elevation": 112.80000305175781
     },
     "Id": "08a8e6e5-d04d-4bfc-84fd-9fc3091bd182",
-    "Name": "Seattle Tacoma Intl Ap"
+    "Name": "Seattle Tacoma Intl AP"
   },
   {
     "CountryCode": "US",
@@ -20197,7 +20197,7 @@
       "Elevation": 1.5
     },
     "Id": "83cd1ad3-d7ae-4b70-8d72-c6bcaefe1e80",
-    "Name": "Bridgeport Sikorsky Mem Ap"
+    "Name": "Bridgeport Sikorsky Mem AP"
   },
   {
     "CountryCode": "UY",
@@ -20547,7 +20547,7 @@
       "Elevation": 94.5
     },
     "Id": "c2ac954d-c6b8-4033-9555-3c703ba5359f",
-    "Name": "Jonesboro 2 Ne"
+    "Name": "Jonesboro 2 NE"
   },
   {
     "CountryCode": "US",
@@ -20567,7 +20567,7 @@
       "Elevation": 598.9000244140625
     },
     "Id": "b8f97e33-b7e5-4e2f-a3d2-6e9d242c556a",
-    "Name": "Clayton 1 Ssw"
+    "Name": "Clayton 1 SSW"
   },
   {
     "CountryCode": "US",
@@ -20577,7 +20577,7 @@
       "Elevation": 189
     },
     "Id": "cdf9119c-5728-43e6-bc98-e7113bb1052b",
-    "Name": "Washington 2 Ese"
+    "Name": "Washington 2 ESE"
   },
   {
     "CountryCode": "US",
@@ -20657,7 +20657,7 @@
       "Elevation": 179.1999969482422
     },
     "Id": "9f272328-6bf3-4627-b7e8-98ad0886d532",
-    "Name": "Claremore 2 Ene"
+    "Name": "Claremore 2 ENE"
   },
   {
     "CountryCode": "US",
@@ -20727,7 +20727,7 @@
       "Elevation": 251.1999969482422
     },
     "Id": "2952e56f-0732-4043-8668-81f7b385c766",
-    "Name": "Huntington Tri State Ap"
+    "Name": "Huntington Tri State AP"
   },
   {
     "CountryCode": "US",
@@ -20747,7 +20747,7 @@
       "Elevation": 24.100000381469727
     },
     "Id": "6d2a427a-52d7-4404-939c-0a8009ad35be",
-    "Name": "Monroe Rgnl Ap"
+    "Name": "Monroe Rgnl AP"
   },
   {
     "CountryCode": "US",
@@ -20757,7 +20757,7 @@
       "Elevation": 97.80000305175781
     },
     "Id": "5c906912-4bf9-472e-aaf5-1631088bec63",
-    "Name": "Glens Falls Ap"
+    "Name": "Glens Falls AP"
   },
   {
     "CountryCode": "US",
@@ -20777,7 +20777,7 @@
       "Elevation": 256.6000061035156
     },
     "Id": "fc94eea9-25ed-49b7-8a69-2a97c06483a9",
-    "Name": "Ottumwa Industrial Ap"
+    "Name": "Ottumwa Industrial AP"
   },
   {
     "CountryCode": "US",
@@ -20787,7 +20787,7 @@
       "Elevation": 389.20001220703125
     },
     "Id": "93313f68-fb16-44cb-8efa-7c2234bb7d47",
-    "Name": "Big Delta Ap"
+    "Name": "Big Delta AP"
   },
   {
     "CountryCode": "US",
@@ -20797,7 +20797,7 @@
       "Elevation": 27.700000762939453
     },
     "Id": "ca3bf733-2212-44b4-a5a7-5663e37f4701",
-    "Name": "Kenai Muni Ap"
+    "Name": "Kenai Muni AP"
   },
   {
     "CountryCode": "US",
@@ -20807,7 +20807,7 @@
       "Elevation": 125.9000015258789
     },
     "Id": "b3793cbf-de0a-49c3-a341-ef7ca326716c",
-    "Name": "Mccomb Pike Co John E Lewis Ap"
+    "Name": "McComb Pike Co John E Lewis AP"
   },
   {
     "CountryCode": "US",
@@ -20817,7 +20817,7 @@
       "Elevation": 304.79998779296875
     },
     "Id": "d18d3c4a-ea1b-492a-8467-2bd0a5e7efcd",
-    "Name": "Worcester Rgnl Ap"
+    "Name": "Worcester Rgnl AP"
   },
   {
     "CountryCode": "AR",
@@ -21327,7 +21327,7 @@
       "Elevation": 634.9000244140625
     },
     "Id": "b4f375db-3ac4-4dfd-a5c3-4141d3c94431",
-    "Name": "Plainville 4Wnw"
+    "Name": "Plainville 4WNW"
   },
   {
     "CountryCode": "US",
@@ -21397,7 +21397,7 @@
       "Elevation": 128
     },
     "Id": "f401f557-64ee-4cd8-85fa-96c0060616b5",
-    "Name": "Gouverneur 3 Nw"
+    "Name": "Gouverneur 3 NW"
   },
   {
     "CountryCode": "US",
@@ -21527,7 +21527,7 @@
       "Elevation": 277.3999938964844
     },
     "Id": "79cb6abe-6db6-4ac9-bc90-8eb03d266953",
-    "Name": "Charleston Yeager Ap"
+    "Name": "Charleston Yeager AP"
   },
   {
     "CountryCode": "US",
@@ -21537,7 +21537,7 @@
       "Elevation": 57.900001525878906
     },
     "Id": "953cdee3-cbde-46b1-b19e-bd79ead46acb",
-    "Name": "Hartford Bradley Intl Ap"
+    "Name": "Hartford Bradley Intl AP"
   },
   {
     "CountryCode": "US",
@@ -21547,7 +21547,7 @@
       "Elevation": 204.1999969482422
     },
     "Id": "76ab1ec7-afeb-4456-adc7-792f611afafe",
-    "Name": "Milwaukee Mitchell Ap"
+    "Name": "Milwaukee Mitchell AP"
   },
   {
     "CountryCode": "US",
@@ -21557,7 +21557,7 @@
       "Elevation": 269.70001220703125
     },
     "Id": "3da83f87-8771-4554-bc9e-7ded2ec7e7d0",
-    "Name": "Eau Claire Rgnl Ap"
+    "Name": "Eau Claire Rgnl AP"
   },
   {
     "CountryCode": "US",
@@ -21567,7 +21567,7 @@
       "Elevation": 476.1000061035156
     },
     "Id": "86ab87c8-32ac-4045-b98c-fdf437d9297f",
-    "Name": "Gulkana Ap"
+    "Name": "Gulkana AP"
   },
   {
     "CountryCode": "US",
@@ -21577,7 +21577,7 @@
       "Elevation": 1438.699951171875
     },
     "Id": "c1630cd2-562e-48d6-93de-be4895f5f8c6",
-    "Name": "Pueblo Mem Ap"
+    "Name": "Pueblo Mem AP"
   },
   {
     "CountryCode": "AU",
@@ -22087,7 +22087,7 @@
       "Elevation": 210.3000030517578
     },
     "Id": "bfb74774-1fa2-4d8f-baf0-154e49d9d475",
-    "Name": "Caro Wwtp"
+    "Name": "Caro WWTP"
   },
   {
     "CountryCode": "US",
@@ -22117,7 +22117,7 @@
       "Elevation": 345.8999938964844
     },
     "Id": "983ea203-ddb7-49b3-983a-62618e0606fd",
-    "Name": "Houghton Lake 6 Wsw"
+    "Name": "Houghton Lake 6 WSW"
   },
   {
     "CountryCode": "US",
@@ -22157,7 +22157,7 @@
       "Elevation": 451.1000061035156
     },
     "Id": "14368793-2846-4bd3-931a-7d6668da0fbb",
-    "Name": "Towner 2 Ne"
+    "Name": "Towner 2 NE"
   },
   {
     "CountryCode": "US",
@@ -22167,7 +22167,7 @@
       "Elevation": 271.29998779296875
     },
     "Id": "55b2a517-70dd-48de-800b-8b557e4b14ac",
-    "Name": "New Lexington 2 Nw"
+    "Name": "New Lexington 2 NW"
   },
   {
     "CountryCode": "US",
@@ -22177,7 +22177,7 @@
       "Elevation": 317
     },
     "Id": "da00b958-914e-4e3c-a832-efe219e027ea",
-    "Name": "Jamestown 2 Nw"
+    "Name": "Jamestown 2 NW"
   },
   {
     "CountryCode": "US",
@@ -22197,7 +22197,7 @@
       "Elevation": 15.199999809265137
     },
     "Id": "ba13f28d-ce55-493b-a64f-a9e3b9c72c46",
-    "Name": "Walkerton 2 Nw"
+    "Name": "Walkerton 2 NW"
   },
   {
     "CountryCode": "US",
@@ -22227,7 +22227,7 @@
       "Elevation": 132
     },
     "Id": "7fe7b2ec-6b37-4b0e-bd65-1e738d239368",
-    "Name": "Jackson Mckellar Ap"
+    "Name": "Jackson McKellar AP"
   },
   {
     "CountryCode": "US",
@@ -22237,7 +22237,7 @@
       "Elevation": 4.900000095367432
     },
     "Id": "5d96e932-1818-4ec8-8c90-e0b5040fad3f",
-    "Name": "Port Arthur Se Tx Ap"
+    "Name": "Port Arthur SE Tx AP"
   },
   {
     "CountryCode": "US",
@@ -22247,7 +22247,7 @@
       "Elevation": 283.5
     },
     "Id": "64fa69eb-87b2-4430-9f1c-7dfd5a2b65ab",
-    "Name": "Wilkes Barre Intl Ap"
+    "Name": "Wilkes Barre Intl AP"
   },
   {
     "CountryCode": "US",
@@ -22257,7 +22257,7 @@
       "Elevation": 234.6999969482422
     },
     "Id": "5d99cad1-2aa5-4528-b8f3-588b288d76d2",
-    "Name": "Flint Bishop Intl Ap"
+    "Name": "Flint Bishop Intl AP"
   },
   {
     "CountryCode": "US",
@@ -22267,7 +22267,7 @@
       "Elevation": 1024.4000244140625
     },
     "Id": "bb3544e1-279d-4ff5-acf3-c6e614dcb6b1",
-    "Name": "Baker City Muni Ap"
+    "Name": "Baker City Muni AP"
   },
   {
     "CountryCode": "US",
@@ -22277,7 +22277,7 @@
       "Elevation": 1262.5
     },
     "Id": "0e2d1201-8d34-45b6-884f-b9df0ff74473",
-    "Name": "Burley Muni Ap"
+    "Name": "Burley Muni AP"
   },
   {
     "CountryCode": "US",
@@ -22287,7 +22287,7 @@
       "Elevation": 381.6000061035156
     },
     "Id": "7b448653-785c-4a27-8779-cfea52767e5b",
-    "Name": "Ephrata Muni Ap"
+    "Name": "Ephrata Muni AP"
   },
   {
     "CountryCode": "US",
@@ -22787,7 +22787,7 @@
       "Elevation": 841.2000122070312
     },
     "Id": "826bd78d-dd4b-43db-a330-fb3bccf17090",
-    "Name": "Potlatch 3 Nne"
+    "Name": "Potlatch 3 NNE"
   },
   {
     "CountryCode": "US",
@@ -22837,7 +22837,7 @@
       "Elevation": 283.5
     },
     "Id": "54445b29-dd11-4b52-a95b-5380c69a2e65",
-    "Name": "Auburn 5 Ese"
+    "Name": "Auburn 5 ESE"
   },
   {
     "CountryCode": "US",
@@ -22877,7 +22877,7 @@
       "Elevation": 271.29998779296875
     },
     "Id": "e06bbd3a-1f9c-44e7-a223-b2625c637fb8",
-    "Name": "Cavalier 7Nw"
+    "Name": "Cavalier 7NW"
   },
   {
     "CountryCode": "US",
@@ -22887,7 +22887,7 @@
       "Elevation": 243.8000030517578
     },
     "Id": "d36880e4-8e61-4f8e-b8b6-16c9eb30cf51",
-    "Name": "Jackson 3 Nw"
+    "Name": "Jackson 3 NW"
   },
   {
     "CountryCode": "US",
@@ -22897,7 +22897,7 @@
       "Elevation": 524.2999877929688
     },
     "Id": "0c734335-6581-4158-a0cd-879ba3fb0f6c",
-    "Name": "Pilot Rock 1 Se"
+    "Name": "Pilot Rock 1 SE"
   },
   {
     "CountryCode": "US",
@@ -22967,7 +22967,7 @@
       "Elevation": 630.9000244140625
     },
     "Id": "f1e9262f-a9a6-4824-889f-880f1f3b6982",
-    "Name": "Mckinley Park"
+    "Name": "McKinley Park"
   },
   {
     "CountryCode": "US",
@@ -22987,7 +22987,7 @@
       "Elevation": 4.900000095367432
     },
     "Id": "1a6a2d91-cd20-446e-a474-45cf90ca0dfe",
-    "Name": "Brunswick Malcolm Mckinnon Ap"
+    "Name": "Brunswick Malcolm McKinnon AP"
   },
   {
     "CountryCode": "US",
@@ -22997,7 +22997,7 @@
       "Elevation": 304.79998779296875
     },
     "Id": "1be66dae-6e57-40d5-ab29-e6a0196d9b6f",
-    "Name": "Ponca City Muni Ap"
+    "Name": "Ponca City Muni AP"
   },
   {
     "CountryCode": "US",
@@ -23007,7 +23007,7 @@
       "Elevation": 246.89999389648438
     },
     "Id": "aa046232-1649-4cec-a373-b69ace87b99c",
-    "Name": "Columbus Port Columbus Intl Ap"
+    "Name": "Columbus Port Columbus Intl AP"
   },
   {
     "CountryCode": "US",
@@ -23027,7 +23027,7 @@
       "Elevation": 1194.199951171875
     },
     "Id": "f8dba3c8-bf9a-4bef-966c-8a1a49108019",
-    "Name": "El Paso Intl Ap"
+    "Name": "El Paso Intl AP"
   },
   {
     "CountryCode": "US",
@@ -23037,7 +23037,7 @@
       "Elevation": 878.4000244140625
     },
     "Id": "97c096f8-8e0f-4891-b1dc-3e2ff5d626c3",
-    "Name": "Garden City Rgnl Ap"
+    "Name": "Garden City Rgnl AP"
   },
   {
     "CountryCode": "US",
@@ -23047,7 +23047,7 @@
       "Elevation": 1250.300048828125
     },
     "Id": "0ade77ca-9941-4ea7-be11-c4ec77e59c89",
-    "Name": "Bishop Ap"
+    "Name": "Bishop AP"
   },
   {
     "CountryCode": "US",
@@ -23067,7 +23067,7 @@
       "Elevation": 437.70001220703125
     },
     "Id": "16a6fa65-7fea-4ec2-96dc-7c2e3f6b2d7c",
-    "Name": "Lewiston Nez Perce Co Ap"
+    "Name": "Lewiston Nez Perce Co AP"
   },
   {
     "CountryCode": "US",
@@ -23077,7 +23077,7 @@
       "Elevation": 304.79998779296875
     },
     "Id": "11d3cc54-5dba-4f01-890e-d94d6a3ade95",
-    "Name": "Dayton Intl Ap"
+    "Name": "Dayton Intl AP"
   },
   {
     "CountryCode": "US",
@@ -23087,7 +23087,7 @@
       "Elevation": 234.39999389648438
     },
     "Id": "f04906ad-8533-4e8a-ba8e-a48f91894027",
-    "Name": "Quincy Rgnl Ap"
+    "Name": "Quincy Rgnl AP"
   },
   {
     "CountryCode": "VN",
@@ -23677,7 +23677,7 @@
       "Elevation": 190.8000030517578
     },
     "Id": "e79bd817-fbb0-4f26-bbdf-3ebec36774c0",
-    "Name": "Hot Springs 1 Nne"
+    "Name": "Hot Springs 1 NNE"
   },
   {
     "CountryCode": "US",
@@ -23697,7 +23697,7 @@
       "Elevation": 1283.800048828125
     },
     "Id": "bc272ea1-2ffc-410a-8f3f-ec618d26381f",
-    "Name": "Susanville 2Sw"
+    "Name": "Susanville 2SW"
   },
   {
     "CountryCode": "US",
@@ -23757,7 +23757,7 @@
       "Elevation": 740.7000122070312
     },
     "Id": "e6b4eeaa-9c24-4af7-91c8-95dba5088b66",
-    "Name": "Jetmore 8Nnw"
+    "Name": "Jetmore 8NNW"
   },
   {
     "CountryCode": "US",
@@ -23947,7 +23947,7 @@
       "Elevation": 667.7999877929688
     },
     "Id": "f1740188-0067-435d-8f98-f3e975bb63a9",
-    "Name": "Gage Ap"
+    "Name": "Gage AP"
   },
   {
     "CountryCode": "US",
@@ -23957,7 +23957,7 @@
       "Elevation": 214.89999389648438
     },
     "Id": "8459c6b2-dca3-417f-91d2-0b38b0098249",
-    "Name": "Pellston Rgnl Ap"
+    "Name": "Pellston Rgnl AP"
   },
   {
     "CountryCode": "US",
@@ -23967,7 +23967,7 @@
       "Elevation": 594.7000122070312
     },
     "Id": "c689225d-f253-499b-91d8-2549f426c17c",
-    "Name": "Childress Muni Ap"
+    "Name": "Childress Muni AP"
   },
   {
     "CountryCode": "US",
@@ -23977,7 +23977,7 @@
       "Elevation": 786.4000244140625
     },
     "Id": "bab78bc9-5acf-4447-a8b2-213b25368bfc",
-    "Name": "Theodore Roosevelt Ap"
+    "Name": "Theodore Roosevelt AP"
   },
   {
     "CountryCode": "US",
@@ -23987,7 +23987,7 @@
       "Elevation": 1309.4000244140625
     },
     "Id": "709b835a-c516-44d3-96ec-074a3ec8eea0",
-    "Name": "Winnemucca Muni Ap"
+    "Name": "Winnemucca Muni AP"
   },
   {
     "CountryCode": "US",
@@ -23997,7 +23997,7 @@
       "Elevation": 71.5999984741211
     },
     "Id": "c4f7dff6-f4bc-4d5e-adc1-cbecd810077a",
-    "Name": "The Dalles Muni Ap"
+    "Name": "The Dalles Muni AP"
   },
   {
     "CountryCode": "US",
@@ -24007,7 +24007,7 @@
       "Elevation": 1216.199951171875
     },
     "Id": "73e196ec-a5c5-46c4-8cf6-0ef5ec5e2e93",
-    "Name": "Dalhart Muni Ap"
+    "Name": "Dalhart Muni AP"
   },
   {
     "CountryCode": "US",
@@ -24017,7 +24017,7 @@
       "Elevation": 5.800000190734863
     },
     "Id": "0fbb5691-7261-4dbf-aacb-b2d665b76a29",
-    "Name": "New Bern Craven Co Ap"
+    "Name": "New Bern Craven Co AP"
   },
   {
     "CountryCode": "US",
@@ -24027,7 +24027,7 @@
       "Elevation": 148.6999969482422
     },
     "Id": "47ae437a-9edc-48a4-a92d-cdd7e0aeb9ff",
-    "Name": "Louisville Intl Ap"
+    "Name": "Louisville Intl AP"
   },
   {
     "CountryCode": "US",
@@ -24037,7 +24037,7 @@
       "Elevation": 568.0999755859375
     },
     "Id": "a97d5386-1205-424c-af6b-f6e59fa7976d",
-    "Name": "Russell Muni Ap"
+    "Name": "Russell Muni AP"
   },
   {
     "CountryCode": "US",
@@ -24047,7 +24047,7 @@
       "Elevation": 200.60000610351562
     },
     "Id": "9c1e47d0-b5ce-469d-b559-a42e34b12f66",
-    "Name": "Chicago Ohare Intl Ap"
+    "Name": "Chicago Ohare Intl AP"
   },
   {
     "CountryCode": "UZ",
@@ -24437,7 +24437,7 @@
       "Elevation": 3
     },
     "Id": "f1cbc631-0e57-46c4-a1e6-cdd298289b63",
-    "Name": "Majuro Wbas Ap"
+    "Name": "Majuro Wbas AP"
   },
   {
     "CountryCode": "RU",
@@ -24577,7 +24577,7 @@
       "Elevation": 408.3999938964844
     },
     "Id": "3f4bb8e5-f432-4782-8724-6d3ca611b0e0",
-    "Name": "Norfolk 2 Sw"
+    "Name": "Norfolk 2 SW"
   },
   {
     "CountryCode": "US",
@@ -24617,7 +24617,7 @@
       "Elevation": 295.70001220703125
     },
     "Id": "e9478278-fc9e-4127-8e5b-b491aa82e849",
-    "Name": "Stockton 3 Nne"
+    "Name": "Stockton 3 NNE"
   },
   {
     "CountryCode": "US",
@@ -24627,7 +24627,7 @@
       "Elevation": 240.1999969482422
     },
     "Id": "94c8167a-446e-4983-a0a9-30713dc3ed37",
-    "Name": "Elkader 6 Ssw"
+    "Name": "Elkader 6 SSW"
   },
   {
     "CountryCode": "US",
@@ -24647,7 +24647,7 @@
       "Elevation": 237.6999969482422
     },
     "Id": "156e01db-40f4-4da8-ad96-b2c5a2a6e038",
-    "Name": "Sedalia Wtp"
+    "Name": "Sedalia WTP"
   },
   {
     "CountryCode": "US",
@@ -24697,7 +24697,7 @@
       "Elevation": 472.3999938964844
     },
     "Id": "93395fbf-dcea-4497-99c5-46afdff2ad55",
-    "Name": "Boonville 4 Ssw"
+    "Name": "Boonville 4 SSW"
   },
   {
     "CountryCode": "US",
@@ -24707,7 +24707,7 @@
       "Elevation": 435.8999938964844
     },
     "Id": "257358ac-ce8d-4e00-8530-fbebf24f4e3c",
-    "Name": "Marion 2 Nw"
+    "Name": "Marion 2 NW"
   },
   {
     "CountryCode": "US",
@@ -24727,7 +24727,7 @@
       "Elevation": 533.4000244140625
     },
     "Id": "16938855-f5d9-4f67-b8d0-a3866616f590",
-    "Name": "Kane 1Nne"
+    "Name": "Kane 1NNE"
   },
   {
     "CountryCode": "US",
@@ -24747,7 +24747,7 @@
       "Elevation": 6.099999904632568
     },
     "Id": "622e20fb-506b-4276-add0-6af03813c7cf",
-    "Name": "West Point 2 Nw"
+    "Name": "West Point 2 NW"
   },
   {
     "CountryCode": "US",
@@ -24757,7 +24757,7 @@
       "Elevation": 207.3000030517578
     },
     "Id": "d2dc22b7-b2f7-4ced-b206-a8628c3ba518",
-    "Name": "Winchester 7 Se"
+    "Name": "Winchester 7 SE"
   },
   {
     "CountryCode": "US",
@@ -24787,7 +24787,7 @@
       "Elevation": 29
     },
     "Id": "8a86500a-dfbc-42c5-8550-f50886592503",
-    "Name": "Houston Intercont Ap"
+    "Name": "Houston Intercont AP"
   },
   {
     "CountryCode": "US",
@@ -24797,7 +24797,7 @@
       "Elevation": 21.299999237060547
     },
     "Id": "5ded0b7f-3bcc-4242-948f-e85b903edfba",
-    "Name": "Millville Muni Ap"
+    "Name": "Millville Muni AP"
   },
   {
     "CountryCode": "US",
@@ -24807,7 +24807,7 @@
       "Elevation": 145.10000610351562
     },
     "Id": "b0ef15ed-1880-47b9-81a8-908f2a1b8de3",
-    "Name": "Houlton Intl Ap"
+    "Name": "Houlton Intl AP"
   },
   {
     "CountryCode": "US",
@@ -24817,7 +24817,7 @@
       "Elevation": 360
     },
     "Id": "0d27c8e1-d1c8-4b05-bdb0-0f356b72332e",
-    "Name": "Wausau Dwtn Ap"
+    "Name": "Wausau Dwtn AP"
   },
   {
     "CountryCode": "US",
@@ -24847,7 +24847,7 @@
       "Elevation": 776.9000244140625
     },
     "Id": "776bb02e-25d6-482b-b966-065d187cfd6f",
-    "Name": "Tucson Intl Ap"
+    "Name": "Tucson Intl AP"
   },
   {
     "CountryCode": "US",
@@ -24867,7 +24867,7 @@
       "Elevation": 65.19999694824219
     },
     "Id": "ba6cd73f-c2ac-4b7f-9a25-d798c1b07f50",
-    "Name": "Massena Intl Ap"
+    "Name": "Massena Intl AP"
   },
   {
     "CountryCode": "BF",
@@ -25337,7 +25337,7 @@
       "Elevation": 54.900001525878906
     },
     "Id": "2faa799a-2b5c-41eb-a311-22cdb846e84f",
-    "Name": "Crossett 2 Sse"
+    "Name": "Crossett 2 SSE"
   },
   {
     "CountryCode": "US",
@@ -25367,7 +25367,7 @@
       "Elevation": 2391.199951171875
     },
     "Id": "afdeaeb9-c0a3-49eb-8b7e-ede79e9575c1",
-    "Name": "Del Norte 3Ene"
+    "Name": "Del Norte 3ENE"
   },
   {
     "CountryCode": "US",
@@ -25457,7 +25457,7 @@
       "Elevation": 894.9000244140625
     },
     "Id": "883d616d-f8ef-4214-b1e3-3213aee9e063",
-    "Name": "Opheim 12 Sse"
+    "Name": "Opheim 12 SSE"
   },
   {
     "CountryCode": "US",
@@ -25597,7 +25597,7 @@
       "Elevation": 3.700000047683716
     },
     "Id": "11b80244-b949-4031-8e49-f8e848999bda",
-    "Name": "Palacios Muni Ap"
+    "Name": "Palacios Muni AP"
   },
   {
     "CountryCode": "US",
@@ -25607,7 +25607,7 @@
       "Elevation": 190.8000030517578
     },
     "Id": "640a6a8a-7158-4962-a16e-2c9940aa2cc5",
-    "Name": "Detroit City Ap"
+    "Name": "Detroit City AP"
   },
   {
     "CountryCode": "US",
@@ -25637,7 +25637,7 @@
       "Elevation": 649.5
     },
     "Id": "81deb58f-5734-477c-a45b-cb40021c56ee",
-    "Name": "Las Vegas Mccarran Ap"
+    "Name": "Las Vegas McCarran AP"
   },
   {
     "CountryCode": "US",
@@ -25647,7 +25647,7 @@
       "Elevation": 1608.0999755859375
     },
     "Id": "7a6038bb-de2d-4137-9c06-8ba6aee23cfa",
-    "Name": "Blue Canyon Ap"
+    "Name": "Blue Canyon AP"
   },
   {
     "CountryCode": "US",
@@ -25657,7 +25657,7 @@
       "Elevation": 2053.10009765625
     },
     "Id": "1d2b8696-a20f-43fa-bd0a-6dc689ea75c3",
-    "Name": "Rawlins Muni Ap"
+    "Name": "Rawlins Muni AP"
   },
   {
     "CountryCode": "US",
@@ -25667,7 +25667,7 @@
       "Elevation": 1364.9000244140625
     },
     "Id": "13067897-bbd2-42e9-ae77-9f2ae0c55745",
-    "Name": "Pocatello Rgnl Ap"
+    "Name": "Pocatello Rgnl AP"
   },
   {
     "CountryCode": "US",
@@ -25677,7 +25677,7 @@
       "Elevation": 1702.5999755859375
     },
     "Id": "22b4f535-8d39-4beb-b3b7-ae3d43c5b3c4",
-    "Name": "Cedar City Muni Ap"
+    "Name": "Cedar City Muni AP"
   },
   {
     "CountryCode": "US",
@@ -25687,7 +25687,7 @@
       "Elevation": 343.20001220703125
     },
     "Id": "7a1c98b0-eb93-4836-b3e0-5b278493aa22",
-    "Name": "Barre Montpelier Ap"
+    "Name": "Barre Montpelier AP"
   },
   {
     "CountryCode": "UZ",
@@ -26027,7 +26027,7 @@
       "Elevation": 650.0999755859375
     },
     "Id": "51a4cdfa-4784-4034-8d9e-858b33f6bad9",
-    "Name": "Coeur D\u0027alene"
+    "Name": "Coeur D\u0027Alene"
   },
   {
     "CountryCode": "US",
@@ -26077,7 +26077,7 @@
       "Elevation": 591.9000244140625
     },
     "Id": "5b6c11a8-5158-463c-8894-89202ed3906a",
-    "Name": "Medicine Lake 3 Se"
+    "Name": "Medicine Lake 3 SE"
   },
   {
     "CountryCode": "US",
@@ -26097,7 +26097,7 @@
       "Elevation": 134.10000610351562
     },
     "Id": "d0ca1339-7d2d-4449-bf6c-45ddb7ee0ead",
-    "Name": "Albion 2 Ne"
+    "Name": "Albion 2 NE"
   },
   {
     "CountryCode": "US",
@@ -26137,7 +26137,7 @@
       "Elevation": 88.4000015258789
     },
     "Id": "85bfdd23-9b31-48fa-b69d-bb6e7b943baf",
-    "Name": "Dallas 2 Ne"
+    "Name": "Dallas 2 NE"
   },
   {
     "CountryCode": "US",
@@ -26157,7 +26157,7 @@
       "Elevation": 454.20001220703125
     },
     "Id": "eeb2fc75-dd71-41e8-be07-048996dc693f",
-    "Name": "Confluence 1 Sw Dam"
+    "Name": "Confluence 1 SW Dam"
   },
   {
     "CountryCode": "US",
@@ -26167,7 +26167,7 @@
       "Elevation": 335.8999938964844
     },
     "Id": "b6b5a3be-40c3-41be-8aaf-4b820fe40158",
-    "Name": "Indiana 3 Se"
+    "Name": "Indiana 3 SE"
   },
   {
     "CountryCode": "US",
@@ -26227,7 +26227,7 @@
       "Elevation": 224
     },
     "Id": "9a1d1672-8177-4fd2-ad99-50a088cb07fc",
-    "Name": "Middlebourne 3 Ese"
+    "Name": "Middlebourne 3 ESE"
   },
   {
     "CountryCode": "US",
@@ -26237,7 +26237,7 @@
       "Elevation": 541
     },
     "Id": "88faf705-29de-453f-86a2-02a5b8d0eeba",
-    "Name": "Parsons 1 Ne"
+    "Name": "Parsons 1 NE"
   },
   {
     "CountryCode": "US",
@@ -26247,7 +26247,7 @@
       "Elevation": 348.3999938964844
     },
     "Id": "da52e2cf-1058-4f2f-873b-0b51a6a034f7",
-    "Name": "Hickory Faa Ap"
+    "Name": "Hickory FAA AP"
   },
   {
     "CountryCode": "US",
@@ -26257,7 +26257,7 @@
       "Elevation": 386.79998779296875
     },
     "Id": "82a723f4-561b-4d3e-b6a1-85a1f22803b6",
-    "Name": "Salina Muni Ap"
+    "Name": "Salina Muni AP"
   },
   {
     "CountryCode": "US",
@@ -26277,7 +26277,7 @@
       "Elevation": 337.3999938964844
     },
     "Id": "365e1466-5b89-46bc-aeb0-dfd1171a757f",
-    "Name": "Phoenix Sky Harbor Intl Ap"
+    "Name": "Phoenix Sky Harbor Intl AP"
   },
   {
     "CountryCode": "US",
@@ -26297,7 +26297,7 @@
       "Elevation": 7.900000095367432
     },
     "Id": "a8203d5b-b3d3-47d2-9d75-97e847ad2f66",
-    "Name": "Stockton Metro Ap"
+    "Name": "Stockton Metro AP"
   },
   {
     "CountryCode": "US",
@@ -26307,7 +26307,7 @@
       "Elevation": 33.20000076293945
     },
     "Id": "a899f8aa-4817-4206-91ea-bdf51b433abf",
-    "Name": "Annette Island Ap"
+    "Name": "Annette Island AP"
   },
   {
     "CountryCode": "US",
@@ -26317,7 +26317,7 @@
       "Elevation": 43.599998474121094
     },
     "Id": "aaa87aff-509a-45b1-bbe8-293ba9a7670f",
-    "Name": "Iliamna Ap"
+    "Name": "Iliamna AP"
   },
   {
     "CountryCode": "US",
@@ -26327,7 +26327,7 @@
       "Elevation": 203.89999389648438
     },
     "Id": "aa247d60-ab2c-4574-9b04-848eb0c96c12",
-    "Name": "Toledo Express Ap"
+    "Name": "Toledo Express AP"
   },
   {
     "CountryCode": "DZ",
@@ -26447,7 +26447,7 @@
       "Elevation": 16.200000762939453
     },
     "Id": "cc674fae-fbd6-40e1-a264-806f508d9343",
-    "Name": "Guantanamo Bay Nas"
+    "Name": "Guantanamo Bay NAS"
   },
   {
     "CountryCode": "IE",
@@ -26797,7 +26797,7 @@
       "Elevation": 243.8000030517578
     },
     "Id": "851252de-2b14-4f86-94cc-35c211895706",
-    "Name": "Mtn Home 1 Nnw"
+    "Name": "Mtn Home 1 NNW"
   },
   {
     "CountryCode": "US",
@@ -26807,7 +26807,7 @@
       "Elevation": 45.70000076293945
     },
     "Id": "0062b41a-812f-4fcc-8381-7d30866c3d81",
-    "Name": "Rohwer 2 Nne"
+    "Name": "Rohwer 2 NNE"
   },
   {
     "CountryCode": "US",
@@ -26837,7 +26837,7 @@
       "Elevation": 2657.89990234375
     },
     "Id": "c8c72cf0-ef35-47e5-ad99-4b00a2bc20c4",
-    "Name": "Grand Lake 1 Nw"
+    "Name": "Grand Lake 1 NW"
   },
   {
     "CountryCode": "US",
@@ -26847,7 +26847,7 @@
       "Elevation": 1920.199951171875
     },
     "Id": "da89e502-bacb-483e-8e5f-27ba6e3b9b95",
-    "Name": "Walsenburg 1 Nw"
+    "Name": "Walsenburg 1 NW"
   },
   {
     "CountryCode": "US",
@@ -26867,7 +26867,7 @@
       "Elevation": 12.199999809265137
     },
     "Id": "7f44fb8d-1eab-4231-8371-0a9e54bf0317",
-    "Name": "Inverness 3 Se"
+    "Name": "Inverness 3 SE"
   },
   {
     "CountryCode": "US",
@@ -27027,7 +27027,7 @@
       "Elevation": 216.39999389648438
     },
     "Id": "45b816dd-5090-4076-8857-1bd48d4b51ab",
-    "Name": "Madison 3Nnw"
+    "Name": "Madison 3NNW"
   },
   {
     "CountryCode": "US",
@@ -27037,7 +27037,7 @@
       "Elevation": 190.1999969482422
     },
     "Id": "e12c2708-25bd-41cb-9273-69b7c64b74be",
-    "Name": "Huntsville Intl Ap"
+    "Name": "Huntsville Intl AP"
   },
   {
     "CountryCode": "US",
@@ -27047,7 +27047,7 @@
       "Elevation": 11.899999618530273
     },
     "Id": "91331f3c-e7a3-46bd-ade3-5fb1f3186974",
-    "Name": "Patuxent River Nas"
+    "Name": "Patuxent River NAS"
   },
   {
     "CountryCode": "US",
@@ -27057,7 +27057,7 @@
       "Elevation": 40.5
     },
     "Id": "faaf547b-0fe7-4e2b-a6a3-55112008f857",
-    "Name": "Greenwood Leflore Ap"
+    "Name": "Greenwood Leflore AP"
   },
   {
     "CountryCode": "US",
@@ -27067,7 +27067,7 @@
       "Elevation": 45.099998474121094
     },
     "Id": "d2193e2e-0ede-4be0-b658-feddca59f6b9",
-    "Name": "Bangor Intl Ap"
+    "Name": "Bangor Intl AP"
   },
   {
     "CountryCode": "US",
@@ -27077,7 +27077,7 @@
       "Elevation": 855.5999755859375
     },
     "Id": "f1952348-9c0f-483c-80ec-984adfa530f9",
-    "Name": "Winkler Co Ap"
+    "Name": "Winkler Co AP"
   },
   {
     "CountryCode": "US",
@@ -27087,7 +27087,7 @@
       "Elevation": 222.5
     },
     "Id": "c4ec9f05-c95b-4acb-b228-703f93bb57af",
-    "Name": "Rockford Gtr Rockford Ap"
+    "Name": "Rockford Gtr Rockford AP"
   },
   {
     "CountryCode": "AR",
@@ -27117,7 +27117,7 @@
       "Elevation": 215
     },
     "Id": "e6812a46-d874-4c84-9dc2-96e13aa30dae",
-    "Name": "Trangie Research Station Aws"
+    "Name": "Trangie Research Station AWS"
   },
   {
     "CountryCode": "AU",
@@ -27147,7 +27147,7 @@
       "Elevation": 825
     },
     "Id": "3383a404-5e12-4388-aad7-615e541cf4bb",
-    "Name": "Swift Current Cda"
+    "Name": "Swift Current CDA"
   },
   {
     "CountryCode": "CA",
@@ -27157,7 +27157,7 @@
       "Elevation": 548
     },
     "Id": "c3ed4d7b-2513-4c89-a45e-ad6d89846523",
-    "Name": "North Battleford Rcs"
+    "Name": "North Battleford RCS"
   },
   {
     "CountryCode": "CN",
@@ -27637,7 +27637,7 @@
       "Elevation": 117.30000305175781
     },
     "Id": "10dd198a-95b5-4892-919c-d870e8674608",
-    "Name": "Hattiesburg 5Sw"
+    "Name": "Hattiesburg 5SW"
   },
   {
     "CountryCode": "US",
@@ -27667,7 +27667,7 @@
       "Elevation": 1012.9000244140625
     },
     "Id": "91f65ae1-3e4e-46ff-aaa5-040259d938fe",
-    "Name": "Dunkirk 19Nne"
+    "Name": "Dunkirk 19NNE"
   },
   {
     "CountryCode": "US",
@@ -27697,7 +27697,7 @@
       "Elevation": 1031.0999755859375
     },
     "Id": "f6fe2c5a-ba87-4c6e-b847-9c011ac66278",
-    "Name": "Chadron 3Sw"
+    "Name": "Chadron 3SW"
   },
   {
     "CountryCode": "US",
@@ -27727,7 +27727,7 @@
       "Elevation": 280.3999938964844
     },
     "Id": "047fc33b-08ca-43c5-874a-f5bc26468671",
-    "Name": "Shelby 2 Nne"
+    "Name": "Shelby 2 NNE"
   },
   {
     "CountryCode": "US",
@@ -27737,7 +27737,7 @@
       "Elevation": 1973.5999755859375
     },
     "Id": "af46a75e-6809-4ad2-b654-d3f75788351a",
-    "Name": "Crater Lake Nps Hq"
+    "Name": "Crater Lake NPS HQ"
   },
   {
     "CountryCode": "US",
@@ -27757,7 +27757,7 @@
       "Elevation": 109.69999694824219
     },
     "Id": "0829ae89-082c-4825-8cd2-c417e3728fa8",
-    "Name": "Landisville 2 Nw"
+    "Name": "Landisville 2 NW"
   },
   {
     "CountryCode": "US",
@@ -27777,7 +27777,7 @@
       "Elevation": 170.6999969482422
     },
     "Id": "5b803078-785b-4057-b9c7-e3f8768b876f",
-    "Name": "Chester 1 Se"
+    "Name": "Chester 1 SE"
   },
   {
     "CountryCode": "US",
@@ -27867,7 +27867,7 @@
       "Elevation": 42.70000076293945
     },
     "Id": "29470814-0acd-44b0-a519-0217a81892a9",
-    "Name": "Warsaw 2 Nw"
+    "Name": "Warsaw 2 NW"
   },
   {
     "CountryCode": "US",
@@ -27887,7 +27887,7 @@
       "Elevation": 5.800000190734863
     },
     "Id": "6fe2782c-f14c-43b0-9f06-8371075dd55e",
-    "Name": "West Palm Beach Intl Ap"
+    "Name": "West Palm Beach Intl AP"
   },
   {
     "CountryCode": "US",
@@ -27897,7 +27897,7 @@
       "Elevation": 73.80000305175781
     },
     "Id": "f68c21fc-727b-4af7-a7b6-3f13d0e329cb",
-    "Name": "Santa Maria Public Ap"
+    "Name": "Santa Maria Public AP"
   },
   {
     "CountryCode": "US",
@@ -27927,7 +27927,7 @@
       "Elevation": 985.0999755859375
     },
     "Id": "66c1c6ba-a4da-44e5-ac03-7d390da81e4d",
-    "Name": "Carlsbad Cavern City Ap"
+    "Name": "Carlsbad Cavern City AP"
   },
   {
     "CountryCode": "US",
@@ -27947,7 +27947,7 @@
       "Elevation": 264.6000061035156
     },
     "Id": "26880f73-c6b2-48b5-8e64-417736c8a260",
-    "Name": "Waterloo Muni Ap"
+    "Name": "Waterloo Muni AP"
   },
   {
     "CountryCode": "DZ",
@@ -28647,7 +28647,7 @@
       "Elevation": 637
     },
     "Id": "3ad4d1d0-e016-451c-b65a-ce8c4260987f",
-    "Name": "Auberry 2 Nw"
+    "Name": "Auberry 2 NW"
   },
   {
     "CountryCode": "US",
@@ -28667,7 +28667,7 @@
       "Elevation": 382.5
     },
     "Id": "44679c8a-9647-4f45-98d2-4dc1a2ce8b12",
-    "Name": "Cresco 1 Ne"
+    "Name": "Cresco 1 NE"
   },
   {
     "CountryCode": "US",
@@ -28737,7 +28737,7 @@
       "Elevation": 432.79998779296875
     },
     "Id": "b32c5c40-05db-4b2b-8f22-74535592ae47",
-    "Name": "Delhi 2 Se"
+    "Name": "Delhi 2 SE"
   },
   {
     "CountryCode": "US",
@@ -28757,7 +28757,7 @@
       "Elevation": 381
     },
     "Id": "cdaa6619-ebea-4bab-97b7-d08407e28636",
-    "Name": "Forman 5 Sse"
+    "Name": "Forman 5 SSE"
   },
   {
     "CountryCode": "US",
@@ -28907,7 +28907,7 @@
       "Elevation": 50.599998474121094
     },
     "Id": "bed4f0c5-af7a-4fa2-9419-cb28c490e37f",
-    "Name": "Poughkeepsie Dutchess Co Ap"
+    "Name": "Poughkeepsie Dutchess Co AP"
   },
   {
     "CountryCode": "US",
@@ -28917,7 +28917,7 @@
       "Elevation": 304.5
     },
     "Id": "160bd4ba-34c9-409f-a399-7d596e5ed1e2",
-    "Name": "Del Rio Intl Ap"
+    "Name": "Del Rio Intl AP"
   },
   {
     "CountryCode": "US",
@@ -28927,7 +28927,7 @@
       "Elevation": 30.5
     },
     "Id": "13e6765b-3d61-46a1-9b1a-0886b6bb9e56",
-    "Name": "Lihue Wso Ap 10201"
+    "Name": "Lihue WSO AP 10201"
   },
   {
     "CountryCode": "US",
@@ -28937,7 +28937,7 @@
       "Elevation": 462.1000061035156
     },
     "Id": "4c3dd289-5038-4d87-909f-28e8c1a2413d",
-    "Name": "March Afb"
+    "Name": "March AFB"
   },
   {
     "CountryCode": "US",
@@ -28947,7 +28947,7 @@
       "Elevation": 120.4000015258789
     },
     "Id": "393e8522-0ec9-48cd-9743-e314442f139a",
-    "Name": "Blythe Ap"
+    "Name": "Blythe AP"
   },
   {
     "CountryCode": "US",
@@ -28957,7 +28957,7 @@
       "Elevation": 1251.199951171875
     },
     "Id": "8f6da3a7-f6d5-4ec5-aae4-a594c7be5dc7",
-    "Name": "Douglas Bisbee Inl Ap"
+    "Name": "Douglas Bisbee Inl AP"
   },
   {
     "CountryCode": "US",
@@ -28967,7 +28967,7 @@
       "Elevation": 6.099999904632568
     },
     "Id": "e19bbd2c-80f4-4c93-bc9d-17c4da7850a8",
-    "Name": "Jacksonville Nas"
+    "Name": "Jacksonville NAS"
   },
   {
     "CountryCode": "US",
@@ -29637,7 +29637,7 @@
       "Elevation": 1008.2999877929688
     },
     "Id": "b9b8bf0d-7ab1-4f03-9926-fed61f8bd471",
-    "Name": "Syracuse 1Ne"
+    "Name": "Syracuse 1NE"
   },
   {
     "CountryCode": "US",
@@ -29657,7 +29657,7 @@
       "Elevation": 182.89999389648438
     },
     "Id": "130c48fe-95cb-45b4-881a-83e9bead7f82",
-    "Name": "Manistique Wwtp"
+    "Name": "Manistique WWTP"
   },
   {
     "CountryCode": "US",
@@ -29687,7 +29687,7 @@
       "Elevation": 222.5
     },
     "Id": "20861e5f-3255-453d-af40-fd93a81c5717",
-    "Name": "Jackson Springs 5 Wnw"
+    "Name": "Jackson Springs 5 WNW"
   },
   {
     "CountryCode": "US",
@@ -29767,7 +29767,7 @@
       "Elevation": 524
     },
     "Id": "197e37ff-8b7f-4296-b360-b14bfe56b931",
-    "Name": "Coulee Dam 1 Sw"
+    "Name": "Coulee Dam 1 SW"
   },
   {
     "CountryCode": "US",
@@ -29817,7 +29817,7 @@
       "Elevation": 1313.4000244140625
     },
     "Id": "94fab808-8fed-4aaf-b68b-0b40352e94a2",
-    "Name": "Sidney Muni Ap"
+    "Name": "Sidney Muni AP"
   },
   {
     "CountryCode": "BF",
@@ -29877,7 +29877,7 @@
       "Elevation": 43
     },
     "Id": "b5dc5860-1e1d-408e-87f1-8055eb9f1d2a",
-    "Name": "Dumont D\u0027urville"
+    "Name": "Dumont D\u0027Urville"
   },
   {
     "CountryCode": "CA",
@@ -29907,7 +29907,7 @@
       "Elevation": 151
     },
     "Id": "43c67cd9-5b10-4819-943a-03b470b89a07",
-    "Name": "Gander Airport Cs"
+    "Name": "Gander Airport CS"
   },
   {
     "CountryCode": "CN",
@@ -30447,7 +30447,7 @@
       "Elevation": 60.400001525878906
     },
     "Id": "59175cff-0db2-411e-8dc3-ec940ea0b2dd",
-    "Name": "Stuttgart 9 Ese"
+    "Name": "Stuttgart 9 ESE"
   },
   {
     "CountryCode": "US",
@@ -30497,7 +30497,7 @@
       "Elevation": 966.2000122070312
     },
     "Id": "f328ec6c-adfa-4e58-af22-1a1e450e72d6",
-    "Name": "Colby 1Sw"
+    "Name": "Colby 1SW"
   },
   {
     "CountryCode": "US",
@@ -30507,7 +30507,7 @@
       "Elevation": 478.5
     },
     "Id": "93a18bd7-1719-4f07-a410-e6dc695e81d5",
-    "Name": "Hutchinson 10 Sw"
+    "Name": "Hutchinson 10 SW"
   },
   {
     "CountryCode": "US",
@@ -30587,7 +30587,7 @@
       "Elevation": 1665.699951171875
     },
     "Id": "e851eaea-6e27-486a-bff0-bbbd8c052e2e",
-    "Name": "Mosquero 1 Ne"
+    "Name": "Mosquero 1 NE"
   },
   {
     "CountryCode": "US",
@@ -30637,7 +30637,7 @@
       "Elevation": 262.1000061035156
     },
     "Id": "cedd54ce-b78e-48c6-865d-c8f5fbb5e712",
-    "Name": "Celina 3 Ne"
+    "Name": "Celina 3 NE"
   },
   {
     "CountryCode": "US",
@@ -30647,7 +30647,7 @@
       "Elevation": 923.5
     },
     "Id": "096cfc4b-0880-4ed5-a35d-aa86c12755eb",
-    "Name": "Antelope 6 Ssw"
+    "Name": "Antelope 6 SSW"
   },
   {
     "CountryCode": "US",
@@ -30677,7 +30677,7 @@
       "Elevation": 443.20001220703125
     },
     "Id": "7461d3eb-44a2-45d1-9ea4-da0c775049d6",
-    "Name": "Gatlinburg 2 Sw"
+    "Name": "Gatlinburg 2 SW"
   },
   {
     "CountryCode": "US",
@@ -30697,7 +30697,7 @@
       "Elevation": 362.1000061035156
     },
     "Id": "a365f8f4-2a5f-4907-b03d-6fe92b73f0c3",
-    "Name": "London Corbin Ap"
+    "Name": "London Corbin AP"
   },
   {
     "CountryCode": "VN",
@@ -30896,7 +30896,7 @@
       "Elevation": 13.399999618530273
     },
     "Id": "c03fbdff-4229-4c14-9120-f30d26bc24dd",
-    "Name": "Yap Island Wso Ap"
+    "Name": "Yap Island WSO AP"
   },
   {
     "CountryCode": "FR",
@@ -31296,7 +31296,7 @@
       "Elevation": 303.6000061035156
     },
     "Id": "af187a92-c233-44d4-8950-d48db2a4fbda",
-    "Name": "New Castle 3 Sw"
+    "Name": "New Castle 3 SW"
   },
   {
     "CountryCode": "US",
@@ -31436,7 +31436,7 @@
       "Elevation": 45.70000076293945
     },
     "Id": "53bd04d5-494d-4a58-a39f-727c241b20e5",
-    "Name": "Otis 2 Ne"
+    "Name": "Otis 2 NE"
   },
   {
     "CountryCode": "US",
@@ -31526,7 +31526,7 @@
       "Elevation": 60.400001525878906
     },
     "Id": "5b18f286-b372-4e87-b4f6-8727955b0b79",
-    "Name": "Valdosta Rgnl Ap"
+    "Name": "Valdosta Rgnl AP"
   },
   {
     "CountryCode": "US",
@@ -31536,7 +31536,7 @@
       "Elevation": 283.5
     },
     "Id": "8cc8df00-d111-4058-8666-56d5a7b1f721",
-    "Name": "Mineral Wells Ap"
+    "Name": "Mineral Wells AP"
   },
   {
     "CountryCode": "AE",
@@ -32066,7 +32066,7 @@
       "Elevation": 271.29998779296875
     },
     "Id": "41e45ee4-5ada-4ac1-99ad-ade2c9197cb1",
-    "Name": "Jordan 1Ssw"
+    "Name": "Jordan 1SSW"
   },
   {
     "CountryCode": "US",
@@ -32226,7 +32226,7 @@
       "Elevation": 2072
     },
     "Id": "3a68be73-4f12-4f0b-8efd-f038455272e6",
-    "Name": "Moran 5Wnw"
+    "Name": "Moran 5WNW"
   },
   {
     "CountryCode": "US",
@@ -32246,7 +32246,7 @@
       "Elevation": 874.7999877929688
     },
     "Id": "e528e38f-5f3e-4bcd-9500-e2a388b2e28f",
-    "Name": "Bluefield Mercer Co Ap"
+    "Name": "Bluefield Mercer Co AP"
   },
   {
     "CountryCode": "US",
@@ -32256,7 +32256,7 @@
       "Elevation": 14.300000190734863
     },
     "Id": "933c8787-ee89-45c7-92d8-e1012de98403",
-    "Name": "Whidbey Island Nas"
+    "Name": "Whidbey Island NAS"
   },
   {
     "CountryCode": "UZ",
@@ -32566,7 +32566,7 @@
       "Elevation": 272
     },
     "Id": "4c708531-e692-4e39-a507-433c22e658a7",
-    "Name": "Birni N\u0027konni"
+    "Name": "Birni N\u0027Konni"
   },
   {
     "CountryCode": "NE",
@@ -32796,7 +32796,7 @@
       "Elevation": 24.399999618530273
     },
     "Id": "3f2a414d-4d78-4161-a0b6-d9fb363aebab",
-    "Name": "Winnsboro 5 Sse"
+    "Name": "Winnsboro 5 SSE"
   },
   {
     "CountryCode": "US",
@@ -32826,7 +32826,7 @@
       "Elevation": 637
     },
     "Id": "2f9fe4ec-7636-42c7-aecf-8ed2e707165a",
-    "Name": "Atkinson 3Sw"
+    "Name": "Atkinson 3SW"
   },
   {
     "CountryCode": "US",
@@ -32896,7 +32896,7 @@
       "Elevation": 8.5
     },
     "Id": "4ae094e9-ca13-4e9b-a63c-079014420cf6",
-    "Name": "Vero Beach Intl Ap"
+    "Name": "Vero Beach Intl AP"
   },
   {
     "CountryCode": "US",
@@ -32916,7 +32916,7 @@
       "Elevation": 363.8999938964844
     },
     "Id": "65db6f87-9c17-481a-a3cf-3b660a1e1c28",
-    "Name": "Pittsfield Muni Ap"
+    "Name": "Pittsfield Muni AP"
   },
   {
     "CountryCode": "US",
@@ -32926,7 +32926,7 @@
       "Elevation": 394.70001220703125
     },
     "Id": "b84f07d6-2959-435a-bb96-7d87744ee155",
-    "Name": "Mansfield Lahm Muni Ap"
+    "Name": "Mansfield Lahm Muni AP"
   },
   {
     "CountryCode": "UZ",
@@ -33026,7 +33026,7 @@
       "Elevation": 1.5
     },
     "Id": "110c03c7-a305-4bbd-add4-bc35eadc8d57",
-    "Name": "Chuuk Wso Ap"
+    "Name": "Chuuk WSO AP"
   },
   {
     "CountryCode": "KP",
@@ -33066,7 +33066,7 @@
       "Elevation": 12.199999809265137
     },
     "Id": "7ee43cd0-f2d7-4923-b042-ad3dca7c1754",
-    "Name": "Piarco Intl Ap"
+    "Name": "Piarco Intl AP"
   },
   {
     "CountryCode": "BG",
@@ -33275,7 +33275,7 @@
       "Elevation": 3.700000047683716
     },
     "Id": "0b6f825c-782e-4cd8-a91e-80b032fc2485",
-    "Name": "Pago Pago Wso Ap"
+    "Name": "Pago Pago WSO AP"
   },
   {
     "CountryCode": "BD",
@@ -33415,7 +33415,7 @@
       "Elevation": 301
     },
     "Id": "d52a0c4e-c324-4c02-b093-92360b80fc74",
-    "Name": "Fada N\u0027gourma"
+    "Name": "Fada N\u0027Gourma"
   },
   {
     "CountryCode": "BO",
@@ -33594,7 +33594,7 @@
       "Elevation": 36.599998474121094
     },
     "Id": "ef395600-50a4-4bb5-b207-3f994a5edc4d",
-    "Name": "Pohnpei Wso"
+    "Name": "Pohnpei WSO"
   },
   {
     "CountryCode": "MZ",
@@ -33684,7 +33684,7 @@
       "Elevation": 28
     },
     "Id": "fbf7e5d2-aadb-4e95-9a8b-e3d1da4cdc3e",
-    "Name": "Ono I Lau Aws"
+    "Name": "Ono I Lau AWS"
   },
   {
     "CountryCode": "KE",
@@ -34083,7 +34083,7 @@
       "Elevation": 64.9000015258789
     },
     "Id": "6750549b-f2a7-4dd0-966b-466e071a3509",
-    "Name": "Juncos 1 Se"
+    "Name": "Juncos 1 SE"
   },
   {
     "CountryCode": "CO",
@@ -34563,7 +34563,7 @@
       "Elevation": 6.099999904632568
     },
     "Id": "cac43997-6a2c-4ab6-bbfa-4df3e4425c3e",
-    "Name": "Charlotte Amalie Ap"
+    "Name": "Charlotte Amalie AP"
   },
   {
     "CountryCode": "MM",
@@ -34863,7 +34863,7 @@
       "Elevation": 18.600000381469727
     },
     "Id": "f412dc13-4f57-46ce-a7c4-4b21d0b76bd6",
-    "Name": "Christiansted Ap"
+    "Name": "Christiansted AP"
   },
   {
     "CountryCode": "ET",
@@ -35363,7 +35363,7 @@
       "Elevation": 222.5
     },
     "Id": "7b21ef65-5b81-442d-bcd4-315291a881fe",
-    "Name": "Mt Pleasant 1 Ssw"
+    "Name": "Mt Pleasant 1 SSW"
   },
   {
     "CountryCode": "US",
@@ -35433,7 +35433,7 @@
       "Elevation": 85.30000305175781
     },
     "Id": "45e4084c-2e6b-47b6-8751-5b98a5bb91ef",
-    "Name": "Ogdensburg 4 Ne"
+    "Name": "Ogdensburg 4 NE"
   },
   {
     "CountryCode": "US",
@@ -35443,7 +35443,7 @@
       "Elevation": 61
     },
     "Id": "bc4310fa-242f-465d-9214-423665e56fc4",
-    "Name": "Glennville 3Nw"
+    "Name": "Glennville 3NW"
   },
   {
     "CountryCode": "US",
@@ -35513,7 +35513,7 @@
       "Elevation": 12.199999809265137
     },
     "Id": "35351095-a82c-46b6-a995-1dc00647834c",
-    "Name": "Covington 4 Nnw"
+    "Name": "Covington 4 NNW"
   },
   {
     "CountryCode": "UZ",
@@ -35653,7 +35653,7 @@
       "Elevation": 413
     },
     "Id": "7f193dcc-69d7-433b-90ff-28bd346588c0",
-    "Name": "Detroit Lakes 1 Nne"
+    "Name": "Detroit Lakes 1 NNE"
   },
   {
     "CountryCode": "US",
@@ -35663,7 +35663,7 @@
       "Elevation": 829.4000244140625
     },
     "Id": "9572596a-86ad-421f-b685-0fcf1a92f5ae",
-    "Name": "Curtis 3Nne"
+    "Name": "Curtis 3NNE"
   },
   {
     "CountryCode": "US",
@@ -36010,7 +36010,7 @@
       "Longitude": 104.70099639892578,
       "Elevation": 14.899999618530273
     },
-    "StationName": "Sultan Mahmud Badaruddin Ii",
+    "StationName": "Sultan Mahmud Badaruddin II",
     "Id": "c46ed25c-c0d8-465a-b612-76f79dfb3f3a",
     "Name": "Palembang"
   },
@@ -36219,7 +36219,7 @@
       "Longitude": -114.0167007446289,
       "Elevation": 1081
     },
-    "StationName": "Calgary Int\u0027l Cs",
+    "StationName": "Calgary Int\u0027l CS",
     "Id": "8f18b486-5b8f-40d9-8c66-0e00c3f8088c",
     "Name": "Calgary"
   },
@@ -36318,7 +36318,7 @@
       "Longitude": 101.44499969482422,
       "Elevation": 31.100000381469727
     },
-    "StationName": "Sultan Syarif Kasim Ii",
+    "StationName": "Sultan Syarif Kasim II",
     "Id": "f0853685-15e6-4f63-823d-349fa9207c2f",
     "Name": "Pekanbaru"
   },
@@ -36384,7 +36384,7 @@
       "Longitude": 105.17900085449219,
       "Elevation": 88
     },
-    "StationName": "Radin Inten Ii",
+    "StationName": "Radin Inten II",
     "Id": "30c9ff96-2683-447d-a132-a90d0e36873a",
     "Name": "Bandar Lampung"
   },
@@ -36482,7 +36482,7 @@
       "Longitude": -97.44999694824219,
       "Elevation": 185.3000030517578
     },
-    "StationName": "Ft Worth Nas",
+    "StationName": "Ft Worth NAS",
     "Id": "857eb332-5341-417a-80cc-e2be1ca710ac",
     "Name": "Fort Worth"
   },
@@ -36988,7 +36988,7 @@
       "Longitude": -80.61599731445312,
       "Elevation": 35.400001525878906
     },
-    "StationName": "Capitan Fap Guillermo Concha",
+    "StationName": "Capitan FAP Guillermo Concha",
     "Id": "74200f48-7528-4b78-aaea-24d460549fbe",
     "Name": "Piura"
   },
@@ -37065,7 +37065,7 @@
       "Longitude": -79.91670227050781,
       "Elevation": 102
     },
-    "StationName": "Hamilton Rbg Cs",
+    "StationName": "Hamilton Rbg CS",
     "Id": "19ed7a00-8179-445d-be03-6547748fb54a",
     "Name": "Hamilton"
   },
@@ -37637,7 +37637,7 @@
       "Longitude": 140.7169952392578,
       "Elevation": 3
     },
-    "StationName": "Jayapura Dok Ii",
+    "StationName": "Jayapura Dok II",
     "Id": "db354fa3-a9f7-4a37-b1f5-1e75b58f0428",
     "Name": "Jayapura"
   },
@@ -37802,7 +37802,7 @@
       "Longitude": 174.8000030517578,
       "Elevation": 12
     },
-    "StationName": "Wellington Aero Aws",
+    "StationName": "Wellington Aero AWS",
     "Id": "8fd4ae35-d24d-49bc-8815-90479aff29e2",
     "Name": "Wellington"
   },
@@ -37989,7 +37989,7 @@
       "Longitude": 151.210693359375,
       "Elevation": 305
     },
-    "StationName": "Mangrove Mountain Aws",
+    "StationName": "Mangrove Mountain AWS",
     "Id": "50562f0e-ad65-4cfe-9ec2-0b4398558e5b",
     "Name": "Central Coast"
   },
@@ -38110,7 +38110,7 @@
       "Longitude": -74.5739974975586,
       "Elevation": 156.39999389648438
     },
-    "StationName": "Cap Fap David Abenzur Rengifo",
+    "StationName": "Cap FAP David Abenzur Rengifo",
     "Id": "5e692b59-4380-43e6-9fbb-5a0ae14e4538",
     "Name": "Pucallpa"
   },
@@ -38462,7 +38462,7 @@
       "Longitude": 150.92909240722656,
       "Elevation": 10
     },
-    "StationName": "Bellambi Aws",
+    "StationName": "Bellambi AWS",
     "Id": "c85a6e4d-3cda-44e1-bf36-f65fa86be731",
     "Name": "Wollongong"
   },
@@ -38594,7 +38594,7 @@
       "Longitude": -106.7166976928711,
       "Elevation": 504
     },
-    "StationName": "Saskatoon Rcs",
+    "StationName": "Saskatoon RCS",
     "Id": "307410f8-248c-4926-b06a-f91cfd12913d",
     "Name": "Saskatoon"
   },
@@ -39199,7 +39199,7 @@
       "Longitude": -78.48899841308594,
       "Elevation": 2676.39990234375
     },
-    "StationName": "Gen Fap Armando Revoredo Igle",
+    "StationName": "Gen FAP Armando Revoredo Igle",
     "Id": "b48e5127-2839-4b2f-b2eb-934bfa44bd83",
     "Name": "Cajamarca"
   },
@@ -39232,7 +39232,7 @@
       "Longitude": -95.55609893798828,
       "Elevation": 46.29999923706055
     },
-    "StationName": "Houston Hooks Mem Ap",
+    "StationName": "Houston Hooks Mem AP",
     "Id": "5f469f6b-1921-4f94-abb7-cdd356b46c94",
     "Name": "Cypress"
   },
@@ -39309,7 +39309,7 @@
       "Longitude": -76.20500183105469,
       "Elevation": 1850.0999755859375
     },
-    "StationName": "Alferez Fap D F Fernandini",
+    "StationName": "Alferez FAP D F Fernandini",
     "Id": "3bd3296b-7b83-4a9b-9f74-d605b3a247b8",
     "Name": "Huanuco"
   },
@@ -39815,7 +39815,7 @@
       "Longitude": -96.59140014648438,
       "Elevation": 178.60000610351562
     },
-    "StationName": "Mckinneymunicipal Airport",
+    "StationName": "McKinneymunicipal Airport",
     "Id": "8351ca8a-27b7-4d74-b651-f114f039ef80",
     "Name": "McKinney"
   },
@@ -40013,7 +40013,7 @@
       "Longitude": -122.68329620361328,
       "Elevation": 5
     },
-    "StationName": "Pitt Meadows Cs",
+    "StationName": "Pitt Meadows CS",
     "Id": "2ccf7862-fe62-4c43-b076-0322911a808d",
     "Name": "Coquitlam"
   },
@@ -40101,7 +40101,7 @@
       "Longitude": -82.27559661865234,
       "Elevation": 37.5
     },
-    "StationName": "Gainesville Rgnl Ap",
+    "StationName": "Gainesville Rgnl AP",
     "Id": "443c67dc-6775-49dd-93b4-3730030e69f1",
     "Name": "Gainesville"
   },
@@ -40332,7 +40332,7 @@
       "Longitude": -98.25389862060547,
       "Elevation": 30.5
     },
-    "StationName": "Mcallen Miller Intl Ap",
+    "StationName": "McAllen Miller Intl AP",
     "Id": "68cfe8eb-49d9-48c2-8491-4079a4ce5505",
     "Name": "McAllen"
   },
@@ -40398,7 +40398,7 @@
       "Longitude": -94.88970184326172,
       "Elevation": 331.29998779296875
     },
-    "StationName": "Olathe Johnson Co Ap",
+    "StationName": "Olathe Johnson Co AP",
     "Id": "16784007-f536-427b-b164-2dffa0b14b6d",
     "Name": "Olathe"
   },
@@ -40442,7 +40442,7 @@
       "Longitude": 4.5,
       "Elevation": 442
     },
-    "StationName": "M\u0027sila",
+    "StationName": "M\u0027Sila",
     "Id": "d1f55f20-cc6b-45be-a181-67a804ff09e7",
     "Name": "M\u0027Sila"
   },
@@ -40750,7 +40750,7 @@
       "Longitude": -80.65390014648438,
       "Elevation": 10.699999809265137
     },
-    "StationName": "Melbourne Wfo",
+    "StationName": "Melbourne WFO",
     "Id": "670e6207-58a9-40e0-a13b-40b1ce18ccd5",
     "Name": "Palm Bay"
   },
@@ -41003,7 +41003,7 @@
       "Longitude": -89.33329772949219,
       "Elevation": 199
     },
-    "StationName": "Thunder Bay Cs",
+    "StationName": "Thunder Bay CS",
     "Id": "660065ac-98d6-47cb-bc2a-1617dd654e23",
     "Name": "Thunder Bay"
   },
@@ -41025,7 +41025,7 @@
       "Longitude": -72.82779693603516,
       "Elevation": 31.399999618530273
     },
-    "StationName": "Meriden Markham Muni Ap",
+    "StationName": "Meriden Markham Muni AP",
     "Id": "05dfc2b9-feac-4942-9837-cfd3b3cbe1d0",
     "Name": "Waterbury"
   },
@@ -41036,7 +41036,7 @@
       "Longitude": -104.69920349121094,
       "Elevation": 1437.0999755859375
     },
-    "StationName": "Greeley Unc",
+    "StationName": "Greeley UNC",
     "Id": "59e323a9-18a7-450a-980c-75f37d8188ba",
     "Name": "Greeley"
   },
@@ -41113,7 +41113,7 @@
       "Longitude": -60.04999923706055,
       "Elevation": 63
     },
-    "StationName": "Sydney Cs",
+    "StationName": "Sydney CS",
     "Id": "6fc34c69-03d1-4b63-b506-104f19d0c36e",
     "Name": "Sydney"
   },
@@ -41124,7 +41124,7 @@
       "Longitude": -84.30220031738281,
       "Elevation": 305.3999938964844
     },
-    "StationName": "Atlanta Peachtree Ap",
+    "StationName": "Atlanta Peachtree AP",
     "Id": "e90a2295-158e-4b44-8bbb-91993bfb711d",
     "Name": "Sandy Springs"
   },
@@ -41388,7 +41388,7 @@
       "Longitude": -113.75,
       "Elevation": 860
     },
-    "StationName": "Lacombe Cda 2",
+    "StationName": "Lacombe CDA 2",
     "Id": "5e699642-0c7f-4587-8487-2266e6f79dc3",
     "Name": "Red Deer"
   },
@@ -41498,7 +41498,7 @@
       "Longitude": -82.45439910888672,
       "Elevation": 23.5
     },
-    "StationName": "Brooksville Hernando Co Ap",
+    "StationName": "Brooksville Hernando Co AP",
     "Id": "72905239-db6a-4085-b5cb-a500e7715817",
     "Name": "Spring Hill"
   },
@@ -41575,7 +41575,7 @@
       "Longitude": -98.41719818115234,
       "Elevation": 325.79998779296875
     },
-    "StationName": "Lawton Muni Ap",
+    "StationName": "Lawton Muni AP",
     "Id": "a18b499c-4653-429b-a58c-b4310047cce6",
     "Name": "Lawton"
   },
@@ -41630,7 +41630,7 @@
       "Longitude": 16.149700164794922,
       "Elevation": 21
     },
-    "StationName": "Norrkoping Smhi",
+    "StationName": "Norrkoping SMHI",
     "Id": "28116613-4ae5-4344-a435-768f8d13487e",
     "Name": "Norrkoeping"
   },
@@ -41663,7 +41663,7 @@
       "Longitude": -80.21610260009766,
       "Elevation": 6.400000095367432
     },
-    "StationName": "Loxahatchee Nwr",
+    "StationName": "Loxahatchee NWR",
     "Id": "f46a4a89-762d-46f8-afb9-93c2d75fb9bf",
     "Name": "Boca Raton"
   },
@@ -41696,7 +41696,7 @@
       "Longitude": 135.33299255371094,
       "Elevation": 30
     },
-    "StationName": "Maizuru Reg Met Hq",
+    "StationName": "Maizuru Reg Met HQ",
     "Id": "8f983dea-984b-4f76-80d0-42b405db8c8a",
     "Name": "Maizuru"
   },
@@ -41773,7 +41773,7 @@
       "Longitude": -123.80000305175781,
       "Elevation": 5
     },
-    "StationName": "Entrance Island Cs",
+    "StationName": "Entrance Island CS",
     "Id": "adc56366-8c26-44a5-97cd-436b196645b8",
     "Name": "Nanaimo"
   },
@@ -41817,7 +41817,7 @@
       "Longitude": -97.41419982910156,
       "Elevation": 325.5
     },
-    "StationName": "Guthrie Muni Ap",
+    "StationName": "Guthrie Muni AP",
     "Id": "effc637e-5c69-4946-a06f-0ee532f43928",
     "Name": "Edmond"
   },
@@ -41861,7 +41861,7 @@
       "Longitude": -87.86669921875,
       "Elevation": 221.60000610351562
     },
-    "StationName": "Chicago Waukegan Rgnl Ap",
+    "StationName": "Chicago Waukegan Rgnl AP",
     "Id": "2ff7e855-852d-4440-af9d-62fa704814ec",
     "Name": "Waukegan"
   },
@@ -42048,7 +42048,7 @@
       "Longitude": -77.23190307617188,
       "Elevation": 213.39999389648438
     },
-    "StationName": "Damascus 3 Ssw",
+    "StationName": "Damascus 3 SSW",
     "Id": "c56a7f6b-e931-4c01-bc12-4d09d580398a",
     "Name": "Germantown"
   },
@@ -42301,7 +42301,7 @@
       "Longitude": -81.20610046386719,
       "Elevation": 1.5
     },
-    "StationName": "Palm Coast 6Ne",
+    "StationName": "Palm Coast 6NE",
     "Id": "46474809-be80-4f53-b728-b13e57d5dc19",
     "Name": "Palm Coast"
   },
@@ -42466,7 +42466,7 @@
       "Longitude": -88.94999694824219,
       "Elevation": 243.8000030517578
     },
-    "StationName": "Normal 4Ne",
+    "StationName": "Normal 4NE",
     "Id": "de526377-1e24-400e-8c53-6b8bd4368c8d",
     "Name": "Bloomington"
   },
@@ -42609,7 +42609,7 @@
       "Longitude": -85.5519027709961,
       "Elevation": 264.6000061035156
     },
-    "StationName": "Kalamazoo Battle Ck Intl Ap",
+    "StationName": "Kalamazoo Battle Ck Intl AP",
     "Id": "241a46ac-caf5-4fcb-a499-2ee4a2298437",
     "Name": "Kalamazoo"
   },
@@ -42730,7 +42730,7 @@
       "Longitude": -84.74749755859375,
       "Elevation": 335.29998779296875
     },
-    "StationName": "Dallas 7 Ne",
+    "StationName": "Dallas 7 NE",
     "Id": "1970c603-05bf-4f65-b29e-2030cd206604",
     "Name": "Lost Mountain"
   },
@@ -42774,7 +42774,7 @@
       "Longitude": -89.08080291748047,
       "Elevation": 12.800000190734863
     },
-    "StationName": "Gulfportbiloxi Ap",
+    "StationName": "Gulfportbiloxi AP",
     "Id": "fb9e158d-5a28-484a-bed1-7e1d3cb727db",
     "Name": "Gulfport"
   },
@@ -42829,7 +42829,7 @@
       "Longitude": -77.4636001586914,
       "Elevation": 88.4000015258789
     },
-    "StationName": "Washington Dc Dulles Ap",
+    "StationName": "Washington DC Dulles AP",
     "Id": "f8281b91-233b-4662-9bb0-7c4eb5d2a2de",
     "Name": "Centreville"
   },
@@ -42862,7 +42862,7 @@
       "Longitude": -98.27359771728516,
       "Elevation": 231.60000610351562
     },
-    "StationName": "Randolph Afb",
+    "StationName": "Randolph AFB",
     "Id": "702c8748-a20d-49ac-8072-62a29476f46a",
     "Name": "New Braunfels"
   },
@@ -42884,7 +42884,7 @@
       "Longitude": -85.44969940185547,
       "Elevation": 112.80000305175781
     },
-    "StationName": "Dothan Rgnl Ap",
+    "StationName": "Dothan Rgnl AP",
     "Id": "87a18fa5-9e8b-4726-995a-d98f9202686c",
     "Name": "Dothan"
   },
@@ -43005,7 +43005,7 @@
       "Longitude": -119.08329772949219,
       "Elevation": 23.5
     },
-    "StationName": "Camarillo Ap",
+    "StationName": "Camarillo AP",
     "Id": "7dfe26be-70d6-44d7-a2a8-a9e20dc341c7",
     "Name": "Camarillo"
   },
@@ -43027,7 +43027,7 @@
       "Longitude": -96.9302978515625,
       "Elevation": 35.099998474121094
     },
-    "StationName": "Victoria Rgnl Ap",
+    "StationName": "Victoria Rgnl AP",
     "Id": "d64fbbec-f376-4e57-a7c2-c4d3e237cc60",
     "Name": "Victoria"
   },
@@ -43038,7 +43038,7 @@
       "Longitude": -77.38330078125,
       "Elevation": 7.900000095367432
     },
-    "StationName": "New River Mcaf",
+    "StationName": "New River MCAF",
     "Id": "b5440e72-93e1-4c50-8f24-48522cf11bf8",
     "Name": "Jacksonville"
   },
@@ -43060,7 +43060,7 @@
       "Longitude": -121.56780242919922,
       "Elevation": 18.899999618530273
     },
-    "StationName": "Marysville Yuba Co Ap",
+    "StationName": "Marysville Yuba Co AP",
     "Id": "917a1169-a886-49d8-8ea3-8faba37f1f96",
     "Name": "Yuba City"
   },
@@ -43082,7 +43082,7 @@
       "Longitude": -111.2166976928711,
       "Elevation": 369
     },
-    "StationName": "Fort Mcmurray Cs",
+    "StationName": "Fort McMurray CS",
     "Id": "4d1e4991-c45b-47ef-a21f-b15156e12d3b",
     "Name": "Fort McMurray"
   },
@@ -43126,7 +43126,7 @@
       "Longitude": -77.30000305175781,
       "Elevation": 3
     },
-    "StationName": "Quantico Mcas",
+    "StationName": "Quantico MCAS",
     "Id": "c2612086-4000-4f6f-9616-358606aefbf9",
     "Name": "Dale City"
   },
@@ -43247,7 +43247,7 @@
       "Longitude": -120.11060333251953,
       "Elevation": 77.0999984741211
     },
-    "StationName": "Madera Muni Ap",
+    "StationName": "Madera Muni AP",
     "Id": "14a8985e-1a68-4634-a141-18c6fd2d8ee7",
     "Name": "Madera"
   },
@@ -43302,7 +43302,7 @@
       "Longitude": -94.30000305175781,
       "Elevation": 392.29998779296875
     },
-    "StationName": "Fayetteville Nw Ar Ap",
+    "StationName": "Fayetteville NW Ar AP",
     "Id": "b8c06cf7-57b2-4aa9-a343-3cc72974c339",
     "Name": "Rogers"
   },
@@ -43324,7 +43324,7 @@
       "Longitude": -66.61669921875,
       "Elevation": 35
     },
-    "StationName": "Fredericton Cda Cs",
+    "StationName": "Fredericton CDA CS",
     "Id": "46f3e769-0afb-44fa-92fd-c9f170c361b6",
     "Name": "Fredericton"
   },
@@ -43500,7 +43500,7 @@
       "Longitude": -80.55000305175781,
       "Elevation": 232
     },
-    "StationName": "Delhi Cs",
+    "StationName": "Delhi CS",
     "Id": "df2733b8-74f5-48b8-9248-79078f5916a0",
     "Name": "Norfolk County"
   },
@@ -43544,7 +43544,7 @@
       "Longitude": -73.10169982910156,
       "Elevation": 25.600000381469727
     },
-    "StationName": "Islip Li Macarthur Ap",
+    "StationName": "Islip Li Macarthur AP",
     "Id": "9ed9c296-94e1-487b-825d-e6eab53f16bf",
     "Name": "Brentwood"
   },
@@ -43555,7 +43555,7 @@
       "Longitude": -75.01110076904297,
       "Elevation": 30.5
     },
-    "StationName": "Philadelphia Ne Ap",
+    "StationName": "Philadelphia NE AP",
     "Id": "02a3bd2e-1e27-4a60-897d-713ad4553c82",
     "Name": "Bensalem"
   },
@@ -43808,7 +43808,7 @@
       "Longitude": -82.50140380859375,
       "Elevation": 6.099999904632568
     },
-    "StationName": "Bradenton 5 Ese",
+    "StationName": "Bradenton 5 ESE",
     "Id": "3107b0f5-fdc7-4321-8d7c-a8fc496bef1a",
     "Name": "Bradenton"
   },
@@ -43819,7 +43819,7 @@
       "Longitude": -81.99829864501953,
       "Elevation": 6.099999904632568
     },
-    "StationName": "Punta Gorda 4 Ese",
+    "StationName": "Punta Gorda 4 ESE",
     "Id": "1dad484a-39b6-4e62-b7cd-e4ac6dc8790a",
     "Name": "Port Charlotte"
   },
@@ -43973,7 +43973,7 @@
       "Longitude": -79.47689819335938,
       "Elevation": 188.10000610351562
     },
-    "StationName": "Burlington Alamance Ap",
+    "StationName": "Burlington Alamance AP",
     "Id": "79954202-ced5-4698-88fb-aacac3ee4824",
     "Name": "Burlington"
   },
@@ -43995,7 +43995,7 @@
       "Longitude": -73.41690063476562,
       "Elevation": 24.700000762939453
     },
-    "StationName": "Farmingdale Ap",
+    "StationName": "Farmingdale AP",
     "Id": "a4a887af-8cb2-4c68-9064-2a8aef3e6c67",
     "Name": "Levittown"
   },
@@ -44017,7 +44017,7 @@
       "Longitude": -85.2667007446289,
       "Elevation": 283.5
     },
-    "StationName": "Battle Creek 5Nw",
+    "StationName": "Battle Creek 5NW",
     "Id": "df61e080-6068-42b6-846a-0c7bf0419f83",
     "Name": "Battle Creek"
   },
@@ -44289,7 +44289,7 @@
       "Elevation": 1454.800048828125
     },
     "Id": "ffda959d-55ad-4218-b771-168078a3570e",
-    "Name": "Cliff 11 Se"
+    "Name": "Cliff 11 SE"
   },
   {
     "CountryCode": "US",
@@ -44299,7 +44299,7 @@
       "Elevation": 333.79998779296875
     },
     "Id": "d291cbfa-b62e-4e04-ab5f-0a86240ea310",
-    "Name": "Hancock Houghton Co Ap"
+    "Name": "Hancock Houghton Co AP"
   },
   {
     "CountryCode": "UZ",
@@ -45119,7 +45119,7 @@
       "Elevation": 14
     },
     "Id": "728c0cc7-650c-427b-845c-9ae229cf1d6c",
-    "Name": "Bellingshausen Aws"
+    "Name": "Bellingshausen AWS"
   },
   {
     "CountryCode": "AQ",
@@ -45169,7 +45169,7 @@
       "Elevation": 335
     },
     "Id": "60c73ae0-1f1f-4f04-97a3-f99b3171ab6a",
-    "Name": "Swan River Rcs"
+    "Name": "Swan River RCS"
   },
   {
     "CountryCode": "CA",
@@ -45519,7 +45519,7 @@
       "Elevation": 15.5
     },
     "Id": "61a0d443-4976-476f-bf33-044f50ee484f",
-    "Name": "Kahului Ap"
+    "Name": "Kahului AP"
   },
   {
     "CountryCode": "CA",
@@ -45639,7 +45639,7 @@
       "Elevation": 11.899999618530273
     },
     "Id": "9ed55c1d-751b-4e20-985c-dc7cafd6bb90",
-    "Name": "Barter Island Wso Ap"
+    "Name": "Barter Island WSO AP"
   },
   {
     "CountryCode": "AU",
@@ -45869,7 +45869,7 @@
       "Elevation": 551.7000122070312
     },
     "Id": "d4e7c22d-c3d2-4f8d-ad92-2e645a2e3cbf",
-    "Name": "Kenmare 1 Wsw"
+    "Name": "Kenmare 1 WSW"
   },
   {
     "CountryCode": "AU",
@@ -45909,7 +45909,7 @@
       "Elevation": 379
     },
     "Id": "a08025fc-9979-490c-816c-bc0910f1b268",
-    "Name": "La Ronge Rcs"
+    "Name": "La Ronge RCS"
   },
   {
     "CountryCode": "FI",
@@ -46109,7 +46109,7 @@
       "Elevation": 351
     },
     "Id": "d456dd61-3865-4eb9-ad75-434f1e19eb39",
-    "Name": "Mccreary"
+    "Name": "McCreary"
   },
   {
     "CountryCode": "CN",
@@ -46299,7 +46299,7 @@
       "Elevation": 426.70001220703125
     },
     "Id": "07ecdadf-15fd-49b7-92f2-5ef16a9ba11e",
-    "Name": "Brownwood 2Ene"
+    "Name": "Brownwood 2ENE"
   },
   {
     "CountryCode": "US",
@@ -46319,7 +46319,7 @@
       "Elevation": 26
     },
     "Id": "9026caf8-08be-4014-ae89-a3d2e53fa17b",
-    "Name": "Mcinnes Island"
+    "Name": "McInnes Island"
   },
   {
     "CountryCode": "CA",
@@ -47059,7 +47059,7 @@
       "Elevation": 24.100000381469727
     },
     "Id": "316f60fb-7006-42fc-b349-e7d18ce7a60d",
-    "Name": "Mcmurdo Sound Naf"
+    "Name": "McMurdo Sound NAF"
   },
   {
     "CountryCode": "CA",
@@ -47089,7 +47089,7 @@
       "Elevation": 289
     },
     "Id": "844a7570-d032-414f-bf49-58078fe60485",
-    "Name": "N\u0027guigni"
+    "Name": "N\u0027Guigni"
   },
   {
     "CountryCode": "RU",
@@ -47159,7 +47159,7 @@
       "Elevation": 1310.9000244140625
     },
     "Id": "e91d2078-5c90-4ade-bd86-200181c92253",
-    "Name": "Deming Muni Ap"
+    "Name": "Deming Muni AP"
   },
   {
     "CountryCode": "US",
@@ -47169,7 +47169,7 @@
       "Elevation": 1261.9000244140625
     },
     "Id": "50b230da-b570-48d0-a82e-8f5b758802da",
-    "Name": "Burns Muni Ap"
+    "Name": "Burns Muni AP"
   },
   {
     "CountryCode": "AU",
@@ -47299,7 +47299,7 @@
       "Elevation": 984.5
     },
     "Id": "70c6ce9c-1d2b-441f-afe9-53b6e62f92eb",
-    "Name": "Mercury Desert Rock Ap"
+    "Name": "Mercury Desert Rock AP"
   },
   {
     "CountryCode": "DZ",
@@ -47549,7 +47549,7 @@
       "Elevation": 977
     },
     "Id": "4213e066-ce75-469a-acba-e07caffc267b",
-    "Name": "Mosstrand Ii"
+    "Name": "Mosstrand II"
   },
   {
     "CountryCode": "PK",
@@ -47709,7 +47709,7 @@
       "Elevation": 11.600000381469727
     },
     "Id": "b00d0e03-154c-41e5-967d-82b19a7ccb19",
-    "Name": "Hilo Intl Ap"
+    "Name": "Hilo Intl AP"
   },
   {
     "CountryCode": "AU",
@@ -47939,7 +47939,7 @@
       "Elevation": 44
     },
     "Id": "ca3a76cc-1562-49dc-a570-74a12969a454",
-    "Name": "Cheticamp Cs"
+    "Name": "Cheticamp CS"
   },
   {
     "CountryCode": "CZ",
@@ -48159,7 +48159,7 @@
       "Elevation": 209.8000030517578
     },
     "Id": "51337f3d-5e84-425e-b1a5-9382b2ae3fb0",
-    "Name": "Daly Waters Aws"
+    "Name": "Daly Waters AWS"
   },
   {
     "CountryCode": "AU",
@@ -48219,7 +48219,7 @@
       "Elevation": 306
     },
     "Id": "ab5d8793-3d32-4c1f-8f14-4e194df719a6",
-    "Name": "La Grande Iv"
+    "Name": "La Grande IV"
   },
   {
     "CountryCode": "CA",
@@ -48509,7 +48509,7 @@
       "Elevation": 1371.9000244140625
     },
     "Id": "53d0dcbe-b9d4-4a34-aa81-670d5955a8d3",
-    "Name": "Animas 3Ese"
+    "Name": "Animas 3ESE"
   },
   {
     "CountryCode": "US",
@@ -48778,7 +48778,7 @@
       "Elevation": 33
     },
     "Id": "8e771684-f076-47e5-a747-e24089da3909",
-    "Name": "Miramichi Rcs"
+    "Name": "Miramichi RCS"
   },
   {
     "CountryCode": "LY",
@@ -48938,7 +48938,7 @@
       "Elevation": 158
     },
     "Id": "0553e1ea-a637-40b9-acd3-9e639e99401a",
-    "Name": "White Cliffs Aws"
+    "Name": "White Cliffs AWS"
   },
   {
     "CountryCode": "AU",
@@ -48998,7 +48998,7 @@
       "Elevation": 222
     },
     "Id": "77bdd601-d9d5-4c0a-a7ba-63f83af1722c",
-    "Name": "Berens River Cs"
+    "Name": "Berens River CS"
   },
   {
     "CountryCode": "FI",
@@ -49198,7 +49198,7 @@
       "Elevation": 532.5
     },
     "Id": "29194bf8-acc9-48b5-8116-5afd7fd1108e",
-    "Name": "Junction 4Ssw"
+    "Name": "Junction 4SSW"
   },
   {
     "CountryCode": "US",
@@ -49268,7 +49268,7 @@
       "Elevation": 256
     },
     "Id": "41743979-9826-4703-bfd0-8f50b5cc620c",
-    "Name": "Base Belgrano Ii"
+    "Name": "Base Belgrano II"
   },
   {
     "CountryCode": "CA",
@@ -49298,7 +49298,7 @@
       "Elevation": 337
     },
     "Id": "82f4281f-67ca-4a2d-b13e-5ff5418aef01",
-    "Name": "Val D\u0027or"
+    "Name": "Val D\u0027Or"
   },
   {
     "CountryCode": "KZ",
@@ -49398,7 +49398,7 @@
       "Elevation": 1350.300048828125
     },
     "Id": "73eccb2c-a5b0-44be-b397-39a51a492f3a",
-    "Name": "Mcdermitt"
+    "Name": "McDermitt"
   },
   {
     "CountryCode": "US",
@@ -49958,7 +49958,7 @@
       "Elevation": 133.60000610351562
     },
     "Id": "83d7780e-ee9f-43f4-b81f-ccfc6aee9001",
-    "Name": "Tindal Raaf"
+    "Name": "Tindal RAAF"
   },
   {
     "CountryCode": "AU",
@@ -49978,7 +49978,7 @@
       "Elevation": 281.29998779296875
     },
     "Id": "73a03702-6133-4d9e-8e75-0b063edf7ed2",
-    "Name": "Broken Hill Airport Aws"
+    "Name": "Broken Hill Airport AWS"
   },
   {
     "CountryCode": "AU",
@@ -50018,7 +50018,7 @@
       "Elevation": 3250
     },
     "Id": "b6f5f4e8-185b-475a-ac0d-4c3fdc6d6437",
-    "Name": "Dome C Ii"
+    "Name": "Dome C II"
   },
   {
     "CountryCode": "BO",
@@ -50098,7 +50098,7 @@
       "Elevation": 1313.699951171875
     },
     "Id": "a3ad22ee-7f75-44cd-aaf0-197fd77035cf",
-    "Name": "Page Muni Ap"
+    "Name": "Page Muni AP"
   },
   {
     "CountryCode": "DZ",
@@ -50288,7 +50288,7 @@
       "Elevation": 1615.4000244140625
     },
     "Id": "a3b9fbc8-95f9-4fd4-b24b-e96ea01ab5ea",
-    "Name": "Kim 10Sse"
+    "Name": "Kim 10SSE"
   },
   {
     "CountryCode": "US",
@@ -50308,7 +50308,7 @@
       "Elevation": 1190.199951171875
     },
     "Id": "9978446f-dc04-4f35-9269-1e77cdd30e8a",
-    "Name": "Ft Hancock 8Sse"
+    "Name": "Ft Hancock 8SSE"
   },
   {
     "CountryCode": "US",
@@ -50428,7 +50428,7 @@
       "Elevation": 134
     },
     "Id": "55648b71-33a3-46fe-9a35-eb782f8d14f2",
-    "Name": "Griffith Airport Aws"
+    "Name": "Griffith Airport AWS"
   },
   {
     "CountryCode": "AQ",
@@ -50448,7 +50448,7 @@
       "Elevation": 251
     },
     "Id": "039ea3cf-be64-4b9a-bbd0-5a943e8b0e75",
-    "Name": "Old Crow Rcs"
+    "Name": "Old Crow RCS"
   },
   {
     "CountryCode": "CA",
@@ -50578,7 +50578,7 @@
       "Elevation": 181.3000030517578
     },
     "Id": "960d2d76-5de2-4dcf-9f6b-9b670b7f3282",
-    "Name": "Coonamble Airport Aws"
+    "Name": "Coonamble Airport AWS"
   },
   {
     "CountryCode": "AQ",
@@ -50718,7 +50718,7 @@
       "Elevation": 40
     },
     "Id": "2547d2ae-bfc0-4d31-8352-2a325625384b",
-    "Name": "Enderby Island Aws"
+    "Name": "Enderby Island AWS"
   },
   {
     "CountryCode": "PY",
@@ -50768,7 +50768,7 @@
       "Elevation": 801.5999755859375
     },
     "Id": "27ad30e3-b937-42a9-bc74-f268bcd4a548",
-    "Name": "Brockway 3 Wsw"
+    "Name": "Brockway 3 WSW"
   },
   {
     "CountryCode": "US",
@@ -50788,7 +50788,7 @@
       "Elevation": 605.2999877929688
     },
     "Id": "cc8170c9-bb73-4ab7-b535-82a6d4420d07",
-    "Name": "Wolf Point Intl Ap"
+    "Name": "Wolf Point Intl AP"
   },
   {
     "CountryCode": "AU",
@@ -50838,7 +50838,7 @@
       "Elevation": 88
     },
     "Id": "649b15be-12e8-424b-985c-171130d4fe4a",
-    "Name": "Cape St James Cs"
+    "Name": "Cape St James CS"
   },
   {
     "CountryCode": "CA",
@@ -50858,7 +50858,7 @@
       "Elevation": 935
     },
     "Id": "2ae4f6ac-3b94-4a60-b678-159dfed45faa",
-    "Name": "Onefour Cda"
+    "Name": "Onefour CDA"
   },
   {
     "CountryCode": "CA",
@@ -50918,7 +50918,7 @@
       "Elevation": 791
     },
     "Id": "6b09c93a-0b51-45e0-9e5c-fc910aa3a262",
-    "Name": "L\u0027etape"
+    "Name": "L\u0027Etape"
   },
   {
     "CountryCode": "CA",
@@ -51008,7 +51008,7 @@
       "Elevation": 17.100000381469727
     },
     "Id": "4f1f4d3a-974e-44c5-bfd8-653a67d10f5a",
-    "Name": "Crescent City Mcnamara Ap"
+    "Name": "Crescent City McNamara AP"
   },
   {
     "CountryCode": "UZ",
@@ -51048,7 +51048,7 @@
       "Elevation": 30
     },
     "Id": "16610970-914b-4f07-a17b-31710c0cded9",
-    "Name": "Holman Cs"
+    "Name": "Holman CS"
   },
   {
     "CountryCode": "CA",
@@ -51068,7 +51068,7 @@
       "Elevation": 745
     },
     "Id": "d862279f-5ada-4ea8-b7d6-c0833ea62c25",
-    "Name": "Beaverlodge Rcs"
+    "Name": "Beaverlodge RCS"
   },
   {
     "CountryCode": "CA",
@@ -51178,7 +51178,7 @@
       "Elevation": 1502.4000244140625
     },
     "Id": "6f8147e3-a7af-4952-b519-401232e7d4cd",
-    "Name": "Douglas Converse Co Ap"
+    "Name": "Douglas Converse Co AP"
   },
   {
     "CountryCode": "AR",
@@ -51238,7 +51238,7 @@
       "Elevation": 1130
     },
     "Id": "1c8d710b-af92-4319-b5f6-fa2786cafe55",
-    "Name": "Nullo Mountain Aws"
+    "Name": "Nullo Mountain AWS"
   },
   {
     "CountryCode": "AU",
@@ -51248,7 +51248,7 @@
       "Elevation": 323.29998779296875
     },
     "Id": "93815ff1-c98a-440a-8aff-41780d531ec2",
-    "Name": "Parkes Airport Aws"
+    "Name": "Parkes Airport AWS"
   },
   {
     "CountryCode": "AQ",
@@ -51298,7 +51298,7 @@
       "Elevation": 543
     },
     "Id": "b47ebbea-49eb-43c8-a5f7-9d9032aa3057",
-    "Name": "Carmacks Cs"
+    "Name": "Carmacks CS"
   },
   {
     "CountryCode": "CA",
@@ -51458,7 +51458,7 @@
       "Elevation": 1819.699951171875
     },
     "Id": "b6730903-2fb0-41ce-9075-006bd60b49a5",
-    "Name": "Ruby Lake Nwr Nevada"
+    "Name": "Ruby Lake NWR Nevada"
   },
   {
     "CountryCode": "US",
@@ -51468,7 +51468,7 @@
       "Elevation": 3.700000047683716
     },
     "Id": "e34cd325-09cd-426a-861d-fb50d0448add",
-    "Name": "Klawock Ap"
+    "Name": "Klawock AP"
   },
   {
     "CountryCode": "AR",
@@ -51498,7 +51498,7 @@
       "Elevation": 13.699999809265137
     },
     "Id": "54e85b07-4c95-4aaf-ae05-4f9cfec8b427",
-    "Name": "Groote Eylandt Airport Aws"
+    "Name": "Groote Eylandt Airport AWS"
   },
   {
     "CountryCode": "AU",
@@ -51548,7 +51548,7 @@
       "Elevation": 213
     },
     "Id": "ec66752d-f5f1-45d4-9ae7-12b4c629b8fa",
-    "Name": "Deline Cs"
+    "Name": "Deline CS"
   },
   {
     "CountryCode": "CA",
@@ -51818,7 +51818,7 @@
       "Elevation": 82
     },
     "Id": "9c88f070-5918-4de6-bd54-bb4da65f2a09",
-    "Name": "Fort Good Hope Cs"
+    "Name": "Fort Good Hope CS"
   },
   {
     "CountryCode": "CA",
@@ -52028,7 +52028,7 @@
       "Elevation": 15
     },
     "Id": "d91b2ebf-e3d9-450c-8032-ed22d7d52249",
-    "Name": "Milingimbi Aws"
+    "Name": "Milingimbi AWS"
   },
   {
     "CountryCode": "AU",
@@ -52058,7 +52058,7 @@
       "Elevation": 181
     },
     "Id": "31df4228-e70f-4224-8e36-34a2f18e0694",
-    "Name": "Fowlers Gap Aws"
+    "Name": "Fowlers Gap AWS"
   },
   {
     "CountryCode": "CA",
@@ -52078,7 +52078,7 @@
       "Elevation": 2
     },
     "Id": "de6a1052-e221-4e05-98f7-db25e0797835",
-    "Name": "Mould Bay Cs"
+    "Name": "Mould Bay CS"
   },
   {
     "CountryCode": "CA",
@@ -52088,7 +52088,7 @@
       "Elevation": 1352
     },
     "Id": "763ef7bf-5115-483d-adc5-4ddfe8dc752e",
-    "Name": "Nordegg Cs"
+    "Name": "Nordegg CS"
   },
   {
     "CountryCode": "CA",
@@ -52098,7 +52098,7 @@
       "Elevation": 648
     },
     "Id": "5c56a6a8-af78-4c4b-93cf-c61dacad1322",
-    "Name": "Barrhead Cs"
+    "Name": "Barrhead CS"
   },
   {
     "CountryCode": "CA",
@@ -52188,7 +52188,7 @@
       "Elevation": 251.5
     },
     "Id": "c5e63a5a-7b08-41ca-b591-d214bc0c93de",
-    "Name": "Kanuti Nwr Alaska"
+    "Name": "Kanuti NWR Alaska"
   },
   {
     "CountryCode": "US",
@@ -52268,7 +52268,7 @@
       "Elevation": 100
     },
     "Id": "7cfb394b-fd2c-4a47-820f-5a0bf3eea4e8",
-    "Name": "Ivanhoe Aerodrome Aws"
+    "Name": "Ivanhoe Aerodrome AWS"
   },
   {
     "CountryCode": "AQ",
@@ -52278,7 +52278,7 @@
       "Elevation": 40
     },
     "Id": "ae9979fd-901e-4a41-a2b2-501f661643ca",
-    "Name": "Univ Wi Id 8925 Limbert Aws"
+    "Name": "Univ Wi Id 8925 Limbert AWS"
   },
   {
     "CountryCode": "AQ",
@@ -52338,7 +52338,7 @@
       "Elevation": 324
     },
     "Id": "d9b55cb3-815a-49bd-8b49-2da297020711",
-    "Name": "Kirkland Lake Cs"
+    "Name": "Kirkland Lake CS"
   },
   {
     "CountryCode": "CA",
@@ -52448,7 +52448,7 @@
       "Elevation": 40
     },
     "Id": "311a4ba6-f81c-4fb4-911d-956d2010db35",
-    "Name": "Mcarthur River Mine"
+    "Name": "McArthur River Mine"
   },
   {
     "CountryCode": "AU",
@@ -52608,7 +52608,7 @@
       "Elevation": 488
     },
     "Id": "6cd82054-f4f5-48be-8914-e27553b60b9a",
-    "Name": "Lupin Cs"
+    "Name": "Lupin CS"
   },
   {
     "CountryCode": "CA",
@@ -52618,7 +52618,7 @@
       "Elevation": 10
     },
     "Id": "a75d3ebb-242f-4172-b277-96d07bc55c5f",
-    "Name": "Arctic Bay Cs"
+    "Name": "Arctic Bay CS"
   },
   {
     "CountryCode": "CA",
@@ -52628,7 +52628,7 @@
       "Elevation": 903
     },
     "Id": "1cb447f7-b3aa-4bc7-8054-d173a65fc631",
-    "Name": "Violet Grove Cs"
+    "Name": "Violet Grove CS"
   },
   {
     "CountryCode": "CA",
@@ -52658,7 +52658,7 @@
       "Elevation": 214
     },
     "Id": "3f8c33b9-69cd-486c-8603-0c2522124a4f",
-    "Name": "Tobermory Rcs"
+    "Name": "Tobermory RCS"
   },
   {
     "CountryCode": "CA",
@@ -52838,7 +52838,7 @@
       "Elevation": 229
     },
     "Id": "4aaba516-8178-4d3f-bd61-ba70b760c82f",
-    "Name": "Narrabri Airport Aws"
+    "Name": "Narrabri Airport AWS"
   },
   {
     "CountryCode": "AQ",
@@ -53008,7 +53008,7 @@
       "Elevation": 694
     },
     "Id": "25a5af8e-8510-433f-a9de-cb054e3d119b",
-    "Name": "Cheyenne 6Sw Mesonet"
+    "Name": "Cheyenne 6SW Mesonet"
   },
   {
     "CountryCode": "US",
@@ -53038,7 +53038,7 @@
       "Elevation": 1.399999976158142
     },
     "Id": "bb5d1dee-e7f6-4be8-b542-c2be9cbd22fa",
-    "Name": "Mccluer Island"
+    "Name": "McCluer Island"
   },
   {
     "CountryCode": "AU",
@@ -53078,7 +53078,7 @@
       "Elevation": 817
     },
     "Id": "4b4e1a96-54c8-46ee-bb8e-46aed7374683",
-    "Name": "Sanae Aws"
+    "Name": "Sanae AWS"
   },
   {
     "CountryCode": "AQ",
@@ -53278,7 +53278,7 @@
       "Elevation": 1968
     },
     "Id": "d6a487a9-d591-4c88-ab63-1fe877d0a4ce",
-    "Name": "Baldrick Aws"
+    "Name": "Baldrick AWS"
   },
   {
     "CountryCode": "AQ",
@@ -53528,7 +53528,7 @@
       "Elevation": 583
     },
     "Id": "5ac6988c-619f-485d-9def-b7a70c47edfa",
-    "Name": "Slave Lake Rcs"
+    "Name": "Slave Lake RCS"
   },
   {
     "CountryCode": "GL",
@@ -53658,7 +53658,7 @@
       "Elevation": 73.19999694824219
     },
     "Id": "a5c04374-98e7-44d2-bfaa-cac2ee929ecf",
-    "Name": "Sand Point 1 Ene"
+    "Name": "Sand Point 1 ENE"
   },
   {
     "CountryCode": "US",
@@ -53988,7 +53988,7 @@
       "Elevation": 183
     },
     "Id": "1f212d3b-0e6a-4a73-8174-dd9139c3558d",
-    "Name": "Kelsey Dam Cs"
+    "Name": "Kelsey Dam CS"
   },
   {
     "CountryCode": "ID",
@@ -54178,7 +54178,7 @@
       "Elevation": 851.5999755859375
     },
     "Id": "89d03624-a655-4b42-9e33-b9e743609d0a",
-    "Name": "Ingomar 11 Ne"
+    "Name": "Ingomar 11 NE"
   },
   {
     "CountryCode": "CA",
@@ -54208,7 +54208,7 @@
       "Elevation": 497
     },
     "Id": "2fb80707-81c0-4be0-a810-c58a4e70eba9",
-    "Name": "Last Mountain Cs"
+    "Name": "Last Mountain CS"
   },
   {
     "CountryCode": "US",
@@ -54528,7 +54528,7 @@
       "Elevation": 928
     },
     "Id": "dda3f6d8-02f2-4967-a796-e75c56e0e93e",
-    "Name": "100 Mile House 6Ne"
+    "Name": "100 Mile House 6NE"
   },
   {
     "CountryCode": "US",
@@ -54538,7 +54538,7 @@
       "Elevation": 294.70001220703125
     },
     "Id": "919bec95-ad9b-446c-b0e0-37ea03e39e24",
-    "Name": "Ada 2Nne Mesonet"
+    "Name": "Ada 2NNE Mesonet"
   },
   {
     "CountryCode": "AU",
@@ -54558,7 +54558,7 @@
       "Elevation": 78
     },
     "Id": "0c05cfed-07de-4e87-9a91-68e8eab47586",
-    "Name": "Grand Manan Sar Cs"
+    "Name": "Grand Manan Sar CS"
   },
   {
     "CountryCode": "US",
