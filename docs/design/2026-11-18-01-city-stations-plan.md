@@ -434,3 +434,39 @@ Chosen row, against the first run:
   it's just outside the 25 km candidate radius, so it keeps its own name.
 
 **Checks:** `Data.Ghcnm` builds with no warnings. The rule is in `Program.cs` top-level code and has no unit test.
+
+## Addendum — full run validated (2026-11-18)
+
+All steps were run (commits `b6872f4f6` to `115f1a4a9`: GHCNm, precipitation and GHCNd, DataPipeline,
+CachingTool).
+
+**Matches the simulation and the rules.**
+
+- 5,388 stations, the same IDs as the simulation, and 767 city locations with the same names.
+- Every station has at least 2 complete years in 2016–25. The 34 with fewer than 10 complete years in total are
+  all city stations, which have no record-length minimum.
+- Every city location is within 25 km of a GeoNames city of 50,000 or more with that name. Names are all ASCII.
+- Locations, stations and the four GHCN data file mappings agree. No mapping points at an unknown location or an
+  unselected station.
+- GHCNm adjusted and unadjusted: 5,388 CSVs each in `SourceData` and in `Datasets/GHCNm.zip`. Precipitation:
+  4,735. No files are left from removed stations.
+- Location cache: 5,501 locations (5,388 GHCNm, 112 BOM, Central England), 767 with `StationName`. 3,421 have a
+  warming anomaly (3,484 before the plan) and 3,916 a trend score (3,953).
+- The solution builds. Core 326, WebApi 225 and Web 535 tests pass.
+
+**Problem: 149 stations lost their GHCNd data.**
+
+- 5,212 stations have a GHCNd archive and 176 don't (12 of 3,195 last time).
+- Checked one at a time against NOAA afterwards, only 27 of the 176 return 404. The other 149 have files.
+- During the run, `GhcndBulkStationFileCache` got 404s for them and recorded them as "not in GHCNd". NOAA's
+  server returns errors under load (rapid requests also failed with dropped connections while checking).
+- **Fix:** retry a 404 before accepting it. Then re-run `Data.Ghcnd`, which only downloads the missing files,
+  then DataPipeline and CachingTool.
+
+**URL names.** In 17 cases a city location shares its URL name with another location that's found first, so
+`/location/<name>` goes to the other one.
+
+- Mostly harmless: `sydney` goes to Australia's BOM Sydney before Sydney, Nova Scotia.
+- Some point to the wrong place for most people: `wellington` goes to a US station before Wellington NZ, and
+  `hamilton` and `kingston` go to US stations before the Canadian cities.
+- The map and GUID links reach all of them. Possible follow-up.
