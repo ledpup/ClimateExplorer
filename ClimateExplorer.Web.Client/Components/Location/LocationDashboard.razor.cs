@@ -120,6 +120,17 @@ public partial class LocationDashboard
         }
     }
 
+    // The location name's tooltip: the average temperature once it loads, then what any abbreviations in the name
+    // stand for.
+    private string? LocationTitleTooltip
+    {
+        get
+        {
+            var tooltip = TemperatureMeanTooltip + (Location is null ? null : AbbreviationTooltip.Build(Location.NameWithStation));
+            return tooltip.Length == 0 ? null : tooltip;
+        }
+    }
+
     // The location the overview fields describe, set once per location. The fields themselves are
     // formatted at render, so they follow a change of unit system without recalculating anything.
     private Location? OverviewLocation { get; set; }

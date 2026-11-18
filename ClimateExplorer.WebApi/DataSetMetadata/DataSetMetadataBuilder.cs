@@ -83,7 +83,7 @@ internal sealed class DataSetMetadataBuilder(
             stations.Add(new DataSetStationMetadata
             {
                 StationId = mapping.Id,
-                StationName = station?.Name,
+                StationName = station?.Name is null ? null : Station.ToDisplayName(station.Name),
                 StationStartDate = mapping.StartDate ?? CreateFirstDayOfYear(station?.FirstYear),
                 StationEndDate = mapping.EndDate ?? CreateLastDayOfYear(station?.LastYear),
                 SourceUrl = ResolveStationUrl(dataSetDefinition, mapping.Id),
