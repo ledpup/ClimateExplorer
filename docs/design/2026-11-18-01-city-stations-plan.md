@@ -1,7 +1,8 @@
 # City stations
 
 - **Date:** 2026-11-18
-- **Status:** Implemented 2026-11-18 (code); see the addendum. The importers haven't been re-run yet.
+- **Status:** Implemented 2026-11-18; see the addenda. `Data.Ghcnm` was run once with the city rule. The recency
+  change (second addendum) hasn't been run yet.
 - **Author:** Patrick (with Claude)
 - **Scope:** `ClimateExplorer.Data.Ghcnm` (station selection, location names, GeoNames extract),
   `ClimateExplorer.Core` (new `CityStationSelector`; `Location.StationName` and titles), `ClimateExplorer.WebApi`
@@ -353,6 +354,83 @@ Implemented as planned, with these details and deviations.
 - `DataSetMetadataBuilderTests`: one new test (`BuildAsync_UpperCaseStationName_ReturnsTitleCaseWithSpaces`).
 - The solution builds with no warnings. Passing: `Core.UnitTests` 326, `WebApi.UnitTests` 225, `Web.UnitTests` 535.
 
-**To run** (not yet done): `Data.Ghcnm` (twice if new IDs are added), then `Data.Ghcnm.Precipitation`,
-`Data.Ghcnd` and `DataPipeline`, then rebuild the WebApi location cache. The `Data.Ghcnm` log should show
-Geelong, Wollongong and Bendigo among about 609 city stations.
+**To run:** `Data.Ghcnm` (twice if new IDs are added), then `Data.Ghcnm.Precipitation`, `Data.Ghcnd` and
+`DataPipeline`, then rebuild the WebApi location cache.
+
+**First run (commit `850f87806`).** 5,422 → 5,650 stations: 278 added, 50 removed. 744 locations are named after
+a city, among them Geelong (Avalon Airport), Wollongong (Bellambi AWS) and Bendigo (Bendigo Airport). The plan's 609
+came from a rougher simulation, which estimated the spaced set from the shipped files. The re-implementation in
+the next addendum reproduces the 744.
+
+All 50 removals were isolation stations that a new city station now blocks, because isolation is seeded with
+the city stations:
+
+- 12 were within 30 km of the new station, which usually has better recent data for the same place: Thunder Bay,
+  Saskatoon, Kingston, Phuket.
+- 38 were 34–74 km away.
+- 5 were swaps: the old station dropped, and a neighbour on the far side came in.
+
+Looking at those swaps showed that the recency rules let in stations that had stopped. Falcon Dam has no complete
+year since 2015 and no value since 2017, and Sharcovschina has no complete year since 2015. That led to the change
+below.
+
+## Addendum — one recency rule (2026-11-18)
+
+**Principle.** The site tracks warming this century, so recent data matters more than total record length. Only
+complete years are usable: one missing month voids a year (`IsValidYear`). Ten recent years each missing a month
+are as good as no station. Two complete recent years and nothing else are two years of usable data. Gaps of whole
+years are fine, so a long record that restarted recently is better than a short complete one. Fewer rules are
+better.
+
+**Rule.** Every route into the station list uses the same recency rule: at least
+`minimumCompleteYearsInRecentPeriod` (now **2**) complete years in the last `recentPeriodYears` (now **10**).
+
+- **Spacing:** replaces "last complete year within 10 years" and "10 complete years in the last 30". It still
+  needs 60 complete years for the anomaly.
+- **City rule:** replaces "10 complete years in the last 30" and "a value in the last 10 years".
+- **Isolation:** replaces "a value in the last 10 years". It keeps 10 complete years.
+- **Country top-up:** replaces "last complete year within 10 years". It keeps 10 complete years.
+
+The two short-record minimums (isolation and top-up) are now one constant, `shortRecordMinimumCompleteYears`
+(10). `GetLastYearWithAnyValue` and `HasAnyValue` are gone. The 2 is a judgement, not a measured threshold.
+
+**GHCNm has no "closed" flag.** The `.inv` file holds only ID, coordinates, elevation and name. A station that
+stops is simply missing from later data. Two checks against NOAA's other products:
+
+- **Johannesburg Intl (`SFM00068368`):** GHCN-Daily and ISD/GSOD (hourly reports) all end on 2020-05-27.
+  NOAA's ISD station list still has it under the old ICAO code FAJS (OR Tambo is FAOR), ending on that date.
+- **Riyadh OBS (`SA000040438`):** ISD lists it as King Salman Air Base (the old airport). Its data ends on
+  2022-02-28.
+
+South Africa still sends monthly data for 50 GHCNm stations. So these are stations that stopped, not countries
+that report late.
+
+Separately, ISD and GSOD end on 2025-08-24 for every station checked. That's a NOAA-side stop that doesn't affect
+GHCNm.
+
+**Simulation.** A re-implementation of `Program.cs` reproduces the first run exactly (the same 5,650 station
+IDs). With the new rule:
+
+| Complete years in the last 10 | Stations | Cities ≥ 100K with a location |
+|---|---|---|
+| Rules of the first run | 5,650 | 2,927 |
+| ≥ 1 | 5,554 | 2,926 |
+| **≥ 2 (chosen), with the top-up on the same rule** | **5,388** | **2,875** |
+| ≥ 3 | 5,282 | 2,871 |
+| ≥ 5 | 4,881 | 2,738 |
+
+Before the top-up change, the ≥ 1, ≥ 3 and ≥ 5 rows were run, and ≥ 2 gave 5,410 stations and 2,894 cities.
+
+Chosen row, against the first run:
+
+- 405 stations removed, 143 added.
+- 767 city locations. Geelong, Wollongong and Bendigo stay. So does Johannesburg (Johannesburg Intl has complete
+  years in 2016 and 2018).
+- The removals include every station with no complete year in 2016–25 (222 in the first run's set), so Falcon
+  Dam, Sharcovschina and Shimla go.
+- Cities that lose their location are mostly where GHCNm has nothing recent and complete: Riyadh, Salvador,
+  Recife, Makkah.
+- King Khaled Intl now comes in through isolation. It's Riyadh's current station, but at 30.2 km from the centre
+  it's just outside the 25 km candidate radius, so it keeps its own name.
+
+**Checks:** `Data.Ghcnm` builds with no warnings. The rule is in `Program.cs` top-level code and has no unit test.

@@ -17,24 +17,26 @@ var logger = serviceProvider.GetService<ILoggerFactory>()!.CreateLogger<Program>
 
 const int minimumStationsInCountry = 5;
 
-// Drops stations with only a scattering of complete years in the last 30. Kept loose: one missing month voids a
-// year (IsValidYear), and 20 of 30 dropped stations worth keeping, such as Cape Sorell.
-const int recentPeriodYears = 30;
-const int minimumCompleteYearsInRecentPeriod = 10;
+// Recency, for spacing, cities and isolation alike: at least 2 complete years in the last 10. Only complete years
+// count (IsValidYear): ten recent years each missing a month are as good as no station, while two complete years
+// and nothing else are two years of usable data. Gaps of whole years are fine, so a long record that restarted
+// recently qualifies, and stations that stopped sending data (Falcon Dam, last complete year 2015) don't.
+const int recentPeriodYears = 10;
+const int minimumCompleteYearsInRecentPeriod = 2;
 
-// A station with nothing else within 75 km (in any country) is kept on a short record: 10 complete years and any
-// monthly value in the last 10 years. It gets no warming anomaly, but it's the only data for that area.
+// Stations added to fill a gap (a country with few stations, or nothing else within 75 km in any country) can have a
+// short record: 10 complete years, as well as the recency rule. They get no warming anomaly, but they're the only
+// data for that area.
+const int shortRecordMinimumCompleteYears = 10;
 const double isolationRadiusKm = 75;
-const int isolatedMinimumCompleteYears = 10;
-const int isolatedRecentYears = 10;
 
 // The smallest spacing radius (a 120-year record). Two kept stations closer than this are near-duplicates.
 const double spacingFloorKm = 10;
 
 // A city (GeoNames) with no location within 30 km of its centre, in its country, gets the best station within 25 km
 // of the centre. Measured from the city, not the station: Avalon Airport is 17 km from Geelong but 31 km from
-// Laverton, while Geelong itself has nothing within 48 km. The station needs the recent-completeness rule and a
-// value in the last 10 years. The location is named after the city.
+// Laverton, while Geelong itself has nothing within 48 km. The station needs the recency rule. The location is named
+// after the city.
 const int cityMinimumPopulation = 50_000;
 const double cityCoveredRadiusKm = 30;
 const double cityCandidateRadiusKm = 25;
@@ -86,11 +88,11 @@ if (newStations.Any())
 }
 
 var completeYearsInRecentPeriod = await GetCompleteYearsInRecentPeriod("qcf", DateTime.Now.Year - recentPeriodYears, DateTime.Now.Year - 1);
-var filteredStations = FilterStationsByRecencyAndMinimumScore(fullStations, (short)(DateTime.Now.Year - 10), AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly, completeYearsInRecentPeriod);
+var filteredStations = FilterStationsByRecencyAndMinimumScore(fullStations, AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly, completeYearsInRecentPeriod);
 
-logger.LogInformation($"{filteredStations.Count} stations remaining after filtering based on recency and longevity of the data (records no longer than {DateTime.Now.Year - 10}), at least {AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly} complete years of data, and at least {minimumCompleteYearsInRecentPeriod} complete years in the last {recentPeriodYears}");
+logger.LogInformation($"{filteredStations.Count} stations remaining after filtering for at least {AnomalyCalculator.MinimumNumberOfYearsToCalculateAnomaly} complete years of data and at least {minimumCompleteYearsInRecentPeriod} complete years in the last {recentPeriodYears}");
 
-var combinedStations = await EnsureCountryRepresentation(fullStations, filteredStations, (short)(DateTime.Now.Year - 10));
+var combinedStations = await EnsureCountryRepresentation(fullStations, filteredStations, completeYearsInRecentPeriod);
 
 logger.LogInformation($"{combinedStations.Count} stations after adjusting for country representation (trying to having at least 5 stations per country, even if the data is poor)");
 
@@ -127,15 +129,13 @@ logger.LogInformation($"{spacedStations.Count} of {candidates.Count} stations ke
 
 // Cities without a location: the best station near the centre, in the same country, that isn't within 10 km of a
 // kept station or nearer a bigger city. Each one picked covers the smaller cities around it.
-var lastYearsWithAnyValue = await GetLastYearWithAnyValue("qcf");
 var spacedStationIds = spacedStations.Select(x => x.Id).ToHashSet();
 var cities = await GeoNamesCities.Load(httpClient, cityMinimumPopulation, logger);
 var cityCandidates = fullStations
     .Where(x => !spacedStationIds.Contains(x.Id)
                 && x.Coordinates != null
                 && x.CountryCode != null
-                && completeYearsInRecentPeriod.GetValueOrDefault(x.Id) >= minimumCompleteYearsInRecentPeriod
-                && lastYearsWithAnyValue.GetValueOrDefault(x.Id) >= DateTime.Now.Year - isolatedRecentYears)
+                && completeYearsInRecentPeriod.GetValueOrDefault(x.Id) >= minimumCompleteYearsInRecentPeriod)
     .OrderByDescending(IsPreviouslySelected)
     .ThenByDescending(x => x.Score ?? 0)
     .ThenBy(x => x.Id)
@@ -156,7 +156,7 @@ foreach (var cityStation in cityStations)
     logger.LogInformation($"City {cityStation.City.Name}, {cityStation.City.CountryCode} (population {cityStation.City.Population}) gets station {cityStation.Station.Id} {cityStation.Station.Name}, {cityStation.DistanceKm:0.0} km from the centre");
 }
 
-logger.LogInformation($"{cityStations.Count} stations added for cities of {cityMinimumPopulation} or more with no location within {cityCoveredRadiusKm} km (from {cityCandidates.Count} candidates within {cityCandidateRadiusKm} km of a centre, at least {minimumCompleteYearsInRecentPeriod} complete years in the last {recentPeriodYears} and a value since {DateTime.Now.Year - isolatedRecentYears})");
+logger.LogInformation($"{cityStations.Count} stations added for cities of {cityMinimumPopulation} or more with no location within {cityCoveredRadiusKm} km (candidates within {cityCandidateRadiusKm} km of a centre, from {cityCandidates.Count} with at least {minimumCompleteYearsInRecentPeriod} complete years in the last {recentPeriodYears})");
 
 var cityByStationId = cityStations.ToDictionary(x => x.Station.Id, x => x.City);
 var keptBeforeIsolation = new List<Station>([.. spacedStations, .. cityStations.Select(x => x.Station)]);
@@ -168,8 +168,8 @@ var isolatedCandidates = fullStations
     .Where(x => !keptBeforeIsolationIds.Contains(x.Id)
                 && x.Coordinates != null
                 && x.CountryCode != null
-                && (x.Score ?? 0) >= isolatedMinimumCompleteYears
-                && lastYearsWithAnyValue.GetValueOrDefault(x.Id) >= DateTime.Now.Year - isolatedRecentYears)
+                && (x.Score ?? 0) >= shortRecordMinimumCompleteYears
+                && completeYearsInRecentPeriod.GetValueOrDefault(x.Id) >= minimumCompleteYearsInRecentPeriod)
     .OrderByDescending(IsPreviouslySelected)
     .ThenByDescending(x => x.Score ?? 0)
     .ThenBy(x => x.Id)
@@ -182,7 +182,7 @@ var isolatedStations = StationSpacingSelector.Select(
     x => x.Coordinates!.Value,
     _ => isolationRadiusKm);
 
-logger.LogInformation($"{isolatedStations.Count} of {isolatedCandidates.Count} short-record stations added because nothing else is within {isolationRadiusKm} km (at least {isolatedMinimumCompleteYears} complete years and a value since {DateTime.Now.Year - isolatedRecentYears})");
+logger.LogInformation($"{isolatedStations.Count} of {isolatedCandidates.Count} short-record stations added because nothing else is within {isolationRadiusKm} km (at least {shortRecordMinimumCompleteYears} complete years, {minimumCompleteYearsInRecentPeriod} of them in the last {recentPeriodYears})");
 
 var selectedStations = await RemoveDuplicateLocations([.. keptBeforeIsolation, .. isolatedStations]);
 logger.LogInformation($"{selectedStations.Count} stations have been selected after adjusting for data quality, spacing, cities, isolation and removing duplicates of pre-existing locations");
@@ -269,44 +269,6 @@ bool IsPreviouslySelected(Station station)
 {
     return previouslySelectedIds.Contains(station.Id)
         || previouslySelectedIds.Contains(GhcnmStationIds.GetPreviousId(station.Id) ?? string.Empty);
-}
-
-// Each station's last year with at least one monthly value, whether or not the year is complete.
-static async Task<Dictionary<string, int>> GetLastYearWithAnyValue(string version)
-{
-    var dir = new DirectoryInfo(@$"SourceData\{version}\");
-    var dataFileName = dir.GetFiles("*.dat").Single().FullName;
-
-    var lastYears = new Dictionary<string, int>();
-    foreach (var record in await File.ReadAllLinesAsync(dataFileName))
-    {
-        if (!HasAnyValue(record))
-        {
-            continue;
-        }
-
-        var id = record[..11];
-        var year = int.Parse(record.Substring(11, 4));
-        if (year > lastYears.GetValueOrDefault(id))
-        {
-            lastYears[id] = year;
-        }
-    }
-
-    return lastYears;
-}
-
-static bool HasAnyValue(string record)
-{
-    for (var i = 0; i < 12; i++)
-    {
-        if (record.Substring(19 + (i * 8), 5) != "-9999")
-        {
-            return true;
-        }
-    }
-
-    return false;
 }
 
 // Counts each station's complete years (all 12 months present) from firstYear to lastYear.
@@ -444,16 +406,11 @@ async Task<List<Station>> GetStations(string version, List<Station> inputStation
     return GetStationsFromFile();
 }
 
-List<Station> FilterStationsByRecencyAndMinimumScore(List<Station> stations, short lastYearOfDataNoLaterThan, short minimumScore, Dictionary<string, int> completeYearsInRecentPeriod)
+List<Station> FilterStationsByRecencyAndMinimumScore(List<Station> stations, short minimumScore, Dictionary<string, int> completeYearsInRecentPeriod)
 {
     var selectedStations = new List<Station>();
     foreach (var station in stations)
     {
-        if (station.LastYear < lastYearOfDataNoLaterThan)
-        {
-            logger!.LogInformation($"Station {station.Id} is being filtered out because it isn't contemporary. Last record was in {station.LastYear.Value}");
-            continue;
-        }
         if (station.Score < minimumScore)
         {
             logger!.LogInformation($"Station {station.Id} is being filtered out because it has too much missing data. It's score ({station.Score}) (i.e., age ({station.Age}) - number of years of missing data ({station.YearsOfMissingData})) is less than the minimum score ({minimumScore})");
@@ -657,7 +614,8 @@ async Task<List<Location>> GetPreExistingLocations()
     return preExistingLocations;
 }
 
-async Task<List<Station>> EnsureCountryRepresentation(List<Station> stations, List<Station> selectedStations, short lastYearOfDataNoLaterThan)
+// Tops each country up to 5 stations with the best short-record stations that pass the recency rule.
+async Task<List<Station>> EnsureCountryRepresentation(List<Station> stations, List<Station> selectedStations, Dictionary<string, int> completeYearsInRecentPeriod)
 {
     var fipsToIsoMapper = await FipsToIsoMapper.Load();
     var combinedStations = new List<Station>();
@@ -681,8 +639,8 @@ async Task<List<Station>> EnsureCountryRepresentation(List<Station> stations, Li
             logger.LogInformation($"{countryCode} has {stationCount} selected stations out of {countryCount} in GHCNm. Will try to add more stations to bring the number to a minimum of {minimumStationsInCountry}");
             var bestStations = stations
                 .Where(x => x.CountryCode == countryCode
-                            && x.Score >= 10
-                            && x.LastYear >= lastYearOfDataNoLaterThan)
+                            && x.Score >= shortRecordMinimumCompleteYears
+                            && completeYearsInRecentPeriod.GetValueOrDefault(x.Id) >= minimumCompleteYearsInRecentPeriod)
                 .OrderByDescending(x => x.Score).Take(minimumStationsInCountry);
             foreach (var goodStation in bestStations)
             {
