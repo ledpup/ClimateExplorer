@@ -36,6 +36,24 @@ public class StationAbbreviationsTests
     }
 
     [TestMethod]
+    public void Find_Phrase_MatchedBeforeItsWords()
+    {
+        var found = StationAbbreviations.Find("Univ Wi Id 8925 Limbert AWS");
+
+        CollectionAssert.AreEqual(
+            new List<(string, string)> { ("Univ Wi", "University of Wisconsin"), ("AWS", "Automatic weather station") },
+            found);
+    }
+
+    [TestMethod]
+    public void Find_FirstWordOfPhraseAlone_MatchesWord()
+    {
+        var found = StationAbbreviations.Find("Winthrop Univ");
+
+        CollectionAssert.AreEqual(new List<(string, string)> { ("Univ", "University") }, found);
+    }
+
+    [TestMethod]
     public void Find_Apostrophe_MatchesWholeWord()
     {
         var found = StationAbbreviations.Find("Calgary Int'l CS");

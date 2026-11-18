@@ -85,6 +85,15 @@ public static partial class StationAbbreviations
         ("Wtr", "Water"),
     ]);
 
+    // Abbreviations of more than one word, matched before the words on their own: "Univ Wi" is one entry, not
+    // "Univ" and an unexplained "Wi". Written with single spaces.
+    private static readonly Dictionary<string, (string Abbreviation, string Meaning)> Phrases = ToLookup(
+    [
+        ("Univ Wi", "University of Wisconsin"),
+    ]);
+
+    private static readonly int LongestPhraseWords = Phrases.Keys.Max(x => x.Split(' ').Length);
+
     /// <summary>
     /// Whether <see cref="Station.ToDisplayName"/> keeps a word in capitals.
     /// </summary>
@@ -100,13 +109,17 @@ public static partial class StationAbbreviations
     public static List<(string Abbreviation, string Meaning)> Find(string name)
     {
         List<(string Abbreviation, string Meaning)> found = [];
-        foreach (Match match in WordRegex().Matches(name))
+        var words = WordRegex().Matches(name).Select(x => x.Value).ToList();
+        var i = 0;
+        while (i < words.Count)
         {
-            if ((Initialisms.TryGetValue(match.Value, out var entry) || ShortenedWords.TryGetValue(match.Value, out entry))
-                && !found.Contains(entry))
+            var (entry, wordCount) = FindAt(words, i);
+            if (entry is { } value && !found.Contains(value))
             {
-                found.Add(entry);
+                found.Add(value);
             }
+
+            i += wordCount;
         }
 
         return found;
@@ -115,6 +128,23 @@ public static partial class StationAbbreviations
     // A word in a station name: letters and digits, with apostrophes kept in ("O'Neill", "Int'l").
     [GeneratedRegex(@"[\p{L}\p{N}']+")]
     internal static partial Regex WordRegex();
+
+    // The longest abbreviation starting at a word, and how many words it takes; one word when there's none.
+    private static ((string Abbreviation, string Meaning)? Entry, int WordCount) FindAt(List<string> words, int start)
+    {
+        for (var count = Math.Min(LongestPhraseWords, words.Count - start); count > 1; count--)
+        {
+            if (Phrases.TryGetValue(string.Join(' ', words.Skip(start).Take(count)), out var phrase))
+            {
+                return (phrase, count);
+            }
+        }
+
+        var word = words[start];
+        return Initialisms.TryGetValue(word, out var entry) || ShortenedWords.TryGetValue(word, out entry)
+            ? (entry, 1)
+            : (null, 1);
+    }
 
     private static Dictionary<string, (string Abbreviation, string Meaning)> ToLookup(List<(string Abbreviation, string Meaning)> entries)
     {
