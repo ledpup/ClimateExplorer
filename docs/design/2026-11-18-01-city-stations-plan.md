@@ -454,14 +454,15 @@ CachingTool).
   warming anomaly (3,484 before the plan) and 3,916 a trend score (3,953).
 - The solution builds. Core 326, WebApi 225 and Web 535 tests pass.
 
-**Problem: 149 stations lost their GHCNd data.**
+**GHCNd: 176 stations without daily data.** (An earlier version of this note blamed transient 404s; that was
+wrong.)
 
-- 5,212 stations have a GHCNd archive and 176 don't (12 of 3,195 last time).
-- Checked one at a time against NOAA afterwards, only 27 of the 176 return 404. The other 149 have files.
-- During the run, `GhcndBulkStationFileCache` got 404s for them and recorded them as "not in GHCNd". NOAA's
-  server returns errors under load (rapid requests also failed with dropped connections while checking).
-- **Fix:** retry a 404 before accepting it. Then re-run `Data.Ghcnd`, which only downloads the missing files,
-  then DataPipeline and CachingTool.
+- 5,212 of 5,388 stations have a GHCNd archive (5,223 of 5,422 before this plan, so no regression).
+- 27 aren't in GHCNd (404). The downloader works: the other 149 CSVs were downloaded on 2026-11-12.
+- The 149 fail `HasSufficientData`: no year with more than 300 days of both TMAX and TMIN, and none with more
+  than 300 days of PRCP. Most are SYNOP airport stations whose daily record is mainly TAVG, e.g. Seoul City
+  (best year 246 days of TMAX and TMIN, but 70 years with 300+ days of TAVG). 116 have at least one year with
+  300+ days of TAVG; 88 have ten or more. The importer doesn't keep TAVG.
 
 **URL names.** In 17 cases a city location shares its URL name with another location that's found first, so
 `/location/<name>` goes to the other one.
